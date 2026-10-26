@@ -386,6 +386,22 @@
       ],
       "documentation":"<p>Describes the settings for a registry. The replication configuration for a repository can be created or updated with the <a>PutReplicationConfiguration</a> API action.</p>"
     },
+    "DescribeReplicationBackfillResults":{
+      "name":"DescribeReplicationBackfillResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeReplicationBackfillResultsRequest"},
+      "output":{"shape":"DescribeReplicationBackfillResultsResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ReplicationBackfillNotFoundException"}
+      ],
+      "documentation":"<p>Returns the status, progress, and per-image results for a replication backfill. The backfill to describe is identified by the <code>replicationBackfillId</code> returned by the <a>StartReplicationBackfill</a> operation.</p> <note> <p>The per-image results are available only after the replication backfill reaches a terminal status.</p> </note>"
+    },
     "DescribeRepositories":{
       "name":"DescribeRepositories",
       "http":{
@@ -624,6 +640,21 @@
       ],
       "documentation":"<p>Lists the IAM principals that are excluded from having their image pull times recorded.</p>"
     },
+    "ListReplicationBackfills":{
+      "name":"ListReplicationBackfills",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListReplicationBackfillsRequest"},
+      "output":{"shape":"ListReplicationBackfillsResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the replication backfills for a registry, including their status and progress.</p> <note> <p>Replication backfills that have reached a terminal status are retained for 90 days after they end, after which they are no longer returned.</p> </note>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -854,6 +885,40 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Starts a preview of a lifecycle policy for the specified repository. This allows you to see the results before associating the lifecycle policy with the repository.</p>"
+    },
+    "StartReplicationBackfill":{
+      "name":"StartReplicationBackfill",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartReplicationBackfillRequest"},
+      "output":{"shape":"StartReplicationBackfillResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ReplicationBackfillInProgressException"}
+      ],
+      "documentation":"<p>Starts a replication backfill for a registry. A replication backfill replicates a registry's existing images that match its replication configuration to the specified destination. Use the <a>DescribeReplicationBackfillResults</a> operation to monitor the progress of a replication backfill, and to retrieve its per-image results after it reaches a terminal status.</p> <note> <p>The destination must already be configured in the registry's replication configuration.</p> </note> <note> <p>Only one replication backfill can be in progress for a given destination Region at a time. Starting a replication backfill for a destination Region that already has one in progress fails with a <code>ReplicationBackfillInProgressException</code>. In addition, a registry can have at most 10 replication backfills in progress at once. Starting a replication backfill that would exceed this limit fails with a <code>LimitExceededException</code>.</p> </note>"
+    },
+    "StopReplicationBackfill":{
+      "name":"StopReplicationBackfill",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopReplicationBackfillRequest"},
+      "output":{"shape":"StopReplicationBackfillResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ReplicationBackfillNotFoundException"},
+        {"shape":"ReplicationBackfillInvalidStatusException"}
+      ],
+      "documentation":"<p>Stops an in progress replication backfill for a registry. The backfill to stop is identified by the <code>replicationBackfillId</code> returned by the <a>StartReplicationBackfill</a> operation.</p> <note> <p>Images that have already been replicated are not affected, and replications that are already in progress continue to completion.</p> </note>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -2029,6 +2094,77 @@
         "replicationConfiguration":{
           "shape":"ReplicationConfiguration",
           "documentation":"<p>The replication configuration for the registry.</p>"
+        }
+      }
+    },
+    "DescribeReplicationBackfillResultsRequest":{
+      "type":"structure",
+      "required":["replicationBackfillId"],
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry that contains the replication backfill to describe. If you do not specify a registry, the default registry is assumed.</p>"
+        },
+        "replicationBackfillId":{
+          "shape":"ReplicationBackfillId",
+          "documentation":"<p>The ID of the replication backfill to describe.</p>"
+        },
+        "resultStatusFilter":{
+          "shape":"ReplicationBackfillResultStatus",
+          "documentation":"<p>The status used to filter the returned results. Each result has a status of <code>COMPLETE</code> or <code>FAILED</code>. If you omit this parameter, results with both statuses are returned.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of replication backfill results returned by <code>DescribeReplicationBackfillResults</code> in paginated output. When this parameter is used, <code>DescribeReplicationBackfillResults</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeReplicationBackfillResults</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribeReplicationBackfillResults</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>DescribeReplicationBackfillResults</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "DescribeReplicationBackfillResultsResponse":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The registry ID associated with the request.</p>"
+        },
+        "replicationBackfillId":{
+          "shape":"ReplicationBackfillId",
+          "documentation":"<p>The ID of the replication backfill.</p>"
+        },
+        "destination":{
+          "shape":"ReplicationDestination",
+          "documentation":"<p>The destination Region and registry to which the images are replicated.</p>"
+        },
+        "status":{
+          "shape":"ReplicationBackfillStatus",
+          "documentation":"<p>The current status of the replication backfill.</p>"
+        },
+        "failureCode":{
+          "shape":"ReplicationBackfillError",
+          "documentation":"<p>The failure code for a replication backfill that has failed.</p>"
+        },
+        "progress":{
+          "shape":"ReplicationBackfillProgress",
+          "documentation":"<p>The progress of the replication backfill, including the total, completed, and failed replication counts. This value is <code>null</code> until the replication backfill finishes preparing the set of images to replicate. It is therefore <code>null</code> while the replication backfill is <code>PREPARING</code>, and remains <code>null</code> if the replication backfill is stopped before preparation completes.</p>"
+        },
+        "results":{
+          "shape":"ReplicationBackfillResultList",
+          "documentation":"<p>The per-image results for the replication backfill. Results are available only after the replication backfill reaches a terminal status.</p>"
+        },
+        "startedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time, in JavaScript date format, when the replication backfill was started.</p>"
+        },
+        "endedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time, in JavaScript date format, when the replication backfill ended. This value is <code>null</code> while the replication backfill is still in progress.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>DescribeReplicationBackfillResults</code> request. When the results of a <code>DescribeReplicationBackfillResults</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -3553,6 +3689,40 @@
         }
       }
     },
+    "ListReplicationBackfillsRequest":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry for which to list replication backfills. If you do not specify a registry, the default registry is assumed.</p>"
+        },
+        "maxResults":{
+          "shape":"FiftyMaxResults",
+          "documentation":"<p>The maximum number of replication backfill results returned by <code>ListReplicationBackfills</code> in paginated output. When this parameter is used, <code>ListReplicationBackfills</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListReplicationBackfills</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 50. If this parameter is not used, then <code>ListReplicationBackfills</code> returns up to 25 results and a <code>nextToken</code> value, if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListReplicationBackfills</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "ListReplicationBackfillsResponse":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The registry ID associated with the request.</p>"
+        },
+        "backfills":{
+          "shape":"ReplicationBackfillSummaryList",
+          "documentation":"<p>A list of the replication backfills for the registry.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListReplicationBackfills</code> request. When the results of a <code>ListReplicationBackfills</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -3586,6 +3756,10 @@
     },
     "Metric":{"type":"string"},
     "NextToken":{"type":"string"},
+    "NonNegativeInteger":{
+      "type":"integer",
+      "min":0
+    },
     "PTCValidateFailure":{"type":"string"},
     "PackageManager":{"type":"string"},
     "PackageVulnerabilityDetails":{
@@ -4154,6 +4328,169 @@
       },
       "documentation":"<p>Information on how to remediate a finding.</p>"
     },
+    "ReplicationBackfillError":{"type":"string"},
+    "ReplicationBackfillId":{
+      "type":"string",
+      "pattern":"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    },
+    "ReplicationBackfillInProgressException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ExceptionMessage",
+          "documentation":"<p>The error message associated with the exception.</p>"
+        }
+      },
+      "documentation":"<p>A replication backfill is already in progress for the specified destination Region. This occurs because only one replication backfill can be in progress for a given destination Region at a time. Wait for the in progress backfill to reach a terminal status, or stop it with the <a>StopReplicationBackfill</a> operation, before starting another one.</p>",
+      "exception":true
+    },
+    "ReplicationBackfillInvalidStatusException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ExceptionMessage",
+          "documentation":"<p>The error message associated with the exception.</p>"
+        }
+      },
+      "documentation":"<p>The requested operation can't be performed on the replication backfill because it is not in a valid status for that operation. For example, you can't stop a replication backfill that has already reached a terminal status. Use the <a>DescribeReplicationBackfillResults</a> operation to check the current status before retrying.</p>",
+      "exception":true
+    },
+    "ReplicationBackfillNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ExceptionMessage",
+          "documentation":"<p>The error message associated with the exception.</p>"
+        }
+      },
+      "documentation":"<p>The specified replication backfill could not be found. Check the specified replication backfill ID and ensure that you are operating on the correct registry.</p>",
+      "exception":true
+    },
+    "ReplicationBackfillProgress":{
+      "type":"structure",
+      "required":[
+        "totalReplicationCount",
+        "completedReplicationCount",
+        "failedReplicationCount",
+        "failureCodes"
+      ],
+      "members":{
+        "totalReplicationCount":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The total number of replications that the backfill will perform. Each image and tag combination is counted as a single replication.</p>"
+        },
+        "completedReplicationCount":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The number of replications that have completed successfully.</p>"
+        },
+        "failedReplicationCount":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The number of replications that have failed.</p>"
+        },
+        "failureCodes":{
+          "shape":"ReplicationErrorList",
+          "documentation":"<p>The distinct failure codes for the replications that have failed. Each failure code appears at most once, regardless of how many replications failed with that code.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the progress of a replication backfill, including the total, completed, and failed replication counts.</p>"
+    },
+    "ReplicationBackfillResult":{
+      "type":"structure",
+      "required":[
+        "repositoryName",
+        "imageId",
+        "status"
+      ],
+      "members":{
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository that contains the image.</p>"
+        },
+        "imageId":{
+          "shape":"ImageIdentifier",
+          "documentation":"<p>An object with identifying information for the image.</p>"
+        },
+        "status":{
+          "shape":"ReplicationBackfillResultStatus",
+          "documentation":"<p>The replication status of the image.</p>"
+        },
+        "failureCode":{
+          "shape":"ReplicationError",
+          "documentation":"<p>The failure code for a replication that has failed.</p>"
+        },
+        "subImageFailureCodes":{
+          "shape":"ReplicationErrorList",
+          "documentation":"<p>The distinct failure codes for the images referenced by a manifest list that failed to replicate. Each failure code appears at most once, regardless of how many referenced images failed with that code. This field is present only when the image is a manifest list.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the result of a single replication during a replication backfill. Each image and tag combination is replicated as a single replication.</p>"
+    },
+    "ReplicationBackfillResultList":{
+      "type":"list",
+      "member":{"shape":"ReplicationBackfillResult"}
+    },
+    "ReplicationBackfillResultStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETE",
+        "FAILED"
+      ]
+    },
+    "ReplicationBackfillStatus":{
+      "type":"string",
+      "enum":[
+        "PREPARING",
+        "IN_PROGRESS",
+        "COMPLETE",
+        "FAILED",
+        "STOPPING",
+        "STOPPED"
+      ]
+    },
+    "ReplicationBackfillSummary":{
+      "type":"structure",
+      "required":[
+        "replicationBackfillId",
+        "destination",
+        "status",
+        "startedAt"
+      ],
+      "members":{
+        "replicationBackfillId":{
+          "shape":"ReplicationBackfillId",
+          "documentation":"<p>The ID of the replication backfill.</p>"
+        },
+        "destination":{
+          "shape":"ReplicationDestination",
+          "documentation":"<p>The destination Region and registry to which the images are replicated.</p>"
+        },
+        "status":{
+          "shape":"ReplicationBackfillStatus",
+          "documentation":"<p>The current status of the replication backfill.</p>"
+        },
+        "failureCode":{
+          "shape":"ReplicationBackfillError",
+          "documentation":"<p>The failure code for a replication backfill that has failed.</p>"
+        },
+        "progress":{
+          "shape":"ReplicationBackfillProgress",
+          "documentation":"<p>The progress of the replication backfill, including the total, completed, and failed replication counts. This value is <code>null</code> until the replication backfill finishes preparing the set of images to replicate. It is therefore <code>null</code> while the replication backfill is <code>PREPARING</code>, and remains <code>null</code> if the replication backfill is stopped before preparation completes.</p>"
+        },
+        "startedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time, in JavaScript date format, when the replication backfill was started.</p>"
+        },
+        "endedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time, in JavaScript date format, when the replication backfill ended. This value is <code>null</code> while the replication backfill is still in progress.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a summary of a replication backfill, including its status, destination, progress, and start and end times.</p>"
+    },
+    "ReplicationBackfillSummaryList":{
+      "type":"list",
+      "member":{"shape":"ReplicationBackfillSummary"}
+    },
     "ReplicationConfiguration":{
       "type":"structure",
       "required":["rules"],
@@ -4190,6 +4527,10 @@
       "min":0
     },
     "ReplicationError":{"type":"string"},
+    "ReplicationErrorList":{
+      "type":"list",
+      "member":{"shape":"ReplicationError"}
+    },
     "ReplicationRule":{
       "type":"structure",
       "required":["destinations"],
@@ -4224,7 +4565,7 @@
       "members":{
         "repositoryArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the repository. The ARN contains the <code>arn:aws:ecr</code> namespace, followed by the region of the repository, Amazon Web Services account ID of the repository owner, repository namespace, and repository name. For example, <code>arn:aws:ecr:region:012345678910:repository-namespace/repository-name</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the repository. The ARN contains the <code>arn:aws:ecr</code> namespace, followed by the region of the repository, Amazon Web Services account ID of the repository owner, and repository name. For example, <code>arn:aws:ecr:region:012345678910:repository/repository-name</code>.</p>"
         },
         "registryId":{
           "shape":"RegistryId",
@@ -4845,7 +5186,85 @@
         }
       }
     },
+    "StartReplicationBackfillRequest":{
+      "type":"structure",
+      "required":["destination"],
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry from which to start the replication backfill. If you do not specify a registry, the default registry is assumed.</p>"
+        },
+        "destination":{
+          "shape":"ReplicationDestination",
+          "documentation":"<p>The destination Region and registry to which the images are replicated.</p>"
+        }
+      }
+    },
+    "StartReplicationBackfillResponse":{
+      "type":"structure",
+      "members":{
+        "replicationBackfillId":{
+          "shape":"ReplicationBackfillId",
+          "documentation":"<p>The ID of the replication backfill that was started. Use this value to describe or stop the backfill.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The registry ID associated with the request.</p>"
+        },
+        "destination":{
+          "shape":"ReplicationDestination",
+          "documentation":"<p>The destination Region and registry to which the images are replicated.</p>"
+        },
+        "status":{
+          "shape":"ReplicationBackfillStatus",
+          "documentation":"<p>The current status of the replication backfill. A newly started replication backfill is returned with a status of <code>PREPARING</code>.</p>"
+        },
+        "startedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time, in JavaScript date format, when the replication backfill was started.</p>"
+        }
+      }
+    },
     "Status":{"type":"string"},
+    "StopReplicationBackfillRequest":{
+      "type":"structure",
+      "required":["replicationBackfillId"],
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry that contains the replication backfill to stop. If you do not specify a registry, the default registry is assumed.</p>"
+        },
+        "replicationBackfillId":{
+          "shape":"ReplicationBackfillId",
+          "documentation":"<p>The ID of the replication backfill to stop.</p>"
+        }
+      }
+    },
+    "StopReplicationBackfillResponse":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The registry ID associated with the request.</p>"
+        },
+        "replicationBackfillId":{
+          "shape":"ReplicationBackfillId",
+          "documentation":"<p>The ID of the replication backfill.</p>"
+        },
+        "destination":{
+          "shape":"ReplicationDestination",
+          "documentation":"<p>The destination Region and registry to which the images are replicated.</p>"
+        },
+        "status":{
+          "shape":"ReplicationBackfillStatus",
+          "documentation":"<p>The current status of the replication backfill. When you stop a replication backfill, its status is <code>STOPPED</code> if the backfill is stopped immediately, or <code>STOPPING</code> if there are replications still in progress that must complete before the backfill stops.</p>"
+        },
+        "startedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time, in JavaScript date format, when the replication backfill was started.</p>"
+        }
+      }
+    },
     "String":{"type":"string"},
     "SubjectIdentifier":{
       "type":"structure",

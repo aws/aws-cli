@@ -1523,6 +1523,10 @@
         "ExpressPrivateOfferConfigurationSummary":{
           "shape":"ExpressPrivateOfferConfigurationSummary",
           "documentation":"<p>An object that contains summary information about the express private offer configuration.</p>"
+        },
+        "SubsidiaryAuthorizationSummary":{
+          "shape":"SubsidiaryAuthorizationSummary",
+          "documentation":"<p>An object that contains summary information about the subsidiary authorization, such as its status and authorized resource, when the entity type is <code>SubsidiaryAuthorization</code>.</p>"
         }
       },
       "documentation":"<p>This object is a container for common summary information about the entity. The summary doesn't contain the whole entity structure, but it does contain information common across all entities.</p>"
@@ -1572,6 +1576,10 @@
         "ExpressPrivateOfferConfigurationFilters":{
           "shape":"ExpressPrivateOfferConfigurationFilters",
           "documentation":"<p>A filter for express private offer configurations.</p>"
+        },
+        "SubsidiaryAuthorizationFilters":{
+          "shape":"SubsidiaryAuthorizationFilters",
+          "documentation":"<p>A filter for subsidiary authorizations.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields per entity type.</p>",
@@ -1612,6 +1620,10 @@
         "ExpressPrivateOfferConfigurationSort":{
           "shape":"ExpressPrivateOfferConfigurationSort",
           "documentation":"<p>A sort for express private offer configurations.</p>"
+        },
+        "SubsidiaryAuthorizationSort":{
+          "shape":"SubsidiaryAuthorizationSort",
+          "documentation":"<p>A sort for subsidiary authorizations.</p>"
         }
       },
       "documentation":"<p>Object containing all the sort fields per entity type.</p>",
@@ -2052,7 +2064,7 @@
         },
         "EntityType":{
           "shape":"EntityType",
-          "documentation":"<p>The type of entities to retrieve. Valid values are: <code>AmiProduct</code>, <code>ContainerProduct</code>, <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>, <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>, <code>Offer</code>, <code>OfferSet</code>, <code>Seller</code>, <code>ResaleAuthorization</code>, <code>Solution</code>.</p>"
+          "documentation":"<p>The type of entities to retrieve. Valid values are: <code>AmiProduct</code>, <code>ContainerProduct</code>, <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>, <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>, <code>Offer</code>, <code>OfferSet</code>, <code>Seller</code>, <code>ResaleAuthorization</code>, <code>Solution</code>, <code>SubsidiaryAuthorization</code>.</p>"
         },
         "FilterList":{
           "shape":"FilterList",
@@ -3975,6 +3987,329 @@
           "documentation":"<p>The ARN associated to the unique identifier generated for the request.</p>"
         }
       }
+    },
+    "SubsidiaryAuthorizationCreatedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"SubsidiaryAuthorizationCreatedDateFilterDateRange",
+          "documentation":"<p>A date range to filter by. The operation returns subsidiary authorizations with creation dates that fall within this range.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the date a subsidiary authorization was created.</p>"
+    },
+    "SubsidiaryAuthorizationCreatedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The start date (inclusive) of the date range. The operation returns subsidiary authorizations created on or after this date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The end date (inclusive) of the date range. The operation returns subsidiary authorizations created on or before this date.</p>"
+        }
+      },
+      "documentation":"<p>A date range for filtering subsidiary authorizations by creation date.</p>"
+    },
+    "SubsidiaryAuthorizationEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SubsidiaryAuthorizationEntityIdFilterValueList",
+          "documentation":"<p>A list of entity IDs to filter by. The operation returns subsidiary authorizations with an entity ID that matches any value in this list. You can include up to 10 entity IDs in this list.</p>"
+        }
+      },
+      "documentation":"<p>The filter for subsidiary authorization entity IDs. Each ID begins with <code>subauthz-</code> followed by 13 alphanumeric characters.</p>"
+    },
+    "SubsidiaryAuthorizationEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SubsidiaryAuthorizationEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "SubsidiaryAuthorizationEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "SubsidiaryAuthorizationFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"SubsidiaryAuthorizationEntityIdFilter",
+          "documentation":"<p>A filter that matches subsidiary authorizations by entity ID.</p>"
+        },
+        "Status":{
+          "shape":"SubsidiaryAuthorizationStatusFilter",
+          "documentation":"<p>A filter that matches subsidiary authorizations by status.</p>"
+        },
+        "ResourceId":{
+          "shape":"SubsidiaryAuthorizationResourceIdFilter",
+          "documentation":"<p>A filter that matches subsidiary authorizations by the ID of the authorized resource.</p>"
+        },
+        "ResourceName":{
+          "shape":"SubsidiaryAuthorizationResourceNameFilter",
+          "documentation":"<p>A filter that matches subsidiary authorizations by the name of the authorized resource.</p>"
+        },
+        "Name":{
+          "shape":"SubsidiaryAuthorizationNameFilter",
+          "documentation":"<p>A filter that matches subsidiary authorizations by name.</p>"
+        },
+        "SubsidiaryAccountId":{
+          "shape":"SubsidiaryAuthorizationSubsidiaryAccountIdFilter",
+          "documentation":"<p>A filter that matches subsidiary authorizations by the AWS account ID of the subsidiary account.</p>"
+        },
+        "CreatedDate":{
+          "shape":"SubsidiaryAuthorizationCreatedDateFilter",
+          "documentation":"<p>A filter that matches subsidiary authorizations by creation date.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"SubsidiaryAuthorizationLastModifiedDateFilter",
+          "documentation":"<p>A filter that matches subsidiary authorizations by last modified date.</p>"
+        }
+      },
+      "documentation":"<p>The filters that you can use with the <code>ListEntities</code> operation to filter subsidiary authorizations. You can filter by <code>EntityId</code>, <code>Status</code>, <code>ResourceId</code>, <code>ResourceName</code>, <code>Name</code>, <code>SubsidiaryAccountId</code>, <code>CreatedDate</code>, and <code>LastModifiedDate</code>. You can add only one wildcard filter in a single <code>ListEntities</code> request.</p>"
+    },
+    "SubsidiaryAuthorizationLastModifiedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"SubsidiaryAuthorizationLastModifiedDateFilterDateRange",
+          "documentation":"<p>A date range to filter by. The operation returns subsidiary authorizations with last modified dates that fall within this range.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the date a subsidiary authorization was last modified.</p>"
+    },
+    "SubsidiaryAuthorizationLastModifiedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The start date (inclusive) of the date range. The operation returns subsidiary authorizations last modified on or after this date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The end date (inclusive) of the date range. The operation returns subsidiary authorizations last modified on or before this date.</p>"
+        }
+      },
+      "documentation":"<p>A date range for filtering subsidiary authorizations by last modified date.</p>"
+    },
+    "SubsidiaryAuthorizationNameFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SubsidiaryAuthorizationNameFilterValueList",
+          "documentation":"<p>A list of names to filter by. The operation returns subsidiary authorizations with a name that matches any value in this list. You can include up to 10 names in this list.</p>"
+        },
+        "WildCardValue":{
+          "shape":"SubsidiaryAuthorizationNameFilterWildcard",
+          "documentation":"<p>A partial name to filter by. The operation returns subsidiary authorizations whose name contains this value. The value must be at least 3 characters.</p>"
+        }
+      },
+      "documentation":"<p>The filter for subsidiary authorization names.</p>"
+    },
+    "SubsidiaryAuthorizationNameFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SubsidiaryAuthorizationNameString"},
+      "max":10,
+      "min":1
+    },
+    "SubsidiaryAuthorizationNameFilterWildcard":{
+      "type":"string",
+      "max":255,
+      "min":3,
+      "pattern":"^(.)+$"
+    },
+    "SubsidiaryAuthorizationNameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "SubsidiaryAuthorizationResourceIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SubsidiaryAuthorizationResourceIdFilterValueList",
+          "documentation":"<p>A list of resource IDs to filter by. The operation returns subsidiary authorizations for resources with an ID that matches any value in this list. You can include up to 10 resource IDs in this list.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the IDs of resources that subsidiary authorizations apply to.</p>"
+    },
+    "SubsidiaryAuthorizationResourceIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SubsidiaryAuthorizationResourceIdString"},
+      "max":10,
+      "min":1
+    },
+    "SubsidiaryAuthorizationResourceIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "SubsidiaryAuthorizationResourceNameFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SubsidiaryAuthorizationResourceNameFilterValueList",
+          "documentation":"<p>A list of resource names to filter by. The operation returns subsidiary authorizations for resources with a name that matches any value in this list. You can include up to 10 resource names in this list.</p>"
+        },
+        "WildCardValue":{
+          "shape":"SubsidiaryAuthorizationResourceNameFilterWildcard",
+          "documentation":"<p>A partial resource name to filter by. The operation returns subsidiary authorizations for resources whose name contains this value. The value must be at least 3 characters.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the names of resources that subsidiary authorizations apply to.</p>"
+    },
+    "SubsidiaryAuthorizationResourceNameFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SubsidiaryAuthorizationResourceNameString"},
+      "max":10,
+      "min":1
+    },
+    "SubsidiaryAuthorizationResourceNameFilterWildcard":{
+      "type":"string",
+      "max":255,
+      "min":3,
+      "pattern":"^(.)+$"
+    },
+    "SubsidiaryAuthorizationResourceNameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "SubsidiaryAuthorizationSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"SubsidiaryAuthorizationSortBy",
+          "documentation":"<p>The field to sort subsidiary authorizations by. Valid values are <code>EntityId</code>, <code>Status</code>, <code>ResourceId</code>, <code>SubsidiaryAccountId</code>, <code>CreatedDate</code>, and <code>LastModifiedDate</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order. Can be <code>ASCENDING</code> or <code>DESCENDING</code>. The default value is <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the field to sort subsidiary authorizations by and the order (ascending or descending) to apply.</p>"
+    },
+    "SubsidiaryAuthorizationSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "Status",
+        "ResourceId",
+        "SubsidiaryAccountId",
+        "CreatedDate",
+        "LastModifiedDate"
+      ]
+    },
+    "SubsidiaryAuthorizationStatusFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SubsidiaryAuthorizationStatusFilterValueList",
+          "documentation":"<p>A list of statuses to filter by. The operation returns subsidiary authorizations with a status that matches a value in this list. Valid values are:</p> <ul> <li> <p> <code>Draft</code> - The subsidiary authorization was created but not yet released. The subsidiary account can't see it.</p> </li> <li> <p> <code>Active</code> - The subsidiary account can use the subsidiary authorization to create offers for the authorized product.</p> </li> <li> <p> <code>Restricted</code> - The subsidiary authorization was discarded while in <code>Draft</code> or revoked while <code>Active</code>. It can't be used to create new offers. This status is final.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The filter for subsidiary authorization statuses.</p>"
+    },
+    "SubsidiaryAuthorizationStatusFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SubsidiaryAuthorizationStatusString"},
+      "max":10,
+      "min":1
+    },
+    "SubsidiaryAuthorizationStatusString":{
+      "type":"string",
+      "enum":[
+        "Draft",
+        "Active",
+        "Restricted"
+      ],
+      "max":64,
+      "min":1
+    },
+    "SubsidiaryAuthorizationSubsidiaryAccountIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SubsidiaryAuthorizationSubsidiaryAccountIdFilterValueList",
+          "documentation":"<p>A list of AWS account IDs to filter by. The operation returns subsidiary authorizations whose subsidiary account ID matches any value in this list. You can include up to 10 account IDs in this list.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the AWS account IDs of subsidiary accounts.</p>"
+    },
+    "SubsidiaryAuthorizationSubsidiaryAccountIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SubsidiaryAuthorizationSubsidiaryAccountIdString"},
+      "max":10,
+      "min":1
+    },
+    "SubsidiaryAuthorizationSubsidiaryAccountIdString":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^[0-9]{12}$"
+    },
+    "SubsidiaryAuthorizationSummary":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"SubsidiaryAuthorizationSummaryNameString",
+          "documentation":"<p>The name of the subsidiary authorization.</p>"
+        },
+        "Status":{
+          "shape":"SubsidiaryAuthorizationSummaryStatusString",
+          "documentation":"<p>The status of the subsidiary authorization. Valid values are:</p> <ul> <li> <p> <code>Draft</code> - The subsidiary authorization was created but not yet released. The subsidiary account can't see it.</p> </li> <li> <p> <code>Active</code> - The subsidiary account can use the subsidiary authorization to create offers for the authorized product.</p> </li> <li> <p> <code>Restricted</code> - The subsidiary authorization was discarded while in <code>Draft</code> or revoked while <code>Active</code>. It can't be used to create new offers. This status is final.</p> </li> </ul>"
+        },
+        "ResourceId":{
+          "shape":"SubsidiaryAuthorizationSummaryResourceIdString",
+          "documentation":"<p>The ID of the resource that the subsidiary authorization applies to. Currently, this is always a product ID, such as <code>prod-example123</code>.</p>"
+        },
+        "ResourceName":{
+          "shape":"SubsidiaryAuthorizationSummaryResourceNameString",
+          "documentation":"<p>The name of the resource that the subsidiary authorization applies to. Currently, this is always a product name.</p>"
+        },
+        "SubsidiaryAccountId":{
+          "shape":"SubsidiaryAuthorizationSummarySubsidiaryAccountIdString",
+          "documentation":"<p>The 12-digit AWS account ID of the subsidiary account.</p>"
+        },
+        "CreatedDate":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The date the subsidiary authorization was created.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains summary information about a subsidiary authorization, including its name, status, authorized resource, subsidiary account, and creation date. A subsidiary authorization lets a seller authorize one of its subsidiary accounts to create offers for one of its products.</p>"
+    },
+    "SubsidiaryAuthorizationSummaryNameString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "SubsidiaryAuthorizationSummaryResourceIdString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "SubsidiaryAuthorizationSummaryResourceNameString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "SubsidiaryAuthorizationSummaryStatusString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "SubsidiaryAuthorizationSummarySubsidiaryAccountIdString":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^[0-9]{12}$"
     },
     "Tag":{
       "type":"structure",

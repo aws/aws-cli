@@ -3014,6 +3014,16 @@
       "documentation":"<p>A list of available provisioned control plane scaling tiers.</p>",
       "max":10
     },
+    "CrdManagementConfiguration":{
+      "type":"structure",
+      "members":{
+        "managed":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates if Gateway API CRD management is enabled on your EKS Auto Mode cluster. If CRD management is enabled, EKS Auto Mode will create and update the Gateway API CRDs in your EKS Auto Mode cluster.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the current configuration of Gateway API custom resource definition (CRD) management on your EKS Auto Mode cluster. For example, if CRD management is enabled or disabled. For more information, see EKS Auto Mode load balancing capability in the <i>Amazon EKS User Guide</i>.</p>"
+    },
     "CreateAccessConfigRequest":{
       "type":"structure",
       "members":{
@@ -4664,6 +4674,10 @@
         "enabled":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Indicates if the load balancing capability is enabled on your EKS Auto Mode cluster. If the load balancing capability is enabled, EKS Auto Mode will create and delete load balancers in your Amazon Web Services account.</p>"
+        },
+        "gatewayApi":{
+          "shape":"GatewayApiConfiguration",
+          "documentation":"<p>Indicates the current configuration of the Kubernetes Gateway API for the load balancing capability on your EKS Auto Mode cluster. For more information, see EKS Auto Mode load balancing capability in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Indicates the current configuration of the load balancing capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. For more information, see EKS Auto Mode load balancing capability in the <i>Amazon EKS User Guide</i>.</p>"
@@ -4879,6 +4893,16 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "GatewayApiConfiguration":{
+      "type":"structure",
+      "members":{
+        "crds":{
+          "shape":"CrdManagementConfiguration",
+          "documentation":"<p>Indicates the current configuration of Gateway API custom resource definition (CRD) management on your EKS Auto Mode cluster. For example, if CRD management is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the current configuration of the Kubernetes Gateway API for the load balancing capability on your EKS Auto Mode cluster. For more information, see EKS Auto Mode load balancing capability in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "HorizontalPodAutoscalerControllerConfigRequest":{
       "type":"structure",

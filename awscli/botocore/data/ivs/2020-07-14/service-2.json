@@ -105,6 +105,25 @@
       ],
       "documentation":"<p>Creates a new channel and an associated stream key to start streaming.</p>"
     },
+    "CreateFailoverSlateConfiguration":{
+      "name":"CreateFailoverSlateConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateFailoverSlateConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateFailoverSlateConfigurationRequest"},
+      "output":{"shape":"CreateFailoverSlateConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new failover slate configuration.</p>"
+    },
     "CreatePlaybackRestrictionPolicy":{
       "name":"CreatePlaybackRestrictionPolicy",
       "http":{
@@ -193,6 +212,23 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes the specified channel and its associated stream keys.</p> <p>If you try to delete a live channel, you will get an error (409 ConflictException). To delete a channel that is live, call <a>StopStream</a>, wait for the Amazon EventBridge \"Stream End\" event (to verify that the stream's state is no longer Live), then call DeleteChannel. (See <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/eventbridge.html\"> Using EventBridge with Amazon IVS</a>.) </p>"
+    },
+    "DeleteFailoverSlateConfiguration":{
+      "name":"DeleteFailoverSlateConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteFailoverSlateConfiguration",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteFailoverSlateConfigurationRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes the specified failover slate configuration.</p>"
     },
     "DeletePlaybackKeyPair":{
       "name":"DeletePlaybackKeyPair",
@@ -294,6 +330,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Gets the channel configuration for the specified channel ARN. See also <a>BatchGetChannel</a>.</p>",
+      "readonly":true
+    },
+    "GetFailoverSlateConfiguration":{
+      "name":"GetFailoverSlateConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetFailoverSlateConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFailoverSlateConfigurationRequest"},
+      "output":{"shape":"GetFailoverSlateConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets the failover slate configuration for the specified ARN.</p>",
       "readonly":true
     },
     "GetPlaybackKeyPair":{
@@ -471,6 +525,23 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Gets summary information about all channels in your account, in the Amazon Web Services region where the API request is processed. This list can be filtered to match a specified name or recording-configuration ARN. Filters are mutually exclusive and cannot be used together. If you try to use both filters, you will get an error (409 ConflictException).</p>",
+      "readonly":true
+    },
+    "ListFailoverSlateConfigurations":{
+      "name":"ListFailoverSlateConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListFailoverSlateConfigurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFailoverSlateConfigurationsRequest"},
+      "output":{"shape":"ListFailoverSlateConfigurationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets summary information about all failover slate configurations in your account, in the Amazon Web Services region where the API request is processed.</p>",
       "readonly":true
     },
     "ListPlaybackKeyPairs":{
@@ -714,9 +785,30 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"PendingVerification"},
+        {"shape":"ThrottlingException"},
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Updates a channel's configuration. Live channels cannot be updated. You must stop the ongoing stream, update the channel, and restart the stream for the changes to take effect.</p>"
+    },
+    "UpdateFailoverSlateConfiguration":{
+      "name":"UpdateFailoverSlateConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateFailoverSlateConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateFailoverSlateConfigurationRequest"},
+      "output":{"shape":"UpdateFailoverSlateConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates a specified failover slate configuration.</p>"
     },
     "UpdatePlaybackRestrictionPolicy":{
       "name":"UpdatePlaybackRestrictionPolicy",
@@ -1257,6 +1349,10 @@
         "adConfigurationArn":{
           "shape":"ChannelAdConfigurationArn",
           "documentation":"<p>ARN of the ad configuration associated with the channel.</p>"
+        },
+        "failoverSlateConfigurationArn":{
+          "shape":"ChannelFailoverSlateConfigurationArn",
+          "documentation":"<p>Failover-slate-configuration ARN. A valid ARN value here both specifies the ARN and enables failover slate. Default: \"\" (empty string, no failover slate configuration is applied).</p>"
         }
       },
       "documentation":"<p>Object specifying a channel.</p>"
@@ -1278,6 +1374,12 @@
       "member":{"shape":"ChannelArn"},
       "max":50,
       "min":1
+    },
+    "ChannelFailoverSlateConfigurationArn":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:failover-slate-configuration/[a-zA-Z0-9-]+$"
     },
     "ChannelLatencyMode":{
       "type":"string",
@@ -1417,6 +1519,10 @@
         "adConfigurationArn":{
           "shape":"ChannelAdConfigurationArn",
           "documentation":"<p>ARN of the ad configuration associated with the channel.</p>"
+        },
+        "failoverSlateConfigurationArn":{
+          "shape":"ChannelFailoverSlateConfigurationArn",
+          "documentation":"<p>Failover-slate-configuration ARN. A valid ARN value here both specifies the ARN and enables failover slate. Default: \"\" (empty string, no failover slate configuration is applied).</p>"
         }
       },
       "documentation":"<p>Summary information about a channel.</p>"
@@ -1586,6 +1692,10 @@
         "adConfigurationArn":{
           "shape":"ChannelAdConfigurationArn",
           "documentation":"<p>ARN of the ad configuration associated with the channel.</p>"
+        },
+        "failoverSlateConfigurationArn":{
+          "shape":"ChannelFailoverSlateConfigurationArn",
+          "documentation":"<p>Failover-slate-configuration ARN. A valid ARN value here both specifies the ARN and enables failover slate. Default: \"\" (empty string, no failover slate configuration is applied).</p>"
         }
       }
     },
@@ -1599,6 +1709,41 @@
         "streamKey":{
           "shape":"StreamKey",
           "documentation":"<p/>"
+        }
+      }
+    },
+    "CreateFailoverSlateConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"FailoverSlateConfigurationName",
+          "documentation":"<p>Failover-slate-configuration name. The value does not need to be unique.</p>"
+        },
+        "activationThresholdSeconds":{
+          "shape":"FailoverSlateActivationThresholdSeconds",
+          "documentation":"<p>Number of seconds of ingest interruption before the failover slate activates. Minimum: <code>3</code>. Maximum: <code>5</code>. Default: <code>3</code>.</p>"
+        },
+        "minSlateDisplaySeconds":{
+          "shape":"FailoverSlateMinDisplaySeconds",
+          "documentation":"<p>Minimum number of seconds that the failover slate displays after activation. Minimum: <code>3</code>. Maximum: <code>10</code>. Default: <code>3</code>.</p>"
+        },
+        "maxSlateDisplaySeconds":{
+          "shape":"FailoverSlateMaxDisplaySeconds",
+          "documentation":"<p>Maximum number of seconds that the failover slate displays. Minimum: <code>60</code>. Maximum: <code>180</code>. Default: <code>60</code>.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
+        }
+      }
+    },
+    "CreateFailoverSlateConfigurationResponse":{
+      "type":"structure",
+      "required":["failoverSlateConfiguration"],
+      "members":{
+        "failoverSlateConfiguration":{
+          "shape":"FailoverSlateConfiguration",
+          "documentation":"<p>The failover slate configuration that was created.</p>"
         }
       }
     },
@@ -1718,6 +1863,16 @@
         }
       }
     },
+    "DeleteFailoverSlateConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"FailoverSlateConfigurationArn",
+          "documentation":"<p>ARN of the failover slate configuration to be deleted.</p>"
+        }
+      }
+    },
     "DeletePlaybackKeyPairRequest":{
       "type":"structure",
       "required":["arn"],
@@ -1772,6 +1927,125 @@
       },
       "documentation":"<p>A complex type that describes a location where recorded videos will be stored. Each member represents a type of destination configuration. For recording, you define one and only one type of destination configuration.</p>"
     },
+    "FailoverSlateActivationThresholdSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":3
+    },
+    "FailoverSlateConfiguration":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "state"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FailoverSlateConfigurationArn",
+          "documentation":"<p>Failover-slate-configuration ARN.</p>"
+        },
+        "name":{
+          "shape":"FailoverSlateConfigurationName",
+          "documentation":"<p>Failover-slate-configuration name.</p>"
+        },
+        "activationThresholdSeconds":{
+          "shape":"FailoverSlateActivationThresholdSeconds",
+          "documentation":"<p>Number of seconds of ingest interruption before the failover slate activates. Minimum: <code>3</code>. Maximum: <code>5</code>. Default: <code>3</code>.</p>"
+        },
+        "minSlateDisplaySeconds":{
+          "shape":"FailoverSlateMinDisplaySeconds",
+          "documentation":"<p>Minimum number of seconds that the failover slate displays after activation. Minimum: <code>3</code>. Maximum: <code>10</code>. Default: <code>3</code>.</p>"
+        },
+        "maxSlateDisplaySeconds":{
+          "shape":"FailoverSlateMaxDisplaySeconds",
+          "documentation":"<p>Maximum number of seconds that the failover slate displays. Minimum: <code>60</code>. Maximum: <code>180</code>. Default: <code>60</code>.</p>"
+        },
+        "state":{
+          "shape":"FailoverSlateConfigurationState",
+          "documentation":"<p>Current state of the failover slate configuration.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
+        }
+      },
+      "documentation":"<p>Object specifying a failover slate configuration.</p>"
+    },
+    "FailoverSlateConfigurationArn":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:failover-slate-configuration/[a-zA-Z0-9-]+"
+    },
+    "FailoverSlateConfigurationList":{
+      "type":"list",
+      "member":{"shape":"FailoverSlateConfigurationSummary"}
+    },
+    "FailoverSlateConfigurationName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9-_]*"
+    },
+    "FailoverSlateConfigurationState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "CREATED",
+        "UPDATING"
+      ]
+    },
+    "FailoverSlateConfigurationSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "state"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FailoverSlateConfigurationArn",
+          "documentation":"<p>Failover-slate-configuration ARN.</p>"
+        },
+        "name":{
+          "shape":"FailoverSlateConfigurationName",
+          "documentation":"<p>Failover-slate-configuration name.</p>"
+        },
+        "activationThresholdSeconds":{
+          "shape":"FailoverSlateActivationThresholdSeconds",
+          "documentation":"<p>Number of seconds of ingest interruption before the failover slate activates. Minimum: <code>3</code>. Maximum: <code>5</code>. Default: <code>3</code>.</p>"
+        },
+        "minSlateDisplaySeconds":{
+          "shape":"FailoverSlateMinDisplaySeconds",
+          "documentation":"<p>Minimum number of seconds that the failover slate displays after activation. Minimum: <code>3</code>. Maximum: <code>10</code>. Default: <code>3</code>.</p>"
+        },
+        "maxSlateDisplaySeconds":{
+          "shape":"FailoverSlateMaxDisplaySeconds",
+          "documentation":"<p>Maximum number of seconds that the failover slate displays. Minimum: <code>60</code>. Maximum: <code>180</code>. Default: <code>60</code>.</p>"
+        },
+        "state":{
+          "shape":"FailoverSlateConfigurationState",
+          "documentation":"<p>Current state of the failover slate configuration.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a failover slate configuration.</p>"
+    },
+    "FailoverSlateMaxDisplaySeconds":{
+      "type":"integer",
+      "box":true,
+      "max":180,
+      "min":60
+    },
+    "FailoverSlateMinDisplaySeconds":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":3
+    },
     "GetAdConfigurationRequest":{
       "type":"structure",
       "required":["arn"],
@@ -1807,6 +2081,26 @@
         "channel":{
           "shape":"Channel",
           "documentation":"<p/>"
+        }
+      }
+    },
+    "GetFailoverSlateConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"FailoverSlateConfigurationArn",
+          "documentation":"<p>ARN of the failover slate configuration to be retrieved.</p>"
+        }
+      }
+    },
+    "GetFailoverSlateConfigurationResponse":{
+      "type":"structure",
+      "required":["failoverSlateConfiguration"],
+      "members":{
+        "failoverSlateConfiguration":{
+          "shape":"FailoverSlateConfiguration",
+          "documentation":"<p>The failover slate configuration that was retrieved.</p>"
         }
       }
     },
@@ -2125,6 +2419,10 @@
           "shape":"ChannelAdConfigurationArn",
           "documentation":"<p>Filters the channel list to match the specified ad configuration ARN.</p>"
         },
+        "filterByFailoverSlateConfigurationArn":{
+          "shape":"ChannelFailoverSlateConfigurationArn",
+          "documentation":"<p>Filters the channel list to match the specified failover-slate-configuration ARN.</p>"
+        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The first channel to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
@@ -2146,6 +2444,33 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If there are more channels than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        }
+      }
+    },
+    "ListFailoverSlateConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first failover slate configuration to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxFailoverSlateConfigurationResults",
+          "documentation":"<p>Maximum number of failover slate configurations to return. Default: your service quota or 100, whichever is smaller.</p>"
+        }
+      }
+    },
+    "ListFailoverSlateConfigurationsResponse":{
+      "type":"structure",
+      "required":["failoverSlateConfigurations"],
+      "members":{
+        "failoverSlateConfigurations":{
+          "shape":"FailoverSlateConfigurationList",
+          "documentation":"<p>List of the matching failover slate configurations.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more failover slate configurations than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
         }
       }
     },
@@ -2354,6 +2679,12 @@
       "min":1
     },
     "MaxChannelResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MaxFailoverSlateConfigurationResults":{
       "type":"integer",
       "box":true,
       "max":100,
@@ -3321,6 +3652,10 @@
         "truncatedEvents":{
           "shape":"StreamEvents",
           "documentation":"<p>List of Amazon IVS events that the stream encountered. The list is sorted by most recent events and contains up to 500 events. For Amazon IVS events, see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/eventbridge.html\">Using Amazon EventBridge with Amazon IVS</a>.</p>"
+        },
+        "failoverSlateConfiguration":{
+          "shape":"FailoverSlateConfiguration",
+          "documentation":"<p>The properties of the failover slate configuration at the time of going live.</p>"
         }
       },
       "documentation":"<p>Object that captures the Amazon IVS configuration that the customer provisioned, the ingest configurations that the broadcaster used, and the most recent Amazon IVS stream events it encountered.</p>"
@@ -3733,6 +4068,10 @@
         "adConfigurationArn":{
           "shape":"ChannelAdConfigurationArn",
           "documentation":"<p>ARN of the ad configuration associated with the channel.</p>"
+        },
+        "failoverSlateConfigurationArn":{
+          "shape":"ChannelFailoverSlateConfigurationArn",
+          "documentation":"<p>Failover-slate-configuration ARN. A valid ARN value here both specifies the ARN and enables failover slate. If this is set to an empty string, failover slate configuration is disabled.</p>"
         }
       }
     },
@@ -3742,6 +4081,42 @@
         "channel":{
           "shape":"Channel",
           "documentation":"<p>Object specifying the updated channel.</p>"
+        }
+      }
+    },
+    "UpdateFailoverSlateConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"FailoverSlateConfigurationArn",
+          "documentation":"<p>ARN of the failover slate configuration to be updated.</p>"
+        },
+        "name":{
+          "shape":"FailoverSlateConfigurationName",
+          "documentation":"<p>Failover-slate-configuration name. The value does not need to be unique.</p>"
+        },
+        "activationThresholdSeconds":{
+          "shape":"FailoverSlateActivationThresholdSeconds",
+          "documentation":"<p>Number of seconds of ingest interruption before the failover slate activates. Minimum: <code>3</code>. Maximum: <code>5</code>. Default: <code>3</code>.</p>"
+        },
+        "minSlateDisplaySeconds":{
+          "shape":"FailoverSlateMinDisplaySeconds",
+          "documentation":"<p>Minimum number of seconds that the failover slate displays after activation. Minimum: <code>3</code>. Maximum: <code>10</code>. Default: <code>3</code>.</p>"
+        },
+        "maxSlateDisplaySeconds":{
+          "shape":"FailoverSlateMaxDisplaySeconds",
+          "documentation":"<p>Maximum number of seconds that the failover slate displays. Minimum: <code>60</code>. Maximum: <code>180</code>. Default: <code>60</code>.</p>"
+        }
+      }
+    },
+    "UpdateFailoverSlateConfigurationResponse":{
+      "type":"structure",
+      "required":["failoverSlateConfiguration"],
+      "members":{
+        "failoverSlateConfiguration":{
+          "shape":"FailoverSlateConfiguration",
+          "documentation":"<p>Object specifying the updated failover slate configuration.</p>"
         }
       }
     },

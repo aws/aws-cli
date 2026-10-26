@@ -5430,6 +5430,14 @@
         "customErrorResponses":{
           "shape":"DistributionCustomErrorResponseList",
           "documentation":"<p>An array of objects that describe the custom error responses for the distribution. With a custom error response, you can specify the page to return when the origin responds with a given HTTP error code. You can also specify the HTTP status code to send to the viewer.</p>"
+        },
+        "enableWaf":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether to enable Web Application Firewall (WAF) for the distribution. WAF inspects viewer requests and blocks requests that match the WAF rule groups that you enable.</p> <p>When you enable WAF without specifying the <code>wafRules</code> parameter, the distribution has no WAF rule groups enabled and doesn't block any requests.</p> <note> <p>WAF is available only for distributions that use the <code>medium_1_0</code> or <code>large_1_0</code> bundle.</p> </note>"
+        },
+        "wafRules":{
+          "shape":"WafRuleList",
+          "documentation":"<p>An array of objects that describe the WAF rule groups to enable for the distribution.</p> <p>The WAF rule groups that you can specify depend on the bundle of the distribution:</p> <ul> <li> <p> <code>medium_1_0</code> – Supports the <code>AWSManagedRulesCommonRuleSet</code>, <code>AWSManagedRulesKnownBadInputsRuleSet</code>, and <code>AWSManagedRulesAnonymousIpList</code> rule groups.</p> </li> <li> <p> <code>large_1_0</code> – Supports the rule groups for <code>medium_1_0</code>, plus <code>AWSManagedRulesAdminProtectionRuleSet</code>, <code>AWSManagedRulesSQLiRuleSet</code>, <code>AWSManagedRulesLinuxRuleSet</code>, <code>AWSManagedRulesUnixRuleSet</code>, <code>AWSManagedRulesWindowsRuleSet</code>, <code>AWSManagedRulesPHPRuleSet</code>, <code>AWSManagedRulesWordPressRuleSet</code>, <code>AWSManagedRulesAmazonIpReputationList</code>, <code>AWSManagedRulesATPRuleSet</code>, <code>AWSManagedRulesACFPRuleSet</code>, and <code>AWSManagedRulesBotControlRuleSet</code> rule groups.</p> </li> </ul>"
         }
       }
     },
@@ -6839,7 +6847,9 @@
         "BytesUploaded",
         "TotalErrorRate",
         "Http4xxErrorRate",
-        "Http5xxErrorRate"
+        "Http5xxErrorRate",
+        "WafAllowedRequests",
+        "WafBlockedRequests"
       ]
     },
     "DnsRecordCreationState":{
@@ -7887,7 +7897,7 @@
         },
         "metricName":{
           "shape":"DistributionMetricName",
-          "documentation":"<p>The metric for which you want to return information.</p> <p>Valid distribution metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value.</p> <ul> <li> <p> <b> <code>Requests</code> </b> - The total number of viewer requests received by your Lightsail distribution, for all HTTP methods, and for both HTTP and HTTPS requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>BytesDownloaded</code> </b> - The number of bytes downloaded by viewers for GET, HEAD, and OPTIONS requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>BytesUploaded </code> </b> - The number of bytes uploaded to your origin by your Lightsail distribution, using POST and PUT requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>TotalErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status code was 4xx or 5xx.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>4xxErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status cod was 4xx. In these cases, the client or client viewer may have made an error. For example, a status code of 404 (Not Found) means that the client requested an object that could not be found.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>5xxErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status code was 5xx. In these cases, the origin server did not satisfy the requests. For example, a status code of 503 (Service Unavailable) means that the origin server is currently unavailable.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> </ul>"
+          "documentation":"<p>The metric for which you want to return information.</p> <p>Valid distribution metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value.</p> <ul> <li> <p> <b> <code>Requests</code> </b> - The total number of viewer requests received by your Lightsail distribution, for all HTTP methods, and for both HTTP and HTTPS requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>BytesDownloaded</code> </b> - The number of bytes downloaded by viewers for GET, HEAD, and OPTIONS requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>BytesUploaded </code> </b> - The number of bytes uploaded to your origin by your Lightsail distribution, using POST and PUT requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>TotalErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status code was 4xx or 5xx.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>4xxErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status cod was 4xx. In these cases, the client or client viewer may have made an error. For example, a status code of 404 (Not Found) means that the client requested an object that could not be found.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>5xxErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status code was 5xx. In these cases, the origin server did not satisfy the requests. For example, a status code of 503 (Service Unavailable) means that the origin server is currently unavailable.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>WafAllowedRequests</code> </b> - The number of viewer requests that Web Application Firewall (WAF) allowed. This metric is available only when WAF is enabled for the distribution.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>WafBlockedRequests</code> </b> - The number of viewer requests that WAF blocked. This metric is available only when WAF is enabled for the distribution.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> </ul>"
         },
         "startTime":{
           "shape":"timestamp",
@@ -9793,6 +9803,10 @@
         "customErrorResponses":{
           "shape":"DistributionCustomErrorResponseList",
           "documentation":"<p>An array of objects that describe the custom error responses configured for the distribution.</p>"
+        },
+        "waf":{
+          "shape":"WafConfig",
+          "documentation":"<p>An object that describes the Web Application Firewall (WAF) configuration of the distribution.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Lightsail content delivery network (CDN) distribution.</p>"
@@ -12663,6 +12677,14 @@
         "customErrorResponses":{
           "shape":"DistributionCustomErrorResponseList",
           "documentation":"<p>An array of objects that describe the custom error responses for the distribution. With a custom error response, you can specify the page to return when the origin responds with a given HTTP error code. You can also specify the HTTP status code to send to the viewer.</p>"
+        },
+        "enableWaf":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether to enable Web Application Firewall (WAF) for the distribution. WAF inspects viewer requests and blocks requests that match the WAF rule groups that you enable.</p> <p>When you enable WAF without specifying the <code>wafRules</code> parameter, the distribution has no WAF rule groups enabled and doesn't block any requests.</p> <note> <p>WAF is available only for distributions that use the <code>medium_1_0</code> or <code>large_1_0</code> bundle.</p> <p>Setting this parameter to <code>false</code> disables WAF for the distribution and removes its WAF rule groups. You must enable the WAF rule groups again if you enable WAF again.</p> </note>"
+        },
+        "wafRules":{
+          "shape":"WafRuleList",
+          "documentation":"<p>An array of objects that describe the WAF rule groups to enable for the distribution.</p> <p>The array that you specify replaces the existing WAF rule groups of the distribution. To keep a WAF rule group enabled, include it in the array. To disable all WAF rule groups, specify an empty array.</p> <p>You can specify this parameter only when WAF is enabled for the distribution.</p> <p>The WAF rule groups that you can specify depend on the bundle of the distribution:</p> <ul> <li> <p> <code>medium_1_0</code> – Supports the <code>AWSManagedRulesCommonRuleSet</code>, <code>AWSManagedRulesKnownBadInputsRuleSet</code>, and <code>AWSManagedRulesAnonymousIpList</code> rule groups.</p> </li> <li> <p> <code>large_1_0</code> – Supports the rule groups for <code>medium_1_0</code>, plus <code>AWSManagedRulesAdminProtectionRuleSet</code>, <code>AWSManagedRulesSQLiRuleSet</code>, <code>AWSManagedRulesLinuxRuleSet</code>, <code>AWSManagedRulesUnixRuleSet</code>, <code>AWSManagedRulesWindowsRuleSet</code>, <code>AWSManagedRulesPHPRuleSet</code>, <code>AWSManagedRulesWordPressRuleSet</code>, <code>AWSManagedRulesAmazonIpReputationList</code>, <code>AWSManagedRulesATPRuleSet</code>, <code>AWSManagedRulesACFPRuleSet</code>, and <code>AWSManagedRulesBotControlRuleSet</code> rule groups.</p> </li> </ul>"
         }
       }
     },
@@ -12860,6 +12882,137 @@
         "TLSv1.2_2019",
         "TLSv1.2_2021"
       ]
+    },
+    "WafAcfpConfig":{
+      "type":"structure",
+      "members":{
+        "payloadType":{
+          "shape":"WafPayloadTypeEnum",
+          "documentation":"<p>The content type of the request body of account creation requests.</p> <p>The following content types are possible:</p> <ul> <li> <p> <code>JSON</code> – The request body is in JSON format.</p> </li> <li> <p> <code>FORM_ENCODED</code> – The request body is form encoded.</p> </li> </ul>"
+        },
+        "creationPath":{
+          "shape":"string",
+          "documentation":"<p>The path of the endpoint that accepts completed account creation forms (for example, <code>/signup/submit</code>). This endpoint must accept <code>POST</code> requests.</p> <p>Constraints:</p> <ul> <li> <p>Must start with a forward slash (<code>/</code>).</p> </li> <li> <p>Must contain from 1 to 256 characters.</p> </li> </ul>"
+        },
+        "registrationPagePath":{
+          "shape":"string",
+          "documentation":"<p>The path of the page that displays the account creation form (for example, <code>/signup</code>).</p> <p>Constraints:</p> <ul> <li> <p>Must start with a forward slash (<code>/</code>).</p> </li> <li> <p>Must contain from 1 to 256 characters.</p> </li> </ul>"
+        },
+        "responseInspection":{
+          "shape":"WafResponseInspection",
+          "documentation":"<p>An object that describes the HTTP status codes that your application returns for successful and failed account creation attempts.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of the account creation fraud prevention Web Application Firewall (WAF) rule group. The rule group inspects account creation requests to your application.</p>"
+    },
+    "WafAtpConfig":{
+      "type":"structure",
+      "members":{
+        "loginPath":{
+          "shape":"string",
+          "documentation":"<p>The path of the login endpoint of your application (for example, <code>/login</code>). Login paths that start with the path that you specify are a match.</p> <p>Constraints:</p> <ul> <li> <p>Must start with a forward slash (<code>/</code>).</p> </li> <li> <p>Must contain from 1 to 256 characters.</p> </li> </ul>"
+        },
+        "payloadType":{
+          "shape":"WafPayloadTypeEnum",
+          "documentation":"<p>The content type of the request body of login requests.</p> <p>The following content types are possible:</p> <ul> <li> <p> <code>JSON</code> – The request body is in JSON format.</p> </li> <li> <p> <code>FORM_ENCODED</code> – The request body is form encoded.</p> </li> </ul>"
+        },
+        "usernameField":{
+          "shape":"string",
+          "documentation":"<p>The name of the field in the request body that contains the username (for example, <code>/username</code> for <code>JSON</code> or <code>username</code> for <code>FORM_ENCODED</code>).</p> <p>Constraints:</p> <ul> <li> <p>For a <code>JSON</code> payload, must be a JSON pointer that starts with a forward slash (<code>/</code>).</p> </li> <li> <p>Must contain from 1 to 512 characters.</p> </li> </ul>"
+        },
+        "passwordField":{
+          "shape":"string",
+          "documentation":"<p>The name of the field in the request body that contains the password (for example, <code>/password</code> for <code>JSON</code> or <code>password</code> for <code>FORM_ENCODED</code>).</p> <p>Constraints:</p> <ul> <li> <p>For a <code>JSON</code> payload, must be a JSON pointer that starts with a forward slash (<code>/</code>).</p> </li> <li> <p>Must contain from 1 to 512 characters.</p> </li> </ul>"
+        },
+        "responseInspection":{
+          "shape":"WafResponseInspection",
+          "documentation":"<p>An object that describes the HTTP status codes that your application returns for successful and failed login attempts.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of the account takeover prevention Web Application Firewall (WAF) rule group. The rule group inspects login requests to the login path of your application.</p>"
+    },
+    "WafBotControlConfig":{
+      "type":"structure",
+      "members":{
+        "inspectionLevel":{
+          "shape":"WafInspectionLevelEnum",
+          "documentation":"<p>The inspection level of the bot control rule group.</p> <p>The following inspection levels are possible:</p> <ul> <li> <p> <code>COMMON</code> – Detects a variety of bots that identify themselves, such as web scraping frameworks, search engines, and automated browsers.</p> </li> <li> <p> <code>TARGETED</code> – Includes the <code>COMMON</code> protections, and adds detection for sophisticated bots that don't identify themselves. This level uses rate limiting, CAPTCHA, and background browser challenges.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of the bot control Web Application Firewall (WAF) rule group.</p>"
+    },
+    "WafConfig":{
+      "type":"structure",
+      "members":{
+        "isWafEnabled":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether WAF is enabled for the distribution.</p>"
+        },
+        "wafRules":{
+          "shape":"WafRuleList",
+          "documentation":"<p>An array of objects that describe the WAF rule groups enabled for the distribution.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Web Application Firewall (WAF) configuration of a Lightsail distribution.</p>"
+    },
+    "WafInspectionLevelEnum":{
+      "type":"string",
+      "enum":[
+        "COMMON",
+        "TARGETED"
+      ]
+    },
+    "WafPayloadTypeEnum":{
+      "type":"string",
+      "enum":[
+        "JSON",
+        "FORM_ENCODED"
+      ]
+    },
+    "WafResponseInspection":{
+      "type":"structure",
+      "members":{
+        "successCodes":{
+          "shape":"WafStatusCodeList",
+          "documentation":"<p>The HTTP status codes that indicate a successful attempt (for example, <code>200</code>).</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 10 status codes.</p> </li> <li> <p>Each status code must be from <code>0</code> to <code>999</code>.</p> </li> <li> <p>Can't contain a status code that is also in <code>failureCodes</code>.</p> </li> </ul>"
+        },
+        "failureCodes":{
+          "shape":"WafStatusCodeList",
+          "documentation":"<p>The HTTP status codes that indicate a failed attempt (for example, <code>401</code>).</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 10 status codes.</p> </li> <li> <p>Each status code must be from <code>0</code> to <code>999</code>.</p> </li> <li> <p>Can't contain a status code that is also in <code>successCodes</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Describes the HTTP status codes that your application returns to indicate successful and failed attempts. The Web Application Firewall (WAF) rule group uses these status codes to track successful and failed attempts.</p>"
+    },
+    "WafRule":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"string",
+          "documentation":"<p>The name of the WAF rule group (for example, <code>AWSManagedRulesCommonRuleSet</code>).</p> <p>For the WAF rule groups that you can specify for each bundle, see the <code>wafRules</code> parameter of the <code>CreateDistribution</code> action.</p>"
+        },
+        "atpConfig":{
+          "shape":"WafAtpConfig",
+          "documentation":"<p>An object that describes the configuration of the account takeover prevention rule group.</p> <p>Constraints:</p> <ul> <li> <p>Define this parameter only when the <code>name</code> is <code>AWSManagedRulesATPRuleSet</code>.</p> </li> <li> <p>This parameter is required when the <code>name</code> is <code>AWSManagedRulesATPRuleSet</code>.</p> </li> </ul>"
+        },
+        "acfpConfig":{
+          "shape":"WafAcfpConfig",
+          "documentation":"<p>An object that describes the configuration of the account creation fraud prevention rule group.</p> <p>Constraints:</p> <ul> <li> <p>Define this parameter only when the <code>name</code> is <code>AWSManagedRulesACFPRuleSet</code>.</p> </li> <li> <p>This parameter is required when the <code>name</code> is <code>AWSManagedRulesACFPRuleSet</code>.</p> </li> </ul>"
+        },
+        "botControlConfig":{
+          "shape":"WafBotControlConfig",
+          "documentation":"<p>An object that describes the configuration of the bot control rule group.</p> <p>Constraints:</p> <ul> <li> <p>Define this parameter only when the <code>name</code> is <code>AWSManagedRulesBotControlRuleSet</code>.</p> </li> <li> <p>This parameter is required when the <code>name</code> is <code>AWSManagedRulesBotControlRuleSet</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Describes a Web Application Firewall (WAF) rule group for a Lightsail distribution. A WAF rule group is a set of rules managed by AWS. The rules inspect viewer requests and block requests that match them.</p>"
+    },
+    "WafRuleList":{
+      "type":"list",
+      "member":{"shape":"WafRule"}
+    },
+    "WafStatusCodeList":{
+      "type":"list",
+      "member":{"shape":"integer"}
     },
     "boolean":{"type":"boolean"},
     "double":{"type":"double"},

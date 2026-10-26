@@ -1,6 +1,126 @@
 {
   "version" : 2,
   "waiters" : {
+    "DestinationEndpointConnected" : {
+      "description" : "Wait until the Destination Endpoint is CONNECTED",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetDestinationEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "DestinationEndpoint.ConnectionState",
+        "state" : "success",
+        "expected" : "CONNECTED"
+      }, {
+        "matcher" : "path",
+        "argument" : "DestinationEndpoint.ConnectionState",
+        "state" : "failure",
+        "expected" : "DISCONNECTED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
+    "DestinationEndpointDeregistered" : {
+      "description" : "Wait until the Destination Endpoint is deregistered",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetDestinationEndpoint",
+      "acceptors" : [ {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "NotFoundException"
+      }, {
+        "matcher" : "path",
+        "argument" : "DestinationEndpoint.RegistrationState",
+        "state" : "failure",
+        "expected" : "REGISTRATION_FAILED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
+    "DestinationEndpointDisconnected" : {
+      "description" : "Wait until the Destination Endpoint is DISCONNECTED",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetDestinationEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "DestinationEndpoint.ConnectionState",
+        "state" : "success",
+        "expected" : "DISCONNECTED"
+      }, {
+        "matcher" : "path",
+        "argument" : "DestinationEndpoint.ConnectionState",
+        "state" : "failure",
+        "expected" : "CONNECTED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
+    "DestinationEndpointRegistered" : {
+      "description" : "Wait until the Destination Endpoint is registered",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetDestinationEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "DestinationEndpoint.RegistrationState",
+        "state" : "success",
+        "expected" : "REGISTERED"
+      }, {
+        "matcher" : "path",
+        "argument" : "DestinationEndpoint.RegistrationState",
+        "state" : "failure",
+        "expected" : "REGISTRATION_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "DestinationEndpoint.RegistrationState",
+        "state" : "failure",
+        "expected" : "DEREGISTERING"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
     "FlowActive" : {
       "description" : "Wait until a flow is active",
       "delay" : 3,
@@ -346,6 +466,174 @@
         "matcher" : "error",
         "state" : "retry",
         "expected" : "ServiceUnavailableException"
+      } ]
+    },
+    "SourceEndpointConnected" : {
+      "description" : "Wait until the Source Endpoint is CONNECTED",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetSourceEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.ConnectionState",
+        "state" : "success",
+        "expected" : "CONNECTED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
+    "SourceEndpointConnecting" : {
+      "description" : "Wait until the Source Endpoint has begun connecting",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetSourceEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.ConnectionState",
+        "state" : "success",
+        "expected" : "CONNECTING"
+      }, {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.ConnectionState",
+        "state" : "success",
+        "expected" : "CONNECTED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
+    "SourceEndpointDeregistered" : {
+      "description" : "Wait until the Source Endpoint is deregistered",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetSourceEndpoint",
+      "acceptors" : [ {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "NotFoundException"
+      }, {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.RegistrationState",
+        "state" : "failure",
+        "expected" : "REGISTRATION_FAILED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
+    "SourceEndpointDisconnected" : {
+      "description" : "Wait until the Source Endpoint is DISCONNECTED",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetSourceEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.ConnectionState",
+        "state" : "success",
+        "expected" : "DISCONNECTED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
+    "SourceEndpointDisconnecting" : {
+      "description" : "Wait until the Source Endpoint has begun disconnecting",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetSourceEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.ConnectionState",
+        "state" : "success",
+        "expected" : "DISCONNECTING"
+      }, {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.ConnectionState",
+        "state" : "success",
+        "expected" : "DISCONNECTED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
+      } ]
+    },
+    "SourceEndpointRegistered" : {
+      "description" : "Wait until the Source Endpoint is registered",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetSourceEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.RegistrationState",
+        "state" : "success",
+        "expected" : "REGISTERED"
+      }, {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.RegistrationState",
+        "state" : "failure",
+        "expected" : "REGISTRATION_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "SourceEndpoint.RegistrationState",
+        "state" : "failure",
+        "expected" : "DEREGISTERING"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "TooManyRequestsException"
       } ]
     }
   }

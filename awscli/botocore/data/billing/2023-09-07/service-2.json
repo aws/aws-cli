@@ -15,6 +15,25 @@
     "uid":"billing-2023-09-07"
   },
   "operations":{
+    "AssociateContract":{
+      "name":"AssociateContract",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateContractRequest"},
+      "output":{"shape":"AssociateContractResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Private Pricing contracts let eligible payer accounts manage private pricing agreements with Amazon Web Services. This operation associates a private pricing contract with the caller's Amazon Web Services account. The caller must be a payer (management) account listed on the contract. This operation is idempotent, so retrying a request that already succeeded is safe.</p>",
+      "idempotent":true
+    },
     "AssociateSourceViews":{
       "name":"AssociateSourceViews",
       "http":{
@@ -34,6 +53,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Associates one or more source billing views with an existing billing view. This allows creating aggregate billing views that combine data from multiple sources. </p>",
+      "idempotent":true
+    },
+    "CancelContractualInvestmentAttestation":{
+      "name":"CancelContractualInvestmentAttestation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelContractualInvestmentAttestationRequest"},
+      "output":{"shape":"CancelContractualInvestmentAttestationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Cancels a contractual investment attestation. This operation is idempotent, so retrying is safe. You can cancel an attestation only while it is still pending (its <code>isCancellable</code> value is <code>true</code>).</p>",
       "idempotent":true
     },
     "CreateBillingView":{
@@ -57,6 +95,24 @@
       "documentation":"<p> Creates a billing view with the specified billing view attributes. </p>",
       "idempotent":true
     },
+    "CreateContractualInvestmentAttestation":{
+      "name":"CreateContractualInvestmentAttestation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateContractualInvestmentAttestationRequest"},
+      "output":{"shape":"CreateContractualInvestmentAttestationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an attestation that claims an investment award for a completed milestone or outcome within a private pricing contract. Supply a <code>clientToken</code> to make the request idempotent so a safe retry does not create a duplicate attestation. This operation starts an asynchronous review and returns an <code>attestationId</code> while the attestation is pending.</p>"
+    },
     "DeleteBillingView":{
       "name":"DeleteBillingView",
       "http":{
@@ -73,6 +129,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes the specified billing view.</p>",
+      "idempotent":true
+    },
+    "DisassociateContract":{
+      "name":"DisassociateContract",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateContractRequest"},
+      "output":{"shape":"DisassociateContractResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes the association between a private pricing contract and your Amazon Web Services account. The account must have been associated with the contract previously. This operation is idempotent, so retrying is safe.</p>",
       "idempotent":true
     },
     "DisassociateSourceViews":{
@@ -127,6 +201,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns the metadata associated to the specified billing view ARN. </p>",
+      "readonly":true
+    },
+    "GetContractInformation":{
+      "name":"GetContractInformation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetContractInformationRequest"},
+      "output":{"shape":"GetContractInformationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about a specific private pricing contract, including its term (duration), eligible payer accounts, investment accounts, and legal entities. This operation is read-only.</p>",
       "readonly":true
     },
     "GetCreditAllocationHistory":{
@@ -287,6 +379,77 @@
       "documentation":"<p>Returns the history of Business Support subscription contracts across accounts.</p>",
       "readonly":true
     },
+    "ListContracts":{
+      "name":"ListContracts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListContractsRequest"},
+      "output":{"shape":"ListContractsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the private pricing contracts that your Amazon Web Services account is an eligible payer account of. This operation is read-only and paginated.</p>",
+      "readonly":true
+    },
+    "ListContractualInvestmentAttestations":{
+      "name":"ListContractualInvestmentAttestations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListContractualInvestmentAttestationsRequest"},
+      "output":{"shape":"ListContractualInvestmentAttestationsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the investment attestations submitted under a specific private pricing contract. Use this operation to track attestation status, including the terminal statuses <code>DISBURSED</code>, <code>REJECTED</code>, and <code>CANCELLED</code>. This operation is read-only and paginated.</p>",
+      "readonly":true
+    },
+    "ListContractualInvestmentSummaries":{
+      "name":"ListContractualInvestmentSummaries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListContractualInvestmentSummariesRequest"},
+      "output":{"shape":"ListContractualInvestmentSummariesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the investment summaries within a specific private pricing contract. This operation is read-only and paginated.</p>",
+      "readonly":true
+    },
+    "ListContractualInvestments":{
+      "name":"ListContractualInvestments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListContractualInvestmentsRequest"},
+      "output":{"shape":"ListContractualInvestmentsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the investments within a specific investment summary. This operation is read-only and paginated.</p>",
+      "readonly":true
+    },
     "ListEnterpriseSupportLinkedAccountCharges":{
       "name":"ListEnterpriseSupportLinkedAccountCharges",
       "http":{
@@ -443,6 +606,13 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "AccountList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "documentation":"<p>A list of 12-digit Amazon Web Services account IDs. The list contains at most 100 account IDs.</p>",
+      "max":100,
+      "min":0
+    },
     "AccountName":{
       "type":"string",
       "max":50,
@@ -492,6 +662,24 @@
       "max":50,
       "min":0
     },
+    "AdditionalRecipient":{
+      "type":"structure",
+      "required":["email"],
+      "members":{
+        "email":{
+          "shape":"SensitiveEmail",
+          "documentation":"<p>The email address of the recipient. This value is 3–256 characters and must be a valid email address.</p>"
+        }
+      },
+      "documentation":"<p>A recipient copied as a viewer on the executive approval request, in addition to the approver.</p>"
+    },
+    "AdditionalRecipients":{
+      "type":"list",
+      "member":{"shape":"AdditionalRecipient"},
+      "documentation":"<p>A list of recipients copied as viewers on the executive approval request. The list contains at most 10 recipients.</p>",
+      "max":10,
+      "min":0
+    },
     "Amount":{
       "type":"structure",
       "required":[
@@ -516,6 +704,56 @@
         "BEFORE_CROSS_SERVICE_DISCOUNTS",
         "AFTER_DISCOUNTS"
       ]
+    },
+    "ApproverDetails":{
+      "type":"structure",
+      "required":[
+        "name",
+        "title",
+        "email"
+      ],
+      "members":{
+        "name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The name of the approver as it appears on the contract. This value can be up to 256 characters.</p>"
+        },
+        "title":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The title of the approver, such as <code>Chief Financial Officer</code>. This value can be up to 256 characters.</p>"
+        },
+        "email":{
+          "shape":"SensitiveEmail",
+          "documentation":"<p>The email address of the approver. This value is 3–256 characters and must be a valid email address.</p>"
+        }
+      },
+      "documentation":"<p>Information about the executive approver who signs off on an investment attestation.</p>"
+    },
+    "ArnString":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"arn:aws[a-z-]*:billing::[0-9]{12}:contract/[a-zA-Z0-9_\\+=\\.\\@-]{0,70}[a-zA-Z0-9]"
+    },
+    "AssociateContractRequest":{
+      "type":"structure",
+      "required":[
+        "contractArn",
+        "contractDocumentId"
+      ],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract to associate with your account.</p>"
+        },
+        "contractDocumentId":{
+          "shape":"ContractDocumentId",
+          "documentation":"<p>The contract ID from the contract document. It can be found in the top right corner of your contract's pages. This value confirms that you have access to the contract you are associating.</p>"
+        }
+      }
+    },
+    "AssociateContractResponse":{
+      "type":"structure",
+      "members":{}
     },
     "AssociateSourceViewsRequest":{
       "type":"structure",
@@ -543,6 +781,86 @@
           "documentation":"<p> The ARN of the billing view that the source views were associated with. </p>"
         }
       }
+    },
+    "AssociationStatus":{
+      "type":"string",
+      "documentation":"<p>Indicates whether a contract is associated with your account. A value of <code>ASSOCIATED</code> indicates that the contract is associated with your account. A value of <code>NOT_ASSOCIATED</code> indicates that the contract is not associated with your account.</p>",
+      "enum":[
+        "ASSOCIATED",
+        "NOT_ASSOCIATED"
+      ]
+    },
+    "AttestationClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[!-~]+"
+    },
+    "AttestationDetails":{
+      "type":"structure",
+      "required":["attestationValue"],
+      "members":{
+        "attestationValue":{
+          "shape":"AttestationValue",
+          "documentation":"<p>The value being attested, expressed as either a monetary amount or one or more quantities. Exactly one form is set.</p>"
+        },
+        "investmentDistributions":{
+          "shape":"InvestmentDistributions",
+          "documentation":"<p>The distribution of the resulting investment across the eligible investment accounts on the contract. If you omit this value, the full investment is allocated to the single eligible investment account on the contract. This value is required when multiple investment accounts are eligible. When you provide this value, the sum of all distributions must equal the resulting monetary investment value (the attested amount, or the value computed from the attested quantities using the investment multipliers). The list contains at most 200 distributions.</p>"
+        }
+      },
+      "documentation":"<p>The details of an investment attestation submission, including the value being attested and how the resulting investment is distributed.</p>"
+    },
+    "AttestationQuantities":{
+      "type":"list",
+      "member":{"shape":"AttestationQuantity"},
+      "documentation":"<p>A list of quantity-based attestation values. The list contains at most 50 quantities.</p>",
+      "max":50,
+      "min":0
+    },
+    "AttestationQuantity":{
+      "type":"structure",
+      "required":[
+        "attestationVolume",
+        "attestationUnit"
+      ],
+      "members":{
+        "attestationVolume":{
+          "shape":"AttestationQuantityAttestationVolumeString",
+          "documentation":"<p>The number of units being attested, expressed as a decimal string to preserve precision. The value is digits with an optional decimal point and is 1–1000 characters.</p>"
+        },
+        "attestationUnit":{
+          "shape":"AttestationQuantityAttestationUnitString",
+          "documentation":"<p>The unit of the attestation, such as <code>workloads migrated</code>. This value is 1–1000 characters.</p>"
+        }
+      },
+      "documentation":"<p>A quantity-based attestation value, such as a count of workloads migrated.</p>"
+    },
+    "AttestationQuantityAttestationUnitString":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "AttestationQuantityAttestationVolumeString":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[0-9]+(\\.[0-9]+)?"
+    },
+    "AttestationValue":{
+      "type":"structure",
+      "members":{
+        "attestationAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The value attested as a monetary amount. This form is valid only when the investment has no multiplier.</p>"
+        },
+        "attestationQuantities":{
+          "shape":"AttestationQuantities",
+          "documentation":"<p>The value attested as one or more quantities, each with its own unit. The list contains at most 50 quantities.</p>"
+        }
+      },
+      "documentation":"<p>The value being attested. This is a union in which exactly one member is set. Set <code>attestationAmount</code> to attest a monetary amount directly, or set <code>attestationQuantities</code> to attest one or more quantities that are converted to a value using the investment's multipliers.</p>",
+      "union":true
     },
     "BillingDomain":{
       "type":"string",
@@ -1120,6 +1438,37 @@
       "max":20,
       "min":0
     },
+    "CancelContractualInvestmentAttestationRequest":{
+      "type":"structure",
+      "required":[
+        "attestationId",
+        "contractArn",
+        "reason"
+      ],
+      "members":{
+        "attestationId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment attestation to cancel.</p>"
+        },
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract that contains the attested investment.</p>"
+        },
+        "reason":{
+          "shape":"CancellationReason",
+          "documentation":"<p>The reason for the cancellation. This value can be 1 to 80 characters.</p>"
+        }
+      }
+    },
+    "CancelContractualInvestmentAttestationResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "CancellationReason":{
+      "type":"string",
+      "max":80,
+      "min":1
+    },
     "ChargeAccount":{
       "type":"structure",
       "required":[
@@ -1195,6 +1544,80 @@
       "max":2000,
       "min":0
     },
+    "ContractDetails":{
+      "type":"structure",
+      "members":{
+        "privatePricingAddendum":{
+          "shape":"PrivatePricingAddendum",
+          "documentation":"<p>The details of a private pricing addendum contract. This member is set when the contract is a private pricing addendum.</p>"
+        }
+      },
+      "documentation":"<p>The details of a contract returned by <code>GetContractInformation</code>. This is a union in which exactly one member is set, corresponding to the contract type. For a private pricing addendum, the <code>privatePricingAddendum</code> member is set. Check which member is present to determine the contract type.</p>",
+      "union":true
+    },
+    "ContractDocumentId":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "sensitive":true
+    },
+    "ContractRestriction":{
+      "type":"string",
+      "documentation":"<p>A restriction that limits the self-service actions you can take on a contract. A contract with no restrictions supports all self-service actions.</p>",
+      "enum":["ATTESTATION_SELF_SERVICE_BLOCKED"]
+    },
+    "ContractRestrictions":{
+      "type":"list",
+      "member":{"shape":"ContractRestriction"},
+      "documentation":"<p>A list of restrictions that apply to a contract. An empty or absent value indicates that no restrictions apply. The list contains at most 10 restrictions.</p>",
+      "max":10,
+      "min":0
+    },
+    "ContractSummaries":{
+      "type":"list",
+      "member":{"shape":"ContractSummary"},
+      "documentation":"<p>A list of private pricing contract summaries, as returned by <code>ListContracts</code>.</p>"
+    },
+    "ContractSummary":{
+      "type":"structure",
+      "required":[
+        "contractArn",
+        "contractTerm",
+        "associationStatus"
+      ],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract. Pass this value to operations such as <code>GetContractInformation</code>, <code>ListContractualInvestmentSummaries</code>, and <code>AssociateContract</code>.</p>"
+        },
+        "contractTerm":{
+          "shape":"Interval",
+          "documentation":"<p>The contract term period of the contract, expressed as an interval with an inclusive start date and an inclusive end date.</p>"
+        },
+        "contractType":{
+          "shape":"ContractType",
+          "documentation":"<p>The classification of the contract. Valid values are <code>Cross-Service</code>, <code>Service-Specific</code>, and <code>Other</code>. <code>Cross-Service</code> applies across multiple Amazon Web Services services. <code>Service-Specific</code> applies to a specific Amazon Web Services service. <code>Other</code> applies to other arrangements.</p>"
+        },
+        "associationStatus":{
+          "shape":"AssociationStatus",
+          "documentation":"<p>Indicates whether the contract is currently associated with your account. Valid values are <code>ASSOCIATED</code> and <code>NOT_ASSOCIATED</code>. <code>ASSOCIATED</code> means the contract is associated with your account. <code>NOT_ASSOCIATED</code> means the contract is not associated with your account.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the contract was last associated with your account.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a private pricing contract visible to your account. <code>ListContracts</code> returns these summaries.</p>"
+    },
+    "ContractType":{
+      "type":"string",
+      "documentation":"<p>The classification of a private pricing contract. A value of <code>Cross-Service</code> indicates that the contract terms apply across multiple Amazon Web Services services. A value of <code>Service-Specific</code> indicates that the contract terms apply to a specific Amazon Web Services service. A value of <code>Other</code> indicates that the contract terms apply to other arrangements.</p>",
+      "enum":[
+        "Cross-Service",
+        "Service-Specific",
+        "Other"
+      ]
+    },
     "CostCategoryName":{
       "type":"string",
       "max":50,
@@ -1264,6 +1687,66 @@
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p> The time when the billing view was created. </p>"
+        }
+      }
+    },
+    "CreateContractualInvestmentAttestationRequest":{
+      "type":"structure",
+      "required":[
+        "contractArn",
+        "investmentSummaryId",
+        "investmentId",
+        "contractDocumentId",
+        "approverDetails",
+        "attestationDetails"
+      ],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract that contains the investment being attested.</p>"
+        },
+        "investmentSummaryId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment summary being attested. This is the parent to the investmentId.</p>"
+        },
+        "investmentId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment (outcome) being attested.</p>"
+        },
+        "contractDocumentId":{
+          "shape":"ContractDocumentId",
+          "documentation":"<p>The contract ID from the contract document, located in the top-right corner of the private pricing contract pages. This value confirms that you have access to the contract.</p>"
+        },
+        "approverDetails":{
+          "shape":"ApproverDetails",
+          "documentation":"<p>The details of the executive who authorized the attestation, under the terms of the private pricing contract. The executive receives a click-to-accept email to confirm the attestation.</p>"
+        },
+        "investmentDisbursedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date on which the investment is disbursed to the investment accounts. The disbursement date is subject to review timelines.</p>"
+        },
+        "attestationDetails":{
+          "shape":"AttestationDetails",
+          "documentation":"<p>The details of the attestation, including the value being claimed and how the resulting investment is distributed across investment accounts.</p>"
+        },
+        "additionalRecipients":{
+          "shape":"AdditionalRecipients",
+          "documentation":"<p>The email addresses to copy as viewers on the executive approval request.</p>"
+        },
+        "clientToken":{
+          "shape":"AttestationClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry completes without performing any further actions.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateContractualInvestmentAttestationResponse":{
+      "type":"structure",
+      "required":["attestationId"],
+      "members":{
+        "attestationId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the submitted attestation.</p>"
         }
       }
     },
@@ -1488,6 +1971,20 @@
       },
       "documentation":"<p> The metadata that you can use to filter and group your results. </p>"
     },
+    "DisassociateContractRequest":{
+      "type":"structure",
+      "required":["contractArn"],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract to disassociate from your account.</p>"
+        }
+      }
+    },
+    "DisassociateContractResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DisassociateSourceViewsRequest":{
       "type":"structure",
       "required":[
@@ -1642,6 +2139,26 @@
         "billingView":{
           "shape":"BillingViewElement",
           "documentation":"<p>The billing view element associated with the specified ARN. </p>"
+        }
+      }
+    },
+    "GetContractInformationRequest":{
+      "type":"structure",
+      "required":["contractArn"],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract to retrieve information about.</p>"
+        }
+      }
+    },
+    "GetContractInformationResponse":{
+      "type":"structure",
+      "required":["contract"],
+      "members":{
+        "contract":{
+          "shape":"ContractDetails",
+          "documentation":"<p>The contract details such as term (duration), eligible payer accounts, investment accounts, and legal entities.</p>"
         }
       }
     },
@@ -1930,6 +2447,12 @@
         }
       }
     },
+    "IdentifierString":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\-]+"
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -1943,6 +2466,286 @@
       "documentation":"<p>The request processing failed because of an unknown error, exception, or failure. </p>",
       "exception":true,
       "fault":true
+    },
+    "Interval":{
+      "type":"structure",
+      "required":[
+        "startDateInclusive",
+        "endDateInclusive"
+      ],
+      "members":{
+        "startDateInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date of the interval. This date is included in the interval.</p>"
+        },
+        "endDateInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date of the interval. This date is included in the interval.</p>"
+        }
+      },
+      "documentation":"<p>A time period bounded by an inclusive start date and an inclusive end date.</p>"
+    },
+    "Investment":{
+      "type":"structure",
+      "members":{
+        "milestoneBasedInvestment":{
+          "shape":"MilestoneBasedInvestment",
+          "documentation":"<p>An investment with a fixed value that is disbursed on a schedule. This member is set for a milestone-based investment and corresponds to the <code>MILESTONE_BASED</code> investment type.</p>"
+        },
+        "outcomeBasedInvestment":{
+          "shape":"OutcomeBasedInvestment",
+          "documentation":"<p>An investment that is awarded upon completion of a defined outcome. This member is set for an outcome-based (attestable) investment and corresponds to the <code>OUTCOME_BASED</code> investment type.</p>"
+        }
+      },
+      "documentation":"<p>An investment within an investment summary. This is a union in which exactly one member is set. The <code>milestoneBasedInvestment</code> member represents a fixed, scheduled investment. The <code>outcomeBasedInvestment</code> member represents an attestable investment awarded upon completion of a defined outcome. Check which member is present to determine the investment type.</p>",
+      "union":true
+    },
+    "InvestmentAttestation":{
+      "type":"structure",
+      "required":[
+        "attestationId",
+        "investmentName",
+        "outcomeDescription",
+        "investmentSummaryId",
+        "investmentId",
+        "attestedAt",
+        "updatedAt",
+        "attestationStatus"
+      ],
+      "members":{
+        "attestationId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the attestation. This value is returned by <code>CreateContractualInvestmentAttestation</code> and is used to cancel the attestation with <code>CancelContractualInvestmentAttestation</code>. This value is 1–36 characters.</p>"
+        },
+        "investmentName":{
+          "shape":"InvestmentAttestationInvestmentNameString",
+          "documentation":"<p>The name of the investment summary that contains the attested outcome. This value is 1–400 characters.</p>"
+        },
+        "outcomeDescription":{
+          "shape":"InvestmentAttestationOutcomeDescriptionString",
+          "documentation":"<p>The description of the attested outcome. This value is 1–2048 characters.</p>"
+        },
+        "investmentSummaryId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment summary that was attested, as returned by <code>ListContractualInvestmentSummaries</code>.</p>"
+        },
+        "investmentId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment that was attested, as returned by <code>ListContractualInvestments</code>.</p>"
+        },
+        "attestedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date on which the attestation was submitted.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date on which the attestation was last updated.</p>"
+        },
+        "attestationStatus":{
+          "shape":"InvestmentAttestationStatus",
+          "documentation":"<p>The current status of the attestation. Valid values are <code>PENDING_REVIEW</code>, <code>PENDING_C_LEVEL_APPROVAL</code>, <code>PENDING_CANCELLATION</code>, <code>REJECTED</code>, <code>CANCELLED</code>, and <code>DISBURSED</code>. The values <code>DISBURSED</code>, <code>REJECTED</code>, and <code>CANCELLED</code> are terminal. The other values indicate the attestation is still in progress.</p>"
+        },
+        "investmentDisbursedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date on which the investment is disbursed to the investment accounts. This is not the same as the time of disbursement, but reflects the date you submitted with the attestation.</p>"
+        },
+        "attestedValue":{
+          "shape":"Amount",
+          "documentation":"<p>The monetary value attested.</p>"
+        },
+        "investmentDistributions":{
+          "shape":"InvestmentDistributions",
+          "documentation":"<p>The distribution of the attested investment across the eligible investment accounts. The list contains at most 200 distributions.</p>"
+        },
+        "rejectionReasons":{
+          "shape":"RejectionReasons",
+          "documentation":"<p>The reasons the attestation was rejected. This value is present only when <code>attestationStatus</code> is <code>REJECTED</code>. The list contains at most 30 reasons.</p>"
+        },
+        "isCancellable":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the attestation can be canceled with <code>CancelContractualInvestmentAttestation</code>.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a submitted investment attestation, as returned by <code>ListContractualInvestmentAttestations</code>.</p>"
+    },
+    "InvestmentAttestationInvestmentNameString":{
+      "type":"string",
+      "max":400,
+      "min":1
+    },
+    "InvestmentAttestationOutcomeDescriptionString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "InvestmentAttestationStatus":{
+      "type":"string",
+      "documentation":"<p>The current state of a submitted investment attestation in its lifecycle. Valid values are <code>PENDING_REVIEW</code>, <code>PENDING_C_LEVEL_APPROVAL</code>, <code>PENDING_CANCELLATION</code>, <code>REJECTED</code>, <code>CANCELLED</code>, and <code>DISBURSED</code>. The values <code>DISBURSED</code>, <code>REJECTED</code>, and <code>CANCELLED</code> are terminal. The values <code>PENDING_REVIEW</code>, <code>PENDING_C_LEVEL_APPROVAL</code>, and <code>PENDING_CANCELLATION</code> indicate the attestation is still in progress.</p>",
+      "enum":[
+        "PENDING_REVIEW",
+        "PENDING_C_LEVEL_APPROVAL",
+        "PENDING_CANCELLATION",
+        "REJECTED",
+        "CANCELLED",
+        "DISBURSED"
+      ]
+    },
+    "InvestmentAttestations":{
+      "type":"list",
+      "member":{"shape":"InvestmentAttestation"},
+      "documentation":"<p>A list of investment attestations submitted under a private pricing contract, as returned by <code>ListContractualInvestmentAttestations</code>.</p>"
+    },
+    "InvestmentDistribution":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "investmentAmount"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The recipient Amazon Web Services account ID that receives this portion of the investment. This must be one of the eligible investment accounts on the contract.</p>"
+        },
+        "investmentAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The monetary value allocated to the recipient account.</p>"
+        }
+      },
+      "documentation":"<p>An allocation of an investment disbursement to a specific recipient account. The account is the target account that receives the investment, not your account.</p>"
+    },
+    "InvestmentDistributions":{
+      "type":"list",
+      "member":{"shape":"InvestmentDistribution"},
+      "documentation":"<p>A list of investment distributions that allocate an attested investment across recipient accounts. The list contains at most 200 distributions.</p>",
+      "max":200,
+      "min":0
+    },
+    "InvestmentMultiplier":{
+      "type":"structure",
+      "required":[
+        "value",
+        "investmentAttestationInputUnit",
+        "multiplierType"
+      ],
+      "members":{
+        "value":{
+          "shape":"InvestmentMultiplierValueString",
+          "documentation":"<p>The multiplier value, expressed as a decimal string to preserve precision. The value is digits with an optional decimal point and is 1–1000 characters. The terms of the contract define this value.</p>"
+        },
+        "investmentAttestationInputUnit":{
+          "shape":"InvestmentMultiplierInvestmentAttestationInputUnitString",
+          "documentation":"<p>The unit of the attestation input that the multiplier applies to, such as <code>workloads migrated</code>. This value is 1–1000 characters. The terms of the contract define this value.</p>"
+        },
+        "multiplierType":{
+          "shape":"MultiplierType",
+          "documentation":"<p>The type of the multiplier. A value of <code>PERCENTAGE</code> applies a percentage of a value. A value of <code>CURRENCY_AMOUNT</code> applies a currency amount per unit of attestation input. The terms of the contract define this value.</p>"
+        }
+      },
+      "documentation":"<p>A multiplier used to convert attestation input into an investment value.</p>"
+    },
+    "InvestmentMultiplierInvestmentAttestationInputUnitString":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "InvestmentMultiplierValueString":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[0-9]+(\\.[0-9]+)?"
+    },
+    "InvestmentMultipliers":{
+      "type":"list",
+      "member":{"shape":"InvestmentMultiplier"},
+      "documentation":"<p>A list of multipliers used to compute investment value from attestation input, derived from the terms of the contract. The list contains at most 200 multipliers.</p>",
+      "max":200,
+      "min":0
+    },
+    "InvestmentRestriction":{
+      "type":"structure",
+      "required":["amount"],
+      "members":{
+        "amount":{
+          "shape":"Amount",
+          "documentation":"<p>The maximum monetary amount allowed under the restriction.</p>"
+        }
+      },
+      "documentation":"<p>A restriction that caps the value that can be disbursed for an investment. The cap applies for each attestation window.</p>"
+    },
+    "InvestmentRestrictions":{
+      "type":"list",
+      "member":{"shape":"InvestmentRestriction"},
+      "documentation":"<p>A list of restrictions that cap the value that can be disbursed for an investment. The list contains at most 10 restrictions.</p>",
+      "max":10,
+      "min":0
+    },
+    "InvestmentSummaries":{
+      "type":"list",
+      "member":{"shape":"InvestmentSummary"},
+      "documentation":"<p>A list of investment summaries within a contract or a private pricing addendum, as returned by <code>ListContractualInvestmentSummaries</code>.</p>"
+    },
+    "InvestmentSummary":{
+      "type":"structure",
+      "required":[
+        "investmentSummaryId",
+        "investmentName",
+        "investmentType"
+      ],
+      "members":{
+        "investmentSummaryId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment summary. Pass this value to <code>ListContractualInvestments</code> to list the investments within the summary, and to <code>CreateContractualInvestmentAttestation</code> to attest an investment. This value is 1–36 characters.</p>"
+        },
+        "investmentName":{
+          "shape":"InvestmentSummaryInvestmentNameString",
+          "documentation":"<p>The name of the investment summary, used to reference the investment against a term in the physical contract. This value is 1–400 characters.</p>"
+        },
+        "investmentType":{
+          "shape":"InvestmentType",
+          "documentation":"<p>The type of the investment summary. Valid values are <code>MILESTONE_BASED</code> and <code>OUTCOME_BASED</code>. <code>OUTCOME_BASED</code> investments can be attested to, upon completion of outcomes. <code>MILESTONE_BASED</code> are automatically triggered by Amazon Web Services, based on the time schedule in the contract.</p>"
+        },
+        "maxAllowedInvestmentDisbursementValue":{
+          "shape":"Amount",
+          "documentation":"<p>The maximum monetary value that can be disbursed against the investment summary, inclusive of all outcomes combined under the summary.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about an investment summary within a contract or a private pricing addendum.</p>"
+    },
+    "InvestmentSummaryInvestmentNameString":{
+      "type":"string",
+      "max":400,
+      "min":1
+    },
+    "InvestmentType":{
+      "type":"string",
+      "documentation":"<p>The type of an investment summary. A value of <code>MILESTONE_BASED</code> indicates a fixed investment amount disbursed on a schedule. A value of <code>OUTCOME_BASED</code> indicates an investment awarded based on the completion of a defined outcome or milestone.</p>",
+      "enum":[
+        "MILESTONE_BASED",
+        "OUTCOME_BASED"
+      ]
+    },
+    "Investments":{
+      "type":"list",
+      "member":{"shape":"Investment"},
+      "documentation":"<p>A list of investments within an investment summary, as returned by <code>ListContractualInvestments</code>. For <code>OUTCOME_BASED</code> investments, they are referred to as <code>outcomes</code>.</p>"
+    },
+    "LegalEntities":{
+      "type":"list",
+      "member":{"shape":"LegalEntity"},
+      "documentation":"<p>A list of legal entities on a private pricing contract. The list contains at most 10 legal entities.</p>",
+      "max":10,
+      "min":0
+    },
+    "LegalEntity":{
+      "type":"structure",
+      "required":["legalEntityName"],
+      "members":{
+        "legalEntityName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The name of the legal entity as it appears on the contract document. This value can be up to 256 characters.</p>"
+        }
+      },
+      "documentation":"<p>A legal entity on a private pricing contract. It can be found on your contract's signature page.</p>"
     },
     "LinkedAccountCharge":{
       "type":"structure",
@@ -2221,6 +3024,164 @@
       },
       "documentation":"<p>Contains the list of Business Support subscription contracts that match the request filters.</p>"
     },
+    "ListContractsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token that indicates the next set of results to retrieve.</p>"
+        },
+        "maxResults":{
+          "shape":"ListContractsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of contracts to return in a single call. Minimum value of 1, maximum value of 100.</p>"
+        }
+      }
+    },
+    "ListContractsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListContractsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ContractSummaries",
+          "documentation":"<p>The list of contracts that your Amazon Web Services account is an eligible payer account of.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token to use on subsequent calls to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListContractualInvestmentAttestationsRequest":{
+      "type":"structure",
+      "required":["contractArn"],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract whose attestations you want to list.</p>"
+        },
+        "investmentSummaryId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of a specific investment summary to filter the attestations by. If omitted, attestations for all investment summaries in the contract are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token that indicates the next set of results to retrieve.</p>"
+        },
+        "maxResults":{
+          "shape":"ListContractualInvestmentAttestationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of attestations to return in a single call. Minimum value of 1, maximum value of 100.</p>"
+        }
+      }
+    },
+    "ListContractualInvestmentAttestationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListContractualInvestmentAttestationsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"InvestmentAttestations",
+          "documentation":"<p>The list of investment attestations submitted under the contract.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token to use on subsequent calls to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListContractualInvestmentSummariesRequest":{
+      "type":"structure",
+      "required":["contractArn"],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract whose investment summaries you want to list.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token that indicates the next set of results to retrieve.</p>"
+        },
+        "maxResults":{
+          "shape":"ListContractualInvestmentSummariesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of investment summaries to return in a single call. Minimum value of 1, maximum value of 100.</p>"
+        }
+      }
+    },
+    "ListContractualInvestmentSummariesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListContractualInvestmentSummariesResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"InvestmentSummaries",
+          "documentation":"<p>The list of investment summaries under the contract. It includes the investment name, maximum investment amount, and investment type. It does not provide investment details. Use this to know if the contract has investment terms and what type.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token to use on subsequent calls to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListContractualInvestmentsRequest":{
+      "type":"structure",
+      "required":[
+        "contractArn",
+        "investmentSummaryId"
+      ],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contract that contains the investment summary.</p>"
+        },
+        "investmentSummaryId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment summary whose investments you want to list.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token that indicates the next set of results to retrieve.</p>"
+        },
+        "maxResults":{
+          "shape":"ListContractualInvestmentsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of investments to return in a single call. Minimum value of 1, maximum value of 100.</p>"
+        }
+      }
+    },
+    "ListContractualInvestmentsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListContractualInvestmentsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"Investments",
+          "documentation":"<p>The list of investments for the investment summary.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token to use on subsequent calls to retrieve the next set of results.</p>"
+        }
+      }
+    },
     "ListEnterpriseSupportLinkedAccountChargesRequest":{
       "type":"structure",
       "required":["billingMonth"],
@@ -2320,10 +3281,82 @@
       "type":"long",
       "box":true
     },
+    "MilestoneBasedInvestment":{
+      "type":"structure",
+      "required":[
+        "investmentId",
+        "investmentValue",
+        "investmentDisbursedAt"
+      ],
+      "members":{
+        "investmentId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment, as returned by <code>ListContractualInvestments</code>. This value is 1–36 characters.</p>"
+        },
+        "investmentValue":{
+          "shape":"Amount",
+          "documentation":"<p>The total value of the investment, including its currency and amount.</p>"
+        },
+        "investmentDisbursedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date on which the investment is disbursed to the investment accounts.</p>"
+        }
+      },
+      "documentation":"<p>An investment with a fixed value that is disbursed on a schedule. This corresponds to the <code>MILESTONE_BASED</code> investment type.</p>"
+    },
     "Month":{
       "type":"integer",
       "box":true,
       "max":12,
+      "min":1
+    },
+    "MultiplierType":{
+      "type":"string",
+      "documentation":"<p>The type of an investment multiplier. A value of <code>PERCENTAGE</code> applies a percentage of a value, expressed as a decimal string. A value of <code>CURRENCY_AMOUNT</code> applies a currency amount per unit of attestation input.</p>",
+      "enum":[
+        "PERCENTAGE",
+        "CURRENCY_AMOUNT"
+      ]
+    },
+    "OutcomeBasedInvestment":{
+      "type":"structure",
+      "required":[
+        "investmentId",
+        "outcomeDescription",
+        "attestationWindow",
+        "disbursedValue"
+      ],
+      "members":{
+        "investmentId":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The identifier of the investment, as returned by <code>ListContractualInvestments</code>. This value is 1–36 characters.</p>"
+        },
+        "outcomeDescription":{
+          "shape":"OutcomeBasedInvestmentOutcomeDescriptionString",
+          "documentation":"<p>The description of what must be completed to attest the outcome. This value is 1–2048 characters.</p>"
+        },
+        "attestationWindow":{
+          "shape":"Interval",
+          "documentation":"<p>The time window, expressed as an interval with inclusive start and end dates, during which outcomes can be attested to.</p>"
+        },
+        "investmentRestrictions":{
+          "shape":"InvestmentRestrictions",
+          "documentation":"<p>The restrictions that cap the value that can be disbursed for the investment. The list contains at most 10 restrictions.</p>"
+        },
+        "investmentMultipliers":{
+          "shape":"InvestmentMultipliers",
+          "documentation":"<p>The multipliers used to compute the investment value from the attestation input. The list contains at most 200 multipliers. Multipliers are derived from the terms of the private pricing contract.</p>"
+        },
+        "disbursedValue":{
+          "shape":"Amount",
+          "documentation":"<p>The total value already disbursed against the investment. This value can be distributed among the investment accounts distribution.</p>"
+        }
+      },
+      "documentation":"<p>An investment that is awarded upon completion of a defined outcome. This corresponds to the <code>OUTCOME_BASED</code> investment type and is claimed through <code>CreateContractualInvestmentAttestation</code>.</p>"
+    },
+    "OutcomeBasedInvestmentOutcomeDescriptionString":{
+      "type":"string",
+      "max":2048,
       "min":1
     },
     "PageToken":{
@@ -2452,6 +3485,43 @@
       "max":20,
       "min":0
     },
+    "PrivatePricingAddendum":{
+      "type":"structure",
+      "required":[
+        "contractArn",
+        "contractTerm",
+        "eligiblePayerAccounts",
+        "investmentAccounts",
+        "legalEntities"
+      ],
+      "members":{
+        "contractArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the private pricing addendum.</p>"
+        },
+        "contractTerm":{
+          "shape":"Interval",
+          "documentation":"<p>The contract term period of the private pricing addendum, expressed as an interval with an inclusive start date and an inclusive end date.</p>"
+        },
+        "eligiblePayerAccounts":{
+          "shape":"AccountList",
+          "documentation":"<p>The payer accounts that are eligible under the private pricing addendum. The list contains at most 100 account IDs.</p>"
+        },
+        "investmentAccounts":{
+          "shape":"AccountList",
+          "documentation":"<p>The accounts that are eligible to receive investments under the private pricing addendum. An <code>InvestmentDistribution</code> must target one of these accounts. The list contains at most 100 account IDs.</p>"
+        },
+        "legalEntities":{
+          "shape":"LegalEntities",
+          "documentation":"<p>The legal entities on the private pricing addendum. The list contains at most 10 legal entities.</p>"
+        },
+        "contractRestrictions":{
+          "shape":"ContractRestrictions",
+          "documentation":"<p>The restrictions that limit the self-service actions you can take on the private pricing addendum. An empty or absent value indicates that no restrictions apply. The list contains at most 10 restrictions.</p>"
+        }
+      },
+      "documentation":"<p>The details of a private pricing addendum contract.</p>"
+    },
     "ProductName":{
       "type":"string",
       "max":128,
@@ -2498,6 +3568,19 @@
     "RedeemCreditsResponse":{
       "type":"structure",
       "members":{}
+    },
+    "RejectionReason":{
+      "type":"string",
+      "documentation":"<p>A single reason an attestation was rejected. This value is 1–300 characters.</p>",
+      "max":300,
+      "min":1
+    },
+    "RejectionReasons":{
+      "type":"list",
+      "member":{"shape":"RejectionReason"},
+      "documentation":"<p>A list of reasons an attestation was rejected. The list contains at most 30 reasons.</p>",
+      "max":30,
+      "min":0
     },
     "ResourceArn":{
       "type":"string",
@@ -2580,6 +3663,19 @@
       "max":128,
       "min":1,
       "pattern":"[a-zA-Z0-9_\\+=\\.\\-@ ]+"
+    },
+    "SensitiveEmail":{
+      "type":"string",
+      "max":256,
+      "min":3,
+      "pattern":"[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}",
+      "sensitive":true
+    },
+    "SensitiveString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
     },
     "ServiceCode":{
       "type":"string",

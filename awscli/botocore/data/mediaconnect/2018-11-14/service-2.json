@@ -130,6 +130,25 @@
       ],
       "documentation":"<p> Adds VPC interfaces to a flow.</p>"
     },
+    "BatchGetDestinationEndpoint":{
+      "name":"BatchGetDestinationEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/destinationEndpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetDestinationEndpointRequest"},
+      "output":{"shape":"BatchGetDestinationEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about multiple destination endpoints in a single request.</p>",
+      "readonly":true
+    },
     "BatchGetRouterInput":{
       "name":"BatchGetRouterInput",
       "http":{
@@ -186,6 +205,46 @@
       ],
       "documentation":"<p>Retrieves information about multiple router outputs in AWS Elemental MediaConnect.</p>",
       "readonly":true
+    },
+    "BatchGetSourceEndpoint":{
+      "name":"BatchGetSourceEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/sourceEndpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetSourceEndpointRequest"},
+      "output":{"shape":"BatchGetSourceEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about multiple source endpoints in a single request.</p>",
+      "readonly":true
+    },
+    "ConnectEndpoints":{
+      "name":"ConnectEndpoints",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/connectEndpoints/{DestinationEndpointArn}",
+        "responseCode":202
+      },
+      "input":{"shape":"ConnectEndpointsRequest"},
+      "output":{"shape":"ConnectEndpointsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Connects a source endpoint to a destination endpoint.</p>",
+      "idempotent":true
     },
     "CreateBridge":{
       "name":"CreateBridge",
@@ -431,6 +490,27 @@
       "documentation":"<p>Deletes a router output from AWS Elemental MediaConnect.</p>",
       "idempotent":true
     },
+    "DeregisterDestinationEndpoint":{
+      "name":"DeregisterDestinationEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/destinationEndpoint/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeregisterDestinationEndpointRequest"},
+      "output":{"shape":"DeregisterDestinationEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deregisters a destination endpoint from MediaConnect.</p>",
+      "idempotent":true
+    },
     "DeregisterGatewayInstance":{
       "name":"DeregisterGatewayInstance",
       "http":{
@@ -450,6 +530,27 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p> Deregisters an instance. Before you deregister an instance, all bridges running on the instance must be stopped. If you want to deregister an instance without stopping the bridges, you must use the --force option.</p>",
+      "idempotent":true
+    },
+    "DeregisterSourceEndpoint":{
+      "name":"DeregisterSourceEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/sourceEndpoint/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeregisterSourceEndpointRequest"},
+      "output":{"shape":"DeregisterSourceEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deregisters a source endpoint from MediaConnect.</p>",
       "idempotent":true
     },
     "DescribeBridge":{
@@ -613,6 +714,48 @@
       "documentation":"<p> Displays the details of a reservation. The response includes the reservation name, state, start date and time, and the details of the offering that make up the rest of the reservation (such as price, duration, and outbound bandwidth).</p>",
       "readonly":true
     },
+    "DisconnectEndpoints":{
+      "name":"DisconnectEndpoints",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/disconnectEndpoints/{DestinationEndpointArn}",
+        "responseCode":202
+      },
+      "input":{"shape":"DisconnectEndpointsRequest"},
+      "output":{"shape":"DisconnectEndpointsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Disconnects a source endpoint from a destination endpoint.</p>",
+      "idempotent":true
+    },
+    "GetDestinationEndpoint":{
+      "name":"GetDestinationEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/destinationEndpoint/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDestinationEndpointRequest"},
+      "output":{"shape":"GetDestinationEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about a destination endpoint.</p>",
+      "readonly":true
+    },
     "GetRouterInput":{
       "name":"GetRouterInput",
       "http":{
@@ -716,6 +859,26 @@
       "documentation":"<p>Retrieves information about a specific router output in AWS Elemental MediaConnect.</p>",
       "readonly":true
     },
+    "GetSourceEndpoint":{
+      "name":"GetSourceEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/sourceEndpoint/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSourceEndpointRequest"},
+      "output":{"shape":"GetSourceEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about a source endpoint.</p>",
+      "readonly":true
+    },
     "GrantFlowEntitlements":{
       "name":"GrantFlowEntitlements",
       "http":{
@@ -753,6 +916,25 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p> Displays a list of bridges that are associated with this account and an optionally specified Amazon Resource Name (ARN). This request returns a paginated result.</p>",
+      "readonly":true
+    },
+    "ListDestinationEndpoints":{
+      "name":"ListDestinationEndpoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/destinationEndpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDestinationEndpointsRequest"},
+      "output":{"shape":"ListDestinationEndpointsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves a list of the destination endpoints in your account. The results are paginated. Use the NextToken value that's returned to retrieve additional results.</p>",
       "readonly":true
     },
     "ListEntitlements":{
@@ -922,6 +1104,25 @@
       "documentation":"<p>Retrieves a list of router outputs in AWS Elemental MediaConnect.</p>",
       "readonly":true
     },
+    "ListSourceEndpoints":{
+      "name":"ListSourceEndpoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/sourceEndpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSourceEndpointsRequest"},
+      "output":{"shape":"ListSourceEndpointsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves a list of the source endpoints in your account. The results are paginated. Use the NextToken value that's returned to retrieve additional results.</p>",
+      "readonly":true
+    },
     "ListTagsForGlobalResource":{
       "name":"ListTagsForGlobalResource",
       "http":{
@@ -974,6 +1175,46 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p> Submits a request to purchase an offering. If you already have an active reservation, you can't purchase another offering.</p>"
+    },
+    "RegisterDestinationEndpoint":{
+      "name":"RegisterDestinationEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/destinationEndpoint",
+        "responseCode":201
+      },
+      "input":{"shape":"RegisterDestinationEndpointRequest"},
+      "output":{"shape":"RegisterDestinationEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"DestinationEndpointServiceQuotaExceededException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Registers a new destination endpoint in MediaConnect.</p>"
+    },
+    "RegisterSourceEndpoint":{
+      "name":"RegisterSourceEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/sourceEndpoint",
+        "responseCode":201
+      },
+      "input":{"shape":"RegisterSourceEndpointRequest"},
+      "output":{"shape":"RegisterSourceEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"SourceEndpointServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Registers a new source endpoint in MediaConnect.</p>"
     },
     "RemoveBridgeOutput":{
       "name":"RemoveBridgeOutput",
@@ -1442,6 +1683,27 @@
       "documentation":"<p> Updates the bridge state. </p>",
       "idempotent":true
     },
+    "UpdateDestinationEndpoint":{
+      "name":"UpdateDestinationEndpoint",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/destinationEndpoint/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateDestinationEndpointRequest"},
+      "output":{"shape":"UpdateDestinationEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Updates the configuration of a destination endpoint.</p>",
+      "idempotent":true
+    },
     "UpdateFlow":{
       "name":"UpdateFlow",
       "http":{
@@ -1623,6 +1885,27 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Updates the configuration of an existing router output in AWS Elemental MediaConnect.</p>",
+      "idempotent":true
+    },
+    "UpdateSourceEndpoint":{
+      "name":"UpdateSourceEndpoint",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/sourceEndpoint/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateSourceEndpointRequest"},
+      "output":{"shape":"UpdateSourceEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Updates the configuration of a source endpoint.</p>",
       "idempotent":true
     }
   },
@@ -2263,6 +2546,11 @@
       "members":{},
       "documentation":"<p>Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.</p>"
     },
+    "AutomaticEndpointEncryptionConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The configuration for automatic endpoint encryption. In this mode, MediaConnect determines the encryption key when the endpoint connects. This type does not require any additional settings.</p>"
+    },
     "BadRequestException":{
       "type":"structure",
       "required":["Message"],
@@ -2278,6 +2566,73 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "BatchGetDestinationEndpointError":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint that MediaConnect couldn't retrieve.</p>",
+          "locationName":"arn"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>An error for a destination endpoint that MediaConnect couldn't retrieve in a <code>BatchGetDestinationEndpoint</code> request.</p>"
+    },
+    "BatchGetDestinationEndpointErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetDestinationEndpointError"}
+    },
+    "BatchGetDestinationEndpointRequest":{
+      "type":"structure",
+      "required":["Arns"],
+      "members":{
+        "Arns":{
+          "shape":"BatchGetDestinationEndpointRequestArnsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of one or more destination endpoints to retrieve. You can specify from 1 to 20 ARNs.</p>",
+          "location":"querystring",
+          "locationName":"arns"
+        }
+      }
+    },
+    "BatchGetDestinationEndpointRequestArnsList":{
+      "type":"list",
+      "member":{"shape":"DestinationEndpointArn"},
+      "max":20,
+      "min":1
+    },
+    "BatchGetDestinationEndpointResponse":{
+      "type":"structure",
+      "required":[
+        "DestinationEndpoints",
+        "Errors"
+      ],
+      "members":{
+        "DestinationEndpoints":{
+          "shape":"DestinationEndpointList",
+          "documentation":"<p>The destination endpoints that MediaConnect successfully retrieved.</p>",
+          "locationName":"destinationEndpoints"
+        },
+        "Errors":{
+          "shape":"BatchGetDestinationEndpointErrorList",
+          "documentation":"<p>The errors for any destination endpoints that MediaConnect couldn't retrieve.</p>",
+          "locationName":"errors"
+        }
+      }
     },
     "BatchGetRouterInputError":{
       "type":"structure",
@@ -2476,6 +2831,73 @@
         "Errors":{
           "shape":"BatchGetRouterOutputErrorList",
           "documentation":"<p>An array of errors that occurred when retrieving the requested router outputs.</p>",
+          "locationName":"errors"
+        }
+      }
+    },
+    "BatchGetSourceEndpointError":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint that MediaConnect couldn't retrieve.</p>",
+          "locationName":"arn"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>An error for a source endpoint that MediaConnect couldn't retrieve in a <code>BatchGetSourceEndpoint</code> request.</p>"
+    },
+    "BatchGetSourceEndpointErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetSourceEndpointError"}
+    },
+    "BatchGetSourceEndpointRequest":{
+      "type":"structure",
+      "required":["Arns"],
+      "members":{
+        "Arns":{
+          "shape":"BatchGetSourceEndpointRequestArnsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of one or more source endpoints to retrieve. You can specify from 1 to 20 ARNs.</p>",
+          "location":"querystring",
+          "locationName":"arns"
+        }
+      }
+    },
+    "BatchGetSourceEndpointRequestArnsList":{
+      "type":"list",
+      "member":{"shape":"SourceEndpointArn"},
+      "max":20,
+      "min":1
+    },
+    "BatchGetSourceEndpointResponse":{
+      "type":"structure",
+      "required":[
+        "SourceEndpoints",
+        "Errors"
+      ],
+      "members":{
+        "SourceEndpoints":{
+          "shape":"SourceEndpointList",
+          "documentation":"<p>The source endpoints that MediaConnect successfully retrieved.</p>",
+          "locationName":"sourceEndpoints"
+        },
+        "Errors":{
+          "shape":"BatchGetSourceEndpointErrorList",
+          "documentation":"<p>The errors for any source endpoints that MediaConnect couldn't retrieve.</p>",
           "locationName":"errors"
         }
       }
@@ -2839,12 +3261,75 @@
       "exception":true,
       "retryable":{"throttling":false}
     },
+    "ConnectEndpointsRequest":{
+      "type":"structure",
+      "required":[
+        "DestinationEndpointArn",
+        "SourceEndpointArn"
+      ],
+      "members":{
+        "DestinationEndpointArn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint to connect.</p>",
+          "location":"uri",
+          "locationName":"DestinationEndpointArn"
+        },
+        "SourceEndpointArn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint to connect.</p>",
+          "locationName":"sourceEndpointArn"
+        }
+      }
+    },
+    "ConnectEndpointsResponse":{
+      "type":"structure",
+      "required":[
+        "DestinationEndpointArn",
+        "DestinationEndpointName",
+        "SourceEndpointArn",
+        "SourceEndpointName"
+      ],
+      "members":{
+        "DestinationEndpointArn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connected destination endpoint.</p>",
+          "locationName":"destinationEndpointArn"
+        },
+        "DestinationEndpointName":{
+          "shape":"String",
+          "documentation":"<p>The name of the connected destination endpoint.</p>",
+          "locationName":"destinationEndpointName"
+        },
+        "SourceEndpointArn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connected source endpoint.</p>",
+          "locationName":"sourceEndpointArn"
+        },
+        "SourceEndpointName":{
+          "shape":"String",
+          "documentation":"<p>The name of the connected source endpoint.</p>",
+          "locationName":"sourceEndpointName"
+        }
+      }
+    },
     "ConnectionStatus":{
       "type":"string",
       "enum":[
         "CONNECTED",
         "DISCONNECTED"
       ]
+    },
+    "ConsumedResourceShareDetails":{
+      "type":"structure",
+      "required":["OwnerAccountId"],
+      "members":{
+        "OwnerAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the shared endpoint.</p>",
+          "locationName":"ownerAccountId"
+        }
+      },
+      "documentation":"<p>The cross-account sharing details for an endpoint that another account shares with this account.</p>"
     },
     "ContentQualityAnalysisFeatureConfiguration":{
       "type":"structure",
@@ -3538,6 +4023,37 @@
         }
       }
     },
+    "DeregisterDestinationEndpointRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint to deregister.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "DeregisterDestinationEndpointResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint that was deregistered.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the destination endpoint that was deregistered.</p>",
+          "locationName":"name"
+        }
+      }
+    },
     "DeregisterGatewayInstanceRequest":{
       "type":"structure",
       "required":["GatewayInstanceArn"],
@@ -3572,6 +4088,37 @@
           "shape":"InstanceState",
           "documentation":"<p> The status of the instance.</p>",
           "locationName":"instanceState"
+        }
+      }
+    },
+    "DeregisterSourceEndpointRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint to deregister.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "DeregisterSourceEndpointResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint that was deregistered.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the source endpoint that was deregistered.</p>",
+          "locationName":"name"
         }
       }
     },
@@ -3858,6 +4405,400 @@
       },
       "documentation":"<p>The definition of a media stream that you want to associate with the output. </p>"
     },
+    "DestinationEndpoint":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "Description",
+        "RegionName",
+        "CreatedAt",
+        "UpdatedAt",
+        "LifecycleManagement",
+        "Messages",
+        "DestinationType",
+        "Configuration",
+        "ResourceShareOwnership",
+        "ResourceShareDetails",
+        "RegistrationState",
+        "ConnectionState",
+        "AssociatedResourceDetails",
+        "Tags"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the destination endpoint.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the destination endpoint.</p>",
+          "locationName":"id"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the destination endpoint.</p>",
+          "locationName":"description"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services Region in which the destination endpoint is located.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone in which the destination endpoint is located.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone in which the destination endpoint is located.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the destination endpoint was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the destination endpoint was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "LifecycleManagement":{
+          "shape":"EndpointLifecycle",
+          "documentation":"<p>The entity that manages the lifecycle of the destination endpoint.</p>",
+          "locationName":"lifecycleManagement"
+        },
+        "Messages":{
+          "shape":"DestinationEndpointMessageList",
+          "documentation":"<p>The status messages for the destination endpoint.</p>",
+          "locationName":"messages"
+        },
+        "DestinationType":{
+          "shape":"DestinationEndpointType",
+          "documentation":"<p>The type of the destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>STANDARD</code> – A destination endpoint that represents an external destination over a standard protocol, such as RTP, RIST, or SRT.</p> </li> <li> <p> <code>ROUTER_INPUT</code> – A destination endpoint that represents a router input.</p> </li> </ul>",
+          "locationName":"destinationType"
+        },
+        "Configuration":{
+          "shape":"DestinationEndpointConfiguration",
+          "documentation":"<p>The configuration settings for the destination endpoint.</p>",
+          "locationName":"configuration"
+        },
+        "ResourceShareOwnership":{
+          "shape":"ResourceShareOwnership",
+          "documentation":"<p>Indicates whether this account owns the destination endpoint or consumes it from another account through RAM.</p>",
+          "locationName":"resourceShareOwnership"
+        },
+        "ResourceShareDetails":{
+          "shape":"ResourceShareDetails",
+          "locationName":"resourceShareDetails"
+        },
+        "RegistrationState":{
+          "shape":"DestinationEndpointRegistrationState",
+          "documentation":"<p>The registration state of the destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>REGISTERED</code> – The destination endpoint is registered and ready to use.</p> </li> <li> <p> <code>REGISTERING</code> – MediaConnect is registering the destination endpoint.</p> </li> <li> <p> <code>DEREGISTERING</code> – MediaConnect is deregistering the destination endpoint.</p> </li> <li> <p> <code>REGISTRATION_FAILED</code> – MediaConnect couldn't register the destination endpoint.</p> </li> </ul>",
+          "locationName":"registrationState"
+        },
+        "ConnectionDetails":{
+          "shape":"DestinationEndpointConnectionDetails",
+          "documentation":"<p>The connection details for the destination endpoint.</p>",
+          "locationName":"connectionDetails"
+        },
+        "ConnectionState":{
+          "shape":"DestinationEndpointConnectionState",
+          "documentation":"<p>The connection state of the destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>CONNECTED</code> – The destination endpoint is connected to a source endpoint.</p> </li> <li> <p> <code>DISCONNECTED</code> – The destination endpoint isn't connected to a source endpoint.</p> </li> <li> <p> <code>CONNECTING</code> – The destination endpoint is connecting to a source endpoint.</p> </li> <li> <p> <code>DISCONNECTING</code> – The destination endpoint is disconnecting from a source endpoint.</p> </li> </ul>",
+          "locationName":"connectionState"
+        },
+        "ConnectedSource":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint that is connected to the destination endpoint.</p>",
+          "locationName":"connectedSource"
+        },
+        "DecryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of decryption used for the destination endpoint connection.</p>",
+          "locationName":"decryptionType"
+        },
+        "DecryptionConfiguration":{
+          "shape":"EndpointEncryptionConfiguration",
+          "locationName":"decryptionConfiguration"
+        },
+        "AssociatedResourceDetails":{
+          "shape":"DestinationEndpointAssociatedResourceDetails",
+          "documentation":"<p>The details of the resource that is associated with the destination endpoint.</p>",
+          "locationName":"associatedResourceDetails"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>The tags associated with the destination endpoint. Each tag is a key-value pair.</p>",
+          "locationName":"tags"
+        }
+      },
+      "documentation":"<p>The details of a destination endpoint in MediaConnect, including its configuration, state, and connection details.</p>"
+    },
+    "DestinationEndpointArn":{
+      "type":"string",
+      "max":128,
+      "min":64,
+      "pattern":"arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:destinationEndpoint:[a-z0-9]{12}"
+    },
+    "DestinationEndpointArnList":{
+      "type":"list",
+      "member":{"shape":"DestinationEndpointArn"}
+    },
+    "DestinationEndpointAssociatedResourceDetails":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardDestinationEndpointAssociatedResourceDetails",
+          "documentation":"<p>The associated resource details for a standard destination endpoint.</p>",
+          "locationName":"standard"
+        },
+        "RouterInput":{
+          "shape":"RouterInputDestinationEndpointAssociatedResourceDetails",
+          "documentation":"<p>The associated resource details for a destination endpoint that represents a router input.</p>",
+          "locationName":"routerInput"
+        }
+      },
+      "documentation":"<p>The details of the resource that is associated with a destination endpoint. This is a union type, so exactly one of its members is set, depending on the type of the destination endpoint.</p>",
+      "union":true
+    },
+    "DestinationEndpointConfiguration":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardDestinationEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a standard destination endpoint, which represents an external destination.</p>",
+          "locationName":"standard"
+        },
+        "RouterInput":{
+          "shape":"RouterInputDestinationEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a destination endpoint that represents a router input.</p>",
+          "locationName":"routerInput"
+        }
+      },
+      "documentation":"<p>The configuration settings for a destination endpoint. This is a union type, so exactly one of its members is set, depending on the type of the destination endpoint.</p>",
+      "union":true
+    },
+    "DestinationEndpointConnectionDetails":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardDestinationEndpointConnectionDetails",
+          "documentation":"<p>The connection details for a standard destination endpoint.</p>",
+          "locationName":"standard"
+        },
+        "RouterInput":{
+          "shape":"RouterInputDestinationEndpointConnectionDetails",
+          "documentation":"<p>The connection details for a destination endpoint that represents a router input.</p>",
+          "locationName":"routerInput"
+        }
+      },
+      "documentation":"<p>The connection details for a destination endpoint. After the destination endpoint connects to a source endpoint, MediaConnect populates these details to describe the connected source. This is a union type, so exactly one of its members is set, depending on the destination endpoint type.</p>",
+      "union":true
+    },
+    "DestinationEndpointConnectionState":{
+      "type":"string",
+      "enum":[
+        "CONNECTED",
+        "DISCONNECTED",
+        "CONNECTING",
+        "DISCONNECTING"
+      ]
+    },
+    "DestinationEndpointFilter":{
+      "type":"structure",
+      "members":{
+        "RegionNames":{
+          "shape":"StringList",
+          "documentation":"<p>Filters the results to destination endpoints in the specified Amazon Web Services Regions.</p>",
+          "locationName":"regionNames"
+        },
+        "DestinationTypes":{
+          "shape":"DestinationEndpointTypeList",
+          "documentation":"<p>Filters the results to destination endpoints of the specified types.</p>",
+          "locationName":"destinationTypes"
+        },
+        "NameContains":{
+          "shape":"StringList",
+          "documentation":"<p>Filters the results to destination endpoints whose names contain the specified strings.</p>",
+          "locationName":"nameContains"
+        }
+      },
+      "documentation":"<p>A filter to apply when listing destination endpoints. This is a union type, so exactly one of its members is set.</p>",
+      "union":true
+    },
+    "DestinationEndpointFilterList":{
+      "type":"list",
+      "member":{"shape":"DestinationEndpointFilter"}
+    },
+    "DestinationEndpointList":{
+      "type":"list",
+      "member":{"shape":"DestinationEndpoint"}
+    },
+    "DestinationEndpointMessage":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The message code.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The message text.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>A status message for a destination endpoint.</p>"
+    },
+    "DestinationEndpointMessageList":{
+      "type":"list",
+      "member":{"shape":"DestinationEndpointMessage"}
+    },
+    "DestinationEndpointNetworkingType":{
+      "type":"string",
+      "enum":[
+        "PUBLIC",
+        "VPC"
+      ]
+    },
+    "DestinationEndpointProtocol":{
+      "type":"string",
+      "enum":[
+        "RTP",
+        "RIST",
+        "SRT_CALLER",
+        "SRT_LISTENER"
+      ]
+    },
+    "DestinationEndpointRegistrationState":{
+      "type":"string",
+      "enum":[
+        "REGISTERED",
+        "REGISTERING",
+        "DEREGISTERING",
+        "REGISTRATION_FAILED"
+      ]
+    },
+    "DestinationEndpointRouterInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "EndpointLifecycleManagement",
+        "SourceTransitDecryption"
+      ],
+      "members":{
+        "EndpointLifecycleManagement":{
+          "shape":"EndpointLifecycle",
+          "documentation":"<p>The entity that manages the lifecycle of the associated destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>MANAGED</code> – MediaConnect manages the lifecycle of the associated destination endpoint.</p> </li> <li> <p> <code>UNMANAGED</code> – You manage the lifecycle of the associated destination endpoint.</p> </li> </ul>",
+          "locationName":"endpointLifecycleManagement"
+        },
+        "SourceTransitDecryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of transit decryption applied to the source content that this router input receives. Valid values include the following:</p> <ul> <li> <p> <code>SECRETS_MANAGER</code> – The decryption key or passphrase is stored in Secrets Manager.</p> </li> <li> <p> <code>AUTOMATIC</code> – MediaConnect determines the decryption key when the endpoint connects.</p> </li> </ul>",
+          "locationName":"sourceTransitDecryptionType"
+        },
+        "SourceTransitDecryption":{
+          "shape":"EndpointEncryptionConfiguration",
+          "locationName":"sourceTransitDecryption"
+        }
+      },
+      "documentation":"<p>Configuration settings for a router input that is represented by a destination endpoint.</p>"
+    },
+    "DestinationEndpointRouterInputStreamDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration details for a router input stream that is represented by a destination endpoint.</p>"
+    },
+    "DestinationEndpointServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>The request would cause you to exceed a service quota for destination endpoints. Delete unused destination endpoints or request a quota increase, then try your request again.</p>",
+      "error":{
+        "httpStatusCode":420,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DestinationEndpointType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "ROUTER_INPUT"
+      ]
+    },
+    "DestinationEndpointTypeList":{
+      "type":"list",
+      "member":{"shape":"DestinationEndpointType"}
+    },
+    "DisconnectEndpointsRequest":{
+      "type":"structure",
+      "required":[
+        "DestinationEndpointArn",
+        "SourceEndpointArn"
+      ],
+      "members":{
+        "DestinationEndpointArn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint to disconnect.</p>",
+          "location":"uri",
+          "locationName":"DestinationEndpointArn"
+        },
+        "SourceEndpointArn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint to disconnect.</p>",
+          "locationName":"sourceEndpointArn"
+        }
+      }
+    },
+    "DisconnectEndpointsResponse":{
+      "type":"structure",
+      "required":[
+        "DestinationEndpointArn",
+        "DestinationEndpointName",
+        "SourceEndpointArn",
+        "SourceEndpointName"
+      ],
+      "members":{
+        "DestinationEndpointArn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the disconnected destination endpoint.</p>",
+          "locationName":"destinationEndpointArn"
+        },
+        "DestinationEndpointName":{
+          "shape":"String",
+          "documentation":"<p>The name of the disconnected destination endpoint.</p>",
+          "locationName":"destinationEndpointName"
+        },
+        "SourceEndpointArn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the disconnected source endpoint.</p>",
+          "locationName":"sourceEndpointArn"
+        },
+        "SourceEndpointName":{
+          "shape":"String",
+          "documentation":"<p>The name of the disconnected source endpoint.</p>",
+          "locationName":"sourceEndpointName"
+        }
+      }
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -4013,6 +4954,58 @@
         }
       },
       "documentation":"<p> Encryption information.</p>"
+    },
+    "EndpointEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "SecretsManager":{
+          "shape":"SecretsManagerEndpointEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for a connection that uses a key or passphrase that you store in Secrets Manager.</p>",
+          "locationName":"secretsManager"
+        },
+        "Automatic":{
+          "shape":"AutomaticEndpointEncryptionConfiguration",
+          "documentation":"<p>The configuration for automatic encryption, where MediaConnect determines the encryption key when the endpoint connects.</p>",
+          "locationName":"automatic"
+        }
+      },
+      "documentation":"<p>The encryption settings for an endpoint connection. This is a union type, so exactly one of its members is set: <code>secretsManager</code> when you store the encryption key or passphrase in Secrets Manager, or <code>automatic</code> when you let MediaConnect determine the encryption key when the endpoint connects.</p>",
+      "union":true
+    },
+    "EndpointEncryptionSecretConfiguration":{
+      "type":"structure",
+      "required":["SecretArn"],
+      "members":{
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The ARN of the Secrets Manager secret that holds the key or passphrase. The secret must be encrypted with a customer managed Amazon Web Services KMS key that is enabled and symmetric; it cannot use the Amazon Web Services managed key <code>aws/secretsmanager</code>. The secret must be in the same Amazon Web Services account and Region as the endpoint.</p>",
+          "locationName":"secretArn"
+        }
+      },
+      "documentation":"<p>The configuration for the Secrets Manager secret that holds the key or passphrase used to encrypt an endpoint connection.</p>"
+    },
+    "EndpointEncryptionSecretType":{
+      "type":"string",
+      "enum":[
+        "AES_128_KEY",
+        "AES_192_KEY",
+        "AES_256_KEY",
+        "SRT_PASSPHRASE"
+      ]
+    },
+    "EndpointEncryptionType":{
+      "type":"string",
+      "enum":[
+        "SECRETS_MANAGER",
+        "AUTOMATIC"
+      ]
+    },
+    "EndpointLifecycle":{
+      "type":"string",
+      "enum":[
+        "MANAGED",
+        "UNMANAGED"
+      ]
     },
     "Entitlement":{
       "type":"structure",
@@ -4697,6 +5690,29 @@
         "DELETED"
       ]
     },
+    "GetDestinationEndpointRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint to retrieve.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "GetDestinationEndpointResponse":{
+      "type":"structure",
+      "required":["DestinationEndpoint"],
+      "members":{
+        "DestinationEndpoint":{
+          "shape":"DestinationEndpoint",
+          "documentation":"<p>The details of the destination endpoint.</p>",
+          "locationName":"destinationEndpoint"
+        }
+      }
+    },
     "GetRouterInputRequest":{
       "type":"structure",
       "required":["Arn"],
@@ -4837,6 +5853,29 @@
           "shape":"RouterOutput",
           "documentation":"<p>The details of the requested router output, including its configuration, state, and other attributes.</p>",
           "locationName":"routerOutput"
+        }
+      }
+    },
+    "GetSourceEndpointRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint to retrieve.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "GetSourceEndpointResponse":{
+      "type":"structure",
+      "required":["SourceEndpoint"],
+      "members":{
+        "SourceEndpoint":{
+          "shape":"SourceEndpoint",
+          "documentation":"<p>The details of the source endpoint.</p>",
+          "locationName":"sourceEndpoint"
         }
       }
     },
@@ -5104,6 +6143,50 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p> The token that identifies the batch of results that you want to see. </p> <p>For example, you submit a <code>ListBridges</code> request with <code>MaxResults</code> set at 5. The service returns the first batch of results (up to 5) and a <code>NextToken</code> value. To see the next batch of results, you can submit the <code>ListBridges</code> request a second time and specify the <code>NextToken</code> value.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDestinationEndpointsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListDestinationEndpointsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single request. The valid range is 1 to 100. If you don't specify a value, the service returns up to 100 results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token that identifies the next page of results to return. Use the token that a previous request returned.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "Filters":{
+          "shape":"DestinationEndpointFilterList",
+          "documentation":"<p>The filters to apply to the list of destination endpoints.</p>",
+          "locationName":"filters"
+        }
+      }
+    },
+    "ListDestinationEndpointsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListDestinationEndpointsResponse":{
+      "type":"structure",
+      "required":["DestinationEndpoints"],
+      "members":{
+        "DestinationEndpoints":{
+          "shape":"ListedDestinationEndpointList",
+          "documentation":"<p>The destination endpoints that match the request.</p>",
+          "locationName":"destinationEndpoints"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use in the next request to retrieve the next page of results. This value is null when there are no more results to return.</p>",
           "locationName":"nextToken"
         }
       }
@@ -5438,6 +6521,50 @@
         }
       }
     },
+    "ListSourceEndpointsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListSourceEndpointsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single request. The valid range is 1 to 100. If you don't specify a value, the service returns up to 100 results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token that identifies the next page of results to return. Use the token that a previous request returned.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "Filters":{
+          "shape":"SourceEndpointFilterList",
+          "documentation":"<p>The filters to apply to the list of source endpoints.</p>",
+          "locationName":"filters"
+        }
+      }
+    },
+    "ListSourceEndpointsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListSourceEndpointsResponse":{
+      "type":"structure",
+      "required":["SourceEndpoints"],
+      "members":{
+        "SourceEndpoints":{
+          "shape":"ListedSourceEndpointList",
+          "documentation":"<p>The source endpoints that match the request.</p>",
+          "locationName":"sourceEndpoints"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use in the next request to retrieve the next page of results. This value is null when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListTagsForGlobalResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -5519,6 +6646,121 @@
         }
       },
       "documentation":"<p> Displays details of the selected bridge.</p>"
+    },
+    "ListedDestinationEndpoint":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "DestinationType",
+        "RegionName",
+        "CreatedAt",
+        "UpdatedAt",
+        "LifecycleManagement",
+        "MessageCount",
+        "ResourceShareOwnership",
+        "ResourceShareState",
+        "RegistrationState",
+        "ConnectionState"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the destination endpoint.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the destination endpoint.</p>",
+          "locationName":"id"
+        },
+        "DestinationType":{
+          "shape":"DestinationEndpointType",
+          "documentation":"<p>The type of the destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>STANDARD</code> – A destination endpoint that represents an external destination over a standard protocol, such as RTP, RIST, or SRT.</p> </li> <li> <p> <code>ROUTER_INPUT</code> – A destination endpoint that represents a router input.</p> </li> </ul>",
+          "locationName":"destinationType"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services Region in which the destination endpoint is located.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone in which the destination endpoint is located.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone in which the destination endpoint is located.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the destination endpoint was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the destination endpoint was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "LifecycleManagement":{
+          "shape":"EndpointLifecycle",
+          "documentation":"<p>The entity that manages the lifecycle of the destination endpoint.</p>",
+          "locationName":"lifecycleManagement"
+        },
+        "MessageCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of status messages for the destination endpoint.</p>",
+          "locationName":"messageCount"
+        },
+        "ResourceShareOwnership":{
+          "shape":"ResourceShareOwnership",
+          "documentation":"<p>Indicates whether this account owns the destination endpoint or consumes it from another account through RAM.</p>",
+          "locationName":"resourceShareOwnership"
+        },
+        "ResourceShareState":{
+          "shape":"ResourceShareState",
+          "documentation":"<p>The sharing state of the destination endpoint.</p>",
+          "locationName":"resourceShareState"
+        },
+        "RegistrationState":{
+          "shape":"DestinationEndpointRegistrationState",
+          "documentation":"<p>The registration state of the destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>REGISTERED</code> – The destination endpoint is registered and ready to use.</p> </li> <li> <p> <code>REGISTERING</code> – MediaConnect is registering the destination endpoint.</p> </li> <li> <p> <code>DEREGISTERING</code> – MediaConnect is deregistering the destination endpoint.</p> </li> <li> <p> <code>REGISTRATION_FAILED</code> – MediaConnect couldn't register the destination endpoint.</p> </li> </ul>",
+          "locationName":"registrationState"
+        },
+        "ConnectionState":{
+          "shape":"DestinationEndpointConnectionState",
+          "documentation":"<p>The connection state of the destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>CONNECTED</code> – The destination endpoint is connected to a source endpoint.</p> </li> <li> <p> <code>DISCONNECTED</code> – The destination endpoint isn't connected to a source endpoint.</p> </li> <li> <p> <code>CONNECTING</code> – The destination endpoint is connecting to a source endpoint.</p> </li> <li> <p> <code>DISCONNECTING</code> – The destination endpoint is disconnecting from a source endpoint.</p> </li> </ul>",
+          "locationName":"connectionState"
+        },
+        "DecryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of decryption used for the destination endpoint connection.</p>",
+          "locationName":"decryptionType"
+        },
+        "ConnectedSource":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint that is connected to the destination endpoint.</p>",
+          "locationName":"connectedSource"
+        },
+        "AssociatedResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that is associated with the destination endpoint.</p>",
+          "locationName":"associatedResourceArn"
+        }
+      },
+      "documentation":"<p>A summary of a destination endpoint that the <code>ListDestinationEndpoints</code> operation returns.</p>"
+    },
+    "ListedDestinationEndpointList":{
+      "type":"list",
+      "member":{"shape":"ListedDestinationEndpoint"}
     },
     "ListedEntitlement":{
       "type":"structure",
@@ -5937,6 +7179,122 @@
     "ListedRouterOutputList":{
       "type":"list",
       "member":{"shape":"ListedRouterOutput"}
+    },
+    "ListedSourceEndpoint":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "SourceType",
+        "RegionName",
+        "CreatedAt",
+        "UpdatedAt",
+        "LifecycleManagement",
+        "MessageCount",
+        "ResourceShareOwnership",
+        "ResourceShareState",
+        "RegistrationState",
+        "ConnectionState",
+        "ConnectedDestinationCount"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the source endpoint.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the source endpoint.</p>",
+          "locationName":"id"
+        },
+        "SourceType":{
+          "shape":"SourceEndpointType",
+          "documentation":"<p>The type of the source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>STANDARD</code> – A source endpoint that represents an external source over a standard protocol, such as RTP, RIST, or SRT.</p> </li> <li> <p> <code>ROUTER_OUTPUT</code> – A source endpoint that represents a router output.</p> </li> </ul>",
+          "locationName":"sourceType"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services Region in which the source endpoint is located.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone in which the source endpoint is located.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone in which the source endpoint is located.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the source endpoint was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the source endpoint was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "LifecycleManagement":{
+          "shape":"EndpointLifecycle",
+          "documentation":"<p>The entity that manages the lifecycle of the source endpoint.</p>",
+          "locationName":"lifecycleManagement"
+        },
+        "MessageCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of status messages for the source endpoint.</p>",
+          "locationName":"messageCount"
+        },
+        "ResourceShareOwnership":{
+          "shape":"ResourceShareOwnership",
+          "documentation":"<p>Indicates whether this account owns the source endpoint or consumes it from another account through RAM.</p>",
+          "locationName":"resourceShareOwnership"
+        },
+        "ResourceShareState":{
+          "shape":"ResourceShareState",
+          "documentation":"<p>The sharing state of the source endpoint.</p>",
+          "locationName":"resourceShareState"
+        },
+        "RegistrationState":{
+          "shape":"SourceEndpointRegistrationState",
+          "documentation":"<p>The registration state of the source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>REGISTERED</code> – The source endpoint is registered and ready to use.</p> </li> <li> <p> <code>REGISTERING</code> – MediaConnect is registering the source endpoint.</p> </li> <li> <p> <code>DEREGISTERING</code> – MediaConnect is deregistering the source endpoint.</p> </li> <li> <p> <code>REGISTRATION_FAILED</code> – MediaConnect couldn't register the source endpoint.</p> </li> </ul>",
+          "locationName":"registrationState"
+        },
+        "ConnectionState":{
+          "shape":"SourceEndpointConnectionState",
+          "documentation":"<p>The connection state of the source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>CONNECTED</code> – The source endpoint is connected to a destination endpoint.</p> </li> <li> <p> <code>DISCONNECTED</code> – The source endpoint isn't connected to a destination endpoint.</p> </li> <li> <p> <code>CONNECTING</code> – The source endpoint is connecting to a destination endpoint.</p> </li> <li> <p> <code>DISCONNECTING</code> – The source endpoint is disconnecting from a destination endpoint.</p> </li> </ul>",
+          "locationName":"connectionState"
+        },
+        "EncryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of encryption used for the source endpoint connection.</p>",
+          "locationName":"encryptionType"
+        },
+        "ConnectedDestinationCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of destination endpoints that are connected to the source endpoint.</p>",
+          "locationName":"connectedDestinationCount"
+        },
+        "AssociatedResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that is associated with the source endpoint.</p>",
+          "locationName":"associatedResourceArn"
+        }
+      },
+      "documentation":"<p>A summary of a source endpoint that the <code>ListSourceEndpoints</code> operation returns.</p>"
+    },
+    "ListedSourceEndpointList":{
+      "type":"list",
+      "member":{"shape":"ListedSourceEndpoint"}
     },
     "Long":{
       "type":"long",
@@ -6947,6 +8305,18 @@
         "DISABLED"
       ]
     },
+    "OwnedResourceShareDetails":{
+      "type":"structure",
+      "required":["ShareState"],
+      "members":{
+        "ShareState":{
+          "shape":"ResourceShareState",
+          "documentation":"<p>The sharing state of the endpoint. Valid values include the following:</p> <ul> <li> <p> <code>SHARED</code> – The endpoint is shared with one or more accounts.</p> </li> <li> <p> <code>UNSHARED</code> – The endpoint is not shared with other accounts.</p> </li> </ul>",
+          "locationName":"shareState"
+        }
+      },
+      "documentation":"<p>The cross-account sharing details for an endpoint that this account owns and shares with other accounts.</p>"
+    },
     "PreferredDayTimeMaintenanceConfiguration":{
       "type":"structure",
       "required":[
@@ -6988,6 +8358,40 @@
         "ndi-speed-hq"
       ]
     },
+    "PublicDestinationEndpointNetworkingConfiguration":{
+      "type":"structure",
+      "required":["DestinationAllowRules"],
+      "members":{
+        "DestinationAllowRules":{
+          "shape":"PublicDestinationEndpointNetworkingConfigurationDestinationAllowRulesList",
+          "documentation":"<p>The rules that specify which CIDR blocks can connect to the destination endpoint. You can specify up to 10 rules.</p>",
+          "locationName":"destinationAllowRules"
+        }
+      },
+      "documentation":"<p>The networking configuration for a publicly accessible destination endpoint, including the CIDR blocks that are allowed to connect.</p>"
+    },
+    "PublicDestinationEndpointNetworkingConfigurationAllowRule":{
+      "type":"structure",
+      "required":["Cidr"],
+      "members":{
+        "Cidr":{
+          "shape":"PublicDestinationEndpointNetworkingConfigurationAllowRuleCidrString",
+          "documentation":"<p>The CIDR block that is allowed to connect to the destination endpoint, in CIDR notation.</p>",
+          "locationName":"cidr"
+        }
+      },
+      "documentation":"<p>A rule that allows a specific CIDR block to connect to the public destination endpoint.</p>"
+    },
+    "PublicDestinationEndpointNetworkingConfigurationAllowRuleCidrString":{
+      "type":"string",
+      "pattern":"(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/([0-9]|[12][0-9]|3[0-2])"
+    },
+    "PublicDestinationEndpointNetworkingConfigurationDestinationAllowRulesList":{
+      "type":"list",
+      "member":{"shape":"PublicDestinationEndpointNetworkingConfigurationAllowRule"},
+      "max":10,
+      "min":0
+    },
     "PublicRouterNetworkInterfaceConfiguration":{
       "type":"structure",
       "required":["AllowRules"],
@@ -7021,6 +8425,40 @@
     "PublicRouterNetworkInterfaceRuleCidrString":{
       "type":"string",
       "pattern":"(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/([0-9]|[12][0-9]|3[0-2])"
+    },
+    "PublicSourceEndpointNetworkingConfiguration":{
+      "type":"structure",
+      "required":["SourceAllowRules"],
+      "members":{
+        "SourceAllowRules":{
+          "shape":"PublicSourceEndpointNetworkingConfigurationSourceAllowRulesList",
+          "documentation":"<p>The rules that specify which CIDR blocks can connect to the source endpoint. You can specify up to 10 rules.</p>",
+          "locationName":"sourceAllowRules"
+        }
+      },
+      "documentation":"<p>The networking configuration for a publicly accessible source endpoint, including the CIDR blocks that are allowed to connect.</p>"
+    },
+    "PublicSourceEndpointNetworkingConfigurationAllowRule":{
+      "type":"structure",
+      "required":["Cidr"],
+      "members":{
+        "Cidr":{
+          "shape":"PublicSourceEndpointNetworkingConfigurationAllowRuleCidrString",
+          "documentation":"<p>The CIDR block that is allowed to connect to the source endpoint, in CIDR notation.</p>",
+          "locationName":"cidr"
+        }
+      },
+      "documentation":"<p>A rule that allows a specific CIDR block to connect to the public source endpoint.</p>"
+    },
+    "PublicSourceEndpointNetworkingConfigurationAllowRuleCidrString":{
+      "type":"string",
+      "pattern":"(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/([0-9]|[12][0-9]|3[0-2])"
+    },
+    "PublicSourceEndpointNetworkingConfigurationSourceAllowRulesList":{
+      "type":"list",
+      "member":{"shape":"PublicSourceEndpointNetworkingConfigurationAllowRule"},
+      "max":10,
+      "min":0
     },
     "PublicTlsEncryptionConfiguration":{
       "type":"structure",
@@ -7070,6 +8508,104 @@
         "FULL",
         "FULLPROTECT"
       ]
+    },
+    "RegisterDestinationEndpointRequest":{
+      "type":"structure",
+      "required":["Configuration"],
+      "members":{
+        "Description":{
+          "shape":"RegisterDestinationEndpointRequestDescriptionString",
+          "documentation":"<p>A description to help you identify the destination endpoint.</p>",
+          "locationName":"description"
+        },
+        "Configuration":{
+          "shape":"DestinationEndpointConfiguration",
+          "documentation":"<p>The configuration settings for the destination endpoint.</p>",
+          "locationName":"configuration"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services Region in which to register the destination endpoint. Defaults to the current region if not specified.</p>",
+          "locationName":"regionName"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>The tags to apply to the destination endpoint. Each tag is a key-value pair.</p>",
+          "locationName":"tags"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "RegisterDestinationEndpointRequestDescriptionString":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+    },
+    "RegisterDestinationEndpointResponse":{
+      "type":"structure",
+      "required":["DestinationEndpoint"],
+      "members":{
+        "DestinationEndpoint":{
+          "shape":"DestinationEndpoint",
+          "documentation":"<p>The details of the destination endpoint that was registered.</p>",
+          "locationName":"destinationEndpoint"
+        }
+      }
+    },
+    "RegisterSourceEndpointRequest":{
+      "type":"structure",
+      "required":["Configuration"],
+      "members":{
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services Region in which to register the source endpoint. Defaults to the current region if not specified.</p>",
+          "locationName":"regionName"
+        },
+        "Description":{
+          "shape":"RegisterSourceEndpointRequestDescriptionString",
+          "documentation":"<p>A description to help you identify the source endpoint.</p>",
+          "locationName":"description"
+        },
+        "Configuration":{
+          "shape":"SourceEndpointConfiguration",
+          "documentation":"<p>The configuration settings for the source endpoint.</p>",
+          "locationName":"configuration"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>The tags to apply to the source endpoint. Each tag is a key-value pair.</p>",
+          "locationName":"tags"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "RegisterSourceEndpointRequestDescriptionString":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+    },
+    "RegisterSourceEndpointResponse":{
+      "type":"structure",
+      "required":["SourceEndpoint"],
+      "members":{
+        "SourceEndpoint":{
+          "shape":"SourceEndpoint",
+          "documentation":"<p>The details of the source endpoint that was registered.</p>",
+          "locationName":"sourceEndpoint"
+        }
+      }
     },
     "RemoveBridgeOutputRequest":{
       "type":"structure",
@@ -7420,6 +8956,37 @@
         "CANCELED"
       ]
     },
+    "ResourceShareDetails":{
+      "type":"structure",
+      "members":{
+        "Owned":{
+          "shape":"OwnedResourceShareDetails",
+          "documentation":"<p>The sharing details for an endpoint that this account owns and shares with other accounts through RAM.</p>",
+          "locationName":"owned"
+        },
+        "Consumed":{
+          "shape":"ConsumedResourceShareDetails",
+          "documentation":"<p>The sharing details for an endpoint that another account shares with this account through RAM.</p>",
+          "locationName":"consumed"
+        }
+      },
+      "documentation":"<p>The cross-account sharing details for an endpoint. Endpoints are shared through Resource Access Manager (RAM). This is a union type, so exactly one of its members is set: <code>owned</code> when this account owns the endpoint and shares it with other accounts, or <code>consumed</code> when this account consumes an endpoint that another account shares. To change how an endpoint is shared, use RAM.</p>",
+      "union":true
+    },
+    "ResourceShareOwnership":{
+      "type":"string",
+      "enum":[
+        "OWNED",
+        "CONSUMED"
+      ]
+    },
+    "ResourceShareState":{
+      "type":"string",
+      "enum":[
+        "SHARED",
+        "UNSHARED"
+      ]
+    },
     "ResourceSpecification":{
       "type":"structure",
       "required":["ResourceType"],
@@ -7617,6 +9184,64 @@
       "max":65535,
       "min":1024
     },
+    "RistStandardDestinationEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationAddress",
+        "DestinationIngestPort"
+      ],
+      "members":{
+        "DestinationAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address on which the destination endpoint receives content.</p>",
+          "locationName":"destinationAddress"
+        },
+        "DestinationIngestPort":{
+          "shape":"RistStandardDestinationEndpointConfigurationDestinationIngestPortInteger",
+          "documentation":"<p>The port on which the destination endpoint receives content. The valid range is 1024 to 65531.</p>",
+          "locationName":"destinationIngestPort"
+        }
+      },
+      "documentation":"<p>The configuration settings for a destination endpoint that uses the RIST protocol.</p>"
+    },
+    "RistStandardDestinationEndpointConfigurationDestinationIngestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65531,
+      "min":1024
+    },
+    "RistStandardSourceEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationIngestPort",
+        "RecoveryLatencyMilliseconds"
+      ],
+      "members":{
+        "DestinationIngestPort":{
+          "shape":"RistStandardSourceEndpointConfigurationDestinationIngestPortInteger",
+          "documentation":"<p>The port on the destination that receives the content. The valid range is 3000 to 30000.</p>",
+          "locationName":"destinationIngestPort"
+        },
+        "RecoveryLatencyMilliseconds":{
+          "shape":"RistStandardSourceEndpointConfigurationRecoveryLatencyMillisecondsLong",
+          "documentation":"<p>The amount of time, in milliseconds, that the source endpoint allows for recovering lost packets. The valid range is 10 to 10000.</p>",
+          "locationName":"recoveryLatencyMilliseconds"
+        }
+      },
+      "documentation":"<p>The configuration settings for a source endpoint that uses the RIST protocol.</p>"
+    },
+    "RistStandardSourceEndpointConfigurationDestinationIngestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30000,
+      "min":3000
+    },
+    "RistStandardSourceEndpointConfigurationRecoveryLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
     "RoleArn":{
       "type":"string",
       "pattern":"arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+"
@@ -7796,6 +9421,11 @@
           "shape":"RouterContentQualityAnalysisConfiguration",
           "documentation":"<p>The content quality analysis configuration for the router input.</p>",
           "locationName":"contentQualityAnalysisConfiguration"
+        },
+        "AssociatedDestinationEndpointArns":{
+          "shape":"DestinationEndpointArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of one or more destination endpoints that are associated with this router input.</p>",
+          "locationName":"associatedDestinationEndpointArns"
         }
       },
       "documentation":"<p>A router input in AWS Elemental MediaConnect. A router input is a source of media content that can be routed to one or more router outputs.</p>"
@@ -7811,6 +9441,11 @@
     "RouterInputConfiguration":{
       "type":"structure",
       "members":{
+        "DestinationEndpoint":{
+          "shape":"DestinationEndpointRouterInputConfiguration",
+          "documentation":"<p>Configuration settings for a router input that is represented by a destination endpoint.</p>",
+          "locationName":"destinationEndpoint"
+        },
         "Standard":{
           "shape":"StandardRouterInputConfiguration",
           "locationName":"standard"
@@ -7834,6 +9469,70 @@
       },
       "documentation":"<p>The configuration settings for a router input.</p>",
       "union":true
+    },
+    "RouterInputDestinationEndpointAssociatedResourceDetails":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "MaximumBitrate",
+        "State",
+        "Messages"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router input.</p>",
+          "locationName":"name"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The maximum bitrate of the router input, in bits per second.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "State":{
+          "shape":"RouterInputState",
+          "documentation":"<p>The state of the router input.</p>",
+          "locationName":"state"
+        },
+        "Messages":{
+          "shape":"RouterInputMessages",
+          "documentation":"<p>The status messages for the router input.</p>",
+          "locationName":"messages"
+        }
+      },
+      "documentation":"<p>The details of the router input that is associated with a destination endpoint.</p>"
+    },
+    "RouterInputDestinationEndpointConfiguration":{
+      "type":"structure",
+      "required":["RouterInputArn"],
+      "members":{
+        "RouterInputArn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input that the destination endpoint represents.</p>",
+          "locationName":"routerInputArn"
+        }
+      },
+      "documentation":"<p>The configuration settings for a destination endpoint that represents a router input.</p>"
+    },
+    "RouterInputDestinationEndpointConnectionDetails":{
+      "type":"structure",
+      "members":{
+        "SourceEncryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of encryption that the source uses for the connection.</p>",
+          "locationName":"sourceEncryptionType"
+        },
+        "SourceEncryptionConfiguration":{
+          "shape":"EndpointEncryptionConfiguration",
+          "locationName":"sourceEncryptionConfiguration"
+        },
+        "SourceEndpointType":{
+          "shape":"SourceEndpointType",
+          "documentation":"<p>The type of the connected source endpoint.</p>",
+          "locationName":"sourceEndpointType"
+        }
+      },
+      "documentation":"<p>The connection details for a destination endpoint that represents a router input.</p>"
     },
     "RouterInputFilter":{
       "type":"structure",
@@ -8001,6 +9700,11 @@
     "RouterInputStreamDetails":{
       "type":"structure",
       "members":{
+        "DestinationEndpoint":{
+          "shape":"DestinationEndpointRouterInputStreamDetails",
+          "documentation":"<p>Configuration details for a router input stream that is represented by a destination endpoint.</p>",
+          "locationName":"destinationEndpoint"
+        },
         "Standard":{
           "shape":"StandardRouterInputStreamDetails",
           "locationName":"standard"
@@ -8108,7 +9812,8 @@
         "FAILOVER",
         "MERGE",
         "MEDIACONNECT_FLOW",
-        "MEDIALIVE_CHANNEL"
+        "MEDIALIVE_CHANNEL",
+        "DESTINATION_ENDPOINT"
       ]
     },
     "RouterInputTypeList":{
@@ -8427,6 +10132,11 @@
           "shape":"FabricConfiguration",
           "documentation":"<p>The fabric configuration settings for the router output.</p>",
           "locationName":"fabricConfiguration"
+        },
+        "AssociatedSourceEndpointArns":{
+          "shape":"SourceEndpointArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of one or more source endpoints that are associated with this router output.</p>",
+          "locationName":"associatedSourceEndpointArns"
         }
       },
       "documentation":"<p>A router output in AWS Elemental MediaConnect. A router output is a destination for media content that can receive input from one or more router inputs.</p>"
@@ -8449,6 +10159,11 @@
         "MediaLiveInput":{
           "shape":"MediaLiveInputRouterOutputConfiguration",
           "locationName":"mediaLiveInput"
+        },
+        "SourceEndpoint":{
+          "shape":"SourceEndpointRouterOutputConfiguration",
+          "documentation":"<p>Configuration settings for a router output that is represented by a source endpoint.</p>",
+          "locationName":"sourceEndpoint"
         }
       },
       "documentation":"<p>The configuration settings for a router output.</p>",
@@ -8584,6 +10299,70 @@
       },
       "exception":true
     },
+    "RouterOutputSourceEndpointAssociatedResourceDetails":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "MaximumBitrate",
+        "State",
+        "Messages"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router output.</p>",
+          "locationName":"name"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The maximum bitrate of the router output, in bits per second.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "State":{
+          "shape":"RouterOutputState",
+          "documentation":"<p>The state of the router output.</p>",
+          "locationName":"state"
+        },
+        "Messages":{
+          "shape":"RouterOutputMessages",
+          "documentation":"<p>The status messages for the router output.</p>",
+          "locationName":"messages"
+        }
+      },
+      "documentation":"<p>The details of the router output that is associated with a source endpoint.</p>"
+    },
+    "RouterOutputSourceEndpointConfiguration":{
+      "type":"structure",
+      "required":["RouterOutputArn"],
+      "members":{
+        "RouterOutputArn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that the source endpoint represents.</p>",
+          "locationName":"routerOutputArn"
+        }
+      },
+      "documentation":"<p>The configuration settings for a source endpoint that represents a router output.</p>"
+    },
+    "RouterOutputSourceEndpointConnectionDetails":{
+      "type":"structure",
+      "members":{
+        "DestinationDecryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of decryption that the destination uses for the connection.</p>",
+          "locationName":"destinationDecryptionType"
+        },
+        "DestinationDecryptionConfiguration":{
+          "shape":"EndpointEncryptionConfiguration",
+          "locationName":"destinationDecryptionConfiguration"
+        },
+        "DestinationEndpointType":{
+          "shape":"DestinationEndpointType",
+          "documentation":"<p>The type of the connected destination endpoint.</p>",
+          "locationName":"destinationEndpointType"
+        }
+      },
+      "documentation":"<p>The connection details for a source endpoint that represents a router output.</p>"
+    },
     "RouterOutputState":{
       "type":"string",
       "enum":[
@@ -8613,6 +10392,11 @@
         "MediaLiveInput":{
           "shape":"MediaLiveInputRouterOutputStreamDetails",
           "locationName":"mediaLiveInput"
+        },
+        "SourceEndpoint":{
+          "shape":"SourceEndpointRouterOutputStreamDetails",
+          "documentation":"<p>Configuration details for a router output stream that is represented by a source endpoint.</p>",
+          "locationName":"sourceEndpoint"
         }
       },
       "documentation":"<p>Information about the router output's stream, including connection state and destination details. The specific details provided vary based on the router output type.</p>",
@@ -8633,7 +10417,8 @@
       "enum":[
         "STANDARD",
         "MEDIACONNECT_FLOW",
-        "MEDIALIVE_INPUT"
+        "MEDIALIVE_INPUT",
+        "SOURCE_ENDPOINT"
       ]
     },
     "RouterOutputTypeList":{
@@ -8748,6 +10533,64 @@
       "max":65531,
       "min":1024
     },
+    "RtpStandardDestinationEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationAddress",
+        "DestinationIngestPort",
+        "ForwardErrorCorrectionState"
+      ],
+      "members":{
+        "DestinationAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address on which the destination endpoint receives content.</p>",
+          "locationName":"destinationAddress"
+        },
+        "DestinationIngestPort":{
+          "shape":"RtpStandardDestinationEndpointConfigurationDestinationIngestPortInteger",
+          "documentation":"<p>The port on which the destination endpoint receives content. The valid range is 1024 to 65531.</p>",
+          "locationName":"destinationIngestPort"
+        },
+        "ForwardErrorCorrectionState":{
+          "shape":"ForwardErrorCorrectionState",
+          "documentation":"<p>Indicates whether forward error correction (FEC) is enabled for the destination endpoint.</p>",
+          "locationName":"forwardErrorCorrectionState"
+        }
+      },
+      "documentation":"<p>The configuration settings for a destination endpoint that uses the RTP protocol.</p>"
+    },
+    "RtpStandardDestinationEndpointConfigurationDestinationIngestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65531,
+      "min":1024
+    },
+    "RtpStandardSourceEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationIngestPort",
+        "ForwardErrorCorrectionState"
+      ],
+      "members":{
+        "DestinationIngestPort":{
+          "shape":"RtpStandardSourceEndpointConfigurationDestinationIngestPortInteger",
+          "documentation":"<p>The port on the destination that receives the content. The valid range is 3000 to 30000.</p>",
+          "locationName":"destinationIngestPort"
+        },
+        "ForwardErrorCorrectionState":{
+          "shape":"ForwardErrorCorrectionState",
+          "documentation":"<p>Indicates whether forward error correction (FEC) is enabled for the source endpoint.</p>",
+          "locationName":"forwardErrorCorrectionState"
+        }
+      },
+      "documentation":"<p>The configuration settings for a source endpoint that uses the RTP protocol.</p>"
+    },
+    "RtpStandardSourceEndpointConfigurationDestinationIngestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30000,
+      "min":3000
+    },
     "ScanMode":{
       "type":"string",
       "enum":[
@@ -8779,6 +10622,23 @@
         }
       },
       "documentation":"<p>The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.</p>"
+    },
+    "SecretsManagerEndpointEncryptionConfiguration":{
+      "type":"structure",
+      "required":["EncryptionSecret"],
+      "members":{
+        "EncryptionSecretType":{
+          "shape":"EndpointEncryptionSecretType",
+          "documentation":"<p>The type of secret used to encrypt the connection. Valid values include the following:</p> <ul> <li> <p> <code>AES_128_KEY</code> – A 128-bit AES encryption key.</p> </li> <li> <p> <code>AES_192_KEY</code> – A 192-bit AES encryption key.</p> </li> <li> <p> <code>AES_256_KEY</code> – A 256-bit AES encryption key.</p> </li> <li> <p> <code>SRT_PASSPHRASE</code> – An SRT passphrase.</p> </li> </ul>",
+          "locationName":"encryptionSecretType"
+        },
+        "EncryptionSecret":{
+          "shape":"EndpointEncryptionSecretConfiguration",
+          "documentation":"<p>The Secrets Manager secret that holds the key or passphrase used to encrypt the connection.</p>",
+          "locationName":"encryptionSecret"
+        }
+      },
+      "documentation":"<p>The endpoint encryption configuration for connections that use a key or passphrase that you store in Secrets Manager.</p>"
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -9082,6 +10942,350 @@
       },
       "documentation":"<p> The settings for the source of the flow.</p>"
     },
+    "SourceEndpoint":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "Description",
+        "RegionName",
+        "CreatedAt",
+        "UpdatedAt",
+        "LifecycleManagement",
+        "Messages",
+        "SourceType",
+        "Configuration",
+        "ResourceShareOwnership",
+        "ResourceShareDetails",
+        "RegistrationState",
+        "ConnectionState",
+        "ConnectedDestinations",
+        "AssociatedResourceDetails",
+        "Tags"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the source endpoint.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the source endpoint.</p>",
+          "locationName":"id"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the source endpoint.</p>",
+          "locationName":"description"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services Region in which the source endpoint is located.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone in which the source endpoint is located.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone in which the source endpoint is located.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the source endpoint was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the source endpoint was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "LifecycleManagement":{
+          "shape":"EndpointLifecycle",
+          "documentation":"<p>The entity that manages the lifecycle of the source endpoint.</p>",
+          "locationName":"lifecycleManagement"
+        },
+        "Messages":{
+          "shape":"SourceEndpointMessageList",
+          "documentation":"<p>The status messages for the source endpoint.</p>",
+          "locationName":"messages"
+        },
+        "SourceType":{
+          "shape":"SourceEndpointType",
+          "documentation":"<p>The type of the source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>STANDARD</code> – A source endpoint that represents an external source over a standard protocol, such as RTP, RIST, or SRT.</p> </li> <li> <p> <code>ROUTER_OUTPUT</code> – A source endpoint that represents a router output.</p> </li> </ul>",
+          "locationName":"sourceType"
+        },
+        "Configuration":{
+          "shape":"SourceEndpointConfiguration",
+          "documentation":"<p>The configuration settings for the source endpoint.</p>",
+          "locationName":"configuration"
+        },
+        "ResourceShareOwnership":{
+          "shape":"ResourceShareOwnership",
+          "documentation":"<p>Indicates whether this account owns the source endpoint or consumes it from another account through RAM.</p>",
+          "locationName":"resourceShareOwnership"
+        },
+        "ResourceShareDetails":{
+          "shape":"ResourceShareDetails",
+          "locationName":"resourceShareDetails"
+        },
+        "RegistrationState":{
+          "shape":"SourceEndpointRegistrationState",
+          "documentation":"<p>The registration state of the source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>REGISTERED</code> – The source endpoint is registered and ready to use.</p> </li> <li> <p> <code>REGISTERING</code> – MediaConnect is registering the source endpoint.</p> </li> <li> <p> <code>DEREGISTERING</code> – MediaConnect is deregistering the source endpoint.</p> </li> <li> <p> <code>REGISTRATION_FAILED</code> – MediaConnect couldn't register the source endpoint.</p> </li> </ul>",
+          "locationName":"registrationState"
+        },
+        "ConnectionState":{
+          "shape":"SourceEndpointConnectionState",
+          "documentation":"<p>The connection state of the source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>CONNECTED</code> – The source endpoint is connected to a destination endpoint.</p> </li> <li> <p> <code>DISCONNECTED</code> – The source endpoint isn't connected to a destination endpoint.</p> </li> <li> <p> <code>CONNECTING</code> – The source endpoint is connecting to a destination endpoint.</p> </li> <li> <p> <code>DISCONNECTING</code> – The source endpoint is disconnecting from a destination endpoint.</p> </li> </ul>",
+          "locationName":"connectionState"
+        },
+        "ConnectionDetails":{
+          "shape":"SourceEndpointConnectionDetails",
+          "documentation":"<p>The connection details for the source endpoint.</p>",
+          "locationName":"connectionDetails"
+        },
+        "ConnectedDestinations":{
+          "shape":"DestinationEndpointArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the destination endpoints that are connected to the source endpoint.</p>",
+          "locationName":"connectedDestinations"
+        },
+        "EncryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of encryption used for the source endpoint connection.</p>",
+          "locationName":"encryptionType"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EndpointEncryptionConfiguration",
+          "locationName":"encryptionConfiguration"
+        },
+        "AssociatedResourceDetails":{
+          "shape":"SourceEndpointAssociatedResourceDetails",
+          "documentation":"<p>The details of the resource that is associated with the source endpoint.</p>",
+          "locationName":"associatedResourceDetails"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>The tags associated with the source endpoint. Each tag is a key-value pair.</p>",
+          "locationName":"tags"
+        }
+      },
+      "documentation":"<p>The details of a source endpoint in MediaConnect, including its configuration, state, and connection details.</p>"
+    },
+    "SourceEndpointArn":{
+      "type":"string",
+      "max":128,
+      "min":64,
+      "pattern":"arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:sourceEndpoint:[a-z0-9]{12}"
+    },
+    "SourceEndpointArnList":{
+      "type":"list",
+      "member":{"shape":"SourceEndpointArn"}
+    },
+    "SourceEndpointAssociatedResourceDetails":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardSourceEndpointAssociatedResourceDetails",
+          "documentation":"<p>The associated resource details for a standard source endpoint.</p>",
+          "locationName":"standard"
+        },
+        "RouterOutput":{
+          "shape":"RouterOutputSourceEndpointAssociatedResourceDetails",
+          "documentation":"<p>The associated resource details for a source endpoint that represents a router output.</p>",
+          "locationName":"routerOutput"
+        }
+      },
+      "documentation":"<p>The details of the resource that is associated with a source endpoint. This is a union type, so exactly one of its members is set, depending on the type of the source endpoint.</p>",
+      "union":true
+    },
+    "SourceEndpointConfiguration":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardSourceEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a standard source endpoint, which represents an external source.</p>",
+          "locationName":"standard"
+        },
+        "RouterOutput":{
+          "shape":"RouterOutputSourceEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a source endpoint that represents a router output.</p>",
+          "locationName":"routerOutput"
+        }
+      },
+      "documentation":"<p>The configuration settings for a source endpoint. This is a union type, so exactly one of its members is set, depending on the type of the source endpoint.</p>",
+      "union":true
+    },
+    "SourceEndpointConnectionDetails":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardSourceEndpointConnectionDetails",
+          "documentation":"<p>The connection details for a standard source endpoint.</p>",
+          "locationName":"standard"
+        },
+        "RouterOutput":{
+          "shape":"RouterOutputSourceEndpointConnectionDetails",
+          "documentation":"<p>The connection details for a source endpoint that represents a router output.</p>",
+          "locationName":"routerOutput"
+        }
+      },
+      "documentation":"<p>The connection details for a source endpoint. After the source endpoint connects to a destination endpoint, MediaConnect populates these details to describe the connected destination and how the source delivers content to it. This is a union type, so exactly one of its members is set, depending on the source endpoint type.</p>",
+      "union":true
+    },
+    "SourceEndpointConnectionState":{
+      "type":"string",
+      "enum":[
+        "CONNECTED",
+        "DISCONNECTED",
+        "CONNECTING",
+        "DISCONNECTING"
+      ]
+    },
+    "SourceEndpointFilter":{
+      "type":"structure",
+      "members":{
+        "RegionNames":{
+          "shape":"StringList",
+          "documentation":"<p>Filters the results to source endpoints in the specified Amazon Web Services Regions.</p>",
+          "locationName":"regionNames"
+        },
+        "SourceTypes":{
+          "shape":"SourceEndpointTypeList",
+          "documentation":"<p>Filters the results to source endpoints of the specified types.</p>",
+          "locationName":"sourceTypes"
+        },
+        "NameContains":{
+          "shape":"StringList",
+          "documentation":"<p>Filters the results to source endpoints whose names contain the specified strings.</p>",
+          "locationName":"nameContains"
+        }
+      },
+      "documentation":"<p>A filter to apply when listing source endpoints. This is a union type, so exactly one of its members is set.</p>",
+      "union":true
+    },
+    "SourceEndpointFilterList":{
+      "type":"list",
+      "member":{"shape":"SourceEndpointFilter"}
+    },
+    "SourceEndpointList":{
+      "type":"list",
+      "member":{"shape":"SourceEndpoint"}
+    },
+    "SourceEndpointMessage":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The message code.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The message text.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>A status message for a source endpoint.</p>"
+    },
+    "SourceEndpointMessageList":{
+      "type":"list",
+      "member":{"shape":"SourceEndpointMessage"}
+    },
+    "SourceEndpointNetworkingType":{
+      "type":"string",
+      "enum":[
+        "PUBLIC",
+        "VPC"
+      ]
+    },
+    "SourceEndpointProtocol":{
+      "type":"string",
+      "enum":[
+        "RTP",
+        "RIST",
+        "SRT_CALLER",
+        "SRT_LISTENER"
+      ]
+    },
+    "SourceEndpointRegistrationState":{
+      "type":"string",
+      "enum":[
+        "REGISTERED",
+        "REGISTERING",
+        "DEREGISTERING",
+        "REGISTRATION_FAILED"
+      ]
+    },
+    "SourceEndpointRouterOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "EndpointLifecycleManagement",
+        "DestinationTransitEncryption"
+      ],
+      "members":{
+        "EndpointLifecycleManagement":{
+          "shape":"EndpointLifecycle",
+          "documentation":"<p>The entity that manages the lifecycle of the associated source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>MANAGED</code> – MediaConnect manages the lifecycle of the associated source endpoint.</p> </li> <li> <p> <code>UNMANAGED</code> – You manage the lifecycle of the associated source endpoint.</p> </li> </ul>",
+          "locationName":"endpointLifecycleManagement"
+        },
+        "DestinationTransitEncryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of transit encryption applied to the destination content that this router output sends. Valid values include the following:</p> <ul> <li> <p> <code>SECRETS_MANAGER</code> – The encryption key or passphrase is stored in Secrets Manager.</p> </li> <li> <p> <code>AUTOMATIC</code> – MediaConnect determines the encryption key when the endpoint connects.</p> </li> </ul>",
+          "locationName":"destinationTransitEncryptionType"
+        },
+        "DestinationTransitEncryption":{
+          "shape":"EndpointEncryptionConfiguration",
+          "locationName":"destinationTransitEncryption"
+        }
+      },
+      "documentation":"<p>Configuration settings for a router output that is represented by a source endpoint.</p>"
+    },
+    "SourceEndpointRouterOutputStreamDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration details for a router output stream that is represented by a source endpoint.</p>"
+    },
+    "SourceEndpointServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>The request would cause you to exceed a service quota for source endpoints. Delete unused source endpoints or request a quota increase, then try your request again.</p>",
+      "error":{
+        "httpStatusCode":420,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SourceEndpointType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "ROUTER_OUTPUT"
+      ]
+    },
+    "SourceEndpointTypeList":{
+      "type":"list",
+      "member":{"shape":"SourceEndpointType"}
+    },
     "SourcePriority":{
       "type":"structure",
       "members":{
@@ -9196,6 +11400,78 @@
       "max":10000,
       "min":10
     },
+    "SrtCallerStandardDestinationEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "SourceListenerPort",
+        "MinimumLatencyMilliseconds"
+      ],
+      "members":{
+        "SourceListenerPort":{
+          "shape":"SrtCallerStandardDestinationEndpointConfigurationSourceListenerPortInteger",
+          "documentation":"<p>The port on which the source listens for the connection. The valid range is 3000 to 30000.</p>",
+          "locationName":"sourceListenerPort"
+        },
+        "MinimumLatencyMilliseconds":{
+          "shape":"SrtCallerStandardDestinationEndpointConfigurationMinimumLatencyMillisecondsLong",
+          "documentation":"<p>The minimum latency, in milliseconds, for the SRT connection. The valid range is 10 to 10000.</p>",
+          "locationName":"minimumLatencyMilliseconds"
+        },
+        "EncryptionPassphrase":{
+          "shape":"EndpointEncryptionSecretConfiguration",
+          "locationName":"encryptionPassphrase"
+        }
+      },
+      "documentation":"<p>The configuration settings for a destination endpoint that uses SRT in caller mode.</p>"
+    },
+    "SrtCallerStandardDestinationEndpointConfigurationMinimumLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
+    "SrtCallerStandardDestinationEndpointConfigurationSourceListenerPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30000,
+      "min":3000
+    },
+    "SrtCallerStandardSourceEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationIngestPort",
+        "MinimumLatencyMilliseconds"
+      ],
+      "members":{
+        "DestinationIngestPort":{
+          "shape":"SrtCallerStandardSourceEndpointConfigurationDestinationIngestPortInteger",
+          "documentation":"<p>The port on which the destination listens for the connection. The valid range is 3000 to 30000.</p>",
+          "locationName":"destinationIngestPort"
+        },
+        "MinimumLatencyMilliseconds":{
+          "shape":"SrtCallerStandardSourceEndpointConfigurationMinimumLatencyMillisecondsLong",
+          "documentation":"<p>The minimum latency, in milliseconds, for the SRT connection. The valid range is 10 to 10000.</p>",
+          "locationName":"minimumLatencyMilliseconds"
+        },
+        "EncryptionPassphrase":{
+          "shape":"EndpointEncryptionSecretConfiguration",
+          "locationName":"encryptionPassphrase"
+        }
+      },
+      "documentation":"<p>The configuration settings for a source endpoint that uses SRT in caller mode.</p>"
+    },
+    "SrtCallerStandardSourceEndpointConfigurationDestinationIngestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30000,
+      "min":3000
+    },
+    "SrtCallerStandardSourceEndpointConfigurationMinimumLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
     "SrtDecryptionConfiguration":{
       "type":"structure",
       "required":["EncryptionKey"],
@@ -9294,6 +11570,221 @@
       "max":30000,
       "min":3000
     },
+    "SrtListenerStandardDestinationEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationAddress",
+        "DestinationIngestPort",
+        "MinimumLatencyMilliseconds"
+      ],
+      "members":{
+        "DestinationAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address on which the destination endpoint listens for incoming connections.</p>",
+          "locationName":"destinationAddress"
+        },
+        "DestinationIngestPort":{
+          "shape":"SrtListenerStandardDestinationEndpointConfigurationDestinationIngestPortInteger",
+          "documentation":"<p>The port on which the destination endpoint listens for incoming connections. The valid range is 0 to 65531.</p>",
+          "locationName":"destinationIngestPort"
+        },
+        "MinimumLatencyMilliseconds":{
+          "shape":"SrtListenerStandardDestinationEndpointConfigurationMinimumLatencyMillisecondsLong",
+          "documentation":"<p>The minimum latency, in milliseconds, for the SRT connection. The valid range is 10 to 10000.</p>",
+          "locationName":"minimumLatencyMilliseconds"
+        },
+        "StreamId":{
+          "shape":"String",
+          "documentation":"<p>The stream ID that identifies the content for the SRT connection.</p>",
+          "locationName":"streamId"
+        },
+        "EncryptionPassphrase":{
+          "shape":"EndpointEncryptionSecretConfiguration",
+          "locationName":"encryptionPassphrase"
+        }
+      },
+      "documentation":"<p>The configuration settings for a destination endpoint that uses SRT in listener mode.</p>"
+    },
+    "SrtListenerStandardDestinationEndpointConfigurationDestinationIngestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65531,
+      "min":0
+    },
+    "SrtListenerStandardDestinationEndpointConfigurationMinimumLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
+    "SrtListenerStandardSourceEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "SourceListenerPort",
+        "SourceAddress",
+        "MinimumLatencyMilliseconds"
+      ],
+      "members":{
+        "SourceListenerPort":{
+          "shape":"SrtListenerStandardSourceEndpointConfigurationSourceListenerPortInteger",
+          "documentation":"<p>The port that the source endpoint listens on for incoming connections. The valid range is 1024 to 65535.</p>",
+          "locationName":"sourceListenerPort"
+        },
+        "SourceAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address that the source endpoint listens on for incoming connections.</p>",
+          "locationName":"sourceAddress"
+        },
+        "MinimumLatencyMilliseconds":{
+          "shape":"SrtListenerStandardSourceEndpointConfigurationMinimumLatencyMillisecondsLong",
+          "documentation":"<p>The minimum latency, in milliseconds, for the SRT connection. The valid range is 10 to 10000.</p>",
+          "locationName":"minimumLatencyMilliseconds"
+        },
+        "StreamId":{
+          "shape":"String",
+          "documentation":"<p>The stream ID that identifies the content for the SRT connection.</p>",
+          "locationName":"streamId"
+        },
+        "EncryptionPassphrase":{
+          "shape":"EndpointEncryptionSecretConfiguration",
+          "locationName":"encryptionPassphrase"
+        }
+      },
+      "documentation":"<p>The configuration settings for a source endpoint that uses SRT in listener mode.</p>"
+    },
+    "SrtListenerStandardSourceEndpointConfigurationMinimumLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
+    "SrtListenerStandardSourceEndpointConfigurationSourceListenerPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1024
+    },
+    "StandardDestinationEndpointAssociatedResourceDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The associated resource details for a standard destination endpoint. This type does not require any additional settings.</p>"
+    },
+    "StandardDestinationEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "DestinationNetworkingConfiguration",
+        "ProtocolConfiguration"
+      ],
+      "members":{
+        "Name":{
+          "shape":"StandardDestinationEndpointConfigurationNameString",
+          "documentation":"<p>The name of the destination endpoint.</p>",
+          "locationName":"name"
+        },
+        "DestinationNetworkingConfiguration":{
+          "shape":"StandardDestinationEndpointNetworkingConfiguration",
+          "documentation":"<p>The networking configuration for the destination endpoint, which determines whether it is publicly accessible or in a virtual private cloud (VPC).</p>",
+          "locationName":"destinationNetworkingConfiguration"
+        },
+        "ProtocolConfiguration":{
+          "shape":"StandardDestinationEndpointProtocolConfiguration",
+          "documentation":"<p>The protocol configuration for the destination endpoint.</p>",
+          "locationName":"protocolConfiguration"
+        },
+        "DestinationNetworkingType":{
+          "shape":"DestinationEndpointNetworkingType",
+          "documentation":"<p>The networking type of the destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>PUBLIC</code> – The destination endpoint is publicly accessible.</p> </li> <li> <p> <code>VPC</code> – The destination endpoint is in a virtual private cloud (VPC).</p> </li> </ul>",
+          "locationName":"destinationNetworkingType"
+        },
+        "Protocol":{
+          "shape":"DestinationEndpointProtocol",
+          "documentation":"<p>The protocol used by the destination endpoint. Valid values include the following:</p> <ul> <li> <p> <code>RTP</code> – Real-time Transport Protocol.</p> </li> <li> <p> <code>RIST</code> – Reliable Internet Stream Transport.</p> </li> <li> <p> <code>SRT_CALLER</code> – Secure Reliable Transport (SRT) in caller mode.</p> </li> <li> <p> <code>SRT_LISTENER</code> – Secure Reliable Transport (SRT) in listener mode.</p> </li> </ul>",
+          "locationName":"protocol"
+        }
+      },
+      "documentation":"<p>The configuration settings for a standard destination endpoint.</p>"
+    },
+    "StandardDestinationEndpointConfigurationNameString":{
+      "type":"string",
+      "max":164,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9\\-_]*[a-zA-Z0-9])?"
+    },
+    "StandardDestinationEndpointConnectionDetails":{
+      "type":"structure",
+      "members":{
+        "SourceIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the source that is connected to the destination endpoint.</p>",
+          "locationName":"sourceIpAddress"
+        },
+        "SourceListenerPort":{
+          "shape":"Integer",
+          "documentation":"<p>The port on which the source listens for the connection.</p>",
+          "locationName":"sourceListenerPort"
+        },
+        "SourceEncryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of encryption that the source uses for the connection.</p>",
+          "locationName":"sourceEncryptionType"
+        },
+        "SourceEncryptionConfiguration":{
+          "shape":"EndpointEncryptionConfiguration",
+          "locationName":"sourceEncryptionConfiguration"
+        },
+        "SourceEndpointType":{
+          "shape":"SourceEndpointType",
+          "documentation":"<p>The type of the connected source endpoint.</p>",
+          "locationName":"sourceEndpointType"
+        }
+      },
+      "documentation":"<p>The connection details for a standard destination endpoint.</p>"
+    },
+    "StandardDestinationEndpointNetworkingConfiguration":{
+      "type":"structure",
+      "members":{
+        "Public":{
+          "shape":"PublicDestinationEndpointNetworkingConfiguration",
+          "documentation":"<p>The configuration for a publicly accessible destination endpoint.</p>",
+          "locationName":"public"
+        },
+        "Vpc":{
+          "shape":"VpcDestinationEndpointNetworkingConfiguration",
+          "documentation":"<p>The configuration for a destination endpoint in a virtual private cloud (VPC).</p>",
+          "locationName":"vpc"
+        }
+      },
+      "documentation":"<p>The networking configuration for a standard destination endpoint. This is a union type, so exactly one of its members is set: <code>public</code> for a publicly accessible endpoint, or <code>vpc</code> for an endpoint in a virtual private cloud (VPC).</p>",
+      "union":true
+    },
+    "StandardDestinationEndpointProtocolConfiguration":{
+      "type":"structure",
+      "members":{
+        "Rist":{
+          "shape":"RistStandardDestinationEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a destination endpoint that uses the RIST protocol.</p>",
+          "locationName":"rist"
+        },
+        "SrtListener":{
+          "shape":"SrtListenerStandardDestinationEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a destination endpoint that uses SRT in listener mode.</p>",
+          "locationName":"srtListener"
+        },
+        "SrtCaller":{
+          "shape":"SrtCallerStandardDestinationEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a destination endpoint that uses SRT in caller mode.</p>",
+          "locationName":"srtCaller"
+        },
+        "Rtp":{
+          "shape":"RtpStandardDestinationEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a destination endpoint that uses the RTP protocol.</p>",
+          "locationName":"rtp"
+        }
+      },
+      "documentation":"<p>The protocol configuration for a standard destination endpoint. This is a union type, so exactly one of its members is set, depending on the protocol that the destination endpoint uses.</p>",
+      "union":true
+    },
     "StandardRouterInputConfiguration":{
       "type":"structure",
       "required":[
@@ -9365,6 +11856,127 @@
         }
       },
       "documentation":"<p>Configuration details for a standard router output stream type. Contains information about the destination IP address and connection state for basic output routing.</p>"
+    },
+    "StandardSourceEndpointAssociatedResourceDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The associated resource details for a standard source endpoint. This type does not require any additional settings.</p>"
+    },
+    "StandardSourceEndpointConfiguration":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "SourceNetworkingConfiguration",
+        "ProtocolConfiguration"
+      ],
+      "members":{
+        "Name":{
+          "shape":"StandardSourceEndpointConfigurationNameString",
+          "documentation":"<p>The name of the source endpoint.</p>",
+          "locationName":"name"
+        },
+        "SourceNetworkingConfiguration":{
+          "shape":"StandardSourceEndpointNetworkingConfiguration",
+          "documentation":"<p>The networking configuration for the source endpoint, which determines whether it is publicly accessible or in a virtual private cloud (VPC).</p>",
+          "locationName":"sourceNetworkingConfiguration"
+        },
+        "ProtocolConfiguration":{
+          "shape":"StandardSourceEndpointProtocolConfiguration",
+          "documentation":"<p>The protocol configuration for the source endpoint.</p>",
+          "locationName":"protocolConfiguration"
+        },
+        "SourceNetworkingType":{
+          "shape":"SourceEndpointNetworkingType",
+          "documentation":"<p>The networking type of the source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>PUBLIC</code> – The source endpoint is publicly accessible.</p> </li> <li> <p> <code>VPC</code> – The source endpoint is in a virtual private cloud (VPC).</p> </li> </ul>",
+          "locationName":"sourceNetworkingType"
+        },
+        "Protocol":{
+          "shape":"SourceEndpointProtocol",
+          "documentation":"<p>The protocol used by the source endpoint. Valid values include the following:</p> <ul> <li> <p> <code>RTP</code> – Real-time Transport Protocol.</p> </li> <li> <p> <code>RIST</code> – Reliable Internet Stream Transport.</p> </li> <li> <p> <code>SRT_CALLER</code> – Secure Reliable Transport (SRT) in caller mode.</p> </li> <li> <p> <code>SRT_LISTENER</code> – Secure Reliable Transport (SRT) in listener mode.</p> </li> </ul>",
+          "locationName":"protocol"
+        }
+      },
+      "documentation":"<p>The configuration settings for a standard source endpoint.</p>"
+    },
+    "StandardSourceEndpointConfigurationNameString":{
+      "type":"string",
+      "max":164,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9\\-_]*[a-zA-Z0-9])?"
+    },
+    "StandardSourceEndpointConnectionDetails":{
+      "type":"structure",
+      "members":{
+        "DestinationIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the destination that receives the content.</p>",
+          "locationName":"destinationIpAddress"
+        },
+        "DestinationIngestPort":{
+          "shape":"Integer",
+          "documentation":"<p>The port on the destination that receives the content.</p>",
+          "locationName":"destinationIngestPort"
+        },
+        "DestinationDecryptionType":{
+          "shape":"EndpointEncryptionType",
+          "documentation":"<p>The type of decryption that the destination uses for the connection.</p>",
+          "locationName":"destinationDecryptionType"
+        },
+        "DestinationDecryptionConfiguration":{
+          "shape":"EndpointEncryptionConfiguration",
+          "locationName":"destinationDecryptionConfiguration"
+        },
+        "DestinationEndpointType":{
+          "shape":"DestinationEndpointType",
+          "documentation":"<p>The type of the connected destination endpoint.</p>",
+          "locationName":"destinationEndpointType"
+        }
+      },
+      "documentation":"<p>The connection details for a standard source endpoint.</p>"
+    },
+    "StandardSourceEndpointNetworkingConfiguration":{
+      "type":"structure",
+      "members":{
+        "Public":{
+          "shape":"PublicSourceEndpointNetworkingConfiguration",
+          "documentation":"<p>The configuration for a publicly accessible source endpoint.</p>",
+          "locationName":"public"
+        },
+        "Vpc":{
+          "shape":"VpcSourceEndpointNetworkingConfiguration",
+          "documentation":"<p>The configuration for a source endpoint in a virtual private cloud (VPC).</p>",
+          "locationName":"vpc"
+        }
+      },
+      "documentation":"<p>The networking configuration for a standard source endpoint. This is a union type, so exactly one of its members is set: <code>public</code> for a publicly accessible endpoint, or <code>vpc</code> for an endpoint in a virtual private cloud (VPC).</p>",
+      "union":true
+    },
+    "StandardSourceEndpointProtocolConfiguration":{
+      "type":"structure",
+      "members":{
+        "Rist":{
+          "shape":"RistStandardSourceEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a source endpoint that uses the RIST protocol.</p>",
+          "locationName":"rist"
+        },
+        "SrtListener":{
+          "shape":"SrtListenerStandardSourceEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a source endpoint that uses SRT in listener mode.</p>",
+          "locationName":"srtListener"
+        },
+        "SrtCaller":{
+          "shape":"SrtCallerStandardSourceEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a source endpoint that uses SRT in caller mode.</p>",
+          "locationName":"srtCaller"
+        },
+        "Rtp":{
+          "shape":"RtpStandardSourceEndpointConfiguration",
+          "documentation":"<p>The configuration settings for a source endpoint that uses the RTP protocol.</p>",
+          "locationName":"rtp"
+        }
+      },
+      "documentation":"<p>The protocol configuration for a standard source endpoint. This is a union type, so exactly one of its members is set, depending on the protocol that the source endpoint uses.</p>",
+      "union":true
     },
     "StartFlowRequest":{
       "type":"structure",
@@ -10331,6 +12943,45 @@
         }
       }
     },
+    "UpdateDestinationEndpointRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"DestinationEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination endpoint to update.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        },
+        "Description":{
+          "shape":"UpdateDestinationEndpointRequestDescriptionString",
+          "documentation":"<p>A description to help you identify the destination endpoint.</p>",
+          "locationName":"description"
+        },
+        "Configuration":{
+          "shape":"DestinationEndpointConfiguration",
+          "documentation":"<p>The updated configuration settings for the destination endpoint.</p>",
+          "locationName":"configuration"
+        }
+      }
+    },
+    "UpdateDestinationEndpointRequestDescriptionString":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+    },
+    "UpdateDestinationEndpointResponse":{
+      "type":"structure",
+      "required":["DestinationEndpoint"],
+      "members":{
+        "DestinationEndpoint":{
+          "shape":"DestinationEndpoint",
+          "documentation":"<p>The details of the updated destination endpoint.</p>",
+          "locationName":"destinationEndpoint"
+        }
+      }
+    },
     "UpdateEgressGatewayBridgeRequest":{
       "type":"structure",
       "members":{
@@ -11172,6 +13823,45 @@
         }
       }
     },
+    "UpdateSourceEndpointRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"SourceEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source endpoint to update.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        },
+        "Description":{
+          "shape":"UpdateSourceEndpointRequestDescriptionString",
+          "documentation":"<p>A description to help you identify the source endpoint.</p>",
+          "locationName":"description"
+        },
+        "Configuration":{
+          "shape":"SourceEndpointConfiguration",
+          "documentation":"<p>The updated configuration settings for the source endpoint.</p>",
+          "locationName":"configuration"
+        }
+      }
+    },
+    "UpdateSourceEndpointRequestDescriptionString":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+    },
+    "UpdateSourceEndpointResponse":{
+      "type":"structure",
+      "required":["SourceEndpoint"],
+      "members":{
+        "SourceEndpoint":{
+          "shape":"SourceEndpoint",
+          "documentation":"<p>The details of the updated source endpoint.</p>",
+          "locationName":"sourceEndpoint"
+        }
+      }
+    },
     "VideoColorimetry":{
       "type":"string",
       "enum":[
@@ -11242,6 +13932,32 @@
         "SMPTE428",
         "BT2100_HLG"
       ]
+    },
+    "VpcDestinationEndpointNetworkingConfiguration":{
+      "type":"structure",
+      "required":[
+        "SecurityGroupIds",
+        "SubnetId"
+      ],
+      "members":{
+        "SecurityGroupIds":{
+          "shape":"VpcDestinationEndpointNetworkingConfigurationSecurityGroupIdsList",
+          "documentation":"<p>The IDs of the security groups to associate with the destination endpoint. You can specify from 1 to 5 security groups.</p>",
+          "locationName":"securityGroupIds"
+        },
+        "SubnetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subnet to use for the destination endpoint.</p>",
+          "locationName":"subnetId"
+        }
+      },
+      "documentation":"<p>The networking configuration for a destination endpoint in a virtual private cloud (VPC).</p>"
+    },
+    "VpcDestinationEndpointNetworkingConfigurationSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
     },
     "VpcInterface":{
       "type":"structure",
@@ -11361,6 +14077,32 @@
       "documentation":"<p>The configuration settings for a router network interface within a VPC, including the security group IDs and subnet ID.</p>"
     },
     "VpcRouterNetworkInterfaceConfigurationSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
+    },
+    "VpcSourceEndpointNetworkingConfiguration":{
+      "type":"structure",
+      "required":[
+        "SecurityGroupIds",
+        "SubnetId"
+      ],
+      "members":{
+        "SecurityGroupIds":{
+          "shape":"VpcSourceEndpointNetworkingConfigurationSecurityGroupIdsList",
+          "documentation":"<p>The IDs of the security groups to associate with the source endpoint. You can specify from 1 to 5 security groups.</p>",
+          "locationName":"securityGroupIds"
+        },
+        "SubnetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subnet to use for the source endpoint.</p>",
+          "locationName":"subnetId"
+        }
+      },
+      "documentation":"<p>The networking configuration for a source endpoint in a virtual private cloud (VPC).</p>"
+    },
+    "VpcSourceEndpointNetworkingConfigurationSecurityGroupIdsList":{
       "type":"list",
       "member":{"shape":"String"},
       "max":5,

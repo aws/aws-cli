@@ -11123,6 +11123,18 @@
         "BandwidthReductionFilterSettings": {
           "shape": "BandwidthReductionFilterSettings",
           "locationName": "bandwidthReductionFilterSettings"
+        },
+        "AutoFilterSettings": {
+          "shape": "AutoFilterSettings",
+          "locationName": "autoFilterSettings"
+        },
+        "NoneFilterSettings": {
+          "shape": "NoneFilterSettings",
+          "locationName": "noneFilterSettings"
+        },
+        "PerceptualFilterSettings": {
+          "shape": "PerceptualFilterSettings",
+          "locationName": "perceptualFilterSettings"
         }
       },
       "documentation": "H264 Filter Settings"
@@ -11475,6 +11487,11 @@
           "shape": "__integerMin0",
           "locationName": "minBitrate",
           "documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output."
+        },
+        "AllowExplicitWeightedPrediction": {
+          "shape": "H264AllowExplicitWeightedPrediction",
+          "locationName": "allowExplicitWeightedPrediction",
+          "documentation": "Specifies whether the encoder may apply explicit weighted prediction (EWP), an H.264 coding tool that can improve compression. EWP applies a scaling factor and offset to reference frames, which helps when brightness changes between frames, such as during a fade. When this setting is enabled, the encoder decides whether to apply EWP based on the output's other codec settings, such as profile and quality level. We recommend that you keep the default, enabled. When disabled, the encoder never applies EWP."
         }
       },
       "documentation": "H264 Settings"
@@ -11588,6 +11605,18 @@
         "BandwidthReductionFilterSettings": {
           "shape": "BandwidthReductionFilterSettings",
           "locationName": "bandwidthReductionFilterSettings"
+        },
+        "AutoFilterSettings": {
+          "shape": "AutoFilterSettings",
+          "locationName": "autoFilterSettings"
+        },
+        "NoneFilterSettings": {
+          "shape": "NoneFilterSettings",
+          "locationName": "noneFilterSettings"
+        },
+        "PerceptualFilterSettings": {
+          "shape": "PerceptualFilterSettings",
+          "locationName": "perceptualFilterSettings"
         }
       },
       "documentation": "H265 Filter Settings"
@@ -20401,10 +20430,6 @@
       "type": "double",
       "documentation": "Placeholder documentation for __doubleMin1Max65535"
     },
-    "__doubleMin250Max5000": {
-      "type": "double",
-      "documentation": "Placeholder documentation for __doubleMin250Max5000"
-    },
     "__doubleMin32Max46": {
       "type": "double",
       "documentation": "Placeholder documentation for __doubleMin32Max46"
@@ -26245,6 +26270,11 @@
           "shape": "Av1BitDepth",
           "locationName": "bitDepth",
           "documentation": "Specifies the bit depth for the output encode. Choose a value. Or leave the field empty to use the default, which is 8 bit."
+        },
+        "FilterSettings": {
+          "shape": "Av1FilterSettings",
+          "locationName": "filterSettings",
+          "documentation": "Optional filters that you can apply to an encode."
         }
       },
       "documentation": "Av1 Settings",
@@ -30972,7 +31002,7 @@
       "type": "structure",
       "members": {
         "EmbeddingFrequency": {
-          "shape": "__doubleMin250Max5000",
+          "shape": "__double",
           "locationName": "embeddingFrequency",
           "documentation": "The frequency with which watermarks will be embedded, in milliseconds."
         },
@@ -31199,6 +31229,64 @@
         "shape": "OutputUsage"
       },
       "documentation": "Placeholder documentation for __listOfOutputUsage"
+    },
+    "AutoFilterSettings": {
+      "type": "structure",
+      "members": {},
+      "documentation": "System-managed filter selection. Resolves to the perceptual filter at strength 1 where the codec\nis eligible (AV1 and H.265 unconditionally; H.264 only at enhanced_quality), and to no filter\notherwise. An empty / undefined filter_settings_choice is treated as \"auto\".\n\nCarries no body (extends EmptySettings, which sets additionalProperties: false), mirroring the\nColorSpacePassthroughSettings empty-settings pattern."
+    },
+    "Av1FilterSettings": {
+      "type": "structure",
+      "members": {
+        "AutoFilterSettings": {
+          "shape": "AutoFilterSettings",
+          "locationName": "autoFilterSettings"
+        },
+        "NoneFilterSettings": {
+          "shape": "NoneFilterSettings",
+          "locationName": "noneFilterSettings"
+        },
+        "PerceptualFilterSettings": {
+          "shape": "PerceptualFilterSettings",
+          "locationName": "perceptualFilterSettings"
+        }
+      },
+      "documentation": "Av1 Filter Settings"
+    },
+    "H264AllowExplicitWeightedPrediction": {
+      "type": "string",
+      "documentation": "H264 Allow Explicit Weighted Prediction",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "NoneFilterSettings": {
+      "type": "structure",
+      "members": {},
+      "documentation": "Explicitly disables the video filter. This is the customer opt-out: a video description set to\n\"none\" never has a filter applied and is never overridden by the system-managed \"auto\" default.\n\nCarries no body (extends EmptySettings, which sets additionalProperties: false), mirroring the\nColorSpacePassthroughSettings empty-settings pattern."
+    },
+    "PerceptualFilterSettings": {
+      "type": "structure",
+      "members": {
+        "Strength": {
+          "shape": "PerceptualFilterStrength",
+          "locationName": "strength",
+          "documentation": "Selects the perceptual noise filter strength. Strength 1 (perceptual lite) is the recommended default and adds\napproximately 30% of an AVC encode of compute on the highest rendition. Strength 2 adds approximately 60% of an\nAVC encode of compute and can introduce slight softening on noisy content."
+        }
+      },
+      "documentation": "Perceptual Filter Settings",
+      "required": [
+        "Strength"
+      ]
+    },
+    "PerceptualFilterStrength": {
+      "type": "string",
+      "documentation": "Perceptual Filter Strength",
+      "enum": [
+        "STRENGTH_1",
+        "STRENGTH_2"
+      ]
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

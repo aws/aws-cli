@@ -19,7 +19,7 @@ from botocore import UNSIGNED, args, exceptions
 from botocore.args import ClientConfigString
 from botocore.client import ClientEndpointBridge
 from botocore.config import Config
-from botocore.configprovider import ConfigValueStore
+from botocore.configprovider import ConfigValueStore, ConstantProvider
 from botocore.credentials import Credentials
 from botocore.hooks import HierarchicalEmitter
 from botocore.model import ServiceModel
@@ -353,19 +353,17 @@ class TestCreateClientArgs(unittest.TestCase):
         )['client_config']
         self.assertEqual(config.retries['max_attempts'], 2)
 
-    def test_max_attempts_matches_config_store_if_retries_is_none(self):
+    def test_max_attempts_not_set_if_not_configured(self):
+        # Leaving max_attempts unset lets the retry handler apply its
+        # own (possibly service-specific) default.  Pin the provider so a
+        # max_attempts set in the environment or config file doesn't leak in.
+        self.config_store.set_config_provider(
+            'max_attempts', ConstantProvider(None)
+        )
         config = self.call_get_client_args(client_config=Config(retries=None))[
             'client_config'
         ]
-        self.assertEqual(
-            config.retries,
-            {
-                'max_attempts': self.config_store.get_config_variable(
-                    'max_attempts'
-                ),
-                'mode': 'standard',
-            },
-        )
+        self.assertEqual(config.retries, {'mode': 'standard'})
 
     def test_retry_mode_set_on_config_store(self):
         self.config_store.set_config_variable('retry_mode', 'standard')

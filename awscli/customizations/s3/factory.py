@@ -16,6 +16,7 @@ import sys
 import awscrt.s3
 from botocore.client import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
+from botocore.retries.standard import DEFAULT_MAX_ATTEMPTS
 from botocore.useragent import register_feature_id
 from s3transfer.crt import (
     BotocoreCRTCredentialsWrapper,
@@ -252,10 +253,10 @@ class TransferManagerFactory:
 
     def _resolve_max_attempts(self, runtime_config):
         config_store = self._session.get_component('config_store')
-        if config_store.is_explicitly_set('max_attempts') or (
-            self._should_use_transfer_config_defaults(runtime_config)
-        ):
+        if config_store.is_explicitly_set('max_attempts'):
             return self._session.get_config_variable('max_attempts')
+        if self._should_use_transfer_config_defaults(runtime_config):
+            return DEFAULT_MAX_ATTEMPTS
         return None
 
     def _get_classic_only_settings(self, runtime_config):

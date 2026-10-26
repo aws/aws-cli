@@ -124,11 +124,18 @@ class BaseRetryTest(BaseSessionTest):
         with self.assert_will_retry_n_times(client, 2):
             client.list_repositories()
 
-    def test_standard_mode_has_default_3_retries(self):
+    def test_standard_mode_has_default_3_attempts(self):
+        client = self.create_client_with_retry_config(
+            'codecommit', retry_mode='standard'
+        )
+        with self.assert_will_retry_n_times(client, 2):
+            client.list_repositories()
+
+    def test_standard_mode_dynamodb_has_default_4_attempts(self):
         client = self.create_client_with_retry_config(
             'dynamodb', retry_mode='standard'
         )
-        with self.assert_will_retry_n_times(client, 2):
+        with self.assert_will_retry_n_times(client, 3):
             client.list_tables()
 
     def test_standard_mode_can_configure_max_attempts(self):
@@ -152,7 +159,7 @@ class BaseRetryTest(BaseSessionTest):
         )
         error_body = {"__type": "ThrottlingException", "message": "Error"}
         with self.assert_will_retry_n_times(
-            client, 2, status=400, body=error_body
+            client, 3, status=400, body=error_body
         ):
             client.list_tables()
 
@@ -160,31 +167,77 @@ class BaseRetryTest(BaseSessionTest):
         client = self.create_client_with_retry_config(
             'dynamodb', retry_mode='standard'
         )
-        with self.assert_will_retry_n_times(client, 2, status=502):
+        with self.assert_will_retry_n_times(client, 3, status=502):
             client.list_tables()
+
+    def test_default_mode_retries_429_with_empty_body(self):
+        # A 429 with an empty body gets the error code "429", which
+        # matches neither the throttling list nor the model, so the
+        # status code is used.
+        client = self.session.create_client('codecommit', self.region)
+        with self.assert_will_retry_n_times(client, 2, status=429, body=b''):
+            client.list_repositories()
+
+    def test_standard_mode_retries_429_with_unknown_error_code(self):
+        client = self.create_client_with_retry_config(
+            'codecommit', retry_mode='standard'
+        )
+        error_body = {"__type": "NotAThrottlingError", "message": "Error"}
+        with self.assert_will_retry_n_times(
+            client, 2, status=429, body=error_body
+        ):
+            client.list_repositories()
+
+    def test_adaptive_mode_retries_429_with_empty_body(self):
+        client = self.create_client_with_retry_config(
+            'codecommit', retry_mode='adaptive'
+        )
+        with self.assert_will_retry_n_times(client, 2, status=429, body=b''):
+            client.list_repositories()
+
+    def test_standard_mode_does_not_retry_modeled_error_on_429(self):
+        # InvalidOrderException is modeled on ListRepositories without a
+        # retryable trait, so the model wins over the 429 status code.
+        client = self.create_client_with_retry_config(
+            'codecommit', retry_mode='standard'
+        )
+        error_body = {"__type": "InvalidOrderException", "message": "Error"}
+        with ClientHTTPStubber(client) as http_stubber:
+            http_stubber.add_response(
+                status=429, body=json.dumps(error_body).encode()
+            )
+            with self.assertRaises(ClientError):
+                client.list_repositories()
+            self.assertEqual(len(http_stubber.requests), 1)
 
     def test_can_exhaust_default_retry_quota(self):
         # Quota of 500 / 14 retry cost == 35 retry attempts (with 10 left).
-        # 35 retry attempts / 2 retries per API call == 17 client calls,
-        # which consumes 476 and leaves 24 in the quota.
+        # 35 retry attempts / 3 retries per API call == 11 client calls,
+        # which consumes 462 and leaves 38 in the quota.
         client = self.create_client_with_retry_config(
             'dynamodb', retry_mode='standard'
         )
-        for i in range(17):
-            with self.assert_will_retry_n_times(client, 2, status=502):
+        for i in range(11):
+            with self.assert_will_retry_n_times(client, 3, status=502):
                 client.list_tables()
-        # On the 18th call, the first retry consumes 14 of the remaining 24.
-        # The second retry needs 14 but only 10 is left, so we should see
-        # quota errors, which we can verify by looking at the request
-        # metadata.
+        # On the 12th call, the first two retries consume 28 of the
+        # remaining 38. The third retry needs 14 but only 10 is left, so
+        # we should see quota errors, which we can verify by looking at
+        # the request metadata.
         with ClientHTTPStubber(client) as http_stubber:
-            http_stubber.add_response(status=502, body=b'{}')
-            http_stubber.add_response(status=502, body=b'{}')
+            for _ in range(3):
+                http_stubber.add_response(status=502, body=b'{}')
             with self.assertRaises(ClientError) as e:
                 client.list_tables()
         self.assertTrue(
             e.exception.response['ResponseMetadata'].get('RetryQuotaReached')
         )
+
+    def test_user_agent_has_standard_mode_feature_id_by_default(self):
+        client = self.session.create_client('dynamodb', self.region)
+        feature_lists = self._get_feature_id_lists_from_retries(client)
+        # Confirm all requests register `'RETRY_MODE_STANDARD': 'E'`
+        assert all('E' in feature_list for feature_list in feature_lists)
 
     def test_user_agent_has_standard_mode_feature_id(self):
         client = self.create_client_with_retry_config(

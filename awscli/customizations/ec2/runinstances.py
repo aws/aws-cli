@@ -81,18 +81,20 @@ def _check_args(parsed_args, **kwargs):
     # raise an error.
     arg_dict = vars(parsed_args)
     if arg_dict['network_interfaces']:
+        msg = (
+            'Mixing the --network-interfaces option '
+            'with the simple, scalar options is '
+            'not supported.'
+        )
         for key in (
             'secondary_private_ip_addresses',
             'secondary_private_ip_address_count',
             'associate_public_ip_address',
         ):
             if arg_dict[key]:
-                msg = (
-                    'Mixing the --network-interfaces option '
-                    'with the simple, scalar options is '
-                    'not supported.'
-                )
                 raise ParamValidationError(msg)
+        if arg_dict['no_associate_public_ip_address'] is False:
+            raise ParamValidationError(msg)
 
 
 def _fix_args(params, **kwargs):

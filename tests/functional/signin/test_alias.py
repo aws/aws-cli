@@ -48,3 +48,19 @@ class TestSigninOAuth2Alias(BaseAWSCommandParamsTest):
         self.run_cmd(
             f'signin revoke-o-auth2-token-with-iam {args}', expected_rc=252
         )
+
+    def test_create_oauth2_token_with_token_exchange_rename(self):
+        args = (
+            '--grant-type client_credentials '
+            '--subject-token token '
+            '--subject-token-type subject_token_type '
+            '--resource r'
+        )
+        self.run_cmd(
+            f'signin create-oauth2-token-with-token-exchange {args}',
+            expected_rc=0,
+        )
+        self.run_cmd(
+            f'signin create-o-auth2-token-with-token-exchange {args}',
+            expected_rc=252,
+        )

@@ -33,6 +33,7 @@ def rename_signin_commands(command_table, **kwargs):
         'create-o-auth2-token-with-iam',
         'introspect-o-auth2-token-with-iam',
         'revoke-o-auth2-token-with-iam',
+        'create-o-auth2-token-with-token-exchange',
     ):
         new_name = old_name.replace('-o-auth2-', '-oauth2-')
         rename_command(command_table, old_name, new_name)

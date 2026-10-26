@@ -40,6 +40,25 @@ RETRYABLE_THROTTLED_RESPONSES = [
     (400, None, False),
     (500, None, False),
     (200, None, False),
+    # A 429 is only retryable via its status code, not its error code.
+    (429, None, False),
+    (429, 'NotAThrottlingError', False),
+]
+
+RETRYABLE_THROTTLING_STATUS_CODES = [
+    # StatusCode, ErrorCode, Retryable?
+    # "429" is the error code botocore assigns to a 429 with no parsed
+    # error code, e.g. an empty body.
+    (429, '429', True),
+    (429, None, True),
+    (429, 'NotAThrottlingError', True),
+    (429, 'ThrottlingException', True),
+    # Negative cases: the status code is all that matters here.
+    (400, 'Throttling', False),
+    (400, None, False),
+    (500, None, False),
+    (503, 'SlowDown', False),
+    (None, ConnectionError(error='unknown'), False),
 ]
 
 RETRYABLE_TRANSIENT_ERRORS = [
@@ -160,6 +179,44 @@ def test_can_detect_retryable_throttled_errors(case):
     _verify_retryable(throttled_checker, None, *case)
 
 
+@pytest.mark.parametrize('case', RETRYABLE_THROTTLING_STATUS_CODES)
+def test_can_detect_throttling_status_codes(case):
+    status_code_checker = standard.ThrottlingStatusCodeChecker()
+    _verify_retryable(status_code_checker, None, *case)
+
+
+@pytest.mark.parametrize(
+    'case',
+    [
+        # The 429 status code only applies to errors the model doesn't
+        # cover.  Any modeled error, retryable or not, is left to the
+        # modeled retry checker.
+        (429, 'NonRetryableError', False),
+        (429, 'ModeledRetryableError', False),
+        (429, 'ModeledThrottlingError', False),
+        (429, 'ErrorCodeRetryable', False),
+        (429, 'NotAModeledError', True),
+        (429, '429', True),
+        (429, None, True),
+    ],
+)
+def test_throttling_status_code_checker_skips_modeled_errors(case):
+    status_code_checker = standard.ThrottlingStatusCodeChecker()
+    _verify_retryable(
+        status_code_checker, get_operation_model_with_retries(), *case
+    )
+
+
+def test_throttling_status_code_checker_ignores_missing_response():
+    status_code_checker = standard.ThrottlingStatusCodeChecker()
+    context = standard.RetryContext(
+        attempt_number=1,
+        http_response=None,
+        caught_exception=ConnectionError(error='unknown'),
+    )
+    assert not status_code_checker.is_retryable(context)
+
+
 @pytest.mark.parametrize('case', RETRYABLE_MODELED_ERRORS)
 def test_can_detect_modeled_retryable_errors(case):
     modeled_retry_checker = standard.ModeledRetryableChecker()
@@ -174,6 +231,7 @@ def test_can_detect_modeled_retryable_errors(case):
         case
         for case in RETRYABLE_TRANSIENT_ERRORS
         + RETRYABLE_THROTTLED_RESPONSES
+        + RETRYABLE_THROTTLING_STATUS_CODES
         + RETRYABLE_MODELED_ERRORS
         if case[2]
     ],
@@ -186,6 +244,24 @@ def test_standard_retry_conditions(case):
     aren't retryable for a different checker.  We need to filter out all
     the False cases (if case[2]).
     """
+    standard_checker = standard.StandardRetryConditions()
+    op_model = get_operation_model_with_retries()
+    _verify_retryable(standard_checker, op_model, *case)
+
+
+@pytest.mark.parametrize(
+    'case',
+    [
+        # A modeled error without a retryable trait is not retried, even
+        # when the service returns it with a 429 status code.  The model
+        # takes precedence over the status code.
+        (429, 'NonRetryableError', False),
+        # A modeled error with a retryable trait is still retried.
+        (429, 'ModeledRetryableError', True),
+        (429, 'NotAModeledError', True),
+    ],
+)
+def test_standard_retry_conditions_with_model_on_429(case):
     standard_checker = standard.StandardRetryConditions()
     op_model = get_operation_model_with_retries()
     _verify_retryable(standard_checker, op_model, *case)
@@ -464,6 +540,22 @@ class TestExponentialBackoff(unittest.TestCase):
         for x in backoffs:
             self.assertTrue(0 <= x <= 0.2)
 
+    def test_bare_429_uses_throttling_base_scale(self):
+        backoff = standard.ExponentialBackoff(
+            random=self.random,
+            throttling_detector=standard.ThrottlingErrorDetector(
+                standard.RetryEventAdapter()
+            ),
+        )
+        http_response = AWSResponse(
+            status_code=429, raw=None, headers={}, url='https://foo/'
+        )
+        context = standard.RetryContext(
+            attempt_number=1, http_response=http_response, parsed_response={}
+        )
+        # Throttling scale is 1, non-throttling scale is 0.05.
+        self.assertEqual(backoff.delay_amount(context), 1)
+
     def test_uniform_rand_dist_on_max_attempts(self):
         backoff = standard.ExponentialBackoff()
         num_datapoints = 10_000
@@ -532,6 +624,15 @@ class TestRetryQuotaChecker(unittest.TestCase):
         self.assertTrue(
             self.quota_checker.acquire_retry_quota(
                 self.create_context(is_throttling_error=True)
+            )
+        )
+        self.assertEqual(self.request_context['retry_quota_capacity'], 5)
+
+    def test_can_acquire_quota_for_bare_429(self):
+        # A 429 with no throttling error code is still a throttling error.
+        self.assertTrue(
+            self.quota_checker.acquire_retry_quota(
+                self.create_context(status_code=429)
             )
         )
         self.assertEqual(self.request_context['retry_quota_capacity'], 5)
@@ -916,6 +1017,63 @@ class TestThrottlingErrorDetector(unittest.TestCase):
             {'Error': {'Code': 'ModeledThrottlingError'}},
         )
         kwargs['operation'] = get_operation_model_with_retries()
+        self.assertTrue(self.throttling_detector.is_throttling_error(**kwargs))
+
+    def create_429_kwargs(self, error_code, operation_model=None):
+        http_response = AWSResponse(
+            status_code=429, raw=None, headers={}, url='https://foo/'
+        )
+        parsed_response = {}
+        if error_code is not None:
+            parsed_response = {'Error': {'Code': error_code}}
+        return self.create_needs_retry_kwargs(
+            response=(http_response, parsed_response),
+            operation=operation_model,
+        )
+
+    def test_detects_429_without_error_code(self):
+        kwargs = self.create_429_kwargs(error_code=None)
+        self.assertTrue(self.throttling_detector.is_throttling_error(**kwargs))
+
+    def test_detects_429_with_unknown_error_code(self):
+        kwargs = self.create_429_kwargs(error_code='RandomError')
+        self.assertTrue(self.throttling_detector.is_throttling_error(**kwargs))
+
+    def test_detects_429_with_unknown_error_code_and_model(self):
+        # The error code matches none of the modeled errors, so the
+        # status code decides.
+        kwargs = self.create_429_kwargs(
+            error_code='RandomError',
+            operation_model=get_operation_model_with_retries(),
+        )
+        self.assertTrue(self.throttling_detector.is_throttling_error(**kwargs))
+
+    def test_modeled_error_without_retryable_trait_is_not_throttling(self):
+        # The model takes precedence over the 429 status code.
+        kwargs = self.create_429_kwargs(
+            error_code='NonRetryableError',
+            operation_model=get_operation_model_with_retries(),
+        )
+        self.assertFalse(
+            self.throttling_detector.is_throttling_error(**kwargs)
+        )
+
+    def test_modeled_retryable_trait_wins_over_429(self):
+        # The model says this is a non-throttling retryable error, which
+        # takes precedence over the 429 status code.
+        kwargs = self.create_429_kwargs(
+            error_code='ModeledRetryableError',
+            operation_model=get_operation_model_with_retries(),
+        )
+        self.assertFalse(
+            self.throttling_detector.is_throttling_error(**kwargs)
+        )
+
+    def test_modeled_throttling_trait_on_429(self):
+        kwargs = self.create_429_kwargs(
+            error_code='ModeledThrottlingError',
+            operation_model=get_operation_model_with_retries(),
+        )
         self.assertTrue(self.throttling_detector.is_throttling_error(**kwargs))
 
 

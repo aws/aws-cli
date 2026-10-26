@@ -1,5 +1,6 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
+import os
 import webbrowser
 from argparse import Namespace
 from unittest import mock
@@ -48,6 +49,7 @@ def mock_session():
     mock_session.available_profiles = ['profile-name']
     mock_session.get_config_variable.side_effect = config_variables
     mock_session.full_config = {'profiles': {'profile-name': {}}}
+    mock_session.get_scoped_config.return_value = {}
     mock_session._profile_map = {'profile-name': {}}
     mock_session.user_agent_extra = ''
     mock_session.emit_first_non_none_response.return_value = None
@@ -420,6 +422,38 @@ def test_no_sign_in_region_with_endpoint_override(
     global_args.endpoint_url = 'https://signin.example.com'
 
     mock_login_command._run_main(DEFAULT_ARGS, global_args)
+
+    saved_token = mock_token_loader.save_token.call_args[0][1]
+    assert 'signInRegion' not in saved_token
+
+
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+def test_no_sign_in_region_with_configured_endpoint(
+    mock_token_fetcher,
+    mock_base_sign_in_uri,
+    mock_login_command,
+    mock_token_loader,
+    mock_session,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+
+    # An endpoint set in the environment or config file redirects Sign-In
+    # just as --endpoint-url does, so the region isn't recorded either.
+    with mock.patch.dict(
+        os.environ, {'AWS_ENDPOINT_URL_SIGNIN': 'https://signin.example.com'}
+    ):
+        mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
 
     saved_token = mock_token_loader.save_token.call_args[0][1]
     assert 'signInRegion' not in saved_token

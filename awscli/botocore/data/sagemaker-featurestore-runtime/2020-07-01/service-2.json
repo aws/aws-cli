@@ -111,6 +111,23 @@
         {"shape":"AccessForbidden"}
       ],
       "documentation":"<p>The <code>PutRecord</code> API is used to ingest a list of <code>Records</code> into your feature group. </p> <p>If a new record’s <code>EventTime</code> is greater, the new record is written to both the <code>OnlineStore</code> and <code>OfflineStore</code>. Otherwise, the record is a historic record and it is written only to the <code>OfflineStore</code>. </p> <p>You can specify the ingestion to be applied to the <code>OnlineStore</code>, <code>OfflineStore</code>, or both by using the <code>TargetStores</code> request parameter. </p> <p>You can set the ingested record to expire at a given time to live (TTL) duration after the record’s event time, <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>, by specifying the <code>TtlDuration</code> parameter. A record level <code>TtlDuration</code> is set when specifying the <code>TtlDuration</code> parameter using the <code>PutRecord</code> API call. If the input <code>TtlDuration</code> is <code>null</code> or unspecified, <code>TtlDuration</code> is set to the default feature group level <code>TtlDuration</code>. A record level <code>TtlDuration</code> supersedes the group level <code>TtlDuration</code>.</p>"
+    },
+    "UpdateRecord":{
+      "name":"UpdateRecord",
+      "http":{
+        "method":"POST",
+        "requestUri":"/FeatureGroup/{FeatureGroupName}/Record"
+      },
+      "input":{"shape":"UpdateRecordRequest"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"InternalFailure"},
+        {"shape":"ServiceUnavailable"},
+        {"shape":"AccessForbidden"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates one or more feature values for an existing record in the specified feature group. Features that you do not include in the request remain unchanged. You can update up to 100 features per call.</p> <important> <p>This operation is available only for feature groups that use the <code>Standard_V2</code> or <code>InMemory</code> online store type.</p> </important> <p>The record must already exist. If the record does not exist or has been soft-deleted, the operation returns a <code>ResourceNotFound</code> error. To create a record, use <code>PutRecord</code>.</p> <p>If you provide an <code>EventTime</code> that is older than the record's current <code>EventTime</code>, the service rejects the update with a <code>ConflictException</code>. If the <code>EventTime</code> is equal to or newer than the current value, the service applies the update. If you omit <code>EventTime</code>, the service keeps the record's existing <code>EventTime</code> and applies the update.</p> <p>If you specify a <code>TtlDuration</code>, you must also provide an <code>EventTime</code> in the request. Otherwise, the operation returns a <code>ValidationError</code>.</p>"
     }
   },
   "shapes":{
@@ -345,6 +362,16 @@
       }
     },
     "Boolean":{"type":"boolean"},
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>The service rejected the update because the provided <code>EventTime</code> is older than the record's current <code>EventTime</code>. To persist the update, retrieve the record's latest <code>EventTime</code> and resubmit the request with an <code>EventTime</code> that is equal to or newer than the current value.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true,
+      "synthetic":true
+    },
     "DeleteRecordRequest":{
       "type":"structure",
       "required":[
@@ -661,6 +688,38 @@
       "type":"list",
       "member":{"shape":"BatchGetRecordIdentifier"},
       "min":0
+    },
+    "UpdateRecordRequest":{
+      "type":"structure",
+      "required":[
+        "FeatureGroupName",
+        "RecordIdentifierValueAsString",
+        "Features"
+      ],
+      "members":{
+        "FeatureGroupName":{
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The identifier for the feature group that contains the record to update. You can specify one of the following:</p> <ul> <li> <p>The feature group name.</p> </li> <li> <p>The feature group Amazon Resource Name (ARN).</p> </li> </ul>",
+          "location":"uri",
+          "locationName":"FeatureGroupName"
+        },
+        "RecordIdentifierValueAsString":{
+          "shape":"ValueAsString",
+          "documentation":"<p>The value that uniquely identifies the record in the feature group. This must match the value defined by the feature group's record identifier feature.</p>"
+        },
+        "Features":{
+          "shape":"Record",
+          "documentation":"<p>The feature values to write to the record.</p>"
+        },
+        "TargetStores":{
+          "shape":"TargetStores",
+          "documentation":"<p>The target stores for the record update. By default, Amazon SageMaker Feature Store updates the record in all stores associated with the <code>FeatureGroup</code>.</p>"
+        },
+        "TtlDuration":{
+          "shape":"TtlDuration",
+          "documentation":"<p>The time-to-live (TTL) duration for the record. Amazon SageMaker Feature Store deletes the record when <code>EventTime</code> + <code>TtlDuration</code> elapses. If you omit this parameter, the record's existing TTL setting remains unchanged. For information about <code>HardDelete</code>, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html\">DeleteRecord</a> operation in the Amazon SageMaker API Reference.</p>"
+        }
+      }
     },
     "ValidationError":{
       "type":"structure",

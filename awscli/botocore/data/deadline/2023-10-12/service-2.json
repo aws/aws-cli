@@ -1657,6 +1657,26 @@
       "endpoint":{"hostPrefix":"management."},
       "readonly":true
     },
+    "ListMemberships":{
+      "name":"ListMemberships",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/memberships",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMembershipsRequest"},
+      "output":{"shape":"ListMembershipsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the Deadline Cloud resource memberships associated with a specified IAM Identity Center principal, optionally filtered by the requested resource types.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
     "ListMeteredProducts":{
       "name":"ListMeteredProducts",
       "http":{
@@ -2252,7 +2272,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Updates a fleet.</p>",
+      "documentation":"<p>Updates a fleet.</p> <note> <p>Workers that are running when you call <code>UpdateFleet</code> keep the instance type and capabilities that they launched with until they scale in. Deadline Cloud can schedule jobs that you submit after the update on these existing workers, so the new configuration might not take effect immediately. To make sure that all workers use the new configuration, set <code>maxWorkerCount</code> to 0, use the <code>ListWorkers</code> operation to confirm that the fleet has no workers, and then restore <code>maxWorkerCount</code>.</p> </note>",
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
@@ -2741,6 +2761,10 @@
         "logConfiguration":{
           "shape":"LogConfiguration",
           "documentation":"<p>The log configuration for the worker's assigned session.</p>"
+        },
+        "metadata":{
+          "shape":"SessionMetadata",
+          "documentation":"<p>Key-value hints that the service provides to guide how the session runs. This value is used by the worker agent.</p>"
         }
       },
       "documentation":"<p>The assigned session for the worker.</p>"
@@ -4812,6 +4836,18 @@
         }
       }
     },
+    "BooleanString":{
+      "type":"string",
+      "max":5,
+      "min":1,
+      "pattern":"([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee]|[Yy][Ee][Ss]|[Nn][Oo]|[Oo][Nn]|[Oo][Ff][Ff]|[01])"
+    },
+    "BooleanStringList":{
+      "type":"list",
+      "member":{"shape":"BooleanString"},
+      "max":512,
+      "min":0
+    },
     "BoundedString":{
       "type":"string",
       "max":64,
@@ -5984,7 +6020,7 @@
           "documentation":"<p>The date and time.</p>"
         }
       },
-      "documentation":"<p>The time stamp in date-time format.</p>"
+      "documentation":"<p>The timestamp in date-time format.</p>"
     },
     "DefaultQueueBudgetAction":{
       "type":"string",
@@ -6629,6 +6665,14 @@
         "template":{
           "shape":"Document",
           "documentation":"<p>The template used for the environment.</p>"
+        },
+        "extensions":{
+          "shape":"OpenjdExtensionNameList",
+          "documentation":"<p>The Open Job Description extensions that the environment uses. This value is used by the worker agent.</p>"
+        },
+        "resolvedSymbolTable":{
+          "shape":"SerializedSymbolTable",
+          "documentation":"<p>The resolved symbol table for the environment's expressions, serialized as JSON. This value is used by the worker agent.</p>"
         }
       },
       "documentation":"<p>The details of a specified environment.</p>"
@@ -7039,6 +7083,27 @@
       "type":"list",
       "member":{"shape":"FleetMember"}
     },
+    "FleetSoftwareAddOn":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"FleetSoftwareAddOnName",
+          "documentation":"<p>The name of the software add-on. The supported value is <code>docker</code>.</p>"
+        }
+      },
+      "documentation":"<p>Software that the service installs on worker hosts in a service-managed fleet.</p>"
+    },
+    "FleetSoftwareAddOnName":{
+      "type":"string",
+      "enum":["docker"]
+    },
+    "FleetSoftwareAddOns":{
+      "type":"list",
+      "member":{"shape":"FleetSoftwareAddOn"},
+      "max":10,
+      "min":0
+    },
     "FleetStatus":{
       "type":"string",
       "enum":[
@@ -7141,6 +7206,12 @@
       "max":26,
       "min":1,
       "pattern":"[-]?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?"
+    },
+    "FloatStringList":{
+      "type":"list",
+      "member":{"shape":"FloatString"},
+      "max":512,
+      "min":0
     },
     "GetBudgetRequest":{
       "type":"structure",
@@ -9012,6 +9083,18 @@
       "min":1,
       "pattern":"[-]?(0|[1-9][0-9]*)"
     },
+    "IntStringList":{
+      "type":"list",
+      "member":{"shape":"IntString"},
+      "max":512,
+      "min":0
+    },
+    "IntStringListList":{
+      "type":"list",
+      "member":{"shape":"NestedIntStringList"},
+      "max":512,
+      "min":0
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -9188,6 +9271,10 @@
         "schemaVersion":{
           "shape":"String",
           "documentation":"<p>The schema version.</p>"
+        },
+        "extensions":{
+          "shape":"OpenjdExtensionNameList",
+          "documentation":"<p>The Open Job Description extensions that the job template uses. This value is used by the worker agent.</p>"
         },
         "pathMappingRules":{
           "shape":"PathMappingRules",
@@ -9378,7 +9465,7 @@
     },
     "JobName":{
       "type":"string",
-      "max":128,
+      "max":512,
       "min":1
     },
     "JobParameter":{
@@ -9399,6 +9486,38 @@
         "path":{
           "shape":"PathString",
           "documentation":"<p>A file system path represented as a string.</p>"
+        },
+        "bool":{
+          "shape":"BooleanString",
+          "documentation":"<p>A boolean value represented as a string. Accepted values are <code>true</code>, <code>false</code>, <code>yes</code>, <code>no</code>, <code>on</code>, <code>off</code>, <code>1</code>, and <code>0</code>, case-insensitive.</p>"
+        },
+        "rangeExpr":{
+          "shape":"RangeExprString",
+          "documentation":"<p>An Open Job Description range expression represented as a string, such as <code>1-10:2</code>.</p>"
+        },
+        "stringList":{
+          "shape":"ParameterStringList",
+          "documentation":"<p>A list of UTF-8 strings.</p>"
+        },
+        "pathList":{
+          "shape":"PathStringList",
+          "documentation":"<p>A list of file system paths, each represented as a string.</p>"
+        },
+        "intList":{
+          "shape":"IntStringList",
+          "documentation":"<p>A list of signed integers, each represented as a string.</p>"
+        },
+        "floatList":{
+          "shape":"FloatStringList",
+          "documentation":"<p>A list of double precision IEEE-754 floating point numbers, each represented as a string.</p>"
+        },
+        "boolList":{
+          "shape":"BooleanStringList",
+          "documentation":"<p>A list of boolean values, each represented as a string.</p>"
+        },
+        "intListList":{
+          "shape":"IntStringListList",
+          "documentation":"<p>A list of lists of signed integers, each represented as a string.</p>"
         }
       },
       "documentation":"<p>The details of job parameters.</p>",
@@ -9417,6 +9536,8 @@
       "type":"map",
       "key":{"shape":"JobParametersKeyString"},
       "value":{"shape":"JobParameter"},
+      "max":200,
+      "min":0,
       "sensitive":true
     },
     "JobParametersKeyString":{
@@ -10271,6 +10392,64 @@
         "limits":{
           "shape":"LimitSummaries",
           "documentation":"<p>A list of limits that the farm contains.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
+        }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
+    },
+    "ListMembershipsRequest":{
+      "type":"structure",
+      "required":["principalId"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The ID of the IAM Identity Center principal whose Deadline Cloud resource memberships you want to list.</p>",
+          "location":"querystring",
+          "locationName":"principalId"
+        },
+        "identityStoreId":{
+          "shape":"IdentityStoreId",
+          "documentation":"<p>The identity store ID that contains the principal. This parameter is required for callers that do not use a monitor session.</p>",
+          "location":"querystring",
+          "locationName":"identityStoreId"
+        },
+        "identityCenterRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the IAM Identity Center instance. If not provided, the service defaults to the Amazon Web Services Region in which you make the request.</p>",
+          "location":"querystring",
+          "locationName":"identityCenterRegion"
+        },
+        "resourceTypes":{
+          "shape":"MembershipResourceTypes",
+          "documentation":"<p>The resource types to include when listing the principal's memberships. If not specified, memberships for all supported resource types are returned.</p>",
+          "location":"querystring",
+          "locationName":"resourceTypes"
+        }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
+    },
+    "ListMembershipsResponse":{
+      "type":"structure",
+      "required":["memberships"],
+      "members":{
+        "memberships":{
+          "shape":"MembershipSummaries",
+          "documentation":"<p>The memberships associated with the specified principal.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -11398,6 +11577,50 @@
         "MANAGER"
       ]
     },
+    "MembershipResourceType":{
+      "type":"string",
+      "enum":[
+        "FARM",
+        "QUEUE",
+        "FLEET",
+        "JOB"
+      ]
+    },
+    "MembershipResourceTypes":{
+      "type":"list",
+      "member":{"shape":"MembershipResourceType"},
+      "documentation":"<p>The list of resource types to include when listing a principal's memberships.</p>",
+      "max":4,
+      "min":1
+    },
+    "MembershipSummaries":{
+      "type":"list",
+      "member":{"shape":"MembershipSummary"},
+      "documentation":"<p>The list of membership records for the principal.</p>"
+    },
+    "MembershipSummary":{
+      "type":"structure",
+      "members":{
+        "farm":{
+          "shape":"FarmMember",
+          "documentation":"<p>A membership on a farm.</p>"
+        },
+        "queue":{
+          "shape":"QueueMember",
+          "documentation":"<p>A membership on a queue.</p>"
+        },
+        "fleet":{
+          "shape":"FleetMember",
+          "documentation":"<p>A membership on a fleet.</p>"
+        },
+        "job":{
+          "shape":"JobMember",
+          "documentation":"<p>A membership on a job.</p>"
+        }
+      },
+      "documentation":"<p>A membership record for a principal on a single Deadline Cloud resource. The summary identifies the resource that the principal is a member of and the principal's membership level for that resource.</p>",
+      "union":true
+    },
     "MemoryAmountMiB":{
       "type":"integer",
       "box":true,
@@ -11551,6 +11774,12 @@
       "max":255,
       "min":1
     },
+    "NestedIntStringList":{
+      "type":"list",
+      "member":{"shape":"IntString"},
+      "max":64,
+      "min":0
+    },
     "NextItemOffset":{
       "type":"integer",
       "box":true,
@@ -11560,6 +11789,18 @@
     "NextToken":{
       "type":"string",
       "max":4096,
+      "min":0
+    },
+    "OpenjdExtensionName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Z][A-Z0-9_]*"
+    },
+    "OpenjdExtensionNameList":{
+      "type":"list",
+      "member":{"shape":"OpenjdExtensionName"},
+      "max":32,
       "min":0
     },
     "OutputRelativeDirectoriesList":{
@@ -11634,6 +11875,12 @@
       "max":1024,
       "min":0
     },
+    "ParameterStringList":{
+      "type":"list",
+      "member":{"shape":"ParameterString"},
+      "max":64,
+      "min":0
+    },
     "ParameterValue":{
       "type":"string",
       "max":256,
@@ -11677,6 +11924,12 @@
     "PathString":{
       "type":"string",
       "max":1024,
+      "min":0
+    },
+    "PathStringList":{
+      "type":"list",
+      "member":{"shape":"PathString"},
+      "max":64,
       "min":0
     },
     "Period":{
@@ -12099,6 +12352,11 @@
         "CONTIGUOUS",
         "NONCONTIGUOUS"
       ]
+    },
+    "RangeExprString":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "Region":{
       "type":"string",
@@ -12732,6 +12990,11 @@
       "type":"string",
       "pattern":"sg-[\\w]{1,120}"
     },
+    "SerializedSymbolTable":{
+      "type":"string",
+      "max":1000000,
+      "min":1
+    },
     "ServiceManagedEc2AutoScalingConfiguration":{
       "type":"structure",
       "members":{
@@ -12832,6 +13095,10 @@
         "customAttributes":{
           "shape":"CustomFleetAttributeCapabilities",
           "documentation":"<p>The custom capability attributes to require for instances in this fleet.</p>"
+        },
+        "softwareAddOns":{
+          "shape":"FleetSoftwareAddOns",
+          "documentation":"<p>The software add-ons that the service installs on worker hosts when they launch.</p>"
         }
       },
       "documentation":"<p>The Amazon EC2 instance capabilities.</p>"
@@ -13061,6 +13328,23 @@
       "type":"string",
       "enum":["ENDED"]
     },
+    "SessionMetadata":{
+      "type":"map",
+      "key":{"shape":"SessionMetadataKey"},
+      "value":{"shape":"SessionMetadataValue"},
+      "max":10,
+      "min":0
+    },
+    "SessionMetadataKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SessionMetadataValue":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "SessionSummaries":{
       "type":"list",
       "member":{"shape":"SessionSummary"}
@@ -13210,7 +13494,7 @@
         },
         "timezone":{
           "shape":"Timezone",
-          "documentation":"<p>The timezone to use for the statistics. Use UTC notation such as \"UTC+8.\"</p>"
+          "documentation":"<p>The time zone to use for the statistics. Use UTC notation such as \"UTC+8.\"</p>"
         },
         "period":{
           "shape":"Period",
@@ -13471,6 +13755,14 @@
         "dependencies":{
           "shape":"DependenciesList",
           "documentation":"<p>The dependencies for a step.</p>"
+        },
+        "extensions":{
+          "shape":"OpenjdExtensionNameList",
+          "documentation":"<p>The Open Job Description extensions that the step uses. This value is used by the worker agent.</p>"
+        },
+        "resolvedSymbolTable":{
+          "shape":"SerializedSymbolTable",
+          "documentation":"<p>The resolved symbol table for the step's expressions, serialized as JSON. This value is used by the worker agent.</p>"
         }
       },
       "documentation":"<p>The details of a step entity.</p>"
@@ -13536,7 +13828,7 @@
     },
     "StepName":{
       "type":"string",
-      "max":64,
+      "max":512,
       "min":1
     },
     "StepParameter":{
@@ -13589,7 +13881,7 @@
     },
     "StepParameterName":{
       "type":"string",
-      "max":64,
+      "max":512,
       "min":1
     },
     "StepParameterType":{

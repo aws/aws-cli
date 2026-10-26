@@ -319,6 +319,22 @@
       ],
       "documentation":"<p>Describes the current Amazon EC2 Auto Scaling resource quotas for your account.</p> <p>When you establish an Amazon Web Services account, the account has initial quotas on the maximum number of Auto Scaling groups and launch configurations that you can create in a given Region. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-quotas.html\">Quotas for Amazon EC2 Auto Scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
     },
+    "DescribeAccountSettings":{
+      "name":"DescribeAccountSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAccountSettingsType"},
+      "output":{
+        "shape":"DescribeAccountSettingsAnswer",
+        "resultWrapper":"DescribeAccountSettingsResult"
+      },
+      "errors":[
+        {"shape":"InvalidNextToken"}
+      ],
+      "documentation":"<p> Describes the current Amazon EC2 Auto Scaling account settings for your account. Account settings are a framework that allows you to enable or disable features for your account. The framework also gives you visibility into features that will be enforced by a given date, providing a time window to prepare for backwards-incompatible changes. </p>"
+    },
     "DescribeAdjustmentTypes":{
       "name":"DescribeAdjustmentTypes",
       "http":{
@@ -815,6 +831,19 @@
       ],
       "documentation":"<p> Launches a specified number of instances in an Auto Scaling group. Returns instance IDs and other details if launch is successful or error details if launch is unsuccessful. </p>"
     },
+    "PutAccountSetting":{
+      "name":"PutAccountSetting",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAccountSettingType"},
+      "output":{
+        "shape":"PutAccountSettingAnswer",
+        "resultWrapper":"PutAccountSettingResult"
+      },
+      "documentation":"<p> Modifies an account setting for your account. You can use this operation to opt in or opt out of features provided through account settings when permitted. Account settings give you control over features that might have backwards-incompatible changes. When Amazon EC2 Auto Scaling introduces such changes, account settings allow you to test and adopt new features. Some account settings are enforced after a specified date. This means that after the enforcement date, you can no longer modify the setting. </p>"
+    },
     "PutLifecycleHook":{
       "name":"PutLifecycleHook",
       "http":{
@@ -1118,6 +1147,40 @@
     "AcceleratorTypes":{
       "type":"list",
       "member":{"shape":"AcceleratorType"}
+    },
+    "AccountSetting":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"AsciiStringMaxLen255",
+          "documentation":"<p> The name of the account setting. Each account setting has a unique name that identifies the specific feature it controls. </p>"
+        },
+        "Value":{
+          "shape":"AsciiStringMaxLen255",
+          "documentation":"<p> The current value of the account setting. </p>"
+        },
+        "EnforcementType":{
+          "shape":"AsciiStringMaxLen255",
+          "documentation":"<p> The type of enforcement for the account setting. Valid values include: <code>hard</code> (the setting has a hard enforcement date after which the setting will be enforced and cannot be modified), <code>flexible</code> (the setting has a flexible enforcement where you can always modify the setting value), and <code>none</code> (the setting has no enforcement and can always be modified). </p>"
+        },
+        "EnforcementDate":{
+          "shape":"TimestampType",
+          "documentation":"<p> The date when the account setting will be enforced. After this date, for settings with hard enforcement type, you can no longer modify the setting value. This parameter is only returned for settings with hard or flexible enforcement types. </p>"
+        },
+        "DefaultValue":{
+          "shape":"AsciiStringMaxLen255",
+          "documentation":"<p> The default value of the account setting before the enforcement date. Valid values are enabled and disabled. This parameter is only returned for settings with hard or flexible enforcement types. </p>"
+        },
+        "EnforcedValue":{
+          "shape":"AsciiStringMaxLen255",
+          "documentation":"<p> The value that will be enforced after the enforcement date. Valid values are enabled and disabled. This parameter is only returned for settings with hard or flexible enforcement types. </p>"
+        }
+      },
+      "documentation":"<p> Describes an account setting for Amazon EC2 Auto Scaling. Account settings control how certain features behave for your account. Some settings can be enforced after a specified date, meaning that after the enforcement date, you can no longer modify the setting. </p>"
+    },
+    "AccountSettings":{
+      "type":"list",
+      "member":{"shape":"AccountSetting"}
     },
     "ActiveInstanceRefreshNotFoundFault":{
       "type":"structure",
@@ -2500,6 +2563,36 @@
         "NumberOfLaunchConfigurations":{
           "shape":"NumberOfLaunchConfigurations",
           "documentation":"<p>The current number of launch configurations for your account.</p>"
+        }
+      }
+    },
+    "DescribeAccountSettingsAnswer":{
+      "type":"structure",
+      "members":{
+        "Settings":{
+          "shape":"AccountSettings",
+          "documentation":"<p> Information about the account settings. </p>"
+        },
+        "NextToken":{
+          "shape":"XmlString",
+          "documentation":"<p> A string that indicates that the response contains more items than can be returned in a single response. To receive additional items, specify this string for the <code>NextToken</code> value when requesting the next set of items. This value is <code>null</code> when there are no more items to return. </p>"
+        }
+      }
+    },
+    "DescribeAccountSettingsType":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"AsciiStringMaxLen255",
+          "documentation":"<p> The name of the account setting to describe. If you omit this parameter, all account settings are described. </p>"
+        },
+        "NextToken":{
+          "shape":"XmlString",
+          "documentation":"<p> The token for the next set of items to return. (You received this token from a previous call.) </p>"
+        },
+        "MaxRecords":{
+          "shape":"MaxRecords",
+          "documentation":"<p> The maximum number of items to return with this call. The default value is <code>50</code> and the maximum value is <code>100</code>. </p>"
         }
       }
     },
@@ -5008,6 +5101,27 @@
     "Progress":{"type":"integer"},
     "PropagateAtLaunch":{"type":"boolean"},
     "ProtectedFromScaleIn":{"type":"boolean"},
+    "PutAccountSettingAnswer":{
+      "type":"structure",
+      "members":{}
+    },
+    "PutAccountSettingType":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"AsciiStringMaxLen255",
+          "documentation":"<p> The name of the account setting to modify. Each account setting has a unique name that identifies the specific feature it controls. </p>"
+        },
+        "Value":{
+          "shape":"AsciiStringMaxLen255",
+          "documentation":"<p> The value for the account setting. </p>"
+        }
+      }
+    },
     "PutLifecycleHookAnswer":{
       "type":"structure",
       "members":{}

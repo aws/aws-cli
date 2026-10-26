@@ -251,14 +251,14 @@ class DetectedAgent:
     def _read_mcp_config(path):
         if not os.path.exists(path):
             return {}
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             return json.load(f)
 
     @staticmethod
     def _write_mcp_config(path, config):
         os.makedirs(os.path.dirname(path), exist_ok=True)
         is_new = not os.path.exists(path)
-        with open(path, 'w') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2)
             f.write('\n')
         # If we created the MCP config file, set permissions to 600, otherwise
@@ -322,6 +322,20 @@ AGENT_CONFIGS = [
         display_name='Cursor',
         detection_path='~/.cursor/',
         mcp_config_path='mcp.json',
+        mcp_servers_key='mcpServers',
+    ),
+    # https://docs.devin.ai/cli/extensibility/mcp/configuration
+    # https://docs.devin.ai/cli/extensibility/skills/overview
+    # Covers Devin CLI and the Devin Local agent in Devin Desktop, which
+    # share ~/.config/devin/.
+    # Windows (%APPDATA%\devin) and a non-default $XDG_CONFIG_HOME are not
+    # detected.
+    AgentConfig(
+        id='devin',
+        display_name='Devin',
+        detection_path='~/.config/devin/',
+        skills_path_override='~/.agents/skills/',
+        mcp_config_path='mcp_config.json',
         mcp_servers_key='mcpServers',
     ),
     # https://geminicli.com/docs/cli/tutorials/mcp-setup/
@@ -419,3 +433,11 @@ def get_detected_agents(agent_configs=None):
         if agent is not None:
             detected.append(agent)
     return detected
+
+
+def get_detected_real_agents(agent_configs=None):
+    return [
+        agent
+        for agent in get_detected_agents(agent_configs)
+        if agent.config.id != UNIVERSAL_ROW_ID
+    ]

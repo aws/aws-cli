@@ -7723,6 +7723,13 @@
       "max":128,
       "min":4
     },
+    "S3AnnotationDirective":{
+      "type":"string",
+      "enum":[
+        "COPY",
+        "EXCLUDE"
+      ]
+    },
     "S3BucketArnString":{
       "type":"string",
       "max":128,
@@ -7831,6 +7838,10 @@
           "shape":"S3MetadataDirective",
           "documentation":"<p/>"
         },
+        "AnnotationDirective":{
+          "shape":"S3AnnotationDirective",
+          "documentation":"<p>Specifies whether the Batch Operations copy job copies object annotations from the source object or skips them. If this property isn't specified, <code>COPY</code> is the default behavior.</p> <p>Valid Values: <code>COPY | EXCLUDE</code> </p> <note> <p>This functionality is not supported by directory buckets.</p> </note>"
+        },
         "ModifiedSinceConstraint":{
           "shape":"TimeStamp",
           "documentation":"<p/>"
@@ -7886,6 +7897,14 @@
         "ChecksumAlgorithm":{
           "shape":"S3ChecksumAlgorithm",
           "documentation":"<p>Indicates the algorithm that you want Amazon S3 to use to create the checksum. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ObjectLockEventHold":{
+          "shape":"S3ObjectLockEventHold",
+          "documentation":"<p>The event hold status to be applied to all objects in the Batch Operations copy job. Set to <code>ON</code> to enable an event hold or <code>OFF</code> to disable it.</p> <note> <p>This functionality is not supported by directory buckets.</p> </note>"
+        },
+        "ObjectLockEventHoldDuration":{
+          "shape":"S3ObjectLockEventHoldDuration",
+          "documentation":"<p>The event hold duration to be applied to all objects in the Batch Operations copy job. The duration specifies how long the object remains protected after the event hold is released.</p> <note> <p>This functionality is not supported by directory buckets.</p> </note>"
         }
       },
       "documentation":"<p>Contains the configuration parameters for a PUT Copy object operation. S3 Batch Operations passes every object to the underlying <code>CopyObject</code> API operation. For more information about the parameters for this operation, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectCOPY.html\">CopyObject</a>.</p>"
@@ -7986,7 +8005,7 @@
       "members":{
         "ExpectedBucketOwner":{
           "shape":"AccountId",
-          "documentation":"<p>The Amazon Web Services account ID that owns the bucket the generated manifest is written to. If provided the generated manifest bucket's owner Amazon Web Services account ID must match this value, else the job fails.</p>"
+          "documentation":"<p>The Amazon Web Services account ID that owns the source bucket specified in <code>SourceBucket</code>. If provided, the manifest source bucket owner's Amazon Web Services account ID must match this value, else the job fails.</p>"
         },
         "SourceBucket":{
           "shape":"S3BucketArnString",
@@ -8050,6 +8069,41 @@
         "REPLACE"
       ]
     },
+    "S3ObjectLockEventHold":{
+      "type":"string",
+      "enum":[
+        "ON",
+        "OFF"
+      ]
+    },
+    "S3ObjectLockEventHoldDuration":{
+      "type":"structure",
+      "members":{
+        "Days":{
+          "shape":"S3ObjectLockEventHoldDurationDays",
+          "documentation":"<p>The number of days for the event hold duration. The minimum value is 1 and the maximum value is 36,500.</p>",
+          "box":true
+        },
+        "Years":{
+          "shape":"S3ObjectLockEventHoldDurationYears",
+          "documentation":"<p>The number of years for the event hold duration. The minimum value is 1 and the maximum value is 100.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Contains the duration configuration for an event hold, specified in either days or years.</p>"
+    },
+    "S3ObjectLockEventHoldDurationDays":{
+      "type":"integer",
+      "box":true,
+      "max":36500,
+      "min":1
+    },
+    "S3ObjectLockEventHoldDurationYears":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "S3ObjectLockLegalHold":{
       "type":"structure",
       "required":["Status"],
@@ -8074,6 +8128,41 @@
         "COMPLIANCE",
         "GOVERNANCE"
       ]
+    },
+    "S3ObjectLockRetentionEventHold":{
+      "type":"string",
+      "enum":[
+        "ON",
+        "OFF"
+      ]
+    },
+    "S3ObjectLockRetentionEventHoldDuration":{
+      "type":"structure",
+      "members":{
+        "Days":{
+          "shape":"S3ObjectLockRetentionEventHoldDurationDays",
+          "documentation":"<p>The number of days for the event hold duration. The minimum value is 1 and the maximum value is 36,500.</p>",
+          "box":true
+        },
+        "Years":{
+          "shape":"S3ObjectLockRetentionEventHoldDurationYears",
+          "documentation":"<p>The number of years for the event hold duration. The minimum value is 1 and the maximum value is 100.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Contains the duration configuration for an event hold, specified in either days or years.</p>"
+    },
+    "S3ObjectLockRetentionEventHoldDurationDays":{
+      "type":"integer",
+      "box":true,
+      "max":36500,
+      "min":1
+    },
+    "S3ObjectLockRetentionEventHoldDurationYears":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
     },
     "S3ObjectLockRetentionMode":{
       "type":"string",
@@ -8203,6 +8292,14 @@
         "Mode":{
           "shape":"S3ObjectLockRetentionMode",
           "documentation":"<p>The Object Lock retention mode to be applied to all objects in the Batch Operations job.</p>"
+        },
+        "EventHold":{
+          "shape":"S3ObjectLockRetentionEventHold",
+          "documentation":"<p>The event hold status to be applied to all objects in the Batch Operations job. Set to <code>ON</code> to enable an event hold or <code>OFF</code> to disable it.</p>"
+        },
+        "EventHoldDuration":{
+          "shape":"S3ObjectLockRetentionEventHoldDuration",
+          "documentation":"<p>The event hold duration to be applied to all objects in the Batch Operations job. The duration specifies how long the object remains protected after the event hold is released.</p>"
         }
       },
       "documentation":"<p>Contains the S3 Object Lock retention mode to be applied to all objects in the S3 Batch Operations job. If you don't provide <code>Mode</code> and <code>RetainUntilDate</code> data types in your operation, you will remove the retention from your objects. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/batch-ops-retention-date.html\">Using S3 Object Lock retention with S3 Batch Operations</a> in the <i>Amazon S3 User Guide</i>.</p>"
@@ -8444,7 +8541,7 @@
         },
         "MinStorageBytesPercentage":{
           "shape":"MinStorageBytesPercentage",
-          "documentation":"<p>The minimum number of storage bytes percentage whose metrics will be selected.</p> <note> <p>You must choose a value greater than or equal to <code>1.0</code>.</p> </note>"
+          "documentation":"<p>The minimum percentage of total bucket storage that a prefix must hold for its metrics to be included.</p>"
         }
       },
       "documentation":"<p/>"

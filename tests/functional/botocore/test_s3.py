@@ -36,6 +36,9 @@ from tests import (
     temporary_file,
     unittest,
 )
+from tests.functional.botocore.test_useragent import (
+    parse_registered_feature_ids,
+)
 from tests.utils.botocore import get_checksum_cls
 
 DATE = datetime.datetime(2021, 8, 27, 0, 0, 0)
@@ -1678,6 +1681,16 @@ class TestRegionRedirect(BaseS3OperationTest):
         )
         self.assertEqual(self.http_stubber.requests[1].url, fixed_url)
 
+        # Verify S3 redirect feature ID
+        initial_features = parse_registered_feature_ids(
+            self.http_stubber.requests[0].headers['User-Agent'].decode()
+        )
+        redirected_features = parse_registered_feature_ids(
+            self.http_stubber.requests[1].headers['User-Agent'].decode()
+        )
+        self.assertNotIn('Ah', initial_features)
+        self.assertIn('Ah', redirected_features)
+
     def test_region_redirect_cache(self):
         self.http_stubber.add_response(**self.redirect_response)
         self.http_stubber.add_response(**self.success_response)
@@ -1705,6 +1718,20 @@ class TestRegionRedirect(BaseS3OperationTest):
         )
         self.assertEqual(self.http_stubber.requests[1].url, fixed_url)
         self.assertEqual(self.http_stubber.requests[2].url, fixed_url)
+
+        # Verify S3 redirect feature ID
+        initial_features = parse_registered_feature_ids(
+            self.http_stubber.requests[0].headers['User-Agent'].decode()
+        )
+        redirected_features = parse_registered_feature_ids(
+            self.http_stubber.requests[1].headers['User-Agent'].decode()
+        )
+        cached_features = parse_registered_feature_ids(
+            self.http_stubber.requests[2].headers['User-Agent'].decode()
+        )
+        self.assertNotIn('Ah', initial_features)
+        self.assertIn('Ah', redirected_features)
+        self.assertIn('Ah', cached_features)
 
     def test_resign_request_with_region_when_needed(self):
         # Create a client with no explicit configuration so we can

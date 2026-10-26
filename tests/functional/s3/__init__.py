@@ -36,7 +36,12 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
 
     def init_clidriver(self):
         with temporary_file('w') as f:
-            f.write('[default]\n' 's3 =\n' '  max_concurrent_requests = 1\n')
+            f.write(
+                '[default]\n'
+                's3 =\n'
+                '  preferred_transfer_client = classic\n'
+                '  max_concurrent_requests = 1\n'
+            )
             f.flush()
             self.environ['AWS_CONFIG_FILE'] = f.name
             self.driver = create_clidriver()
@@ -505,6 +510,7 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
         s3_request = FakeCRTS3Request(
             future=FakeCRTFuture(kwargs.get('on_done'))
         )
+        s3_request.finished_future.result()
         return s3_request
 
     def simulate_file_download(self, recv_filepath):

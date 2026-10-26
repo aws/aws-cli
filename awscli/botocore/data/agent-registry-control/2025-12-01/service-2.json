@@ -347,32 +347,39 @@
     },
     "AgentCoreGatewayProtocolType":{
       "type":"string",
-      "documentation":"<p>The protocol type of an AgentCore Gateway.</p>",
       "enum":["MCP"]
     },
     "AgentCoreGatewaySourceDetails":{
       "type":"structure",
       "members":{
-        "protocolType":{"shape":"AgentCoreGatewayProtocolType"},
+        "protocolType":{
+          "shape":"AgentCoreGatewayProtocolType",
+          "documentation":"<p>The protocol type of the AgentCore Gateway resource that the registry record was detected from, for example <code>MCP</code>.</p>"
+        },
         "authorizerType":{
           "shape":"String",
           "documentation":"<p>The type of authorizer configured on the AgentCore Gateway resource that the registry record was detected from.</p>"
         },
         "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
-        "workloadIdentityDetails":{"shape":"WorkloadIdentityDetails"}
+        "workloadIdentityDetails":{
+          "shape":"WorkloadIdentityDetails",
+          "documentation":"<p>The workload identity details for the AgentCore Gateway resource. Present when the gateway has a workload identity configured.</p>"
+        }
       },
-      "documentation":"<p>Source details for a record auto-detected from an AgentCore Gateway resource.</p>"
+      "documentation":"<p>The source details for a registry record that was auto-detected from an Amazon Bedrock AgentCore Gateway resource.</p>"
     },
     "AgentCoreRuntimeProtocolConfiguration":{
       "type":"structure",
       "members":{
-        "serverProtocol":{"shape":"AgentCoreRuntimeServerProtocol"}
+        "serverProtocol":{
+          "shape":"AgentCoreRuntimeServerProtocol",
+          "documentation":"<p>The server protocol used by the AgentCore Runtime, such as <code>MCP</code>, <code>HTTP</code>, <code>A2A</code>, or <code>AGUI</code>.</p>"
+        }
       },
-      "documentation":"<p>Protocol configuration for an AgentCore Runtime.</p>"
+      "documentation":"<p>The protocol configuration of an AgentCore Runtime resource that a registry record was auto-detected from.</p>"
     },
     "AgentCoreRuntimeServerProtocol":{
       "type":"string",
-      "documentation":"<p>The server protocol used by an AgentCore Runtime.</p>",
       "enum":[
         "HTTP",
         "A2A",
@@ -383,11 +390,17 @@
     "AgentCoreRuntimeSourceDetails":{
       "type":"structure",
       "members":{
-        "protocolConfiguration":{"shape":"AgentCoreRuntimeProtocolConfiguration"},
+        "protocolConfiguration":{
+          "shape":"AgentCoreRuntimeProtocolConfiguration",
+          "documentation":"<p>The protocol configuration of the AgentCore Runtime resource that the registry record was detected from.</p>"
+        },
         "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
-        "workloadIdentityDetails":{"shape":"WorkloadIdentityDetails"}
+        "workloadIdentityDetails":{
+          "shape":"WorkloadIdentityDetails",
+          "documentation":"<p>The workload identity details for the AgentCore Runtime resource. Present when the runtime has a workload identity configured.</p>"
+        }
       },
-      "documentation":"<p>Source details for a record auto-detected from an AgentCore Runtime resource.</p>"
+      "documentation":"<p>The source details for a registry record that was auto-detected from an Amazon Bedrock AgentCore Runtime resource.</p>"
     },
     "AgentSkillsAdditionalData":{
       "type":"structure",
@@ -663,7 +676,14 @@
           "documentation":"<p>Client token for idempotency</p>",
           "idempotencyToken":true
         },
-        "provenance":{"shape":"ProvenanceList"},
+        "provenance":{
+          "shape":"ProvenanceList",
+          "documentation":"<p>The provenance lineage entries for the registry record. This field is reserved for the Amazon Web Services Agent Registry auto-detection service principal. Requests that include this field from other callers are rejected.</p>"
+        },
+        "customMetadata":{
+          "shape":"CustomMetadataDocument",
+          "documentation":"<p>The custom metadata for the record. Values are strings or JSON booleans.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags to associate with the registry record</p>"
@@ -720,6 +740,10 @@
         "approvalConfiguration":{
           "shape":"ApprovalConfiguration",
           "documentation":"<p>Approval configuration for registry records</p>"
+        },
+        "customMetadataSchemaConfiguration":{
+          "shape":"CustomMetadataSchemaConfiguration",
+          "documentation":"<p>The optional custom metadata schema configuration for the registry. When provided, registry records can carry structured metadata validated against this schema.</p>"
         },
         "autoDetectionConfiguration":{
           "shape":"AutoDetectionConfiguration",
@@ -824,6 +848,42 @@
         }
       },
       "documentation":"<p>Configuration for a custom JWT authorizer that validates inbound bearer tokens against an OpenID Connect identity provider.</p>"
+    },
+    "CustomMetadataDocument":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Free-form JSON document representing custom metadata on a registry record. Values may be strings or booleans (native JSON types). Key/value constraints enforced in service code.</p>",
+      "document":true,
+      "sensitive":true
+    },
+    "CustomMetadataSchemaComplianceStatus":{
+      "type":"string",
+      "documentation":"<p>Indicates whether a registry record's custom metadata conforms to the registry's current schema. <code>COMPLIANT</code> means all required fields are present and all values match their declared types. <code>NON_COMPLIANT</code> means the metadata does not satisfy the current schema, for example because the schema was updated after the record was last modified.</p>",
+      "enum":[
+        "COMPLIANT",
+        "NON_COMPLIANT"
+      ]
+    },
+    "CustomMetadataSchemaConfiguration":{
+      "type":"structure",
+      "members":{
+        "defaultSchema":{
+          "shape":"CustomMetadataSchemaDefinition",
+          "documentation":"<p>A JSON Schema with the common attributes: fields that records of every record type can carry.</p>"
+        },
+        "recordTypeSchemaOverrides":{
+          "shape":"RecordTypeSchemaOverrideList",
+          "documentation":"<p>The fields for individual record types. Records of a record type can carry the common attributes defined in <code>defaultSchema</code> plus that record type's fields.</p>"
+        }
+      },
+      "documentation":"<p>The custom metadata fields that records in the registry can carry. <code>defaultSchema</code> defines the common attributes for every record type, and <code>recordTypeSchemaOverrides</code> adds fields for individual record types.</p>",
+      "sensitive":true
+    },
+    "CustomMetadataSchemaDefinition":{
+      "type":"string",
+      "max":16384,
+      "min":1,
+      "sensitive":true
     },
     "CustomParameterMap":{
       "type":"map",
@@ -1106,7 +1166,10 @@
           "shape":"String",
           "documentation":"<p>The reason for the current status. Typically populated when the status indicates a failure state.</p>"
         },
-        "provenance":{"shape":"ProvenanceList"},
+        "provenance":{
+          "shape":"ProvenanceList",
+          "documentation":"<p>The provenance lineage entries for the registry record. Populated for records created by auto-detection; each entry identifies the upstream source that the record was detected from.</p>"
+        },
         "createdByAutoDetection":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the registry record was created by auto-detection. <code>true</code> indicates the record was automatically created by the service based on the registry's auto-detection configuration; <code>false</code> indicates the record was created through a control-plane API call.</p>"
@@ -1114,6 +1177,14 @@
         "createdBy":{
           "shape":"CreatorAccountId",
           "documentation":"<p>The ID of the Amazon Web Services account that created the registry record.</p>"
+        },
+        "customMetadata":{
+          "shape":"CustomMetadataDocument",
+          "documentation":"<p>The custom metadata attached to this registry record. Values are strings (maximum 128 characters) or booleans.</p>"
+        },
+        "customMetadataSchemaComplianceStatus":{
+          "shape":"CustomMetadataSchemaComplianceStatus",
+          "documentation":"<p>Indicates whether this record's custom metadata conforms to the registry's current schema. This status is computed at read time against the latest schema.</p>"
         }
       },
       "documentation":"<p>Response structure for retrieving a registry record</p>"
@@ -1169,6 +1240,10 @@
         "approvalConfiguration":{
           "shape":"ApprovalConfiguration",
           "documentation":"<p>Approval configuration for registry records</p>"
+        },
+        "customMetadataSchemaConfiguration":{
+          "shape":"CustomMetadataSchemaConfiguration",
+          "documentation":"<p>The custom metadata schema configuration for this registry, if one has been defined.</p>"
         },
         "status":{
           "shape":"RegistryStatus",
@@ -1510,7 +1585,10 @@
         "sourceId"
       ],
       "members":{
-        "relation":{"shape":"ProvenanceRelation"},
+        "relation":{
+          "shape":"ProvenanceRelation",
+          "documentation":"<p>The relationship between the registry record and its upstream source. <code>DETECTED_FROM</code> indicates that the record was auto-detected from the source resource.</p>"
+        },
         "sourceId":{
           "shape":"SourceId",
           "documentation":"<p>The identifier of the upstream source that the registry record was detected from.</p>"
@@ -1524,18 +1602,16 @@
           "documentation":"<p>Additional details about the upstream source that the registry record was detected from, such as the AgentCore Gateway or Runtime configuration. The populated member corresponds to the source type.</p>"
         }
       },
-      "documentation":"<p>One provenance entry describing the lineage of a registry record.</p>"
+      "documentation":"<p>A provenance entry that describes the lineage of a registry record. Records that were auto-detected by Amazon Web Services Agent Registry carry a provenance entry that links the record back to its upstream source.</p>"
     },
     "ProvenanceList":{
       "type":"list",
       "member":{"shape":"Provenance"},
-      "documentation":"<p>List of provenance entries on a registry record. Capped at one entry today: a record carries a single DETECTED_FROM lineage. Modeled as a list so additional relations can be unlocked post-GA by raising this bound without a breaking shape change.</p>",
       "max":1,
       "min":0
     },
     "ProvenanceRelation":{
       "type":"string",
-      "documentation":"<p>The relationship between the registry record and its provenance source.</p>",
       "enum":["DETECTED_FROM"]
     },
     "ProvenanceSummary":{
@@ -1545,7 +1621,10 @@
         "sourceId"
       ],
       "members":{
-        "relation":{"shape":"ProvenanceRelation"},
+        "relation":{
+          "shape":"ProvenanceRelation",
+          "documentation":"<p>The relationship between the registry record and its upstream source. <code>DETECTED_FROM</code> indicates that the record was auto-detected from the source resource.</p>"
+        },
         "sourceId":{
           "shape":"SourceId",
           "documentation":"<p>The identifier of the upstream source that the registry record was detected from.</p>"
@@ -1555,12 +1634,11 @@
           "documentation":"<p>The type of the upstream source that the registry record was detected from.</p>"
         }
       },
-      "documentation":"<p>Condensed provenance entry for list results — the key triple only (no sourceDetails union). Enough to display and client-side-filter lineage without the full-read config payload.</p>"
+      "documentation":"<p>A condensed provenance entry surfaced in list results. Contains the source identity of a lineage entry without the source details returned by <code>GetRegistryRecord</code>.</p>"
     },
     "ProvenanceSummaryList":{
       "type":"list",
       "member":{"shape":"ProvenanceSummary"},
-      "documentation":"<p>List of condensed provenance entries surfaced on RegistryRecordSummary. Mirrors ProvenanceList's cardinality (one entry today); modeled as a list for forward-compatibility.</p>",
       "max":1,
       "min":0
     },
@@ -1581,6 +1659,30 @@
         "SKILL",
         "GATEWAY"
       ]
+    },
+    "RecordTypeSchemaOverride":{
+      "type":"structure",
+      "required":[
+        "recordType",
+        "schema"
+      ],
+      "members":{
+        "recordType":{
+          "shape":"RecordType",
+          "documentation":"<p>The record type these fields apply to.</p>"
+        },
+        "schema":{
+          "shape":"CustomMetadataSchemaDefinition",
+          "documentation":"<p>A JSON Schema with the fields for this record type.</p>"
+        }
+      },
+      "documentation":"<p>The custom metadata fields for one record type, in addition to the common attributes defined in <code>defaultSchema</code>.</p>"
+    },
+    "RecordTypeSchemaOverrideList":{
+      "type":"list",
+      "member":{"shape":"RecordTypeSchemaOverride"},
+      "max":10,
+      "min":0
     },
     "RegistryArn":{
       "type":"string",
@@ -1879,7 +1981,14 @@
           "shape":"CreatorAccountId",
           "documentation":"<p>The ID of the Amazon Web Services account that created the registry record.</p>"
         },
-        "provenanceSummaryList":{"shape":"ProvenanceSummaryList"}
+        "provenanceSummaryList":{
+          "shape":"ProvenanceSummaryList",
+          "documentation":"<p>The condensed provenance lineage for the registry record. Each entry contains the source relation, source identifier, and source type of an auto-detection lineage entry. Populated for records created by auto-detection.</p>"
+        },
+        "customMetadataSchemaComplianceStatus":{
+          "shape":"CustomMetadataSchemaComplianceStatus",
+          "documentation":"<p>Indicates whether this record's custom metadata conforms to the registry's current schema.</p>"
+        }
       },
       "documentation":"<p>A summary of a registry record returned by list operations. Contains identifying and lifecycle fields but omits descriptor content.</p>"
     },
@@ -2047,8 +2156,14 @@
     "SourceDetails":{
       "type":"structure",
       "members":{
-        "agentcoreRuntime":{"shape":"AgentCoreRuntimeSourceDetails"},
-        "agentcoreGateway":{"shape":"AgentCoreGatewaySourceDetails"}
+        "agentcoreRuntime":{
+          "shape":"AgentCoreRuntimeSourceDetails",
+          "documentation":"<p>The source details for a registry record that was auto-detected from an Amazon Bedrock AgentCore Runtime resource. Populated when the source type is <code>AWS::BedrockAgentCore::Runtime</code>.</p>"
+        },
+        "agentcoreGateway":{
+          "shape":"AgentCoreGatewaySourceDetails",
+          "documentation":"<p>The source details for a registry record that was auto-detected from an Amazon Bedrock AgentCore Gateway resource. Populated when the source type is <code>AWS::BedrockAgentCore::Gateway</code>.</p>"
+        }
       },
       "documentation":"<p>The details about the upstream source from which a registry record was detected. Exactly one member is populated, corresponding to the source type.</p>",
       "union":true
@@ -2265,11 +2380,18 @@
           "shape":"RegistryRecordVersion",
           "documentation":"<p>The updated version of the registry record. Omit to leave the version unchanged.</p>"
         },
+        "customMetadata":{
+          "shape":"UpdatedCustomMetadataMap",
+          "documentation":"<p>The updated custom metadata for the registry record. Values can be strings (maximum 128 characters) or native JSON booleans (<code>true</code> or <code>false</code>). Omit to leave the existing metadata unchanged. Supply the wrapper with a full replacement set to update, or with a null value to clear all metadata.</p>"
+        },
         "triggerSynchronization":{
           "shape":"Boolean",
           "documentation":"<p>Whether to trigger synchronization of the record's descriptor content from its source</p>"
         },
-        "provenance":{"shape":"ProvenanceList"}
+        "provenance":{
+          "shape":"ProvenanceList",
+          "documentation":"<p>The provenance lineage re-assertion for the registry record. This field is reserved for the Amazon Web Services Agent Registry auto-detection service principal. Requests that include this field from other callers are rejected. The source identity of an existing lineage is immutable; a re-assertion may only refresh the source details.</p>"
+        }
       }
     },
     "UpdateRegistryRecordResponse":{
@@ -2337,7 +2459,10 @@
           "shape":"String",
           "documentation":"<p>The reason for the current status. Typically populated when the status indicates a failure state.</p>"
         },
-        "provenance":{"shape":"ProvenanceList"},
+        "provenance":{
+          "shape":"ProvenanceList",
+          "documentation":"<p>The provenance lineage entries for the registry record. Populated for records created by auto-detection; each entry identifies the upstream source that the record was detected from.</p>"
+        },
         "createdByAutoDetection":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the registry record was created by auto-detection. <code>true</code> indicates the record was automatically created by the service based on the registry's auto-detection configuration; <code>false</code> indicates the record was created through a control-plane API call.</p>"
@@ -2345,6 +2470,14 @@
         "createdBy":{
           "shape":"CreatorAccountId",
           "documentation":"<p>The ID of the Amazon Web Services account that created the registry record.</p>"
+        },
+        "customMetadata":{
+          "shape":"CustomMetadataDocument",
+          "documentation":"<p>The custom metadata attached to this registry record. Values are strings (maximum 128 characters) or booleans.</p>"
+        },
+        "customMetadataSchemaComplianceStatus":{
+          "shape":"CustomMetadataSchemaComplianceStatus",
+          "documentation":"<p>Indicates whether this record's custom metadata conforms to the registry's current schema. This status is computed at read time against the latest schema.</p>"
         }
       },
       "documentation":"<p>Response structure for updating a registry record</p>"
@@ -2449,6 +2582,10 @@
           "shape":"UpdatedApprovalConfiguration",
           "documentation":"<p>The updated approval configuration. The change applies only to records that move to PENDING_APPROVAL after the update; records already in PENDING_APPROVAL are unaffected.</p>"
         },
+        "customMetadataSchemaConfiguration":{
+          "shape":"UpdatedCustomMetadataSchemaConfiguration",
+          "documentation":"<p>The new custom metadata schema configuration, which replaces the current one. You can add fields and allowed values, but you can't remove a field or an allowed value, or change a field's type.</p>"
+        },
         "autoDetectionConfiguration":{
           "shape":"UpdatedAutoDetectionConfiguration",
           "documentation":"<p>The updated auto-detection configuration for the registry, with PATCH semantics. Omit this field to leave the current configuration unchanged. Supply an empty wrapper to unset it. Supply <code>optionalValue</code> to replace it.</p>"
@@ -2494,6 +2631,10 @@
         "approvalConfiguration":{
           "shape":"ApprovalConfiguration",
           "documentation":"<p>Approval configuration for registry records</p>"
+        },
+        "customMetadataSchemaConfiguration":{
+          "shape":"CustomMetadataSchemaConfiguration",
+          "documentation":"<p>The custom metadata schema configuration for this registry, if one has been defined.</p>"
         },
         "status":{
           "shape":"RegistryStatus",
@@ -2691,6 +2832,26 @@
         }
       },
       "documentation":"<p>The set of custom descriptor fields that can be individually updated.</p>"
+    },
+    "UpdatedCustomMetadataMap":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"CustomMetadataDocument",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The custom metadata patch wrapper. Omit to leave the existing metadata unchanged; supply with a null value to clear all metadata; supply with key-value pairs to replace the existing metadata.</p>"
+    },
+    "UpdatedCustomMetadataSchemaConfiguration":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"CustomMetadataSchemaConfiguration",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The custom metadata schema configuration patch wrapper. Omit to leave the existing schema unchanged.</p>"
     },
     "UpdatedDataSchemaVersion":{
       "type":"structure",
@@ -2960,7 +3121,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the workload identity associated with the source resource.</p>"
         }
       },
-      "documentation":"<p>Workload identity details associated with a source resource.</p>"
+      "documentation":"<p>The workload identity details associated with a source resource. Present on the source details of a provenance entry when the upstream resource has a workload identity configured.</p>"
     },
     "WorkloadIdentityDetailsWorkloadIdentityArnString":{
       "type":"string",

@@ -297,12 +297,56 @@ class TestLoginCommand(BaseSSOTest):
         self.run_cmd('sso login')
         self.assert_used_expected_sso_region(expected_region=self.sso_region)
         self.assert_auth_browser_handler_called_with('sso%3Aaccount%3Aaccess')
+        self.fetcher_mock.assert_called_once_with(redirect_port=None)
         self.assert_cache_contains_registration(
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
             expected_client_id='auth-client-id',
         )
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            session_name='test-session',
+            expected_token=self.access_token,
+        )
+
+    def test_login_auth_sso_session_with_redirect_port(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.fetcher_mock.return_value.redirect_uri_with_port.return_value = (
+            'http://127.0.0.1:34535/oauth/callback'
+        )
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login --redirect-port 34535')
+        self.fetcher_mock.assert_called_once_with(redirect_port=34535)
+        self.assert_auth_browser_handler_called_with(
+            'sso%3Aaccount%3Aaccess',
+            expected_redirect_port=34535,
+        )
+
+    def test_login_invalid_redirect_port(self):
+        for redirect_port in (-1, 0, 65536):
+            with self.subTest(redirect_port=redirect_port):
+                _, stderr, _ = self.run_cmd(
+                    f'sso login --redirect-port {redirect_port}',
+                    expected_rc=252,
+                )
+                self.assertIn('Invalid value for --redirect-port', stderr)
+                self.fetcher_mock.assert_not_called()
+
+    def test_login_non_integer_redirect_port(self):
+        _, stderr, _ = self.run_cmd(
+            'sso login --redirect-port invalid', expected_rc=255
+        )
+        self.assertIn("invalid literal for int()", stderr)
+        self.fetcher_mock.assert_not_called()
+
+    def test_login_device_code_ignores_redirect_port(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login --use-device-code --redirect-port 34535')
+        self.fetcher_mock.assert_not_called()
         self.assert_cache_contains_token(
             start_url=self.start_url,
             session_name='test-session',

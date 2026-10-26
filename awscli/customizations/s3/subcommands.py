@@ -124,11 +124,14 @@ FOLLOW_SYMLINKS = {
     'default': True,
     'group_name': 'follow_symlinks',
     'help_text': (
-        "Symbolic links are followed "
-        "only when uploading to S3 from the local filesystem. "
-        "Note that S3 does not support symbolic links, so the "
+        "Symbolic links are followed when uploading to S3 from the local "
+        "filesystem. Note that S3 does not support symbolic links, so the "
         "contents of the link target are uploaded under the "
-        "name of the link. When neither ``--follow-symlinks`` "
+        "name of the link. When downloading from S3, "
+        "``--no-follow-symlinks`` skips any object whose destination is a "
+        "symbolic link, or is located under one, starting at the destination "
+        "you specified. Symbolic links in the path leading up to that "
+        "destination are still followed. When neither ``--follow-symlinks`` "
         "nor ``--no-follow-symlinks`` is specified, the default "
         "is to follow symlinks."
     ),

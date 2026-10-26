@@ -146,7 +146,8 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         uni_print(f'  Found: {names}\n', self._stream)
 
         if not yes and not yes_no_choice(
-            f'\nInstall {len(default_skills)} default AWS skills? [Y/n]: '
+            f'\nInstall {len(default_skills)} default AWS skills? [Y/n]: ',
+            default=True,
         ):
             return
 
@@ -196,7 +197,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
 
     def _configure_mcp(self, agents, yes=False):
         if not yes and not yes_no_choice(
-            '\nConfigure AWS MCP server connection? [Y/n]: '
+            '\nConfigure AWS MCP server connection? [Y/n]: ', default=True
         ):
             return
 

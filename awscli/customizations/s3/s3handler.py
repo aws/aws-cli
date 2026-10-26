@@ -12,11 +12,12 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import stat
 
 from s3transfer.checksums import resolve_full_object_checksum
 from s3transfer.manager import TransferManager
 
-from awscli.compat import get_binary_stdin
+from awscli.compat import get_binary_stdin, is_windows
 from awscli.customizations.s3.results import (
     CommandResultRecorder,
     DoneResultSubscriber,
@@ -60,6 +61,25 @@ from awscli.customizations.s3.utils import (
 )
 
 LOGGER = logging.getLogger(__name__)
+
+
+def is_link(path):
+    """Whether a path redirects to somewhere else.
+
+    On Windows this covers junctions as well as symbolic links.
+    ``os.path.islink`` does not report junctions, and they are the redirect
+    an unprivileged process can create there, so leaving them out would miss
+    the more reachable case. ``os.path.isjunction`` is only available in
+    Python 3.12 and later, so the reparse tag is read directly.
+    """
+    if os.path.islink(path):
+        return True
+    if not is_windows:
+        return False
+    try:
+        return os.lstat(path).st_reparse_tag == stat.IO_REPARSE_TAG_MOUNT_POINT
+    except OSError:
+        return False
 
 
 class S3TransferHandlerFactory:
@@ -463,8 +483,67 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         return [
             self._warn_glacier,
             self._warn_parent_reference,
+            self._warn_if_link_in_dest_path,
             self._warn_if_file_exists_with_no_overwrite,
         ]
+
+    def _warn_if_link_in_dest_path(self, fileinfo):
+        """
+        Skips downloads whose destination path is or goes through a link
+        when ``--no-follow-symlinks`` is set.
+
+        :type fileinfo: FileInfo
+        :param fileinfo: The FileInfo object containing transfer details
+
+        :rtype: bool
+        :returns: True if the download should be skipped, False otherwise
+        """
+        if self._cli_params.get('follow_symlinks', True):
+            return False
+        unfollowable = self._find_link_in_dest_path(fileinfo.dest)
+        if unfollowable is None:
+            return False
+        LOGGER.debug(
+            f"Skipping s3://{fileinfo.src} -> {fileinfo.dest}, not following "
+            f"{unfollowable} because --no-follow-symlinks is set"
+        )
+        return True
+
+    def _find_link_in_dest_path(self, dest):
+        """
+        Returns the first path in the destination that cannot be followed, or
+        None if the whole destination path can be.
+
+        The destination the user named is checked along with everything below
+        it, matching uploads, where a symlinked source root makes the command
+        transfer nothing. Paths above it are not part of the transfer and may
+        legitimately be symlinks, e.g. ``/tmp``.
+
+        Paths are checked root first, so each one is only reached once
+        everything leading to it has been shown not to be a link. A parent
+        reference breaks that, because a link check cannot resolve a
+        path through a directory that does not exist yet and the download
+        creates missing directories afterwards, so it is never followed.
+        """
+        root = os.path.abspath(self._cli_params.get('dest', ''))
+        if is_link(root):
+            return root
+        prefix = root if root.endswith(os.sep) else root + os.sep
+        if not dest.startswith(prefix):
+            # The destination is the root itself, or is not below it at all.
+            return None
+        parents = []
+        path = os.path.dirname(dest)
+        while path != root:
+            parents.append(path)
+            parent = os.path.dirname(path)
+            if parent == path:
+                break
+            path = parent
+        for path in reversed(parents):
+            if os.path.basename(path) == os.pardir or is_link(path):
+                return path
+        return dest if is_link(dest) else None
 
     def _warn_if_file_exists_with_no_overwrite(self, fileinfo):
         """
@@ -579,6 +658,10 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
     def _get_fileout(self, fileinfo):
         return StdoutBytesWriter()
+
+    def _warn_if_link_in_dest_path(self, fileinfo):
+        # Streamed downloads go to stdout, so there is no path to check.
+        return False
 
     def _format_local_path(self, path):
         return '-'

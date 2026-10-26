@@ -2733,6 +2733,10 @@
           "shape":"Id",
           "documentation":"<p>The identifier of the identity store that is connected to the instance of IAM Identity Center.</p>"
         },
+        "IdentityStoreArn":{
+          "shape":"InstanceIdentityStoreArn",
+          "documentation":"<p>The ARN of the identity store that is connected to the instance of IAM Identity Center.</p>"
+        },
         "OwnerAccountId":{
           "shape":"AccountId",
           "documentation":"<p>The identifier of the Amazon Web Services account for which the instance was created.</p>"
@@ -2752,6 +2756,14 @@
         "StatusReason":{
           "shape":"Reason",
           "documentation":"<p>Provides additional context about the current status of the IAM Identity Center instance. This field is particularly useful when an instance is in a non-ACTIVE state, such as CREATE_FAILED. When an instance fails to create or update, this field contains information about the cause, which may include issues with KMS key configuration, permission problems with the specified KMS key, or service-related errors. </p>"
+        },
+        "PrimaryRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The primary Region where the IAM Identity Center instance was originally enabled. The primary Region cannot be removed.</p>"
+        },
+        "Regions":{
+          "shape":"RegionMetadataList",
+          "documentation":"<p>The list of Regions enabled in the IAM Identity Center instance, including Regions with ACTIVE, ADDING, or REMOVING status.</p>"
         },
         "EncryptionConfigurationDetails":{
           "shape":"EncryptionConfigurationDetails",
@@ -3288,6 +3300,12 @@
       "min":10,
       "pattern":"arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}"
     },
+    "InstanceIdentityStoreArn":{
+      "type":"string",
+      "max":93,
+      "min":62,
+      "pattern":"arn:aws(-[a-z]{1,5}){0,3}:identitystore::\\d{12}:identitystore/(d-[0-9a-f]{10}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
+    },
     "InstanceList":{
       "type":"list",
       "member":{"shape":"InstanceMetadata"},
@@ -3304,6 +3322,10 @@
         "IdentityStoreId":{
           "shape":"Id",
           "documentation":"<p>The identifier of the identity store that is connected to the Identity Center instance.</p>"
+        },
+        "IdentityStoreArn":{
+          "shape":"InstanceIdentityStoreArn",
+          "documentation":"<p>The ARN of the identity store that is connected to the Identity Center instance.</p>"
         },
         "OwnerAccountId":{
           "shape":"AccountId",

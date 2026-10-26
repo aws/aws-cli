@@ -32,6 +32,50 @@ class ArgParseException(Exception):
     pass
 
 
+def get_option_suggestion_candidates(arg_table, session):
+    """Return the option names to consider when suggesting a correction.
+
+    Includes the documented options in ``arg_table`` plus the global
+    options, without the leading ``--``.
+    """
+    candidates = [
+        arg.cli_name[2:]
+        for arg in arg_table.values()
+        if arg.cli_name.startswith('--')
+        and not getattr(arg, '_UNDOCUMENTED', False)
+    ]
+    # Misspelled global options (e.g. --regoin) aren't recognized by
+    # the main parser either, so they end up as unknown options of the
+    # command.
+    candidates.extend(session.get_data('cli')['options'])
+    return candidates
+
+
+def format_unknown_options_error(unknown, candidates):
+    """Build the error message for unrecognized options.
+
+    :param unknown: The unparsed args, which can include the values
+        that followed an unknown option (e.g. ``['--regoin', 'us-west-2']``).
+    :param candidates: Valid option names, without the leading ``--``.
+    """
+    msg = f"Unknown options: {', '.join(unknown)}"
+    suggestions = []
+    for arg in unknown:
+        if not arg.startswith('--'):
+            continue
+        name = arg[2:].split('=', 1)[0]
+        # Compare without the shared '--' prefix, which would otherwise
+        # inflate the similarity of every candidate.
+        for match in get_close_matches(name, candidates, cutoff=0.8):
+            suggestion = f'  * --{match} (instead of --{name})'
+            # The same unknown option may be passed more than once.
+            if suggestion not in suggestions:
+                suggestions.append(suggestion)
+    if suggestions:
+        msg += '\n\nMaybe you meant:\n' + '\n'.join(suggestions)
+    return msg
+
+
 class CommandAction(argparse.Action):
     """Custom action for CLI command arguments
 

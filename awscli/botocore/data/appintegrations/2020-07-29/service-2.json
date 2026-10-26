@@ -102,7 +102,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the Application. Only Applications that don't have any Application Associations can be deleted.</p>"
+      "documentation":"<p>Deletes an application. If the application has associations, you must delete them first. Alternatively, use the <code>force</code> option to delete the application and remove its associations.</p>"
     },
     "DeleteDataIntegration":{
       "name":"DeleteDataIntegration",
@@ -350,7 +350,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnsupportedOperationException"}
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Updates and persists an Application resource.</p>"
     },
@@ -531,7 +532,8 @@
       "enum":[
         "STANDARD",
         "SERVICE",
-        "MCP_SERVER"
+        "MCP_SERVER",
+        "A2A_SERVER"
       ]
     },
     "ApplicationsList":{
@@ -552,6 +554,31 @@
       "min":1,
       "pattern":"^(arn:aws:[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(:[\\w\\$]+)?$"
     },
+    "AuthConfig":{
+      "type":"structure",
+      "members":{
+        "AuthType":{
+          "shape":"AuthType",
+          "documentation":"<p>The type of authentication that Connect Customer uses to call the external application endpoint. You must specify an authentication type for <code>A2A_SERVER</code> applications. Valid values:</p> <ul> <li> <p> <code>API_KEY</code>: Connect Customer sends an API key that is stored in the Secrets Manager secret that you specify in <code>CredentialProviderIdentifier</code>.</p> </li> <li> <p> <code>CONNECT_JWT</code>: Connect Customer issues a short-lived, signed JSON Web Token (JWT). This authentication type doesn't require a stored credential.</p> </li> </ul>"
+        },
+        "CredentialProviderIdentifier":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the Secrets Manager secret that stores the credentials. The secret must be accessible to Connect Customer.</p> <p>You must specify this ARN when <code>AuthType</code> is <code>API_KEY</code>. Don't specify it when <code>AuthType</code> is <code>CONNECT_JWT</code>.</p>"
+        },
+        "AudienceOverride":{
+          "shape":"Identifier",
+          "documentation":"<p>The value that Connect Customer uses as the audience (<code>aud</code>) claim of the JSON Web Token (JWT) that it issues. You can specify this parameter only when <code>AuthType</code> is <code>CONNECT_JWT</code>. If you don't specify it, the audience is the <code>AccessUrl</code> of the application. The value can't contain <code>connect.amazonaws.com</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the authentication settings that Connect Customer uses to call an external application endpoint.</p>"
+    },
+    "AuthType":{
+      "type":"string",
+      "enum":[
+        "API_KEY",
+        "CONNECT_JWT"
+      ]
+    },
     "Boolean":{"type":"boolean"},
     "ClientAssociationMetadata":{
       "type":"map",
@@ -563,6 +590,15 @@
       "max":255,
       "min":1,
       "pattern":".*"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource. Verify the application's current state and retry the request.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
     },
     "ContactHandling":{
       "type":"structure",
@@ -652,6 +688,10 @@
         "ApplicationType":{
           "shape":"ApplicationType",
           "documentation":"<p>The type of application.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfig",
+          "documentation":"<p>The authentication settings that Connect Customer uses when calling the external application.</p>"
         }
       }
     },
@@ -920,6 +960,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the Application.</p>",
           "location":"uri",
           "locationName":"ApplicationIdentifier"
+        },
+        "Force":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to delete the application even if it still has application associations. If <code>true</code>, the operation removes the application and its associations. If <code>false</code> or absent, the delete fails when associations exist.</p> <important> <p>Setting this parameter to <code>true</code> permanently removes all of the application's associations. Doing so might impact other resources that rely on and reference the application. This action can't be undone.</p> </important>",
+          "location":"querystring",
+          "locationName":"force"
         }
       }
     },
@@ -1257,6 +1303,10 @@
         "ApplicationType":{
           "shape":"ApplicationType",
           "documentation":"<p>The type of application.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfig",
+          "documentation":"<p>The authentication settings that Connect Customer uses when calling the external application.</p>"
         }
       }
     },
@@ -1993,6 +2043,10 @@
         "ApplicationType":{
           "shape":"ApplicationType",
           "documentation":"<p>The type of application.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfig",
+          "documentation":"<p>The authentication settings that Connect Customer uses when calling the external application.</p>"
         }
       }
     },

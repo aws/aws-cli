@@ -414,6 +414,27 @@
       "documentation":"<p>Creates an Amazon DataZone data source.</p>",
       "idempotent":true
     },
+    "CreateDesignation":{
+      "name":"CreateDesignation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDesignationInput"},
+      "output":{"shape":"CreateDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a new user-defined designation with a Cedar permit policy. The designation defines a named role that can be assigned to project members.</p>"
+    },
     "CreateDomain":{
       "name":"CreateDomain",
       "http":{
@@ -992,6 +1013,27 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Deletes a data source in Amazon DataZone.</p>",
+      "idempotent":true
+    },
+    "DeleteDesignation":{
+      "name":"DeleteDesignation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteDesignationInput"},
+      "output":{"shape":"DeleteDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes a designation. Managed designations cannot be deleted. This operation is idempotent.</p>",
       "idempotent":true
     },
     "DeleteDomain":{
@@ -1638,6 +1680,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets an Amazon DataZone data source run.</p>",
+      "readonly":true
+    },
+    "GetDesignation":{
+      "name":"GetDesignation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDesignationInput"},
+      "output":{"shape":"GetDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the details of a designation, including its Cedar policy.</p>",
       "readonly":true
     },
     "GetDomain":{
@@ -2423,6 +2485,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists data sources in Amazon DataZone.</p>",
+      "readonly":true
+    },
+    "ListDesignations":{
+      "name":"ListDesignations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDesignationsInput"},
+      "output":{"shape":"ListDesignationsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists the designations in a domain. Returns system-managed designations first, followed by user-created designations sorted alphabetically by name.</p>",
       "readonly":true
     },
     "ListDomainUnitsForParent":{
@@ -3511,6 +3593,26 @@
       ],
       "documentation":"<p>Updates the specified data source in Amazon DataZone.</p>",
       "idempotent":true
+    },
+    "UpdateDesignation":{
+      "name":"UpdateDesignation",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDesignationInput"},
+      "output":{"shape":"UpdateDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates an existing designation. Managed designations cannot be modified.</p>"
     },
     "UpdateDomain":{
       "name":"UpdateDomain",
@@ -5668,6 +5770,10 @@
         }
       }
     },
+    "BlueprintCategory":{
+      "type":"string",
+      "enum":["TOOLING"]
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -5786,6 +5892,12 @@
           "documentation":"<p>Specifies whether the permissions to the asset are retained after the subscription is cancelled.</p>"
         }
       }
+    },
+    "CedarDesignationPolicy":{
+      "type":"string",
+      "documentation":"<p>A Cedar permit policy that defines what actions designation holders can perform.</p>",
+      "max":10000,
+      "min":1
     },
     "CellInformation":{
       "type":"structure",
@@ -6321,7 +6433,10 @@
         "AMAZON_Q",
         "MLFLOW",
         "VPC",
-        "GIT"
+        "GIT",
+        "ICEBERGRESTCATALOG",
+        "SNOWFLAKEICEBERGRESTCATALOG",
+        "DATABRICKSICEBERGRESTCATALOG"
       ]
     },
     "ConnectivityProperties":{
@@ -7527,6 +7642,93 @@
         }
       }
     },
+    "CreateDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "name",
+        "policy"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the designation is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name must be unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that defines what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. Defaults to true when omitted.</p>"
+        }
+      }
+    },
+    "CreateDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the designation was created.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
+    },
     "CreateDomainInput":{
       "type":"structure",
       "required":["name"],
@@ -7819,6 +8021,10 @@
         "userParameters":{
           "shape":"CustomParameterList",
           "documentation":"<p>The user parameters of this Amazon DataZone blueprint.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of the Amazon DataZone blueprint. The only valid value is <code>TOOLING</code>, which creates a blueprint that provisions the tooling resources of a project.</p>"
         }
       }
     },
@@ -7862,6 +8068,10 @@
         "glossaryTerms":{
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms attached to this Amazon DataZone blueprint.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of the Amazon DataZone blueprint. The only valid value is <code>TOOLING</code>, which indicates a blueprint that provisions the tooling resources of a project.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -8564,6 +8774,10 @@
           "shape":"Description",
           "documentation":"<p>The description of the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
+        },
         "metadata":{
           "shape":"Metadata",
           "documentation":"<p>The metadata for the notebook, specified as key-value pairs. You can specify up to 50 entries, with keys up to 128 characters and values up to 1024 characters.</p>"
@@ -8613,6 +8827,10 @@
         "status":{
           "shape":"NotebookStatus",
           "documentation":"<p>The status of the notebook.</p>"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
         },
         "description":{
           "shape":"Description",
@@ -8776,6 +8994,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designation of the project membership.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation to assign to the project member. Required when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         }
       }
     },
@@ -10528,6 +10750,31 @@
         }
       }
     },
+    "DeleteDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation to delete.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to delete.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteDesignationOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteDomainInput":{
       "type":"structure",
       "required":["identifier"],
@@ -11272,6 +11519,77 @@
       "min":0,
       "sensitive":true
     },
+    "DesignationId":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]{1,36}"
+    },
+    "DesignationName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\w -]+"
+    },
+    "DesignationSummaries":{
+      "type":"list",
+      "member":{"shape":"DesignationSummary"}
+    },
+    "DesignationSummary":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary representation of a designation returned by list operations.</p>"
+    },
+    "DesignationType":{
+      "type":"string",
+      "documentation":"<p>The classification of a designation.</p>",
+      "enum":[
+        "MANAGED",
+        "USER_CREATED"
+      ]
+    },
     "DetailedGlossaryTerm":{
       "type":"structure",
       "members":{
@@ -11843,6 +12161,10 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when the blueprint was enabled.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of the environment blueprint. The only valid value is <code>TOOLING</code>.</p>"
         }
       },
       "documentation":"<p>The details of an environment blueprint summary.</p>"
@@ -13505,6 +13827,82 @@
         }
       }
     },
+    "GetDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to retrieve.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
+    },
     "GetDomainInput":{
       "type":"structure",
       "required":["identifier"],
@@ -13870,6 +14268,10 @@
         "glossaryTerms":{
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms attached to this Amazon DataZone blueprint.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of this Amazon DataZone blueprint. The only valid value is <code>TOOLING</code>, which indicates a blueprint that provisions the tooling resources of a project.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -14987,6 +15389,10 @@
           "shape":"NotebookStatus",
           "documentation":"<p>The status of the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the notebook.</p>"
@@ -15131,6 +15537,10 @@
         "storageConfiguration":{
           "shape":"StorageConfig",
           "documentation":"<p>The storage configuration of the notebook run, including the Amazon Simple Storage Service path and KMS key ARN.</p>"
+        },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration of the notebook run, including the notebook run states that trigger notifications.</p>"
         },
         "triggerSource":{
           "shape":"TriggerSource",
@@ -16563,7 +16973,10 @@
         "SAPHANA",
         "SQLSERVER",
         "TERADATA",
-        "VERTICA"
+        "VERTICA",
+        "ICEBERGRESTCATALOG",
+        "SNOWFLAKEICEBERGRESTCATALOG",
+        "DATABRICKSICEBERGRESTCATALOG"
       ]
     },
     "GlueOAuth2Credentials":{
@@ -16965,6 +17378,10 @@
         "glueLineageSyncEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether Amazon Web Services Glue lineage sync is enabled for a connection.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role to associate with the connection as the project user role. To use this operation, you must have <code>iam:PassRole</code> permission for this role.</p>"
         }
       },
       "documentation":"<p>The IAM properties of a connection.</p>"
@@ -18256,6 +18673,50 @@
         }
       }
     },
+    "ListDesignationsInput":{
+      "type":"structure",
+      "required":["domainIdentifier"],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designations to list.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the results exceed the value of <code>MaxResults</code>, the previous call returns a pagination token. Specify this token in a subsequent call to <code>ListDesignations</code> to retrieve the next set of results. If not specified, the operation returns the first page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListDesignationsMaxResults",
+          "documentation":"<p>The maximum number of designations to return in a single call to <code>ListDesignations</code>. If the number of designations exceeds <code>MaxResults</code>, the response includes a <code>NextToken</code> value. Use that token in a subsequent call to <code>ListDesignations</code> to retrieve the next set of designations. The default value is 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListDesignationsMaxResults":{
+      "type":"integer",
+      "documentation":"<p>Maximum number of results for ListDesignations. Minimum 10 ensures built-in designations always fit on the first page.</p>",
+      "box":true,
+      "max":50,
+      "min":10
+    },
+    "ListDesignationsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"DesignationSummaries",
+          "documentation":"<p>The designation summaries that <code>ListDesignations</code> returned. Each item contains summary information about a designation in the domain.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token that indicates that more results are available. Pass this token to a subsequent call to <code>ListDesignations</code> to retrieve the next page of results. If there are no more results, this value is null.</p>"
+        }
+      }
+    },
     "ListDomainUnitsForParentInput":{
       "type":"structure",
       "required":[
@@ -19048,6 +19509,12 @@
           "documentation":"<p>The status to filter notebooks by.</p>",
           "location":"querystring",
           "locationName":"status"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type to filter notebooks by.</p>",
+          "location":"querystring",
+          "locationName":"type"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -20761,6 +21228,10 @@
           "shape":"NotebookStatus",
           "documentation":"<p>The status of the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the notebook.</p>"
@@ -20787,6 +21258,25 @@
     "NotebookSummaryList":{
       "type":"list",
       "member":{"shape":"NotebookSummary"}
+    },
+    "NotebookType":{
+      "type":"string",
+      "documentation":"<p>The type of a notebook in Amazon SageMaker Unified Studio.</p>",
+      "enum":[
+        "DATA",
+        "SQL"
+      ]
+    },
+    "NotificationConfig":{
+      "type":"structure",
+      "required":["notifyOn"],
+      "members":{
+        "notifyOn":{
+          "shape":"NotifyOnStates",
+          "documentation":"<p>The notebook run states that trigger notifications. You can specify up to 7 states, and the ordering of the states is not significant.</p>"
+        }
+      },
+      "documentation":"<p>The notification configuration for a notebook run in Amazon SageMaker Unified Studio.</p>"
     },
     "NotificationOutput":{
       "type":"structure",
@@ -20899,6 +21389,25 @@
     "NotificationsList":{
       "type":"list",
       "member":{"shape":"NotificationOutput"}
+    },
+    "NotifyOnState":{
+      "type":"string",
+      "documentation":"<p>A notebook run state that triggers a notification in Amazon SageMaker Unified Studio.</p>",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED",
+        "QUEUED",
+        "STARTING",
+        "RUNNING",
+        "STOPPING"
+      ]
+    },
+    "NotifyOnStates":{
+      "type":"list",
+      "member":{"shape":"NotifyOnState"},
+      "max":7,
+      "min":0
     },
     "OAuth2ClientApplication":{
       "type":"structure",
@@ -21512,7 +22021,8 @@
       "enum":[
         "OWNER",
         "CONTRIBUTOR",
-        "PROJECT_CATALOG_STEWARD"
+        "PROJECT_CATALOG_STEWARD",
+        "USER_CREATED_DESIGNATION"
       ]
     },
     "ProjectGrantFilter":{
@@ -21548,6 +22058,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designated role of a project member.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation held by the project member when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>.</p>"
         }
       },
       "documentation":"<p>The details of a project member.</p>"
@@ -21570,6 +22084,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designation of the project membership.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation to assign to this member when creating the project. Required when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         }
       },
       "documentation":"<p>A map of user or group profiles to designations that need to be assigned in the project.</p>"
@@ -21592,6 +22110,10 @@
         "projectDesignation":{
           "shape":"ProjectDesignation",
           "documentation":"<p>The project designation of the project policy grant principal.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation granted to the project principal. Required when <code>projectDesignation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         },
         "projectIdentifier":{
           "shape":"ProjectId",
@@ -23351,6 +23873,13 @@
       "min":0,
       "pattern":"[a-zA-Z0-9\\-]+"
     },
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]",
+      "sensitive":true
+    },
     "S3Destination":{
       "type":"structure",
       "members":{
@@ -23360,6 +23889,41 @@
         }
       },
       "documentation":"<p>The Amazon Simple Storage Service destination for a notebook export in Amazon SageMaker Unified Studio.</p>"
+    },
+    "S3File":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>The key of the Amazon Simple Storage Service object to import.</p>"
+        }
+      },
+      "documentation":"<p>A single Amazon Simple Storage Service object to import as a notebook cell.</p>"
+    },
+    "S3FileList":{
+      "type":"list",
+      "member":{"shape":"S3File"},
+      "max":100,
+      "min":1
+    },
+    "S3FilesLocation":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "fileList"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the Amazon Simple Storage Service bucket that contains the files to import.</p>"
+        },
+        "fileList":{
+          "shape":"S3FileList",
+          "documentation":"<p>The files to import. Cells are created in the order in which you list the files. You can specify between 1 and 100 files.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Simple Storage Service objects to import as the cells of a notebook, specified as a bucket and an ordered list of object keys.</p>"
     },
     "S3Location":{
       "type":"string",
@@ -23372,6 +23936,12 @@
       "member":{"shape":"S3Location"},
       "max":20,
       "min":0
+    },
+    "S3ObjectKey":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
     },
     "S3Path":{
       "type":"string",
@@ -24199,6 +24769,10 @@
         "s3":{
           "shape":"S3SourceLocation",
           "documentation":"<p>The Amazon Simple Storage Service URI of the notebook source file.</p>"
+        },
+        "s3Files":{
+          "shape":"S3FilesLocation",
+          "documentation":"<p>The Amazon Simple Storage Service objects to import as the notebook's cells. One cell is created for each object, in the order in which you list them.</p>"
         }
       },
       "documentation":"<p>The source location for a notebook import in Amazon SageMaker Unified Studio.</p>",
@@ -24841,7 +25415,7 @@
         },
         "sourceLocation":{
           "shape":"SourceLocation",
-          "documentation":"<p>The source location of the notebook to import. This specifies the Amazon Simple Storage Service URI of the notebook file.</p>"
+          "documentation":"<p>The source location of the notebook to import. Specify either a single Amazon Simple Storage Service URI, or a list of objects to import as the notebook's cells.</p>"
         },
         "name":{
           "shape":"NotebookName",
@@ -24850,6 +25424,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the imported notebook.</p>"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook to import. If not specified, defaults to <code>DATA</code>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -24884,6 +25462,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the imported notebook.</p>"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the imported notebook.</p>"
         },
         "sourceLocation":{
           "shape":"SourceLocation",
@@ -24936,6 +25518,10 @@
         "timeoutConfiguration":{
           "shape":"TimeoutConfig",
           "documentation":"<p>The timeout configuration for the notebook run. The default timeout is 720 minutes (12 hours) and the maximum is 1440 minutes (24 hours).</p>"
+        },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration for the notebook run. Use this to specify the notebook run states that trigger notifications.</p>"
         },
         "triggerSource":{
           "shape":"TriggerSource",
@@ -25021,6 +25607,10 @@
         "storageConfiguration":{
           "shape":"StorageConfig",
           "documentation":"<p>The storage configuration of the notebook run, including the Amazon Simple Storage Service path and KMS key ARN.</p>"
+        },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration of the notebook run, including the notebook run states that trigger notifications.</p>"
         },
         "triggerSource":{
           "shape":"TriggerSource",
@@ -26922,6 +27512,98 @@
         }
       }
     },
+    "UpdateDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation to update.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to update.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The updated name of the designation. The name must be unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The updated human-readable description of the designation and its intended use.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The updated Cedar permit policy.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. Omit to keep the existing value.</p>"
+        }
+      }
+    },
+    "UpdateDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
+    },
     "UpdateDomainInput":{
       "type":"structure",
       "required":["identifier"],
@@ -27185,6 +27867,10 @@
         "userParameters":{
           "shape":"CustomParameterList",
           "documentation":"<p>The user parameters to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category to update. The only valid value is <code>TOOLING</code>.</p>"
         }
       }
     },
@@ -27228,6 +27914,10 @@
         "glossaryTerms":{
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of the environment blueprint. The only valid value is <code>TOOLING</code>.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -27749,6 +28439,10 @@
           "shape":"CellOrder",
           "documentation":"<p>The updated ordered list of cells in the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The updated type of the notebook.</p>"
+        },
         "metadata":{
           "shape":"Metadata",
           "documentation":"<p>The updated metadata for the notebook, specified as key-value pairs.</p>"
@@ -27802,6 +28496,10 @@
         "status":{
           "shape":"NotebookStatus",
           "documentation":"<p>The status of the notebook.</p>"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
         },
         "description":{
           "shape":"Description",
@@ -28702,7 +29400,8 @@
         "PROJECT_CONTRIBUTOR",
         "PROJECT_CATALOG_VIEWER",
         "PROJECT_CATALOG_CONSUMER",
-        "PROJECT_CATALOG_STEWARD"
+        "PROJECT_CATALOG_STEWARD",
+        "USER_CREATED_DESIGNATION"
       ]
     },
     "UserDetails":{

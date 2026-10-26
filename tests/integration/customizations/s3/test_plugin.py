@@ -1371,16 +1371,13 @@ class TestMbRb(BaseS3IntegrationTest):
         p = aws('s3 rb s3://%s' % bucket_name)
         self.assert_no_errors(p)
 
-    def test_fail_mb_rb(self):
-        # S3 can intermittently return an `OperationAborted` exception instead of
-        # `BucketAlreadyExists`, so we give this test four attempts
-        for i in range(4):
-            # Choose a bucket name that already exists.
-            p = aws('s3 mb s3://mybucket')
-            if "OperationAborted" not in p.stderr:
-                break
-            time.sleep(2**i)
-        assert "BucketAlreadyExists" in p.stderr
+    def test_fail_mb_existing_bucket(self, shared_bucket, region):
+        # Try to create a bucket we already own. Using a bucket owned by
+        # someone else can intermittently fail with `OperationAborted` due
+        # to concurrent requests outside our control. The region must match
+        # the bucket's region for S3 to return `BucketAlreadyOwnedByYou`.
+        p = aws(f's3 mb s3://{shared_bucket} --region {region}')
+        assert "BucketAlreadyOwnedByYou" in p.stderr
         assert p.rc == 1
 
 
@@ -2004,10 +2001,16 @@ class TestHonorsEndpointUrl(BaseParameterizedS3ClientTest):
         # be in the debug logs.  The other alternative is to actually
         # watch what connections are made in the process, which is not
         # easy.
+        # Nothing is listening on the endpoint, so don't retry the
+        # connection errors; only the debug logs are checked.
+        env_vars = os.environ.copy()
+        env_vars['AWS_DEFAULT_REGION'] = 'us-west-2'
+        env_vars['AWS_MAX_ATTEMPTS'] = '1'
         p = aws(
             's3 ls s3://dnscompat/ '
             '--endpoint-url http://localhost:51515 '
-            '--debug'
+            '--debug',
+            env_vars=env_vars,
         )
         debug_logs = p.stderr
         original_hostname = 'dnscompat.s3.amazonaws.com'
@@ -2295,7 +2298,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
         )
         p = aws('s3 rm s3://%s/%s' % (shared_bucket, key))
         self.assert_no_errors(p)
-        assert not s3_utils.key_exists(shared_bucket, key)
+        assert s3_utils.key_not_exists(shared_bucket, key)
 
     def test_sse_c_upload_and_download_large_file(
         self, files, s3_utils, encrypt_key, shared_bucket

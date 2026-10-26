@@ -162,6 +162,7 @@
         {"shape":"NoSuchResourceException"},
         {"shape":"IllegalArgumentException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InvalidPaginationTokenException"},
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Retrieves the quota utilization report for your Amazon Web Services account. This operation returns paginated results showing your quota usage across all Amazon Web Services services, sorted by utilization percentage in descending order (highest utilization first).</p> <p>You must first initiate a report using the <code>StartQuotaUtilizationReport</code> operation. The report generation process is asynchronous and may take several seconds to complete. Poll this operation periodically to check the status and retrieve results when the report is ready.</p> <p>Each report contains up to 1,000 quota records per page. Use the <code>NextToken</code> parameter to retrieve additional pages of results. Reports are automatically deleted after 15 minutes.</p>"
@@ -512,6 +513,14 @@
       },
       "documentation":"<p>You do not have sufficient permission to perform this action.</p>",
       "exception":true
+    },
+    "AdjustableAtLevelEnum":{
+      "type":"string",
+      "enum":[
+        "ACCOUNT",
+        "PER_RESOURCE",
+        "ALL"
+      ]
     },
     "AmazonResourceName":{
       "type":"string",
@@ -1294,6 +1303,10 @@
         "ContextId":{
           "shape":"QuotaContextId",
           "documentation":"<p>Specifies the resource, or resources, to which the quota applies. The value for this field is either an Amazon Resource Name (ARN) or *. If the value is an ARN, the quota value applies to that resource. If the value is *, then the quota value applies to all resources listed in the <code>ContextScopeType</code> field. The quota value applies to all resources for which you haven’t previously applied a quota value, and any new resources you create in your Amazon Web Services account.</p>"
+        },
+        "AdjustableAtLevel":{
+          "shape":"AdjustableAtLevelEnum",
+          "documentation":"<p>Specifies the level at which you can request an increase for this quota:</p> <ul> <li> <p> <code>ACCOUNT</code> – You can request an increase only at the account level.</p> </li> <li> <p> <code>PER_RESOURCE</code> – You can request an increase only for an individual resource.</p> </li> <li> <p> <code>ALL</code> – You can request an increase at either the account level or for an individual resource.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A structure that describes the context for a resource-level quota. For resource-level quotas, such as <code>Instances per OpenSearch Service Domain</code>, you can apply the quota value at the resource-level for each OpenSearch Service Domain in your Amazon Web Services account. Together the attributes of this structure help you understand how the quota is implemented by Amazon Web Services and how you can manage it. For quotas such as <code>Amazon OpenSearch Service Domains</code> which can be managed at the account-level for each Amazon Web Services Region, the <code>QuotaContext</code> field is absent. See the attribute descriptions below to further understand how to use them.</p>"

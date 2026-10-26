@@ -6,7 +6,6 @@ import webbrowser
 import botocore
 from awscrt.crypto import EC, ECType
 from botocore.exceptions import ProfileNotFound
-from botocore.loaders import Loader
 from botocore.utils import (
     JSONFileCache,
     LoginCredentialsLoader,
@@ -14,6 +13,9 @@ from botocore.utils import (
 )
 
 from awscli.compat import compat_input
+from awscli.customizations.agenttoolkit.hint import (
+    maybe_prompt_agent_toolkit,
+)
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.exceptions import ConfigurationError
@@ -24,12 +26,14 @@ from awscli.customizations.login.utils import (
 )
 from awscli.customizations.prompts import yes_no_choice
 from awscli.customizations.sso.utils import (
+    REDIRECT_PORT_ARG,
     AuthCodeFetcher,
     OpenBrowserHandler,
     PrintOnlyHandler,
     open_browser_with_original_ld_path,
+    validate_redirect_port,
 )
-from awscli.customizations.utils import uni_print
+from awscli.customizations.utils import load_all_regions, uni_print
 
 DEFAULT_REGION_FOR_PROMPT = 'us-east-1'
 
@@ -60,7 +64,8 @@ class LoginCommand(BasicCommand):
                 'intended when running the CLI on remote hosts via SSH '
                 'where a local browser is not available.'
             ),
-        }
+        },
+        REDIRECT_PORT_ARG,
     ]
 
     def __init__(
@@ -85,6 +90,7 @@ class LoginCommand(BasicCommand):
         self._config_file_writer = config_file_writer
 
     def _run_main(self, parsed_args, parsed_globals):
+        validate_redirect_port(parsed_args.redirect_port)
         region = self._resolve_region(parsed_globals)
         profile_name = self.resolve_profile_name()
         sign_in_type = self.resolve_sign_in_type(parsed_args)
@@ -92,7 +98,8 @@ class LoginCommand(BasicCommand):
         # If the profile specified via --profile doesn't already exist
         # add it to the session so the client creation still succeeds.
         # If the login is successful we'll save the profile at the end.
-        if profile_name not in self._session.available_profiles:
+        is_new_profile = profile_name not in self._session.available_profiles
+        if is_new_profile:
             self._session._profile_map[profile_name] = {}
 
         # Abort if the profile is already configured with a different style
@@ -115,7 +122,9 @@ class LoginCommand(BasicCommand):
         if sign_in_type is LoginType.SAME_DEVICE:
             token_fetcher = SameDeviceLoginTokenFetcher(
                 client=client,
-                auth_code_fetcher=AuthCodeFetcher(),
+                auth_code_fetcher=AuthCodeFetcher(
+                    redirect_port=parsed_args.redirect_port,
+                ),
                 on_pending_authorization=OpenBrowserHandler(
                     open_browser=open_browser_with_original_ld_path
                 ),
@@ -151,6 +160,13 @@ class LoginCommand(BasicCommand):
             uni_print(
                 f'Use "--profile {profile_name}" to use the new credentials, '
                 f'such as "aws sts get-caller-identity --profile {profile_name}"\n'
+            )
+
+        # Only nudge on first-time setup (a newly created profile), not on
+        # routine re-auth of an existing profile.
+        if is_new_profile:
+            maybe_prompt_agent_toolkit(
+                self._session, parsed_globals, region=region
             )
 
     def accept_change_to_existing_profile_if_needed(
@@ -247,18 +263,11 @@ class LoginCommand(BasicCommand):
         new_region = prompter.get_value(
             DEFAULT_REGION_FOR_PROMPT,
             'AWS Region',
-            completions=list(self._load_all_regions()),
+            completions=list(load_all_regions()),
             validator=RequiredInputValidator(DEFAULT_REGION_FOR_PROMPT),
         )
 
         return new_region if new_region else DEFAULT_REGION_FOR_PROMPT
-
-    @staticmethod
-    def _load_all_regions():
-        """Loads all regions from all partitions via partitions.json"""
-        loader = Loader()
-        for partition in loader.load_data('partitions')['partitions']:
-            yield from partition['regions'].keys()
 
     def _update_profile_with_login_session(
         self, profile_name, session_id, region

@@ -20,6 +20,9 @@ from awscli.compat import compat_input
 from awscli.customizations.agenttoolkit.configure import (
     ConfigureAgentToolkitCommand,
 )
+from awscli.customizations.agenttoolkit.hint import (
+    maybe_prompt_agent_toolkit,
+)
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
 from awscli.customizations.configure.exportcreds import (
@@ -36,6 +39,8 @@ from awscli.customizations.configure.sso_commands import (
     ConfigureSSOSessionCommand,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.utils import load_all_regions
+from awscli.utils import is_a_tty, is_stdin_a_tty
 
 from . import mask_value, profile_to_section
 
@@ -54,13 +59,35 @@ class InteractivePrompter:
             'aws_session_token',
         ):
             current_value = mask_value(current_value)
-        response = compat_input(f"{prompt_text} [{current_value}]: ")
+        if config_name == 'region' and self._is_interactive():
+            response = self._prompt_with_region_completions(
+                current_value, prompt_text
+            )
+        else:
+            response = compat_input(f"{prompt_text} [{current_value}]: ")
         if not response:
             # If the user hits enter, we return a value of None
             # instead of an empty string.  That way we can determine
             # whether or not a value has changed.
             response = None
         return response
+
+    def _is_interactive(self):
+        # prompt_toolkit requires a real terminal; fall back to plain input
+        # when stdin/stdout are redirected.
+        return is_stdin_a_tty() and is_a_tty()
+
+    def _prompt_with_region_completions(self, current_value, prompt_text):
+        from awscli.customizations.configure.sso import PTKPrompt
+
+        # Pass an empty current value so hitting enter returns '' rather
+        # than the current value, preserving the "no change" semantics.
+        return PTKPrompt().get_value(
+            '',
+            prompt_text,
+            completions=list(load_all_regions()),
+            prompt_fmt=f'{prompt_text} [{current_value}]: ',
+        )
 
 
 class ConfigureCommand(BasicCommand):
@@ -148,10 +175,12 @@ class ConfigureCommand(BasicCommand):
         new_values = {}
         # This is the config from the config file scoped to a specific
         # profile.
+        profile_exists = True
         try:
             config = self._session.get_scoped_config()
         except ProfileNotFound:
             config = {}
+            profile_exists = False
 
         if not config:
             sys.stdout.write(
@@ -187,13 +216,27 @@ class ConfigureCommand(BasicCommand):
             self._session.get_config_variable('config_file')
         )
         if new_values:
+            region = self._resolve_configured_region(new_values)
             profile = self._session.profile
             self._write_out_creds_file_values(new_values, profile)
             if profile is not None:
                 section = profile_to_section(profile)
                 new_values['__section__'] = section
             self._config_writer.update_config(new_values, config_filename)
+            if not profile_exists and profile is not None:
+                self._session._profile_map[profile] = {}
+            maybe_prompt_agent_toolkit(
+                self._session, parsed_globals, region=region
+            )
         return 0
+
+    def _resolve_configured_region(self, new_values):
+        if new_values.get('region'):
+            return new_values['region']
+        try:
+            return self._session.get_config_variable('region')
+        except ProfileNotFound:
+            return None
 
     def _write_out_creds_file_values(self, new_values, profile_name):
         # The access_key/secret_key are now *always* written to the shared

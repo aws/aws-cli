@@ -45,6 +45,7 @@ import botocore.loaders
 import botocore.model
 import botocore.serialize
 import botocore.validate
+from botocore.context import start_as_current_context
 from botocore.exceptions import ClientError, WaiterError
 
 from awscrt.crypto import RSA
@@ -152,7 +153,8 @@ class CLIRunner:
         driver = create_clidriver()
         entry_point = AWSCLIEntryPoint(driver)
         self._session_stubber.register(driver.session)
-        rc = entry_point.main(cmdline)
+        with start_as_current_context():
+            rc = entry_point.main(cmdline)
         self._session_stubber.assert_no_remaining_responses()
         runner_result = CLIRunnerResult(rc)
         runner_result.aws_requests = copy.copy(

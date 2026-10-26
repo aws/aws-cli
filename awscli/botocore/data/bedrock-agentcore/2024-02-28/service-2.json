@@ -1750,6 +1750,10 @@
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier to ensure idempotent processing of the batch request.</p>",
           "idempotencyToken":true
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) applied to every record created by this request. Set <code>recordExpiryDurationDays</code> to the number of days after which the records expire. Only the expiry provided here is applied; the records' strategy association has no effect on their expiry. If you do not provide this value, the records do not expire. The <code>REMOVE</code> action does not apply when creating records.</p>"
         }
       }
     },
@@ -1931,6 +1935,10 @@
         "records":{
           "shape":"MemoryRecordsUpdateInputList",
           "documentation":"<p>A list of memory record update inputs to be processed in the batch operation.</p>"
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) applied to every record updated by this request. Set <code>recordExpiryDurationDays</code> to configure or overwrite the number of days after which the records expire, or set <code>action</code> to <code>REMOVE</code> to clear a previously configured expiry so that the records no longer expire.</p> <p>When you do not provide this value, the service determines each record's expiry from its current state:</p> <ul> <li> <p>If the record already has an expiry configured, the service resets and reapplies the expiry based on the last applied <code>recordExpiryDurationDays</code>.</p> </li> <li> <p>If the record does not have an expiry configured, no expiry is applied and the record remains non-expiring. This is the outcome regardless of whether the record's strategy configures an expiry.</p> </li> </ul> <p>Providing an explicit <code>recordExpiryDurationDays</code> always takes precedence: it overwrites an existing expiry, or sets one on a record that previously had none.</p>"
         }
       }
     },
@@ -2299,6 +2307,10 @@
         "timeRange":{
           "shape":"SessionFilterConfig",
           "documentation":"<p>The time range filter for selecting sessions to evaluate.</p>"
+        },
+        "sessionTraceIds":{
+          "shape":"SessionTraceIdsList",
+          "documentation":"<p>A list of session and trace ID pairs that restrict evaluation to specific traces within a session. If specified, only the listed traces are evaluated instead of the entire session.</p>"
         }
       },
       "documentation":"<p>Filter configuration for narrowing down CloudWatch Logs sessions for evaluation.</p>"
@@ -2368,10 +2380,7 @@
     },
     "CloudWatchLogsSource":{
       "type":"structure",
-      "required":[
-        "serviceNames",
-        "logGroupNames"
-      ],
+      "required":["serviceNames"],
       "members":{
         "serviceNames":{
           "shape":"CloudWatchLogsSourceServiceNamesList",
@@ -2379,7 +2388,11 @@
         },
         "logGroupNames":{
           "shape":"CloudWatchLogsSourceLogGroupNamesList",
-          "documentation":"<p>The list of CloudWatch log group names to read agent traces from. Maximum of 5 log groups.</p>"
+          "documentation":"<p>The list of CloudWatch log group names to read agent traces from. Maximum of 10 log groups.</p>"
+        },
+        "logGroupNamePrefixes":{
+          "shape":"CloudWatchLogsSourceLogGroupNamePrefixesList",
+          "documentation":"<p>The list of CloudWatch log group name prefixes to read agent traces from. Specify this instead of <code>logGroupNames</code> to match log groups by prefix. Maximum of 5 prefixes. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>, not both. One of the two is required.</p>"
         },
         "filterConfig":{
           "shape":"CloudWatchFilterConfig",
@@ -2388,11 +2401,19 @@
       },
       "documentation":"<p>The configuration for reading agent traces from CloudWatch Logs.</p>"
     },
-    "CloudWatchLogsSourceLogGroupNamesList":{
+    "CloudWatchLogsSourceLogGroupNamePrefixesList":{
       "type":"list",
-      "member":{"shape":"String"},
+      "member":{"shape":"LogGroupNamePrefix"},
+      "documentation":"<p>List of CloudWatch Logs log group name prefixes to source trace data from.</p>",
       "max":5,
       "min":1
+    },
+    "CloudWatchLogsSourceLogGroupNamesList":{
+      "type":"list",
+      "member":{"shape":"LogGroupName"},
+      "documentation":"<p>Length is constrained per member, because members relaxed from @required carry @default([]).</p>",
+      "max":10,
+      "min":0
     },
     "CloudWatchLogsSourceServiceNamesList":{
       "type":"list",
@@ -2440,18 +2461,22 @@
     },
     "CloudWatchOutputConfig":{
       "type":"structure",
-      "required":[
-        "logGroupName",
-        "logStreamName"
-      ],
       "members":{
         "logGroupName":{
-          "shape":"String",
-          "documentation":"<p>The name of the CloudWatch log group where evaluation results will be written.</p>"
+          "shape":"OptionalLogGroupName",
+          "documentation":"<p>The name of the CloudWatch log group where evaluation results will be written. This value doesn't apply when <code>resultDestination</code> is <code>SOURCE_LOG_GROUP</code>, because results are written back to the trace source log group. The name can't be under the service-reserved <code>/aws/bedrock-agentcore/evaluations/</code> namespace, apart from the service-managed default group.</p>"
         },
         "logStreamName":{
-          "shape":"String",
+          "shape":"LogStreamName",
           "documentation":"<p>The name of the CloudWatch log stream where evaluation results will be written.</p>"
+        },
+        "metricsNamespace":{
+          "shape":"MetricsNamespace",
+          "documentation":"<p>The CloudWatch metrics namespace where evaluation result metrics are published. If you omit this value, the service publishes metrics to <code>Bedrock-AgentCore/Evaluations</code>. This value can't begin with <code>AWS/</code>.</p>"
+        },
+        "resultDestination":{
+          "shape":"ResultDestination",
+          "documentation":"<p>The destination where evaluation results are written. Valid values:</p> <ul> <li> <p> <code>DEDICATED_LOG_GROUP</code> (default) – Writes results to a dedicated result log group.</p> </li> <li> <p> <code>SOURCE_LOG_GROUP</code> – Writes results back to the log group that the agent traces were read from. If you use this value, don't specify <code>logGroupName</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>CloudWatch Logs destination for batch evaluation results.</p>"
@@ -3764,6 +3789,10 @@
       "max":100000,
       "min":1
     },
+    "EvaluationDimensionName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
     "EvaluationErrorCode":{
       "type":"string",
       "max":1024,
@@ -3893,6 +3922,10 @@
         "evaluatorName":{
           "shape":"EvaluatorName",
           "documentation":"<p> The human-readable name of the evaluator used for this evaluation. For built-in evaluators, this is the descriptive name (e.g., \"Helpfulness\", \"Correctness\"); for custom evaluators, this is the user-defined name. </p>"
+        },
+        "evaluationDimensionName":{
+          "shape":"EvaluationDimensionName",
+          "documentation":"<p> The name of the dimension that this result scores. This field is set only on results produced by an evaluator that uses a multi-dimensional rating scale, where each dimension is scored independently. For evaluators with a single rating scale, this field is absent. </p>"
         },
         "explanation":{
           "shape":"EvaluationExplanation",
@@ -4034,6 +4067,10 @@
         "evaluatorId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the evaluator.</p>"
+        },
+        "evaluationDimensionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the dimension that this summary covers. This field is set only for evaluators that use a multi-dimensional rating scale, where each dimension is summarized separately. For single-scale evaluators, this field is not set.</p>"
         },
         "statistics":{
           "shape":"EvaluatorStatistics",
@@ -4507,6 +4544,26 @@
       "documentation":"<p>A value used in filter comparisons, supporting different data types.</p>",
       "union":true
     },
+    "FindingDescription":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
+    "FindingTargetId":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "FindingTargetType":{
+      "type":"string",
+      "documentation":"<p>The type of location in a session that a finding points to: a span ID, a trace ID, or a span name.</p>",
+      "enum":[
+        "SPAN_ID",
+        "TRACE_ID",
+        "SPAN_NAME"
+      ]
+    },
     "GatewayArn":{
       "type":"string",
       "pattern":"arn:aws(|-cn|-us-gov):bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
@@ -4734,6 +4791,10 @@
         "evaluationResults":{
           "shape":"EvaluationJobResults",
           "documentation":"<p>The aggregated evaluation results, including session completion counts and evaluator score summaries.</p>"
+        },
+        "insightResults":{
+          "shape":"InsightResultList",
+          "documentation":"<p>The insights generated when the batch evaluation includes the <code>Builtin.FailureAnalysis</code> evaluator. Each insight groups related failures found across the evaluated sessions. An empty list means that no failures were found. If the analysis fails, this field is omitted and <code>errorDetails</code> describes the error.</p>"
         },
         "failureAnalysisResult":{
           "shape":"FailureAnalysisResultContent",
@@ -5723,7 +5784,7 @@
         },
         "oauth":{
           "shape":"OAuthCredentialProvider",
-          "documentation":"<p>OAuth 2.0 authentication via AgentCore Identity.</p>"
+          "documentation":"<p>OAuth 2.0 authentication via AgentCore Identity.</p> <p>The <code>AUTHORIZATION_CODE</code> grant type is not supported for outbound authentication from a harness to an AgentCore Gateway, even when <code>defaultReturnUrl</code> is specified.</p>"
         }
       },
       "documentation":"<p>Authentication method for calling a Gateway.</p>",
@@ -5766,6 +5827,69 @@
         }
       },
       "documentation":"<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
+    },
+    "HarnessHookDecision":{
+      "type":"string",
+      "enum":[
+        "allow",
+        "deny"
+      ]
+    },
+    "HarnessHookEvent":{
+      "type":"structure",
+      "required":[
+        "hookEventId",
+        "name",
+        "type"
+      ],
+      "members":{
+        "hookEventId":{
+          "shape":"HarnessHookEventId",
+          "documentation":"<p>The unique identifier for this hook event.</p>"
+        },
+        "name":{
+          "shape":"HarnessHookName",
+          "documentation":"<p>The name of the hook that ran.</p>"
+        },
+        "type":{
+          "shape":"HarnessHookEventType",
+          "documentation":"<p>The type of lifecycle hook event.</p>"
+        },
+        "decision":{
+          "shape":"HarnessHookDecision",
+          "documentation":"<p>The decision applied to the hook event. This field is present only for blocking Lambda targets.</p>"
+        },
+        "reason":{
+          "shape":"HarnessHookEventReasonString",
+          "documentation":"<p>The optional reason for the applied decision.</p>"
+        }
+      },
+      "documentation":"<p>A lifecycle hook event emitted in the invocation stream for visibility into hook decisions.</p>",
+      "event":true
+    },
+    "HarnessHookEventId":{
+      "type":"string",
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "HarnessHookEventReasonString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "HarnessHookEventType":{
+      "type":"string",
+      "enum":[
+        "before_tool_call",
+        "after_tool_call",
+        "before_invocation",
+        "after_invocation"
+      ]
+    },
+    "HarnessHookName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
     },
     "HarnessInlineFunctionConfig":{
       "type":"structure",
@@ -5920,6 +6044,12 @@
       "documentation":"<p>Specification of which model to use.</p>",
       "union":true
     },
+    "HarnessOpenAiApiBase":{
+      "type":"string",
+      "max":16383,
+      "min":1,
+      "sensitive":true
+    },
     "HarnessOpenAiApiFormat":{
       "type":"string",
       "enum":[
@@ -5941,6 +6071,10 @@
         "apiKeyArn":{
           "shape":"ApiKeyArn",
           "documentation":"<p>The ARN of your OpenAI API key on AgentCore Identity.</p>"
+        },
+        "apiBase":{
+          "shape":"HarnessOpenAiApiBase",
+          "documentation":"<p>Optional custom endpoint URL for an OpenAI-compatible endpoint.</p>"
         },
         "maxTokens":{
           "shape":"MaxTokens",
@@ -6055,7 +6189,7 @@
         },
         "awsSkills":{
           "shape":"HarnessSkillAwsSkillsSource",
-          "documentation":"<p>AWS Skills baked into the Harness's underlying Runtime.</p>"
+          "documentation":"<p>Amazon Web Services Skills baked into the Harness's underlying Runtime.</p>"
         }
       },
       "documentation":"<p>A skill available to the agent.</p>",
@@ -6069,7 +6203,7 @@
           "documentation":"<p>Optionally filter allowed skills with glob syntax, e.g., ['core-skills/*'].</p>"
         }
       },
-      "documentation":"<p>Passed to show that AWS Skills should be included.</p>"
+      "documentation":"<p>Passed to show that Amazon Web Services Skills should be included.</p>"
     },
     "HarnessSkillGitAuth":{
       "type":"structure",
@@ -6153,7 +6287,8 @@
         "model_context_window_exceeded",
         "max_iterations_exceeded",
         "max_output_tokens_exceeded",
-        "timeout_exceeded"
+        "timeout_exceeded",
+        "hook_stopped"
       ]
     },
     "HarnessStreamMetrics":{
@@ -6673,6 +6808,12 @@
       },
       "documentation":"<p>A reference to an insight analysis to run against sessions during batch evaluation. Insights provide deeper analysis beyond individual evaluator scores, including failure detection, user intent clustering, and execution summarization.</p>"
     },
+    "InsightDescription":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
     "InsightId":{
       "type":"string",
       "documentation":"<p>Canonical insight identifiers using the Builtin.Insight.* naming convention. Used by BatchEvaluate, InternalEvaluate, and ServiceEngineEvaluate flows.</p>",
@@ -6683,6 +6824,105 @@
       "member":{"shape":"Insight"},
       "max":10,
       "min":0
+    },
+    "InsightName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "InsightResult":{
+      "type":"structure",
+      "required":[
+        "type",
+        "name",
+        "description",
+        "createdAt"
+      ],
+      "members":{
+        "type":{
+          "shape":"InsightType",
+          "documentation":"<p>The type of insight. <code>FAILURE</code> indicates a group of related failures.</p>"
+        },
+        "name":{
+          "shape":"InsightName",
+          "documentation":"<p>A generated label for the insight. The name is not an identifier and can differ between batch evaluations.</p>"
+        },
+        "description":{
+          "shape":"InsightDescription",
+          "documentation":"<p>A description of the failure pattern that the insight represents.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the insight was generated.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of distinct sessions affected by the insight.</p>"
+        },
+        "sampleSessions":{
+          "shape":"InsightSampleSessionList",
+          "documentation":"<p>A sample of up to 10 sessions affected by the insight. Returned only when the insight has no root causes. Otherwise, sample sessions are returned for each root cause.</p>"
+        },
+        "rootCauses":{
+          "shape":"InsightRootCauseList",
+          "documentation":"<p>The root causes identified for the insight.</p>"
+        }
+      },
+      "documentation":"<p>An insight that groups related failures found across the sessions in a batch evaluation.</p>"
+    },
+    "InsightResultList":{
+      "type":"list",
+      "member":{"shape":"InsightResult"},
+      "max":50,
+      "min":0
+    },
+    "InsightRootCause":{
+      "type":"structure",
+      "required":[
+        "name",
+        "explanation"
+      ],
+      "members":{
+        "name":{
+          "shape":"RootCauseName",
+          "documentation":"<p>A generated label for the root cause.</p>"
+        },
+        "explanation":{
+          "shape":"RootCauseExplanation",
+          "documentation":"<p>An explanation of how the root cause leads to the failures in the insight.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of distinct sessions affected by the root cause. A session can be affected by more than one root cause of the same insight.</p>"
+        },
+        "suggestedFix":{
+          "shape":"SuggestedFix",
+          "documentation":"<p>A suggested change to the agent that addresses the root cause.</p>"
+        },
+        "sampleSessions":{
+          "shape":"InsightSampleSessionList",
+          "documentation":"<p>A sample of up to 10 sessions affected by the root cause.</p>"
+        }
+      },
+      "documentation":"<p>A root cause that contributes to an insight.</p>"
+    },
+    "InsightRootCauseList":{
+      "type":"list",
+      "member":{"shape":"InsightRootCause"},
+      "max":50,
+      "min":0
+    },
+    "InsightSampleSessionList":{
+      "type":"list",
+      "member":{"shape":"SampleSession"},
+      "max":10,
+      "min":0
+    },
+    "InsightType":{
+      "type":"string",
+      "documentation":"<p>The type of insight.</p>",
+      "enum":["FAILURE"]
     },
     "InsightsFailureCategory":{
       "type":"string",
@@ -7455,6 +7695,10 @@
         "runtimeClientError":{
           "shape":"RuntimeClientError",
           "documentation":"<p>An error returned by the runtime container during agent execution.</p>"
+        },
+        "hookEvent":{
+          "shape":"HarnessHookEvent",
+          "documentation":"<p>A lifecycle hook event emitted when a configured hook runs.</p>"
         }
       },
       "documentation":"<p>The streaming events returned by a harness invocation.</p>",
@@ -7995,7 +8239,7 @@
         },
         "namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The namespace prefix to filter memory records by. Returns all memory records in namespaces that start with the provided prefix. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
+          "documentation":"<p>The exact namespace to filter memory records by. Returns all memory records that matches the provided namespace. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
         },
         "namespacePath":{
           "shape":"Namespace",
@@ -8229,6 +8473,22 @@
       },
       "documentation":"<p>The configuration for a stream that provides a visual representation of a browser session in Amazon Bedrock AgentCore. This stream enables agents to observe the current state of the browser, including rendered web pages, visual elements, and the results of interactions.</p>"
     },
+    "LogGroupName":{
+      "type":"string",
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
+    "LogGroupNamePrefix":{
+      "type":"string",
+      "documentation":"<p>Prefix of a CloudWatch Logs log group name.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
+    "LogStreamName":{
+      "type":"string",
+      "documentation":"<p>A log stream name. The pattern is CloudWatch Logs' own log stream name pattern, which already admits the empty string; empty is the @default of members relaxed from @required and means &quot;no log stream&quot;. No @length is applied, because CloudWatch's min of 1 would reject that default.</p>",
+      "pattern":"[^:*]*"
+    },
     "Long":{
       "type":"long",
       "box":true
@@ -8371,9 +8631,17 @@
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the memory record was created.</p>"
         },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp based on which the memory record was ingested. This reflects the time of the source content that the record was derived from, which can differ from <code>createdAt</code>, the time the record itself was written.</p>"
+        },
         "metadata":{
           "shape":"MemoryRecordMetadataMap",
           "documentation":"<p>A map of metadata key-value pairs associated with a memory record.</p>"
+        },
+        "expiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the memory record expires and becomes eligible for deletion. This value is set when a record expiry (long-term memory time-to-live) applies to the record, either from the strategy the record belongs to or from a record expiry provided on the batch request that created or updated it. If the record has no expiry configured, this value is not present and the record does not expire.</p>"
         }
       },
       "documentation":"<p>Contains information about a memory record in an AgentCore Memory resource.</p>"
@@ -8573,6 +8841,10 @@
           "shape":"Double",
           "documentation":"<p>The relevance score of the memory record when returned as part of a search result. Higher values indicate greater relevance to the search query.</p>"
         },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp based on which the memory record was ingested. This reflects the time of the source content that the record was derived from, which can differ from <code>createdAt</code>, the time the record itself was written.</p>"
+        },
         "metadata":{
           "shape":"MemoryRecordMetadataMap",
           "documentation":"<p>A map of metadata key-value pairs associated with a memory record.</p>"
@@ -8707,6 +8979,13 @@
       "max":256,
       "min":0,
       "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "MetricsNamespace":{
+      "type":"string",
+      "documentation":"<p>CloudWatch metrics namespace for evaluation result metrics.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._#/:-]+"
     },
     "MimeType":{
       "type":"string",
@@ -9188,6 +9467,11 @@
         "EXISTS",
         "NOT_EXISTS"
       ]
+    },
+    "OptionalLogGroupName":{
+      "type":"string",
+      "documentation":"<p>A log group name that may also be empty. The empty string is the @default of members that were relaxed from @required, and carries the meaning &quot;no log group&quot; for that member.</p>",
+      "pattern":"$|^[.\\-_/#A-Za-z0-9]+"
     },
     "OutputConfig":{
       "type":"structure",
@@ -9981,6 +10265,31 @@
         "TOOL_DESCRIPTION_RECOMMENDATION"
       ]
     },
+    "RecordExpiryAction":{
+      "type":"string",
+      "documentation":"<p>The action to apply to an existing record expiry (long-term memory time-to-live) configuration. <code>REMOVE</code> removes a previously configured expiry so that the records no longer expire.</p>",
+      "enum":["REMOVE"]
+    },
+    "RecordExpiryDurationDays":{
+      "type":"integer",
+      "box":true,
+      "min":31
+    },
+    "RecordExpirySpecification":{
+      "type":"structure",
+      "members":{
+        "recordExpiryDurationDays":{
+          "shape":"RecordExpiryDurationDays",
+          "documentation":"<p>The duration, in days, after which the records in this request expire. The minimum is 31 days.</p>"
+        },
+        "action":{
+          "shape":"RecordExpiryAction",
+          "documentation":"<p>The action to apply to the existing record expiry configuration. Set to <code>REMOVE</code> to remove a previously configured expiry so that the records no longer expire. This value does not apply when creating records.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the record expiry (long-term memory time-to-live) applied to the records in a batch request. Provide exactly one of <code>recordExpiryDurationDays</code> or <code>action</code>. Set <code>recordExpiryDurationDays</code> to configure or update the expiry, or set <code>action</code> to <code>REMOVE</code> to remove a previously configured expiry.</p>",
+      "union":true
+    },
     "RegistryArn":{
       "type":"string",
       "max":2048,
@@ -10202,6 +10511,14 @@
       "sensitive":true,
       "streaming":true
     },
+    "ResultDestination":{
+      "type":"string",
+      "documentation":"<p>Where evaluation results are written: dedicated results log group (default) or the source log group.</p>",
+      "enum":[
+        "DEDICATED_LOG_GROUP",
+        "SOURCE_LOG_GROUP"
+      ]
+    },
     "RetrieveMemoryRecordsInput":{
       "type":"structure",
       "required":[
@@ -10217,7 +10534,7 @@
         },
         "namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The namespace prefix to filter memory records by. Searches for memory records in namespaces that start with the provided prefix. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
+          "documentation":"<p>The exact namespace to filter memory records by. Searches for memory records that matches the provided namespace value. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
         },
         "namespacePath":{
           "shape":"Namespace",
@@ -10334,6 +10651,18 @@
       "member":{"shape":"RootCauseCluster"},
       "min":0
     },
+    "RootCauseExplanation":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "RootCauseName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
     "RuntimeClientError":{
       "type":"structure",
       "members":{
@@ -10419,6 +10748,25 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "SampleSession":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the session.</p>"
+        },
+        "lastSeenAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The latest timestamp observed for the session in the batch evaluation input.</p>"
+        },
+        "findings":{
+          "shape":"SessionFindingList",
+          "documentation":"<p>The failures found in the session that belong to the insight or root cause, up to 10.</p>"
+        }
+      },
+      "documentation":"<p>A session affected by an insight or root cause. Use the session ID to find the per-session evaluation results in CloudWatch Logs.</p>"
     },
     "SaveBrowserSessionProfileRequest":{
       "type":"structure",
@@ -10732,6 +11080,50 @@
       },
       "documentation":"<p>A time range filter for selecting sessions. Specifies the start and end times to narrow down which sessions are included.</p>"
     },
+    "SessionFinding":{
+      "type":"structure",
+      "required":["description"],
+      "members":{
+        "targetId":{
+          "shape":"FindingTargetId",
+          "documentation":"<p>The identifier or name of the location in the session where the failure was found, interpreted according to <code>targetType</code>.</p>"
+        },
+        "targetType":{
+          "shape":"FindingTargetType",
+          "documentation":"<p>The type of location that <code>targetId</code> refers to.</p>"
+        },
+        "description":{
+          "shape":"FindingDescription",
+          "documentation":"<p>A description of the failure.</p>"
+        },
+        "category":{
+          "shape":"SessionFindingCategoryString",
+          "documentation":"<p>The category of the failure.</p>"
+        },
+        "confidence":{
+          "shape":"SessionFindingConfidenceDouble",
+          "documentation":"<p>The confidence that the finding is a failure, from 0 to 1.</p>"
+        }
+      },
+      "documentation":"<p>A failure found in a session.</p>"
+    },
+    "SessionFindingCategoryString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "SessionFindingConfidenceDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "SessionFindingList":{
+      "type":"list",
+      "member":{"shape":"SessionFinding"},
+      "max":10,
+      "min":0
+    },
     "SessionId":{
       "type":"string",
       "max":100,
@@ -10811,6 +11203,30 @@
     "SessionSummaryList":{
       "type":"list",
       "member":{"shape":"SessionSummary"}
+    },
+    "SessionTraceIds":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "traceIds"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session that contains the traces to evaluate.</p>"
+        },
+        "traceIds":{
+          "shape":"TraceIdList",
+          "documentation":"<p>The list of trace IDs within the session to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>A pairing of a session with the specific trace IDs to evaluate within that session. Use this to evaluate individual traces rather than an entire session.</p>"
+    },
+    "SessionTraceIdsList":{
+      "type":"list",
+      "member":{"shape":"SessionTraceIds"},
+      "max":500,
+      "min":1
     },
     "SessionType":{
       "type":"string",
@@ -10926,7 +11342,8 @@
         "description":{
           "shape":"BatchEvaluationDescription",
           "documentation":"<p>The description of the batch evaluation.</p>"
-        }
+        },
+        "outputConfig":{"shape":"OutputConfig"}
       }
     },
     "StartBatchEvaluationRequestEvaluatorsList":{
@@ -11695,6 +12112,12 @@
       "max":2048,
       "min":1
     },
+    "SuggestedFix":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
@@ -12218,6 +12641,12 @@
       "type":"string",
       "max":32,
       "min":32
+    },
+    "TraceIdList":{
+      "type":"list",
+      "member":{"shape":"TraceId"},
+      "max":100,
+      "min":1
     },
     "TraceIds":{
       "type":"list",

@@ -16,23 +16,47 @@ from awscli.customizations.utils import uni_print
 from awscli.utils import is_stdin_a_tty
 
 
-def yes_no_choice(prompt):
+def yes_no_choice(prompt, default=None):
     """
     Prompts the user to answer a yes/no question.
     Continually re-prompts for invalid selections.
 
     :param prompt: Prompt text.
+    :param default: Optional boolean returned when the response is empty.
     :returns: True for yes, False for no.
     """
     while True:
         response = compat_input(prompt)
 
+        if response == '' and default is not None:
+            return default
         if response.lower() in ('y', 'yes'):
             return True
         elif response.lower() in ('n', 'no'):
             return False
         else:
             uni_print('Invalid response. Please enter "y" or "n"\n')
+
+
+def yes_no_never_choice(prompt):
+    """
+    Prompts the user with a yes/no/never question.
+    Continually re-prompts for invalid selections.
+
+    :param prompt: Prompt text.
+    :returns: 'yes', 'no', or 'never'.
+    """
+    while True:
+        response = compat_input(prompt)
+
+        if response.lower() in ('y', 'yes'):
+            return 'yes'
+        elif response.lower() in ('n', 'no'):
+            return 'no'
+        elif response.lower() == 'never':
+            return 'never'
+        else:
+            uni_print('Invalid response. Please enter "y", "n", or "never"\n')
 
 
 def multiselect_choice(

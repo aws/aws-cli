@@ -1,0 +1,22 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "CodeScanSucceeded" : {
+      "description" : "Waits until the scan reaches SUCCEEDED, at which point the scan has finished and its findings are available from ListCodeFindings (filter on scanRunId). Triage of those findings and creation of issues continue asynchronously after the scan succeeds. Fails if the scan reaches FAILED. Scans run a build followed by analysis and can take from minutes to several hours. SDKs that use exponential backoff wait at least 60 seconds between polls and back off to at most 8 hours between polls, until the caller's maximum wait time elapses. SDKs and the AWS CLI that use a fixed delay poll every 60 seconds for up to 480 attempts (8 hours).",
+      "delay" : 60,
+      "maxAttempts" : 480,
+      "operation" : "GetCodeScan",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "scan.status",
+        "state" : "success",
+        "expected" : "SUCCEEDED"
+      }, {
+        "matcher" : "path",
+        "argument" : "scan.status",
+        "state" : "failure",
+        "expected" : "FAILED"
+      } ]
+    }
+  }
+}

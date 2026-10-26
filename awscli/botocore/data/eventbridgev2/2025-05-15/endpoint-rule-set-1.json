@@ -1,0 +1,814 @@
+{
+    "version": "1.0",
+    "parameters": {
+        "Region": {
+            "type": "String",
+            "builtIn": "AWS::Region",
+            "required": true,
+            "documentation": "The AWS region used to dispatch the request."
+        },
+        "Endpoint": {
+            "type": "String",
+            "builtIn": "SDK::Endpoint",
+            "documentation": "Override the endpoint used to send this request."
+        },
+        "UseFIPS": {
+            "type": "Boolean",
+            "builtIn": "AWS::UseFIPS",
+            "required": true,
+            "default": false,
+            "documentation": "When true, send this request to the FIPS-compliant regional endpoint."
+        },
+        "UseDualStack": {
+            "type": "Boolean",
+            "builtIn": "AWS::UseDualStack",
+            "required": true,
+            "default": false,
+            "documentation": "When true, use the dual-stack endpoint."
+        },
+        "AccountId": {
+            "type": "String",
+            "builtIn": "AWS::Auth::AccountId",
+            "documentation": "The AWS account ID used for the request, sourced from the caller's credentials."
+        },
+        "EventBusArn": {
+            "type": "String",
+            "documentation": "The bus ARN from the request, bound via @contextParam. Its account is the bus owner and takes precedence over the credentials-sourced account for cell routing (cross-account calls)."
+        },
+        "AccountIdEndpointMode": {
+            "type": "String",
+            "builtIn": "AWS::Auth::AccountIdEndpointMode",
+            "documentation": "The behavior for account ID based endpoint routing: preferred, disabled, or required."
+        }
+    },
+    "rules": [
+        {
+            "documentation": "An explicit endpoint override always wins; FIPS/DualStack cannot be combined with it.",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "type": "tree",
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                    "type": "error"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseDualStack"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                    "type": "error"
+                },
+                {
+                    "conditions": [],
+                    "endpoint": {
+                        "url": {
+                            "ref": "Endpoint"
+                        }
+                    },
+                    "type": "endpoint"
+                }
+            ]
+        },
+        {
+            "documentation": "Resolve against the partition of the configured region.",
+            "conditions": [
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
+            "type": "tree",
+            "rules": [
+                {
+                    "documentation": "Bus-owner account endpoint derived from the request's bus ARN (cross-account safe). Falls through to the credentials-sourced rule if the ARN does not parse or its account is not a valid host label. FIPS/DualStack partition support is validated per variant.",
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "AccountIdEndpointMode"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "not",
+                            "argv": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "AccountIdEndpointMode"
+                                        },
+                                        "disabled"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "EventBusArn"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "aws.parseArn",
+                            "argv": [
+                                {
+                                    "ref": "EventBusArn"
+                                }
+                            ],
+                            "assign": "ParsedBusArn"
+                        },
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "ParsedBusArn"
+                                        },
+                                        "service"
+                                    ]
+                                },
+                                "events"
+                            ]
+                        },
+                        {
+                            "fn": "isValidHostLabel",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "ParsedBusArn"
+                                        },
+                                        "accountId"
+                                    ]
+                                },
+                                false
+                            ]
+                        }
+                    ],
+                    "type": "tree",
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        true
+                                    ]
+                                },
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "type": "tree",
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsFIPS"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsDualStack"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://{ParsedBusArn#accountId}.eventsv2-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        }
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                    "type": "error"
+                                }
+                            ]
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "type": "tree",
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsFIPS"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://{ParsedBusArn#accountId}.eventsv2-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        }
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                    "type": "error"
+                                }
+                            ]
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "type": "tree",
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsDualStack"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://{ParsedBusArn#accountId}.eventsv2.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        }
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                    "type": "error"
+                                }
+                            ]
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://{ParsedBusArn#accountId}.eventsv2.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {
+                                    "metricValues": [
+                                        "O"
+                                    ]
+                                }
+                            },
+                            "type": "endpoint"
+                        }
+                    ]
+                },
+                {
+                    "documentation": "Account-based endpoint when routing is enabled and a credentials-sourced account ID is present. FIPS/DualStack partition support is validated per variant.",
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "AccountIdEndpointMode"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "not",
+                            "argv": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "AccountIdEndpointMode"
+                                        },
+                                        "disabled"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "AccountId"
+                                }
+                            ]
+                        }
+                    ],
+                    "type": "tree",
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isValidHostLabel",
+                                    "argv": [
+                                        {
+                                            "ref": "AccountId"
+                                        },
+                                        false
+                                    ]
+                                }
+                            ],
+                            "type": "tree",
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsFIPS"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsDualStack"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://{AccountId}.eventsv2-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "properties": {
+                                                    "metricValues": [
+                                                        "O"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                            "type": "error"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsFIPS"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://{AccountId}.eventsv2-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "metricValues": [
+                                                        "O"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "FIPS is enabled but this partition does not support FIPS",
+                                            "type": "error"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsDualStack"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://{AccountId}.eventsv2.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "properties": {
+                                                    "metricValues": [
+                                                        "O"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "DualStack is enabled but this partition does not support DualStack",
+                                            "type": "error"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://{AccountId}.eventsv2.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        }
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ]
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Credentials-sourced account ID parameter is invalid",
+                            "type": "error"
+                        }
+                    ]
+                },
+                {
+                    "documentation": "Required mode could not produce an account-based endpoint: no account ID from the bus ARN or credentials. (An invalid credentials-sourced ID errors in the rule above.)",
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "AccountIdEndpointMode"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "AccountIdEndpointMode"
+                                },
+                                "required"
+                            ]
+                        }
+                    ],
+                    "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
+                    "type": "error"
+                },
+                {
+                    "documentation": "Regional endpoint fallback with FIPS/DualStack variants, validating partition support.",
+                    "conditions": [],
+                    "type": "tree",
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        true
+                                    ]
+                                },
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "type": "tree",
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsFIPS"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsDualStack"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://eventsv2-fips.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                    "type": "error"
+                                }
+                            ]
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "type": "tree",
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsFIPS"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://eventsv2-fips.{Region}.{PartitionResult#dnsSuffix}"
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                    "type": "error"
+                                }
+                            ]
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "type": "tree",
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsDualStack"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://eventsv2.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                    "type": "error"
+                                }
+                            ]
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://eventsv2.{Region}.{PartitionResult#dnsSuffix}"
+                            },
+                            "type": "endpoint"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

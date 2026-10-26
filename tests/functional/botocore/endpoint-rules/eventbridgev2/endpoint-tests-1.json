@@ -1,0 +1,513 @@
+{
+    "version": "1.0",
+    "testCases": [
+        {
+            "documentation": "Bus ARN account takes precedence over the credentials-sourced account (cross-account call).",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://210987654321.eventsv2.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Bus ARN routing works without a credentials-sourced account ID.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://210987654321.eventsv2.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Disabled mode ignores the bus ARN and the credentials-sourced account.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://eventsv2.us-east-1.amazonaws.com"
+                }
+            }
+        },
+        {
+            "documentation": "An unparseable bus ARN falls through to the credentials-sourced account.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "not-an-arn",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "FIPS account-based endpoint from the bus ARN.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountIdEndpointMode": "preferred",
+                "UseFIPS": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://210987654321.eventsv2-fips.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "DualStack account-based endpoint from the bus ARN.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountIdEndpointMode": "preferred",
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://210987654321.eventsv2.us-east-1.api.aws",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "FIPS + DualStack account-based endpoint from the bus ARN.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountIdEndpointMode": "preferred",
+                "UseFIPS": true,
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://210987654321.eventsv2-fips.us-east-1.api.aws",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "FIPS account-based endpoint from the credentials-sourced account.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "UseFIPS": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2-fips.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "FIPS + DualStack account-based endpoint from the credentials-sourced account.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "UseFIPS": true,
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2-fips.us-east-1.api.aws",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Explicit endpoint override wins over account-based routing.",
+            "params": {
+                "Region": "us-east-1",
+                "Endpoint": "https://example.com",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            }
+        },
+        {
+            "documentation": "FIPS cannot be combined with an endpoint override.",
+            "params": {
+                "Region": "us-east-1",
+                "Endpoint": "https://example.com",
+                "UseFIPS": true
+            },
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            }
+        },
+        {
+            "documentation": "DualStack cannot be combined with an endpoint override.",
+            "params": {
+                "Region": "us-east-1",
+                "Endpoint": "https://example.com",
+                "UseDualStack": true
+            },
+            "expect": {
+                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+            }
+        },
+        {
+            "documentation": "Account-based endpoint when mode is preferred and account ID is available.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Regional endpoint when mode is disabled.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://eventsv2.us-east-1.amazonaws.com"
+                }
+            }
+        },
+        {
+            "documentation": "Regional FIPS endpoint when mode is disabled.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "UseFIPS": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://eventsv2-fips.us-east-1.amazonaws.com"
+                }
+            }
+        },
+        {
+            "documentation": "Regional DualStack endpoint when mode is disabled.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://eventsv2.us-east-1.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "Regional FIPS + DualStack endpoint when mode is disabled.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "UseFIPS": true,
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://eventsv2-fips.us-east-1.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "Regional endpoint when no account ID is available and mode is preferred.",
+            "params": {
+                "Region": "eu-west-1",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://eventsv2.eu-west-1.amazonaws.com"
+                }
+            }
+        },
+        {
+            "documentation": "Error when mode is required but no account ID is available.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountIdEndpointMode": "required"
+            },
+            "expect": {
+                "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded"
+            }
+        },
+        {
+            "documentation": "Account-based endpoint in the aws-cn partition when mode is required (account routing works in every partition).",
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "required"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.cn-north-1.amazonaws.com.cn",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Error when the credentials-sourced account ID is not a valid host label.",
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "not/valid",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "error": "Credentials-sourced account ID parameter is invalid"
+            }
+        },
+        {
+            "documentation": "Regional endpoint when AccountIdEndpointMode is not set at all, even with an account ID and bus ARN available. The explicit empty properties pin that regional endpoints carry no adoption metric.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountId": "123456789012"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://eventsv2.us-east-1.amazonaws.com",
+                    "properties": {}
+                }
+            }
+        },
+        {
+            "documentation": "Account-based endpoint in the aws-us-gov partition when mode is preferred (account routing works in every partition).",
+            "params": {
+                "Region": "us-gov-west-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.us-gov-west-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Account-based FIPS endpoint in the aws-us-gov partition when mode is required.",
+            "params": {
+                "Region": "us-gov-west-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "required",
+                "UseFIPS": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2-fips.us-gov-west-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Account-based endpoint in the aws-iso partition when mode is preferred, composing the iso DNS suffix.",
+            "params": {
+                "Region": "us-iso-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.us-iso-east-1.c2s.ic.gov",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "DualStack account-based endpoint in the aws-iso partition, composing the iso dualstack DNS suffix.",
+            "params": {
+                "Region": "us-iso-east-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.us-iso-east-1.api.aws.ic.gov",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "A parseable bus ARN whose account is not a valid host label falls through to the credentials-sourced account.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:not_a_valid_label!:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "A bus ARN for another service falls through to the credentials-sourced account.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:sqs:us-east-1:210987654321:some-queue",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Cross-region bus ARN: the ARN account routes within the CLIENT region (cells are per-account per-region).",
+            "params": {
+                "Region": "us-west-2",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://210987654321.eventsv2.us-west-2.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Required mode succeeds through the bus ARN account.",
+            "params": {
+                "Region": "us-east-1",
+                "EventBusArn": "arn:aws:events:us-east-1:210987654321:event-busv2/owner-bus/abcdefghij0123456789abcde",
+                "AccountIdEndpointMode": "required"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://210987654321.eventsv2.us-east-1.amazonaws.com",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Account-based endpoint in the aws-cn partition when mode is preferred, composing the cn DNS suffix.",
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://123456789012.eventsv2.cn-north-1.amazonaws.com.cn",
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

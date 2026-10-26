@@ -1612,7 +1612,7 @@
     },
     "AgentSoftwareVersion":{
       "type":"string",
-      "documentation":"The image type is the type of AppStream image resource.",
+      "documentation":"<p>The image type is the type of AppStream image resource.</p>",
       "enum":[
         "CURRENT_LATEST",
         "ALWAYS_LATEST"
@@ -1840,11 +1840,13 @@
     "AppDisplayName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_. -]{0,99}$"
     },
     "AppName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
     },
     "AppVisibility":{
@@ -3018,6 +3020,10 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfig",
           "documentation":"<p>The configuration for agent access on the stack. If specified, agent access is enabled for the stack.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions. When you specify FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. The default is REUSE_CREDENTIALS.</p>"
         }
       }
     },
@@ -4507,6 +4513,7 @@
     "FilePath":{
       "type":"string",
       "max":32767,
+      "min":0,
       "sensitive":true
     },
     "Filter":{
@@ -4872,6 +4879,10 @@
         "ImageType":{
           "shape":"ImageType",
           "documentation":"<p>The type of the image. Images created through AMI import have type \"custom\", while WorkSpaces Applications provided images have type \"native\". Custom images support additional instance types including GeneralPurpose, MemoryOptimized, ComputeOptimized, and Accelerated instance families.</p>"
+        },
+        "ImageSoftwareMetadata":{
+          "shape":"ImageSoftwareMetadata",
+          "documentation":"<p>The software metadata associated with the image.</p>"
         }
       },
       "documentation":"<p>Describes an image.</p>"
@@ -5011,11 +5022,13 @@
     "ImageImportDescription":{
       "type":"string",
       "max":256,
+      "min":0,
       "pattern":"^[a-zA-Z0-9_.() -]+$"
     },
     "ImageImportDisplayName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9_.() -]+$"
     },
     "ImageList":{
@@ -5042,6 +5055,16 @@
         "TRUE",
         "FALSE"
       ]
+    },
+    "ImageSoftwareMetadata":{
+      "type":"structure",
+      "members":{
+        "nvidiaGridDriverVersion":{
+          "shape":"NvidiaGridDriverVersion",
+          "documentation":"<p>The version of the NVIDIA GRID driver installed on the image. This field is empty if no NVIDIA GRID driver is installed.</p>"
+        }
+      },
+      "documentation":"<p>Describes the software metadata for an image, such as the installed NVIDIA GRID driver version.</p>"
     },
     "ImageState":{
       "type":"string",
@@ -5082,7 +5105,7 @@
     },
     "ImageType":{
       "type":"string",
-      "documentation":"The image type is the type of AppStream image resource.",
+      "documentation":"<p>The image type is the type of AppStream image resource.</p>",
       "enum":[
         "CUSTOM",
         "NATIVE",
@@ -5167,7 +5190,8 @@
     "LaunchParameters":{
       "type":"string",
       "max":1024,
-      "pattern":"[^\\x00]+",
+      "min":0,
+      "pattern":"^[^\\x00]+$",
       "sensitive":true
     },
     "LimitExceededException":{
@@ -5360,6 +5384,12 @@
         }
       },
       "documentation":"<p>Describes the network details of the fleet or image builder instance.</p>"
+    },
+    "NvidiaGridDriverVersion":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"^[0-9]+(\\.[0-9]+){1,2}$"
     },
     "OperationNotPermittedException":{
       "type":"structure",
@@ -5817,13 +5847,17 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfig",
           "documentation":"<p>The agent access configuration of the stack, if agent access is enabled.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Indicates whether users' cloud storage authentication persists across streaming sessions. When this attribute is FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. The default is REUSE_CREDENTIALS.</p>"
         }
       },
       "documentation":"<p>Describes a stack.</p>"
     },
     "StackAttribute":{
       "type":"string",
-      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> </ul>",
+      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> <li> <p>STORAGE_CONNECTOR_AUTHENTICATION</p> </li> </ul>",
       "enum":[
         "STORAGE_CONNECTORS",
         "STORAGE_CONNECTOR_HOMEFOLDERS",
@@ -5838,7 +5872,8 @@
         "ACCESS_ENDPOINTS",
         "STREAMING_EXPERIENCE_SETTINGS",
         "CONTENT_REDIRECTION",
-        "AGENT_ACCESS_CONFIG"
+        "AGENT_ACCESS_CONFIG",
+        "STORAGE_CONNECTOR_AUTHENTICATION"
       ]
     },
     "StackAttributes":{
@@ -6018,6 +6053,14 @@
         }
       },
       "documentation":"<p>Describes a connector that enables persistent storage for users.</p>"
+    },
+    "StorageConnectorAuthentication":{
+      "type":"string",
+      "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions.</p>",
+      "enum":[
+        "FORCE_REAUTHENTICATION",
+        "REUSE_CREDENTIALS"
+      ]
     },
     "StorageConnectorList":{
       "type":"list",
@@ -6215,7 +6258,7 @@
     "Timestamp":{"type":"timestamp"},
     "UUID":{
       "type":"string",
-      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -6609,6 +6652,10 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfigForUpdate",
           "documentation":"<p>The configuration for agent access on the stack. Specify this to update agent access settings. To remove agent access, use AttributesToDelete with the AGENT_ACCESS_CONFIG value.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions. When you specify FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. To clear this attribute, add STORAGE_CONNECTOR_AUTHENTICATION to AttributesToDelete.</p>"
         }
       }
     },
@@ -6943,6 +6990,7 @@
     },
     "WorkspaceImageId":{
       "type":"string",
+      "documentation":"<p>WorkspaceImageId type with validation pattern</p>",
       "max":67,
       "min":12,
       "pattern":"^wsi-[0-9a-z]{8,63}$"

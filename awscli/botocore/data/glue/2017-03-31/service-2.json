@@ -47,7 +47,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"OperationTimeoutException"},
-        {"shape":"GlueEncryptionException"}
+        {"shape":"GlueEncryptionException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Creates one or more partitions in a batch operation.</p>"
     },
@@ -77,7 +78,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"InternalServiceException"},
-        {"shape":"OperationTimeoutException"}
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Deletes one or more partitions in a batch operation.</p>"
     },
@@ -95,7 +97,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"GlueEncryptionException"},
-        {"shape":"ResourceNotReadyException"}
+        {"shape":"ResourceNotReadyException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Deletes multiple tables at once.</p> <note> <p>After completing this operation, you no longer have access to the table versions and partitions that belong to the deleted table. Glue deletes these \"orphaned\" resources asynchronously in a timely manner, at the discretion of the service.</p> <p>To ensure the immediate deletion of all related resources, before calling <code>BatchDeleteTable</code>, use <code>DeleteTableVersion</code> or <code>BatchDeleteTableVersion</code>, and <code>DeletePartition</code> or <code>BatchDeletePartition</code>, to delete any resources that belong to the table.</p> </note>"
     },
@@ -173,6 +176,21 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Retrieves a list of data quality results for the specified result IDs.</p>"
+    },
+    "BatchGetDataQualityResultV2":{
+      "name":"BatchGetDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetDataQualityResultV2Request"},
+      "output":{"shape":"BatchGetDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves a list of data quality results for the specified result IDs. You can specify up to 100 result IDs in a single request.</p>"
     },
     "BatchGetDataQualityRulesetEvaluationRun":{
       "name":"BatchGetDataQualityRulesetEvaluationRun",
@@ -348,7 +366,8 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"InternalServiceException"},
-        {"shape":"GlueEncryptionException"}
+        {"shape":"GlueEncryptionException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Updates one or more partitions in a batch operation.</p>"
     },
@@ -2219,6 +2238,22 @@
       ],
       "documentation":"<p>Retrieves the result of a data quality rule evaluation.</p>"
     },
+    "GetDataQualityResultV2":{
+      "name":"GetDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityResultV2Request"},
+      "output":{"shape":"GetDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"EntityNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the result of a data quality rule evaluation published from any supported data platform.</p>"
+    },
     "GetDataQualityRuleRecommendationRun":{
       "name":"GetDataQualityRuleRecommendationRun",
       "http":{
@@ -2924,6 +2959,41 @@
       ],
       "documentation":"<p>Retrieves the statement.</p>"
     },
+    "GetSystemLogsForJobRun":{
+      "name":"GetSystemLogsForJobRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSystemLogsForJobRunRequest"},
+      "output":{"shape":"GetSystemLogsForJobRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves the system logs for a job run.</p>",
+      "readonly":true
+    },
+    "GetSystemLogsForSession":{
+      "name":"GetSystemLogsForSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSystemLogsForSessionRequest"},
+      "output":{"shape":"GetSystemLogsForSessionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Retrieves the system logs for an interactive session.</p>",
+      "readonly":true
+    },
     "GetTable":{
       "name":"GetTable",
       "http":{
@@ -3367,6 +3437,21 @@
       ],
       "documentation":"<p>Returns all data quality execution results for your account.</p>"
     },
+    "ListDataQualityResultsV2":{
+      "name":"ListDataQualityResultsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityResultsV2Request"},
+      "output":{"shape":"ListDataQualityResultsV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns a paginated list of data quality execution results for your account, filtered by the specified criteria. Use the <code>NextToken</code> parameter to retrieve additional results.</p>"
+    },
     "ListDataQualityRuleRecommendationRuns":{
       "name":"ListDataQualityRuleRecommendationRuns",
       "http":{
@@ -3543,6 +3628,25 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>List integration resource properties for a single customer. It supports the filters, maxRecords and markers.</p>"
+    },
+    "ListIntegrationTableProperties":{
+      "name":"ListIntegrationTableProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListIntegrationTablePropertiesRequest"},
+      "output":{"shape":"ListIntegrationTablePropertiesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Lists the integration table properties in your account. This operation supports filtering and pagination.</p>"
     },
     "ListIterableForms":{
       "name":"ListIterableForms",
@@ -3776,6 +3880,24 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Modifies a Zero-ETL integration in the caller's account.</p>"
+    },
+    "PublishDataQualityResultV2":{
+      "name":"PublishDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PublishDataQualityResultV2Request"},
+      "output":{"shape":"PublishDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNumberLimitExceededException"}
+      ],
+      "documentation":"<note> <p>This operation is intended for internal use. Do not call it directly.</p> </note> <p>AWS Glue Data Quality uses this operation to publish a data quality result.</p>",
+      "idempotent":true
     },
     "PutAsset":{
       "name":"PutAsset",
@@ -6261,6 +6383,30 @@
         }
       }
     },
+    "BatchGetDataQualityResultV2Request":{
+      "type":"structure",
+      "required":["ResultIds"],
+      "members":{
+        "ResultIds":{
+          "shape":"DataQualityResultV2IdList",
+          "documentation":"<p>A list of unique result IDs for the data quality results.</p>"
+        }
+      }
+    },
+    "BatchGetDataQualityResultV2Response":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DataQualityResultV2List",
+          "documentation":"<p>A list of <code>DataQualityResultV2Item</code> objects representing the data quality results.</p>"
+        },
+        "ResultsNotFound":{
+          "shape":"DataQualityResultV2IdList",
+          "documentation":"<p>A list of result IDs for which results were not found.</p>"
+        }
+      }
+    },
     "BatchGetDataQualityRulesetEvaluationRunRequest":{
       "type":"structure",
       "required":["RunIds"],
@@ -7707,6 +7853,12 @@
         }
       },
       "documentation":"<p>OAuth2 client credentials configuration that defines the properties needed for the Client Credentials grant type flow.</p>"
+    },
+    "ClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_-]+$"
     },
     "CloudWatchEncryption":{
       "type":"structure",
@@ -9658,6 +9810,10 @@
         "LakeFormationConfiguration":{
           "shape":"LakeFormationConfiguration",
           "documentation":"<p>Specifies whether the crawler should use Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog in which the crawler's output is stored.</p>"
         }
       },
       "documentation":"<p>Specifies a crawler program that examines a data source and uses classifiers to try to determine its schema. If successful, the crawler records metadata concerning the data source in the Glue Data Catalog.</p>"
@@ -10014,7 +10170,7 @@
           "documentation":"<p>The percentage of data to sample.</p>"
         },
         "CatalogID":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog in which the database resides.</p>"
         },
         "SecurityConfiguration":{
@@ -10125,6 +10281,10 @@
         "Tags":{
           "shape":"TagsMap",
           "documentation":"<p>The tags to use with this crawler request. You may use tags to limit access to the crawler. For more information about tags in Glue, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/monitor-tags.html\">Amazon Web Services Tags in Glue</a> in the developer guide.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog in which to store the crawler's output. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -10885,7 +11045,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (N. California), US West (Oregon), Asia Pacific (Mumbai), Asia Pacific (Seoul), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Spain), Europe (Stockholm), and South America (São Paulo).</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p> </li> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
+          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.025X, G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.12X</code> worker type, each worker maps to 12 DPU (48 vCPUs, 192 GB of memory) with 768GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.16X</code> worker type, each worker maps to 16 DPU (64 vCPUs, 256 GB of memory) with 1024GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.1X</code> worker type, each worker maps to 1 M-DPU (4 vCPUs, 32 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.2X</code> worker type, each worker maps to 2 M-DPU (8 vCPUs, 64 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.4X</code> worker type, each worker maps to 4 M-DPU (16 vCPUs, 128 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.8X</code> worker type, each worker maps to 8 M-DPU (32 vCPUs, 256 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
         },
         "CodeGenConfigurationNodes":{
           "shape":"CodeGenConfigurationNodes",
@@ -11311,7 +11471,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, or G.8X for Spark jobs. Accepts the value Z.2X for Ray notebooks.</p> <ul> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
+          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray notebooks.</p> <ul> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.12X</code> worker type, each worker maps to 12 DPU (48 vCPUs, 192 GB of memory) with 768GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.16X</code> worker type, each worker maps to 16 DPU (64 vCPUs, 256 GB of memory) with 1024GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.1X</code> worker type, each worker maps to 1 M-DPU (4 vCPUs, 32 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.2X</code> worker type, each worker maps to 2 M-DPU (8 vCPUs, 64 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.4X</code> worker type, each worker maps to 4 M-DPU (16 vCPUs, 128 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.8X</code> worker type, each worker maps to 8 M-DPU (32 vCPUs, 256 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
         },
         "SecurityConfiguration":{
           "shape":"NameString",
@@ -12105,6 +12265,20 @@
       "max":2000,
       "min":0
     },
+    "DataQualityConfigurationV2":{
+      "type":"structure",
+      "members":{
+        "ObservationsEnabled":{
+          "shape":"ObservationConfiguration",
+          "documentation":"<p>Whether observations are enabled for the run. Valid values are:</p> <ul> <li> <p> <code>ALL</code> </p> </li> <li> <p> <code>NONE</code> </p> </li> </ul>"
+        },
+        "ObservationMode":{
+          "shape":"ObservationMode",
+          "documentation":"<p>The observation mode for the run. Valid values are:</p> <ul> <li> <p> <code>SCHEDULED</code> </p> </li> <li> <p> <code>FIXED</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The run configuration for a data quality result.</p>"
+    },
     "DataQualityEncryption":{
       "type":"structure",
       "members":{
@@ -12124,6 +12298,13 @@
       "enum":[
         "DISABLED",
         "SSE-KMS"
+      ]
+    },
+    "DataQualityEngine":{
+      "type":"string",
+      "enum":[
+        "SPARK",
+        "PYTHON"
       ]
     },
     "DataQualityEvaluationRunAdditionalRunOptions":{
@@ -12171,6 +12352,13 @@
         }
       },
       "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
+    },
+    "DataQualityFlagsEnabled":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":30,
+      "min":0
     },
     "DataQualityGlueTable":{
       "type":"structure",
@@ -12312,15 +12500,15 @@
         },
         "RuleResults":{
           "shape":"DataQualityRuleResults",
-          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
         },
         "AnalyzerResults":{
           "shape":"DataQualityAnalyzerResults",
-          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer. </p>"
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
         },
         "Observations":{
           "shape":"DataQualityObservations",
-          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
         },
         "AggregatedMetrics":{
           "shape":"DataQualityAggregatedMetrics",
@@ -12397,9 +12585,150 @@
       "max":100,
       "min":1
     },
+    "DataQualityResultV2IdList":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":100,
+      "min":1
+    },
+    "DataQualityResultV2Item":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>A map of tags associated with the data quality result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run started.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run completed.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>An aggregate data quality score. Represents the ratio of rules that passed to the total number of rules.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results.</p>"
+        },
+        "RulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset associated with the data quality result.</p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality result returned by <code>BatchGetDataQualityResultV2</code>.</p>"
+    },
+    "DataQualityResultV2List":{
+      "type":"list",
+      "member":{"shape":"DataQualityResultV2Item"},
+      "max":100,
+      "min":0
+    },
     "DataQualityResultsList":{
       "type":"list",
       "member":{"shape":"DataQualityResult"}
+    },
+    "DataQualityResultsV2Description":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique result ID for this data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality result returned by <code>ListDataQualityResultsV2</code>.</p>"
+    },
+    "DataQualityResultsV2DescriptionList":{
+      "type":"list",
+      "member":{"shape":"DataQualityResultsV2Description"},
+      "max":1000,
+      "min":0
+    },
+    "DataQualityResultsV2FilterCriteria":{
+      "type":"structure",
+      "members":{
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source used to filter the results. For example, you can retrieve all results for an Glue table. <code>DatabaseName</code> and <code>TableName</code> are required. If you omit <code>CatalogId</code>, the catalog of the calling account is used.</p> <p>When you filter by data source, a page of results can be empty but still include a <code>NextToken</code>. Keep requesting pages until <code>NextToken</code> is absent.</p>"
+        },
+        "PublishedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time after which to include published results.</p>"
+        },
+        "PublishedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time before which to include published results.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>The platform dimensions to filter results by.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context to filter results by.</p>"
+        }
+      },
+      "documentation":"<p>Describes the criteria used to filter the data quality results returned by <code>ListDataQualityResultsV2</code>.</p>"
     },
     "DataQualityRuleRecommendationRunAdditionalRunOptions":{
       "type":"structure",
@@ -12433,6 +12762,10 @@
         "CreatedRulesetName":{
           "shape":"NameString",
           "documentation":"<p>The name of the ruleset that was created by the recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>Describes the result of a data quality rule recommendation run.</p>"
@@ -12750,6 +13083,17 @@
         }
       },
       "documentation":"<p>An object representing an Glue table.</p>"
+    },
+    "DataQualityTelemetry":{
+      "type":"structure",
+      "members":{
+        "VcpuHours":{"shape":"NullableDouble"},
+        "FlagsEnabled":{"shape":"DataQualityFlagsEnabled"},
+        "LibraryVersion":{"shape":"NameString"},
+        "SparkVersion":{"shape":"NameString"},
+        "HostRuntimeVersion":{"shape":"NameString"},
+        "Engine":{"shape":"DataQualityEngine"}
+      }
     },
     "DataSource":{
       "type":"structure",
@@ -13215,6 +13559,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to delete column statistics.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -16235,6 +16583,10 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -16265,6 +16617,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to retrieve column statistics.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -16673,15 +17029,15 @@
         },
         "RuleResults":{
           "shape":"DataQualityRuleResults",
-          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
         },
         "AnalyzerResults":{
           "shape":"DataQualityAnalyzerResults",
-          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer. </p>"
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
         },
         "Observations":{
           "shape":"DataQualityObservations",
-          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
         },
         "AggregatedMetrics":{
           "shape":"DataQualityAggregatedMetrics",
@@ -16689,6 +17045,85 @@
         }
       },
       "documentation":"<p>The response for the data quality result.</p>"
+    },
+    "GetDataQualityResultV2Request":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        }
+      }
+    },
+    "GetDataQualityResultV2Response":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID for the data quality result.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>A map of tags associated with the data quality result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run started.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run completed.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>An aggregate data quality score. Represents the ratio of rules that passed to the total number of rules.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results.</p>"
+        },
+        "RulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset associated with the data quality result.</p>"
+        }
+      }
     },
     "GetDataQualityRuleRecommendationRunRequest":{
       "type":"structure",
@@ -16713,7 +17148,7 @@
         },
         "Role":{
           "shape":"RoleString",
-          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+          "documentation":"<p>The IAM role that Glue assumes to access resources for the run.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -16762,6 +17197,10 @@
         "AdditionalRunOptions":{
           "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
           "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>The response for the Data Quality rule recommendation run.</p>"
@@ -17657,7 +18096,7 @@
       ],
       "members":{
         "CatalogId":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>"
         },
         "MaterializedViewRefreshTaskRunId":{
@@ -18270,6 +18709,51 @@
         }
       }
     },
+    "GetSystemLogsForJobRunRequest":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "RunId"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The ID of the job run.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForJobRunResponse":{
+      "type":"structure",
+      "members":{
+        "SystemLogsUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL to download the system logs for the job run.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForSessionRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the session.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForSessionResponse":{
+      "type":"structure",
+      "members":{
+        "SystemLogsUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL to download the system logs for the session.</p>"
+        }
+      }
+    },
     "GetTableOptimizerRequest":{
       "type":"structure",
       "required":[
@@ -18485,6 +18969,10 @@
         "AuditContext":{
           "shape":"AuditContext",
           "documentation":"<p>A structure containing the Lake Formation <a href=\"https://docs.aws.amazon.com/glue/latest/webapi/API_AuditContext.html\">audit context</a>.</p>"
+        },
+        "ResourceShareType":{
+          "shape":"TableResourceShareType",
+          "documentation":"<p>Specifies which tables the <code>GetTables</code> call returns. The allowable values are <code>FEDERATED</code> or <code>ALL</code>. </p> <ul> <li> <p>If set to <code>FEDERATED</code>, returns only federated tables, which reference an entity outside the Glue Data Catalog.</p> </li> <li> <p>If set to <code>ALL</code>, returns all tables in the database, both federated and non-federated. </p> </li> </ul>"
         },
         "IncludeStatusDetails":{
           "shape":"BooleanNullable",
@@ -20283,6 +20771,10 @@
         "ContinuousSync":{
           "shape":"ContinuousSync",
           "documentation":"<p>Enables continuous synchronization for on-demand data extractions from SaaS applications to Amazon Web Services data services like Amazon Redshift and Amazon S3.</p>"
+        },
+        "TargetNamespace":{
+          "shape":"TargetNamespace",
+          "documentation":"<p>An optional custom namespace for the integration's target. Supply this parameter only when the target is an Amazon S3 Tables table bucket; it is not accepted for other target types. The integration replicates data into the namespace you specify, reusing it if it already exists. If you omit this parameter, the target namespace defaults to <code>zetl_</code> followed by the integration ID, with hyphens converted to underscores.</p> <p>The value is immutable after the integration is created; <code>ModifyIntegration</code> rejects changes to it. It must be a valid Amazon S3 Tables namespace name: 1 to 255 characters using lowercase letters, numbers, and underscores, with no leading or trailing underscore and no reserved <code>aws</code> prefix.</p>"
         }
       },
       "documentation":"<p>Properties associated with the integration.</p>"
@@ -20456,6 +20948,58 @@
       ]
     },
     "IntegrationString":{"type":"string"},
+    "IntegrationTableProperties":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TableName"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"String512",
+          "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
+        },
+        "TableName":{
+          "shape":"String128",
+          "documentation":"<p>The name of the source table to be replicated.</p>"
+        },
+        "SourceTableConfig":{
+          "shape":"SourceTableConfig",
+          "documentation":"<p>A structure for the source table configuration.</p>"
+        },
+        "TargetTableConfig":{
+          "shape":"TargetTableConfig",
+          "documentation":"<p>A structure for the target table configuration.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a single integration table, including the resource ARN, the table name, and the source or target table configuration.</p>"
+    },
+    "IntegrationTablePropertiesFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String128",
+          "documentation":"<p>The name of the filter. Supported filter keys are <code>SourceArn</code>, <code>TargetArn</code>, <code>SourceTableName</code>, and <code>TargetTableName</code>.</p>"
+        },
+        "Values":{
+          "shape":"IntegrationTablePropertiesFilterValues",
+          "documentation":"<p>A list of filter values.</p>"
+        }
+      },
+      "documentation":"<p>A key-value filter used to narrow the list of integration table properties returned by ListIntegrationTableProperties. Specify a filter key and one or more values to match.</p>"
+    },
+    "IntegrationTablePropertiesFilterList":{
+      "type":"list",
+      "member":{"shape":"IntegrationTablePropertiesFilter"}
+    },
+    "IntegrationTablePropertiesFilterValues":{
+      "type":"list",
+      "member":{"shape":"String128"}
+    },
+    "IntegrationTablePropertiesList":{
+      "type":"list",
+      "member":{"shape":"IntegrationTableProperties"}
+    },
     "IntegrationTagsList":{
       "type":"list",
       "member":{"shape":"Tag"}
@@ -20975,7 +21519,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a job runs.</p> <p>Glue provides multiple worker types to accommodate different workload requirements:</p> <p>G Worker Types (General-purpose compute workers):</p> <ul> <li> <p>G.1X: 1 DPU (4 vCPUs, 16 GB memory, 94GB disk)</p> </li> <li> <p>G.2X: 2 DPU (8 vCPUs, 32 GB memory, 138GB disk)</p> </li> <li> <p>G.4X: 4 DPU (16 vCPUs, 64 GB memory, 256GB disk)</p> </li> <li> <p>G.8X: 8 DPU (32 vCPUs, 128 GB memory, 512GB disk)</p> </li> <li> <p>G.12X: 12 DPU (48 vCPUs, 192 GB memory, 768GB disk)</p> </li> <li> <p>G.16X: 16 DPU (64 vCPUs, 256 GB memory, 1024GB disk)</p> </li> </ul> <p>R Worker Types (Memory-optimized workers):</p> <ul> <li> <p>R.1X: 1 M-DPU (4 vCPUs, 32 GB memory)</p> </li> <li> <p>R.2X: 2 M-DPU (8 vCPUs, 64 GB memory)</p> </li> <li> <p>R.4X: 4 M-DPU (16 vCPUs, 128 GB memory)</p> </li> <li> <p>R.8X: 8 M-DPU (32 vCPUs, 256 GB memory)</p> </li> </ul>"
+          "documentation":"<p>The type of predefined worker that is allocated when a job runs.</p> <p>Glue provides multiple worker types to accommodate different workload requirements:</p> <p>G Worker Types (General-purpose compute workers):</p> <ul> <li> <p>G.1X: 1 DPU (4 vCPUs, 16 GB memory, 94GB disk)</p> </li> <li> <p>G.2X: 2 DPU (8 vCPUs, 32 GB memory, 138GB disk)</p> </li> <li> <p>G.4X: 4 DPU (16 vCPUs, 64 GB memory, 256GB disk)</p> </li> <li> <p>G.8X: 8 DPU (32 vCPUs, 128 GB memory, 512GB disk)</p> </li> <li> <p>G.12X: 12 DPU (48 vCPUs, 192 GB memory, 768GB disk)</p> </li> <li> <p>G.16X: 16 DPU (64 vCPUs, 256 GB memory, 1024GB disk)</p> </li> </ul> <p>R Worker Types (Memory-optimized workers):</p> <ul> <li> <p>R.1X: 1 M-DPU (4 vCPUs, 32 GB memory, 94GB disk)</p> </li> <li> <p>R.2X: 2 M-DPU (8 vCPUs, 64 GB memory, 138GB disk)</p> </li> <li> <p>R.4X: 4 M-DPU (16 vCPUs, 128 GB memory, 256GB disk)</p> </li> <li> <p>R.8X: 8 M-DPU (32 vCPUs, 256 GB memory, 512GB disk)</p> </li> </ul> <p>The <code>G.12X</code>, <code>G.16X</code>, and <code>R.1X</code> through <code>R.8X</code> worker types are available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -21199,7 +21743,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p> </li> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
+          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.025X, G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.12X</code> worker type, each worker maps to 12 DPU (48 vCPUs, 192 GB of memory) with 768GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.16X</code> worker type, each worker maps to 16 DPU (64 vCPUs, 256 GB of memory) with 1024GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.1X</code> worker type, each worker maps to 1 M-DPU (4 vCPUs, 32 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.2X</code> worker type, each worker maps to 2 M-DPU (8 vCPUs, 64 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.4X</code> worker type, each worker maps to 4 M-DPU (16 vCPUs, 128 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.8X</code> worker type, each worker maps to 8 M-DPU (32 vCPUs, 256 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -21330,7 +21874,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs. For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html#create-job\">Defining job properties for Spark jobs </a> </p>"
+          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.025X, G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray jobs. For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html#create-job\">Defining job properties for Spark jobs </a> </p> <p>The <code>G.12X</code>, <code>G.16X</code>, and <code>R.1X</code> through <code>R.8X</code> worker types are available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -22070,6 +22614,37 @@
         }
       }
     },
+    "ListDataQualityResultsV2Request":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"DataQualityResultsV2FilterCriteria",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return. If you don't specify a value, the operation uses the default number of results.</p>"
+        }
+      }
+    },
+    "ListDataQualityResultsV2Response":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DataQualityResultsV2DescriptionList",
+          "documentation":"<p>A list of <code>DataQualityResultsV2Description</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token, if more results are available.</p>"
+        }
+      }
+    },
     "ListDataQualityRuleRecommendationRunsRequest":{
       "type":"structure",
       "members":{
@@ -22400,7 +22975,7 @@
       "type":"structure",
       "members":{
         "Marker":{
-          "shape":"String1024",
+          "shape":"String4096",
           "documentation":"<p>This is the pagination token for next page, initial value is <code>null</code>.</p>"
         },
         "Filters":{
@@ -22421,8 +22996,38 @@
           "documentation":"<p>A list of integration resource property meeting the filter criteria.</p>"
         },
         "Marker":{
-          "shape":"String1024",
+          "shape":"String4096",
           "documentation":"<p>This is the pagination token for the next page.</p>"
+        }
+      }
+    },
+    "ListIntegrationTablePropertiesRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String4096",
+          "documentation":"<p>The pagination token for the next page of results. The initial value is <code>null</code>.</p>"
+        },
+        "Filters":{
+          "shape":"IntegrationTablePropertiesFilterList",
+          "documentation":"<p>A list of filters. Supported filter keys are <code>SourceArn</code>, <code>TargetArn</code>, <code>SourceTableName</code>, and <code>TargetTableName</code>.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegrationInteger",
+          "documentation":"<p>The maximum number of records to return in the response.</p>"
+        }
+      }
+    },
+    "ListIntegrationTablePropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "IntegrationTablePropertiesList":{
+          "shape":"IntegrationTablePropertiesList",
+          "documentation":"<p>A list of integration table properties meeting the filter criteria.</p>"
+        },
+        "Marker":{
+          "shape":"String4096",
+          "documentation":"<p>The pagination token for the next page. Returns <code>null</code> if there are no more results.</p>"
         }
       }
     },
@@ -22538,7 +23143,7 @@
       "required":["CatalogId"],
       "members":{
         "CatalogId":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>"
         },
         "DatabaseName":{
@@ -23818,6 +24423,10 @@
       "type":"integer",
       "box":true
     },
+    "NullableLong":{
+      "type":"long",
+      "box":true
+    },
     "NullableString":{
       "type":"string",
       "box":true
@@ -23864,7 +24473,8 @@
       "enum":[
         "AUTHORIZATION_CODE",
         "CLIENT_CREDENTIALS",
-        "JWT_BEARER"
+        "JWT_BEARER",
+        "REFRESH_TOKEN"
       ]
     },
     "OAuth2Properties":{
@@ -23872,7 +24482,7 @@
       "members":{
         "OAuth2GrantType":{
           "shape":"OAuth2GrantType",
-          "documentation":"<p>The OAuth2 grant type. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
+          "documentation":"<p>The OAuth2 grant type. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, <code>REFRESH_TOKEN</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
         },
         "OAuth2ClientApplication":{
           "shape":"OAuth2ClientApplication",
@@ -23894,7 +24504,7 @@
       "members":{
         "OAuth2GrantType":{
           "shape":"OAuth2GrantType",
-          "documentation":"<p>The OAuth2 grant type in the CreateConnection request. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
+          "documentation":"<p>The OAuth2 grant type in the CreateConnection request. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, <code>REFRESH_TOKEN</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
         },
         "OAuth2ClientApplication":{
           "shape":"OAuth2ClientApplication",
@@ -24944,6 +25554,114 @@
       "member":{"shape":"GenericString"},
       "max":5
     },
+    "PublishDataQualityResultDescriptors":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":10,
+      "min":0
+    },
+    "PublishDataQualityResultDimensions":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":10,
+      "min":1
+    },
+    "PublishDataQualityResultTags":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":5,
+      "min":1
+    },
+    "PublishDataQualityResultV2Request":{
+      "type":"structure",
+      "required":[
+        "Dimensions",
+        "Score",
+        "RuleResults",
+        "EvaluationContext"
+      ],
+      "members":{
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>The dimensions for the result.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>The tags for the result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time execution started for the result.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time execution completed for the result.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>The score for the result.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>The rule level results.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>The analyzer level results.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>The observations for the result.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>The aggregated metrics for the result.</p>"
+        },
+        "Statistics":{
+          "shape":"StatisticSummaryList",
+          "documentation":"<p>The statistics for the result.</p>"
+        },
+        "RunConfiguration":{
+          "shape":"DataQualityConfigurationV2",
+          "documentation":"<p>The run configuration for the result.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientTokenString",
+          "documentation":"<p>The client token for the request.</p>",
+          "idempotencyToken":true
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the result.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>The descriptors for the result.</p>"
+        },
+        "RulesetName":{
+          "shape":"HashString",
+          "documentation":"<p>The ruleset name for the result.</p>"
+        },
+        "DataQualitySecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The security configuration for the result.</p>"
+        },
+        "Telemetry":{"shape":"DataQualityTelemetry"}
+      }
+    },
+    "PublishDataQualityResultV2Response":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>The ID of the result.</p>"
+        }
+      }
+    },
     "PutAssetRequest":{
       "type":"structure",
       "required":[
@@ -25425,7 +26143,7 @@
           "documentation":"<p>An opaque string-string map passed by the query engine.</p>"
         }
       },
-      "documentation":"<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p>"
+      "documentation":"<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p> <p>For more information about how to utilize QuerySessionContext, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/api-overview.html\">Lake Formation workflow for application integration API operations</a> in the developer guide.</p>"
     },
     "QuoteChar":{
       "type":"string",
@@ -25435,6 +26153,16 @@
         "single_quote",
         "disabled"
       ]
+    },
+    "RLSProperties":{
+      "type":"structure",
+      "members":{
+        "DefaultRLSPolicy":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the default row-level security policy applied to the table.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the default row-level security policy of a table.</p>"
     },
     "Recipe":{
       "type":"structure",
@@ -25518,6 +26246,14 @@
       "type":"string",
       "max":16,
       "min":1
+    },
+    "RecommendationMode":{
+      "type":"string",
+      "documentation":"<p>Specifies the mode for how Glue Data Quality recommends rules.</p> <ul> <li> <p> <code>BASIC</code> uses an Glue job to analyze table data and recommend rules. This value is the default.</p> </li> <li> <p> <code>ADVANCED</code> uses Amazon Athena to analyze table data and Amazon Bedrock to recommend rules.</p> </li> </ul>",
+      "enum":[
+        "BASIC",
+        "ADVANCED"
+      ]
     },
     "Record":{
       "type":"structure",
@@ -28055,7 +28791,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a session runs. Accepts a value of <code>G.1X</code>, <code>G.2X</code>, <code>G.4X</code>, or <code>G.8X</code> for Spark sessions. Accepts the value <code>Z.2X</code> for Ray sessions.</p>"
+          "documentation":"<p>The type of predefined worker that is allocated when a session runs. Accepts a value of <code>G.1X</code>, <code>G.2X</code>, <code>G.4X</code>, <code>G.8X</code>, <code>G.12X</code>, <code>G.16X</code>, <code>R.1X</code>, <code>R.2X</code>, <code>R.4X</code>, or <code>R.8X</code> for Spark sessions. Accepts the value <code>Z.2X</code> for Ray sessions.</p> <p>The <code>G.12X</code>, <code>G.16X</code>, and <code>R.1X</code> through <code>R.8X</code> worker types are available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>"
         },
         "CompletedOn":{
           "shape":"TimestampValue",
@@ -28553,6 +29289,23 @@
       },
       "documentation":"<p>Specifies a target that uses an Apache Spark connector.</p>"
     },
+    "SparkPipelineInfoKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SparkPipelineInfoMap":{
+      "type":"map",
+      "key":{"shape":"SparkPipelineInfoKey"},
+      "value":{"shape":"SparkPipelineInfoValue"},
+      "max":50,
+      "min":0
+    },
+    "SparkPipelineInfoValue":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
     "SparkSQL":{
       "type":"structure",
       "required":[
@@ -28725,7 +29478,7 @@
           "documentation":"<p>The percentage of rows used to generate statistics. If none is supplied, the entire table will be used to generate stats.</p>"
         },
         "CatalogID":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         },
         "SecurityConfiguration":{
@@ -28757,6 +29510,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to start a column statistic task run schedule.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -28805,7 +29562,7 @@
         },
         "Role":{
           "shape":"RoleString",
-          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+          "documentation":"<p>The IAM role that Glue assumes to access resources for the run.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/data-quality-authorization.html\">Configure IAM permissions for Glue Data Quality</a>.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -28830,6 +29587,10 @@
         "AdditionalRunOptions":{
           "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
           "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>The request of the Data Quality rule recommendation request.</p>"
@@ -28994,7 +29755,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p> </li> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
+          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.025X, G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.12X</code> worker type, each worker maps to 12 DPU (48 vCPUs, 192 GB of memory) with 768GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>G.16X</code> worker type, each worker maps to 16 DPU (64 vCPUs, 256 GB of memory) with 1024GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.1X</code> worker type, each worker maps to 1 M-DPU (4 vCPUs, 32 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.2X</code> worker type, each worker maps to 2 M-DPU (8 vCPUs, 64 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.4X</code> worker type, each worker maps to 4 M-DPU (16 vCPUs, 128 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>R.8X</code> worker type, each worker maps to 8 M-DPU (32 vCPUs, 256 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -29073,7 +29834,7 @@
       ],
       "members":{
         "CatalogId":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>"
         },
         "DatabaseName":{
@@ -29416,6 +30177,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -29437,6 +30202,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to stop a column statistic task run schedule.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -29481,7 +30250,7 @@
       ],
       "members":{
         "CatalogId":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>"
         },
         "DatabaseName":{
@@ -29638,11 +30407,6 @@
       "documentation":"<p>Specifies options related to data preview for viewing a sample of your data.</p>"
     },
     "String":{"type":"string"},
-    "String1024":{
-      "type":"string",
-      "max":1024,
-      "min":1
-    },
     "String128":{
       "type":"string",
       "max":128,
@@ -29651,6 +30415,11 @@
     "String2048":{
       "type":"string",
       "max":2048,
+      "min":1
+    },
+    "String4096":{
+      "type":"string",
+      "max":4096,
       "min":1
     },
     "String512":{
@@ -29694,6 +30463,49 @@
       "type":"map",
       "key":{"shape":"NullableString"},
       "value":{"shape":"NullableString"}
+    },
+    "SubObjectSourceType":{
+      "type":"string",
+      "enum":[
+        "HIVE_PARQUET",
+        "HIVE_ORC",
+        "HIVE_CSV",
+        "HIVE_JSON",
+        "PLAIN_PARQUET",
+        "ICEBERG"
+      ]
+    },
+    "SubObjectStatistics":{
+      "type":"structure",
+      "members":{
+        "SourceType":{
+          "shape":"SubObjectSourceType",
+          "documentation":"<p>The source type of the sub-object (for example, its table format), which identifies the sub-object.</p>"
+        },
+        "GlueVersionId":{
+          "shape":"NullableString",
+          "documentation":"<p>The Glue version ID of the sub-object that the statistics were captured for.</p>"
+        },
+        "PartitionCount":{
+          "shape":"NullableLong",
+          "documentation":"<p>The number of sub-object partitions selected for that refresh. Not present for unpartitioned sub-objects.</p>"
+        },
+        "FileCount":{
+          "shape":"NullableLong",
+          "documentation":"<p>The number of sub-object data files selected for that refresh.</p>"
+        },
+        "TotalFileBytes":{
+          "shape":"NullableLong",
+          "documentation":"<p>The total size, in bytes, of the data files counted by <code>FileCount</code>.</p>"
+        }
+      },
+      "documentation":"<p>Statistics for one sub-object referenced by a materialized view, recorded when the materialized view was created or last fully refreshed. These values describe what that refresh selected from the sub-object, which can be a subset of the table when the materialized view's definition limits the data it reads. The fields present depend on the sub-object's format.</p>"
+    },
+    "SubObjectsStatisticsList":{
+      "type":"list",
+      "member":{"shape":"SubObjectStatistics"},
+      "max":250,
+      "min":0
     },
     "SupportedDialect":{
       "type":"structure",
@@ -29816,6 +30628,10 @@
         "Status":{
           "shape":"TableStatus",
           "documentation":"<p>Indicates the the state of an asynchronous change to a table.</p>"
+        },
+        "RLSProperties":{
+          "shape":"RLSProperties",
+          "documentation":"<p>A <code>RLSProperties</code> structure that describes the default row-level security policy of the table.</p>"
         }
       },
       "documentation":"<p>Represents a collection of related data organized in columns and rows.</p>"
@@ -29933,6 +30749,10 @@
         "TargetTable":{
           "shape":"TableIdentifier",
           "documentation":"<p>A <code>TableIdentifier</code> structure that describes a target table for resource linking.</p>"
+        },
+        "FederatedTable":{
+          "shape":"FederatedTable",
+          "documentation":"<p>A <code>FederatedTable</code> structure that references an entity outside the Glue Data Catalog. Specify this field to create a federated table, which points to a table in an external metastore instead of describing data managed in the Glue Data Catalog.</p>"
         },
         "ViewDefinition":{
           "shape":"ViewDefinitionInput",
@@ -30079,6 +30899,13 @@
       "type":"string",
       "max":128,
       "min":0
+    },
+    "TableResourceShareType":{
+      "type":"string",
+      "enum":[
+        "FEDERATED",
+        "ALL"
+      ]
     },
     "TableStatus":{
       "type":"structure",
@@ -30240,6 +31067,12 @@
         "xml"
       ]
     },
+    "TargetNamespace":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-z0-9]([a-z0-9_]*[a-z0-9])?"
+    },
     "TargetProcessingProperties":{
       "type":"structure",
       "members":{
@@ -30298,6 +31131,10 @@
         "TargetTableName":{
           "shape":"String128",
           "documentation":"<p>The optional name of a target table.</p>"
+        },
+        "IntegrationArn":{
+          "shape":"String128",
+          "documentation":"<p>The ARN of the integration that owns this target table configuration.</p>"
         }
       },
       "documentation":"<p>Properties used by the target leg to partition the data on the target.</p>"
@@ -31208,7 +32045,7 @@
           "documentation":"<p>The percentage of data to sample.</p>"
         },
         "CatalogID":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog in which the database resides.</p>"
         },
         "SecurityConfiguration":{
@@ -31305,6 +32142,10 @@
         "CrawlerSecurityConfiguration":{
           "shape":"CrawlerSecurityConfiguration",
           "documentation":"<p>The name of the <code>SecurityConfiguration</code> structure to be used by this crawler.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog in which to store the crawler's output. If you omit this value, the existing value on the crawler is preserved.</p>"
         }
       }
     },
@@ -32260,6 +33101,10 @@
       "documentation":"<p>The options to configure an upsert operation when writing to a Redshift target .</p>"
     },
     "UriString":{"type":"string"},
+    "Url":{
+      "type":"string",
+      "max":40000
+    },
     "UrlString":{"type":"string"},
     "UsageProfileDefinition":{
       "type":"structure",
@@ -32440,6 +33285,10 @@
           "shape":"NullableBoolean",
           "documentation":"<p>You can set this flag as true to instruct the engine not to push user-provided operations into the logical plan of the view during query planning. However, setting this flag does not guarantee that the engine will comply. Refer to the engine's documentation to understand the guarantees provided, if any.</p>"
         },
+        "IsManaged":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether the materialized view is managed by Glue.</p>"
+        },
         "Definer":{
           "shape":"ArnString",
           "documentation":"<p>The definer of a view in SQL.</p>"
@@ -32468,9 +33317,17 @@
           "shape":"ViewSubObjectVersionIdsList",
           "documentation":"<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
         },
+        "SubObjectsStatistics":{
+          "shape":"SubObjectsStatisticsList",
+          "documentation":"<p>Statistics captured for each sub-object referenced by the materialized view as of its most recent refresh, such as the source type, Glue version ID, and the partition, file, and byte counts. Each entry describes one sub-object, identified by its source type.</p>"
+        },
         "Representations":{
           "shape":"ViewRepresentationList",
           "documentation":"<p>A list of representations.</p>"
+        },
+        "SparkPipelineInfo":{
+          "shape":"SparkPipelineInfoMap",
+          "documentation":"<p>A map of key-value pairs containing Spark Declarative Pipelines (SDP) information for the materialized view.</p>"
         }
       },
       "documentation":"<p>A structure containing details for representations.</p>"
@@ -32481,6 +33338,10 @@
         "IsProtected":{
           "shape":"NullableBoolean",
           "documentation":"<p>You can set this flag as true to instruct the engine not to push user-provided operations into the logical plan of the view during query planning. However, setting this flag does not guarantee that the engine will comply. Refer to the engine's documentation to understand the guarantees provided, if any.</p>"
+        },
+        "IsManaged":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether the materialized view is managed by Glue.</p>"
         },
         "Definer":{
           "shape":"ArnString",
@@ -32513,6 +33374,14 @@
         "SubObjectVersionIds":{
           "shape":"ViewSubObjectVersionIdsList",
           "documentation":"<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
+        },
+        "SubObjectsStatistics":{
+          "shape":"SubObjectsStatisticsList",
+          "documentation":"<p>Statistics for each sub-object referenced by the materialized view, such as the source type, Glue version ID, and the partition, file, and byte counts. Each entry describes one sub-object, identified by its source type.</p>"
+        },
+        "SparkPipelineInfo":{
+          "shape":"SparkPipelineInfoMap",
+          "documentation":"<p>A map of key-value pairs containing Spark Declarative Pipelines (SDP) information for the materialized view.</p>"
         }
       },
       "documentation":"<p>A structure containing details for creating or updating an Glue view.</p>"
@@ -32663,10 +33532,16 @@
         "Standard",
         "G.1X",
         "G.2X",
-        "G.025X",
         "G.4X",
         "G.8X",
-        "Z.2X"
+        "G.025X",
+        "Z.2X",
+        "G.12X",
+        "G.16X",
+        "R.1X",
+        "R.2X",
+        "R.4X",
+        "R.8X"
       ]
     },
     "Workflow":{

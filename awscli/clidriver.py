@@ -42,6 +42,8 @@ from awscli.argparser import (
     ServiceArgParser,
     SubCommandArgParser,
     detect_help_flag,
+    format_unknown_options_error,
+    get_option_suggestion_candidates,
 )
 from awscli.argprocess import unpack_argument
 from awscli.arguments import (
@@ -1023,7 +1025,12 @@ class ServiceOperation:
             remaining.append(parsed_args.help)
         if remaining:
             raise UnknownArgumentError(
-                f"Unknown options: {', '.join(remaining)}"
+                format_unknown_options_error(
+                    remaining,
+                    get_option_suggestion_candidates(
+                        self.arg_table, self._session
+                    ),
+                )
             )
         event = f'operation-args-parsed.{self._parent_name}.{self._name}'
         self._emit(

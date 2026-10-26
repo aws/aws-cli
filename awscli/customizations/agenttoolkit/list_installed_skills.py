@@ -10,9 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.agenttoolkit.agents import universal_first
 from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
+    collect_installed_skills,
     resolve_agents,
 )
 from awscli.customizations.commands import BasicCommand
@@ -43,15 +43,6 @@ class ListInstalledSkillsCommand(BasicCommand):
         agent_filter = getattr(parsed_args, 'agent', None)
         agents = resolve_agents(agent_filter, self._agent_configs)
 
-        seen_paths = set()
-        all_skills = []
-        for agent in universal_first(agents):
-            for skill in agent.get_installed_skills():
-                if skill.path in seen_paths:
-                    continue
-                seen_paths.add(skill.path)
-                all_skills.append(skill)
-
         result = {
             'skills': [
                 {
@@ -59,7 +50,7 @@ class ListInstalledSkillsCommand(BasicCommand):
                     'name': skill.name,
                     'path': skill.path,
                 }
-                for skill in all_skills
+                for skill in collect_installed_skills(agents)
             ]
         }
 

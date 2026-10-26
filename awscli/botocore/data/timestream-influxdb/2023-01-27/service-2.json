@@ -3048,6 +3048,22 @@
         "catalogSyncInterval":{
           "shape":"Duration",
           "documentation":"<p>Defines how often the catalog synchronizes across cluster nodes.</p> <p>Default: 10s</p>"
+        },
+        "upgradePachaTree":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to migrate the cluster from the Parquet storage engine to PachaTree. This action cannot be reversed. To create a new cluster on Parquet, set this to false.</p>"
+        },
+        "walBufferSize":{
+          "shape":"InfluxDBv3EnterpriseParametersWalBufferSizeLong",
+          "documentation":"<p>The maximum size, in bytes, of the in-memory WAL buffer before a flush is triggered regardless of the flush interval. Increase this value if WAL files are flushed before the interval elapses.</p>"
+        },
+        "snapshotSize":{
+          "shape":"PercentOrAbsoluteLong",
+          "documentation":"<p>The maximum size of the active snapshot bucket before it is rotated for snapshotting.</p>"
+        },
+        "snapshotDuration":{
+          "shape":"Duration",
+          "documentation":"<p>The time-based trigger that controls how often the ingester creates snapshots. This value is also used on query nodes as the bucket rotation interval for the replica buffer.</p>"
         }
       },
       "documentation":"<p>All the customer-modifiable InfluxDB v3 Enterprise parameters in Timestream for InfluxDB.</p>"
@@ -3173,6 +3189,12 @@
       "type":"integer",
       "box":true,
       "max":1000,
+      "min":1
+    },
+    "InfluxDBv3EnterpriseParametersWalBufferSizeLong":{
+      "type":"long",
+      "box":true,
+      "max":1073741824,
       "min":1
     },
     "InfluxDBv3EnterpriseParametersWalMaxWriteBufferSizeInteger":{

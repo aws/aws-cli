@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 import logging
 
-import awscrt.io
-
 from awscli.logger import (
     disable_crt_logging,
     enable_crt_logging,
@@ -47,16 +45,12 @@ class TestLogger(unittest.TestCase):
         log = logging.getLogger('test_stream_logger')
         self.assertEqual(len(log.handlers), 0)
 
-    @mock.patch('awscrt.io.set_log_level')
-    def test_can_enable_crt_logging(self, mock_init_logging):
+    @mock.patch('awscrt.logging.set_log_level')
+    def test_can_enable_crt_logging(self, mock_set_log_level):
         enable_crt_logging()
-        mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.Debug,
-        )
+        mock_set_log_level.assert_called_with(logging.DEBUG)
 
-    @mock.patch('awscrt.io.set_log_level')
-    def test_can_disable_crt_logging(self, mock_init_logging):
+    @mock.patch('awscrt.logging.set_log_level')
+    def test_can_disable_crt_logging(self, mock_set_log_level):
         disable_crt_logging()
-        mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.NoLogs,
-        )
+        mock_set_log_level.assert_called_with(logging.NOTSET)

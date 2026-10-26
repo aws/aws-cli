@@ -20,7 +20,6 @@ import re
 import sys
 from collections import namedtuple
 
-import awscrt.io
 import botocore.model
 import pytest
 from botocore import xform_name
@@ -433,22 +432,18 @@ class TestCliDriver:
         assert rc == 252
         assert 1 == fake_stderr.getvalue().count('CLI version:')
 
-    @mock.patch('awscrt.io.set_log_level')
-    def test_debug_enables_crt_logging(self, mock_init_logging):
+    @mock.patch('awscrt.logging.set_log_level')
+    def test_debug_enables_crt_logging(self, mock_set_log_level):
         with contextlib.redirect_stderr(io.StringIO()):
             self.driver.main(
                 ['s3', 'list-objects', '--bucket', 'foo', '--debug']
             )
-        mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.Debug,
-        )
+        mock_set_log_level.assert_called_with(logging.DEBUG)
 
-    @mock.patch('awscrt.io.set_log_level')
-    def test_no_debug_disables_crt_logging(self, mock_init_logging):
+    @mock.patch('awscrt.logging.set_log_level')
+    def test_no_debug_disables_crt_logging(self, mock_set_log_level):
         self.driver.main(['s3', 'list-objects', '--bucket', 'foo'])
-        mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.NoLogs,
-        )
+        mock_set_log_level.assert_called_with(logging.NOTSET)
 
     def test_throw_error_if_both_args_specified(self):
         args = ['--cli-auto-prompt', '--no-cli-auto-prompt']

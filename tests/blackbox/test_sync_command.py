@@ -848,6 +848,43 @@ class TestSyncCommand:
         assert_list_objects_v2(server.requests[0], Bucket="bucket")
         assert_put_object(server.requests[1], Bucket="bucket", Key="myfile")
 
+    async def test_upload_sync_with_tags(self, aws_cli, tmp_path):
+        """sync local->s3 --tags sends x-amz-tagging on each PutObject."""
+        (tmp_path / "myfile").write_text("mycontent")
+        async with mock_server(on_headers_received=handle_expect_header) as (
+            server,
+            proxy,
+        ):
+            setup_responses(
+                server, [_empty_list_response(), put_object_response()]
+            )
+            stdout, stderr, rc = await run_cli(
+                aws_cli,
+                [
+                    "s3",
+                    "sync",
+                    str(tmp_path),
+                    "s3://bucket/",
+                    "--tags",
+                    "key1",
+                    "value1",
+                    "--tags",
+                    "key2",
+                    "value2",
+                ],
+                cli_env(proxy),
+            )
+
+        assert rc == 0, stderr.decode()
+        assert len(server.requests) == 2, format_requests(server)
+        assert_list_objects_v2(server.requests[0], Bucket="bucket")
+        assert_put_object(
+            server.requests[1],
+            Bucket="bucket",
+            Key="myfile",
+            Tagging="key1=value1&key2=value2",
+        )
+
     async def test_download_sync(self, aws_cli, tmp_path):
         """sync s3->local downloads new files."""
         async with mock_server(on_headers_received=handle_expect_header) as (

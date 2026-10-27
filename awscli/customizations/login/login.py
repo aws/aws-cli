@@ -242,6 +242,10 @@ class LoginCommand(BasicCommand):
     def _resolve_endpoint_override(self, parsed_globals):
         if parsed_globals.endpoint_url:
             return parsed_globals.endpoint_url
+        if self._session.get_config_variable(
+            'ignore_configured_endpoint_urls'
+        ):
+            return None
         return ConfiguredEndpointProvider(
             full_config=self._session.full_config,
             scoped_config=self._session.get_scoped_config(),

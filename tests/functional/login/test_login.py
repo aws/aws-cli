@@ -457,3 +457,37 @@ def test_no_sign_in_region_with_configured_endpoint(
 
     saved_token = mock_token_loader.save_token.call_args[0][1]
     assert 'signInRegion' not in saved_token
+
+
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+def test_sign_in_region_when_configured_endpoints_ignored(
+    mock_token_fetcher,
+    mock_base_sign_in_uri,
+    mock_login_command,
+    mock_token_loader,
+    mock_session,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+    mock_session.get_config_variable.side_effect = lambda key: {
+        'config_file': 'configfile',
+        'ignore_configured_endpoint_urls': True,
+    }.get(key)
+
+    with mock.patch.dict(
+        os.environ, {'AWS_ENDPOINT_URL_SIGNIN': 'https://signin.example.com'}
+    ):
+        mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    saved_token = mock_token_loader.save_token.call_args[0][1]
+    assert saved_token['signInRegion'] == 'us-east-1'

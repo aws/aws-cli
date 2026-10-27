@@ -78,6 +78,13 @@ PYTHONUTF8_ENV_VAR = 'PYTHONUTF8'
 # cmd.exe characters that require double-quoting to be treated as literals.
 # https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd
 _WIN_CMD_UNSAFE_CHARS = set('&<>[]|{}^=;!\'()+,`~ \t')
+# cmd.exe characters that must be caret-escaped. Every double quote is
+# escaped so that cmd.exe never enters a quoted region, where carets are
+# not honored and an embedded quote could end the quoting early. Colons
+# are escaped so that %VAR:str=repl% and %VAR:~n,m% are never parsed as
+# variable substitutions, including when the percent signs come from
+# different arguments.
+_WIN_CMD_CARET_ESCAPE_CHARS = set('"^&|<>()%!:')
 
 LOG = logging.getLogger(__name__)
 
@@ -357,18 +364,33 @@ def _windows_cmd_shell_quote(s):
     safe to pass through cmd.exe
 
     Handles two interpretation layers:
-      1. cmd.exe metacharacters - neutralized by double-quoting when
-         the string contains any cmd.exe special characters.
-      2. MSVC C runtime argv parsing - backslash/double-quote escaping
-         so the target process receives the correct argument.
+      1. cmd.exe metacharacters - neutralized by caret-escaping every
+         cmd.exe special character, including every double quote, so
+         cmd.exe never enters a quoted region. cmd.exe strips the carets
+         before starting the target process.
+      2. MSVC C runtime argv parsing - backslash/double-quote escaping,
+         and double-quoting when the string contains any cmd.exe special
+         characters, so the target process receives the correct argument.
+         This escaping is applied first; the carets from layer 1 are
+         added on top of it.
 
-    Note: cmd.exe %VAR% expansion and !VAR! delayed expansion
-    cannot be reliably escaped inside double quotes on the
-    command line and are not handled here.
+    This guarantees the string reaches the first command cmd.exe runs
+    as a single literal argument. It does not protect against a target
+    that passes its arguments through cmd.exe again, such as a .bat or
+    .cmd file, or cmd /c. Line breaks cannot be escaped for cmd.exe and
+    end the command at that point.
 
     :param s: A string to escape
     :return: An escaped string
     """
+    return ''.join(
+        f'^{character}' if character in _WIN_CMD_CARET_ESCAPE_CHARS
+        else character
+        for character in _windows_cmd_argv_quote(s)
+    )
+
+
+def _windows_cmd_argv_quote(s):
     if not s:
         return '""'
 

@@ -115,7 +115,7 @@
         {"shape":"RateLimitExceededException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a grant for the specified license. A grant shares the use of license entitlements with a specific Amazon Web Services account, an organization, or an organizational unit (OU). For more information, see <a href=\"https://docs.aws.amazon.com/license-manager/latest/userguide/granted-licenses.html\">Granted licenses in License Manager</a> in the <i>License Manager User Guide</i>.</p>"
+      "documentation":"<p>Creates a grant for the specified license. A grant shares the use of license entitlements with a specific Amazon Web Services account, an organization, or an organizational unit (OU). For more information, see <a href=\"https://docs.aws.amazon.com/license-manager/latest/userguide/granted-licenses.html\">Granted licenses in License Manager</a> in the <i>License Manager User Guide</i>.</p> <p>Set the type of grant with the <code>GrantType</code> field:</p> <ul> <li> <p> <code>BuyerGrant</code> - The default grant type, created by the seller when a customer subscribes to a product. The seller creates a license for the subscription and a buyer grant for the customer. With a buyer grant, the customer can use, consume, and distribute the license, according to the permissions the seller sets in the product contract.</p> </li> <li> <p> <code>DelegateGrant</code> - A delegate grant gives the grantee read-only visibility into the licenses and grants that you have distributed to buyers for a product. The grantee can monitor that activity on your behalf, and can also listen for the related Amazon EventBridge events. A delegate grant conveys no entitlement to use the licenses, and its only allowed operation is <code>ListReceivedLicenses</code>. You must create the delegate grant, and its license, from the same Amazon Web Services account that you used to create those buyer licenses and grants.</p> </li> </ul>"
     },
     "CreateGrantVersion":{
       "name":"CreateGrantVersion",
@@ -1218,7 +1218,8 @@
         "CheckInLicense",
         "ExtendConsumptionLicense",
         "ListPurchasedLicenses",
-        "CreateToken"
+        "CreateToken",
+        "ListReceivedLicenses"
       ]
     },
     "AllowedOperationList":{
@@ -1574,6 +1575,14 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Tags to add to the grant. For more information about tagging support in License Manager, see the <a href=\"https://docs.aws.amazon.com/license-manager/latest/APIReference/API_TagResource.html\">TagResource</a> operation.</p>"
+        },
+        "GrantType":{
+          "shape":"GrantType",
+          "documentation":"<p>The type of grant to create. For more information about each type, see the preceding description of this operation. Valid values:</p> <ul> <li> <p> <code>BuyerGrant</code> - The default grant type if you don't specify a value. Conveys the entitlement to use the license.</p> </li> <li> <p> <code>DelegateGrant</code> - Gives the grantee read-only visibility into the licenses and grants that you have distributed to buyers, with no entitlement to use them.</p> </li> </ul>"
+        },
+        "Options":{
+          "shape":"Options",
+          "documentation":"<p>The options for the grant: the status to set after creation, and how activating the grant affects other active grants for the same product.</p>"
         }
       }
     },
@@ -2906,6 +2915,10 @@
         "Options":{
           "shape":"Options",
           "documentation":"<p>The options specified for the grant.</p>"
+        },
+        "GrantType":{
+          "shape":"GrantType",
+          "documentation":"<p>The type of the grant. Valid values:</p> <ul> <li> <p> <code>BuyerGrant</code> - Grants the entitlement to use the license.</p> </li> <li> <p> <code>DelegateGrant</code> - Gives the grantee read-only visibility into the licenses and grants distributed to buyers, with no entitlement to use them.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes a grant.</p>"
@@ -2926,6 +2939,13 @@
         "PENDING_DELETE",
         "DISABLED",
         "WORKFLOW_COMPLETED"
+      ]
+    },
+    "GrantType":{
+      "type":"string",
+      "enum":[
+        "BuyerGrant",
+        "DelegateGrant"
       ]
     },
     "GrantedLicense":{
@@ -4463,10 +4483,14 @@
       "members":{
         "ActivationOverrideBehavior":{
           "shape":"ActivationOverrideBehavior",
-          "documentation":"<p>An activation option for your grant that determines the behavior of activating a grant. Activation options can only be used with granted licenses sourced from the Amazon Web Services Marketplace. Additionally, the operation must specify the value of <code>ACTIVE</code> for the <code>Status</code> parameter.</p> <ul> <li> <p>As a license administrator, you can optionally specify an <code>ActivationOverrideBehavior</code> when activating a grant.</p> </li> <li> <p>As a grantor, you can optionally specify an <code>ActivationOverrideBehavior</code> when you activate a grant for a grantee account in your organization.</p> </li> <li> <p>As a grantee, if the grantor creating the distributed grant doesn’t specify an <code>ActivationOverrideBehavior</code>, you can optionally specify one when you are activating the grant.</p> </li> </ul> <dl> <dt>DISTRIBUTED_GRANTS_ONLY</dt> <dd> <p>Use this value to activate a grant without replacing any member account’s active grants for the same product.</p> </dd> <dt>ALL_GRANTS_PERMITTED_BY_ISSUER</dt> <dd> <p>Use this value to activate a grant and disable other active grants in any member accounts for the same product. This action will also replace their previously activated grants with this activated grant.</p> </dd> </dl>"
+          "documentation":"<p>An activation option for your grant that determines the behavior of activating a grant. Activation options can only be used with granted licenses sourced from the Amazon Web Services Marketplace. Additionally, the operation must activate the grant. For the <code>CreateGrantVersion</code> operation, specify <code>ACTIVE</code> for the <code>Status</code> parameter. For the <code>CreateGrant</code> operation, specify <code>ACTIVE</code> for the <code>DesiredStatus</code> option.</p> <ul> <li> <p>As a license administrator, you can optionally specify an <code>ActivationOverrideBehavior</code> when activating a grant.</p> </li> <li> <p>As a grantor, you can optionally specify an <code>ActivationOverrideBehavior</code> when you activate a grant for a grantee account in your organization.</p> </li> <li> <p>As a grantee, if the grantor creating the distributed grant doesn’t specify an <code>ActivationOverrideBehavior</code>, you can optionally specify one when you are activating the grant.</p> </li> </ul> <dl> <dt>DISTRIBUTED_GRANTS_ONLY</dt> <dd> <p>Use this value to activate a grant without replacing any member account’s active grants for the same product.</p> </dd> <dt>ALL_GRANTS_PERMITTED_BY_ISSUER</dt> <dd> <p>Use this value to activate a grant and disable other active grants in any member accounts for the same product. This action will also replace their previously activated grants with this activated grant.</p> </dd> </dl>"
+        },
+        "DesiredStatus":{
+          "shape":"GrantStatus",
+          "documentation":"<p>The status of the grant after License Manager creates it. The only supported value is <code>ACTIVE</code>. Specify <code>ACTIVE</code> to create and activate the grant in one request.</p> <p>You can specify this option only for the <code>CreateGrant</code> operation, and only when the grant principal is an organization or an organizational unit (OU). To change the status of an existing grant, use the <code>Status</code> parameter of the <code>CreateGrantVersion</code> operation.</p>"
         }
       },
-      "documentation":"<p>The options you can specify when you create a new version of a grant, such as activation override behavior. For more information, see <a href=\"https://docs.aws.amazon.com/license-manager/latest/userguide/granted-licenses.html\">Granted licenses in License Manager</a> in the <i>License Manager User Guide</i>.</p>"
+      "documentation":"<p>The options you can specify when you create a grant or a new version of a grant, such as activation override behavior. For more information, see <a href=\"https://docs.aws.amazon.com/license-manager/latest/userguide/granted-licenses.html\">Granted licenses in License Manager</a> in the <i>License Manager User Guide</i>.</p>"
     },
     "OrRuleStatement":{
       "type":"structure",
@@ -4610,6 +4634,10 @@
         "AllowedOperations":{
           "shape":"AllowedOperationList",
           "documentation":"<p>Allowed operations.</p>"
+        },
+        "GrantType":{
+          "shape":"GrantType",
+          "documentation":"<p>The type of the grant through which the license was received. Valid values:</p> <ul> <li> <p> <code>BuyerGrant</code> - Grants you the entitlement to use the license.</p> </li> <li> <p> <code>DelegateGrant</code> - Gives you read-only visibility into the licenses and grants distributed to buyers, with no entitlement to use them.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Metadata associated with received licenses and grants.</p>"

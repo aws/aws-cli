@@ -649,6 +649,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -2698,6 +2699,26 @@
       "documentation":"<p>Creates or updates a resource-based policy for a resource with the specified resourceArn.</p> <note> <p>This feature is currently available only for AgentCore Runtime and Gateway.</p> </note>",
       "idempotent":true
     },
+    "ResetTokenVaultKeyMaterial":{
+      "name":"ResetTokenVaultKeyMaterial",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/reset-token-vault-key-material",
+        "responseCode":200
+      },
+      "input":{"shape":"ResetTokenVaultKeyMaterialRequest"},
+      "output":{"shape":"ResetTokenVaultKeyMaterialResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Resets the key material for a token vault whose customer managed KMS key has been deleted, and re-encrypts the token vault with an Amazon Web Services managed key so that you can use the token vault again.</p> <important> <p>This operation can't be undone. The reset permanently deletes the OAuth2 access tokens and refresh tokens stored in the token vault, including tokens obtained through all supported flows. After the reset, your agents must complete these flows again to get new tokens, and for user-delegated flows your users must authorize access again. The reset doesn't delete your credential providers or their configuration.</p> </important> <p>You can reset a token vault only if its customer managed key has been deleted. If the key still exists, including when it's disabled or scheduled for deletion, this operation returns a <code>ValidationException</code>. To use the token vault again, enable the key or cancel its scheduled deletion in KMS. To switch to a different key, use <code>SetTokenVaultCMK</code>.</p>"
+    },
     "RotatePaymentConnectorCredentials":{
       "name":"RotatePaymentConnectorCredentials",
       "http":{
@@ -2732,6 +2753,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -3389,6 +3411,7 @@
       "errors":[
         {"shape":"UnauthorizedException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
@@ -10451,7 +10474,7 @@
     "EvaluationDimensions":{
       "type":"list",
       "member":{"shape":"EvaluationDimension"},
-      "documentation":"<p> The list of dimensions for an LLM-as-a-judge evaluator that uses a multi-dimensional rating scale. The service enforces a lower limit than the model's maximum; see the AgentCore Evaluation quotas for the current effective limit. </p>",
+      "documentation":"<p> The list of dimensions for an LLM-as-a-judge evaluator that uses a multi-dimensional rating scale. An evaluator can have up to 50 dimensions. </p>",
       "max":50,
       "min":1
     },
@@ -19045,6 +19068,21 @@
       "documentation":"<p>Contains the output configuration for an OAuth2 provider.</p>",
       "union":true
     },
+    "OnBehalfOfAuthenticationConfig":{
+      "type":"structure",
+      "required":["clientAuthenticationMethod"],
+      "members":{
+        "clientAuthenticationMethod":{
+          "shape":"OnBehalfOfClientAuthenticationMethod",
+          "documentation":"<p>The client authentication method to use during the on-behalf-of token exchange. The <code>NO_CLIENT</code> option omits the <code>clientId</code> and <code>clientSecret</code> during the on-behalf-of token exchange with the identity provider.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the client authentication method to use for the on-behalf-of token exchange.</p>"
+    },
+    "OnBehalfOfClientAuthenticationMethod":{
+      "type":"string",
+      "enum":["NO_CLIENT"]
+    },
     "OnBehalfOfTokenExchangeConfigType":{
       "type":"structure",
       "required":["grantType"],
@@ -19056,6 +19094,10 @@
         "tokenExchangeGrantTypeConfig":{
           "shape":"TokenExchangeGrantTypeConfigType",
           "documentation":"<p>Configuration specific to the TOKEN_EXCHANGE grant type (RFC 8693).</p>"
+        },
+        "onBehalfOfAuthenticationConfig":{
+          "shape":"OnBehalfOfAuthenticationConfig",
+          "documentation":"<p>Specify the client authentication configuration to use for the on-behalf-of token exchange. With this configuration, you override the provider level client authentication method for the on-behalf-of exchange with the identity provider. If you don't specify this configuration, we use the provider level client authentication method.</p>"
         }
       },
       "documentation":"<p>Configuration for on-behalf-of token exchange.</p>"
@@ -20698,6 +20740,38 @@
     "RequiredProperties":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "ResetTokenVaultKeyMaterialRequest":{
+      "type":"structure",
+      "required":["tokenVaultId"],
+      "members":{
+        "tokenVaultId":{
+          "shape":"TokenVaultIdType",
+          "documentation":"<p>The unique identifier of the token vault to reset. To reset your account's default token vault, specify <code>default</code>.</p>"
+        }
+      }
+    },
+    "ResetTokenVaultKeyMaterialResponse":{
+      "type":"structure",
+      "required":[
+        "tokenVaultId",
+        "kmsConfiguration",
+        "lastModifiedDate"
+      ],
+      "members":{
+        "tokenVaultId":{
+          "shape":"TokenVaultIdType",
+          "documentation":"<p>The ID of the token vault.</p>"
+        },
+        "kmsConfiguration":{
+          "shape":"KmsConfiguration",
+          "documentation":"<p>The KMS configuration for the token vault after the reset. The token vault uses an Amazon Web Services managed key.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the token vault was last modified.</p>"
+        }
+      }
     },
     "Resource":{
       "type":"structure",

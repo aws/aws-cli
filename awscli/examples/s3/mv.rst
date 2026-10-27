@@ -116,7 +116,7 @@ Output::
 
 **Example 11: Move a file with tags**
 
-The following ``mv`` command moves a single file (``file.txt``) to a specified bucket and key while setting two tags on the object. Specify ``--tags`` once per tag, separating the key and value with a space. Tags are applied only to uploaded objects::
+The following ``mv`` command moves a single file (``file.txt``) to a specified bucket and key while setting two tags on the object. Specify ``--tags`` once per tag, separating the key and value with a space. Tags are supported only when transferring from a local path to S3::
 
     aws s3 mv file.txt s3://amzn-s3-demo-bucket/file.txt \
         --tags key1 value1 --tags key2 value2

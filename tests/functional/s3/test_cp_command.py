@@ -337,22 +337,23 @@ class TestCPCommand(BaseCPCommandTest):
             'key1=a%3Db%26c&key%202=has%20spaces',
         )
 
-    def test_s3_to_s3_copy_does_not_set_tags(self):
+    def test_s3_to_s3_copy_with_tags_errors(self):
         cmdline = (
             '%s s3://bucket/key1.txt s3://bucket/key2.txt --tags key1 value1'
             % self.prefix
         )
-        self.parsed_responses = [
-            {
-                "ContentLength": "100",
-                "LastModified": "00:00:00Z",
-                'ETag': '"foo-1"',
-            },
-            {'ETag': '"c8afdb36c52cf4727836669019e69222"'},
-        ]
-        self.run_cmd(cmdline, expected_rc=0)
-        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
-        self.assertNotIn('Tagging', self.operations_called[1][1])
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=252)
+        self.assertIn('Expected tags parameter to be used with', stderr)
+        self.assertEqual(self.operations_called, [])
+
+    def test_download_with_tags_errors(self):
+        cmdline = '%s s3://bucket/key.txt %s --tags key1 value1' % (
+            self.prefix,
+            self.files.rootdir,
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=252)
+        self.assertIn('Expected tags parameter to be used with', stderr)
+        self.assertEqual(self.operations_called, [])
 
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [

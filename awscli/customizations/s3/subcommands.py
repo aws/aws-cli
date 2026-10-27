@@ -711,10 +711,11 @@ OBJECT_TAGS = {
     'action': 'append',
     'nargs': 2,
     'help_text': (
-        'Tags to set on objects uploaded to S3, in the format of '
-        '``--tags key value``. You can specify this flag multiple '
-        'times, once for each tag. For a ``sync``, tags are only set  '
-        'on objects that are actually uploaded.'
+        'Tags to set on objects, in the format of ``--tags key value``. '
+        'You can specify this flag multiple times, once for each tag. '
+        'This parameter is only supported when transferring from a local '
+        'path to S3. For a ``sync``, tags are only set on objects that '
+        'are transferred.'
     ),
 }
 
@@ -1852,6 +1853,10 @@ class CommandParameters:
         if params.get('checksum_mode'):
             self._raise_if_paths_type_incorrect_for_param(
                 CHECKSUM_MODE['name'], params['paths_type'], ['s3local']
+            )
+        if params.get('tags'):
+            self._raise_if_paths_type_incorrect_for_param(
+                OBJECT_TAGS['name'], params['paths_type'], ['locals3']
             )
 
         # If the user provided local path does not exist, hard fail because

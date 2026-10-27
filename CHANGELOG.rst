@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.39.0
+======
+
+* feature:``cloudfront``: Add ``aws cloudfront sign-cookies`` command to generate CloudFront signed cookies.
+* api-change:``license-manager``: AWS License Manager now supports delegate grants for read-only visibility into license distributions. CreateGrant accepts a new GrantType (BuyerGrant or DelegateGrant) and a desired status at distribution time.
+* api-change:``inspector2``: Adding support for Machine Image scan
+* api-change:``ec2``: EC2 AMIs can now show vulnerability data and be targeted directly for scanning.
+* api-change:``lightsail``: Added the attributeUpdates parameter to the Lightsail StartInstance API, which allows customers to update the attributes of a stopped instance when starting it.
+* enhancement:``cloudfront``: ``aws cloudfront sign`` now supports ECDSA (P-256) private keys, SHA-256 signing with ``--hash-algorithm``, and wildcard policies with ``--policy-resource``, and rejects input that would produce a URL CloudFront rejects.
+* api-change:``bedrock-agentcore-control``: Adds the ResetTokenVaultKeyMaterial API, which restores a token vault whose customer managed key was deleted by moving it to an AWS owned key. The reset permanently deletes the stored OAuth 2.0 tokens, users must consent again. Adds on-behalf-of token exchange client authentication override option.
+* enhancement:login: Record the sign-in region in the cached login token and send refresh requests to that region, so a refresh is redeemed in the region the session was created in.
+* enhancement:``logging``: Redact PEM private keys from ``--debug`` output and the CLI history database when passed as a single argument value or as a ``fileb://`` blob parameter.
+* bugfix:``cloudfront``: Fix ``aws cloudfront sign`` to support ``fileb://`` private keys and PEM files that contain other blocks, such as a certificate.
+* api-change:``ecs``: ECS now supports GPU sharing via NVIDIA Multi-Process Service (MPS) on ECS Managed Instances and ECS EC2, allowing multiple ECS tasks to share a single Nvidia GPU for improved utilization.
+
+
 2.38.6
 ======
 

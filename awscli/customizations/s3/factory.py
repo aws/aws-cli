@@ -63,6 +63,10 @@ MINIMUM_TARGET_THROUGHPUT_GBPS = 10.0
 # RuntimeError for this, leaving the error code as the only thing to match on.
 CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT = 14371
 
+# The crt client treats a connect timeout of 0 as its 3 second default, so no
+# timeout is mapped to the largest uint32 it accepts.
+MAX_CRT_CONNECT_TIMEOUT_MS = 2**32 - 1
+
 WARN_IGNORED = 'warn_ignored'
 
 EXCLUDE_FROM_AUTO = 'exclude_from_auto'
@@ -90,6 +94,18 @@ CRT_CLIENT_KWARG_MAP = {
 
 def _gbps_to_bytes_per_sec(gbps):
     return int(gbps * 1_000_000_000 / 8)
+
+
+def _to_crt_connect_timeout_ms(connect_timeout):
+    if connect_timeout is None:
+        return MAX_CRT_CONNECT_TIMEOUT_MS
+    if connect_timeout <= 0:
+        raise InvalidConfigError(
+            f'Attempted to set connect timeout to {connect_timeout}, but the '
+            f'timeout cannot be set to a value less than or equal to 0.'
+        )
+    timeout_ms = max(int(connect_timeout * 1000), 1)
+    return min(timeout_ms, MAX_CRT_CONNECT_TIMEOUT_MS)
 
 
 class ClientFactory:
@@ -346,6 +362,9 @@ class TransferManagerFactory:
                 params
             )
         use_ssl = not self._is_http_endpoint(botocore_client.meta.endpoint_url)
+        connect_timeout_ms = _to_crt_connect_timeout_ms(
+            botocore_client.meta.config.connect_timeout
+        )
 
         transfer_manager = CRTTransferManager(
             crt_client_factory=lambda client_region=None: (
@@ -356,6 +375,7 @@ class TransferManagerFactory:
                     region=client_region or region,
                     bootstrap=bootstrap,
                     use_ssl=use_ssl,
+                    connect_timeout_ms=connect_timeout_ms,
                 )
             ),
             crt_request_serializer=self._create_crt_request_serializer(
@@ -386,12 +406,14 @@ class TransferManagerFactory:
         region=None,
         bootstrap=None,
         use_ssl=True,
+        connect_timeout_ms=None,
     ):
         create_crt_client_kwargs = {
             'region': region,
             'verify': self._resolve_verify(params),
             'bootstrap': bootstrap,
             'use_ssl': use_ssl,
+            'connect_timeout_ms': connect_timeout_ms,
         }
         target_throughput = self._resolve_target_throughput(runtime_config)
         if target_throughput:

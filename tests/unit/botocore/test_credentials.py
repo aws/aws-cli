@@ -883,17 +883,13 @@ class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
                 'Expiration': self.some_future_time().isoformat(),
             },
         }
-        client_creator_a = self.create_client_creator(
-            with_response=response_a
-        )
+        client_creator_a = self.create_client_creator(with_response=response_a)
         fetcher_a = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
             client_creator_a, lambda: 'token-a', self.role_arn, cache=cache
         )
         fetcher_a.fetch_credentials()
 
-        client_creator_b = self.create_client_creator(
-            with_response=response_b
-        )
+        client_creator_b = self.create_client_creator(with_response=response_b)
         fetcher_b = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
             client_creator_b, lambda: 'token-b', self.role_arn, cache=cache
         )
@@ -4486,3 +4482,79 @@ def test_login_credential_fetcher_access_denied_errors(
 
     with pytest.raises(expected_exception):
         fetcher.refresh_credentials()
+
+
+def _login_refresh_client():
+    client = mock.Mock()
+    client.exceptions.AccessDeniedException = ClientError
+    client.create_o_auth2_token.return_value = {
+        'tokenOutput': {
+            'accessToken': {
+                'accessKeyId': 'new-akid',
+                'secretAccessKey': 'new-secret',
+                'sessionToken': 'new-session-token',
+            },
+            'refreshToken': 'new-refresh-token',
+            'expiresIn': 900,
+        }
+    }
+    return client
+
+
+def _expired_login_token(**extra):
+    token = {
+        'clientId': 'test-client',
+        'refreshToken': 'test-refresh-token',
+        'dpopKey': SAMPLE_SIGN_IN_DPOP_PEM,
+        'accessToken': {
+            'accessKeyId': 'old-akid',
+            'secretAccessKey': 'old-secret',
+            'sessionToken': 'old-session-token',
+            'accountId': '123456789012',
+            'expiresAt': '2020-01-01T00:00:00Z',
+        },
+    }
+    token.update(extra)
+    return token
+
+
+def test_login_refresh_uses_sign_in_region():
+    token_loader = mock.Mock()
+    token_loader.load_token.return_value = _expired_login_token(
+        signInRegion='eu-west-2'
+    )
+    client_creator = mock.Mock(return_value=_login_refresh_client())
+
+    fetcher = credentials.LoginCredentialFetcher(
+        session_name='test-session',
+        token_loader=token_loader,
+        client_creator=client_creator,
+    )
+    creds = fetcher.refresh_credentials()
+
+    assert creds['access_key'] == 'new-akid'
+    client_creator.assert_called_once_with(
+        'signin', config=mock.ANY, region_name='eu-west-2'
+    )
+    # The region is preserved for the next refresh, not rewritten.
+    saved_token = token_loader.save_token.call_args[0][1]
+    assert saved_token['signInRegion'] == 'eu-west-2'
+
+
+@pytest.mark.parametrize(
+    'extra', [{}, {'signInRegion': ''}], ids=['missing', 'empty']
+)
+def test_login_refresh_without_sign_in_region(extra):
+    token_loader = mock.Mock()
+    token_loader.load_token.return_value = _expired_login_token(**extra)
+    client_creator = mock.Mock(return_value=_login_refresh_client())
+
+    fetcher = credentials.LoginCredentialFetcher(
+        session_name='test-session',
+        token_loader=token_loader,
+        client_creator=client_creator,
+    )
+    fetcher.refresh_credentials()
+
+    client_creator.assert_called_once_with('signin', config=mock.ANY)
+    assert 'region_name' not in client_creator.call_args.kwargs

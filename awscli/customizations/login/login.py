@@ -5,6 +5,7 @@ import webbrowser
 
 import botocore
 from awscrt.crypto import EC, ECType
+from botocore.configprovider import ConfiguredEndpointProvider
 from botocore.exceptions import ProfileNotFound
 from botocore.utils import (
     JSONFileCache,
@@ -145,6 +146,14 @@ class LoginCommand(BasicCommand):
         ):
             return
 
+        # Record where we signed in. Refresh tokens are regional, so the
+        # refresh has to go back to the same region rather than whatever
+        # region is configured when it runs. An endpoint override supplies
+        # the host instead, so the region no longer says where the request
+        # went and we leave it out for the refresh to resolve itself.
+        if not self._resolve_endpoint_override(parsed_globals):
+            access_token['signInRegion'] = region
+
         # Cache the access token to disk
         self._token_loader.save_token(session_id, access_token)
 
@@ -229,6 +238,19 @@ class LoginCommand(BasicCommand):
     def resolve_profile_name(self):
         profile = self._session.profile
         return profile if profile is not None else 'default'
+
+    def _resolve_endpoint_override(self, parsed_globals):
+        if parsed_globals.endpoint_url:
+            return parsed_globals.endpoint_url
+        if self._session.get_config_variable(
+            'ignore_configured_endpoint_urls'
+        ):
+            return None
+        return ConfiguredEndpointProvider(
+            full_config=self._session.full_config,
+            scoped_config=self._session.get_scoped_config(),
+            client_name='signin',
+        ).provide()
 
     def _resolve_region(self, parsed_globals):
         if parsed_globals.region:

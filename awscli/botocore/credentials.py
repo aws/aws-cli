@@ -2560,10 +2560,13 @@ class LoginCredentialFetcher:
         config = botocore.config.Config(
             signature_version=botocore.UNSIGNED,
         )
-        client = self._client_creator(
-            'signin',
-            config=config,
-        )
+        client_kwargs = {'config': config}
+        # The token's signInRegion overrides the configured region.
+        # Tokens from older logins do not have it.
+        sign_in_region = token.get('signInRegion')
+        if sign_in_region:
+            client_kwargs['region_name'] = sign_in_region
+        client = self._client_creator('signin', **client_kwargs)
 
         client.meta.events.register(
             'before-call.signin.CreateOAuth2Token',

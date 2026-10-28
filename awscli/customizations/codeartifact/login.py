@@ -565,18 +565,34 @@ class NpmLogin(BaseLogin):
         commands = []
         scope = kwargs.get('scope')
 
+        # `npm config` does not support workspaces and npm refuses to run it
+        # from within a workspace ("This command does not support
+        # workspaces."). Explicitly disable workspaces for these invocations
+        # so that the config is still written when run from a workspace
+        # directory. This is a no-op outside of a workspace.
+        no_workspaces = '--workspaces=false'
+
         # prepend scope if it exists
         registry = f'{scope}:registry' if scope else 'registry'
 
         # set up the codeartifact repository as the npm registry.
-        commands.append([cls.NPM_CMD, 'config', 'set', registry, endpoint])
+        commands.append(
+            [cls.NPM_CMD, 'config', 'set', registry, endpoint, no_workspaces]
+        )
 
         repo_uri = urlsplit(endpoint)
 
         # configure npm to always require auth for the repository.
         always_auth_config = f'//{repo_uri.netloc}{repo_uri.path}:always-auth'
         commands.append(
-            [cls.NPM_CMD, 'config', 'set', always_auth_config, 'true']
+            [
+                cls.NPM_CMD,
+                'config',
+                'set',
+                always_auth_config,
+                'true',
+                no_workspaces,
+            ]
         )
 
         return commands

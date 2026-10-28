@@ -4,7 +4,7 @@ The following ``list-members`` example lists and provides details of only curren
 
     aws guardduty list-members \
         --detector-id 12abc34d567e8fa901bc2d34eexample \
-        --only-associated="true"
+        --only-associated="true" 
 
 Output::
 

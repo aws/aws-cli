@@ -8,7 +8,7 @@ The following ``describe-fleet-events`` example displays details of all fleet-re
         --end-time 1579649400 \
         --limit 5
 
-Output::
+Output:: 
 
     {
         "Events": [

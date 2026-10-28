@@ -8,8 +8,8 @@ The following ``get-instance`` example gets the attributes of a service. ::
 
 Output::
 
-    {
-        "ResourceOwner": "123456789012",
+    {  
+        "ResourceOwner": "123456789012", 
         "Instance": {
             "Id": "arn:aws:servicediscovery:us-west-2:111122223333;:service/srv-e4anhexample0004",
             "Attributes": {

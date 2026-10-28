@@ -2,7 +2,7 @@
 
 The following ``list-speech-synthesis-tasks`` example lists your speech synthesis tasks. ::
 
-    aws polly list-speech-synthesis-tasks
+    aws polly list-speech-synthesis-tasks 
 
 Output::
 

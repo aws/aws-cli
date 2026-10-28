@@ -4,6 +4,6 @@ The following ``service-inactive`` example waits until ECS services becomes inac
 
     aws ecs wait services-inactive \
         --cluster MyCluster \
-        --services MyService
+        --services MyService 
 
 This command produces no output.

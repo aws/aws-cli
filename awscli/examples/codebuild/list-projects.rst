@@ -2,7 +2,7 @@
 
 The following ``list-projects`` example gets a list of CodeBuild build projects sorted by name in ascending order. ::
 
-    aws codebuild list-projects --sort-by NAME --sort-order ASCENDING
+    aws codebuild list-projects --sort-by NAME --sort-order ASCENDING 
 
 The output includes a ``nextToken`` value which indicates that there is more output available. ::
 

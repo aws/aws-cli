@@ -84,7 +84,7 @@ If encryption by default is enabled, the following example command creates an en
 
     aws ec2 create-volume \
         --size 80 \
-        --availability-zone us-east-1a
+        --availability-zone us-east-1a 
 
 If you use the ``--kms-key-id`` parameter to specify a customer managed CMK, you must specify the ``--encrypted`` parameter even if encryption by default is enabled. ::
 
@@ -93,7 +93,7 @@ If you use the ``--kms-key-id`` parameter to specify a customer managed CMK, you
         --size 80 \
         --encrypted \
         --kms-key-id 0ea3fef3-80a7-4778-9d8c-1c0c6EXAMPLE \
-        --availability-zone us-east-1a
+        --availability-zone us-east-1a 
 
 **Example 4: To create a volume with tags**
 

@@ -10,7 +10,7 @@ The following ``create-wireless-gateway`` example creates a wireless LoRaWAN dev
 Output::
 
     {
-        "Arn": "arn:aws:iotwireless:us-east-1:123456789012:WirelessGateway/12345678-a1b2-3c45-67d8-e90fa1b2c34d",
+        "Arn": "arn:aws:iotwireless:us-east-1:123456789012:WirelessGateway/12345678-a1b2-3c45-67d8-e90fa1b2c34d", 
         "Id": "12345678-a1b2-3c45-67d8-e90fa1b2c34d"
     }
 

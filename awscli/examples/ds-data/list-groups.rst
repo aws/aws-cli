@@ -3,7 +3,7 @@
 The following ``list-groups`` example lists groups in the specified directory. ::
 
     aws ds-data list-groups \
-        --directory-id d-1234567890
+        --directory-id d-1234567890 
 
 Output::
 

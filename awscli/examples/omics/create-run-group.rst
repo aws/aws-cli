@@ -7,7 +7,7 @@ The following ``create-run-group`` example creates a run group named ``cram-conv
         --max-cpus 20 \
         --max-gpus 10 \
         --max-duration 600 \
-        --max-runs 5
+        --max-runs 5 
 
 Output::
 

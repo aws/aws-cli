@@ -6,7 +6,7 @@ The following ``create-constraint`` example creates a constraint. ::
         --portfolio-id port-y3fnkesxxxxx \
         --product-id prod-cfrfxmraxxxxx \
         --type LAUNCH \
-        --parameters '{"RoleArn" : "arn:aws:iam::123456789012:role/LaunchRole"}'
+        --parameters '{"RoleArn" : "arn:aws:iam::123456789012:role/LaunchRole"}'   
 
 Output::
 

@@ -1,7 +1,7 @@
 **To list available EMR Studios**
-
+ 
 The following ``list-studios`` example lists the EMR Studios in the AWS account.::
-
+ 
     aws emr list-studios
 
 Output::

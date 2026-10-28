@@ -3,7 +3,7 @@
 The following ``get-data-lake-sources`` example gets a snapshot of log collection for the specified account in the current AWS Region. The account has Amazon Security Lake enabled. ::
 
     aws securitylake get-data-lake-sources \
-        --accounts "123456789012"
+        --accounts "123456789012" 
 
 Output::
 

@@ -3,7 +3,7 @@
 The following ``list-data-lake-exceptions`` example lists the issues that are affecting your data lake in the last 14 days in the specified AWS Regions. ::
 
     aws securitylake list-data-lake-exceptions \
-        --regions "us-east-1" "eu-west-3"
+        --regions "us-east-1" "eu-west-3" 
 
 Output::
 

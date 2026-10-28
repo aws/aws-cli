@@ -2,7 +2,7 @@
 
 The following ``get-data-lake-organization-configuration`` example retrieves details about the source logs that new organization accounts will send after onboarding to Amazon Security Lake. ::
 
-    aws securitylake get-data-lake-organization-configuration
+    aws securitylake get-data-lake-organization-configuration 
 
 Output::
 

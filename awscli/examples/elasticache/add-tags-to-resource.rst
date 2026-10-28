@@ -11,11 +11,11 @@ Output::
     {
         "TagList": [
             {
-                "Value": "20150202",
+                "Value": "20150202", 
                 "Key": "APIVersion"
-            },
+            }, 
             {
-                "Value": "ElastiCache",
+                "Value": "ElastiCache", 
                 "Key": "Service"
             }
         ]

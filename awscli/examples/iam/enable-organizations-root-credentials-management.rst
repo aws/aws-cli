@@ -9,7 +9,7 @@ Output::
     {
         "EnabledFeatures": [
             "RootCredentialsManagement"
-        ]
+        ],
         "OrganizationId": "o-aa111bb222"
     }
 

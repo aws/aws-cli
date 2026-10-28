@@ -29,7 +29,7 @@ Output::
                 "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/queue/hgfedcba-4444-5555-a31f-123456789102",
                 "Name": "BasicQueue",
                 "QueueType": "STANDARD"
-            },
+            }
         ]
     }
 

@@ -25,4 +25,5 @@ Output::
                 "Tags": [],
                 "PrimaryVpcId": "vpc-6c31a611"
             }
+        ]
     }

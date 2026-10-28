@@ -1,6 +1,6 @@
 **To download a genome reference**
 
-The following ``get-reference`` example downloads part 1 of a genome as ``hg38.1.fa``. ::
+The following ``get-reference`` example downloads part 1 of a genome as ``hg38.1.fa``. This command produces no output. ::
 
     aws omics get-reference \
         --reference-store-id 1234567890 \

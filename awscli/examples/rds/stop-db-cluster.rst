@@ -18,7 +18,7 @@ Output::
             "BackupRetentionPeriod": 1,
             "DatabaseName": "mydb",
             "DBClusterIdentifier": "mydbcluster",
-            ...some output truncated...
+            "Status": "stopping"
         }
     }
 

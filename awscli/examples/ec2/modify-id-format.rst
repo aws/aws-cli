@@ -6,6 +6,8 @@ The following ``modify-id-format`` example enables the longer ID format for the 
         --resource instance \
         --use-long-ids
 
+This command produces no output.
+
 **Example 2: To disable the longer ID format for a resource**
 
 The following ``modify-id-format`` example disables the longer ID format for the ``instance`` resource type. ::
@@ -14,8 +16,12 @@ The following ``modify-id-format`` example disables the longer ID format for the
         --resource instance \
         --no-use-long-ids
 
+This command produces no output.
+
 The following ``modify-id-format`` example enables the longer ID format for all supported resource types that are within their opt-in period. ::
 
     aws ec2 modify-id-format \
         --resource all-current \
         --use-long-ids
+
+This command produces no output.

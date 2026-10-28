@@ -1,6 +1,6 @@
 **Example 1: To pause running until a service is confirmed to be stable**
 
-The following ``wait services-stable`` example pauses and continues only after it can confirm that the specified service running on the specified cluster is stable. There is no output. ::
+The following ``wait services-stable`` example pauses and continues only after it can confirm that the specified service running on the specified cluster is stable. This command produces no output. ::
 
     aws ecs wait services-stable \
         --cluster MyCluster \
@@ -8,7 +8,7 @@ The following ``wait services-stable`` example pauses and continues only after i
 
 **Example 2: To pause running until a task is confirmed to be running**
 
-The following ``wait services-stable`` example pauses and continues only after the specified task enters a ``RUNNING`` state. ::
+The following ``wait services-stable`` example pauses and continues only after the specified task enters a ``RUNNING`` state. This command produces no output. ::
 
     aws ecs wait services-stable \
         --cluster MyCluster \

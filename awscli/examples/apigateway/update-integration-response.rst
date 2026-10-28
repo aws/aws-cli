@@ -29,3 +29,8 @@ The following ``update-integration-response`` example removes an integration res
         --status-code 200 \
         --patch-operations op='remove',path='/responseParameters/method.response.header.Access-Control-Allow-Origin'
 
+Output::
+
+    {
+        "statusCode": "200"
+    }

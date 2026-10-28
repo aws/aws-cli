@@ -5,4 +5,4 @@ The following ``wait cluster-deleted`` example pauses and continues only after i
     aws redshift wait cluster-deleted \
         --cluster-identifier mycluster
 
-This command does not produce any output.
+This command produces no output.

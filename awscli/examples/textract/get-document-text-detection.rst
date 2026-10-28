@@ -6,7 +6,7 @@ The following ``get-document-text-detection`` example shows how to get the resul
         --job-id 57849a3dc627d4df74123dca269d69f7b89329c870c65bb16c9fd63409d200b9 \
         --max-results 1000
 
-Output ::
+Output::
 
     {
         "Blocks": [

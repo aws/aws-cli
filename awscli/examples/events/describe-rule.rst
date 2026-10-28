@@ -4,3 +4,14 @@ The following ``describe-rule`` example displays information about the rule name
 
     aws events describe-rule \
         --name "DailyLambdaFunction"
+
+Output::
+
+    {
+        "Name": "DailyLambdaFunction",
+        "Arn": "arn:aws:events:us-west-2:123456789012:rule/DailyLambdaFunction",
+        "ScheduleExpression": "cron(0 9 * * ? *)",
+        "State": "ENABLED",
+        "EventBusName": "default",
+        "CreatedBy": "123456789012"
+    }

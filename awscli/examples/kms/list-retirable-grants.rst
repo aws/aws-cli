@@ -19,7 +19,7 @@ Output::
                 "KeyId": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
                 "GrantId": "156b69c63cb154aa21f59929ff19760717be8d9d82b99df53e18b94a15a5e88e",
                 "Name": "",
-                "CreationDate": 2021-01-14T20:17:36.419000+00:00,
+                "CreationDate": "2021-01-14T20:17:36.419000+00:00",
                 "GranteePrincipal": "arn:aws:iam::111122223333:user/ExampleUser",
                 "RetiringPrincipal": "arn:aws:iam::111122223333:user/ExampleAdmin",
                 "IssuingAccount": "arn:aws:iam::111122223333:root",

@@ -4,11 +4,13 @@ The following ``get-ebs-default-kms-key-id`` example describes the default CMK f
 
     aws ec2 get-ebs-default-kms-key-id
 
-The output shows the default CMK for EBS encryption, which is an AWS managed CMK with the alias ``alias/aws/ebs``. ::
+Output::
 
     {
         "KmsKeyId": "alias/aws/ebs"
     }
+
+The preceding output shows the default CMK for EBS encryption, which is an AWS managed CMK with the alias ``alias/aws/ebs``.
 
 The following output shows a custom CMK for EBS encryption. ::
 

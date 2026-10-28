@@ -1,6 +1,6 @@
 **To revoke a private certificate**
 
-The following ``revoke-certificate`` example revokes a private certificate from the CA identified by the ARN. ::
+The following ``revoke-certificate`` example revokes a private certificate from the CA identified by the ARN. This command produces no output. ::
 
     aws acm-pca revoke-certificate \
         --certificate-authority-arn arn:aws:acm-pca:us-west-2:1234567890:certificate-authority/12345678-1234-1234-1234-123456789012 \

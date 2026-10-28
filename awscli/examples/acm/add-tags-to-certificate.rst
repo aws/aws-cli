@@ -1,6 +1,6 @@
 **To add tags to an existing ACM Certificate**
 
-The following ``add-tags-to-certificate`` example adds two tags to the specified certificate. Use a space to separate multiple tags. ::
+The following ``add-tags-to-certificate`` example adds two tags to the specified certificate. Use a space to separate multiple tags. This command produces no output. ::
 
     aws acm add-tags-to-certificate \
         --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 \

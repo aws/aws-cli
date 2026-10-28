@@ -4,3 +4,5 @@ The following ``delete-client-certificate`` example deletes the specified client
 
     aws apigateway delete-client-certificate \
         --client-certificate-id a1b2c3
+
+This command produces no output.

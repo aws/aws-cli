@@ -4,7 +4,7 @@ The following ``describe-reserved-nodes`` example shows a reserved node offering
 
     aws redshift describe-reserved-nodes
 
-Result::
+Output::
 
     {
         "ResponseMetadata": {

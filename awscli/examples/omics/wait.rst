@@ -1,6 +1,6 @@
 **To wait for an annotation store to be ready**
 
-The following ``wait`` example waits for an annotation store's status to be ``ACTIVE``. ::
+The following ``wait`` example waits for an annotation store's status to be ``ACTIVE``. This command produces no output. ::
 
     aws omics wait annotation-store-created \
         --name my_ann_store

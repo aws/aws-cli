@@ -124,7 +124,110 @@ The following ``run-instances`` example requests a public IP address for an inst
         --associate-public-ip-address \
         --key-name MyKeyPair 
 
-For an example of the output for ``run-instances``, see Example 1.
+Output::
+
+    {
+        "Instances": [
+            {
+                "AmiLaunchIndex": 0,
+                "ImageId": "ami-0abcdef1234567890",
+                "InstanceId": "i-1234567890abcdef2",
+                "InstanceType": "t2.micro",
+                "KeyName": "MyKeyPair",
+                "LaunchTime": "2018-05-10T08:05:20.000Z",
+                "Monitoring": {
+                    "State": "disabled"
+                },
+                "Placement": {
+                    "AvailabilityZone": "us-east-2a",
+                    "GroupName": "",
+                    "Tenancy": "default"
+                },
+                "PrivateDnsName": "ip-10-0-0-162.us-east-2.compute.internal",
+                "PrivateIpAddress": "10.0.0.162",
+                "ProductCodes": [],
+                "PublicDnsName": "",
+                "State": {
+                    "Code": 0,
+                    "Name": "pending"
+                },
+                "StateTransitionReason": "",
+                "SubnetId": "subnet-08fc749671b2d077c",
+                "VpcId": "vpc-1234567890abcdef0",
+                "Architecture": "x86_64",
+                "BlockDeviceMappings": [],
+                "ClientToken": "",
+                "EbsOptimized": false,
+                "Hypervisor": "xen",
+                "NetworkInterfaces": [
+                    {
+                        "Attachment": {
+                            "AttachTime": "2018-05-10T08:05:20.000Z",
+                            "AttachmentId": "eni-attach-0e325c07e928a0402",
+                            "DeleteOnTermination": true,
+                            "DeviceIndex": 0,
+                            "Status": "attaching"
+                        },
+                        "Description": "",
+                        "Groups": [
+                            {
+                                "GroupName": "MySecurityGroup",
+                                "GroupId": "sg-0b0384b66d7d692f9"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "MacAddress": "0a:ab:58:e0:67:e3",
+                        "NetworkInterfaceId": "eni-0c0a29997760baee2",
+                        "OwnerId": "123456789012",
+                        "PrivateDnsName": "ip-10-0-0-162.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.0.162",
+                        "PrivateIpAddresses": [
+                            {
+                                "Primary": true,
+                                "PrivateDnsName": "ip-10-0-0-162.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.0.162"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Status": "in-use",
+                        "SubnetId": "subnet-08fc749671b2d077c",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "InterfaceType": "interface"
+                    }
+                ],
+                "RootDeviceName": "/dev/xvda",
+                "RootDeviceType": "ebs",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "MySecurityGroup",
+                        "GroupId": "sg-0b0384b66d7d692f9"
+                    }
+                ],
+                "SourceDestCheck": true,
+                "StateReason": {
+                    "Code": "pending",
+                    "Message": "pending"
+                },
+                "Tags": [],
+                "VirtualizationType": "hvm",
+                "CpuOptions": {
+                    "CoreCount": 1,
+                    "ThreadsPerCore": 1
+                },
+                "CapacityReservationSpecification": {
+                    "CapacityReservationPreference": "open"
+                },
+                "MetadataOptions": {
+                    "State": "pending",
+                    "HttpTokens": "optional",
+                    "HttpPutResponseHopLimit": 1,
+                    "HttpEndpoint": "enabled"
+                }
+            }
+        ],
+        "OwnerId": "123456789012",
+        "ReservationId": "r-02a3f596d91211702"
+    }
 
 **Example 3: To launch an instance with additional volumes**
 
@@ -162,7 +265,110 @@ Contents of ``mapping.json``::
         }
     ]
 
-For an example of the output for ``run-instances``, see Example 1.
+Output::
+
+    {
+        "Instances": [
+            {
+                "AmiLaunchIndex": 0,
+                "ImageId": "ami-0abcdef1234567890",
+                "InstanceId": "i-1234567890abcdef3",
+                "InstanceType": "t2.micro",
+                "KeyName": "MyKeyPair",
+                "LaunchTime": "2018-05-10T08:05:20.000Z",
+                "Monitoring": {
+                    "State": "disabled"
+                },
+                "Placement": {
+                    "AvailabilityZone": "us-east-2a",
+                    "GroupName": "",
+                    "Tenancy": "default"
+                },
+                "PrivateDnsName": "ip-10-0-0-163.us-east-2.compute.internal",
+                "PrivateIpAddress": "10.0.0.163",
+                "ProductCodes": [],
+                "PublicDnsName": "",
+                "State": {
+                    "Code": 0,
+                    "Name": "pending"
+                },
+                "StateTransitionReason": "",
+                "SubnetId": "subnet-08fc749671b2d077c",
+                "VpcId": "vpc-1234567890abcdef0",
+                "Architecture": "x86_64",
+                "BlockDeviceMappings": [],
+                "ClientToken": "",
+                "EbsOptimized": false,
+                "Hypervisor": "xen",
+                "NetworkInterfaces": [
+                    {
+                        "Attachment": {
+                            "AttachTime": "2018-05-10T08:05:20.000Z",
+                            "AttachmentId": "eni-attach-0e325c07e928a0403",
+                            "DeleteOnTermination": true,
+                            "DeviceIndex": 0,
+                            "Status": "attaching"
+                        },
+                        "Description": "",
+                        "Groups": [
+                            {
+                                "GroupName": "MySecurityGroup",
+                                "GroupId": "sg-0b0384b66d7d692f9"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "MacAddress": "0a:ab:58:e0:67:e4",
+                        "NetworkInterfaceId": "eni-0c0a29997760baee3",
+                        "OwnerId": "123456789012",
+                        "PrivateDnsName": "ip-10-0-0-163.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.0.163",
+                        "PrivateIpAddresses": [
+                            {
+                                "Primary": true,
+                                "PrivateDnsName": "ip-10-0-0-163.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.0.163"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Status": "in-use",
+                        "SubnetId": "subnet-08fc749671b2d077c",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "InterfaceType": "interface"
+                    }
+                ],
+                "RootDeviceName": "/dev/xvda",
+                "RootDeviceType": "ebs",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "MySecurityGroup",
+                        "GroupId": "sg-0b0384b66d7d692f9"
+                    }
+                ],
+                "SourceDestCheck": true,
+                "StateReason": {
+                    "Code": "pending",
+                    "Message": "pending"
+                },
+                "Tags": [],
+                "VirtualizationType": "hvm",
+                "CpuOptions": {
+                    "CoreCount": 1,
+                    "ThreadsPerCore": 1
+                },
+                "CapacityReservationSpecification": {
+                    "CapacityReservationPreference": "open"
+                },
+                "MetadataOptions": {
+                    "State": "pending",
+                    "HttpTokens": "optional",
+                    "HttpPutResponseHopLimit": 1,
+                    "HttpEndpoint": "enabled"
+                }
+            }
+        ],
+        "OwnerId": "123456789012",
+        "ReservationId": "r-02a3f596d91211703"
+    }
 
 For more information about block device mappings, see `Block device mapping <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.
 
@@ -179,7 +385,115 @@ The following ``run-instances`` example adds a tag with a key of ``webserver`` a
         --security-group-ids sg-0b0384b66d7d692f9 \
         --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
 
-For an example of the output for ``run-instances``, see Example 1.
+Output::
+
+    {
+        "Instances": [
+            {
+                "AmiLaunchIndex": 0,
+                "ImageId": "ami-0abcdef1234567890",
+                "InstanceId": "i-1234567890abcdef4",
+                "InstanceType": "t2.micro",
+                "KeyName": "MyKeyPair",
+                "LaunchTime": "2018-05-10T08:05:20.000Z",
+                "Monitoring": {
+                    "State": "disabled"
+                },
+                "Placement": {
+                    "AvailabilityZone": "us-east-2a",
+                    "GroupName": "",
+                    "Tenancy": "default"
+                },
+                "PrivateDnsName": "ip-10-0-0-164.us-east-2.compute.internal",
+                "PrivateIpAddress": "10.0.0.164",
+                "ProductCodes": [],
+                "PublicDnsName": "",
+                "State": {
+                    "Code": 0,
+                    "Name": "pending"
+                },
+                "StateTransitionReason": "",
+                "SubnetId": "subnet-08fc749671b2d077c",
+                "VpcId": "vpc-1234567890abcdef0",
+                "Architecture": "x86_64",
+                "BlockDeviceMappings": [],
+                "ClientToken": "",
+                "EbsOptimized": false,
+                "Hypervisor": "xen",
+                "NetworkInterfaces": [
+                    {
+                        "Attachment": {
+                            "AttachTime": "2018-05-10T08:05:20.000Z",
+                            "AttachmentId": "eni-attach-0e325c07e928a0404",
+                            "DeleteOnTermination": true,
+                            "DeviceIndex": 0,
+                            "Status": "attaching"
+                        },
+                        "Description": "",
+                        "Groups": [
+                            {
+                                "GroupName": "MySecurityGroup",
+                                "GroupId": "sg-0b0384b66d7d692f9"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "MacAddress": "0a:ab:58:e0:67:e5",
+                        "NetworkInterfaceId": "eni-0c0a29997760baee4",
+                        "OwnerId": "123456789012",
+                        "PrivateDnsName": "ip-10-0-0-164.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.0.164",
+                        "PrivateIpAddresses": [
+                            {
+                                "Primary": true,
+                                "PrivateDnsName": "ip-10-0-0-164.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.0.164"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Status": "in-use",
+                        "SubnetId": "subnet-08fc749671b2d077c",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "InterfaceType": "interface"
+                    }
+                ],
+                "RootDeviceName": "/dev/xvda",
+                "RootDeviceType": "ebs",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "MySecurityGroup",
+                        "GroupId": "sg-0b0384b66d7d692f9"
+                    }
+                ],
+                "SourceDestCheck": true,
+                "StateReason": {
+                    "Code": "pending",
+                    "Message": "pending"
+                },
+                "Tags": [
+                    {
+                        "Key": "webserver",
+                        "Value": "production"
+                    }
+                ],
+                "VirtualizationType": "hvm",
+                "CpuOptions": {
+                    "CoreCount": 1,
+                    "ThreadsPerCore": 1
+                },
+                "CapacityReservationSpecification": {
+                    "CapacityReservationPreference": "open"
+                },
+                "MetadataOptions": {
+                    "State": "pending",
+                    "HttpTokens": "optional",
+                    "HttpPutResponseHopLimit": 1,
+                    "HttpEndpoint": "enabled"
+                }
+            }
+        ],
+        "OwnerId": "123456789012",
+        "ReservationId": "r-02a3f596d91211704"
+    }
 
 **Example 5: To launch an instance with user data**
 
@@ -202,7 +516,110 @@ Contents of ``my_script.txt``::
     systemctl start httpd
     systemctl enable httpd
 
-For an example of the output for ``run-instances``, see Example 1. 
+Output::
+
+    {
+        "Instances": [
+            {
+                "AmiLaunchIndex": 0,
+                "ImageId": "ami-0abcdef1234567890",
+                "InstanceId": "i-1234567890abcdef5",
+                "InstanceType": "t2.micro",
+                "KeyName": "MyKeyPair",
+                "LaunchTime": "2018-05-10T08:05:20.000Z",
+                "Monitoring": {
+                    "State": "disabled"
+                },
+                "Placement": {
+                    "AvailabilityZone": "us-east-2a",
+                    "GroupName": "",
+                    "Tenancy": "default"
+                },
+                "PrivateDnsName": "ip-10-0-0-165.us-east-2.compute.internal",
+                "PrivateIpAddress": "10.0.0.165",
+                "ProductCodes": [],
+                "PublicDnsName": "",
+                "State": {
+                    "Code": 0,
+                    "Name": "pending"
+                },
+                "StateTransitionReason": "",
+                "SubnetId": "subnet-08fc749671b2d077c",
+                "VpcId": "vpc-1234567890abcdef0",
+                "Architecture": "x86_64",
+                "BlockDeviceMappings": [],
+                "ClientToken": "",
+                "EbsOptimized": false,
+                "Hypervisor": "xen",
+                "NetworkInterfaces": [
+                    {
+                        "Attachment": {
+                            "AttachTime": "2018-05-10T08:05:20.000Z",
+                            "AttachmentId": "eni-attach-0e325c07e928a0405",
+                            "DeleteOnTermination": true,
+                            "DeviceIndex": 0,
+                            "Status": "attaching"
+                        },
+                        "Description": "",
+                        "Groups": [
+                            {
+                                "GroupName": "MySecurityGroup",
+                                "GroupId": "sg-0b0384b66d7d692f9"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "MacAddress": "0a:ab:58:e0:67:e6",
+                        "NetworkInterfaceId": "eni-0c0a29997760baee5",
+                        "OwnerId": "123456789012",
+                        "PrivateDnsName": "ip-10-0-0-165.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.0.165",
+                        "PrivateIpAddresses": [
+                            {
+                                "Primary": true,
+                                "PrivateDnsName": "ip-10-0-0-165.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.0.165"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Status": "in-use",
+                        "SubnetId": "subnet-08fc749671b2d077c",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "InterfaceType": "interface"
+                    }
+                ],
+                "RootDeviceName": "/dev/xvda",
+                "RootDeviceType": "ebs",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "MySecurityGroup",
+                        "GroupId": "sg-0b0384b66d7d692f9"
+                    }
+                ],
+                "SourceDestCheck": true,
+                "StateReason": {
+                    "Code": "pending",
+                    "Message": "pending"
+                },
+                "Tags": [],
+                "VirtualizationType": "hvm",
+                "CpuOptions": {
+                    "CoreCount": 1,
+                    "ThreadsPerCore": 1
+                },
+                "CapacityReservationSpecification": {
+                    "CapacityReservationPreference": "open"
+                },
+                "MetadataOptions": {
+                    "State": "pending",
+                    "HttpTokens": "optional",
+                    "HttpPutResponseHopLimit": 1,
+                    "HttpEndpoint": "enabled"
+                }
+            }
+        ],
+        "OwnerId": "123456789012",
+        "ReservationId": "r-02a3f596d91211705"
+    }
 
 For more information about instance user data, see `Working with instance user data <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html>`__ in the *Amazon EC2 User Guide*.
 
@@ -219,6 +636,109 @@ The following ``run-instances`` example launches a t2.micro instance with the ``
         --security-group-ids sg-0b0384b66d7d692f9 \
         --credit-specification CpuCredits=unlimited
 
-For an example of the output for ``run-instances``, see Example 1.
+Output::
+
+    {
+        "Instances": [
+            {
+                "AmiLaunchIndex": 0,
+                "ImageId": "ami-0abcdef1234567890",
+                "InstanceId": "i-1234567890abcdef6",
+                "InstanceType": "t2.micro",
+                "KeyName": "MyKeyPair",
+                "LaunchTime": "2018-05-10T08:05:20.000Z",
+                "Monitoring": {
+                    "State": "disabled"
+                },
+                "Placement": {
+                    "AvailabilityZone": "us-east-2a",
+                    "GroupName": "",
+                    "Tenancy": "default"
+                },
+                "PrivateDnsName": "ip-10-0-0-166.us-east-2.compute.internal",
+                "PrivateIpAddress": "10.0.0.166",
+                "ProductCodes": [],
+                "PublicDnsName": "",
+                "State": {
+                    "Code": 0,
+                    "Name": "pending"
+                },
+                "StateTransitionReason": "",
+                "SubnetId": "subnet-08fc749671b2d077c",
+                "VpcId": "vpc-1234567890abcdef0",
+                "Architecture": "x86_64",
+                "BlockDeviceMappings": [],
+                "ClientToken": "",
+                "EbsOptimized": false,
+                "Hypervisor": "xen",
+                "NetworkInterfaces": [
+                    {
+                        "Attachment": {
+                            "AttachTime": "2018-05-10T08:05:20.000Z",
+                            "AttachmentId": "eni-attach-0e325c07e928a0406",
+                            "DeleteOnTermination": true,
+                            "DeviceIndex": 0,
+                            "Status": "attaching"
+                        },
+                        "Description": "",
+                        "Groups": [
+                            {
+                                "GroupName": "MySecurityGroup",
+                                "GroupId": "sg-0b0384b66d7d692f9"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "MacAddress": "0a:ab:58:e0:67:e7",
+                        "NetworkInterfaceId": "eni-0c0a29997760baee6",
+                        "OwnerId": "123456789012",
+                        "PrivateDnsName": "ip-10-0-0-166.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.0.166",
+                        "PrivateIpAddresses": [
+                            {
+                                "Primary": true,
+                                "PrivateDnsName": "ip-10-0-0-166.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.0.166"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Status": "in-use",
+                        "SubnetId": "subnet-08fc749671b2d077c",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "InterfaceType": "interface"
+                    }
+                ],
+                "RootDeviceName": "/dev/xvda",
+                "RootDeviceType": "ebs",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "MySecurityGroup",
+                        "GroupId": "sg-0b0384b66d7d692f9"
+                    }
+                ],
+                "SourceDestCheck": true,
+                "StateReason": {
+                    "Code": "pending",
+                    "Message": "pending"
+                },
+                "Tags": [],
+                "VirtualizationType": "hvm",
+                "CpuOptions": {
+                    "CoreCount": 1,
+                    "ThreadsPerCore": 1
+                },
+                "CapacityReservationSpecification": {
+                    "CapacityReservationPreference": "open"
+                },
+                "MetadataOptions": {
+                    "State": "pending",
+                    "HttpTokens": "optional",
+                    "HttpPutResponseHopLimit": 1,
+                    "HttpEndpoint": "enabled"
+                }
+            }
+        ],
+        "OwnerId": "123456789012",
+        "ReservationId": "r-02a3f596d91211706"
+    }
 
 For more information about burstable performance instances, see `Burstable performance instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html>`__ in the *Amazon EC2 User Guide*.

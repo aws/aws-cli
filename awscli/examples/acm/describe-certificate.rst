@@ -5,7 +5,7 @@ The following ``describe-certificate`` example retrieves all of the fields for t
     aws acm describe-certificate \
         --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012
  
-Output similar to the following is displayed::
+Output::
 
     {
         "Certificate": {

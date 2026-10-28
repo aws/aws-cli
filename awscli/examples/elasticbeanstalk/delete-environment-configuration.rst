@@ -1,6 +1,6 @@
 **To delete a draft configuration**
 
-The following ``delete-environment-configuration`` example deletes a draft configuration for an environment named ``my-env``. ::
+The following ``delete-environment-configuration`` example deletes a draft configuration for an environment named ``my-env``. This command produces no output. ::
 
     aws elasticbeanstalk delete-environment-configuration \
         --environment-name my-env \

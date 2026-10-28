@@ -6,3 +6,5 @@ The following ``delete-integration`` example deletes an integration for a given 
         --rest-api-id 1234123412 \
         --resource-id a1b2c3 \
         --http-method GET
+
+This command produces no output.

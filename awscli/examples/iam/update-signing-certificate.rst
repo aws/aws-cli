@@ -1,6 +1,6 @@
 **To activate or deactivate a signing certificate for an IAM user**
 
-The following ``update-signing-certificate`` example deactivates the specified signing certificate for the IAM user named ``Bob``. ::
+The following ``update-signing-certificate`` example deactivates the specified signing certificate for the IAM user named ``Bob``. This command produces no output. ::
 
     aws iam update-signing-certificate \
         --certificate-id TA7SMP42TDN5Z26OBPJE7EXAMPLE \

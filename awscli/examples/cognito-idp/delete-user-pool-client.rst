@@ -1,6 +1,6 @@
 **To delete a user pool client**
 
-The following ``delete-user-pool-client`` example deletes a user pool client. ::
+The following ``delete-user-pool-client`` example deletes a user pool client. This command produces no output. ::
 
     aws cognito-idp delete-user-pool-client \
         --user-pool-id us-west-2_aaaaaaaaa \

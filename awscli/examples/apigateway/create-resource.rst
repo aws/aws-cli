@@ -6,3 +6,12 @@ The following ``create-resource`` example creates a resource with the path part 
         --rest-api-id 1234123412 \
         --parent-id a1b2c3 \
         --path-part 'new-resource'
+
+Output::
+
+    {
+        "id": "b2c3d4",
+        "parentId": "a1b2c3",
+        "pathPart": "new-resource",
+        "path": "/new-resource"
+    }

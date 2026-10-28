@@ -1,6 +1,6 @@
 **To report status feedback for an instance**
 
-The following ``report-instance-status`` example reports status feedback for the specified instance. ::
+The following ``report-instance-status`` example reports status feedback for the specified instance. This command produces no output. ::
 
     aws ec2 report-instance-status \
         --instances i-1234567890abcdef0 \

@@ -42,3 +42,23 @@ The following ``describe-flow-logs`` example uses a filter to display details fo
 
     aws ec2 describe-flow-logs \
         --filter "Name=log-group-name,Values=MyFlowLogs"
+
+Output::
+
+    {
+        "FlowLogs": [
+            {
+                "CreationTime": "2021-06-10T08:15:42.317Z",
+                "DeliverLogsPermissionArn": "arn:aws:iam::123456789012:role/flow-logs-role",
+                "DeliverLogsStatus": "SUCCESS",
+                "FlowLogId": "fl-1a2b3c4d5e6f7a8b9",
+                "MaxAggregationInterval": 600,
+                "FlowLogStatus": "ACTIVE",
+                "LogGroupName": "MyFlowLogs",
+                "ResourceId": "vpc-1a2b3c4d5e6f7a8b9",
+                "TrafficType": "ALL",
+                "LogDestinationType": "cloud-watch-logs",
+                "LogFormat": "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}"
+            }
+        ]
+    }

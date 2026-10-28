@@ -1,6 +1,6 @@
 **To link a local user to a federated user**
 
-The following ``admin-link-provider-for-user`` example links the local user diego to a user who will do federated sign-in with Google. ::
+The following ``admin-link-provider-for-user`` example links the local user diego to a user who will do federated sign-in with Google. This command produces no output. ::
 
     aws cognito-idp admin-link-provider-for-user \
         --user-pool-id us-west-2_EXAMPLE \

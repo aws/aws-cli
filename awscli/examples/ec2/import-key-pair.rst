@@ -4,7 +4,7 @@ The following ``import-key-pair`` example imports a public key. First, generate 
 
     ssh-keygen -t rsa -C "my-key" -f ~/.ssh/my-key
 
-Output::
+The ``ssh-keygen`` command displays output similar to the following::
 
     Generating public/private rsa key pair.
     Enter passphrase (empty for no passphrase):

@@ -5,7 +5,7 @@ The following ``describe-handshake`` example requests details about a handshake.
     aws organizations describe-handshake \
         --handshake-id h-examplehandshakeid111
 
-The output includes a handshake object that has all the details about the requested handshake: ::
+Output::
 
     {
         "Handshake": {

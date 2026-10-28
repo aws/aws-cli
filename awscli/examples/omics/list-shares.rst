@@ -16,7 +16,7 @@ Output::
                 "principalSubscriber": "123456789012",
                 "ownerId": "555555555555",
                 "status": "PENDING"
-            }
+            },
             {
                 "shareId": "39b65d0d-4368-4a19-9814-b0e31d73c10a",
                 "name": "myShare3456",
@@ -35,7 +35,5 @@ Output::
             }
         ]
     }
-        
-
 
 For more information, see `Cross-account sharing <https://docs.aws.amazon.com/omics/latest/dev/cross-account-sharing.html>`__ in the *AWS HealthOmics User Guide*.

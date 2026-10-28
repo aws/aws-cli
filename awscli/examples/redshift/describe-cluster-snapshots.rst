@@ -5,7 +5,7 @@ account.  By default, the output is in JSON format. ::
 
     aws redshift describe-cluster-snapshots
 
-Result::
+Output::
 
     {
         "Snapshots": [
@@ -18,36 +18,36 @@ Result::
                 "MasterUsername": "adminuser",
                 "Encrypted": false,
                 "OwnerAccount": "111122223333",
-                "BackupProgressInMegabytes": 20.0,
+                "BackupProgressInMegaBytes": 20.0,
                 "ElapsedTimeInSeconds": 0,
                 "DBName": "dev",
-                "CurrentBackupRateInMegabytesPerSecond: 0.0,
+                "CurrentBackupRateInMegaBytesPerSecond": 0.0,
                 "ClusterCreateTime": "2013-01-22T21:59:29.559Z",
-                "ActualIncrementalBackupSizeInMegabytes"; 20.0
+                "ActualIncrementalBackupSizeInMegaBytes": 20.0,
                 "SnapshotType": "automated",
                 "NodeType": "dw.hs1.xlarge",
                 "ClusterIdentifier": "mycluster",
                 "Port": 5439,
-                "TotalBackupSizeInMegabytes": 20.0,
-                "NumberOfNodes": "2",
+                "TotalBackupSizeInMegaBytes": 20.0,
+                "NumberOfNodes": 2,
                 "SnapshotIdentifier": "cm:mycluster-2013-01-22-22-04-18"
             },
             {
                 "EstimatedSecondsToCompletion": 0,
                 "OwnerAccount": "111122223333",
-                "CurrentBackupRateInMegabytesPerSecond: 0.1534,
-                "ActualIncrementalBackupSizeInMegabytes"; 11.0,
-                "NumberOfNodes": "2",
+                "CurrentBackupRateInMegaBytesPerSecond": 0.1534,
+                "ActualIncrementalBackupSizeInMegaBytes": 11.0,
+                "NumberOfNodes": 2,
                 "Status": "available",
                 "ClusterVersion": "1.0",
                 "MasterUsername": "adminuser",
                 "AccountsWithRestoreAccess": [
                     {
-                        "AccountID": "444455556666"
-                    } ],
-                "TotalBackupSizeInMegabytes": 20.0,
+                        "AccountId": "444455556666"
+                } ],
+                "TotalBackupSizeInMegaBytes": 20.0,
                 "DBName": "dev",
-                "BackupProgressInMegabytes": 11.0,
+                "BackupProgressInMegaBytes": 11.0,
                 "ClusterCreateTime": "2013-01-22T21:59:29.559Z",
                 "ElapsedTimeInSeconds": 0,
                 "ClusterIdentifier": "mycluster",
@@ -58,8 +58,7 @@ Result::
                 "SnapshotType": "manual",
                 "Port": 5439,
                 "SnapshotIdentifier": "my-snapshot-id"
-            } ]
-        }
-        (...remaining output omitted...)
+        } ]
+    }
 
 

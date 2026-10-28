@@ -1,6 +1,6 @@
 **To remove a tag from a resource**
 
-The following ``untag-resource`` example removes the ``department`` tag from a workflow. ::
+The following ``untag-resource`` example removes the ``department`` tag from a workflow. This command produces no output. ::
 
     aws omics untag-resource \
         --resource-arn arn:aws:omics:us-west-2:123456789012:workflow/1234567 \

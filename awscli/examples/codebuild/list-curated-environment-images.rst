@@ -27,8 +27,7 @@ Output::
                                 "versions": [
                                     "aws/codebuild/eb-java-8-amazonlinux-64:2.1.3-1.0.0"
                                 ]
-                            },
-                            ... LIST TRUNCATED FOR BREVITY ...
+                            }
                         ]
                     }
                 ]

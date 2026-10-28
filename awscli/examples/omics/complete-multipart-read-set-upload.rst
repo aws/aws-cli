@@ -12,8 +12,6 @@ Output::
 
     {
         "readSetId": "0000000001"
-        "readSetId": "0000000002"
-        "readSetId": "0000000003"
     }
 
 For more information, see `Direct upload to a sequence store <https://docs.aws.amazon.com/omics/latest/dev/synchronous-uploads.html>`__ in the *AWS HealthOmics User Guide*.

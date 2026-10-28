@@ -7,3 +7,5 @@ The following ``delete-method-response`` example deletes a method response for t
         --resource-id a1b2c3 \
         --http-method GET \
         --status-code 200
+
+This command produces no output.

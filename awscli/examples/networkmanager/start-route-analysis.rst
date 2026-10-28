@@ -12,13 +12,13 @@ Output::
 
     {
         "RouteAnalysis": {
-            "GlobalNetworkId": "global-network-00aa0aaa0b0aaa000 
+            "GlobalNetworkId": "global-network-00aa0aaa0b0aaa000",
             "OwnerAccountId": "1111222233333",
             "RouteAnalysisId": "a1873de1-273c-470c-1a2bc2345678",
             "StartTimestamp": 1695760154.0,
             "Status": "RUNNING",
             "Source": {
-                "TransitGatewayAttachmentArn": "arn:aws:ec2:us-east-1:111122223333:transit-gateway-attachment/tgw-attach-1234567890abcdef0,
+                "TransitGatewayAttachmentArn": "arn:aws:ec2:us-east-1:111122223333:transit-gateway-attachment/tgw-attach-1234567890abcdef0",
                 "TransitGatewayArn": "arn:aws:ec2:us-east-1:111122223333:transit-gateway/tgw-abcdef01234567890",
                 "IpAddress": "10.0.0.0"
             },

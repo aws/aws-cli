@@ -1,6 +1,6 @@
 **To delete a run group**
 
-The following ``delete-run-group`` example deletes a run group with ID ``1234567``. ::
+The following ``delete-run-group`` example deletes a run group with ID ``1234567``. This command produces no output. ::
 
     aws omics delete-run-group \
         --id 1234567

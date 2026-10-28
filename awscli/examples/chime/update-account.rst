@@ -23,7 +23,7 @@ Output::
             "SigninDelegateGroups": [
                 {
                     "GroupName": "myGroup"
-                },
+                }
             ]
         }
     }

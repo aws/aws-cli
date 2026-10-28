@@ -1,7 +1,7 @@
 **To configure CORS for a bucket**
 
 The following ``put-bucket-cors`` example enables ``PUT``, ``POST``, and ``DELETE`` requests from *www.example.com*, and enables ``GET``
-requests from any domain. ::
+requests from any domain. This command produces no output. ::
 
     aws s3api put-bucket-cors \
         --bucket amzn-s3-demo-bucket \

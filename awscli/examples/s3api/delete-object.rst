@@ -6,7 +6,9 @@ The following ``delete-object`` example deletes an object named ``test.txt`` fro
         --bucket amzn-s3-demo-bucket \
         --key test.txt
 
-If bucket versioning is enabled, the output will contain the version ID of the delete marker::
+If bucket versioning is enabled, the output contains the version ID of the delete marker.
+
+Output::
 
     {
         "VersionId": "9_gKg5vG56F.TTEUdwkxGpJ3tNDlWlGq",

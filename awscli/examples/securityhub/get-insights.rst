@@ -22,7 +22,7 @@ Output::
                             "Comparison": "EQUALS",
                             "Value": "CRITICAL"
                         }
-                    ],
+                    ]
                 },
                 "GroupByAttribute": "ResourceId",
                 "InsightArn": "arn:aws:securityhub:us-west-1:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",

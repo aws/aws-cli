@@ -68,6 +68,38 @@ The following ``register-task-definition`` example registers a task definition u
         --family sleep360 \
         --container-definitions "[{\"name\":\"sleep\",\"image\":\"busybox\",\"cpu\":10,\"command\":[\"sleep\",\"360\"],\"memory\":10,\"essential\":true}]"
 
-The output is identical to the previous example.
+Output::
+
+    {
+        "taskDefinition": {
+            "status": "ACTIVE",
+            "family": "sleep360",
+            "placementConstraints": [],
+            "compatibilities": [
+                "EXTERNAL",
+                "EC2"
+            ],
+            "volumes": [],
+            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/sleep360:1",
+            "containerDefinitions": [
+                {
+                    "environment": [],
+                    "name": "sleep",
+                    "mountPoints": [],
+                    "image": "busybox",
+                    "cpu": 10,
+                    "portMappings": [],
+                    "command": [
+                        "sleep",
+                        "360"
+                    ],
+                    "memory": 10,
+                    "essential": true,
+                    "volumesFrom": []
+                }
+            ],
+            "revision": 1
+        }
+    }
 
 For more information, see `Creating a Task Definition <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html>`_ in the *Amazon ECS Developer Guide*.

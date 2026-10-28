@@ -1,6 +1,6 @@
 **To set the Amazon SNS topic to which Amazon SES will publish bounce, complaint, and/or delivery notifications for a verified identity**
 
-The following ``set-identity-notification-topic`` example specifies the Amazon SNS topic to which a verified email address will receive bounce notifications. ::
+The following ``set-identity-notification-topic`` example specifies the Amazon SNS topic to which a verified email address will receive bounce notifications. This command produces no output. ::
 
     aws ses set-identity-notification-topic \
         --identity user@example.com \

@@ -1,6 +1,6 @@
 **To remove a tag from a resource**
 
-The following ``untag-resource`` example removes the tag with the key ``region`` from the specified channel. ::
+The following ``untag-resource`` example removes the tag with the key ``region`` from the specified channel. This command produces no output. ::
 
     aws mediapackage untag-resource \
         --resource-arn arn:aws:mediapackage:us-west-2:111222333:channels/6d345804ec3f46c9b454a91d4a80d0e0 \

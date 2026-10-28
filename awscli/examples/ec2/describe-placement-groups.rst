@@ -12,7 +12,6 @@ Output::
                 "GroupName": "my-cluster",
                 "State": "available",
                 "Strategy": "cluster"
-            },
-            ...
+            }
         ]
     }

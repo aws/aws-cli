@@ -37,10 +37,7 @@ Output::
                         "RecurringChargeFrequency": "Hourly"
                     }
                 ]
-            },
-
-            ...
-            
+            }
         ]
     }
 

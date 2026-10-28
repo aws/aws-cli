@@ -14,7 +14,6 @@ Output::
             "MonitoringInterval": 0,
             "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:test-instance-repl",
             "ReadReplicaSourceDBInstanceIdentifier": "test-instance",
-            "DBInstanceIdentifier": "test-instance-repl",
-            ...some output truncated...
+            "DBInstanceIdentifier": "test-instance-repl"
         }
     }

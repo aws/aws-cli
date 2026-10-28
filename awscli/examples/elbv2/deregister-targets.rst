@@ -1,6 +1,6 @@
 **Example 1: To deregister a target from a target group**
 
-The following ``deregister-targets`` example removes the specified instance from the specified target group. ::
+The following ``deregister-targets`` example removes the specified instance from the specified target group. This command produces no output. ::
 
     aws elbv2 deregister-targets \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067 \
@@ -8,7 +8,7 @@ The following ``deregister-targets`` example removes the specified instance from
 
 **Example 2: To deregister a target registered using port overrides**
 
-The following ``deregister-targets`` example removes an instance from a target group that was registered using port overrides. ::
+The following ``deregister-targets`` example removes an instance from a target group that was registered using port overrides. This command produces no output. ::
 
     aws elbv2 deregister-targets \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-internal-targets/3bb63f11dfb0faf9 \

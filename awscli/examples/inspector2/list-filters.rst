@@ -17,7 +17,7 @@ Output::
                         {
                             "comparison": "EQUALS",
                             "value": "AWS_EC2_INSTANCE"
-                        },
+                        }
                     ]
                 },
                 "description": "This suppression rule omits EC2 instance type findings",
@@ -36,7 +36,7 @@ Output::
                             "comparison": "EQUALS",
                             "value": "AWS_ECR_INSTANCE"
                         }
-                    ]   
+                    ]
                 },
                 "description": "This suppression rule omits ECR instance type findings",
                 "name": "ExampleSuppressionRuleECR",

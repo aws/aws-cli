@@ -1,6 +1,6 @@
 **To delete a workflow run**
 
-The following ``delete-run`` example deletes a run with ID ``1234567``. ::
+The following ``delete-run`` example deletes a run with ID ``1234567``. This command produces no output. ::
 
     aws omics delete-run \
         --id 1234567

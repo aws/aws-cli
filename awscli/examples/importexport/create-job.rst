@@ -26,6 +26,16 @@ Contents of ``manifest``::
     notificationEmail: john.doe@example.com;jane.roe@example.com
     bucket: amzn-s3-demo-bucket
 
+Output::
+
+    {
+        "JobId": "EX1ID",
+        "JobType": "Import",
+        "Signature": "ktKDXpdbEXAMPLEyGFJmQO744UHw=",
+        "SignatureFileContents": "version:2.0\nsigningMethod:HmacSHA1\njobId:EX1ID\nsignature:ktKDXpdbEXAMPLEyGFJmQO744UHw=",
+        "WarningMessage": "**** Device will be erased before being returned. ****"
+    }
+
 For more information on the manifest file format, see `Creating Import Manifests`_ in the *AWS Import/Export Developer Guide*.
 
 .. _`Creating Import Manifests`: http://docs.aws.amazon.com/AWSImportExport/latest/DG/ImportManifestFile.html

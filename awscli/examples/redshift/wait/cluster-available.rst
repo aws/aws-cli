@@ -5,4 +5,4 @@ The following ``wait cluster-available`` example pauses and continues only after
     aws redshift wait cluster-available \
         --cluster-identifier mycluster
 
-This command does not produce any output.
+This command produces no output.

@@ -1,6 +1,6 @@
 **To cancel a run**
 
-The following ``cancel-run`` example cancels a run with ID ``1234567``. ::
+The following ``cancel-run`` example cancels a run with ID ``1234567``. This command produces no output. ::
 
     aws omics cancel-run \
         --id 1234567

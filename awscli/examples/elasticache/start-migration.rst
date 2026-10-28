@@ -6,7 +6,7 @@ The following ``start-migration`` example migrates your data from self-hosted Re
         --replication-group-id test \
         --customer-node-endpoint-list "Address='test.g2xbih.ng.0001.usw2.cache.amazonaws.com',Port=6379"
 
-Output ::
+Output::
 
     {
         "ReplicationGroup": {

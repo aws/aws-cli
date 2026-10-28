@@ -1,6 +1,6 @@
 **To apply a tagging configuration to a bucket**
 
-The following ``put-bucket-tagging`` example applies a tagging configuration to a bucket named ``amzn-s3-demo-bucket``. ::
+The following ``put-bucket-tagging`` example applies a tagging configuration to a bucket named ``amzn-s3-demo-bucket``. This command produces no output. ::
 
     aws s3api put-bucket-tagging \
         --bucket amzn-s3-demo-bucket \
@@ -19,7 +19,7 @@ Contents of ``tagging.json``::
         ]
     }
 
-Alternatively, apply a tagging configuration to ``amzn-s3-demo-bucket`` directly from the command line. ::
+Alternatively, apply a tagging configuration to ``amzn-s3-demo-bucket`` directly from the command line. This command produces no output. ::
 
     aws s3api put-bucket-tagging \
         --bucket amzn-s3-demo-bucket \

@@ -41,8 +41,7 @@ Output::
                     "DocumentName": "AWS-UpdateSSMAgent",
                     "DocumentVersion": "1"
                 }
-            },
-            ...
+        }
         ],
         "NextToken": "--token string truncated--"
     }
@@ -56,6 +55,28 @@ The following ``list-compliance-items`` example lists all compliance items for t
         --resource-types "ManagedInstance" \
         --filters "Key=ComplianceType,Values=Association,Type=EQUAL" "Key=Id,Values=e4c2ed6d-516f-41aa-aa2a-0123456789ab,Type=EQUAL"
 
+Output::
+
+    {
+        "ComplianceItems": [
+            {
+                "ComplianceType": "Association",
+                "ResourceType": "ManagedInstance",
+                "ResourceId": "i-1234567890abcdef0",
+                "Id": "e4c2ed6d-516f-41aa-aa2a-0123456789ab",
+                "Title": "",
+                "Status": "COMPLIANT",
+                "Severity": "UNSPECIFIED",
+                "ExecutionSummary": {
+                    "ExecutionTime": 1550508475.0
+                },
+                "Details": {
+                    "DocumentName": "AWS-UpdateSSMAgent",
+                    "DocumentVersion": "1"
+                }
+            }
+        ]
+    }
 
 **Example 3: To list compliance items for an instance after a specific date and time**
 
@@ -66,3 +87,25 @@ The following ``list-compliance-items`` example lists all compliance items for a
         --resource-types "ManagedInstance" \
         --filters "Key=ExecutionTime,Values=2019-02-18T16:00:00Z,Type=GREATER_THAN"
 
+Output::
+
+    {
+        "ComplianceItems": [
+            {
+                "ComplianceType": "Association",
+                "ResourceType": "ManagedInstance",
+                "ResourceId": "i-1234567890abcdef0",
+                "Id": "e4c2ed6d-516f-41aa-aa2a-0123456789ab",
+                "Title": "",
+                "Status": "COMPLIANT",
+                "Severity": "UNSPECIFIED",
+                "ExecutionSummary": {
+                    "ExecutionTime": 1550508475.0
+                },
+                "Details": {
+                    "DocumentName": "AWS-UpdateSSMAgent",
+                    "DocumentVersion": "1"
+                }
+            }
+        ]
+    }

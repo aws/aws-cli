@@ -4,7 +4,9 @@ The following ``list-accounts`` example requests a list of the accounts in an or
 
     aws organizations list-accounts
 
-The output includes a list of account summary objects. ::
+The output includes a list of account summary objects.
+
+Output::
 
     {
         "Accounts": [

@@ -14,7 +14,7 @@ Output::
                 "UserId": "123456789012"
             }
         ],
-        "ImageId": "ami-5731123e",
+        "ImageId": "ami-5731123e"
     }
 
 **Example 2: To describe the product codes for an AMI**
@@ -29,5 +29,5 @@ Output::
 
     {
         "ProductCodes": [],
-        "ImageId": "ami-5731123e",
+        "ImageId": "ami-5731123e"
     }

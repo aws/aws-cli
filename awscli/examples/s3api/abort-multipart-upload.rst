@@ -1,6 +1,6 @@
 **To abort the specified multipart upload**
 
-The following ``abort-multipart-upload`` example aborts a multipart upload for the key ``multipart/01`` in the bucket ``amzn-s3-demo-bucket``. ::
+The following ``abort-multipart-upload`` example aborts a multipart upload for the key ``multipart/01`` in the bucket ``amzn-s3-demo-bucket``. This command produces no output. ::
 
     aws s3api abort-multipart-upload \
         --bucket amzn-s3-demo-bucket \

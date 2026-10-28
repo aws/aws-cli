@@ -1,6 +1,6 @@
 **To unlink a federated user from a local user profile**
 
-The following ``admin-disable-provider-for-user`` example disconnects a Google user from their linked local profile. ::
+The following ``admin-disable-provider-for-user`` example disconnects a Google user from their linked local profile. This command produces no output. ::
 
     aws cognito-idp admin-disable-provider-for-user \
         --user-pool-id us-west-2_EXAMPLE \

@@ -5,3 +5,18 @@ The following ``list-tags`` example lists the tags associated with the private C
     aws acm-pca list-tags \
         --certificate-authority-arn arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/123455678-1234-1234-1234-123456789012 \
         --max-results 10
+
+Output::
+
+    {
+        "Tags": [
+            {
+                "Key": "Admin",
+                "Value": "Alice"
+            },
+            {
+                "Key": "Purpose",
+                "Value": "Website"
+            }
+        ]
+    }

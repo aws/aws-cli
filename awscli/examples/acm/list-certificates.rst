@@ -4,7 +4,7 @@ The following ``list-certificates`` example lists the ARNs of the certificates i
 
     aws acm list-certificates
 
-The preceding command produces output similar to the following::
+Output::
 
     {
         "CertificateSummaryList": [
@@ -24,21 +24,23 @@ You can decide how many certificates you want to display each time you call ``li
     aws acm list-certificates \
         --max-items 2
 
-Two certificate ARNs and a ``NextToken`` value will be displayed::
+Two certificate ARNs and a ``NextToken`` value are displayed.
 
-    "CertificateSummaryList": [
-        {
-            "CertificateArn": "arn:aws:acm:region:account: \
-                certificate/12345678-1234-1234-1234-123456789012",
-            "DomainName": "www.example.com"
-        },
-        {
-            "CertificateArn": "arn:aws:acm:region:account: \
-                certificate/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-            "DomainName": "www.example.net"
-        }
-    ],
-    "NextToken": "9f4d9f69-275a-41fe-b58e-2b837bd9ba48"
+Output::
+
+    {
+        "CertificateSummaryList": [
+            {
+                "CertificateArn": "arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012",
+                "DomainName": "www.example.com"
+            },
+            {
+                "CertificateArn": "arn:aws:acm:region:account:certificate/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                "DomainName": "www.example.net"
+            }
+        ],
+        "NextToken": "9f4d9f69-275a-41fe-b58e-2b837bd9ba48"
+    }
 
 To display the next two certificates in your account, set this ``NextToken`` value in your next call. ::
 

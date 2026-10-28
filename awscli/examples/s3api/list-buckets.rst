@@ -6,6 +6,13 @@ regions). ::
     aws s3api list-buckets \
         --query "Buckets[].Name"
 
+Output::
+
+    [
+        "amzn-s3-demo-bucket1",
+        "amzn-s3-demo-bucket2"
+    ]
+
 The query option filters the output of ``list-buckets`` down to only the bucket names.
 
 For more information about buckets, see `Working with Amazon S3 Buckets`_ in the *Amazon S3 Developer Guide*.

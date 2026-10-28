@@ -1,6 +1,6 @@
 **To delete an application**
 
-The following ``delete-application`` example deletes an application named ``my-app``. ::
+The following ``delete-application`` example deletes an application named ``my-app``. This command produces no output. ::
 
     aws elasticbeanstalk delete-application \
         --application-name my-app

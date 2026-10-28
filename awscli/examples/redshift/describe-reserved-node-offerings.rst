@@ -5,7 +5,7 @@ purchase. ::
 
     aws redshift describe-reserved-node-offerings
 
-Result::
+Output::
 
     {
         "ReservedNodeOfferings": [
@@ -18,7 +18,7 @@ Result::
                     {
                         "RecurringChargeAmount": "",
                         "RecurringChargeFrequency": "Hourly"
-                    } ],
+                } ],
                 "Duration": 31536000,
                 "ReservedNodeOfferingId": "ceb6a579-cf4c-4343-be8b-d832c45ab51c"
             },
@@ -31,11 +31,10 @@ Result::
                     {
                         "RecurringChargeAmount": "",
                         "RecurringChargeFrequency": "Hourly"
-                    } ],
+                } ],
                 "Duration": 31536000,
                 "ReservedNodeOfferingId": "e5a2ff3b-352d-4a9c-ad7d-373c4cab5dd2"
-            },
-            ...remaining output omitted...
+            }
         ],
         "ResponseMetadata": {
             "RequestId": "8b1a1a43-75ff-11e2-9666-e142fe91ddd1"

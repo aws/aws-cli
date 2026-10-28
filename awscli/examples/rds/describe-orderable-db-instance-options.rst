@@ -42,5 +42,4 @@ Output::
                 "SupportsPerformanceInsights": false
             }
         ]
-        ...some output truncated...
     }

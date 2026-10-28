@@ -1,6 +1,6 @@
 **To download a read set**
 
-The following ``get-read-set`` example downloads part 3 of a read set as ``1234567890.3.bam``. ::
+The following ``get-read-set`` example downloads part 3 of a read set as ``1234567890.3.bam``. This command produces no output. ::
 
     aws omics get-read-set \
         --sequence-store-id 1234567890 \

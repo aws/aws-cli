@@ -7,7 +7,7 @@ The following ``create-cluster-subnet-group`` example creates a new cluster subn
         --description "My subnet group" \
         --subnet-ids subnet-763fdd1c
 
-Result::
+Output::
 
     {
         "ClusterSubnetGroup": {

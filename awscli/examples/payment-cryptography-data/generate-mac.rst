@@ -10,7 +10,7 @@ The following ``generate-mac`` example generates a Hash-Based Message Authentica
 Output::
 
     {
-        "KeyArn": "arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h,
+        "KeyArn": "arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h",
         "KeyCheckValue": "2976E7",
         "Mac": "ED87F26E961C6D0DDB78DA5038AA2BDDEA0DCE03E5B5E96BDDD494F4A7AA470C"
     }

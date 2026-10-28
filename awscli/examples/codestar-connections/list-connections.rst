@@ -24,7 +24,7 @@ Output::
                 "Status": "AVAILABLE",
                 "ARN": "arn:aws:codestar-connections:us-east-1:123456789012:connection/aEXAMPLE-8aad-4d5d-8878-dfcab0bc441f",
                 "OwnerAccountId": "123456789012"
-            },
+            }
         ],
         "NextToken": "next-token"
     }

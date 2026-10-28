@@ -36,7 +36,7 @@ Output::
                                     "targetSegmentDurationSeconds": 2
                                 }
                             },
-                            "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
+                            "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"
                         }
                     },
                     "detail": {
@@ -181,12 +181,12 @@ Output::
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
                             "thumbnailConfigurations": [
-                               {
-                                  "targetIntervalSeconds": 60,
-                                  "storage": [
-                                      "SEQUENTIAL"
-                                  ],
-                               }
+                                {
+                                    "targetIntervalSeconds": 60,
+                                    "storage": [
+                                        "SEQUENTIAL"
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -202,12 +202,13 @@ Output::
             ],
             "layout": {
                 "grid": {
-                    "featuredParticipantAttribute": ""
+                    "featuredParticipantAttribute": "",
                     "gridGap": 2,
                     "omitStoppedVideo": false,
                     "participantOrderAttribute": "",
                     "videoAspectRatio": "VIDEO",
-                    "videoFillMode": ""                }
+                    "videoFillMode": ""
+                }
             },
             "stageArn": "arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd",
             "startTime": "2023-10-16T23:24:00+00:00",

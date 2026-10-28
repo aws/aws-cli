@@ -10,7 +10,7 @@ Output::
         "EnabledFeatures": [
             "RootCredentialsManagement",
             "RootSessions"
-        ]
+        ],
         "OrganizationId": "o-aa111bb222"
     }
 

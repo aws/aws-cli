@@ -7,7 +7,7 @@ The following ``list-vocabulary-filters`` example lists the vocabulary filters a
 Output::
 
     {
-        "NextToken": "NextToken": [
+        "VocabularyFilters": [
             {
                 "VocabularyFilterName": "testFilter",
                 "LanguageCode": "language-code",

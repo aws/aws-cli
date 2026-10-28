@@ -6,7 +6,7 @@ The following ``create-cluster-security-group`` example creates a new cluster se
         --cluster-security-group-name mysecuritygroup \
         --description "This is my cluster security group"
 
-Result::
+Output::
 
     {
         "create_cluster_security_group_response": {
@@ -15,8 +15,8 @@ Result::
                     "description": "This is my cluster security group",
                     "owner_id": "300454760768",
                     "cluster_security_group_name": "mysecuritygroup",
-                    "ec2_security_groups": \[],
-                    "ip_ranges": \[]
+                    "ec2_security_groups": [],
+                    "ip_ranges": []
                 }
             },
             "response_metadata": {
@@ -32,7 +32,7 @@ You can also obtain the same information in text format using the ``--output tex
         --description "This is my cluster security group" \
         --output text
 
-Result::
+Output::
 
     This is my cluster security group   300454760768    mysecuritygroup
     a0c0bfab-343a-11e2-95d2-c3dc9fe8ab57

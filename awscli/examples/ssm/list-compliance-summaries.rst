@@ -57,8 +57,7 @@ Output::
                         "UnspecifiedCount": 0
                     }
                 }
-            },
-            ...
+        }
         ],
         "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
     }
@@ -70,3 +69,34 @@ The following ``list-compliance-summaries`` example lists the compliance summary
     aws ssm list-compliance-summaries \
         --filters "Key=ComplianceType,Values=Patch,Type=EQUAL"
 
+Output::
+
+    {
+        "ComplianceSummaryItems": [
+            {
+                "ComplianceType": "Patch",
+                "CompliantSummary": {
+                    "CompliantCount": 1,
+                    "SeveritySummary": {
+                        "CriticalCount": 0,
+                        "HighCount": 0,
+                        "MediumCount": 0,
+                        "LowCount": 0,
+                        "InformationalCount": 0,
+                        "UnspecifiedCount": 1
+                    }
+                },
+                "NonCompliantSummary": {
+                    "NonCompliantCount": 1,
+                    "SeveritySummary": {
+                        "CriticalCount": 1,
+                        "HighCount": 0,
+                        "MediumCount": 0,
+                        "LowCount": 0,
+                        "InformationalCount": 0,
+                        "UnspecifiedCount": 0
+                    }
+                }
+            }
+        ]
+    }

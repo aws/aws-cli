@@ -15,9 +15,6 @@ Output::
             "ReplicationInstanceStatus": "available",
             "AllocatedStorage": 5,
             "InstanceCreateTime": 1590011235.952,
-
-            ...output omitted...
-
             "PendingModifiedValues": {
                 "MultiAZ": true
             },
@@ -25,9 +22,7 @@ Output::
             "EngineVersion": "3.3.2",
             "AutoMinorVersionUpgrade": true,
             "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/f7bc0f8e-1a3a-4ace-9faa-e8494fa3921a",
-
-            ...output omitted...
-
+            "ReplicationInstanceArn": "arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE"
         }
     }
 

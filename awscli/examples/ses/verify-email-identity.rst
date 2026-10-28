@@ -1,6 +1,6 @@
 **To verify an email address with Amazon SES**
 
-The following ``verify-email-identity`` example verifies an email address. ::
+The following ``verify-email-identity`` example verifies an email address. This command produces no output. ::
 
     aws ses verify-email-identity \
         --email-address user@example.com

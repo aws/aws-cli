@@ -6,3 +6,10 @@ The following ``create-certificate-authority-audit-report`` example creates an a
         --certificate-authority-arn arn:aws:acm-pca:us-east-1:accountid:certificate-authority/12345678-1234-1234-1234-123456789012 \
         --s3-bucket-name your-bucket-name \
         --audit-report-response-format JSON
+
+Output::
+
+    {
+        "AuditReportId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "S3Key": "audit-report/12345678-1234-1234-1234-123456789012/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.json"
+    }

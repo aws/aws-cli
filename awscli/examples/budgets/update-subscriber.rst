@@ -1,6 +1,6 @@
 **To replace a subscriber for a Cost and Usage budget**
 
-The following ``update-subscriber`` example replaces the subscriber for a Cost and Usage budget. ::
+The following ``update-subscriber`` example replaces the subscriber for a Cost and Usage budget. This command produces no output. ::
 
     aws budgets update-subscriber \
         --account-id 111122223333 \

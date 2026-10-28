@@ -27,6 +27,20 @@ The following ``create-resource-share`` example creates a resource share and gra
         --name MyNewResourceShare \
         --principals 222222222222
 
+Output::
+
+    {
+        "resourceShare": {
+            "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "name": "MyNewResourceShare",
+            "owningAccountId": "123456789012",
+            "allowExternalPrincipals": true,
+            "status": "ACTIVE",
+            "creationTime": 1634586751.437,
+            "lastUpdatedTime": 1634586751.437
+        }
+    }
+
 **Example 3: To create a resource share restricted to your AWS Organization**
 
 The following ``create-resource-share`` example creates a resource share that is restricted to accounts in the AWS Organization that your account is a member of, and adds the specified OU as a principal. All accounts in that OU can use the resources in the resource share. ::

@@ -41,6 +41,7 @@ Output::
                     "Value": "cc123"
                 }
             ]
+        }
     }
 
 Once you create a resource discovery, you may want to share it with another IPAM delegated admin, which you can do with `create-resource-share <https://docs.aws.amazon.com/cli/latest/reference/ram/create-resource-share.html>`__. For more information, see `Integrate IPAM with accounts outside of your organization <https://docs.aws.amazon.com/vpc/latest/ipam/enable-integ-ipam-outside-org.html>`__ in the *Amazon VPC IPAM User Guide*.

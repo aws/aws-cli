@@ -10,44 +10,45 @@ Output::
 
     {
         "commits": [
-          {
-            "additionalData": "",
-            "committer": {
-                "date": "1508280564 -0800",
-                "name": "Mary Major",
-                "email": "mary_major@example.com"
+            {
+                "additionalData": "",
+                "committer": {
+                    "date": "1508280564 -0800",
+                    "name": "Mary Major",
+                    "email": "mary_major@example.com"
+                },
+                "author": {
+                    "date": "1508280564 -0800",
+                    "name": "Mary Major",
+                    "email": "mary_major@example.com"
+                },
+                "commitId": "317f8570EXAMPLE",
+                "treeId": "1f330709EXAMPLE",
+                "parents": [
+                    "6e147360EXAMPLE"
+                ],
+                "message": "Change variable name and add new response element"
             },
-            "author": {
-                "date": "1508280564 -0800",
-                "name": "Mary Major",
-                "email": "mary_major@example.com"
-            },
-            "commitId": "317f8570EXAMPLE",
-            "treeId": "1f330709EXAMPLE",
-            "parents": [
-                "6e147360EXAMPLE"
-            ],
-            "message": "Change variable name and add new response element"
-        },
-        {
-            "additionalData": "",
-            "committer": {
-                "date": "1508280542 -0800",
-                "name": "Li Juan",
-                "email": "li_juan@example.com"
-            },
-            "author": {
-                "date": "1508280542 -0800",
-                "name": "Li Juan",
-                "email": "li_juan@example.com"
-            },
-            "commitId": "4c925148EXAMPLE",
-            "treeId": "1f330709EXAMPLE",
-            "parents": [
-                "317f8570EXAMPLE"
-            ],
-            "message": "Added new class"
-        }   
+            {
+                "additionalData": "",
+                "committer": {
+                    "date": "1508280542 -0800",
+                    "name": "Li Juan",
+                    "email": "li_juan@example.com"
+                },
+                "author": {
+                    "date": "1508280542 -0800",
+                    "name": "Li Juan",
+                    "email": "li_juan@example.com"
+                },
+                "commitId": "4c925148EXAMPLE",
+                "treeId": "1f330709EXAMPLE",
+                "parents": [
+                    "317f8570EXAMPLE"
+                ],
+                "message": "Added new class"
+            }
+        ]
     }
 
 

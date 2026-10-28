@@ -54,9 +54,26 @@ Output::
             },
             {
                 "PolicyAttributeTypeDescriptions": [
-                    .
-                    .
-                    .
+                    {
+                        "Cardinality": "ZERO_OR_ONE",
+                        "AttributeName": "Reference-Security-Policy",
+                        "AttributeType": "String"
+                    },
+                    {
+                        "Cardinality": "ZERO_OR_ONE",
+                        "AttributeName": "Protocol-TLSv1.2",
+                        "AttributeType": "Boolean"
+                    },
+                    {
+                        "Cardinality": "ZERO_OR_ONE",
+                        "AttributeName": "Server-Defined-Cipher-Order",
+                        "AttributeType": "Boolean"
+                    },
+                    {
+                        "Cardinality": "ZERO_OR_ONE",
+                        "AttributeName": "ECDHE-RSA-AES128-GCM-SHA256",
+                        "AttributeType": "Boolean"
+                    }
                 ],
                 "PolicyTypeName": "SSLNegotiationPolicyType",
                 "Description": "Listener policy that defines the ciphers and protocols that will be accepted by the load balancer. This policy can be associated only with HTTPS/SSL listeners."

@@ -6,14 +6,16 @@ The following ``enable-policy-type`` example enables the service control policy 
         --root-id r-examplerootid111 \
         --policy-type SERVICE_CONTROL_POLICY
 		
-The output shows a root object with a policyTypes response element showing that SCPs are now enabled: ::
+The output shows a root object with a policyTypes response element showing that SCPs are now enabled.
+
+Output::
 
     {
         "Root": {
             "PolicyTypes": [
                 {
-                    "Status":"ENABLED",
-                    "Type":"SERVICE_CONTROL_POLICY"
+                    "Status": "ENABLED",
+                    "Type": "SERVICE_CONTROL_POLICY"
                 }
             ],
             "Id": "r-examplerootid111",

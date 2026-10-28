@@ -6,7 +6,9 @@ The following ``invite-account-to-organization`` example invites the account own
         --target '{"Type": "EMAIL", "Id": "juan@example.com"}' \
         --notes "This is a request for Juan's account to join Bill's organization."
   
-The output includes a handshake structure that shows what is sent to the invited account: ::
+The output includes a handshake structure that shows what is sent to the invited account.
+
+Output::
 
     {
         "Handshake": {

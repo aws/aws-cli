@@ -1,11 +1,11 @@
 **To deregister a task definition**
 
-The following ``deregister-task-definition`` example deregisters the first revision of the ``curler`` task definition in your default region. ::
+The following ``deregister-task-definition`` example deregisters the first revision of the ``curler`` task definition in your default region. In the output, the task definition status shows ``INACTIVE``. ::
 
     aws ecs deregister-task-definition \
         --task-definition curler:1
 
-Note that in the resulting output, the task definition status shows ``INACTIVE``::
+Output::
 
     {
         "taskDefinition": {

@@ -1,6 +1,6 @@
 **Example 1: To add a tag to a health check**
 
-The following ``change-tags-for-resource`` example adds a tag named ``owner`` to a health check resource specified by ID. ::
+The following ``change-tags-for-resource`` example adds a tag named ``owner`` to a health check resource specified by ID. This command produces no output. ::
 
     aws route53 change-tags-for-resource \
         --resource-type healthcheck \
@@ -9,7 +9,7 @@ The following ``change-tags-for-resource`` example adds a tag named ``owner`` to
 
 **Example 2: To remove a tag from a hosted zone**
 
-The following ``change-tags-for-resource`` example removes a tag named ``owner`` from a hosted zone resource specified by ID. ::
+The following ``change-tags-for-resource`` example removes a tag named ``owner`` from a hosted zone resource specified by ID. This command produces no output. ::
 
     aws route53 change-tags-for-resource \
         --resource-type hostedzone \

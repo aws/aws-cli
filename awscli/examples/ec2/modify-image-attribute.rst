@@ -36,3 +36,4 @@ The following ``modify-image-attribute`` example removes launch permissions from
         --image-id ami-5731123e \
         --launch-permission "Remove=[{UserId=123456789012}]"
 
+This command produces no output.

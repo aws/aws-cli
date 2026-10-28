@@ -39,6 +39,6 @@ Output::
                 "DefaultVersionNumber": 1,
                 "CreatedBy": "arn:aws:sts::123456789012:assumed-role/AdminRole/i-03ee35176e2e5aabc",
                 "CreateTime": "2017-12-01T08:19:48.000Z"
-            },
+            }
         ]
     }

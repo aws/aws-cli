@@ -17,7 +17,7 @@ Output::
             "Format": "VMDK",
             "Progress": "3",
             "Status": "active",
-            "StatusMessage": "pending"
+            "StatusMessage": "pending",
             "UserBucket": {
                 "S3Bucket": "my-import-bucket",
                 "S3Key": "vms/my-server-vm.vmdk"

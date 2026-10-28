@@ -11,12 +11,12 @@ Output::
         "RuntimeConfiguration": {
             "ServerProcesses": [
                 {
-                    "LaunchPath": "C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe",
+                    "LaunchPath": "C:\\game\\Bin64.Release.Dedicated\\MegaFrogRace_Server.exe",
                     "Parameters": "+gamelift_start_server",
                     "ConcurrentExecutions": 3
                 },
                 {
-                    "LaunchPath": "C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe",
+                    "LaunchPath": "C:\\game\\Bin64.Release.Dedicated\\MegaFrogRace_Server.exe",
                     "Parameters": "+gamelift_start_server +debug",
                     "ConcurrentExecutions": 1
                 }

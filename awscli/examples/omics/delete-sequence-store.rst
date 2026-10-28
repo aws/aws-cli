@@ -1,6 +1,6 @@
 **To delete a sequence store**
 
-The following ``delete-sequence-store`` example deletes a sequence store with ID ``1234567890``. ::
+The following ``delete-sequence-store`` example deletes a sequence store with ID ``1234567890``. This command produces no output. ::
 
     aws omics delete-sequence-store \
         --id 1234567890

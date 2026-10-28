@@ -12,7 +12,6 @@ Output::
         "ImportJobProperties": {
         "InputDataConfig": {
             "S3Uri": "s3://(Bucket Name)/(Prefix Name)/"
-            { "arrayitem2": 2 }
         },
         "DataAccessRoleArn": "arn:aws:iam::(AWS Account ID):role/(Role Name)",
         "JobStatus": "COMPLETED",

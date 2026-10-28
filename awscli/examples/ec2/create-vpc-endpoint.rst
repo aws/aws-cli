@@ -11,7 +11,7 @@ Output::
 
     {
         "VpcEndpoint": {
-            "PolicyDocument": "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":\"\*\",\"Action\":\"\*\",\"Resource\":\"\*\"}]}",
+            "PolicyDocument": "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"*\",\"Resource\":\"*\"}]}",
             "VpcId": "vpc-1a2b3c4d",
             "State": "available",
             "ServiceName": "com.amazonaws.us-east-1.s3",

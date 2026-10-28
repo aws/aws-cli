@@ -1,6 +1,6 @@
 **To delete a notification from a budget**
 
-The following ``delete-notification`` example deletes the specified notification from the specified budget. ::
+The following ``delete-notification`` example deletes the specified notification from the specified budget. This command produces no output. ::
 
     aws budgets delete-notification \
         --account-id 111122223333 \

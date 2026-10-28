@@ -11,8 +11,8 @@ Output::
 
     {
         "RemovedLabels": [
-            "label_1"
-            "label_2"
+            "label_1",
+            "label_2",
             "label_3"
         ],
         "InvalidLabels": []

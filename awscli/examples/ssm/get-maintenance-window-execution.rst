@@ -14,7 +14,7 @@ Output::
         ],
         "StartTime": 1487692834.595,
         "EndTime": 1487692835.051,
-        "WindowExecutionId": "518d5565-5969-4cca-8f0e-da3b2EXAMPLE",
+        "WindowExecutionId": "518d5565-5969-4cca-8f0e-da3b2EXAMPLE"
     }
 
 For more information, see `View Information About Tasks and Task Executions (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/mw-cli-tutorial-task-info.html>`__ in the *AWS Systems Manager User Guide*.

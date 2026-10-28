@@ -10,7 +10,7 @@ The following ``create-domain-name-access-association`` example creates a domain
 Output::
 
     {
-        "domainNameAccessAssociationArn": "arn:aws:apigateway:us-west-2:012345678910:/domainnameaccessassociations/domainname/my.private.domain.tld/vpcesource/vpce-abcd1234efg
+        "domainNameAccessAssociationArn": "arn:aws:apigateway:us-west-2:012345678910:/domainnameaccessassociations/domainname/my.private.domain.tld/vpcesource/vpce-abcd1234efg",
         "accessAssociationSource": "vpce-abcd1234efg",
         "accessAssociationSourceType": "VPCE",
         "domainNameArn" : "arn:aws:apigateway:us-west-2:111122223333:/domainnames/private.example.com+abcd1234"

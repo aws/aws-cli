@@ -14,6 +14,7 @@ Output::
     {
         "VirtualMFADevice": {
             "SerialNumber": "arn:aws:iam::210987654321:mfa/BobsMFADevice"
+        }
     }
 
 For more information, see `Using multi-factor authentication (MFA) in AWS <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html>`__ in the *AWS IAM User Guide*.

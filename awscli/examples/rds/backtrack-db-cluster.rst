@@ -6,4 +6,13 @@ The following ``backtrack-db-cluster`` example backtracks the specified DB clust
         --db-cluster-identifier sample-cluster \
         --backtrack-to 2018-03-19T10:00:00+00:00
 
-This command outputs a JSON block that acknowledges the change to the RDS resource.
+Output::
+
+    {
+        "DBClusterIdentifier": "sample-cluster",
+        "BacktrackIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "BacktrackTo": "2018-03-19T10:00:00+00:00",
+        "BacktrackedFrom": "2018-03-19T11:30:00.123000+00:00",
+        "BacktrackRequestCreationTime": "2018-03-19T11:30:00.123000+00:00",
+        "Status": "PENDING"
+    }

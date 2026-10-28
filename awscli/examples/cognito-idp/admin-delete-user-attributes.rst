@@ -1,6 +1,6 @@
 **To delete a user attribute**
 
-The following ``admin-delete-user-attributes`` example deletes a custom attribute CustomAttr1 for user diego@example.com. ::
+The following ``admin-delete-user-attributes`` example deletes a custom attribute CustomAttr1 for user diego@example.com. This command produces no output. ::
 
     aws cognito-idp admin-delete-user-attributes \
         --user-pool-id us-west-2_aaaaaaaaa \

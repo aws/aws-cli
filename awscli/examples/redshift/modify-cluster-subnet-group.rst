@@ -6,7 +6,7 @@ The following ``modify-cluster-subnet-group`` example modifies the list of subne
         --cluster-subnet-group-name mysubnetgroup \
         --subnet-ids subnet-763fdd1 subnet-ac830e9
 
-Result::
+Output::
 
     {
         "ClusterSubnetGroup":

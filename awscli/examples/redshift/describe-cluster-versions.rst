@@ -4,7 +4,7 @@ The following ``describe-cluster-versions`` example returns a description of all
 
     aws redshift describe-cluster-versions
 
-Result::
+Output::
 
     {
         "ClusterVersions": [

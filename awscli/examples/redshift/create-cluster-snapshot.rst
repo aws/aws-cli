@@ -6,7 +6,7 @@ The following ``create-cluster-snapshot`` example creates a new cluster snapshot
         --cluster-identifier mycluster \
         --snapshot-identifier my-snapshot-id
 
-Result::
+Output::
 
     {
         "Snapshot": {

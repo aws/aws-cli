@@ -21,3 +21,20 @@ The following ``list-runs`` example uses the ``--start-interval`` to specify the
     aws datapipeline list-runs \
         --pipeline-id df-01434553B58A2SHZUKO5 \
         --start-interval 2017-10-07T00:00:00,2017-10-08T00:00:00
+
+Output::
+
+            Name                                                Scheduled Start      Status
+            ID                                                  Started              Ended
+    ----------------------------------------------------------------------------------------------------
+        1.  EC2ResourceObj                                      2017-10-07T09:00:00  FINISHED
+            @EC2ResourceObj_2017-10-07T09:00:00                 2017-10-07T09:00:05  2017-10-07T09:12:45
+
+        2.  S3InputLocation                                     2017-10-07T09:00:00  FINISHED
+            @S3InputLocation_2017-10-07T09:00:00                2017-10-07T09:01:10  2017-10-07T09:01:10
+
+        3.  S3OutputLocation                                    2017-10-07T09:00:00  FINISHED
+            @S3OutputLocation_2017-10-07T09:00:00               2017-10-07T09:01:10  2017-10-07T09:10:52
+
+        4.  ShellCommandActivityObj                             2017-10-07T09:00:00  FINISHED
+            @ShellCommandActivityObj_2017-10-07T09:00:00        2017-10-07T09:01:10  2017-10-07T09:10:52

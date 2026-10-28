@@ -5,6 +5,6 @@ The following ``delete-event-subscription`` example deletes the specified event 
     aws redshift delete-event-subscription \
         --subscription-name mysubscription
 
-This command does not produce any output.
+This command produces no output.
 
 For more information, see `Subscribing to Amazon Redshift Event Notifications <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-event-notifications.html>`__ in the *Amazon Redshift Cluster Management Guide*.

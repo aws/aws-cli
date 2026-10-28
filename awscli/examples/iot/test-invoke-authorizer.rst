@@ -13,7 +13,7 @@ Output::
         "isAuthenticated": true,
         "principalId": "principalId",
         "policyDocuments": [
-            "{"Version":"2012-10-17","Statement":[{"Action":"iot:Publish","Effect":"Allow","Resource":"arn:aws:iot:us-west-2:123456789012:topic/customauthtesting"}]}"
+            "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"iot:Publish\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:iot:us-west-2:123456789012:topic/customauthtesting\"}]}"
         ],
         "refreshAfterInSeconds": 600,
         "disconnectAfterInSeconds": 3600

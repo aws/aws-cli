@@ -1,6 +1,6 @@
 **To configure SNS notifications for a vault**
 
-The following ``set-vault-notifications`` example configures SNS notifications for a vault named ``my-vault``. ::
+The following ``set-vault-notifications`` example configures SNS notifications for a vault named ``my-vault``. This command produces no output. ::
 
     aws glacier set-vault-notifications \
         --account-id - \

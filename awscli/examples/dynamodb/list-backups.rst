@@ -138,7 +138,7 @@ The following ``list-backups`` example uses the ``NextToken`` value from a previ
     aws dynamodb list-backups \
         --starting-token abCDeFGhiJKlmnOPqrSTuvwxYZ1aBCdEFghijK7LM51nOpqRSTuv3WxY3ZabC5dEFGhI2Jk3LmnoPQ6RST9
 
-Output ::
+Output::
 
     {
         "BackupSummaries": [

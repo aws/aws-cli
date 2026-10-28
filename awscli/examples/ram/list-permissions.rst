@@ -80,7 +80,6 @@ Output::
                 "lastUpdatedTime": 1589307188.584,
                 "isResourceTypeDefault": true
             },
-            ...TRUNCATED FOR BREVITY...
             {
                 "arn": "arn:aws:ram::aws:permission/AWSRAMSubordinateCACertificatePathLen0IssuanceCertificateAuthority",
                 "version": "1",

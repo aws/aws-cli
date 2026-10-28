@@ -38,7 +38,7 @@ Output::
             "lastUpdateTime": 1616017331.51,
             "roleArn": "arn:aws:iam::123456789012:role/FISRole",
             "tags": {
-            "key: "value"
+                "key": "value"
             }
         }
     }

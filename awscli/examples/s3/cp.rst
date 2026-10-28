@@ -161,7 +161,7 @@ Output::
 
 **Example 11: To upload a local file stream to S3**
 
-The following ``cp`` example uploads a local file stream from standard input to a specified bucket and key. ::
+The following ``cp`` example uploads a local file stream from standard input to a specified bucket and key. This command produces no output. ::
 
     aws s3 cp - s3://amzn-s3-demo-bucket/stream.txt
 
@@ -169,7 +169,7 @@ The following ``cp`` example uploads a local file stream from standard input to 
 
 **Example 12: To upload a local file stream that is larger than 50GB to S3**
 
-The following ``cp`` example uploads a 51GB local file stream from standard input to a specified bucket and key.  The ``--expected-size`` option must be provided, or the upload may fail when it reaches the default part limit of 10,000. ::
+The following ``cp`` example uploads a 51GB local file stream from standard input to a specified bucket and key.  The ``--expected-size`` option must be provided, or the upload may fail when it reaches the default part limit of 10,000. This command produces no output. ::
 
     aws s3 cp - s3://amzn-s3-demo-bucket/stream.txt \
         --expected-size 54760833024

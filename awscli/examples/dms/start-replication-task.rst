@@ -15,8 +15,6 @@ Output::
             "TargetEndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:EOM4SFKCZEYHZBFGAGZT3QEC5U",
             "ReplicationInstanceArn": "arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE",
             "MigrationType": "full-load",
-            "TableMappings": ...output omitted... ,
-            "ReplicationTaskSettings": ...output omitted... ,
             "Status": "starting",
             "ReplicationTaskCreationDate": 1590524772.505,
             "ReplicationTaskStartDate": 1590619805.212,

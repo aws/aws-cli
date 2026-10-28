@@ -11,10 +11,10 @@ The following ``update-job-execution`` example updates the status of the specifi
 Output::
 
     {
-        "executionState": { 
+        "executionState": {
             "status": "REMOVED",
             "versionNumber": 3
-        },
+        }
     }
 
 For more information, see `Devices and Jobs <https://docs.aws.amazon.com/iot/latest/developerguide/jobs-devices.html>`__ in the *AWS IoT Developer Guide*.

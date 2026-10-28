@@ -6,7 +6,7 @@ The following ``copy-cluster-snapshot`` example creates a copy of the automated 
         --source-snapshot-identifier cm:examplecluster-2013-01-22-19-27-58 \
         --target-snapshot-identifier my-saved-snapshot-copy
 
-Result::
+Output::
 
     {
         "Snapshot": {

@@ -25,7 +25,7 @@ Contents of ``policy.json``::
         ]
     }
 
-The output includes a policy object with details about the new policy: ::
+Output::
 
     {
         "Policy": {
@@ -34,7 +34,7 @@ The output includes a policy object with details about the new policy: ::
                 "Arn": "arn:aws:organizations::o-exampleorgid:policy/service_control_policy/p-examplepolicyid111",
                 "Description": "Allows delegation of all S3 actions",
                 "Name": "AllowAllS3Actions",
-                "Type":"SERVICE_CONTROL_POLICY"
+                "Type": "SERVICE_CONTROL_POLICY"
             }
         }
     }
@@ -48,6 +48,20 @@ The following ``create-policy`` example creates the same SCP, this time by embed
         --name AllowAllS3Actions \
         --type SERVICE_CONTROL_POLICY \
         --description "Allows delegation of all S3 actions"
+
+Output::
+
+    {
+        "Policy": {
+            "Content": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"s3:*\"],\"Resource\":[\"*\"]}]}",
+            "PolicySummary": {
+                "Arn": "arn:aws:organizations::o-exampleorgid:policy/service_control_policy/p-examplepolicyid111",
+                "Description": "Allows delegation of all S3 actions",
+                "Name": "AllowAllS3Actions",
+                "Type": "SERVICE_CONTROL_POLICY"
+            }
+        }
+    }
 
 For more information about creating and using policies in your organization, see `Managing Organization Policies`_ in the *AWS Organizations User Guide*.
 

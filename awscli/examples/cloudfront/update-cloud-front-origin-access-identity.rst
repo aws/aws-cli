@@ -37,7 +37,9 @@ Contents of ``OAI-config.json``::
     }
 
 Whether you provide the OAI configuration with a command line argument or a
-JSON file, the output is the same::
+JSON file, the output is the same.
+
+Output::
 
     {
         "ETag": "E9LHASXEXAMPLE",

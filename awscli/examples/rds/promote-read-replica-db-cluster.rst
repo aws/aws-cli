@@ -17,8 +17,7 @@ Output::
             ],
             "BackupRetentionPeriod": 1,
             "DatabaseName": "",
-            "DBClusterIdentifier": "mydbcluster-1",
-            ...some output truncated...
+            "DBClusterIdentifier": "mydbcluster-1"
         }
     }
 

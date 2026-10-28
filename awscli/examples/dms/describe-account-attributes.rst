@@ -17,10 +17,7 @@ Output::
                 "AccountQuotaName": "AllocatedStorage",
                 "Used": 5,
                 "Max": 10000
-            },
-
-            ...remaining output omitted...
-    
+            }
         ],
         "UniqueAccountIdentifier": "cqahfbfy5xee"
     }

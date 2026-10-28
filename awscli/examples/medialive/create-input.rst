@@ -36,4 +36,35 @@ The output repeats back the contents of the JSON file, plus the following values
 * ``State`` of this input.
 * ``Tags``, which is empty (the default for this parameter).
 
+Output::
+
+    {
+        "Input": {
+            "Arn": "arn:aws:medialive:us-west-2:123456789012:input/1234567",
+            "AttachedChannels": [],
+            "Destinations": [],
+            "Id": "1234567",
+            "InputClass": "STANDARD",
+            "InputSourceType": "STATIC",
+            "MediaConnectFlows": [],
+            "Name": "local_news",
+            "SecurityGroups": [],
+            "Sources": [
+                {
+                    "PasswordParam": "/medialive/examplecorp1",
+                    "Url": "https://203.0.113.13/newschannel/anytownusa.m3u8",
+                    "Username": "examplecorp"
+                },
+                {
+                    "PasswordParam": "examplecorp2",
+                    "Url": "https://198.51.100.54/fillervideos/oceanwaves.mp4",
+                    "Username": "examplecorp"
+                }
+            ],
+            "State": "DETACHED",
+            "Tags": {},
+            "Type": "URL_PULL"
+        }
+    }
+
 For more information, see `Creating an Input <https://docs.aws.amazon.com/medialive/latest/ug/create-input.html>`__ in the *AWS Elemental MediaLive User Guide*.

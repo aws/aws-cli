@@ -19,20 +19,18 @@ To associate the resource discovery with the IPAM, run the following command. ::
 Output::
 
     {
-        {
-            "IpamResourceDiscoveryAssociation": {
-                "OwnerId": "320805250157",
-                "IpamResourceDiscoveryAssociationId": "ipam-res-disco-assoc-04382a6346357cf82",
-                "IpamResourceDiscoveryAssociationArn": "arn:aws:ec2::320805250157:ipam-resource-discovery-association/ipam-res-disco-assoc-04382a6346357cf82",
-                "IpamResourceDiscoveryId": "ipam-res-disco-0365d2977fc1672fe",
-                "IpamId": "ipam-005f921c17ebd5107",
-                "IpamArn": "arn:aws:ec2::320805250157:ipam/ipam-005f921c17ebd5107",
-                "IpamRegion": "us-east-1",
-                "IsDefault": false,
-                "ResourceDiscoveryStatus": "active",
-                "State": "associate-in-progress",
-                "Tags": []
-            }
+        "IpamResourceDiscoveryAssociation": {
+            "OwnerId": "320805250157",
+            "IpamResourceDiscoveryAssociationId": "ipam-res-disco-assoc-04382a6346357cf82",
+            "IpamResourceDiscoveryAssociationArn": "arn:aws:ec2::320805250157:ipam-resource-discovery-association/ipam-res-disco-assoc-04382a6346357cf82",
+            "IpamResourceDiscoveryId": "ipam-res-disco-0365d2977fc1672fe",
+            "IpamId": "ipam-005f921c17ebd5107",
+            "IpamArn": "arn:aws:ec2::320805250157:ipam/ipam-005f921c17ebd5107",
+            "IpamRegion": "us-east-1",
+            "IsDefault": false,
+            "ResourceDiscoveryStatus": "active",
+            "State": "associate-in-progress",
+            "Tags": []
         }
     }
 

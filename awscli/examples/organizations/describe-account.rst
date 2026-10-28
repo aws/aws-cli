@@ -5,7 +5,7 @@ The following ``describe-account`` example requests details about an account. ::
     aws organizations describe-account \
         --account-id 555555555555
 
-The output shows an account object with the details about the account: ::
+Output::
 
     {
         "Account": {

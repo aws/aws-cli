@@ -13,8 +13,7 @@ Output::
                 "InstanceId": "i-1234567890abcdef0",
                 "InstanceType": "m3.medium",
                 "SpotInstanceRequestId": "sir-08b93456"
-            },
-            ...
+            }
         ],
         "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE"
     }

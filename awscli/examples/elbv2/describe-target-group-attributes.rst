@@ -5,7 +5,9 @@ The following ``describe-target-group-attributes`` example displays the attribut
     aws elbv2 describe-target-group-attributes \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
-The output includes the attributes if the protocol is HTTP or HTTPS and the target type is ``instance`` or ``ip``. ::
+The output includes the attributes if the protocol is HTTP or HTTPS and the target type is ``instance`` or ``ip``.
+
+Output::
 
     {
         "Attributes": [
@@ -32,7 +34,9 @@ The output includes the attributes if the protocol is HTTP or HTTPS and the targ
         ]
     }
 
-The following output includes the attributes if the protocol is HTTP or HTTPS and the target type is ``lambda``. ::
+The following output includes the attributes if the protocol is HTTP or HTTPS and the target type is ``lambda``.
+
+Output::
 
     {
         "Attributes": [
@@ -43,7 +47,9 @@ The following output includes the attributes if the protocol is HTTP or HTTPS an
         ]
     }
 
-The following output includes the attributes if the protocol is TCP, TLS, UDP, or TCP_UDP. ::
+The following output includes the attributes if the protocol is TCP, TLS, UDP, or TCP_UDP.
+
+Output::
 
     {
         "Attributes": [

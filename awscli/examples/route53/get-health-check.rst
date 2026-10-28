@@ -5,3 +5,26 @@ The following ``get-health-check`` example gets information about the health che
     aws route53 get-health-check \
         --health-check-id 02ec8401-9879-4259-91fa-04e66d094674
 
+Output::
+
+    {
+        "HealthCheck": {
+            "Id": "02ec8401-9879-4259-91fa-04e66d094674",
+            "CallerReference": "2014-04-01-18:47",
+            "HealthCheckConfig": {
+                "IPAddress": "192.0.2.44",
+                "Port": 80,
+                "Type": "HTTP",
+                "ResourcePath": "/docs/route53-health-check.html",
+                "FullyQualifiedDomainName": "example.com",
+                "RequestInterval": 30,
+                "FailureThreshold": 3,
+                "MeasureLatency": false,
+                "Inverted": false,
+                "Disabled": false,
+                "EnableSNI": false
+            },
+            "HealthCheckVersion": 1
+        }
+    }
+

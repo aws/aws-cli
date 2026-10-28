@@ -54,7 +54,46 @@ The following ``describe-images`` example describes Windows AMIs provided by Ama
         --owners amazon \
         --filters "Name=platform,Values=windows" "Name=root-device-type,Values=ebs"
 
-For an example of the output for ``describe-images``, see Example 1.
+Output::
+
+    {
+        "Images": [
+            {
+                "Architecture": "x86_64",
+                "CreationDate": "2024-05-15T09:12:34.000Z",
+                "ImageId": "ami-0abcdef1234567890",
+                "ImageLocation": "amazon/Windows_Server-2022-English-Full-Base-2024.05.15",
+                "ImageType": "machine",
+                "Public": true,
+                "OwnerId": "123456789012",
+                "Platform": "windows",
+                "PlatformDetails": "Windows",
+                "UsageOperation": "RunInstances:0002",
+                "State": "available",
+                "BlockDeviceMappings": [
+                    {
+                        "DeviceName": "/dev/sda1",
+                        "Ebs": {
+                            "DeleteOnTermination": true,
+                            "SnapshotId": "snap-0abcdef1234567890",
+                            "VolumeSize": 30,
+                            "VolumeType": "gp2",
+                            "Encrypted": false
+                        }
+                    }
+                ],
+                "Description": "Microsoft Windows Server 2022 Full Locale English AMI provided by Amazon",
+                "EnaSupport": true,
+                "Hypervisor": "xen",
+                "ImageOwnerAlias": "amazon",
+                "Name": "Windows_Server-2022-English-Full-Base-2024.05.15",
+                "RootDeviceName": "/dev/sda1",
+                "RootDeviceType": "ebs",
+                "SriovNetSupport": "simple",
+                "VirtualizationType": "hvm"
+            }
+        ]
+    }
 
 For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
 

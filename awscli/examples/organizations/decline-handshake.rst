@@ -5,7 +5,7 @@ The following ``decline-handshake`` example declines an invitation to join Bill'
     aws organizations decline-handshake \
         --handshake-id h-examplehandshakeid111
 
-The output includes a handshake object that shows the new state of ``DECLINED``: ::
+Output::
 
     {
         "Handshake": {

@@ -26,9 +26,8 @@ Output::
                         "Deadline": "2016-12-15T00:00:00.000Z",
                         "Resource": "volume",
                         "UseLongIds": true
-                    },
+                    }
                 ]
-            },
-            ...
+            }
         ]
     }

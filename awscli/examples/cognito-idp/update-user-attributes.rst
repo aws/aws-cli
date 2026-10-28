@@ -5,3 +5,9 @@ The following ``update-user-attributes`` example updates the user attribute "nic
     aws cognito-idp update-user-attributes \
         --access-token ACCESS_TOKEN \
         --user-attributes Name="nickname",Value="Dan"
+
+Output::
+
+    {
+        "CodeDeliveryDetailsList": []
+    }

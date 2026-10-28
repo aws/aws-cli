@@ -117,8 +117,6 @@ Output::
             "Endpoint": "pg2-cluster.cluster-cnpexample.us-east-1.rds.amazonaws.com",
             "ReaderEndpoint": "pg2-cluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
             "DBClusterIdentifier": "pg2-cluster"
-        },
-        ...output omitted...
         }
     ]
 

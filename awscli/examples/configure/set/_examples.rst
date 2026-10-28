@@ -1,6 +1,6 @@
 **To set configuration values**
 
-The following ``set`` example sets configuration values. Given an empty config file, the following commands::
+The following ``set`` example sets configuration values. This command produces no output. Given an empty config file, the following commands::
 
     $ aws configure set aws_access_key_id default_access_key
     $ aws configure set aws_secret_access_key default_secret_key

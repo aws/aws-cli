@@ -29,7 +29,7 @@ Output::
                 "GroupName": "MySG1",
                 "StaleIpPermissions": [],
                 "GroupId": "sg-fe6fba9a",
-                "Description": MySG1"
+                "Description": "MySG1"
             },
             {
                 "VpcId": "vpc-11223344",

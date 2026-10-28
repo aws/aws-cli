@@ -152,3 +152,21 @@ The following ``get-metric-statistics`` example illustrates how to specify multi
 For more examples using the ``get-metric-statistics`` command, see `Get Statistics for a Metric`__ in the *Amazon CloudWatch Developer Guide*.
 
 .. __: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/US_GetStatistics.html
+
+Output::
+
+    {
+        "Label": "Buffers",
+        "Datapoints": [
+            {
+                "Timestamp": "2016-10-15T04:00:00Z",
+                "Average": 231434333.0,
+                "Unit": "Bytes"
+            },
+            {
+                "Timestamp": "2016-10-15T04:01:00Z",
+                "Average": 231434333.0,
+                "Unit": "Bytes"
+            }
+        ]
+    }

@@ -13,7 +13,7 @@ To get the ``ETag``, use the
 <get-field-level-encryption.html>`_ or
 `get-field-level-encryption-config
 <get-field-level-encryption-config.html>`_ command.
-Use the ``--if-match`` option to provide the configuration's ``ETag``. ::
+Use the ``--if-match`` option to provide the configuration's ``ETag``. This command produces no output. ::
 
     aws cloudfront delete-field-level-encryption-config \
         --id C3KM2WVD605UAY \

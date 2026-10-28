@@ -11,7 +11,6 @@ Output::
     {
         "containerInstance": {
             "status": "ACTIVE",
-    ...
             "agentUpdateStatus": "PENDING",
             "versionInfo": {
                 "agentVersion": "1.0.0",

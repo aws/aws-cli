@@ -1,6 +1,6 @@
 **To request tailed logs**
 
-The following ``request-environment-info`` example requests logs from an environment named ``my-env``. ::
+The following ``request-environment-info`` example requests logs from an environment named ``my-env``. This command produces no output. ::
 
     aws elasticbeanstalk request-environment-info \
         --environment-name my-env \

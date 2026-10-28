@@ -42,6 +42,12 @@ Modify the placement. ::
         --instance-id i-0123a456700123456 \
         --group-name MySpreadGroup
 
+Output::
+
+    {
+        "Return": true
+    }
+
 Restart the instance. ::
 
     aws ec2 start-instances \

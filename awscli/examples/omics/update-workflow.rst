@@ -1,6 +1,6 @@
 **To update a workflow**
 
-The following ``update-workflow`` example updates the description of a workflow with ID ``1234567``. ::
+The following ``update-workflow`` example updates the description of a workflow with ID ``1234567``. This command produces no output. ::
 
     aws omics update-workflow \
         --id 1234567 \

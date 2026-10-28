@@ -6,7 +6,9 @@ The following ``create-key-pair`` example creates a key pair that you can use to
         --key-pair-name MyPersonalKeyPair
 
 The output provides the private key base64 value that you can use to authenticate to instances that use the created key pair.
-**Note:** Copy and paste the private key base64 value to a safe location because you cannot retrieve it later. ::
+**Note:** Copy and paste the private key base64 value to a safe location because you cannot retrieve it later.
+
+Output::
 
     {
         "keyPair": {

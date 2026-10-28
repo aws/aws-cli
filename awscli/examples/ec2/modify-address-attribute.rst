@@ -21,10 +21,11 @@ Output::
             {
                 "PublicIp": "192.0.2.0",
                 "AllocationId": "eipalloc-abcdef01234567890",
-                "PtrRecord": "example.net."
+                "PtrRecord": "example.net.",
                 "PtrRecordUpdate": {
                     "Value": "example.com.",
                     "Status": "PENDING"
+                }
             }
         ]
     }

@@ -1,6 +1,6 @@
 **Example 1: To create a policy that enables Proxy Protocol on a load balancer**
 
-The following ``create-load-balancer-policy`` example creates a policy that enables Proxy Protocol on the specified load balancer. ::
+The following ``create-load-balancer-policy`` example creates a policy that enables Proxy Protocol on the specified load balancer. This command produces no output. ::
 
     aws elb create-load-balancer-policy \
         --load-balancer-name my-load-balancer \
@@ -11,7 +11,7 @@ The following ``create-load-balancer-policy`` example creates a policy that enab
 
 **Example 2: To create an SSL negotiation policy using the recommended security policy**
 
-The following ``create-load-balancer-policy`` example creates an SSL negotiation policy for the specified HTTPS load balancer using the recommended security policy. ::
+The following ``create-load-balancer-policy`` example creates an SSL negotiation policy for the specified HTTPS load balancer using the recommended security policy. This command produces no output. ::
 
     aws elb create-load-balancer-policy \
         --load-balancer-name my-load-balancer \
@@ -22,7 +22,7 @@ The following ``create-load-balancer-policy`` example creates an SSL negotiation
 
 **Example 3: To create an SSL negotiation policy using a custom security policy**
 
-The following ``create-load-balancer-policy`` example creates an SSL negotiation policy for your HTTPS load balancer using a custom security policy by enabling the protocols and the ciphers. ::
+The following ``create-load-balancer-policy`` example creates an SSL negotiation policy for your HTTPS load balancer using a custom security policy by enabling the protocols and the ciphers. This command produces no output. ::
 
     aws elb create-load-balancer-policy \
         --load-balancer-name my-load-balancer \
@@ -33,7 +33,7 @@ The following ``create-load-balancer-policy`` example creates an SSL negotiation
 
 **Example 4: To create a public key policy**
 
-The following ``create-load-balancer-policy`` example creates a public key policy. ::
+The following ``create-load-balancer-policy`` example creates a public key policy. This command produces no output. ::
 
     aws elb create-load-balancer-policy \
         --load-balancer-name my-load-balancer \
@@ -44,7 +44,7 @@ The following ``create-load-balancer-policy`` example creates a public key polic
 
 **Example 5: To create a backend server authentication policy**
 
-The following ``create-load-balancer-policy`` example creates a backend server authentication policy that enables authentication on your backend instance using a public key policy. ::
+The following ``create-load-balancer-policy`` example creates a backend server authentication policy that enables authentication on your backend instance using a public key policy. This command produces no output. ::
 
     aws elb create-load-balancer-policy \
         --load-balancer-name my-load-balancer \

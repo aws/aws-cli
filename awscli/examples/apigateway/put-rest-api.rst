@@ -7,6 +7,24 @@ The following ``put-rest-api`` example overwrites an existing API using a Swagge
         --mode overwrite \
         --body 'fileb:///path/to/API_Swagger_template.json'
 
+Output::
+
+    {
+        "id": "1234123412",
+        "name": "MyAPI",
+        "description": "API defined by a Swagger template",
+        "createdDate": "2016-02-23T23:39:00+00:00",
+        "version": "1.0",
+        "apiKeySource": "HEADER",
+        "endpointConfiguration": {
+            "types": [
+                "EDGE"
+            ]
+        },
+        "disableExecuteApiEndpoint": false,
+        "rootResourceId": "a1b2c3d4f5"
+    }
+
 **Example 2: To merge a Swagger template into an existing API**
 
 The following ``put-rest-api`` example merges a Swagger template into an existing API. ::
@@ -15,3 +33,21 @@ The following ``put-rest-api`` example merges a Swagger template into an existin
         --rest-api-id 1234123412 \
         --mode merge \
         --body 'fileb:///path/to/API_Swagger_template.json'
+
+Output::
+
+    {
+        "id": "1234123412",
+        "name": "MyAPI",
+        "description": "API defined by a Swagger template",
+        "createdDate": "2016-02-23T23:39:00+00:00",
+        "version": "1.0",
+        "apiKeySource": "HEADER",
+        "endpointConfiguration": {
+            "types": [
+                "EDGE"
+            ]
+        },
+        "disableExecuteApiEndpoint": false,
+        "rootResourceId": "a1b2c3d4f5"
+    }

@@ -1,6 +1,6 @@
 **To create a torrent for an object**
 
-The following ``get-object-torrent`` example creates a torrent for an object in a bucket named ``amzn-s3-demo-bucket``. ::
+The following ``get-object-torrent`` example creates a torrent for an object in a bucket named ``amzn-s3-demo-bucket``. This command produces no output. ::
 
     aws s3api get-object-torrent large-video-file.torrent \
         --bucket amzn-s3-demo-bucket \

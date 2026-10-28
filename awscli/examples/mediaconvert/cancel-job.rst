@@ -1,6 +1,6 @@
 **To cancel a job that is in a queue**
 
-The following ``cancel-job`` example cancels the job with ID ``1234567891234-abc123``. You can't cancel a job that the service has started processing. ::
+The following ``cancel-job`` example cancels the job with ID ``1234567891234-abc123``. You can't cancel a job that the service has started processing. This command produces no output. ::
 
     aws mediaconvert cancel-job \
         --endpoint-url https://abcd1234.mediaconvert.region-name-1.amazonaws.com \

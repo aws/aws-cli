@@ -24,8 +24,7 @@ Output::
             "ReaderEndpoint": "test-pg-multiaz-cluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
             "MultiAZ": true,
             "Engine": "postgres",
-            "EngineVersion": "17.5",
-            ...some output truncated...
+            "EngineVersion": "17.5"
         }
     }
 

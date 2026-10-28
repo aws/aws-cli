@@ -52,8 +52,6 @@ Output::
                 "supportedPlatforms": [
                     "LINUX_UNIX"
                 ]
-            },
-            ...
             }
         ]
     }

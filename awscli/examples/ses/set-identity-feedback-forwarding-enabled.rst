@@ -1,6 +1,6 @@
 **To enable or disable bounce and complaint email feedback forwarding for an Amazon SES verified identity**
 
-The following ``set-identity-feedback-forwarding-enabled`` example enables a verified email address to receive bounce and complaint notifications by email. ::
+The following ``set-identity-feedback-forwarding-enabled`` example enables a verified email address to receive bounce and complaint notifications by email. This command produces no output. ::
 
     aws ses set-identity-feedback-forwarding-enabled \
         --identity user@example.com \

@@ -4,7 +4,7 @@ The following ``describe-clusters`` example returns a description of all cluster
 
     aws redshift describe-clusters
 
-Result::
+Output::
 
     {
         "Clusters": [
@@ -21,14 +21,14 @@ Result::
                     {
                         "ParameterApplyStatus": "in-sync",
                         "ParameterGroupName": "default.redshift-1.0"
-                    } ],
+                } ],
                 "ClusterSecurityGroups": [
                     {
                         "Status": "active",
                         "ClusterSecurityGroupName": "default"
-                    } ],
+                } ],
                 "AllowVersionUpgrade": true,
-                "VpcSecurityGroups": \[],
+                "VpcSecurityGroups": [],
                 "AvailabilityZone": "us-east-1a",
                 "ClusterCreateTime": "2013-01-22T21:59:29.559Z",
                 "PreferredMaintenanceWindow": "sat:03:30-sat:04:00",
@@ -38,7 +38,7 @@ Result::
                 "DBName": "dev",
                 "NumberOfNodes": 2,
                 "PendingModifiedValues": {}
-            } ],
+        } ],
         "ResponseMetadata": {
             "RequestId": "65b71cac-64df-11e2-8f5b-e90bd6c77476"
         }
@@ -49,7 +49,7 @@ You can also obtain the same information in text format using the ``--output tex
     aws redshift describe-clusters \
         --output text
 
-Result::
+Output::
 
     dw.hs1.xlarge       1.0     true    adminuser       True    us-east-1a      2013-01-22T21:59:29.559Z        sat:03:30-sat:04:00     1       available       mycluster       dev     2
     ENDPOINT    5439    mycluster.coqoarplqhsn.us-east-1.redshift.amazonaws.com

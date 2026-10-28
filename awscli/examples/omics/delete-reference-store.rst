@@ -1,6 +1,6 @@
 **To delete a reference store**
 
-The following ``delete-reference-store`` example deletes a reference store with ID ``1234567890``. ::
+The following ``delete-reference-store`` example deletes a reference store with ID ``1234567890``. This command produces no output. ::
 
     aws omics delete-reference-store \
         --id 1234567890

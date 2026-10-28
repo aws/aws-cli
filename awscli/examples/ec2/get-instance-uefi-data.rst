@@ -9,9 +9,7 @@ Output::
 
     {
         "InstanceId": "i-0123456789example",
-        "UefiData": "QU1aTlVFRkkf+uLXAAAAAHj5a7fZ9+3dBzxXb/.  
-        <snipped>
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4L/J/AODshho="
+        "UefiData": "QU1aTlVFRkkf+uLXAAAAAHj5a7fZ9+3dBzxXb/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4L/J/AODshho="
     }
 
 For more information, see `UEFI Secure Boot <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html>`__ in the *Amazon EC2 User Guide*.

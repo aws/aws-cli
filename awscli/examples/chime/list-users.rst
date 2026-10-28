@@ -17,7 +17,7 @@ Output::
                 "LicenseType": "Pro",
                 "UserType": "PrivateUser",
                 "UserRegistrationStatus": "Registered",
-                "RegisteredOn": "2018-12-20T18:45:25.231Z"
+                "RegisteredOn": "2018-12-20T18:45:25.231Z",
                 "AlexaForBusinessMetadata": {
                     "IsAlexaForBusinessEnabled": false
                 }
@@ -30,7 +30,7 @@ Output::
                 "LicenseType": "Pro",
                 "UserType": "PrivateUser",
                 "UserRegistrationStatus": "Registered",
-                "RegisteredOn": "2018-12-20T18:45:45.415Z"
+                "RegisteredOn": "2018-12-20T18:45:45.415Z",
                 "AlexaForBusinessMetadata": {
                     "IsAlexaForBusinessEnabled": false
                 }
@@ -43,7 +43,7 @@ Output::
                 "LicenseType": "Basic",
                 "UserType": "PrivateUser",
                 "UserRegistrationStatus": "Registered",
-                "RegisteredOn": "2018-12-20T18:46:57.747Z"
+                "RegisteredOn": "2018-12-20T18:46:57.747Z",
                 "AlexaForBusinessMetadata": {
                     "IsAlexaForBusinessEnabled": false
                 }
@@ -56,7 +56,7 @@ Output::
                 "LicenseType": "Basic",
                 "UserType": "PrivateUser",
                 "UserRegistrationStatus": "Registered",
-                "RegisteredOn": "2018-12-20T18:47:15.390Z"
+                "RegisteredOn": "2018-12-20T18:47:15.390Z",
                 "AlexaForBusinessMetadata": {
                     "IsAlexaForBusinessEnabled": false
                 }

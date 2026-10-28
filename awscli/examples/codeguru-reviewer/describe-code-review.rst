@@ -7,7 +7,7 @@ The following ``describe-code-review`` example lists information about a review 
         --recommendation-id 3be1b2e5d7ef6e298a06499379ee290c9c596cf688fdcadb08285ddb0dd390eb \
         --reactions ThumbsUp
 
-Output ::
+Output::
 
     {
         "CodeReview": {

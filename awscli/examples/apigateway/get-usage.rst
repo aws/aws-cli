@@ -6,3 +6,23 @@ The following ``get-usage`` example gets the usage details for the specified usa
         --usage-plan-id a1b2c3 \
         --start-date "2016-08-16" \
         --end-date "2016-08-17"
+
+Output::
+
+    {
+        "usagePlanId": "a1b2c3",
+        "startDate": "2016-08-16",
+        "endDate": "2016-08-17",
+        "items": {
+            "a1b2c3d4e5f6g7h8i9j0": [
+                [
+                    13,
+                    487
+                ],
+                [
+                    7,
+                    480
+                ]
+            ]
+        }
+    }

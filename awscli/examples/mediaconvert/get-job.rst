@@ -8,14 +8,38 @@ The following ``get-job`` example requests the information for the job with ID `
 
 To get your account-specific endpoint, use ``describe-endpoints``, or send the command without the endpoint. The service returns an error and your endpoint.
 
-If your request is successful, the service returns a JSON file with job information, including job settings, any returned errors, and other job data, as follows::
+If your request is successful, the service returns a JSON file with job information, including job settings, any returned errors, and other job data.
+
+Output::
 
     {
         "Job": {
             "Status": "ERROR",
             "Queue": "arn:aws:mediaconvert:region-name-1:012345678998:queues/Queue1",
             "Settings": {
-                ...<truncated for brevity>...
+                "Inputs": [
+                    {
+                        "FileInput": "s3://my-input-bucket/file-name.mp4"
+                    }
+                ],
+                "OutputGroups": [
+                    {
+                        "Name": "File Group",
+                        "OutputGroupSettings": {
+                            "Type": "FILE_GROUP_SETTINGS",
+                            "FileGroupSettings": {
+                                "Destination": "s3://amzn-s3-demo-bucket/output/"
+                            }
+                        },
+                        "Outputs": [
+                            {
+                                "Extension": "mp4",
+                                "NameModifier": "_720p",
+                                "Preset": "System-Generic_Hd_Mp4_Avc_Aac_16x9_Sdr_1280x720p_30Hz_5Mbps_Qvbr_Vq9"
+                            }
+                        ]
+                    }
+                ]
             },
             "ErrorMessage": "Unable to open input file [s3://my-input-bucket/file-name.mp4]: [Failed probe/open: [Failed to read data: AssumeRole failed]]",
             "ErrorCode": 1434,

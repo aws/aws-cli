@@ -65,7 +65,7 @@ Output::
                 "recommendationArn": "arn:aws:trustedadvisor:::organization-recommendation/5a694939-2e54-45a2-ae72-730598fa89d0",
                 "regionCode": "us-west-2",
                 "status": "warning"
-            },
+            }
         ],
         "nextToken": "REDACTED"
     }

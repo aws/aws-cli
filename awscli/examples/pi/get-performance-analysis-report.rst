@@ -19,8 +19,16 @@ Output::
             "EndTime": 1680587086.584,
             "CreateTime": 1680587087.139,
             "Insights": [
-                ... (Condensed for space)
-           ]
+                {
+                    "InsightId": "insight-12345678901234567",
+                    "InsightType": "HighDBLoad",
+                    "Context": "CAUSAL",
+                    "StartTime": 1680583486.584,
+                    "EndTime": 1680587086.584,
+                    "Severity": "HIGH",
+                    "Description": "A high severity Insight found between 04:44 to 05:44, where there was an unusually high DB load 600x above baseline. Likely performance impact."
+                }
+            ]
         }
     }
 

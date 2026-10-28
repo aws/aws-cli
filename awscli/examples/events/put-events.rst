@@ -27,3 +27,17 @@ Contents of ``putevents.json``::
             "DetailType": "myDetailType"
         }
     ]
+
+Output::
+
+    {
+        "FailedEntryCount": 0,
+        "Entries": [
+            {
+                "EventId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+            },
+            {
+                "EventId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
+            }
+        ]
+    }

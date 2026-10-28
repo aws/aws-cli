@@ -36,7 +36,7 @@ Output::
             "UserName": "sofia",
             "SSHPublicKeyId": "APKA123456789EXAMPLE",
             "Fingerprint": "12:34:56:78:90:ab:cd:ef:12:34:56:78:90:ab:cd:ef",
-            "SSHPublicKeyBody": ""-----BEGIN PUBLIC KEY-----\n<<long encoded PEM string>>\n-----END PUBLIC KEY-----\n"",
+            "SSHPublicKeyBody": "-----BEGIN PUBLIC KEY-----\n<<long encoded PEM string>>\n-----END PUBLIC KEY-----\n",
             "Status": "Inactive",
             "UploadDate": "2019-04-18T17:04:49+00:00"
         }

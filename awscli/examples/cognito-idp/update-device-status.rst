@@ -1,6 +1,6 @@
 **To update device status**
 
-The following ``update-device-status`` example updates the status for a device to "not_remembered". ::
+The following ``update-device-status`` example updates the status for a device to "not_remembered". This command produces no output. ::
 
     aws cognito-idp update-device-status \
         --access-token ACCESS_TOKEN \

@@ -61,7 +61,7 @@ Windows version of the command::
 
     certutil -encode UserData.txt tmp.b64 && findstr /v /c:- tmp.b64 > UserData.base64.txt
 
-Output::
+The ``certutil`` command displays output similar to the following::
 
     Input Length = 67
     Output Length = 152

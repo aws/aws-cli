@@ -25,7 +25,7 @@ Contents of ``policy.json``::
         ]
     }
 
-To apply the logging policy, use ``put-bucket-logging``. ::
+To apply the logging policy, use ``put-bucket-logging``. This command produces no output. ::
 
     aws s3api put-bucket-logging \
         --bucket amzn-s3-demo-bucket \
@@ -54,7 +54,7 @@ the log files, and no one else has any access. First, grant S3 permission with `
         --grant-write URI=http://acs.amazonaws.com/groups/s3/LogDelivery \
         --grant-read-acp URI=http://acs.amazonaws.com/groups/s3/LogDelivery
 
-Then apply the logging policy using ``put-bucket-logging``. ::
+Then apply the logging policy using ``put-bucket-logging``. This command produces no output. ::
 
     aws s3api put-bucket-logging \
         --bucket amzn-s3-demo-bucket \

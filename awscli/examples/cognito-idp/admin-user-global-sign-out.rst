@@ -1,6 +1,6 @@
 **To sign out a user as an admin**
 
-The following ``admin-user-global-sign-out`` example signs out the user diego@example.com. ::
+The following ``admin-user-global-sign-out`` example signs out the user diego@example.com. This command produces no output. ::
 
     aws cognito-idp admin-user-global-sign-out \
         --user-pool-id us-west-2_EXAMPLE \

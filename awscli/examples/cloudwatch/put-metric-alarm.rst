@@ -1,6 +1,6 @@
 **Example 1: To send an Amazon Simple Notification Service email message when CPU utilization exceeds 70 percent**
 
-The following ``put-metric-alarm`` example sends an Amazon Simple Notification Service email message when CPU utilization exceeds 70 percent. ::
+The following ``put-metric-alarm`` example sends an Amazon Simple Notification Service email message when CPU utilization exceeds 70 percent. This command produces no output. ::
 
     aws cloudwatch put-metric-alarm \
         --alarm-name cpu-mon \
@@ -16,11 +16,11 @@ The following ``put-metric-alarm`` example sends an Amazon Simple Notification S
         --alarm-actions arn:aws:sns:us-east-1:111122223333:MyTopic \
         --unit Percent
 
-This command returns to the prompt if successful. If an alarm with the same name already exists, it will be overwritten by the new alarm.
+If an alarm with the same name already exists, it will be overwritten by the new alarm.
 
 **Example 2: To specify multiple dimensions**
 
-The following ``put-metric-alarm`` example illustrates how to specify multiple dimensions. Each dimension is specified as a Name/Value pair, with a comma between the name and the value. Multiple dimensions are separated by a space. ::
+The following ``put-metric-alarm`` example illustrates how to specify multiple dimensions. Each dimension is specified as a Name/Value pair, with a comma between the name and the value. Multiple dimensions are separated by a space. This command produces no output. ::
 
     aws cloudwatch put-metric-alarm \
         --alarm-name "Default_Test_Alarm3" \

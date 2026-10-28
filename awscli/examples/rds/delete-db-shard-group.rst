@@ -5,7 +5,7 @@ The following ``delete-db-shard-group`` example shows the error that occurs when
     aws rds delete-db-shard-group \
         --db-shard-group-identifier limitless-test-shard-grp
 
-Output::
+The command fails and produces no output. Instead, it returns the following error message. ::
 
     An error occurred (InvalidDBShardGroupState) when calling the DeleteDBShardGroup operation: Unable to delete the DB shard group limitless-test-db-shard-group.
     Delete all of your Limitless Database databases and schemas, then try again.

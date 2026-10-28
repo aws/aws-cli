@@ -1,6 +1,6 @@
 **To remove a tag from an ACM Certificate**
 
-The following ``remove-tags-from-certificate`` example removes two tags from the specified certificate. Use a space to separate multiple tags. ::
+The following ``remove-tags-from-certificate`` example removes two tags from the specified certificate. Use a space to separate multiple tags. This command produces no output. ::
 
     aws acm remove-tags-from-certificate \
         --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 \

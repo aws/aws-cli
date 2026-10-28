@@ -51,7 +51,7 @@ Output::
                             "Host": "#{host}",
                             "Path": "/#{path}",
                             "Query": "#{query}",
-                            "StatusCode": "HTTP_302",
+                            "StatusCode": "HTTP_302"
                         }
                     }
                 ]
@@ -87,7 +87,7 @@ Output::
                     {
                         "CertificateArn": "arn:aws:iam::123456789012:server-certificate/my-new-server-cert"
                     }
-                ],
+                ]
             }
         ]
     }

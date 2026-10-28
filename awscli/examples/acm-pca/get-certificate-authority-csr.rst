@@ -4,3 +4,12 @@ The following ``get-certificate-authority-csr`` example retrieves the CSR for th
 
     aws acm-pca get-certificate-authority-csr \
         --certificate-authority-arn arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/12345678-1234-1234-1234-123456789012
+
+Output::
+
+    -----BEGIN CERTIFICATE REQUEST-----
+    MIICvjCCAaYCAQAweTELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24x
+    EDAOBgNVBAcMB1NlYXR0bGUxFTATBgNVBAoMDEV4YW1wbGUgQ29ycDEOMAwGA1UE
+    CwwFU2FsZXMxGDAWBgNVBAMMD3d3dy5leGFtcGxlLmNvbTCCASIwDQYJKoZIhvcN
+    AQEBBQADggEPADCCAQoCggEBAMEXAMPLEKEYBODYPLACEHOLDERVALUE0000000=
+    -----END CERTIFICATE REQUEST-----

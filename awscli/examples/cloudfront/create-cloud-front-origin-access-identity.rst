@@ -20,7 +20,9 @@ Contents of ``OAI-config.json``::
     }
 
 Whether you provide the OAI configuration with a command line argument or a
-JSON file, the output is the same::
+JSON file, the output is the same.
+
+Output::
 
     {
         "Location": "https://cloudfront.amazonaws.com/2019-03-26/origin-access-identity/cloudfront/E74FTE3AEXAMPLE",

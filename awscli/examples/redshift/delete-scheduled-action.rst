@@ -5,4 +5,4 @@ The following ``delete-scheduled-action`` example deletes the specified schedule
     aws redshift delete-scheduled-action \
         --scheduled-action-name myscheduledaction
 
-This command does not produce any output.
+This command produces no output.

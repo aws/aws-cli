@@ -13,9 +13,9 @@ Output::
                 "arn": "arn:aws:ivs:us-west-2:123456789012:ingest-configuration/XYZuvwSt4567",
                 "ingestProtocol": "RTMPS",
                 "stageArn": "arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh",
-                "participnatId": "abC789Xyz456",
-                "state": "INACTIVE"
-                "userId": "",
+                "participantId": "abC789Xyz456",
+                "state": "INACTIVE",
+                "userId": ""
             }
         ]
     }

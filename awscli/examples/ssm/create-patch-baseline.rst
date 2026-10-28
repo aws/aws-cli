@@ -92,6 +92,12 @@ Contents of ``my-amazon-linux-approval-rules-and-repo.json``::
         ]
     }
 
+Output::
+
+    {
+        "BaselineId": "pb-045f10b4f3EXAMPLE"
+    }
+
 **Example 4: To create a patch baseline that specifies approved and rejected patches**
 
 The following ``create-patch-baseline`` example explicitly specifies patches to approve and reject as exception to the default approval rules. ::
@@ -103,6 +109,12 @@ The following ``create-patch-baseline`` example explicitly specifies patches to 
         --approved-patches "CVE-2018-1234567,example-pkg-EE-2018*.amzn1.noarch" \
         --approved-patches-compliance-level "HIGH" \
         --approved-patches-enable-non-security \
-        --tags "Key=Environment,Value=Alpha" 
-      
+        --tags "Key=Environment,Value=Alpha"
+
+Output::
+
+    {
+        "BaselineId": "pb-045f10b4f3EXAMPLE"
+    }
+
 For more information, see `Create a Custom Patch Baseline <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-patch-baseline-console.html>`__ in the *AWS Systems Manager User Guide*.

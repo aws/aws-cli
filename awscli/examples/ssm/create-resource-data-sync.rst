@@ -1,6 +1,6 @@
 **To create a resource data sync**
 
-The following ``create-resource-data-sync`` example creates a resource data sync. There is no output if the command succeeds. ::
+The following ``create-resource-data-sync`` example creates a resource data sync. This command produces no output. ::
 
     aws ssm create-resource-data-sync \
         --sync-name "ssm-resource-data-sync" \

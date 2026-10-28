@@ -16,13 +16,11 @@ Output::
                 "Metric": "os.general.numVCPUs",
                 "Unit": "vCPUs"
             },
-            ......,
             {
                 "Description": "Time spent reading data file blocks by backends in this instance",
                 "Metric": "db.IO.read_latency",
                 "Unit": "Milliseconds per block"
-            },
-            ......
+            }
         ]
     }
 

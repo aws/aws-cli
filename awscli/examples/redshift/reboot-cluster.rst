@@ -5,7 +5,7 @@ The following ``reboot-cluster`` example reboots a cluster. By default, the outp
     aws redshift reboot-cluster \
         --cluster-identifier mycluster
 
-Result::
+Output::
 
     {
         "Cluster": {
@@ -30,7 +30,7 @@ Result::
                 }
             ],
             "AllowVersionUpgrade": true,
-            "VpcSecurityGroups": \[],
+            "VpcSecurityGroups": [],
             "AvailabilityZone": "us-east-1a",
             "ClusterCreateTime": "2013-01-22T21:59:29.559Z",
             "PreferredMaintenanceWindow": "sun:23:15-mon:03:15",

@@ -9,3 +9,14 @@ The following ``put-method`` example creates a method for a resource in an API w
         --authorization-type "NONE" \
         --no-api-key-required \
         --request-parameters "method.request.header.custom-header=false"
+
+Output::
+
+    {
+        "httpMethod": "PUT",
+        "authorizationType": "NONE",
+        "apiKeyRequired": false,
+        "requestParameters": {
+            "method.request.header.custom-header": false
+        }
+    }

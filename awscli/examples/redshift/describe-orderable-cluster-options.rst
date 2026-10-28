@@ -4,7 +4,7 @@ The following ``describe-orderable-cluster-options`` example returns description
 
     aws redshift describe-orderable-cluster-options
 
-Result::
+Output::
 
     {
         "OrderableClusterOptions": [
@@ -45,7 +45,7 @@ You can also obtain the same information in text format using the ``--output tex
     aws redshift describe-orderable-cluster-options \
         --output text
 
-Result::
+Output::
 
     dw.hs1.8xlarge      1.0     multi-node
     us-east-1a

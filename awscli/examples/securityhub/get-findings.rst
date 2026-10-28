@@ -107,7 +107,7 @@ Output::
                 "Types": [
                     "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
                 ],
-                "FindingProviderFields" {
+                "FindingProviderFields": {
                     "Severity": {
                         "Original": 90,
                         "Label": "CRITICAL"

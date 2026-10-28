@@ -4,10 +4,13 @@ The following ``list-handshakes-for-account`` example gets a list of all handsha
 
     aws organizations list-handshakes-for-account
 
-The output includes a list of handshake structures with information about each handshake including its current state: ::
+The output includes a list of handshake structures with information about each handshake including its current state.
+
+Output::
 
     {
-        "Handshake": {
+        "Handshakes": [
+            {
             "Action": "INVITE",
             "Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111",
             "ExpirationTimestamp": 1482952459.257,
@@ -49,4 +52,5 @@ The output includes a list of handshake structures with information about each h
             ],
             "State": "OPEN"
         }
+        ]
     }

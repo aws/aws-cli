@@ -1,6 +1,6 @@
 **To apply a lifecycle configuration to a bucket**
 
-The following ``put-bucket-lifecycle`` example applies a lifecycle configuration to the bucket ``amzn-s3-demo-bucket``. ::
+The following ``put-bucket-lifecycle`` example applies a lifecycle configuration to the bucket ``amzn-s3-demo-bucket``. This command produces no output. ::
 
     aws s3api put-bucket-lifecycle \
         --bucket amzn-s3-demo-bucket \

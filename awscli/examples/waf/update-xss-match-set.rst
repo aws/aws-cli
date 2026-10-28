@@ -7,8 +7,11 @@ The following ``update-xss-match-set`` example deletes an XssMatchTuple object (
         --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1 \
         --updates Action="DELETE",XssMatchTuple={FieldToMatch={Type="QUERY_STRING"},TextTransformation="URL_DECODE"}
 
+Output::
 
-
+    {
+        "ChangeToken": "12cs345-67cd-890b-1cd2-c3a4567d89f1"
+    }
 
 For more information, see `Working with Cross-site Scripting Match Conditions`_ in the *AWS WAF* developer guide.
 

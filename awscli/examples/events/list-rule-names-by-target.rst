@@ -4,3 +4,11 @@ The following ``list-rule-names-by-target`` example displays all rules that have
 
     aws events list-rule-names-by-target \
         --target-arn "arn:aws:lambda:us-east-1:123456789012:function:MyFunctionName"
+
+Output::
+
+    {
+        "RuleNames": [
+            "DailyLambdaFunction"
+        ]
+    }

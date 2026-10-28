@@ -1,6 +1,6 @@
 **Example 1: To tags an existing public repository in a public registry**
 
-The following ``tag-resource`` example tags a repository named ``project-a/nginx-web-app`` in a public registry. ::
+The following ``tag-resource`` example tags a repository named ``project-a/nginx-web-app`` in a public registry. This command produces no output. ::
 
     aws ecr-public tag-resource \
         --resource-arn arn:aws:ecr-public::123456789012:repository/project-a/nginx-web-app \
@@ -11,7 +11,7 @@ For more information, see `Using Tags for a public repository <https://docs.aws.
 
 **Example 2: To tag an existing public repository with multiple tags in a public registry.**
 
-The following ``tag-resource`` example tags an existing repository with multiple tags. ::
+The following ``tag-resource`` example tags an existing repository with multiple tags. This command produces no output. ::
 
     aws ecr-public tag-resource \
         --resource-arn arn:aws:ecr-public::890517186334:repository/project-a/nginx-web-app  \

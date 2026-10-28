@@ -1,6 +1,6 @@
 **Example 1: To register targets with a target group by instance ID**
 
-The following ``register-targets`` example registers the specified instances with a target group. The target group must have a target type of ``instance``. ::
+The following ``register-targets`` example registers the specified instances with a target group. The target group must have a target type of ``instance``. This command produces no output. ::
 
     aws elbv2 register-targets \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067 \
@@ -8,7 +8,7 @@ The following ``register-targets`` example registers the specified instances wit
 
 **Example 2: To register targets with a target group using port overrides**
 
-The following ``register-targets`` example registers the specified instance with a target group using multiple ports. This enables you to register containers on the same instance as targets in the target group. ::
+The following ``register-targets`` example registers the specified instance with a target group using multiple ports. This enables you to register containers on the same instance as targets in the target group. This command produces no output. ::
 
     aws elbv2 register-targets \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-internal-targets/3bb63f11dfb0faf9 \
@@ -16,7 +16,7 @@ The following ``register-targets`` example registers the specified instance with
 
 **Example 3: To register targets with a target group by IP address**
 
-The following ``register-targets`` example registers the specified IP addresses with a target group. The target group must have a target type of ``ip``. ::
+The following ``register-targets`` example registers the specified IP addresses with a target group. The target group must have a target type of ``ip``. This command produces no output. ::
 
     aws elbv2 register-targets \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-ip-targets/8518e899d173178f \
@@ -24,7 +24,7 @@ The following ``register-targets`` example registers the specified IP addresses 
 
 **Example 4: To register a Lambda function as a target**
 
-The following ``register-targets`` example registers the specified IP addresses with a target group. The target group must have a target type of ``lambda``. You must grant Elastic Load Balancing permission to invoke the Lambda function. ::
+The following ``register-targets`` example registers the specified IP addresses with a target group. The target group must have a target type of ``lambda``. You must grant Elastic Load Balancing permission to invoke the Lambda function. This command produces no output. ::
 
     aws elbv2 register-targets \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-ip-targets/8518e899d173178f \

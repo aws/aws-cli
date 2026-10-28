@@ -1,6 +1,6 @@
 **To delete a static route from a VPN connection**
 
-The following ``delete-vpn-connection-route`` example deletes the specified static route from the specified VPN connection. If the command succeeds, no output is returned. ::
+The following ``delete-vpn-connection-route`` example deletes the specified static route from the specified VPN connection. This command produces no output. ::
 
     aws ec2 delete-vpn-connection-route \
         --vpn-connection-id vpn-40f41529 \

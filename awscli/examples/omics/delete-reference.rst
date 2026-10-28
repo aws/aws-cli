@@ -1,6 +1,6 @@
 **To delete a reference**
 
-The following ``delete-reference`` example deletes a reference. ::
+The following ``delete-reference`` example deletes a reference. This command produces no output. ::
 
     aws omics delete-reference \
         --reference-store-id 1234567890 \

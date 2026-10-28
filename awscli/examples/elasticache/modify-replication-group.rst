@@ -7,7 +7,7 @@ The following ``modify-replication-group`` example disables Multi-AZ using the R
         --no-multi-az-enabled \
         --apply-immediately
 
-Output ::
+Output::
 
     {
         "ReplicationGroup": {

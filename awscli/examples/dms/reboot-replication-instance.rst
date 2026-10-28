@@ -14,7 +14,7 @@ Output::
             "ReplicationInstanceStatus": "rebooting",
             "AllocatedStorage": 5,
             "InstanceCreateTime": 1590011235.952,
-        ... output omitted ...
+            "ReplicationInstanceArn": "arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE"
         }
     }
 

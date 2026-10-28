@@ -17,13 +17,17 @@ Contents of ``options.json``::
         }
     ]
 
-If the options that you specify are valid for the specified environment, Elastic Beanstalk returns an empty Messages array::
+If the options that you specify are valid for the specified environment, Elastic Beanstalk returns an empty Messages array.
+
+Output::
 
     {
         "Messages": []
     }
 
-If validation fails, the response will include information about the error::
+If validation fails, the response will include information about the error.
+
+Output::
 
     {
         "Messages": [

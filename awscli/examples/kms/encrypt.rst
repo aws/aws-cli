@@ -30,6 +30,8 @@ The command does several things:
 
     The final part of the command (``> ExampleEncryptedFile``) saves the binary ciphertext to a file to make decryption easier. For an example command that uses the AWS CLI to decrypt data, see the `decrypt examples <decrypt.html#examples>`_.
 
+This command produces no output.
+
 **Example 2: To encrypt the contents of a file (Windows)**
 
 The following ``encrypt`` example is the same as the previous one, except that it uses the ``certutil`` tool instead of ``base64``. This procedure requires two commands, as shown in the following example. ::
@@ -43,6 +45,8 @@ The following ``encrypt`` example is the same as the previous one, except that i
 Run the ``certutil`` command. ::
 
     certutil -decode C:\Temp\ExampleEncryptedFile.base64 C:\Temp\ExampleEncryptedFile
+
+This example produces no output. The ciphertext is saved to ``C:\Temp\ExampleEncryptedFile``.
 
 **Example 3: To encrypt the contents of a file with an asymmetric KMS key**
 

@@ -1,6 +1,6 @@
 **To update device status**
 
-The following ``admin-update-device-status`` example sets the device remembered status for the device identified by device-key to not_remembered. ::
+The following ``admin-update-device-status`` example sets the device remembered status for the device identified by device-key to not_remembered. This command produces no output. ::
 
     aws cognito-idp admin-update-device-status \
         --user-pool-id us-west-2_aaaaaaaaa \

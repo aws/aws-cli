@@ -4,7 +4,7 @@ The following ``describe-cluster-subnet-groups`` example returns a description o
 
     aws redshift describe-cluster-subnet-groups
 
-Result::
+Output::
 
     {
         "ClusterSubnetGroups": [

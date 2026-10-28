@@ -21,7 +21,7 @@ Output::
                 "Arn": "arn:aws:securityhub:eu-central-1:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Name": "SampleConfigurationPolicy2",
-                "Description": "SampleDescription2"
+                "Description": "SampleDescription2",
                 "UpdatedAt": "2023-11-28T19:26:25.207000+00:00",
                 "ServiceEnabled": true
             },
@@ -33,6 +33,7 @@ Output::
                 "UpdatedAt": "2023-11-28T20:28:04.494000+00:00",
                 "ServiceEnabled": true
             }
+        ]
     }
 
 For more information, see `Viewing Security Hub configuration policies <https://docs.aws.amazon.com/securityhub/latest/userguide/view-policy.html>`__ in the *AWS Security Hub User Guide*.

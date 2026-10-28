@@ -1,6 +1,6 @@
 **To add a model**
 
-The following ``add-model`` example adds a service model from a file named ``service.json``. ::
+The following ``add-model`` example adds a service model from a file named ``service.json``. This command produces no output. ::
 
     aws configure add-model \
         --service-model file://service.json

@@ -1,6 +1,6 @@
 **To verify an attribute change**
 
-The following ``verify-user-attribute`` example verifies a change to the current user's email attribute. ::
+The following ``verify-user-attribute`` example verifies a change to the current user's email attribute. This command produces no output. ::
 
     aws cognito-idp verify-user-attribute \
         --access-token eyJra456defEXAMPLE \

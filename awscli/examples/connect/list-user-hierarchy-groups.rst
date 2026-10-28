@@ -13,7 +13,7 @@ Output::
                 "Id": "0e2f6d1d-b3ca-494b-8dbc-ba81d9f8182a",
                 "Arn": "arn:aws:connect:us-west-2:123456789012:instance/40c83b68-ea62-414c-97bb-d018e39e158e/agent-group/0e2f6d1d-b3ca-494b-8dbc-ba81d9f8182a",
                 "Name": "Example Corporation"
-            },
+            }
         ]
     }
 

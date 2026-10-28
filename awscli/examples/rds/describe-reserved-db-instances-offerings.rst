@@ -25,6 +25,6 @@ Output::
                 ],
                 "FixedPrice": 4089.0,
                 "Duration": 31536000
-            },
-        ...some output truncated...
+            }
+        ]
     }

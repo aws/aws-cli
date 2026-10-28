@@ -11,7 +11,7 @@ The following ``send-data-to-wireless-device`` example sends a decrypted applica
 Output::
 
     {
-        MessageId: "6011dd36-0043d6eb-0072-0008"
+        "MessageId": "6011dd36-0043d6eb-0072-0008"
     }
 
 For more information, see `Connecting devices and gateways to AWS IoT Core for LoRaWAN <https://docs.aws.amazon.com/iot/latest/developerguide/connect-iot-lorawan.html>`__ in the *AWS IoT Developers Guide*.

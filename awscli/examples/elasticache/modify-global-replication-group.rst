@@ -7,7 +7,7 @@ The following ``modify-global-replication-group`` example modifies the propertie
         --apply-immediately \
         --no-automatic-failover-enabled
         
-Output ::
+Output::
 
     {
         "GlobalReplicationGroup": {

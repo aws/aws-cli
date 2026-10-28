@@ -7,6 +7,13 @@ The following ``get-export`` example gets the JSON Swagger template for the ``de
         --stage-name dev \
         --export-type swagger
 
+Output::
+
+    {
+        "contentType": "application/octet-stream",
+        "contentDisposition": "attachment; filename=\"swagger_2016-02-22_23-52Z.json\""
+    }
+
 **Example 2: To get the JSON Swagger template + API Gateway Extensions for a stage**
 
 The following ``get-export`` example gets the JSON Swagger template with API Gateway Extensions for the ``dev`` stage and saves it to a file. ::
@@ -16,6 +23,13 @@ The following ``get-export`` example gets the JSON Swagger template with API Gat
         --rest-api-id a1b2c3d4e5 \
         --stage-name dev \
         --export-type swagger
+
+Output::
+
+    {
+        "contentType": "application/octet-stream",
+        "contentDisposition": "attachment; filename=\"swagger_2016-02-22_23-52Z.json\""
+    }
 
 **Example 3: To get the JSON Swagger template + Postman Extensions for a stage**
 
@@ -27,3 +41,9 @@ The following ``get-export`` example gets the JSON Swagger template with Postman
         --stage-name dev \
         --export-type swagger
 
+Output::
+
+    {
+        "contentType": "application/octet-stream",
+        "contentDisposition": "attachment; filename=\"swagger_2016-02-22_23-52Z.json\""
+    }

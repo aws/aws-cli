@@ -1,6 +1,6 @@
 **To delete a scaling policy**
 
-The following ``delete-scaling-policy`` example deletes a scaling policy for the Amazon ECS service `web-app` running in the `default` cluster. ::
+The following ``delete-scaling-policy`` example deletes a scaling policy for the Amazon ECS service `web-app` running in the `default` cluster. This command produces no output. ::
 
     aws application-autoscaling delete-scaling-policy \
         --policy-name web-app-cpu-lt-25 \

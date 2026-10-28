@@ -1,6 +1,6 @@
 **To delete a workflow**
 
-The following ``delete-workflow`` example deletes a workflow with ID ``1234567``. ::
+The following ``delete-workflow`` example deletes a workflow with ID ``1234567``. This command produces no output. ::
 
     aws omics delete-workflow \
         --id 1234567

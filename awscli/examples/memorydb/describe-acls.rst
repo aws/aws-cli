@@ -19,7 +19,7 @@ Output::
                 "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:acl/open-access"
             },
             {
-                "Name": my-acl",
+                "Name": "my-acl",
                 "Status": "active",
                 "UserNames": [],
                 "MinimumEngineVersion": "6.2",

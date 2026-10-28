@@ -1,6 +1,6 @@
 **To enable sign-in by a user**
 
-The following ``admin-enable-user`` example enables sign-in by the user diego@example.com. ::
+The following ``admin-enable-user`` example enables sign-in by the user diego@example.com. This command produces no output. ::
 
     aws cognito-idp admin-enable-user \
         --user-pool-id us-west-2_EXAMPLE \

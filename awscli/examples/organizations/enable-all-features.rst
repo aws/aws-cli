@@ -4,27 +4,29 @@ The following ``enable-all-features`` example asks all the invited accounts in t
 
     aws organizations enable-all-features
 
-The output is a handshake object that is sent to all invited member accounts for approval: ::
+The output is a handshake object that is sent to all invited member accounts for approval.
+
+Output::
 
     {
         "Handshake": {
             "Action": "ENABLE_ALL_FEATURES",
-            "Arn":"arn:aws:organizations::111111111111:handshake/o-exampleorgid/enable_all_features/h-examplehandshakeid111",
-            "ExpirationTimestamp":1.483127868609E9,
-            "Id":"h-examplehandshakeid111",
+            "Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/enable_all_features/h-examplehandshakeid111",
+            "ExpirationTimestamp": 1483127868.609,
+            "Id": "h-examplehandshakeid111",
             "Parties": [
                 {
-                    "id":"o-exampleorgid",
-                    "type":"ORGANIZATION"
+                    "Id": "o-exampleorgid",
+                    "Type": "ORGANIZATION"
                 }
             ],
-            "requestedTimestamp":1.481831868609E9,
-            "resources": [
+            "RequestedTimestamp": 1481831868.609,
+            "Resources": [
                 {
-                    "type":"ORGANIZATION",
-                    "value":"o-exampleorgid"
+                    "Type": "ORGANIZATION",
+                    "Value": "o-exampleorgid"
                 }
             ],
-            "state":"REQUESTED"
+            "State": "REQUESTED"
         }
     }

@@ -1,6 +1,6 @@
 **To delete a group**
 
-The following ``delete-group`` example deletes a group. ::
+The following ``delete-group`` example deletes a group. This command produces no output. ::
 
     aws cognito-idp delete-group \
         --user-pool-id us-west-2_aaaaaaaaa \

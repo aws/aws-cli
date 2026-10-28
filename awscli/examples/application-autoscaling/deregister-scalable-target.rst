@@ -1,6 +1,6 @@
 **To deregister a scalable target**
 
-The following ``deregister-scalable-target`` example deregisters a scalable target for an Amazon ECS service called `web-app` that is running in the `default` cluster. ::
+The following ``deregister-scalable-target`` example deregisters a scalable target for an Amazon ECS service called `web-app` that is running in the `default` cluster. This command produces no output. ::
 
     aws application-autoscaling deregister-scalable-target \
         --service-namespace ecs \

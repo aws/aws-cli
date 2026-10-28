@@ -1,6 +1,6 @@
 **To activate a pipeline**
 
-The following ``activate-pipeline`` example activates the specified pipeline. ::
+The following ``activate-pipeline`` example activates the specified pipeline. This command produces no output. ::
 
     aws datapipeline activate-pipeline \
         --pipeline-id df-00627471SOVYZEXAMPLE

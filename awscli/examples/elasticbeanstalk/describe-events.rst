@@ -5,7 +5,7 @@ The following ``describe-events`` example retrieves events for an environment na
     aws elasticbeanstalk describe-events \
         --environment-name my-env
 
-Output (abbreviated)::
+Output::
 
     {
         "Events": [
@@ -24,7 +24,6 @@ Output (abbreviated)::
                 "Message": "Environment update completed successfully.",
                 "EventDate": "2015-08-20T07:06:02.049Z"
             },
-            ...
             {
                 "ApplicationName": "my-app",
                 "EnvironmentName": "my-env",

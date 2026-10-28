@@ -1,6 +1,6 @@
 **To prevent sign-in by a user**
 
-The following ``admin-disable-user`` example prevents sign-in by the user ``diego@example.com``. ::
+The following ``admin-disable-user`` example prevents sign-in by the user ``diego@example.com``. This command produces no output. ::
 
     aws cognito-idp admin-disable-user \
         --user-pool-id us-west-2_EXAMPLE \

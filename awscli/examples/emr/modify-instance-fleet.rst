@@ -1,6 +1,6 @@
-**To change the target capacites of an instance fleet**
+**To change the target capacities of an instance fleet**
 
-The following ``modify-instance-fleet`` example changes the On-Demand and Spot target capacities to 1 for the specified instance fleet. ::
+The following ``modify-instance-fleet`` example changes the On-Demand and Spot target capacities to 1 for the specified instance fleet. This command produces no output. ::
 
     aws emr modify-instance-fleet \
         --cluster-id 'j-12ABCDEFGHI34JK' \

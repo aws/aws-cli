@@ -20,9 +20,6 @@ Output::
                 "isLongDurationTest": false,
                 "protocol": "MqttV3_1_1",
                 "createdAt": "2022-11-17T14:15:56.830000-05:00"
-            },
-            {
-                ......
             }
         ],
         "nextToken": "nextTokenValue"

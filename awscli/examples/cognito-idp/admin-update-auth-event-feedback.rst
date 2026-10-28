@@ -1,6 +1,6 @@
 **To provide feedback for an authorization event**
 
-The following ``admin-update-auth-event-feedback`` example sets the feedback value for an authorization event identified by event-id to Valid. ::
+The following ``admin-update-auth-event-feedback`` example sets the feedback value for an authorization event identified by event-id to Valid. This command produces no output. ::
 
     aws cognito-idp admin-update-auth-event-feedback \
         --user-pool-id us-west-2_aaaaaaaaa \

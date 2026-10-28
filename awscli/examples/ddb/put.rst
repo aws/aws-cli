@@ -1,12 +1,12 @@
 **Example 1: To add an item to a table**
 
-The following ``put`` example adds a new item to the *MusicCollection* table. ::
+The following ``put`` example adds a new item to the *MusicCollection* table. This command produces no output. ::
 
     aws ddb put MusicCollection '{Artist: "No One You Know", SongTitle: "Call Me Today", AlbumTitle: "Somewhat Famous"}'
 
 **Example 2: To add items to a table from a file**
 
-The following ``put`` example adds two new items from a file to the *MusicCollection* table. ::
+The following ``put`` example adds two new items from a file to the *MusicCollection* table. This command produces no output. ::
 
     aws ddb put MusicCollection file://items.json
 
@@ -30,7 +30,7 @@ Contents of ``items.json``::
 **Example 3: To add items to a table from stdin**
 
 The following ``put`` example adds a new item to the *MusicCollection* table by reading it from
-stdin. ::
+stdin. This command produces no output. ::
 
     echo '{Artist: "No One You Know", SongTitle: "Call Me Today"}' \
         | aws ddb put MusicCollection -

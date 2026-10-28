@@ -1,6 +1,6 @@
 **Example 1: To schedule a full HBase backup**
 
-The following ``schedule-hbase-backup`` example schedules a full HBase backup. This command can only be used with HBase on AMI version 2.x and 3.x. ::
+The following ``schedule-hbase-backup`` example schedules a full, consistent HBase backup to Amazon S3 every 10 hours. This command can only be used with HBase on AMI version 2.x and 3.x. The command adds an HBase backup step to the cluster and returns the ID of the step. ::
 
     aws emr schedule-hbase-backup \
         --cluster-id j-XXXXXXYY \
@@ -13,12 +13,15 @@ The following ``schedule-hbase-backup`` example schedules a full HBase backup. T
 
 Output::
 
-    None
-
+    {
+        "StepIds": [
+            "s-1A2B3C4D5E6F7"
+        ]
+    }
 
 **Example 2: To schedule an incremental HBase backup**
 
-The following ``schedule-hbase-backup`` example schedules an incremental HBase backup. This command can only be used with HBase on AMI version 2.x and 3.x. ::
+The following ``schedule-hbase-backup`` example schedules an incremental, consistent HBase backup to Amazon S3 every 30 minutes. This command can only be used with HBase on AMI version 2.x and 3.x. The command adds an HBase backup step to the cluster and returns the ID of the step. ::
 
     aws emr schedule-hbase-backup \
         --cluster-id j-XXXXXXYY \
@@ -31,5 +34,8 @@ The following ``schedule-hbase-backup`` example schedules an incremental HBase b
 
 Output::
 
-    None
-
+    {
+        "StepIds": [
+            "s-2B3C4D5E6F7G8"
+        ]
+    }

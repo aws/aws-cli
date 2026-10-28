@@ -21,7 +21,6 @@ Output::
                 "SubscriptionCreationTime": "2018-07-31 23:22:01.893",
                 "CustSubscriptionId": "my-instance-events",
                 "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:interesting-events"
-            },
-            ...some output truncated...
+            }
         ]
     }

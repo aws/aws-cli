@@ -1,6 +1,6 @@
 **To delete an origin endpoint**
 
-The following ``delete-origin-endpoint`` example deletes the origin endpoint named ``tester2``. ::
+The following ``delete-origin-endpoint`` example deletes the origin endpoint named ``tester2``. This command produces no output. ::
 
     aws mediapackage delete-origin-endpoint \
         --id tester2

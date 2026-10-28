@@ -15,7 +15,7 @@ Output::
             "registeredContainerInstancesCount": 0,
             "pendingTasksCount": 0,
             "runningTasksCount": 0,
-            "activeServicesCount": 0
+            "activeServicesCount": 0,
             "statistics": [],
             "tags": []
         }

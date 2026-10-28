@@ -11,7 +11,7 @@ Output::
             {
                 "ActivationId": "5743558d-563b-4457-8682-d16c3EXAMPLE",
                 "Description": "Example1",
-                "IamRole": "HybridWebServersRole,
+                "IamRole": "HybridWebServersRole",
                 "RegistrationLimit": 5,
                 "RegistrationsCount": 5,
                 "ExpirationDate": 1584316800.0,
@@ -27,7 +27,7 @@ Output::
                 "ExpirationDate": 1580515200.0,
                 "Expired": true,
                 "CreatedDate": 1578064132.002
-            },
+            }
         ]
     }
 

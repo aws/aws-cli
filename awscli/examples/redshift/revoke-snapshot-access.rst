@@ -8,7 +8,7 @@ format. ::
         --snapshot-id my-snapshot-id \
         --account-with-restore-access 444455556666
 
-Result::
+Output::
 
     {
         "Snapshot": {
@@ -23,9 +23,9 @@ Result::
             "BackupProgressInMegabytes": 11.0,
             "ElapsedTimeInSeconds": 0,
             "DBName": "dev",
-            "CurrentBackupRateInMegabytesPerSecond: 0.1534,
+            "CurrentBackupRateInMegabytesPerSecond": 0.1534,
             "ClusterCreateTime": "2013-01-22T21:59:29.559Z",
-            "ActualIncrementalBackupSizeInMegabytes"; 11.0,
+            "ActualIncrementalBackupSizeInMegabytes": 11.0,
             "SnapshotType": "manual",
             "NodeType": "dw.hs1.xlarge",
             "ClusterIdentifier": "mycluster",

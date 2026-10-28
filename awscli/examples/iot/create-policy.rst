@@ -49,41 +49,7 @@ Output::
     {
         "policyName": "TemperatureSensorPolicy",
         "policyArn": "arn:aws:iot:us-west-2:123456789012:policy/TemperatureSensorPolicy",
-        "policyDocument": "{
-            \"Version\": \"2012-10-17\",
-            \"Statement\": [
-                {
-                    \"Effect\": \"Allow\",
-                    \"Action\": [
-                        \"iot:Publish\",
-                        \"iot:Receive\"
-                    ],
-                    \"Resource\": [
-                        \"arn:aws:iot:us-west-2:123456789012:topic/topic_1\",
-                        \"arn:aws:iot:us-west-2:123456789012:topic/topic_2\"
-                    ]
-                },
-                {
-                    \"Effect\": \"Allow\",
-                    \"Action\": [
-                        \"iot:Subscribe\"
-                    ],
-                    \"Resource\": [
-                        \"arn:aws:iot:us-west-2:123456789012:topicfilter/topic_1\",
-                        \"arn:aws:iot:us-west-2:123456789012:topicfilter/topic_2\"
-                    ]
-                },
-                {
-                    \"Effect\": \"Allow\",
-                    \"Action\": [
-                        \"iot:Connect\"
-                    ],
-                    \"Resource\": [
-                        \"arn:aws:iot:us-west-2:123456789012:client/basicPubSub\"
-                    ]
-                }
-            ]
-        }",
+        "policyDocument": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"iot:Publish\",\"iot:Receive\"],\"Resource\":[\"arn:aws:iot:us-west-2:123456789012:topic/topic_1\",\"arn:aws:iot:us-west-2:123456789012:topic/topic_2\"]},{\"Effect\":\"Allow\",\"Action\":[\"iot:Subscribe\"],\"Resource\":[\"arn:aws:iot:us-west-2:123456789012:topicfilter/topic_1\",\"arn:aws:iot:us-west-2:123456789012:topicfilter/topic_2\"]},{\"Effect\":\"Allow\",\"Action\":[\"iot:Connect\"],\"Resource\":[\"arn:aws:iot:us-west-2:123456789012:client/basicPubSub\"]}]}",
         "policyVersionId": "1"
     }
 

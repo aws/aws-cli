@@ -6,7 +6,7 @@ The following ``create-pipeline`` example creates a pipeline. ::
         --name my-pipeline \
         --unique-id my-pipeline-token
    
-The following is example output::
+Output::
 
     {
         "pipelineId": "df-00627471SOVYZEXAMPLE"

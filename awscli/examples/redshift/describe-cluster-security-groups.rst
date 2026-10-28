@@ -5,15 +5,14 @@ By default, the output is in JSON format. ::
 
     aws redshift describe-cluster-security-groups
 
-Result::
+Output::
 
     {
         "ClusterSecurityGroups": [
             {
-                "OwnerId": "100447751468",
                 "Description": "default",
                 "ClusterSecurityGroupName": "default",
-                "EC2SecurityGroups": \[],
+                "EC2SecurityGroups": [],
                 "IPRanges": [
                     {
                         "Status": "authorized",
@@ -22,13 +21,11 @@ Result::
                 ]
             },
             {
-                "OwnerId": "100447751468",
                 "Description": "This is my cluster security group",
                 "ClusterSecurityGroupName": "mysecuritygroup",
-                "EC2SecurityGroups": \[],
-                "IPRanges": \[]
-            },
-            (...remaining output omitted...)
+                "EC2SecurityGroups": [],
+                "IPRanges": []
+            }
         ]
     }
 

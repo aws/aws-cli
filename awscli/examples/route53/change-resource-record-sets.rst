@@ -27,6 +27,16 @@ Contents of ``C:\awscli\route53\change-resource-record-sets.json``::
         ]
     }
 
+Output::
+
+    {
+        "ChangeInfo": {
+            "Id": "/change/CWPIK4URU2I5S",
+            "Status": "PENDING",
+            "SubmittedAt": "2025-01-15T18:21:11.930000+00:00"
+        }
+    }
+
 For more information, see `POST ChangeResourceRecordSets`_ in the *Amazon Route 53 API Reference*.
 
 .. _`POST ChangeResourceRecordSets`: http://docs.aws.amazon.com/Route53/latest/APIReference/API_ChangeResourceRecordSets.html

@@ -16,7 +16,7 @@ Output::
         "VerificationKeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/37y2tsl45p5zjbh2",
         "VerificationKeyCheckValue": "7F2363",
         "EncryptionKeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/ivi5ksfsuplneuyt",
-        "EncryptionKeyCheckValue": "7CC9E2",
-    } 
+        "EncryptionKeyCheckValue": "7CC9E2"
+    }
 
 For more information, see `Verify PIN data <https://docs.aws.amazon.com/payment-cryptography/latest/userguide/verify-pin-data.html>`__ in the *AWS Payment Cryptography User Guide*.

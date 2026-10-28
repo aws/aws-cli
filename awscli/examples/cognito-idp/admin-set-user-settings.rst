@@ -1,6 +1,6 @@
 **To set user settings**
 
-The following ``admin-set-user-settings`` example sets the MFA delivery preference for username diego@example.com to EMAIL. ::
+The following ``admin-set-user-settings`` example sets the MFA delivery preference for username diego@example.com to EMAIL. This command produces no output. ::
 
     aws cognito-idp admin-set-user-settings \
         --user-pool-id us-west-2_aaaaaaaaa \

@@ -5,6 +5,6 @@ The following ``delete-snapshot-copy-grant`` example deletes the specified snaps
     aws redshift delete-snapshot-copy-grant \
         --snapshot-copy-grant-name mysnapshotcopygrantname
 
-This command does not produce any output.
+This command produces no output.
 
 For more information, see `Amazon Redshift Database Encryption <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html>`__ in the *Amazon Redshift Cluster Management Guide*.

@@ -14,7 +14,7 @@ Output::
             "Value": "Veni",
             "Version": 1,
             "LastModifiedDate": 1530018761.888,
-            "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MyStringParameter"
+            "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MyStringParameter",
             "DataType": "text"
         }
     }
@@ -38,7 +38,7 @@ Output::
             "Value": "16679b88-310b-4895-a943-e0764EXAMPLE",
             "Version": 2,
             "LastModifiedDate": 1582155479.205,
-            "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MySecureStringParameter"
+            "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MySecureStringParameter",
             "DataType": "text"
         }
     }

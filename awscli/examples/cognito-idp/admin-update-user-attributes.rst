@@ -1,6 +1,6 @@
 **To update user attributes**
 
-The following ``admin-update-user-attributes`` example updates a custom user attribute CustomAttr1 for user diego@example.com. ::
+The following ``admin-update-user-attributes`` example updates a custom user attribute CustomAttr1 for user diego@example.com. This command produces no output. ::
 
     aws cognito-idp admin-update-user-attributes \
         --user-pool-id us-west-2_aaaaaaaaa \

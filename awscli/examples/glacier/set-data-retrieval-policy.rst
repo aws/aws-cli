@@ -1,6 +1,6 @@
 **To set the data retrieval policy for an account**
 
-The following ``set-data-retrieval-policy`` example configures a data retrieval policy for the in-use account. ::
+The following ``set-data-retrieval-policy`` example configures a data retrieval policy for the in-use account. This command produces no output. ::
 
     aws glacier set-data-retrieval-policy \
         --account-id - \

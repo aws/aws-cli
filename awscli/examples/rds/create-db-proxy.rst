@@ -17,7 +17,7 @@ Output::
             "DBProxyArn": "arn:aws:rds:us-east-1:123456789012:db-proxy:prx-0123a01b12345c0ab",
             "EngineFamily": "MYSQL",
             "VpcId": "vpc-1234567",
-            "VpcSecuritytGroupIds": [
+            "VpcSecurityGroupIds": [
                 "sg-1234",
                 "sg-5678",
                 "sg-9101"
@@ -26,19 +26,19 @@ Output::
                 "subnetgroup1",
                 "subnetgroup2"
             ],
-            "Auth": "[
+            "Auth": [
                 {
                     "Description": "proxydescription1",
                     "AuthScheme": "SECRETS",
                     "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789123:secret:proxysecret1-Abcd1e",
                     "IAMAuth": "DISABLED"
                 }
-            ]",
+            ],
             "RoleArn": "arn:aws:iam::12345678912:role/ProxyRole",
             "Endpoint": "proxyExample.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
             "RequireTLS": false,
             "IdleClientTimeout": 1800,
-            "DebuggingLogging": false,
+            "DebugLogging": false,
             "CreatedDate": "2023-04-05T16:09:33.452000+00:00",
             "UpdatedDate": "2023-04-13T01:49:38.568000+00:00"
         }

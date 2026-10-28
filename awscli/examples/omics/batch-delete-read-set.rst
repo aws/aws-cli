@@ -6,7 +6,9 @@ The following ``batch-delete-read-set`` example deletes two read sets. ::
         --sequence-store-id 1234567890 \
         --ids 1234567890 0123456789
 
-If there is an error deleting any of the specified read sets, the service returns an error list. ::
+If there is an error deleting any of the specified read sets, the service returns an error list.
+
+Output::
 
     {
         "errors": [

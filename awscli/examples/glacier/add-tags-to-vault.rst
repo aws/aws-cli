@@ -1,6 +1,6 @@
 **To add tags to a vault**
 
-The following ``add-tags-to-vault`` example adds two tags to a vault named ``my-vault``. ::
+The following ``add-tags-to-vault`` example adds two tags to a vault named ``my-vault``. This command produces no output. ::
 
     aws glacier add-tags-to-vault \
         --account-id - \

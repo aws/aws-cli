@@ -7,3 +7,21 @@ The following ``create-usage-plan`` example creates a usage plan with throttle a
         --description "A new usage plan" \
         --throttle burstLimit=10,rateLimit=5 \
         --quota limit=500,offset=0,period=MONTH
+
+Output::
+
+    {
+        "id": "a1b2c3",
+        "name": "New Usage Plan",
+        "description": "A new usage plan",
+        "apiStages": [],
+        "throttle": {
+            "burstLimit": 10,
+            "rateLimit": 5.0
+        },
+        "quota": {
+            "limit": 500,
+            "offset": 0,
+            "period": "MONTH"
+        }
+    }

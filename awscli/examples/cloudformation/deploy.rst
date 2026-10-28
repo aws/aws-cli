@@ -25,6 +25,12 @@ Contents of ``parameters.json``::
         "Key2=Value2"
     ]
 
+Output::
+
+    Waiting for changeset to be created..
+    Waiting for stack create/update to complete
+    Successfully created/updated stack - my-new-stack
+
 Supported JSON syntax
 ~~~~~~~~~~~~~~~~~~~~~
 

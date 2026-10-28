@@ -6,6 +6,19 @@ The following ``list-objects`` example displays the names of all the objects in 
         --bucket text-content \
         --query 'Contents[].{Key: Key, Size: Size}'
 
+Output::
+
+    [
+        {
+            "Key": "dir/my_data",
+            "Size": 20000
+        },
+        {
+            "Key": "dir/my_images.tar.bz2",
+            "Size": 3191
+        }
+    ]
+
 The example uses the ``--query`` argument to filter the output of
 ``list-objects`` down to the key value and size for each object
 

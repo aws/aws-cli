@@ -23,4 +23,10 @@ The following ``create-user-pool-domain`` example creates a new domain with a se
         --user-pool-id us-west-2_EXAMPLE2 \
         --domain mydomainprefix
 
+Output::
+
+    {
+        "ManagedLoginVersion": 1
+    }
+
 For more information, see `Configuring a user pool domain <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html>`__ in the *Amazon Cognito Developer Guide*.

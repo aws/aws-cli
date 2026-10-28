@@ -10,8 +10,10 @@ Output::
     {
         "Listener": {
             "PortRanges": [
-                "FromPort": 5000,
-                "ToPort": 10000
+                {
+                    "FromPort": 5000,
+                    "ToPort": 10000
+                }
             ],
             "ListenerArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234"
         }

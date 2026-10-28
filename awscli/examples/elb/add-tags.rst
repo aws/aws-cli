@@ -1,6 +1,6 @@
 **To add a tag to a load balancer**
 
-The following ``add-tags`` example adds tags to the specified load balancer. ::
+The following ``add-tags`` example adds tags to the specified load balancer. This command produces no output. ::
 
     aws elb add-tags \
         --load-balancer-name my-load-balancer \

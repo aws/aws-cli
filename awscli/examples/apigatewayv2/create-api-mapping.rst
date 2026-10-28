@@ -13,7 +13,7 @@ Output::
     {
         "ApiId": "a1b2c3d4",
         "ApiMappingId": "0qzs2sy7bh",
-        "ApiMappingKey": "myApi"
+        "ApiMappingKey": "myApi",
         "Stage": "test"
     }
 

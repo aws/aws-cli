@@ -5,7 +5,7 @@ The following ``describe-resize`` example describes the latest resize of a clust
     aws redshift describe-resize \
         --cluster-identifier mycluster
 
-Result::
+Output::
 
     {
         "Status": "NONE",

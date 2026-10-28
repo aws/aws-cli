@@ -25,7 +25,19 @@ The following ``update-maintenance-window`` example disables a maintenance windo
     aws ssm update-maintenance-window \
         --window-id "mw-1a2b3c4d5e6f7g8h9" \
         --no-enabled
-        
+
+Output::
+
+    {
+        "Cutoff": 1,
+        "Name": "My-Renamed-MW",
+        "Schedule": "cron(0 16 ? * TUE *)",
+        "Enabled": false,
+        "AllowUnassociatedTargets": true,
+        "WindowId": "mw-1a2b3c4d5e6f7g8h9",
+        "Duration": 4
+    }
+
 **Example 3: To enable a maintenance window**
 
 The following ``update-maintenance-window`` example enables a maintenance window. ::
@@ -33,5 +45,17 @@ The following ``update-maintenance-window`` example enables a maintenance window
     aws ssm update-maintenance-window \
         --window-id "mw-1a2b3c4d5e6f7g8h9" \
         --enabled
+
+Output::
+
+    {
+        "Cutoff": 1,
+        "Name": "My-Renamed-MW",
+        "Schedule": "cron(0 16 ? * TUE *)",
+        "Enabled": true,
+        "AllowUnassociatedTargets": true,
+        "WindowId": "mw-1a2b3c4d5e6f7g8h9",
+        "Duration": 4
+    }
 
 For more information, see `Update a Maintenance Window (AWS CLI)  <https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-cli-tutorials-update.html>`__ in the *AWS Systems Manager User Guide*.

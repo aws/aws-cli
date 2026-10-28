@@ -1,6 +1,6 @@
 **To replace a notification for a Cost and Usage budget**
 
-The following ``update-notification`` example replaces an 80% notification for a Cost and Usage budget with a 90% notification. ::
+The following ``update-notification`` example replaces an 80% notification for a Cost and Usage budget with a 90% notification. This command produces no output. ::
 
     aws budgets update-notification \
         --account-id 111122223333 \

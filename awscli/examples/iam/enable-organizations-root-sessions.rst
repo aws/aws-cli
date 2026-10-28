@@ -9,7 +9,7 @@ Output::
     {
         "EnabledFeatures": [
             "RootSessions"
-        ]
+        ],
         "OrganizationId": "o-aa111bb222"
     }
 

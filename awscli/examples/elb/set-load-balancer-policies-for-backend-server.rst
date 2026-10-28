@@ -1,6 +1,6 @@
 **Example 1: To replace the policies associated with a port for a backend instance**
 
-The following ``set-load-balancer-policies-for-backend-server`` example replaces the policies that are currently associated with the specified port. ::
+The following ``set-load-balancer-policies-for-backend-server`` example replaces the policies that are currently associated with the specified port. This command produces no output. ::
 
     aws elb set-load-balancer-policies-for-backend-server \
         --load-balancer-name my-load-balancer \
@@ -10,7 +10,7 @@ The following ``set-load-balancer-policies-for-backend-server`` example replaces
 
 **Example 2: To remove all policies that are currently associated with a port on your backend instance**
 
-The following ``set-load-balancer-policies-for-backend-server`` example removes all policies associated with the specified port. ::
+The following ``set-load-balancer-policies-for-backend-server`` example removes all policies associated with the specified port. This command produces no output. ::
 
     aws elb set-load-balancer-policies-for-backend-server \
         --load-balancer-name my-load-balancer \

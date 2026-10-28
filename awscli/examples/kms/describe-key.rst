@@ -15,7 +15,7 @@ Output::
             "KeyId": "b8a9477d-836c-491f-857e-07937918959b",
             "Arn": "arn:aws:kms:us-west-2:846764612917:key/b8a9477d-836c-491f-857e-07937918959b",
             "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
-            "CreationDate": 2017-06-30T21:44:32.140000+00:00,
+            "CreationDate": "2017-06-30T21:44:32.140000+00:00",
             "Enabled": true,
             "Description": "Default KMS key that protects my S3 objects when no other key is defined",
             "KeyUsage": "ENCRYPT_DECRYPT",

@@ -1,6 +1,6 @@
 **To delete a subscriber from a notification**
 
-The following ``delete-subscriber`` example deletes the specified subscriber from the specified notification. ::
+The following ``delete-subscriber`` example deletes the specified subscriber from the specified notification. This command produces no output. ::
 
     aws budgets delete-subscriber \
         --account-id 111122223333 \

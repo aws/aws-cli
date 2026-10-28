@@ -11,7 +11,7 @@ Output::
 
     {
         "DiskImageFormat": "vmdk",
-        "ExportImageTaskId": "export-ami-1234567890abcdef0"
+        "ExportImageTaskId": "export-ami-1234567890abcdef0",
         "ImageId": "ami-1234567890abcdef0",
         "RoleName": "vmimport",
         "Progress": "0",

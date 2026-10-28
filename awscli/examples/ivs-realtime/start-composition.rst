@@ -54,7 +54,7 @@ Output::
             ],
             "layout": {
                 "grid": {
-                    "featuredParticipantAttribute": ""
+                    "featuredParticipantAttribute": "",
                     "gridGap": 2,
                     "omitStoppedVideo": false,
                     "participantOrderAttribute": "",
@@ -191,12 +191,12 @@ Output::
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
                             "thumbnailConfigurations": [
-                               {
-                                  "targetIntervalSeconds": 60,
-                                  "storage": [
-                                      "SEQUENTIAL"
-                                  ]
-                               }
+                                {
+                                    "targetIntervalSeconds": 60,
+                                    "storage": [
+                                        "SEQUENTIAL"
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -211,7 +211,7 @@ Output::
             ],
             "layout": {
                 "grid": {
-                    "featuredParticipantAttribute": ""
+                    "featuredParticipantAttribute": "",
                     "gridGap": 2,
                     "omitStoppedVideo": false,
                     "participantOrderAttribute": "",
@@ -273,12 +273,12 @@ Output::
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
                             "thumbnailConfigurations": [
-                               {
-                                  "targetIntervalSeconds": 60,
-                                  "storage": [
-                                      "SEQUENTIAL"
-                                  ]
-                               }
+                                {
+                                    "targetIntervalSeconds": 60,
+                                    "storage": [
+                                        "SEQUENTIAL"
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -293,7 +293,7 @@ Output::
             ],
             "layout": {
                 "grid": {
-                    "featuredParticipantAttribute": ""
+                    "featuredParticipantAttribute": "",
                     "gridGap": 2,
                     "omitStoppedVideo": false,
                     "participantOrderAttribute": "abcdefg",

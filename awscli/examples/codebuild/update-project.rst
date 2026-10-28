@@ -10,7 +10,7 @@ The following ``update-project`` example changes the settings of the specified C
         --environment "{\"type\": \"LINUX_CONTAINER\",\"image\": \"aws/codebuild/standard:1.0\",\"computeType\": \"BUILD_GENERAL1_MEDIUM\"}" \
         --service-role "arn:aws:iam::123456789012:role/service-role/my-codebuild-service-role"
 
-The output displays the updated settings. ::
+Output::
 
     {
         "project": {

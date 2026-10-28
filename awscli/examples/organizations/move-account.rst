@@ -1,6 +1,6 @@
 **To move an account between roots or OUs**
 
-The following ``move-account`` example moves the management account in the organization from the root to an OU. ::
+The following ``move-account`` example moves the management account in the organization from the root to an OU. This command produces no output. ::
 
     aws organizations move-account \
         --account-id 333333333333 \

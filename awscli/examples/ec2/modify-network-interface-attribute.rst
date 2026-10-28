@@ -1,6 +1,6 @@
 **Example 1: To modify the attachment attribute of a network interface**
 
-The following ``modify-network-interface-attribute`` example modifies the ``attachment`` attribute of the specified network interface. ::
+The following ``modify-network-interface-attribute`` example modifies the ``attachment`` attribute of the specified network interface. This command produces no output. ::
 
     aws ec2 modify-network-interface-attribute \
         --network-interface-id eni-686ea200 \
@@ -9,7 +9,7 @@ The following ``modify-network-interface-attribute`` example modifies the ``atta
 
 **Example 2: To modify the description attribute of a network interface**
 
-The following ``modify-network-interface-attribute`` example modifies the ``description`` attribute of the specified network interface. ::
+The following ``modify-network-interface-attribute`` example modifies the ``description`` attribute of the specified network interface. This command produces no output. ::
 
     aws ec2 modify-network-interface-attribute \
         --network-interface-id eni-686ea200 \
@@ -18,7 +18,7 @@ The following ``modify-network-interface-attribute`` example modifies the ``desc
 
 **Example 3: To modify the groupSet attribute of a network interface**
 
-The following ``modify-network-interface-attribute`` example modifies the ``groupSet`` attribute of the specified network interface. ::
+The following ``modify-network-interface-attribute`` example modifies the ``groupSet`` attribute of the specified network interface. This command produces no output. ::
 
     aws ec2 modify-network-interface-attribute \
         --network-interface-id eni-686ea200 \
@@ -27,7 +27,7 @@ The following ``modify-network-interface-attribute`` example modifies the ``grou
 
 **Example 4: To modify the sourceDestCheck attribute of a network interface**
 
-The following ``modify-network-interface-attribute`` example modifies the ``sourceDestCheck`` attribute of the specified network interface. ::
+The following ``modify-network-interface-attribute`` example modifies the ``sourceDestCheck`` attribute of the specified network interface. This command produces no output. ::
 
     aws ec2 modify-network-interface-attribute \
         --network-interface-id eni-686ea200 \

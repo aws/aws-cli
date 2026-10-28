@@ -33,6 +33,16 @@ The following ``create-flow-logs`` example creates a flow log that captures all 
         --log-destination arn:aws:s3:::flow-log-bucket/my-custom-flow-logs/ \
         --log-format '${version} ${vpc-id} ${subnet-id} ${instance-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${tcp-flags} ${type} ${pkt-srcaddr} ${pkt-dstaddr}'
 
+Output::
+
+    {
+        "ClientToken": "so0eNA2uSHUNlHI0S2cJ305GuIX1CezaRdGtexample",
+        "FlowLogIds": [
+            "fl-1a2b3c4d5e6f7a8b9"
+        ],
+        "Unsuccessful": []
+    }
+
 For more information, see `VPC Flow Logs <https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html>`__ in the *Amazon VPC User Guide*.
 
 **Example 3: To create a flow log with a one-minute maximum aggregation interval**
@@ -46,5 +56,15 @@ The following ``create-flow-logs`` example creates a flow log that captures all 
         --log-destination-type s3 \
         --log-destination arn:aws:s3:::flow-log-bucket/my-custom-flow-logs/ \
         --max-aggregation-interval 60
+
+Output::
+
+    {
+        "ClientToken": "so0eNA2uSHUNlHI0S2cJ305GuIX1CezaRdGtexample",
+        "FlowLogIds": [
+            "fl-0a1b2c3d4e5f6a7b8"
+        ],
+        "Unsuccessful": []
+    }
 
 For more information, see `VPC Flow Logs <https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html>`__ in the *Amazon VPC User Guide*.

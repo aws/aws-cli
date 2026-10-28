@@ -8,7 +8,7 @@ The following ``modify-replication-group-shard-configuration`` example decreases
         --apply-immediately \
         --node-groups-to-remove 0002
         
-Output ::
+Output::
 
     {
         "ReplicationGroup": {

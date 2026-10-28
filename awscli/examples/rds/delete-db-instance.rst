@@ -11,7 +11,6 @@ Output::
     {
         "DBInstance": {
             "DBInstanceIdentifier": "test-instance",
-            "DBInstanceStatus": "deleting",
-            ...some output truncated...
+            "DBInstanceStatus": "deleting"
         }
     }

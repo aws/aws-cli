@@ -7,8 +7,6 @@ The following ``get-work-unit-results`` example returns the work units resulting
         --work-unit-id '0' \
         --work-unit-token 'B2fMSdmQXe9umX8Ux8XCo4=' outfile
 
-Output::
-
-    outfile with Blob content.
+This command produces no output. The results are saved to the file ``outfile``.
 
 For more information, see `Transactional data operations <https://docs.aws.amazon.com/lake-formation/latest/dg/transactions-data-operations.html>`__ in the *AWS Lake Formation Developer Guide*.

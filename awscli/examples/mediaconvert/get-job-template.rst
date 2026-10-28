@@ -17,7 +17,73 @@ Output::
             "Priority": 0,
             "Name": "DASH Streaming",
             "Settings": {
-                ...<truncatedforbrevity>...
+                "OutputGroups": [
+                    {
+                        "Name": "DASH ISO",
+                        "OutputGroupSettings": {
+                            "Type": "DASH_ISO_GROUP_SETTINGS",
+                            "DashIsoGroupSettings": {
+                                "FragmentLength": 2,
+                                "SegmentControl": "SEGMENTED_FILES",
+                                "SegmentLength": 30
+                            }
+                        },
+                        "Outputs": [
+                            {
+                                "NameModifier": "_1080p",
+                                "ContainerSettings": {
+                                    "Container": "MPD"
+                                },
+                                "VideoDescription": {
+                                    "Width": 1920,
+                                    "Height": 1080,
+                                    "CodecSettings": {
+                                        "Codec": "H_264",
+                                        "H264Settings": {
+                                            "MaxBitrate": 6000000,
+                                            "RateControlMode": "QVBR"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "NameModifier": "_720p",
+                                "ContainerSettings": {
+                                    "Container": "MPD"
+                                },
+                                "VideoDescription": {
+                                    "Width": 1280,
+                                    "Height": 720,
+                                    "CodecSettings": {
+                                        "Codec": "H_264",
+                                        "H264Settings": {
+                                            "MaxBitrate": 3500000,
+                                            "RateControlMode": "QVBR"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "NameModifier": "_audio",
+                                "ContainerSettings": {
+                                    "Container": "MPD"
+                                },
+                                "AudioDescriptions": [
+                                    {
+                                        "CodecSettings": {
+                                            "Codec": "AAC",
+                                            "AacSettings": {
+                                                "Bitrate": 96000,
+                                                "CodingMode": "CODING_MODE_2_0",
+                                                "SampleRate": 48000
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             },
             "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:jobTemplates/DASH Streaming",
             "Type": "CUSTOM"

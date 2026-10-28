@@ -4,7 +4,7 @@ The following ``delete-lf-tag`` example deletes LF-Tag definition. ::
 
     aws lakeformation delete-lf-tag \
         --catalog-id '123456789111' \
-        --tag-key 'usergroup' 
+        --tag-key 'usergroup'
 
 This command produces no output.
 

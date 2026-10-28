@@ -6,7 +6,7 @@ The following ``batch-detect-sentiment`` example analyzes multiple input texts a
         --text-list "That movie was very boring, I can't believe it was over four hours long." "It is a beautiful day for hiking today." "My meal was okay, I'm excited to try other restaurants." \
         --language-code en
 
-Output:: 
+Output::
 
     {
         "ResultList": [

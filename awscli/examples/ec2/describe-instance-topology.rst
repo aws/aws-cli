@@ -41,7 +41,7 @@ Output::
                     "nn-1311133311example"
                 ],
                 "ZoneId": "usw2-az4",
-                "AvailabilityZone": "us-west-2d"            
+                "AvailabilityZone": "us-west-2d"
             },
             {
                 "InstanceId": "i-444444444example",
@@ -52,7 +52,7 @@ Output::
                     "nn-1235301234example"
                 ],
                 "ZoneId": "usw2-az2",
-                "AvailabilityZone": "us-west-2a"          
+                "AvailabilityZone": "us-west-2a"
             }
         ],
         "NextToken": "SomeEncryptedToken"

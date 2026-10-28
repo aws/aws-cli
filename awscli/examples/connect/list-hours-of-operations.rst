@@ -3,7 +3,7 @@
 The following ``list-hours-of-operations`` example lists the hours of operations for the specified Amazon Connect instance. ::
 
     aws connect list-hours-of-operations \
-        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e 
+        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e
 
 Output::
 

@@ -9,7 +9,7 @@ The following ``create-multipart-read-set-upload`` example initiates a multipart
         --subject-id mySubject\
         --sample-id mySample\
         --description "FASTQ for HG00146"\
-        --generated-from "1000 Genomes" 
+        --generated-from "1000 Genomes"
 
 
 Output::

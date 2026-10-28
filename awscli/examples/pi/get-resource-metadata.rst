@@ -8,7 +8,7 @@ The following ``get-resource-metadata`` example gets the resource metadata for t
 
 Output::
 
-    {    
+    {
         "Identifier": "db-abcdefg123456789",
         "Features":{
             "SQL_DIGEST_STATISTICS":{

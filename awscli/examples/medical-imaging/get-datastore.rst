@@ -20,7 +20,7 @@ Output::
         }
     }
 
-**Example 2: To get data store's properties configured for JPEG2000** 
+**Example 2: To get data store's properties configured for JPEG2000**
 
 The following ``get-datastore`` code example gets a data store's properties for a data store configured for JPEG 2000 Lossless storage format. ::
 

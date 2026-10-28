@@ -4,7 +4,7 @@ The following ``modify-user-group`` example adds a user to the user group. ::
 
     aws elasticache modify-user-group \
         --user-group-id myusergroup \
-        --user-ids-to-add user1 
+        --user-ids-to-add user1
 
 Output::
 

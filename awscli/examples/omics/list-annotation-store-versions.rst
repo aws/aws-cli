@@ -31,7 +31,7 @@ Output::
          "statusMessage": "",
          "versionSizeBytes": 0
          }
-      
+
     }
 
 For more information, see `Creating new versions of annotation stores <https://docs.aws.amazon.com/omics/latest/dev/annotation-store-versioning.html>`__ in the *AWS HealthOmics User Guide*.

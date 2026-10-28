@@ -6,32 +6,32 @@ By default, the output is in JSON format.
 
 Command::
 
-   aws redshift describe-cluster-security-groups
+    aws redshift describe-cluster-security-groups
 
 Result::
 
     {
-       "ClusterSecurityGroups": [
-          {
-             "OwnerId": "100447751468",
-             "Description": "default",
-             "ClusterSecurityGroupName": "default",
-             "EC2SecurityGroups": \[],
-             "IPRanges": [
-                {
-                   "Status": "authorized",
-                   "CIDRIP": "0.0.0.0/0"
-                }
-             ]
-          },
-          {
-             "OwnerId": "100447751468",
-             "Description": "This is my cluster security group",
-             "ClusterSecurityGroupName": "mysecuritygroup",
-             "EC2SecurityGroups": \[],
-             "IPRanges": \[]
-          },
-          (...remaining output omitted...)
-       ]
+        "ClusterSecurityGroups": [
+            {
+                "OwnerId": "100447751468",
+                "Description": "default",
+                "ClusterSecurityGroupName": "default",
+                "EC2SecurityGroups": \[],
+                "IPRanges": [
+                    {
+                        "Status": "authorized",
+                        "CIDRIP": "0.0.0.0/0"
+                    }
+                ]
+            },
+            {
+                "OwnerId": "100447751468",
+                "Description": "This is my cluster security group",
+                "ClusterSecurityGroupName": "mysecuritygroup",
+                "EC2SecurityGroups": \[],
+                "IPRanges": \[]
+            },
+            (...remaining output omitted...)
+        ]
     }
 

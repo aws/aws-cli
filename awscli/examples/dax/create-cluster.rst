@@ -8,7 +8,7 @@ The following ``create-cluster`` example creates a DAX cluster with the specifie
         --replication-factor 3 \
         --iam-role-arn roleARN  \
         --sse-specification Enabled=true
-	
+
 Output::
 
     {

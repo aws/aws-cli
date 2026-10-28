@@ -11,7 +11,7 @@ The following ``list-commands`` example retrieves the details of commands reques
 
     aws ssm list-commands \
         --filter "key=InvokedAfter,value=2020-02-01T00:00:00Z"
-        
+
 **Example 3: To list all commands requested in an AWS account**
 
 The following ``list-commands`` example lists all commands requested by users in the current AWS account and Region. ::

@@ -9,7 +9,7 @@ Output::
 
     {
         "Sidewalk": {
-            "AmazonId": "12345678901234", 
+            "AmazonId": "12345678901234",
             "AppServerPrivateKey": "a123b45c6d78e9f012a34cd5e6a7890b12c3d45e6f78a1b234c56d7e890a1234"
         }
     }

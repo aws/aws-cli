@@ -9,11 +9,11 @@ Output::
     {
         "Sidewalk": [
             {
-                "AmazonId": "78965678771228", 
+                "AmazonId": "78965678771228",
                 "Fingerprint": "bd96d8ef66dbfd2160eb60e156849e82ad7018b8b73c1ba0b4fc65c32498ee35"
-            }, 
+            },
             {
-                "AmazonId": "89656787651228", 
+                "AmazonId": "89656787651228",
                 "Fingerprint": "bc5e99e151c07be14be7e6603e4489c53f858b271213a36ebe3370777ba06e9b"
             }
         ]

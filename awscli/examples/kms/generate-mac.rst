@@ -7,7 +7,7 @@ In AWS CLI v2, the value of the ``message`` parameter must be Base64-encoded. Or
 Before running this command, replace the example key ID with a valid key ID from your AWS account. The key ID must represent a HMAC KMS key with a key usage of ``GENERATE_VERIFY_MAC``. ::
 
     msg=(echo 'Hello World' | base64)
-    
+
     aws kms generate-mac \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
         --message fileb://Message \

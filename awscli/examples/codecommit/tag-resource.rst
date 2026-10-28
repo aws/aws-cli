@@ -4,7 +4,7 @@ The following ``tag-resource`` example tags the specified repository with two ta
 
     aws codecommit tag-resource \
         --resource-arn arn:aws:codecommit:us-west-2:111111111111:MyDemoRepo \
-        --tags Status=Secret,Team=Saanvi 
+        --tags Status=Secret,Team=Saanvi
 
 This command produces no output.
 

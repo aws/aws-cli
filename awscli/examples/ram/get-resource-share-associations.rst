@@ -36,7 +36,7 @@ Output::
 
 The following ``get-resource-share-associations`` example lists only the principal associations for only the specified resource share. ::
 
-     aws ram get-resource-share-associations \
+    aws ram get-resource-share-associations \
         --resource-share-arns arn:aws:ram:us-west-2:123456789012:resource-share/7be8694e-095c-41ca-9ce8-7be4aEXAMPLE \
         --association-type PRINCIPAL
 

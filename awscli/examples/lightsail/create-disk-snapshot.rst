@@ -8,40 +8,40 @@ The following ``create-disk-snapshot`` example creates a snapshot named ``DiskSn
 
 Output::
 
-   {
-       "operations": [
-           {
-               "id": "fa74c6d2-03a3-4f42-a7c7-792f124d534b",
-               "resourceName": "DiskSnapshot-1",
-               "resourceType": "DiskSnapshot",
-               "createdAt": 1569625129.739,
-               "location": {
-                   "availabilityZone": "all",
-                   "regionName": "us-west-2"
-               },
-               "isTerminal": false,
-               "operationDetails": "Disk-1",
-               "operationType": "CreateDiskSnapshot",
-               "status": "Started",
-               "statusChangedAt": 1569625129.739
-           },
-           {
-               "id": "920a25df-185c-4528-87cd-7b85f5488c06",
-               "resourceName": "Disk-1",
-               "resourceType": "Disk",
-               "createdAt": 1569625129.739,
-               "location": {
-                   "availabilityZone": "us-west-2a",
-                   "regionName": "us-west-2"
-               },
-               "isTerminal": false,
-               "operationDetails": "DiskSnapshot-1",
-               "operationType": "CreateDiskSnapshot",
-               "status": "Started",
-               "statusChangedAt": 1569625129.739
-           }
-       ]
-   }
+    {
+        "operations": [
+            {
+                "id": "fa74c6d2-03a3-4f42-a7c7-792f124d534b",
+                "resourceName": "DiskSnapshot-1",
+                "resourceType": "DiskSnapshot",
+                "createdAt": 1569625129.739,
+                "location": {
+                    "availabilityZone": "all",
+                    "regionName": "us-west-2"
+                },
+                "isTerminal": false,
+                "operationDetails": "Disk-1",
+                "operationType": "CreateDiskSnapshot",
+                "status": "Started",
+                "statusChangedAt": 1569625129.739
+            },
+            {
+                "id": "920a25df-185c-4528-87cd-7b85f5488c06",
+                "resourceName": "Disk-1",
+                "resourceType": "Disk",
+                "createdAt": 1569625129.739,
+                "location": {
+                    "availabilityZone": "us-west-2a",
+                    "regionName": "us-west-2"
+                },
+                "isTerminal": false,
+                "operationDetails": "DiskSnapshot-1",
+                "operationType": "CreateDiskSnapshot",
+                "status": "Started",
+                "statusChangedAt": 1569625129.739
+            }
+        ]
+    }
 
 **Example 2: To create a snapshot of an instance's system disk**
 

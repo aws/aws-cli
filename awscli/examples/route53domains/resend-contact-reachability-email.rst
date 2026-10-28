@@ -1,6 +1,6 @@
 **To resend the confirmation email to the current email address for the registrant contact**
 
-The following ``resend-contact-reachability-email`` command resends the confirmation email to the current email address for the registrant contact for the example.com domain. 
+The following ``resend-contact-reachability-email`` command resends the confirmation email to the current email address for the registrant contact for the example.com domain.
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 

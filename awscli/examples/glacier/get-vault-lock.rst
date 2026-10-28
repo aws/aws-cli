@@ -4,8 +4,8 @@ The following ``get-vault-lock`` example retrieved the details about the lock fo
 
     aws glacier get-vault-lock \
         --account-id - \
-        --vault-name MyVaultName 
-        
+        --vault-name MyVaultName
+
 Output::
 
     {

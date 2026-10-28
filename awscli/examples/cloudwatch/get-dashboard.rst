@@ -3,7 +3,7 @@
 The following ``get-dashboard`` example displays information about the dashboard named ``Dashboard-A`` in the specified account. ::
 
     aws cloudwatch get-dashboard \
-        --dashboard-name Dashboard-A 
+        --dashboard-name Dashboard-A
 
 Output::
 

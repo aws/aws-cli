@@ -7,7 +7,7 @@ The following ``add-lf-tags-to-resource`` example attaches given LF-tag to the t
 
 Contents of ``input.json``::
 
-    {   
+    {
         "CatalogId": "123456789111",
         "Resource": {
             "Table": {

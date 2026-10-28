@@ -28,11 +28,11 @@ The following ``allocate-hosts`` example allocates a single Dedicated Host in th
 
 Output::
 
-   {
+    {
         "HostIds": [
             "h-07879acf49EXAMPLE"
         ]
-   }
+    }
 
 **Example 3: To allocate a Dedicated Host with tags**
 

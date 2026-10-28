@@ -4,7 +4,7 @@ This example removes the managed policy with the ARN ``arn:aws:iam::123456789012
 
     aws iam detach-user-policy \
         --user-name Bob \
-        --policy-arn arn:aws:iam::123456789012:policy/TesterPolicy 
+        --policy-arn arn:aws:iam::123456789012:policy/TesterPolicy
 
 This command produces no output.
 

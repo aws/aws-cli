@@ -52,7 +52,7 @@ The following ``update-method`` example modifies the method to require IAM autho
 
 Output::
 
-     {
+    {
         "httpMethod": "GET",
         "authorizationType": "AWS_IAM",
         "apiKeyRequired": false,
@@ -91,7 +91,7 @@ The following ``update-method`` example modifies the method to required Lambda a
 
 Output::
 
-     {
+    {
         "httpMethod": "GET",
         "authorizationType": "CUSTOM",
         "authorizerId" : "e4f5g6",

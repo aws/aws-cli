@@ -6,11 +6,11 @@ The following example uses the ``get-send-quota`` command to return your Amazon 
 
 Output::
 
- {
-    "Max24HourSend": 200.0,
-    "SentLast24Hours": 1.0,
-    "MaxSendRate": 1.0
- }
+    {
+        "Max24HourSend": 200.0,
+        "SentLast24Hours": 1.0,
+        "MaxSendRate": 1.0
+    }
 
 
 Max24HourSend is your sending quota, which is the maximum number of emails that you can send in a 24-hour period.

@@ -12,7 +12,7 @@
 
 --Command::
 
-  aws emr describe-cluster --cluster-id j-XXXXXXYY --query Cluster.Tags
+    aws emr describe-cluster --cluster-id j-XXXXXXYY --query Cluster.Tags
 
 - Output::
 

@@ -6,7 +6,7 @@ The following ``update-pipe`` example updates the Pipe named ``Demo_Pipe`` by ad
         --name Demo_Pipe \
         --desired-state RUNNING \
         --log-configuration CloudwatchLogsLogDestination={LogGroupArn=arn:aws:logs:us-east-1:123456789012:log-group:/aws/vendedlogs/pipes/Demo_Pipe},Level=TRACE \
-        --role-arn arn:aws:iam::123456789012:role/service-role/Amazon_EventBridge_Pipe_Demo_Pipe_28b3aa4f 
+        --role-arn arn:aws:iam::123456789012:role/service-role/Amazon_EventBridge_Pipe_Demo_Pipe_28b3aa4f
 
 Output::
 

@@ -1,6 +1,6 @@
 **To replace the existing list of server certificate thumbprints with a new list**
 
-This example updates the certificate thumbprint list for the OIDC provider whose ARN is 
+This example updates the certificate thumbprint list for the OIDC provider whose ARN is
 ``arn:aws:iam::123456789012:oidc-provider/example.oidcprovider.com`` to use a new thumbprint. ::
 
     aws iam update-open-id-connect-provider-thumbprint \

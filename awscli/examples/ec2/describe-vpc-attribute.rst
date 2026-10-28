@@ -4,30 +4,30 @@ This example describes the ``enableDnsSupport`` attribute. This attribute indica
 
 Command::
 
-  aws ec2 describe-vpc-attribute --vpc-id vpc-a01106c2 --attribute enableDnsSupport
+    aws ec2 describe-vpc-attribute --vpc-id vpc-a01106c2 --attribute enableDnsSupport
 
 Output::
 
-  {
-      "VpcId": "vpc-a01106c2",
-      "EnableDnsSupport": {
-          "Value": true
-      }
-  }
-  
+    {
+        "VpcId": "vpc-a01106c2",
+        "EnableDnsSupport": {
+            "Value": true
+        }
+    }
+
 **To describe the enableDnsHostnames attribute**
 
 This example describes the ``enableDnsHostnames`` attribute. This attribute indicates whether the instances launched in the VPC get DNS hostnames. If this attribute is ``true``, instances in the VPC get DNS hostnames; otherwise, they do not.
 
 Command::
 
-  aws ec2 describe-vpc-attribute --vpc-id vpc-a01106c2 --attribute enableDnsHostnames
+    aws ec2 describe-vpc-attribute --vpc-id vpc-a01106c2 --attribute enableDnsHostnames
 
 Output::
 
-  {
-      "VpcId": "vpc-a01106c2",
-      "EnableDnsHostnames": {
-          "Value": true
-      }
-  }
+    {
+        "VpcId": "vpc-a01106c2",
+        "EnableDnsHostnames": {
+            "Value": true
+        }
+    }

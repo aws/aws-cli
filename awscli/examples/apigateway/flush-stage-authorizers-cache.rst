@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway flush-stage-authorizers-cache --rest-api-id 1234123412 --stage-name dev
+    aws apigateway flush-stage-authorizers-cache --rest-api-id 1234123412 --stage-name dev

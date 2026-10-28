@@ -7,7 +7,7 @@ The following ``describe-transit-gateway-multicast-domains`` example displays de
 Output::
 
     {
-   
+
         "TransitGatewayMulticastDomains": [
             {
                 "TransitGatewayMulticastDomainId": "tgw-mcast-domain-000fb24d04EXAMPLE",

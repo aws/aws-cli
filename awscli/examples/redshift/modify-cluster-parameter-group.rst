@@ -18,9 +18,9 @@ Contents of ``modify_pg.json``::
 Output::
 
     {
-       "ParameterGroupStatus": "Your parameter group has been updated but changes won't get applied until you reboot the associated Clusters.",
-       "ParameterGroupName": "myclusterparametergroup",
-       "ResponseMetadata": {
-          "RequestId": "09974cc0-64cd-11e2-bea9-49e0ce183f07"
-       }
+        "ParameterGroupStatus": "Your parameter group has been updated but changes won't get applied until you reboot the associated Clusters.",
+        "ParameterGroupName": "myclusterparametergroup",
+        "ResponseMetadata": {
+            "RequestId": "09974cc0-64cd-11e2-bea9-49e0ce183f07"
+        }
     }

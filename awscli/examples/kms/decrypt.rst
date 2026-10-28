@@ -12,11 +12,11 @@ The following ``decrypt`` command example demonstrates the recommended way to de
 
 * Request the plaintext output as a text value.
 
-    The ``--query`` parameter tells the CLI to get only the value of the ``Plaintext`` field from the output. The ``--output`` parameter returns the output as text. 
+    The ``--query`` parameter tells the CLI to get only the value of the ``Plaintext`` field from the output. The ``--output`` parameter returns the output as text.
 
 * Base64-decode the plaintext and save it in a file.
 
-    The  following example pipes (|) the value of the ``Plaintext`` parameter to the Base64 utility, which decodes it. Then, it redirects (>) the decoded output to the ``ExamplePlaintext`` file. 
+    The  following example pipes (|) the value of the ``Plaintext`` parameter to the Base64 utility, which decodes it. Then, it redirects (>) the decoded output to the ``ExamplePlaintext`` file.
 
 Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 
@@ -33,7 +33,7 @@ For more information, see `Decrypt <https://docs.aws.amazon.com/kms/latest/APIRe
 
 **Example 2: To decrypt an encrypted message with a symmetric KMS key (Windows command prompt)**
 
-The following example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
+The following example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples.
 
 Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 

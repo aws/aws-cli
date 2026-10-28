@@ -3,7 +3,7 @@
 The following ``delete-git-hub-account-token`` example deletes the connection of the specified GitHub account. ::
 
     aws deploy delete-git-hub-account-token --token-name my-github-account
-    
+
 Output::
 
     {

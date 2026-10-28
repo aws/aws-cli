@@ -22,15 +22,15 @@ Contents of ``create-ota-update.json``::
         },
         "files": [
             {
-              "fileName": "firmware.bin",                
+              "fileName": "firmware.bin",
               "fileLocation": {
                 "stream": {
-                  "streamId": "004",                         
+                  "streamId": "004",
                   "fileId":123
-                }                        
+                }
               },
               "codeSigning": {
-                "awsSignerJobId": "48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"     
+                "awsSignerJobId": "48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"
               }
             }
         ]
@@ -40,11 +40,11 @@ Contents of ``create-ota-update.json``::
 Output::
 
     {
-         "otaUpdateId": "ota12345",
-         "awsIotJobId": "job54321",
-         "otaUpdateArn": "arn:aws:iot:us-west-2:123456789012:otaupdate/itsaupdate",
-         "awsIotJobArn": "arn:aws:iot:us-west-2:123456789012:job/itsajob",
-         "otaUpdateStatus": "CREATE_IN_PROGRESS"
+        "otaUpdateId": "ota12345",
+        "awsIotJobId": "job54321",
+        "otaUpdateArn": "arn:aws:iot:us-west-2:123456789012:otaupdate/itsaupdate",
+        "awsIotJobArn": "arn:aws:iot:us-west-2:123456789012:job/itsajob",
+        "otaUpdateStatus": "CREATE_IN_PROGRESS"
     }
 
 For more information, see `CreateOTAUpdate <https://docs.aws.amazon.com/iot/latest/apireference/API_CreateOTAUpdate.html>`__ in the *AWS IoT API Reference*.

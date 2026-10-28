@@ -1,6 +1,6 @@
 **To add tags to a resource**
 
-The following ``add-tags-to-resource`` example add tags to an RDS database. :: 
+The following ``add-tags-to-resource`` example add tags to an RDS database. ::
 
     aws rds add-tags-to-resource \
         --resource-name arn:aws:rds:us-east-1:123456789012:db:database-mysql \

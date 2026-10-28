@@ -11,6 +11,6 @@ Output::
 
     {
         "transactionId": "ABC1234567890xyz"
-    }   
+    }
 
 For more information, see `Using the Data API for Aurora Serverless <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html>`__ in the *Amazon RDS User Guide*.

@@ -11,11 +11,11 @@ Output::
 
     {
         "LaunchTemplate": {
-            "LatestVersionNumber": 1, 
-            "LaunchTemplateId": "lt-01238c059e3466abc", 
-            "LaunchTemplateName": "TemplateForWebServer", 
-            "DefaultVersionNumber": 1, 
-            "CreatedBy": "arn:aws:iam::123456789012:user/Bob", 
+            "LatestVersionNumber": 1,
+            "LaunchTemplateId": "lt-01238c059e3466abc",
+            "LaunchTemplateName": "TemplateForWebServer",
+            "DefaultVersionNumber": 1,
+            "CreatedBy": "arn:aws:iam::123456789012:user/Bob",
             "CreateTime": "2019-01-27T09:13:24.000Z"
         }
     }
@@ -30,20 +30,20 @@ The following ``create-launch-template`` example creates a launch template with 
     aws ec2 create-launch-template \
         --launch-template-name TemplateForAutoScaling \
         --version-description AutoScalingVersion1 \
-        --launch-template-data '{"NetworkInterfaces":[{"DeviceIndex":0,"AssociatePublicIpAddress":true,"Groups":["sg-7c227019,sg-903004f8"],"DeleteOnTermination":true}],"ImageId":"ami-b42209de","InstanceType":"m4.large","TagSpecifications":[{"ResourceType":"instance","Tags":[{"Key":"environment","Value":"production"},{"Key":"purpose","Value":"webserver"}]},{"ResourceType":"volume","Tags":[{"Key":"environment","Value":"production"},{"Key":"cost-center","Value":"cc123"}]}],"BlockDeviceMappings":[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":100}}]}' --region us-east-1 
+        --launch-template-data '{"NetworkInterfaces":[{"DeviceIndex":0,"AssociatePublicIpAddress":true,"Groups":["sg-7c227019,sg-903004f8"],"DeleteOnTermination":true}],"ImageId":"ami-b42209de","InstanceType":"m4.large","TagSpecifications":[{"ResourceType":"instance","Tags":[{"Key":"environment","Value":"production"},{"Key":"purpose","Value":"webserver"}]},{"ResourceType":"volume","Tags":[{"Key":"environment","Value":"production"},{"Key":"cost-center","Value":"cc123"}]}],"BlockDeviceMappings":[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":100}}]}' --region us-east-1
 
 Output::
 
-  {
-      "LaunchTemplate": {
-          "LatestVersionNumber": 1,
-          "LaunchTemplateId": "lt-0123c79c33a54e0abc",
-          "LaunchTemplateName": "TemplateForAutoScaling",
-          "DefaultVersionNumber": 1,
-          "CreatedBy": "arn:aws:iam::123456789012:user/Bob",
-          "CreateTime": "2019-04-30T18:16:06.000Z"
-      }
-  }
+    {
+        "LaunchTemplate": {
+            "LatestVersionNumber": 1,
+            "LaunchTemplateId": "lt-0123c79c33a54e0abc",
+            "LaunchTemplateName": "TemplateForAutoScaling",
+            "DefaultVersionNumber": 1,
+            "CreatedBy": "arn:aws:iam::123456789012:user/Bob",
+            "CreateTime": "2019-04-30T18:16:06.000Z"
+        }
+    }
 
 For more information, see `Creating a Launch Template for an Auto Scaling Group`_ in the *Amazon EC2 Auto Scaling User Guide*.
 For information about quoting JSON-formatted parameters, see `Quoting Strings`_ in the *AWS Command Line Interface User Guide*.
@@ -52,9 +52,9 @@ For information about quoting JSON-formatted parameters, see `Quoting Strings`_ 
 
 The following ``create-launch-template`` example creates a launch template that includes encrypted EBS volumes created from an unencrypted snapshot. It also tags the volumes during creation. If encryption by default is disabled, you must specify the ``"Encrypted"`` option as shown in the following example. If you use the ``"KmsKeyId"`` option to specify a customer managed CMK, you also must specify the ``"Encrypted"`` option even if encryption by default is enabled. ::
 
-  aws ec2 create-launch-template \
-    --launch-template-name TemplateForEncryption \
-    --launch-template-data file://config.json
+    aws ec2 create-launch-template \
+        --launch-template-name TemplateForEncryption \
+        --launch-template-data file://config.json
 
 Contents of ``config.json``::
 

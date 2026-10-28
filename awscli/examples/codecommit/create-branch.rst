@@ -4,8 +4,8 @@ This example creates a branch in an AWS CodeCommit repository. This command prod
 
 Command::
 
-  aws codecommit create-branch --repository-name MyDemoRepo --branch-name MyNewBranch --commit-id 317f8570EXAMPLE
+    aws codecommit create-branch --repository-name MyDemoRepo --branch-name MyNewBranch --commit-id 317f8570EXAMPLE
 
 Output::
 
-  None.
+    None.

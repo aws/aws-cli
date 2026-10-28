@@ -2,7 +2,7 @@
 
 The following ``list-dashboards`` example lists all the Dashboards in the specified account. ::
 
-    aws cloudwatch list-dashboards 
+    aws cloudwatch list-dashboards
 
 Output::
 
@@ -22,5 +22,5 @@ Output::
             }
         ]
     }
-    
+
 For more information, see `Amazon CloudWatch dashboards <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Dashboards.html>`__ in the *Amazon CloudWatch User Guide*.

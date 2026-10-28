@@ -57,7 +57,7 @@ Output::
                 ]
             }
         ]
-    }  
+    }
 
 **Example 2: To describe a specified VPC**
 

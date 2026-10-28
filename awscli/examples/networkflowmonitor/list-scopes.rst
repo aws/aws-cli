@@ -2,7 +2,7 @@
 
 The following ``list-scopes`` example lists all scopes in the specified account. ::
 
-    aws networkflowmonitor list-scopes 
+    aws networkflowmonitor list-scopes
 
 Output::
 

@@ -4,10 +4,10 @@ This example deletes endpoints vpce-aa22bb33 and vpce-1a2b3c4d. If the command i
 
 Command::
 
-  aws ec2 delete-vpc-endpoints --vpc-endpoint-ids vpce-aa22bb33 vpce-1a2b3c4d
+    aws ec2 delete-vpc-endpoints --vpc-endpoint-ids vpce-aa22bb33 vpce-1a2b3c4d
 
 Output::
 
-  {
-    "Unsuccessful": []
-  }
+    {
+        "Unsuccessful": []
+    }

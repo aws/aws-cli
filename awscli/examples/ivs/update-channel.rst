@@ -15,7 +15,7 @@ Output::
             "name": "channel-1",
             "latencyMode": "LOW",
             "containerFormat": "TS",
-            "multitrackInputConfiguration": { 
+            "multitrackInputConfiguration": {
                 "enabled": false,
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
@@ -54,7 +54,7 @@ Output::
             "name": "test-channel-with-recording",
             "latencyMode": "LOW",
             "containerFormat": "TS",
-            "multitrackInputConfiguration": { 
+            "multitrackInputConfiguration": {
                 "enabled": false,
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
@@ -93,7 +93,7 @@ Output::
             "name": "test-channel-with-recording",
             "latencyMode": "LOW",
             "containerFormat": "TS",
-            "multitrackInputConfiguration": { 
+            "multitrackInputConfiguration": {
                 "enabled": false,
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
@@ -133,7 +133,7 @@ Output::
             "name": "test-channel-with-playback-restriction-policy",
             "latencyMode": "LOW",
             "containerFormat": "TS",
-            "multitrackInputConfiguration": { 
+            "multitrackInputConfiguration": {
                 "enabled": false,
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
@@ -172,7 +172,7 @@ Output::
             "name": "test-channel-with-playback-restriction-policy",
             "latencyMode": "LOW",
             "containerFormat": "TS",
-            "multitrackInputConfiguration": { 
+            "multitrackInputConfiguration": {
                 "enabled": false,
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
@@ -212,7 +212,7 @@ Output::
             "containerFormat": "FRAGMENTED_MP4",
             "name": "test-channel-with-multitrack",
             "latencyMode": "LOW",
-            "multitrackInputConfiguration": { 
+            "multitrackInputConfiguration": {
                 "enabled": true,
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
@@ -252,7 +252,7 @@ Output::
             "containerFormat": "TS",
             "name": "test-channel-with-multitrack",
             "latencyMode": "LOW",
-            "multitrackInputConfiguration": { 
+            "multitrackInputConfiguration": {
                 "enabled": false,
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"

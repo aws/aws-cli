@@ -2,7 +2,7 @@
 
 The following ``list-backup-jobs`` example returns metadata about your backup jobs in your AWS account. ::
 
-    aws backup list-backup-jobs 
+    aws backup list-backup-jobs
 
 Output::
 

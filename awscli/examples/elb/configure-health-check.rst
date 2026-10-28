@@ -9,13 +9,13 @@ Command::
 
 Output::
 
-   {
-      "HealthCheck": {
-          "HealthyThreshold": 2,
-          "Interval": 30,
-          "Target": "HTTP:80/png",
-          "Timeout": 3,
-          "UnhealthyThreshold": 2
-      }
-   }
+    {
+        "HealthCheck": {
+            "HealthyThreshold": 2,
+            "Interval": 30,
+            "Target": "HTTP:80/png",
+            "Timeout": 3,
+            "UnhealthyThreshold": 2
+        }
+    }
 

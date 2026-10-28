@@ -4,10 +4,10 @@ The following ``update-endpoint-group`` example adds three endpoints to an endpo
 
     aws globalaccelerator update-endpoint-group \
         --endpoint-group-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/6789vxyz-vxyz-6789-vxyz-6789lmnopqrs/endpoint-group/ab88888example \
-        --endpoint-configurations \ 
+        --endpoint-configurations \
             EndpointId=eipalloc-eip01234567890abc,Weight=128 \
             EndpointId=arn:aws:elasticloadbalancing:us-east-1:000123456789:loadbalancer/app/ALBTesting/alb01234567890xyz,Weight=128 \
-            EndpointId=arn:aws:elasticloadbalancing:us-east-1:000123456789:loadbalancer/net/NLBTesting/alb01234567890qrs,Weight=128 
+            EndpointId=arn:aws:elasticloadbalancing:us-east-1:000123456789:loadbalancer/net/NLBTesting/alb01234567890qrs,Weight=128
 
 Output::
 

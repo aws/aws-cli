@@ -7,7 +7,7 @@ The following ``get-celebrity-info`` command displays information about the spec
 Output::
 
     {
-        "Name": "Celeb A", 
+        "Name": "Celeb A",
         "Urls": [
             "www.imdb.com/name/aaaaaaaaa"
         ]

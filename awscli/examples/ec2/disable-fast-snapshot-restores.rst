@@ -2,9 +2,9 @@
 
 The following ``disable-fast-snapshot-restores`` example disables fast snapshot restore for the specified snapshot in the specified Availability Zone. ::
 
-  aws ec2 disable-fast-snapshot-restores \
-      --availability-zones us-east-2a \
-      --source-snapshot-ids snap-1234567890abcdef0
+    aws ec2 disable-fast-snapshot-restores \
+        --availability-zones us-east-2a \
+        --source-snapshot-ids snap-1234567890abcdef0
 
 Output::
 

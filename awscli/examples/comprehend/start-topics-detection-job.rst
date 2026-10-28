@@ -1,6 +1,6 @@
 **To start a topics detection analysis job**
 
-The following ``start-topics-detection-job`` example starts an asynchronous topics detection job for all files located at the address specified by the ``--input-data-config`` tag. 
+The following ``start-topics-detection-job`` example starts an asynchronous topics detection job for all files located at the address specified by the ``--input-data-config`` tag.
 When the job is complete, the folder, ``output``, is placed at the location specified by the ``--ouput-data-config`` tag.
 ``output`` contains `topic-terms.csv` and `doc-topics.csv`. The first output file, `topic-terms.csv`, is a list of topics in the collection. For each topic, the list includes, by default, the top terms by topic according to their weight.
 The second file, ``doc-topics.csv``, lists the documents associated with a topic and the proportion of the document that is concerned with the topic. ::

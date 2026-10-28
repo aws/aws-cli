@@ -8,15 +8,15 @@ The following ``get-insight-results`` example returns the list of insight result
 Output::
 
     {
-        "InsightResults": { 
+        "InsightResults": {
             "GroupByAttribute": "ResourceId",
             "InsightArn": "arn:aws:securityhub:us-west-1:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-            "ResultValues": [ 
-                { 
+            "ResultValues": [
+                {
                     "Count": 10,
                     "GroupByAttributeValue": "AWS::::Account:123456789111"
                 },
-                { 
+                {
                     "Count": 3,
                     "GroupByAttributeValue": "AWS::::Account:123456789222"
                 }

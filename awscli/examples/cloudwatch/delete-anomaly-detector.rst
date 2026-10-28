@@ -5,7 +5,7 @@ The following ``delete-anomaly-detector`` example deletes an anomaly detector mo
     aws cloudwatch delete-anomaly-detector \
         --namespace AWS/Logs \
         --metric-name IncomingBytes \
-        --stat SampleCount 
+        --stat SampleCount
 
 This command produces no output.
 

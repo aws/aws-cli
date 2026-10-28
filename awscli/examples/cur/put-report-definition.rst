@@ -11,13 +11,13 @@ Contents of ``report-definition.json``::
         "TimeUnit": "DAILY",
         "Format": "textORcsv",
         "Compression": "ZIP",
-        "AdditionalSchemaElements": [ 
+        "AdditionalSchemaElements": [
             "RESOURCES"
         ],
         "S3Bucket": "example-s3-bucket",
         "S3Prefix": "exampleprefix",
         "S3Region": "us-east-1",
-        "AdditionalArtifacts": [ 
+        "AdditionalArtifacts": [
             "REDSHIFT",
             "QUICKSIGHT"
         ]

@@ -4,7 +4,7 @@ The following ``delete-sampling-rule`` example deletes the specified sampling ru
 
     aws xray delete-sampling-rule \
         --rule-name polling-scorekeep
-	
+
 Output::
 
     {

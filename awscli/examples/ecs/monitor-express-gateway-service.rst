@@ -2,7 +2,7 @@
 
 The following ``monitor-express-gateway-service`` example monitors an Express Gateway Service deployment, showing all resources associated with the service. ::
 
-  aws ecs monitor-express-gateway-service --service-arn arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-express-gateway-service
+    aws ecs monitor-express-gateway-service --service-arn arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-express-gateway-service
 
 This command displays an interactive monitoring interface rather than producing standard output.
 
@@ -12,9 +12,9 @@ For more information, see `Express Gateway Service <https://docs.aws.amazon.com/
 
 The following ``monitor-express-gateway-service`` example monitors an Express Gateway Service but only shows resources that have changed in the most recent deployment. ::
 
-  aws ecs monitor-express-gateway-service \
-      --service-arn arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-express-gateway-service \
-      --resource-view DEPLOYMENT
+    aws ecs monitor-express-gateway-service \
+        --service-arn arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-express-gateway-service \
+        --resource-view DEPLOYMENT
 
 For more information, see `Express Gateway Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-overview.html>`__ in the *Amazon Elastic Container Service Developer Guide*.
 
@@ -22,9 +22,9 @@ For more information, see `Express Gateway Service <https://docs.aws.amazon.com/
 
 The following ``monitor-express-gateway-service`` example monitors an Express Gateway Service with a timeout of 60 minutes instead of the default 30 minutes. ::
 
-  aws ecs monitor-express-gateway-service \
-      --service-arn my-express-gateway-service \
-      --timeout 60
+    aws ecs monitor-express-gateway-service \
+        --service-arn my-express-gateway-service \
+        --timeout 60
 
 The command provides an interactive display with the following controls:
 

@@ -2,7 +2,7 @@
 
 The following ``create-backup-vault`` example creates a backup vault with the specified name. ::
 
-    aws backup create-backup-vault 
+    aws backup create-backup-vault
         --backup-vault-name sample-vault
 
 This command produces no output.

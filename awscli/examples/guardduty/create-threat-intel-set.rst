@@ -7,7 +7,7 @@ The following ``create-threat-intel-set`` example creates and activates a threat
         --name myThreatSet-example \
         --format TXT \
         --location s3://amzn-s3-demo-bucket/threatlist.csv \
-        --activate 
+        --activate
 
 Output::
 

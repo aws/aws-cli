@@ -8,32 +8,32 @@ The following ``get-content-moderation`` command displays the results of an unsa
 Output::
 
     {
-        "NextToken": "dlhcKMHMzpCBGFukz6IO3JMcWiJAamCVhXHt3r6b4b5Tfbyw3q7o+Jeezt+ZpgfOnW9FCCgQ", 
+        "NextToken": "dlhcKMHMzpCBGFukz6IO3JMcWiJAamCVhXHt3r6b4b5Tfbyw3q7o+Jeezt+ZpgfOnW9FCCgQ",
         "ModerationLabels": [
             {
-                "Timestamp": 0, 
+                "Timestamp": 0,
                 "ModerationLabel": {
-                    "Confidence": 97.39583587646484, 
-                    "ParentName": "", 
+                    "Confidence": 97.39583587646484,
+                    "ParentName": "",
                     "Name": "Violence"
                 }
-            }, 
+            },
             {
-                "Timestamp": 0, 
+                "Timestamp": 0,
                 "ModerationLabel": {
-                    "Confidence": 97.39583587646484, 
-                    "ParentName": "Violence", 
+                    "Confidence": 97.39583587646484,
+                    "ParentName": "Violence",
                     "Name": "Weapon Violence"
                 }
             }
-        ], 
-        "JobStatus": "SUCCEEDED", 
+        ],
+        "JobStatus": "SUCCEEDED",
         "VideoMetadata": {
-            "Format": "QuickTime / MOV", 
-            "FrameRate": 29.97515869140625, 
-            "Codec": "h264", 
-            "DurationMillis": 6039, 
-            "FrameHeight": 1920, 
+            "Format": "QuickTime / MOV",
+            "FrameRate": 29.97515869140625,
+            "Codec": "h264",
+            "DurationMillis": 6039,
+            "FrameHeight": 1920,
             "FrameWidth": 1080
         }
     }

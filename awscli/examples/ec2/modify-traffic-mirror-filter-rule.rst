@@ -20,6 +20,6 @@ Output::
             "SourceCidrBlock": "10.0.0.0/24",
             "Description": "TCP Rule"
         }
-    }           
+    }
 
 For more information, see `Modify Your Traffic Mirror Filter Rules <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-filter.html#modify-traffic-mirroring-filter-rules>`__ in the *AWS Traffic Mirroring Guide*.

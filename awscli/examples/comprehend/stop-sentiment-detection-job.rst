@@ -1,6 +1,6 @@
 **To stop an asynchronous sentiment detection job**
 
-The following ``stop-sentiment-detection-job`` example stops an in-progress, asynchronous sentiment detection job. If the current job state is ``IN_PROGRESS`` the job is marked for 
+The following ``stop-sentiment-detection-job`` example stops an in-progress, asynchronous sentiment detection job. If the current job state is ``IN_PROGRESS`` the job is marked for
 termination and put into the ``STOP_REQUESTED`` state. If the job completes before it can be stopped, it is put into the ``COMPLETED`` state. ::
 
     aws comprehend stop-sentiment-detection-job \

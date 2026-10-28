@@ -2,7 +2,7 @@
 
 The following ``get-signing-profile`` example displays details about the specified signing profile. ::
 
-    aws signer get-signing-profile \ 
+    aws signer get-signing-profile \
         --profile-name MyProfile3
 
 Output::

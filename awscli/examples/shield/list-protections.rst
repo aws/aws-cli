@@ -15,5 +15,5 @@ Output::
             }
         ]
     }
-        
+
 For more information, see `Specify Your Resources to Protect <https://docs.aws.amazon.com/waf/latest/developerguide/ddos-choose-resources.html>`__ in the *AWS Shield Advanced Developer Guide*.

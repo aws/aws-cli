@@ -55,12 +55,12 @@ Output::
                 "Type": "SYSTEM",
                 "Category": "HLS",
                 "Settings": {
-                ...<output settings removed for brevity>... 
+                ...<output settings removed for brevity>...
                 }
             },
-            
+
             ...<list of presets shortened for brevity>...
-            
+
             {
                 "Arn": "arn:aws:mediaconvert:us-east-1:123456789012:presets/System-Xdcam_HD_1080i_29_97fps_35mpbs",
                 "Name": "System-Xdcam_HD_1080i_29_97fps_35mpbs",
@@ -70,7 +70,7 @@ Output::
                 "Type": "SYSTEM",
                 "Category": "MXF",
                 "Settings": {
-                ...<output settings removed for brevity>... 
+                ...<output settings removed for brevity>...
                 }
             }
         ]

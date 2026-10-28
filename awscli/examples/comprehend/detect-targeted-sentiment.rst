@@ -1,13 +1,13 @@
 **To detect the targeted sentiment of named entities in an input text**
 
-The following ``detect-targeted-sentiment`` example analyzes the input text and returns the named entities in addition to the targeted sentiment associated with each entity. 
+The following ``detect-targeted-sentiment`` example analyzes the input text and returns the named entities in addition to the targeted sentiment associated with each entity.
 The pre-trained models confidence score for each prediction is also output. ::
 
     aws comprehend detect-targeted-sentiment \
         --language-code en \
         --text "I do not enjoy January because it is too cold but August is the perfect temperature"
 
-Output:: 
+Output::
 
     {
         "Entities": [

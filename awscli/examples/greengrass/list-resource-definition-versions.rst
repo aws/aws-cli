@@ -4,7 +4,7 @@ The following ``list-resource-definition-versions`` example lists the versions f
 
     aws greengrass list-resource-definition-versions \
         --resource-definition-id "ad8c101d-8109-4b0e-b97d-9cc5802ab658"
-    
+
 Output::
 
     {

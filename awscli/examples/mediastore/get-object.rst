@@ -23,7 +23,7 @@ The following ``get-object`` example downloads a portion an object to the specif
     aws mediastore-data get-object \
         --endpoint https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
         --path /folder_name/README.md \
-        --range="bytes=0-100" README2.md 
+        --range="bytes=0-100" README2.md
 
 Output::
 

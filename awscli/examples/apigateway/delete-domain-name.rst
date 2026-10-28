@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway delete-domain-name --domain-name 'api.domain.tld'
+    aws apigateway delete-domain-name --domain-name 'api.domain.tld'

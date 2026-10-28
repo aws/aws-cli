@@ -11,7 +11,7 @@ Contents of ``create-image-recipe.json``::
         "name": "MyBasicRecipe",
         "description": "This example image recipe creates a Windows 2016 image.",
         "semanticVersion": "2019.12.03",
-        "components": 
+        "components":
         [
             {
                 "componentArn": "arn:aws:imagebuilder:us-west-2:123456789012:component/myexamplecomponent/2019.12.02/1"

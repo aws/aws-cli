@@ -4,4 +4,4 @@ This example deletes the specified VPN connection. If the command succeeds, no o
 
 Command::
 
-  aws ec2 delete-vpn-connection --vpn-connection-id vpn-40f41529
+    aws ec2 delete-vpn-connection --vpn-connection-id vpn-40f41529

@@ -19,5 +19,5 @@ Output::
             }
         ]
     }
-    
+
 For more information, see `Alarms and tagging <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_alarms_and_tagging.html>`__ in the *Amazon CloudWatch User Guide*.

@@ -2,7 +2,7 @@
 
 The following ``describe-instance-event-notification-attributes`` example describes the tags to appear in scheduled event notifications. ::
 
-    aws ec2 describe-instance-event-notification-attributes 
+    aws ec2 describe-instance-event-notification-attributes
 
 Output::
 

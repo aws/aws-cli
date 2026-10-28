@@ -6,7 +6,7 @@ The following ``batch-get-image`` example gets an image with the tag ``v1.13.6``
     aws ecr batch-get-image \
         --repository-name cluster-autoscaler \
         --image-ids imageTag=v1.13.6
-  
+
 Output::
 
     {

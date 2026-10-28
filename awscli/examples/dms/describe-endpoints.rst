@@ -2,7 +2,7 @@
 
 The following ``describe-endpoints`` example lists the endpoints in your AWS account. ::
 
-    aws dms describe-endpoints 
+    aws dms describe-endpoints
 
 Output::
 

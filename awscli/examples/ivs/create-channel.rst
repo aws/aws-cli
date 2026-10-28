@@ -156,7 +156,7 @@ Output::
             "containerFormat": "FRAGMENTED_MP4",
             "name": "test-channel",
             "latencyMode": "LOW",
-            "multitrackInputConfiguration": { 
+            "multitrackInputConfiguration": {
                 "enabled": true,
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"

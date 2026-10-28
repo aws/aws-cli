@@ -2,10 +2,10 @@
 
 The following ``delete-interconnect`` command deletes the specified interconnect::
 
-  aws directconnect delete-interconnect --interconnect-id dxcon-fgktov66
+    aws directconnect delete-interconnect --interconnect-id dxcon-fgktov66
 
 Output::
 
-  {
-      "interconnectState": "deleted"
-  }
+    {
+        "interconnectState": "deleted"
+    }

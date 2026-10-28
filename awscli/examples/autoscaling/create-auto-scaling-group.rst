@@ -160,7 +160,7 @@ This example creates an Auto Scaling group that specifies a custom Lambda functi
         --launch-template LaunchTemplateName=my-template-for-auto-scaling \
         --min-size 1 \
         --max-size 5 \
-        --termination-policies "arn:aws:lambda:us-west-2:123456789012:function:HelloFunction:prod" \    
+        --termination-policies "arn:aws:lambda:us-west-2:123456789012:function:HelloFunction:prod" \
         --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782"
 
 This command produces no output.

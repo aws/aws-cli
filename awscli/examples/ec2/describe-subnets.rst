@@ -22,7 +22,7 @@ Output::
                 "OwnerId": "111122223333",
                 "AssignIpv6AddressOnCreation": false,
                 "Ipv6CidrBlockAssociationSet": [],
-                "CustomerOwnedIpv4Pool:": 'pool-2EXAMPLE',    
+                "CustomerOwnedIpv4Pool:": 'pool-2EXAMPLE',
                 "SubnetArn": "arn:aws:ec2:us-east-2:111122223333:subnet/subnet-0bb1c79de3EXAMPLE",
                 "EnableDns64": false,
                 "Ipv6Native": false,
@@ -45,7 +45,7 @@ Output::
                 "VpcId": "vpc-3EXAMPLE",
                 "OwnerId": "1111222233333",
                 "AssignIpv6AddressOnCreation": false,
-                "Ipv6CidrBlockAssociationSet": [],        
+                "Ipv6CidrBlockAssociationSet": [],
                 "Tags": [
                     {
                         "Key": "Name",

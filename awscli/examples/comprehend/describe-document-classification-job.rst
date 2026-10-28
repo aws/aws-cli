@@ -5,7 +5,7 @@ The following ``describe-document-classification-job`` example gets the properti
     aws comprehend describe-document-classification-job \
         --job-id 123456abcdeb0e11022f22a11EXAMPLE
 
-Output:: 
+Output::
 
     {
         "DocumentClassificationJobProperties": {

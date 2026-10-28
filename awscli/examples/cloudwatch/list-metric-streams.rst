@@ -2,7 +2,7 @@
 
 The following ``list-metric-streams`` example lists all the metric streams in the specified account. ::
 
-    aws cloudwatch list-metric-streams 
+    aws cloudwatch list-metric-streams
 
 Output::
 

@@ -4,25 +4,25 @@ This example describes the tags assigned to the specified load balancer.
 
 Command::
 
-  aws elb describe-tags --load-balancer-name my-load-balancer
+    aws elb describe-tags --load-balancer-name my-load-balancer
 
 Output::
 
-  {
-    "TagDescriptions": [
-        {
-            "Tags": [                
-                {
-                    "Value": "lima", 
-                    "Key": "project"
-                },
-                {
-                    "Value": "digital-media",
-                    "Key": "department"
-                }
-            ], 
-            "LoadBalancerName": "my-load-balancer"
-        }
-    ]
-  }
+    {
+        "TagDescriptions": [
+            {
+                "Tags": [
+                    {
+                        "Value": "lima",
+                        "Key": "project"
+                    },
+                    {
+                        "Value": "digital-media",
+                        "Key": "department"
+                    }
+                ],
+                "LoadBalancerName": "my-load-balancer"
+            }
+        ]
+    }
 

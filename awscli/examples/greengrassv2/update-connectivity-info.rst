@@ -9,8 +9,8 @@ The following ``update-connectivity-info`` example gets the connectivity informa
 Contents of ``core-device-connectivity-info.json``::
 
     {
-        "connectivityInfo": [ 
-            { 
+        "connectivityInfo": [
+            {
                 "hostAddress": "192.0.2.0",
                 "portNumber": 8883,
                 "id": "localIP_192.0.2.0"

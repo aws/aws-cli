@@ -2,7 +2,7 @@
 
 The following ``list-organization-admin-accounts`` example lists the Security Hub administrator accounts for an organization. ::
 
-    aws securityhub list-organization-admin-accounts 
+    aws securityhub list-organization-admin-accounts
 
 Output::
 

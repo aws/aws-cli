@@ -6,7 +6,7 @@ The following ``decrypt-data`` example decrypts ciphertext data using a symmetri
         --key-identifier arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h \
         --cipher-text 33612AB9D6929C3A828EB6030082B2BD \
         --decryption-attributes 'Symmetric={Mode=CBC}'
-        
+
 Output::
 
     {

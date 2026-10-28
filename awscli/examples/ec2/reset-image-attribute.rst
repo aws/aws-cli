@@ -4,4 +4,4 @@ This example resets the ``launchPermission`` attribute for the specified AMI to 
 
 Command::
 
-  aws ec2 reset-image-attribute --image-id ami-5731123e --attribute launchPermission
+    aws ec2 reset-image-attribute --image-id ami-5731123e --attribute launchPermission

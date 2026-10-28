@@ -11,4 +11,4 @@ Output::
 
     {
         "arn": "arn:aws:signer:us-west-2:123456789012:/signing-profiles/MyProfile6"
-    }   
+    }

@@ -4,11 +4,11 @@ This example runs the latest revision present in the source stage of a pipeline 
 
 Command::
 
-  aws codepipeline start-pipeline-execution --name MyFirstPipeline
+    aws codepipeline start-pipeline-execution --name MyFirstPipeline
 
 
 Output::
 
-  {
-    "pipelineExecutionId": "3137f7cb-7cf7-EXAMPLE"
-  }
+    {
+        "pipelineExecutionId": "3137f7cb-7cf7-EXAMPLE"
+    }

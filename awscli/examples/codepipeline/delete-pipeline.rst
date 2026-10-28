@@ -4,9 +4,9 @@ This example deletes a pipeline named MySecondPipeline from AWS CodePipeline. Us
 
 Command::
 
-  aws codepipeline delete-pipeline --name MySecondPipeline
+    aws codepipeline delete-pipeline --name MySecondPipeline
 
 
 Output::
 
-  None.
+    None.

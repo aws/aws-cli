@@ -8,11 +8,11 @@ The following ``create-logger-definition-version`` example creates a logger defi
 
 Output::
 
-   {
-    "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/loggers/a454b62a-5d56-4ca9-bdc4-8254e1662cb0/versions/49aedb1e-01a3-4d39-9871-3a052573f1ea",
-    "Version": "49aedb1e-01a3-4d39-9871-3a052573f1ea",
-    "CreationTimestamp": "2019-07-24T00:04:48.523Z",
-    "Id": "a454b62a-5d56-4ca9-bdc4-8254e1662cb0"
-   }
+    {
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/loggers/a454b62a-5d56-4ca9-bdc4-8254e1662cb0/versions/49aedb1e-01a3-4d39-9871-3a052573f1ea",
+        "Version": "49aedb1e-01a3-4d39-9871-3a052573f1ea",
+        "CreationTimestamp": "2019-07-24T00:04:48.523Z",
+        "Id": "a454b62a-5d56-4ca9-bdc4-8254e1662cb0"
+    }
 
 For more information, see `Monitoring with AWS IoT Greengrass Logs <https://docs.aws.amazon.com/greengrass/latest/developerguide/greengrass-logs-overview.html>`__ in the *AWS IoT Greengrass Developer Guide*.

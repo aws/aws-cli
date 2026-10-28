@@ -12,7 +12,7 @@ Output::
             {
                 "InstanceId": "i-1234567890abcdef0",
                 "PatchGroup": "my-patch-group",
-                "BaselineId": "pb-0713accee01234567",            
+                "BaselineId": "pb-0713accee01234567",
                 "SnapshotId": "521c3536-930c-4aa9-950e-01234567abcd",
                 "CriticalNonCompliantCount": 2,
                 "SecurityNonCompliantCount": 2,

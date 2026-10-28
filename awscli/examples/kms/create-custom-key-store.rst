@@ -1,6 +1,6 @@
 **Example 1: To create an AWS CloudHSM key store**
 
-The following ``create-custom-key-store`` example creates an AWS CloudHSM key store backed by an AWS CloudHSM cluster using the required parameters. You can also add the ``custom-key-store-type``parameter with the default value: ``AWS_CLOUDHSM``. 
+The following ``create-custom-key-store`` example creates an AWS CloudHSM key store backed by an AWS CloudHSM cluster using the required parameters. You can also add the ``custom-key-store-type``parameter with the default value: ``AWS_CLOUDHSM``.
 
 To specify the file input for the ``trust-anchor-certificate`` command in the AWS CLI, the ``file://`` prefix is required. ::
 
@@ -22,7 +22,7 @@ For more information, see `Creating an AWS CloudHSM key store <https://docs.aws.
 
 The following ``create-custom-key-store`` example creates an external key store (XKS) that communicates with AWS KMS over the internet.
 
-In this example, the ``XksProxyUriPath`` uses an optional prefix of ``example-prefix``. 
+In this example, the ``XksProxyUriPath`` uses an optional prefix of ``example-prefix``.
 
 NOTE: If you use AWS CLI version 1.0, run the following command before specifying a parameter with an HTTP or HTTPS value, such as the XksProxyUriEndpoint parameter. ::
 
@@ -49,7 +49,7 @@ For more information, see `Creating an external key store <https://docs.aws.amaz
 
 **Example 3: To create an external key store with VPC endpoint service connectivity**
 
-The following ``create-custom-key-store`` example creates an external key store (XKS) that uses an Amazon VPC endpoint service to communicate with AWS KMS. 
+The following ``create-custom-key-store`` example creates an external key store (XKS) that uses an Amazon VPC endpoint service to communicate with AWS KMS.
 
 NOTE: If you use AWS CLI version 1.0, run the following command before specifying a parameter with an HTTP or HTTPS value, such as the XksProxyUriEndpoint parameter. ::
 

@@ -1,6 +1,6 @@
 **To start analyzing text in a multi-page document**
 
-The following ``start-document-analysis`` example shows how to start asynchronous analysis of text in a multi-page document. 
+The following ``start-document-analysis`` example shows how to start asynchronous analysis of text in a multi-page document.
 
 Linux/macOS::
 

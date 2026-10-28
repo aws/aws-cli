@@ -7,7 +7,7 @@ The following ``create-fargate-profile`` example creates an EKS Fargate Profile 
         --pod-execution-role-arn arn:aws:iam::111122223333:role/role-name \
         --fargate-profile-name my-fargate-profile \
         --selectors '[{"namespace": "default"}]'
-    
+
 Output::
 
     {

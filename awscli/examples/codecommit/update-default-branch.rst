@@ -4,8 +4,8 @@ This example changes the default branch for an AWS CodeCommit repository. This c
 
 Command::
 
-  aws codecommit update-default-branch --repository-name MyDemoRepo --default-branch-name MyNewBranch
+    aws codecommit update-default-branch --repository-name MyDemoRepo --default-branch-name MyNewBranch
 
 Output::
 
-  None.
+    None.

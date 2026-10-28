@@ -8,7 +8,7 @@ The following ``translate-pin-data`` example translates a PIN from PEK TDES encr
         --incoming-key-identifier arn:aws:payment-cryptography:us-east-2:111122223333:key/ivi5ksfsuplneuyt \
         --outgoing-key-identifier arn:aws:payment-cryptography:us-east-2:111122223333:key/4pmyquwjs3yj4vwe \
         --outgoing-translation-attributes IsoFormat4="{PrimaryAccountNumber=171234567890123}" \
-        --outgoing-dukpt-attributes KeySerialNumber="FFFF9876543210E00008"  
+        --outgoing-dukpt-attributes KeySerialNumber="FFFF9876543210E00008"
 
 Output::
 

@@ -4,10 +4,10 @@ This example deletes the specified egress-only Internet gateway.
 
 Command::
 
-  aws ec2 delete-egress-only-internet-gateway --egress-only-internet-gateway-id eigw-01eadbd45ecd7943f
+    aws ec2 delete-egress-only-internet-gateway --egress-only-internet-gateway-id eigw-01eadbd45ecd7943f
 
 Output::
 
-  {
-    "ReturnCode": true
-  }
+    {
+        "ReturnCode": true
+    }

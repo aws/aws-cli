@@ -23,7 +23,7 @@ The following ``create-core-definition`` example creates a core definition that 
 
     aws iot create-thing \
         --thing-name "MyCoreDevice"
-        
+
 Output::
 
     {
@@ -39,7 +39,7 @@ Output::
         --certificate-pem-outfile "myCore.cert.pem" \
         --public-key-outfile "myCore.public.key" \
         --private-key-outfile "myCore.private.key"
-        
+
 Output::
 
     {
@@ -57,7 +57,7 @@ Output::
     aws iot create-policy \
         --policy-name "Core_Devices" \
         --policy-document "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"iot:Publish\",\"iot:Subscribe\",\"iot:Connect\",\"iot:Receive\"],\"Resource\":[\"*\"]},{\"Effect\":\"Allow\",\"Action\":[\"iot:GetThingShadow\",\"iot:UpdateThingShadow\",\"iot:DeleteThingShadow\"],\"Resource\":[\"*\"]},{\"Effect\":\"Allow\",\"Action\":[\"greengrass:*\"],\"Resource\":[\"*\"]}]}"
-        
+
 Output::
 
     {
@@ -88,7 +88,7 @@ This command produces no output.
     aws greengrass create-core-definition \
         --name "MyCores" \
         --initial-version "{\"Cores\":[{\"Id\":\"MyCoreDevice\",\"ThingArn\":\"arn:aws:iot:us-west-2:123456789012:thing/MyCoreDevice\",\"CertificateArn\":\"arn:aws:iot:us-west-2:123456789012:cert/123a15ec415668c2349a76170b64ac0878231c1e21ec83c10e92a1EXAMPLExyz\",\"SyncShadow\":true}]}"
-        
+
 Output::
 
     {

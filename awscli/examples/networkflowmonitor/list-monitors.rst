@@ -2,7 +2,7 @@
 
 The following ``list-monitors`` example returns returns all the monitors in the specified account. ::
 
-    aws networkflowmonitor list-monitors 
+    aws networkflowmonitor list-monitors
 
 Output::
 

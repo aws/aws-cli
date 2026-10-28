@@ -2,7 +2,7 @@
 
 The following ``describe-insight-rules`` example shows all the Contributor Insight rules in the specified account. ::
 
-    aws cloudwatch describe-insight-rules 
+    aws cloudwatch describe-insight-rules
 
 Output::
 

@@ -1,6 +1,6 @@
 **To delete a provisioning template**
 
-The following ``delete-provisioning-template`` example deletes the specified provisioning template. :: 
+The following ``delete-provisioning-template`` example deletes the specified provisioning template. ::
 
     aws iot delete-provisioning-template \
         --template-name widget-template

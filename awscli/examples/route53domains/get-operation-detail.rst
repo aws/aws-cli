@@ -1,6 +1,6 @@
 **To get the current status of an operation**
 
-Some domain registration operations operate asynchronously and return a response before they finish. These operations return an operation ID that you can use to get the current status. The following ``get-operation-detail`` command returns the status of the specified operation. 
+Some domain registration operations operate asynchronously and return a response before they finish. These operations return an operation ID that you can use to get the current status. The following ``get-operation-detail`` command returns the status of the specified operation.
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 

@@ -5,7 +5,7 @@ The following ``update-lf-tag`` example updates LF-Tag definition. ::
     aws lakeformation update-lf-tag \
         --catalog-id '123456789111' \
         --tag-key 'usergroup' \
-        --tag-values-to-add '["admin"]' 
+        --tag-values-to-add '["admin"]'
 
 This command produces no output.
 

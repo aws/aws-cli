@@ -5,7 +5,7 @@ The following ``describe-ec2-instance-limits`` example displays the maximum allo
     aws gamelift describe-ec2-instance-limits \
         --ec2-instance-type m5.large
 
-Output:: 
+Output::
 
     {
         "EC2InstanceLimits": [

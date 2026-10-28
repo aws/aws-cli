@@ -3,7 +3,7 @@
 The following ``get-login-password`` example retrieves and displays an authentication token using the GetAuthorizationToken API that you can use to authenticate to an Amazon ECR public registry. ::
 
     aws ecr-public get-login-password \
-        --region us-east-1 
+        --region us-east-1
     | docker login \
         --username AWS \
         --password-stdin public.ecr.aws
@@ -16,7 +16,7 @@ For more information, see `Authenticate to the public registry <https://docs.aws
 
 The following ``get-login-password`` example retrieves and displays an authentication token using the GetAuthorizationToken API that you can use to authenticate to your own custom Amazon ECR public registry. ::
 
-     aws ecr-public get-login-password \
+    aws ecr-public get-login-password \
         --region us-east-1 \
     | docker login \
         --username AWS \

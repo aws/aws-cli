@@ -4,7 +4,7 @@ The following ``get-pull-request-override-state`` example returns the override s
 
     aws codecommit get-pull-request-override-state \
         --pull-request-id 34  \
-        --revision-id 9f29d167EXAMPLE 
+        --revision-id 9f29d167EXAMPLE
 
 Output::
 

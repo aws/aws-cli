@@ -2,8 +2,8 @@
 
 The following ``get-authorization-token`` example gets an authorization token with the AWS CLI and sets it to an environment variable. ::
 
-      aws ecr-public get-authorization-token \
-          --region us-east-1
+    aws ecr-public get-authorization-token \
+        --region us-east-1
 
 Output::
 

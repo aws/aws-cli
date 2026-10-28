@@ -14,5 +14,5 @@ Output::
     {
         "Arn": "arn:aws:cloudwatch:us-east-1:123456789012:metric-stream/QuickFull-GuaFbs"
     }
-    
+
 For more information, see `Set up a metric stream <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-setup.html>`__ in the *Amazon CloudWatch User Guide*.

@@ -3,7 +3,7 @@
 The following ``delete-core-network`` example deletes a core network from a Cloud WAN global network. ::
 
     aws networkmanager delete-core-network \
-        --core-network-id core-network-0fab62fe438d94db6 
+        --core-network-id core-network-0fab62fe438d94db6
 
 Output::
 

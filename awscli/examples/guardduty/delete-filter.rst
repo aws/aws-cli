@@ -4,7 +4,7 @@ This example shows how to create delete a filter. ::
 
     aws guardduty delete-filter \
         --detector-id b6b992d6d2f48e64bc59180bfexample \
-        --filter-name byebyeFilter 
+        --filter-name byebyeFilter
 
 This command produces no output.
 

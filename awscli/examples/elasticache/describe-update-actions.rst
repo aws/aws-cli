@@ -2,7 +2,7 @@
 
 The following ``describe-update-actions`` example returns details of update actions. ::
 
-    aws elasticache describe-update-actions 
+    aws elasticache describe-update-actions
 
 Output::
 

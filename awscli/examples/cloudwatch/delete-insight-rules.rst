@@ -3,7 +3,7 @@
 The following ``delete-insight-rules`` example deletes two contributor insights rules named ``Rule-A`` and ``Rule-B`` in the specified account. ::
 
     aws cloudwatch delete-insight-rules \
-        --rule-names Rule-A Rule-B 
+        --rule-names Rule-A Rule-B
 
 Output::
 

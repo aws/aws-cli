@@ -1,10 +1,10 @@
 **To reboot a cache cluster**
 
-The following ``reboot-cache-cluster`` example reboots some, or all, of the cache nodes within a provisioned cluster. This operation applies any modified cache parameter groups to the cluster. The reboot operation takes place as soon as possible, and results in a momentary outage to the cluster. During the reboot, the cluster status is set to ``REBOOTING``. :: 
+The following ``reboot-cache-cluster`` example reboots some, or all, of the cache nodes within a provisioned cluster. This operation applies any modified cache parameter groups to the cluster. The reboot operation takes place as soon as possible, and results in a momentary outage to the cluster. During the reboot, the cluster status is set to ``REBOOTING``. ::
 
     aws elasticache reboot-cache-cluster \
         --cache-cluster-id "my-cluster-001" \
-        --cache-node-ids-to-reboot "0001" 
+        --cache-node-ids-to-reboot "0001"
 
 Output::
 

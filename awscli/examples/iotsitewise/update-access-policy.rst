@@ -10,13 +10,13 @@ Contents of ``update-project-viewer-access-policy.json``::
 
     {
         "accessPolicyIdentity": {
-            "user": { 
+            "user": {
                 "id": "a1b2c3d4e5-a1b2c3d4-5678-90ab-cdef-bbbbbEXAMPLE"
             }
         },
         "accessPolicyPermission": "ADMINISTRATOR",
-        "accessPolicyResource": { 
-            "project": { 
+        "accessPolicyResource": {
+            "project": {
                 "id": "a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE"
             }
         }

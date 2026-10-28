@@ -7,8 +7,8 @@ The following ``get-service-endpoint`` example gets the account-specific endpoin
 Output::
 
     {
-        "ServiceType": "CUPS", 
-        "ServiceEndpoint": "https://A1RMKZ37ACAGOT.cups.lorawan.us-east-1.amazonaws.com:443", 
+        "ServiceType": "CUPS",
+        "ServiceEndpoint": "https://A1RMKZ37ACAGOT.cups.lorawan.us-east-1.amazonaws.com:443",
         "ServerTrust": "-----BEGIN CERTIFICATE-----\n
         MIIESTCCAzGgAwIBAgITBn+UV4WH6Kx33rJTMlu8mYtWDTANBgkqhkiG9w0BAQsF\n
         ADA5MQswCQYDVQQGEwJVUzEPMA0GA1UEChMGQW1hem9uMRkwFwYDVQQDExBBbWF6\n

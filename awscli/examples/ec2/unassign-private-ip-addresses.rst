@@ -4,4 +4,4 @@ This example unassigns the specified private IP address from the specified netwo
 
 Command::
 
-  aws ec2 unassign-private-ip-addresses --network-interface-id eni-e5aa89a3 --private-ip-addresses 10.0.0.82
+    aws ec2 unassign-private-ip-addresses --network-interface-id eni-e5aa89a3 --private-ip-addresses 10.0.0.82

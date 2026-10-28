@@ -1,7 +1,7 @@
 **To create a a Network Load Balancer traffic mirror target**
 
 The following ``create-traffic-mirror-target`` example creates a  Network Load Balancer traffic mirror target. ::
-    
+
     aws ec2 create-traffic-mirror-target \
         --description 'Example Network Load Balancer Target' \
         --network-load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:111122223333:loadbalancer/net/NLB/7cdec873EXAMPLE

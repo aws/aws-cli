@@ -3,7 +3,7 @@
 The following ``create-connection`` example creates a connection in the AWS Glue Data Catalog that provides connection information for a Kafka data store. ::
 
     aws glue create-connection \
-        --connection-input '{ \ 
+        --connection-input '{ \
             "Name":"conn-kafka-custom", \
             "Description":"kafka connection with ssl to custom kafka", \
             "ConnectionType":"KAFKA",  \
@@ -17,8 +17,8 @@ The following ``create-connection`` example creates a connection in the AWS Glue
                 "SecurityGroupIdList":["sg-1234"], \
                 "AvailabilityZone":"us-east-1a"} \
         }' \
-        --region us-east-1 
-        --endpoint https://glue.us-east-1.amazonaws.com 
+        --region us-east-1
+        --endpoint https://glue.us-east-1.amazonaws.com
 
 This command produces no output.
 

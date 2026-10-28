@@ -7,4 +7,4 @@ The following ``delete-flywheel`` example deletes a flywheel. The data lake or t
 
 This command produces no output.
 
-For more information, see `Flywheel overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in the *Amazon Comprehend Developer Guide*. 
+For more information, see `Flywheel overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in the *Amazon Comprehend Developer Guide*.

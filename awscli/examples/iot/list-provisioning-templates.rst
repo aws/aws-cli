@@ -1,6 +1,6 @@
 **To list provisioning templates**
 
-The following ``list-provisioning-templates`` example lists all of the provisioning templates in your AWS account. :: 
+The following ``list-provisioning-templates`` example lists all of the provisioning templates in your AWS account. ::
 
     aws iot list-provisioning-templates
 

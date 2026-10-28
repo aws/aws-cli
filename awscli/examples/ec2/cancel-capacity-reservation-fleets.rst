@@ -10,11 +10,11 @@ Output::
     {
         "SuccessfulFleetCancellations": [
             {
-                "CurrentFleetState": "cancelling", 
-                "PreviousFleetState": "active", 
+                "CurrentFleetState": "cancelling",
+                "PreviousFleetState": "active",
                 "CapacityReservationFleetId": "crf-abcdef01234567890"
             }
-        ], 
+        ],
         "FailedFleetCancellations": []
     }
 

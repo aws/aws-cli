@@ -15,7 +15,7 @@ Output::
                 "OwnerId": "123456789012",
                 "Tags": [
                     {
-                        
+
                         "Key": "example",
                         "Value": "tag"
                     }

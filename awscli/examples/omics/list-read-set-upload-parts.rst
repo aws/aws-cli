@@ -5,7 +5,7 @@ The following ``list-read-set-upload-parts`` example list all parts in a request
     aws omics list-read-set-upload-parts \
         --sequence-store-id 0123456789 \
         --upload-id 1122334455 \
-        --part-source SOURCE1  
+        --part-source SOURCE1
 
 Output::
 

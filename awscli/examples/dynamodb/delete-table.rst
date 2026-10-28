@@ -9,13 +9,13 @@ Output::
 
     {
         "TableDescription": {
-            "TableStatus": "DELETING", 
-            "TableSizeBytes": 0, 
-            "ItemCount": 0, 
-            "TableName": "MusicCollection", 
+            "TableStatus": "DELETING",
+            "TableSizeBytes": 0,
+            "ItemCount": 0,
+            "TableName": "MusicCollection",
             "ProvisionedThroughput": {
-                "NumberOfDecreasesToday": 0, 
-                "WriteCapacityUnits": 5, 
+                "NumberOfDecreasesToday": 0,
+                "WriteCapacityUnits": 5,
                 "ReadCapacityUnits": 5
             }
         }

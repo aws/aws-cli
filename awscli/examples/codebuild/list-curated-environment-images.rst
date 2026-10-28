@@ -3,7 +3,7 @@
 The following ``list-curated-environment-images`` example lists the Docker images managed by CodeBuild that can be used for builds.::
 
     aws codebuild list-curated-environment-images
-    
+
 Output::
 
     {

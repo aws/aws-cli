@@ -4,17 +4,17 @@ The following ``create-resource`` example creates an AWS::Kinesis::Stream resour
 
     aws cloudcontrol create-resource \
         --type-name AWS::Kinesis::Stream \
-        --desired-state "{\"Name\": \"ResourceExample\",\"RetentionPeriodHours\":168, \"ShardCount\":3}" 
+        --desired-state "{\"Name\": \"ResourceExample\",\"RetentionPeriodHours\":168, \"ShardCount\":3}"
 
 Output::
 
     {
         "ProgressEvent": {
-            "EventTime": 1632506656.706, 
-            "TypeName": "AWS::Kinesis::Stream", 
-            "OperationStatus": "IN_PROGRESS", 
-            "Operation": "CREATE", 
-            "Identifier": "ResourceExample", 
+            "EventTime": 1632506656.706,
+            "TypeName": "AWS::Kinesis::Stream",
+            "OperationStatus": "IN_PROGRESS",
+            "Operation": "CREATE",
+            "Identifier": "ResourceExample",
             "RequestToken": "20999d87-e304-4725-ad84-832dcbfd7fc5"
         }
     }

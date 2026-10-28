@@ -3,7 +3,7 @@
 The following ``detect-labels`` example detects scenes and objects in an image stored in an Amazon S3 bucket. ::
 
     aws rekognition detect-labels \
-        --image '{"S3Object":{"Bucket":"bucket","Name":"image"}}' 
+        --image '{"S3Object":{"Bucket":"bucket","Name":"image"}}'
 
 Output::
 

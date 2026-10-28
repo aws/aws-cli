@@ -9,5 +9,5 @@ The following ``create-platform-endpoint`` example creates an endpoint for the s
 Output::
 
     {
-          "EndpointArn": "arn:aws:sns:us-west-2:1234567890:endpoint/GCM/MyApplication/12345678-abcd-9012-efgh-345678901234"
+        "EndpointArn": "arn:aws:sns:us-west-2:1234567890:endpoint/GCM/MyApplication/12345678-abcd-9012-efgh-345678901234"
     }

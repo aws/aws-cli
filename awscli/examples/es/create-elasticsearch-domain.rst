@@ -59,5 +59,5 @@ Output::
             "ARN": "arn:aws:es:us-west-1:123456789012:domain/vpc-cli-example"
         }
     }
- 
+
 For more information, see `Creating and Managing Amazon Elasticsearch Service Domains <https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html>`__ in the *Amazon Elasticsearch Service Developer Guide*.

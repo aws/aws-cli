@@ -4,7 +4,7 @@ The following ``start-face-search`` command starts a job to search for faces in 
 
     aws rekognition start-face-search \
         --video "S3Object={Bucket=MyVideoS3Bucket,Name=MyVideoFile.mpg}" \
-        --collection-id collection 
+        --collection-id collection
 
 Output::
 

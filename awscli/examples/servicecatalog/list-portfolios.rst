@@ -9,11 +9,11 @@ Output::
     {
         "PortfolioDetails": [
             {
-               "CreatedTime": 1559665256.348,
-               "ARN": "arn:aws:catalog:us-east-2:123456789012:portfolio/port-5pzcxmplst4ei",
-               "DisplayName": "my-portfolio",
-               "Id": "port-5pzcxmplst4ei",
-               "ProviderName": "my-user"
+                "CreatedTime": 1559665256.348,
+                "ARN": "arn:aws:catalog:us-east-2:123456789012:portfolio/port-5pzcxmplst4ei",
+                "DisplayName": "my-portfolio",
+                "Id": "port-5pzcxmplst4ei",
+                "ProviderName": "my-user"
             }
         ]
     }

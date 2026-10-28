@@ -2,7 +2,7 @@
 
 The following ``start-telemetry-evaluation-for-organization`` example enables the telemetry config feature for the organization. ::
 
-    aws observabilityadmin start-telemetry-evaluation-for-organization 
+    aws observabilityadmin start-telemetry-evaluation-for-organization
 
 This command produces no output.
 

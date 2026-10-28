@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway get-usage-plan-keys --usage-plan-id a1b2c3
+    aws apigateway get-usage-plan-keys --usage-plan-id a1b2c3

@@ -4,16 +4,16 @@ This example deletes a custom action in AWS CodePipeline by using an already-cre
 
 Command::
 
-  aws codepipeline delete-custom-action-type --cli-input-json file://DeleteMyCustomAction.json
-  
+    aws codepipeline delete-custom-action-type --cli-input-json file://DeleteMyCustomAction.json
+
 JSON file sample contents::
-  
-  {
-    "category": "Build",
-    "version": "1",
-    "provider": "MyJenkinsProviderName"
-  }
+
+    {
+        "category": "Build",
+        "version": "1",
+        "provider": "MyJenkinsProviderName"
+    }
 
 Output::
 
-  None.
+    None.

@@ -4,8 +4,8 @@ This example changes the name of an AWS CodeCommit repository. This command prod
 
 Command::
 
-  aws codecommit update-repository-name --old-name MyDemoRepo --new-name MyRenamedDemoRepo
+    aws codecommit update-repository-name --old-name MyDemoRepo --new-name MyRenamedDemoRepo
 
 Output::
 
-  None.
+    None.

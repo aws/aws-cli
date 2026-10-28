@@ -5,5 +5,5 @@ This example deletes a cluster snapshot.
 
 Command::
 
-   aws redshift delete-cluster-snapshot --snapshot-identifier my-snapshot-id
+    aws redshift delete-cluster-snapshot --snapshot-identifier my-snapshot-id
 

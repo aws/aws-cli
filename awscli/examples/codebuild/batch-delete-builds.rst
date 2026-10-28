@@ -9,10 +9,10 @@ Output::
     {
         "buildsNotDeleted": [
             {
-                "id": "arn:aws:codebuild:us-west-2:123456789012:build/my-build-project-one:a1b2c3d4-5678-9012-abcd-11111EXAMPLE", 
+                "id": "arn:aws:codebuild:us-west-2:123456789012:build/my-build-project-one:a1b2c3d4-5678-9012-abcd-11111EXAMPLE",
                 "statusCode": "BUILD_IN_PROGRESS"
             }
-        ], 
+        ],
         "buildsDeleted": [
             "arn:aws:codebuild:us-west-2:123456789012:build/my-build-project-two:a1b2c3d4-5678-9012-abcd-22222EXAMPLE"
         ]

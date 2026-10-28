@@ -6,7 +6,7 @@ The following ``create-instance-event-window`` example creates an event window w
         --region us-east-1 \
         --time-range StartWeekDay=monday,StartHour=2,EndWeekDay=wednesday,EndHour=8 \
         --tag-specifications "ResourceType=instance-event-window,Tags=[{Key=K1,Value=V1}]" \
-        --name myEventWindowName 
+        --name myEventWindowName
 
 Output::
 

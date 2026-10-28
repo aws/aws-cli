@@ -1,6 +1,6 @@
 **To create a provisioning template**
 
-The following ``create-provisioning-template`` example creates a provisioning template as defined by the file ``template.json``. :: 
+The following ``create-provisioning-template`` example creates a provisioning template as defined by the file ``template.json``. ::
 
     aws iot create-provisioning-template \
         --template-name widget-template \
@@ -27,7 +27,7 @@ Contents of ``template.json``::
             "thing" : {
                 "Type" : "AWS::IoT::Thing",
                 "Properties" : {
-                    "AttributePayload" : { 
+                    "AttributePayload" : {
                         "version" : "v1",
                         "serialNumber" : "serialNumber"
                     },
@@ -68,7 +68,7 @@ Contents of ``template.json``::
             "LocationUrl": {
                 "Fn::FindInMap": ["LocationTable",{"Ref": "DeviceLocation"}, "LocationUrl"]}
             }
-        }    
+        }
     }
 
 Output::

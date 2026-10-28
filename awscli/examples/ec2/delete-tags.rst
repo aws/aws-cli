@@ -17,9 +17,9 @@ If you specify the empty string as the tag value, the tag is deleted only if the
     aws ec2 delete-tags \
         --resources i-1234567890abcdef0 \
         --tags Key=Name,Value=
-  
+
 **Example 2: To delete a tag from multiple resources**
-  
+
 The following ``delete-tags`` example deletes the tag``Purpose=Test`` from both an instance and an AMI. As shown in the previous example, you can omit the tag value from the command. ::
 
     aws ec2 delete-tags \

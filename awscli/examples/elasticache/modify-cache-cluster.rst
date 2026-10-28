@@ -1,6 +1,6 @@
 **To modify cache clusters**
 
-The following ``modify-cache-cluster`` example modifies the settings for the specified cluster. :: 
+The following ``modify-cache-cluster`` example modifies the settings for the specified cluster. ::
 
     aws elasticache modify-cache-cluster \
         --cache-cluster-id "my-cluster" \

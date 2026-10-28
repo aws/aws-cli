@@ -52,6 +52,6 @@ Output::
         }
     }
 
-For more information on moving resources, see `Move resource CIDRs between scopes <https://docs.aws.amazon.com/vpc/latest/ipam/move-resource-ipam.html>`__ in the *Amazon VPC IPAM User Guide*. 
+For more information on moving resources, see `Move resource CIDRs between scopes <https://docs.aws.amazon.com/vpc/latest/ipam/move-resource-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.
 
-For more information on changing monitoring states, see `Change the monitoring state of resource CIDRs <https://docs.aws.amazon.com/vpc/latest/ipam/change-monitoring-state-ipam.html>`__ in the *Amazon VPC IPAM User Guide*. 
+For more information on changing monitoring states, see `Change the monitoring state of resource CIDRs <https://docs.aws.amazon.com/vpc/latest/ipam/change-monitoring-state-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

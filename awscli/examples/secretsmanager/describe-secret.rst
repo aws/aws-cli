@@ -3,7 +3,7 @@
 The following ``describe-secret`` example shows the details of a secret. ::
 
     aws secretsmanager describe-secret \
-        --secret-id MyTestSecret 
+        --secret-id MyTestSecret
 
 Output::
 

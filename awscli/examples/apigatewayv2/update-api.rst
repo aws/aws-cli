@@ -8,8 +8,8 @@ The following ``update-api`` example updates the specified API's CORS configurat
 
 Output::
 
-    {    
-        "ApiEndpoint": "https://a1b2c3d4.execute-api.us-west-2.amazonaws.com",    
+    {
+        "ApiEndpoint": "https://a1b2c3d4.execute-api.us-west-2.amazonaws.com",
         "ApiId": "a1b2c3d4",
         "ApiKeySelectionExpression": "$request.header.x-api-key",
         "CorsConfiguration": {

@@ -17,5 +17,5 @@ Output::
         ]
     }
 
-For more information, see 
+For more information, see
 `Logging DNS queries <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/query-logs.html>`__ in the *Amazon Route 53 Developer Guide*.

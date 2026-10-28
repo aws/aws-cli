@@ -6,16 +6,16 @@ The following example uses the ``get-identity-verification-attributes`` command 
 
 Output::
 
- {
-    "VerificationAttributes": {
-        "user1@example.com": {
-            "VerificationStatus": "Success"
-        },
-        "user2@example.com": {
-            "VerificationStatus": "Pending"
+    {
+        "VerificationAttributes": {
+            "user1@example.com": {
+                "VerificationStatus": "Success"
+            },
+            "user2@example.com": {
+                "VerificationStatus": "Pending"
+            }
         }
     }
- }
 
 If you call this command with an identity that you have never submitted for verification, that identity won't appear in the output.
 

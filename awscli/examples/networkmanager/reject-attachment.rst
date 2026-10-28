@@ -3,7 +3,7 @@
 The following ``reject-attachment`` example rejects a VPC attachment request. ::
 
     aws networkmanager reject-attachment \
-        --attachment-id  attachment-03b7ea450134787da 
+        --attachment-id  attachment-03b7ea450134787da
 
 Output::
 

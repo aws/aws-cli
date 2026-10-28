@@ -1,4 +1,4 @@
-**To create a replication task** 
+**To create a replication task**
 
 The following ``create-replication-task`` example creates a replication task. ::
 

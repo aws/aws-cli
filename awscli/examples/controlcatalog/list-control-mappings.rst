@@ -39,7 +39,7 @@ Output::
             }
         ]
     }
-    
+
 For more information, see `Ontology overview <https://docs.aws.amazon.com/controlcatalog/latest/userguide/ontology-overview.html>`__ in the *AWS Control Catalog User Guide*.
 
 **Example 2: To retrieve a list of control mappings of a specific control mapping type**

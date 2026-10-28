@@ -2,15 +2,15 @@
 
 The following ``list-assessment-targets`` command lists all existing assessment targets::
 
-  aws inspector list-assessment-targets
+    aws inspector list-assessment-targets
 
 Output::
 
-   {
-	  "assessmentTargetArns": [
-	  "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq"
-	  ]
-   }
+    {
+        "assessmentTargetArns": [
+            "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq"
+        ]
+    }
 
 For more information, see `Amazon Inspector Assessment Targets`_ in the *Amazon Inspector* guide.
 

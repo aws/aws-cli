@@ -38,7 +38,7 @@ The following ``create-cluster`` example creates a cluster and associates two ex
     aws ecs create-cluster \
         --cluster-name MyCluster \
         --capacity-providers MyCapacityProvider1 MyCapacityProvider2 \
-        --default-capacity-provider-strategy capacityProvider=MyCapacityProvider1,weight=1 capacityProvider=MyCapacityProvider2,weight=1 
+        --default-capacity-provider-strategy capacityProvider=MyCapacityProvider1,weight=1 capacityProvider=MyCapacityProvider2,weight=1
 
 Output::
 
@@ -75,19 +75,19 @@ Output::
                 }
             ],
             "attachments": [
-               {
-                   "id": "0fb0c8f4-6edd-4de1-9b09-17e470ee1918",
-                   "type": "asp",
-                   "status": "PRECREATED",
-                   "details": [
-                       {
-                           "name": "capacityProviderName",
-                           "value": "MyCapacityProvider1"
-                       },
-                       {
-                           "name": "scalingPlanName",
-                           "value": "ECSManagedAutoScalingPlan-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
-                       }
+                {
+                    "id": "0fb0c8f4-6edd-4de1-9b09-17e470ee1918",
+                    "type": "asp",
+                    "status": "PRECREATED",
+                    "details": [
+                        {
+                            "name": "capacityProviderName",
+                            "value": "MyCapacityProvider1"
+                        },
+                        {
+                            "name": "scalingPlanName",
+                            "value": "ECSManagedAutoScalingPlan-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+                        }
                     ]
                 },
                 {
@@ -118,30 +118,30 @@ The following ``create-cluster`` example creates a cluster with multiple tags.  
 
     aws ecs create-cluster \
         --cluster-name MyCluster \
-        --tags key=key1,value=value1 key=key2,value=value2 
+        --tags key=key1,value=value1 key=key2,value=value2
 
 Output::
 
-   {
-       "cluster": {
-           "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
-           "clusterName": "MyCluster",
-           "status": "ACTIVE",
-           "registeredContainerInstancesCount": 0,
-           "pendingTasksCount": 0,
-           "runningTasksCount": 0,
-           "activeServicesCount": 0,
-           "statistics": [],
-           "tags": [
-               {
-                   "key": "key1",
-                   "value": "value1"
-               },
-               {
-                   "key": "key2",
-                   "value": "value2"
-               }
-           ]
+    {
+        "cluster": {
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
+            "clusterName": "MyCluster",
+            "status": "ACTIVE",
+            "registeredContainerInstancesCount": 0,
+            "pendingTasksCount": 0,
+            "runningTasksCount": 0,
+            "activeServicesCount": 0,
+            "statistics": [],
+            "tags": [
+                {
+                    "key": "key1",
+                    "value": "value1"
+                },
+                {
+                    "key": "key2",
+                    "value": "value2"
+                }
+            ]
         }
     }
 

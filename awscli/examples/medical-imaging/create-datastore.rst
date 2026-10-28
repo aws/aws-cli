@@ -15,7 +15,7 @@ Output::
 
 **Example 2: To create a data store with JPEG 2000 Lossless storage format**
 
-A data store configured with JPEG 2000 Lossless storage format will transcode and persist lossless image frames in JPEG 2000 format. Image frames can then be retrieved in 
+A data store configured with JPEG 2000 Lossless storage format will transcode and persist lossless image frames in JPEG 2000 format. Image frames can then be retrieved in
 JPEG 2000 Lossless without transcoding. The following ``create-datastore`` code example creates a data store configured for JPEG 2000 Lossless storage format with the name ``my-datastore``. ::
 
     aws medical-imaging create-datastore \

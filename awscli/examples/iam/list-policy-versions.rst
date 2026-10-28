@@ -3,7 +3,7 @@
 This example returns the list of available versions of the policy whose ARN is ``arn:aws:iam::123456789012:policy/MySamplePolicy``. ::
 
     aws iam list-policy-versions \
-        --policy-arn arn:aws:iam::123456789012:policy/MySamplePolicy 
+        --policy-arn arn:aws:iam::123456789012:policy/MySamplePolicy
 
 Output::
 

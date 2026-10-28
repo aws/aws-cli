@@ -1,8 +1,8 @@
-**To list your accelerators** 
+**To list your accelerators**
 
 The following ``list-accelerators`` example lists the accelerators in your AWS account. This account has two accelerators. ::
 
-    aws globalaccelerator list-accelerators 
+    aws globalaccelerator list-accelerators
 
 Output::
 

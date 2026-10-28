@@ -3,7 +3,7 @@
 The following ``batch-get-named-query`` example returns information about the named queries that have the specified IDs. ::
 
     aws athena batch-get-named-query \
-        --named-query-ids a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 a1b2c3d4-5678-90ab-cdef-EXAMPLE33333 
+        --named-query-ids a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 Output::
 

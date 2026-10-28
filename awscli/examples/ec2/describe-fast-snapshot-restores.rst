@@ -2,8 +2,8 @@
 
 The following ``describe-fast-snapshot-restores`` example displays details for all fast snapshot restores with a state of ``disabled``. ::
 
-  aws ec2 describe-fast-snapshot-restores \
-      --filters Name=state,Values=disabled
+    aws ec2 describe-fast-snapshot-restores \
+        --filters Name=state,Values=disabled
 
 Output::
 
@@ -26,4 +26,4 @@ Output::
 
 The following ``describe-fast-snapshot-restores`` example describes all fast snapshot restores. ::
 
-    aws ec2 describe-fast-snapshot-restores 
+    aws ec2 describe-fast-snapshot-restores

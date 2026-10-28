@@ -3,7 +3,7 @@
 The following ``list-resource-definitions`` example lists the resources that are defined for AWS IoT Greengrass to use. ::
 
     aws greengrass list-resource-definitions
-    
+
 Output::
 
     {

@@ -7,13 +7,13 @@ By default, this command displays information about all custom key stores in the
     aws kms describe-custom-key-stores \
         --custom-key-store-name ExampleCloudHSMKeyStore
 
-The output of this command includes useful details about the AWS CloudHSM key store including its connection state (``ConnectionState``). If the connection state is ``FAILED``, the output includes a ``ConnectionErrorCode`` field that describes the problem. 
+The output of this command includes useful details about the AWS CloudHSM key store including its connection state (``ConnectionState``). If the connection state is ``FAILED``, the output includes a ``ConnectionErrorCode`` field that describes the problem.
 
 Output::
 
     {
-        "CustomKeyStores": [ 
-            { 
+        "CustomKeyStores": [
+            {
                 "CloudHsmClusterId": "cluster-1a23b4cdefg",
                 "ConnectionState": "CONNECTED",
                 "CreationDate": "2022-04-05T14:04:55-07:00",
@@ -35,19 +35,19 @@ By default, this command displays information about all custom key stores in the
     aws kms describe-custom-key-stores \
         --custom-key-store-id cks-9876543210fedcba9
 
-The output of this command includes useful details about the external key store including its connection state (``ConnectionState``). If the connection state is ``FAILED``, the output includes a ``ConnectionErrorCode`` field that describes the problem. 
+The output of this command includes useful details about the external key store including its connection state (``ConnectionState``). If the connection state is ``FAILED``, the output includes a ``ConnectionErrorCode`` field that describes the problem.
 
 Output::
 
     {
-        "CustomKeyStores": [ 
-            { 
+        "CustomKeyStores": [
+            {
                 "CustomKeyStoreId": "cks-9876543210fedcba9",
                 "CustomKeyStoreName": "ExampleXKS",
-                "ConnectionState": "CONNECTED",    
+                "ConnectionState": "CONNECTED",
                 "CreationDate": "2022-12-02T07:48:55-07:00",
                 "CustomKeyStoreType": "EXTERNAL_KEY_STORE",
-                "XksProxyConfiguration": { 
+                "XksProxyConfiguration": {
                     "AccessKeyId": "ABCDE12345670EXAMPLE",
                     "Connectivity": "PUBLIC_ENDPOINT",
                     "UriEndpoint": "https://myproxy.xks.example.com",
@@ -68,19 +68,19 @@ By default, this command displays information about all custom key stores in the
     aws kms describe-custom-key-stores \
         --custom-key-store-id cks-2234567890abcdef0
 
-The output of this command includes useful details about the external key store including its connection state (``ConnectionState``). If the connection state is ``FAILED``, the output includes a ``ConnectionErrorCode`` field that describes the problem. 
+The output of this command includes useful details about the external key store including its connection state (``ConnectionState``). If the connection state is ``FAILED``, the output includes a ``ConnectionErrorCode`` field that describes the problem.
 
 Output::
 
     {
-        "CustomKeyStores": [ 
-            { 
+        "CustomKeyStores": [
+            {
                 "CustomKeyStoreId": "cks-3234567890abcdef0",
                 "CustomKeyStoreName": "ExampleVPCExternalKeyStore",
                 "ConnectionState": "CONNECTED",
                 "CreationDate": "2022-12-22T07:48:55-07:00",
                 "CustomKeyStoreType": "EXTERNAL_KEY_STORE",
-                "XksProxyConfiguration": { 
+                "XksProxyConfiguration": {
                     "AccessKeyId": "ABCDE12345670EXAMPLE",
                     "Connectivity": "VPC_ENDPOINT_SERVICE",
                     "UriEndpoint": "https://myproxy-private.xks.example.com",

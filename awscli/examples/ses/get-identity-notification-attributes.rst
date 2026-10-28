@@ -6,19 +6,19 @@ The following example uses the ``get-identity-notification-attributes`` command 
 
 Output::
 
- {
-    "NotificationAttributes": {
-        "user1@example.com": {
-            "ForwardingEnabled": false,
-            "ComplaintTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic",
-            "BounceTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic",
-            "DeliveryTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic"
-        },
-        "user2@example.com": {
-            "ForwardingEnabled": true
+    {
+        "NotificationAttributes": {
+            "user1@example.com": {
+                "ForwardingEnabled": false,
+                "ComplaintTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic",
+                "BounceTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic",
+                "DeliveryTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic"
+            },
+            "user2@example.com": {
+                "ForwardingEnabled": true
+            }
         }
     }
- }
 
 This command returns the status of email feedback forwarding and, if applicable, the Amazon Resource Names (ARNs) of the Amazon SNS topics that bounce, complaint, and delivery notifications are sent to.
 

@@ -2,11 +2,11 @@
 
 Command::
 
-  aws apigateway get-model-template --rest-api-id 1234123412 --model-name Empty
+    aws apigateway get-model-template --rest-api-id 1234123412 --model-name Empty
 
 Output::
 
-  {
-      "value": "#set($inputRoot = $input.path('$'))\n{ }"
-  }
+    {
+        "value": "#set($inputRoot = $input.path('$'))\n{ }"
+    }
 

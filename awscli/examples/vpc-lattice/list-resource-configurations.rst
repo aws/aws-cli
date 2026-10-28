@@ -2,7 +2,7 @@
 
 The following ``list-resource-configurations`` example lists your resource configurations. ::
 
-    aws vpc-lattice list-resource-configurations 
+    aws vpc-lattice list-resource-configurations
 
 Output::
 

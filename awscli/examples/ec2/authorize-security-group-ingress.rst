@@ -197,7 +197,7 @@ Output::
             }
         ]
     }
-        
+
 **Example 8: To add an inbound rule that uses a prefix list**
 
 The following ``authorize-security-group-ingress`` example uses the ``ip-permissions`` parameter to add an inbound rule that allows all traffic for the CIDR ranges in the specified prefix list. ::

@@ -1,6 +1,6 @@
 **To detect key phrases of multiple text inputs**
 
-The following ``batch-detect-key-phrases`` example analyzes multiple input texts and returns the key noun phrases of each. The pre-trained model's confidence score for each prediction is also output. :: 
+The following ``batch-detect-key-phrases`` example analyzes multiple input texts and returns the key noun phrases of each. The pre-trained model's confidence score for each prediction is also output. ::
 
     aws comprehend batch-detect-key-phrases \
         --language-code en \

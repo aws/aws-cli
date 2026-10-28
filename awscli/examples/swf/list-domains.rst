@@ -8,16 +8,16 @@ The following ``list-domains`` command example lists the ``REGISTERED`` SWF doma
 Output::
 
     {
-      "domainInfos": [
-        {
-          "status": "REGISTERED",
-          "name": "DataFrobotz"
-        },
-        {
-          "status": "REGISTERED",
-          "name": "erontest"
-        }
-      ]
+        "domainInfos": [
+            {
+                "status": "REGISTERED",
+                "name": "DataFrobotz"
+            },
+            {
+                "status": "REGISTERED",
+                "name": "erontest"
+            }
+        ]
     }
 
 For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
@@ -32,12 +32,12 @@ The following ``list-domains`` command example lists the ``DEPRECATED`` SWF doma
 Output::
 
     {
-      "domainInfos": [
-        {
-          "status": "DEPRECATED",
-          "name": "MyNeatNewDomain"
-        }
-      ]
+        "domainInfos": [
+            {
+                "status": "DEPRECATED",
+                "name": "MyNeatNewDomain"
+            }
+        ]
     }
 
 For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
@@ -60,7 +60,7 @@ Output::
                 "name": "DataFrobotz"
             }
         ],
-    "nextPageToken": "AAAAKgAAAAEAAAAAAAAAA2QJKNtidVgd49TTeNwYcpD+QKT2ynuEbibcQWe2QKrslMGe63gpS0MgZGpcpoKttL4OCXRFn98Xif557it+wSZUsvUDtImjDLvguyuyyFdIZtvIxIKEOPm3k2r4OjAGaFsGOuVbrKljvla7wdU7FYH3OlkNCP8b7PBj9SBkUyGoiAghET74P93AuVIIkdKGtQ=="
+        "nextPageToken": "AAAAKgAAAAEAAAAAAAAAA2QJKNtidVgd49TTeNwYcpD+QKT2ynuEbibcQWe2QKrslMGe63gpS0MgZGpcpoKttL4OCXRFn98Xif557it+wSZUsvUDtImjDLvguyuyyFdIZtvIxIKEOPm3k2r4OjAGaFsGOuVbrKljvla7wdU7FYH3OlkNCP8b7PBj9SBkUyGoiAghET74P93AuVIIkdKGtQ=="
     }
 
 For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*

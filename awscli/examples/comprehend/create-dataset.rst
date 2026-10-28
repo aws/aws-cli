@@ -16,7 +16,7 @@ Contents of ``file://inputConfig.json``::
         "DocumentClassifierInputDataConfig": {
             "S3Uri": "s3://amzn-s3-demo-bucket/training-data.csv"
         }
-    }  
+    }
 
 Output::
 

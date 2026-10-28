@@ -2,7 +2,7 @@
 
 The following ``get-data-lake-exception-subscription`` example provides details about a Security Lake exception subscription. In this example, the user of the specified AWS account is notified of errors through SMS delivery. The exception message remains in the account for the specified time period. An exception subscription notifies a Security Lake user about an error through the requester's preferred protocol. ::
 
-    aws securitylake get-data-lake-exception-subscription 
+    aws securitylake get-data-lake-exception-subscription
 
 Output::
 

@@ -4,7 +4,7 @@ The following ``modify-user`` example modifies a user's access string. ::
 
     aws elasticache modify-user \
         --user-id user2 \
-        --append-access-string "on ~* +@all" 
+        --append-access-string "on ~* +@all"
 
 Output::
 

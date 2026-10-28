@@ -2,7 +2,7 @@
 
 The following ``list-resource-groups`` example lists all of the resources that are part of the specified resource group. ::
 
-    aws resource-groups list-group-resources \ 
+    aws resource-groups list-group-resources \
         --group-name tbq-WebServer
 
 Output::

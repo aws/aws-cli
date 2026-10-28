@@ -66,36 +66,36 @@ The following ``modify-db-instance`` example associates a specific VPC security 
 Output::
 
     {
-    "DBInstance": {
-        "DBInstanceIdentifier": "dbName",
-        "DBInstanceClass": "db.t3.micro",
-        "Engine": "mysql",
-        "DBInstanceStatus": "available",
-        "MasterUsername": "admin",
-        "Endpoint": {
-            "Address": "dbName.abcdefghijk.us-west-2.rds.amazonaws.com",
-            "Port": 3306,
-            "HostedZoneId": "ABCDEFGHIJK1234"
-        },
-        "AllocatedStorage": 20,
-        "InstanceCreateTime": "2024-02-15T00:37:58.793000+00:00",
-        "PreferredBackupWindow": "11:57-12:27",
-        "BackupRetentionPeriod": 7,
-        "DBSecurityGroups": [],
-        "VpcSecurityGroups": [
-            {
-                "VpcSecurityGroupId": "sg-ID",
-                "Status": "active"
-            }
-        ],
-        ... output omitted ...
-        "MultiAZ": false,
-        "EngineVersion": "8.0.35",
-        "AutoMinorVersionUpgrade": true,
-        "ReadReplicaDBInstanceIdentifiers": [],
-        "LicenseModel": "general-public-license",
-        
-        ... output omitted ...
+        "DBInstance": {
+            "DBInstanceIdentifier": "dbName",
+            "DBInstanceClass": "db.t3.micro",
+            "Engine": "mysql",
+            "DBInstanceStatus": "available",
+            "MasterUsername": "admin",
+            "Endpoint": {
+                "Address": "dbName.abcdefghijk.us-west-2.rds.amazonaws.com",
+                "Port": 3306,
+                "HostedZoneId": "ABCDEFGHIJK1234"
+            },
+            "AllocatedStorage": 20,
+            "InstanceCreateTime": "2024-02-15T00:37:58.793000+00:00",
+            "PreferredBackupWindow": "11:57-12:27",
+            "BackupRetentionPeriod": 7,
+            "DBSecurityGroups": [],
+            "VpcSecurityGroups": [
+                {
+                    "VpcSecurityGroupId": "sg-ID",
+                    "Status": "active"
+                }
+            ],
+            ... output omitted ...
+            "MultiAZ": false,
+            "EngineVersion": "8.0.35",
+            "AutoMinorVersionUpgrade": true,
+            "ReadReplicaDBInstanceIdentifiers": [],
+            "LicenseModel": "general-public-license",
+
+            ... output omitted ...
         }
     }
 

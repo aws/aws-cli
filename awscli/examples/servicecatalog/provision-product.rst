@@ -5,7 +5,7 @@ The following ``provision-product`` example provisions the specified product usi
     aws servicecatalog provision-product \
         --product-id prod-abcdfz3syn2rg \
         --provisioning-artifact-id pa-abc347pcsccfm \
-        --provisioned-product-name "mytestppname3" 
+        --provisioned-product-name "mytestppname3"
 
 Output::
 

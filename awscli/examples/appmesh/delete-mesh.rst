@@ -4,7 +4,7 @@ The following ``delete-mesh`` example deletes the specified service mesh. ::
 
     aws appmesh delete-mesh \
         --mesh-name app1
-        
+
 Output::
 
     {

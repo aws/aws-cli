@@ -1,6 +1,6 @@
 **To create a high availability auto scaling configuration**
 
-The following ``create-auto-scaling-configuration`` example creates an auto scaling configuration optimized for high availability by setting ``MinSize`` to 5. 
+The following ``create-auto-scaling-configuration`` example creates an auto scaling configuration optimized for high availability by setting ``MinSize`` to 5.
 With this configuration, App Runner attempts to spread your service instances over the most Availability Zones possible, up to five, depending on the AWS Region.
 
 The call returns an ``AutoScalingConfiguration`` object with the other settings set to their defaults.

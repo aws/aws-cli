@@ -62,7 +62,7 @@ The following ``create-stage`` example creates a stage and configures individual
 Output::
 
     {
-        "stage": { 
+        "stage": {
             "activeSessionId": "st-a1b2c3d4e5f6g",
             "arn": "arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh",
             "autoParticipantRecordingConfiguration": {
@@ -108,7 +108,7 @@ The following ``create-stage`` example creates a stage and configures individual
 Output::
 
     {
-        "stage": { 
+        "stage": {
             "activeSessionId": "st-a1b2c3d4e5f6g",
             "arn": "arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh",
             "autoParticipantRecordingConfiguration": {
@@ -116,7 +116,7 @@ Output::
                 "mediaTypes": [
                     "AUDIO_VIDEO"
                 ],
-                "thumbnailConfiguration": { 
+                "thumbnailConfiguration": {
                     "targetIntervalSeconds": 60,
                     "storage": [
                         "SEQUENTIAL"

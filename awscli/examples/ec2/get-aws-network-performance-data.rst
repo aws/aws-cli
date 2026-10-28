@@ -61,7 +61,7 @@ Output::
                         "Value": 62.75349,
                         "Status": "OK"
                     }
-                ] 
+                ]
             }
         ]
     }

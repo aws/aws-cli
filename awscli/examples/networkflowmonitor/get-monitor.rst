@@ -2,7 +2,7 @@
 
 The following ``get-monitor`` example displays information about the monitor named ``demo`` in the specified account. ::
 
-    aws networkflowmonitor get-monitor \ 
+    aws networkflowmonitor get-monitor \
         --monitor-name Demo
 
 Output::

@@ -4,7 +4,7 @@ The following ``create-group`` example creates a group in a specified directory.
 
     aws ds-data create-group \
         --directory-id d-1234567890 \
-        --sam-account-name "sales" 
+        --sam-account-name "sales"
 
 Output::
 

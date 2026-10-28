@@ -4,7 +4,7 @@ The following ``update-license-configuration`` example updates the specified lic
 
     aws license-manager update-license-configuration \
         --no-license-count-hard-limit \
-        --license-configuration-arn arn:aws:license-manager:us-west-2:880185128111:license-configuration:lic-6eb6586f508a786a2ba4f56c1EXAMPLE 
+        --license-configuration-arn arn:aws:license-manager:us-west-2:880185128111:license-configuration:lic-6eb6586f508a786a2ba4f56c1EXAMPLE
 
 This command produces no output.
 

@@ -1,6 +1,6 @@
 **To create a domain entry (DNS record)**
 
-The following ``create-domain-entry`` example creates a DNS record (A) for the apex of the specified domain that points to an instance's IP address. 
+The following ``create-domain-entry`` example creates a DNS record (A) for the apex of the specified domain that points to an instance's IP address.
 
 **Note:** Lightsail's domain-related API operations are available in only the ``us-east-1`` Region. If your CLI profile is configured to use a different Region, you must include the ``--region us-east-1`` parameter or the command fails. ::
 

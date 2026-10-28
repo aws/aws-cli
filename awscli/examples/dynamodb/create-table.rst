@@ -15,33 +15,33 @@ Output::
         "TableDescription": {
             "AttributeDefinitions": [
                 {
-                    "AttributeName": "Artist", 
+                    "AttributeName": "Artist",
                     "AttributeType": "S"
-                }, 
+                },
                 {
-                    "AttributeName": "SongTitle", 
+                    "AttributeName": "SongTitle",
                     "AttributeType": "S"
                 }
-            ], 
+            ],
             "ProvisionedThroughput": {
-                "NumberOfDecreasesToday": 0, 
-                "WriteCapacityUnits": 5, 
+                "NumberOfDecreasesToday": 0,
+                "WriteCapacityUnits": 5,
                 "ReadCapacityUnits": 5
-            }, 
-            "TableSizeBytes": 0, 
-            "TableName": "MusicCollection", 
-            "TableStatus": "CREATING", 
+            },
+            "TableSizeBytes": 0,
+            "TableName": "MusicCollection",
+            "TableStatus": "CREATING",
             "KeySchema": [
                 {
-                    "KeyType": "HASH", 
+                    "KeyType": "HASH",
                     "AttributeName": "Artist"
-                }, 
+                },
                 {
-                    "KeyType": "RANGE", 
+                    "KeyType": "RANGE",
                     "AttributeName": "SongTitle"
                 }
-            ], 
-            "ItemCount": 0, 
+            ],
+            "ItemCount": 0,
             "CreationDateTime": "2020-05-26T16:04:41.627000-07:00",
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
             "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
@@ -183,7 +183,7 @@ The following example uses the specified attributes and key schema to create a t
                         \"NonKeyAttributes\": [\"Genre\", \"Year\"]
                     }
                 }
-            ]" 
+            ]"
 
 Output::
 
@@ -583,9 +583,9 @@ The following example creates a table called ``GameScores`` with DynamoDB Stream
         --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S \
         --key-schema AttributeName=UserId,KeyType=HASH AttributeName=GameTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
-        --stream-specification StreamEnabled=TRUE,StreamViewType=KEYS_ONLY  
+        --stream-specification StreamEnabled=TRUE,StreamViewType=KEYS_ONLY
 
-Output:: 
+Output::
 
     {
         "TableDescription": {
@@ -636,7 +636,7 @@ For more information, see `Change data capture for DynamoDB Streams <https://doc
 **Example 9: To create a table with the Standard Infrequent Access class**
 
 The following example creates a table called ``GameScores`` and assigns the Standard-Infrequent Access (DynamoDB Standard-IA) table class. This table class is optimized for storage being the dominant cost. ::
-    
+
     aws dynamodb create-table \
         --table-name GameScores \
         --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S \
@@ -644,7 +644,7 @@ The following example creates a table called ``GameScores`` and assigns the Stan
         --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
         --table-class STANDARD_INFREQUENT_ACCESS
 
-Output:: 
+Output::
 
     {
         "TableDescription": {
@@ -699,7 +699,7 @@ The following example creates a table called ``GameScores`` and enables deletion
         --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S \
         --key-schema AttributeName=UserId,KeyType=HASH AttributeName=GameTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
-        --deletion-protection-enabled 
+        --deletion-protection-enabled
 
 Output::
 

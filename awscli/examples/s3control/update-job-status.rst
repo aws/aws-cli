@@ -21,7 +21,7 @@ The following ``update-job-status`` example confirms and runs the specified whic
         --job-id 5782949f-3301-4fb3-be34-8d5bab54dbca \
         --requested-job-status Ready
 
-    Output::
+Output::
 
     {
         "Status": "Ready",
@@ -30,13 +30,14 @@ The following ``update-job-status`` example confirms and runs the specified whic
 
 The following ``update-job-status`` example cancels the specified job which is running. ::
 
-     aws s3control update-job-status \
+    aws s3control update-job-status \
         --account-id 123456789012 \
         --job-id 5782949f-3301-4fb3-be34-8d5bab54dbca \
         --requested-job-status Cancelled
 
-    Output::
+Output::
+
     {
-             "Status": "Cancelling",
-             "JobId": "5782949f-3301-4fb3-be34-8d5bab54dbca"
+        "Status": "Cancelling",
+        "JobId": "5782949f-3301-4fb3-be34-8d5bab54dbca"
     }

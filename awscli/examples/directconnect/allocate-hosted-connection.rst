@@ -12,13 +12,13 @@ The following ``allocate-hosted-connection`` example creates a hosted connection
 Output::
 
     {
-        "partnerName": "TIVIT", 
-        "vlan": 101, 
-        "ownerAccount": "123456789012", 
-        "connectionId": "dxcon-ffzc51m1", 
-        "connectionState": "ordering", 
-        "bandwidth": "500Mbps", 
-        "location": "TIVIT", 
-        "connectionName": "mydcinterconnect", 
+        "partnerName": "TIVIT",
+        "vlan": 101,
+        "ownerAccount": "123456789012",
+        "connectionId": "dxcon-ffzc51m1",
+        "connectionState": "ordering",
+        "bandwidth": "500Mbps",
+        "location": "TIVIT",
+        "connectionName": "mydcinterconnect",
         "region": "sa-east-1"
     }

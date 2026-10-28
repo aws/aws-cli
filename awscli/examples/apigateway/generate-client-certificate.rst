@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway generate-client-certificate --description 'My First Client Certificate'
+    aws apigateway generate-client-certificate --description 'My First Client Certificate'

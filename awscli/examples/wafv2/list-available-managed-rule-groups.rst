@@ -8,7 +8,7 @@ The following ``list-available-managed-rule-groups`` returns the list of all man
 
 Output::
 
-     {
+    {
         "ManagedRuleGroups": [
             {
                 "VendorName": "AWS",

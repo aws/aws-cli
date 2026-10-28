@@ -19,7 +19,7 @@ Output::
                 "Status": "INVITED",
                 "UpdatedTime": 1579826107000
             },
-            { 
+            {
                 "AccountId": "123456789012",
                 "AdministratorId": "111122223333",
                 "EmailAddress": "jstiles@example.com",

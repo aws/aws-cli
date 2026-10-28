@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway delete-rest-api --rest-api-id 1234123412
+    aws apigateway delete-rest-api --rest-api-id 1234123412

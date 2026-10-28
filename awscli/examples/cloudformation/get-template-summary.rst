@@ -2,8 +2,8 @@
 
 The following command displays summary information about the resources and metadata for the specified template file. ::
 
-	aws cloudformation get-template-summary \
-	   --template-body file://template.yaml
+    aws cloudformation get-template-summary \
+        --template-body file://template.yaml
 
 Output::
 

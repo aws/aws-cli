@@ -54,7 +54,7 @@ The following command creates a configuration recorder that tracks changes to al
 
     {
         "allSupported": false,
-        "exclusionByResourceTypes": { 
+        "exclusionByResourceTypes": {
             "resourceTypes": [
             "AWS::Redshift::ClusterSnapshot",
             "AWS::RDS::DBClusterSnapshot",
@@ -63,7 +63,7 @@ The following command creates a configuration recorder that tracks changes to al
         },
             "includeGlobalResourceTypes": false,
             "recordingStrategy": {
-            "useOnly": "EXCLUSION_BY_RESOURCE_TYPES" 
+            "useOnly": "EXCLUSION_BY_RESOURCE_TYPES"
         },
     }
 

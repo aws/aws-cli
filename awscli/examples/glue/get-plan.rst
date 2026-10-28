@@ -35,8 +35,8 @@ The following ``get-plan`` retrieves the generated code for mapping columns from
             { \
                 "DatabaseName":"tempdb", \
                 "TableName":"my-s3-sink" \
-            }]' 
-        --language "scala" 
+            }]'
+        --language "scala"
         --endpoint https://glue.us-east-1.amazonaws.com
         --output "text"
 

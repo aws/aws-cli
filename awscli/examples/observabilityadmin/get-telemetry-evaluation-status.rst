@@ -2,7 +2,7 @@
 
 The following ``get-telemetry-evaluation-status`` example returns the current onboarding status of the telemetry config feature in the specified account. ::
 
-    aws observabilityadmin get-telemetry-evaluation-status 
+    aws observabilityadmin get-telemetry-evaluation-status
 
 Output::
 

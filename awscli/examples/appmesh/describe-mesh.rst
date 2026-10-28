@@ -4,7 +4,7 @@ The following ``describe-mesh`` example returns details about the specified serv
 
     aws appmesh describe-mesh \
         --mesh-name app1
-        
+
 Output::
 
     {

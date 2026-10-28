@@ -3,7 +3,7 @@
 The following ``list-user-hierarchy-groups`` example lists the user hierarchy groups in the specified Amazon Connect instance. ::
 
     aws connect list-user-hierarchy-groups \
-        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e 
+        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e
 
 Output::
 

@@ -7,7 +7,7 @@ The following ``create-custom-metric`` example creates a custom metric that meas
         --metric-type "number" \
         --display-name "Remaining battery percentage." \
         --region us-east-1 \
-        --client-request-token "02ccb92b-33e8-4dfa-a0c1-35b181ed26b0" 
+        --client-request-token "02ccb92b-33e8-4dfa-a0c1-35b181ed26b0"
 
 Output::
 

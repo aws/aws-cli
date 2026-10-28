@@ -74,7 +74,7 @@ Output::
                     },
                     {
                         "Name": "country",
-    
+
                         "Name": "id2",
                         "Type": "string",
                         "Comment": "geo id2"

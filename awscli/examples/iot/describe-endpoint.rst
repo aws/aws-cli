@@ -18,7 +18,7 @@ The following ``describe-endpoint`` example retrieves the Amazon Trust Services 
 
     aws iot describe-endpoint \
         --endpoint-type iot:Data-ATS
-    
+
 Output::
 
     {

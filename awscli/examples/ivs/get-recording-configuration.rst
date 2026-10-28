@@ -18,11 +18,11 @@ Output::
             "name": "test-recording-config",
             "recordingReconnectWindowSeconds": 60,
             "state": "ACTIVE",
-            "tags": { 
-                "key1" : "value1", 
-                "key2" : "value2" 
+            "tags": {
+                "key1" : "value1",
+                "key2" : "value2"
             },
-            "thumbnailConfiguration": { 
+            "thumbnailConfiguration": {
                 "recordingMode": "INTERVAL",
                 "targetIntervalSeconds": 1,
                 "resolution": "LOWEST_RESOLUTION",

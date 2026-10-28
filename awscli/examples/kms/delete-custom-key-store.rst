@@ -1,10 +1,10 @@
 **To delete a custom key store**
 
-The following ``delete-custom-key-store`` example deletes the specified custom key store. 
+The following ``delete-custom-key-store`` example deletes the specified custom key store.
 
 Deleting an AWS CloudHSM key store has no effect on the associated CloudHSM cluster. Deleting an external key store has no effect on the associated external key store proxy, external key manager, or external keys.
 
-**NOTE:** Before you can delete a custom key store, you must schedule the deletion of all KMS keys in the custom key store and then wait for those KMS keys to be deleted. Then, you must disconnect the custom key store. 
+**NOTE:** Before you can delete a custom key store, you must schedule the deletion of all KMS keys in the custom key store and then wait for those KMS keys to be deleted. Then, you must disconnect the custom key store.
 For help finding the KMS keys in your custom key store, see `Delete an AWS CloudHSM key store (API) <https://docs.aws.amazon.com/kms/latest/developerguide/delete-keystore.html#delete-keystore-api>`__ in the *AWS Key Management Service Developer Guide*. ::
 
     delete-custom-key-store \

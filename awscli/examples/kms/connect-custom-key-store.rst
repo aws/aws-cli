@@ -1,6 +1,6 @@
 **To connect a custom key store**
 
-The following ``connect-custom-key-store`` example reconnects the specified custom key store. You can use a command like this one to connect a custom key store for the first time or to reconnect a key store that was disconnected. 
+The following ``connect-custom-key-store`` example reconnects the specified custom key store. You can use a command like this one to connect a custom key store for the first time or to reconnect a key store that was disconnected.
 
 You can use this command to connect an AWS CloudHSM key store or an external key store. ::
 

@@ -31,7 +31,7 @@ Output::
             },
             "Routes": [],
             "Tags": [
-                 {
+                {
                     "Key": "Name",
                     "Value": "BGP-VPN"
                 }

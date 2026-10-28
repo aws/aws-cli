@@ -8,10 +8,10 @@ The following ``get-public-access-block`` example displays the block public acce
 Output::
 
     {
-       "PublicAccessBlockConfiguration": {
-          "BlockPublicPolicy": true,
-          "RestrictPublicBuckets": true,
-          "IgnorePublicAcls": true,
-          "BlockPublicAcls": true
-       }
+        "PublicAccessBlockConfiguration": {
+            "BlockPublicPolicy": true,
+            "RestrictPublicBuckets": true,
+            "IgnorePublicAcls": true,
+            "BlockPublicAcls": true
+        }
     }

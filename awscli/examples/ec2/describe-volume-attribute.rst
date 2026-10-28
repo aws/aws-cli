@@ -4,13 +4,13 @@ This example command describes the ``autoEnableIo`` attribute of the volume with
 
 Command::
 
-  aws ec2 describe-volume-attribute --volume-id vol-049df61146c4d7901 --attribute autoEnableIO
+    aws ec2 describe-volume-attribute --volume-id vol-049df61146c4d7901 --attribute autoEnableIO
 
 Output::
 
-   {
-       "AutoEnableIO": {
-           "Value": false
-       },
-       "VolumeId": "vol-049df61146c4d7901"
-   }
+    {
+        "AutoEnableIO": {
+            "Value": false
+        },
+        "VolumeId": "vol-049df61146c4d7901"
+    }

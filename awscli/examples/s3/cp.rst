@@ -152,7 +152,7 @@ Output::
 The following ``cp`` command illustrates the use of the ``--grants`` option to grant read access to all users identified
 by URI and full control to a specific user identified by their Canonical ID::
 
-  aws s3 cp file.txt s3://amzn-s3-demo-bucket/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers full=id=79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be
+    aws s3 cp file.txt s3://amzn-s3-demo-bucket/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers full=id=79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be
 
 Output::
 

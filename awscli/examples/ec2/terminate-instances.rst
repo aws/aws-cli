@@ -4,25 +4,25 @@ This example terminates the specified instance.
 
 Command::
 
-  aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
+    aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
 
 Output::
 
-  {
-      "TerminatingInstances": [
-          {
-              "InstanceId": "i-1234567890abcdef0",
-              "CurrentState": {
-                  "Code": 32,
-                  "Name": "shutting-down"
-              },
-              "PreviousState": {
-                  "Code": 16,
-                  "Name": "running"
-              }
-          }
-      ]
-  }
+    {
+        "TerminatingInstances": [
+            {
+                "InstanceId": "i-1234567890abcdef0",
+                "CurrentState": {
+                    "Code": 32,
+                    "Name": "shutting-down"
+                },
+                "PreviousState": {
+                    "Code": 16,
+                    "Name": "running"
+                }
+            }
+        ]
+    }
 
 For more information, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 

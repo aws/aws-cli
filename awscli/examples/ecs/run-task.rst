@@ -72,17 +72,17 @@ The following ``run-task`` example configures an encrypted Amazon EBS volume for
 Contents of ``ebs.json``::
 
     {
-       "cluster": "default",
-       "taskDefinition": "mytaskdef",
-       "launchType": "FARGATE",
-       "networkConfiguration":{
+        "cluster": "default",
+        "taskDefinition": "mytaskdef",
+        "launchType": "FARGATE",
+        "networkConfiguration":{
             "awsvpcConfiguration":{
                 "assignPublicIp": "ENABLED",
                 "securityGroups": ["sg-12344321"],
                 "subnets":["subnet-12344321"]
             }
         },
-       "volumeConfigurations": [
+        "volumeConfigurations": [
             {
                 "name": "myEBSVolume",
                 "managedEBSVolume": {
@@ -108,8 +108,8 @@ Output::
                         "status": "PRECREATED",
                         "details": [
                             {
-                            "name": "subnetId",
-                            "value": "subnet-070982705451dad82"
+                                "name": "subnetId",
+                                "value": "subnet-070982705451dad82"
                             }
                         ]
                     },

@@ -4,7 +4,7 @@ The following ``tag-resource`` example tags the wireless destination ``IoTWirele
 
     aws iotwireless tag-resource \
         --resource-arn "arn:aws:iotwireless:us-east-1:651419225604:Destination/IoTWirelessDestination" \
-        --tags Key="MyTag",Value="MyValue" 
+        --tags Key="MyTag",Value="MyValue"
 
 This command produces no output.
 

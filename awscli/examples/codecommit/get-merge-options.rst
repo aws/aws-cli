@@ -18,6 +18,6 @@ Output::
         "sourceCommitId": "18059494EXAMPLE",
         "destinationCommitId": "ffd3311dEXAMPLE",
         "baseCommitId": "ffd3311dEXAMPLE"
-    } 
+    }
 
 For more information, see `Resolve Conflicts in a Pull Request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-resolve-conflict-pull-request.html#get-merge-options>`__ in the *AWS CodeCommit User Guide*.

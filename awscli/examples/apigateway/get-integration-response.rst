@@ -2,14 +2,14 @@
 
 Command::
 
-  aws apigateway get-integration-response --rest-api-id 1234123412 --resource-id y9h6rt --http-method GET --status-code 200
+    aws apigateway get-integration-response --rest-api-id 1234123412 --resource-id y9h6rt --http-method GET --status-code 200
 
 Output::
 
-  {
-      "statusCode": "200", 
-      "responseTemplates": {
-          "application/json": null
-      }
-  }
+    {
+        "statusCode": "200",
+        "responseTemplates": {
+            "application/json": null
+        }
+    }
 

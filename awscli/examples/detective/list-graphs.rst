@@ -7,8 +7,8 @@ The following ``list-graphs`` example retrieves the behavior graphs that the cal
 Output::
 
     {
-        "GraphList": [ 
-            { 
+        "GraphList": [
+            {
                 "Arn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
                 "CreatedTime": 1579736111000
             }

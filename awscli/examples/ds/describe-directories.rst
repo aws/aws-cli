@@ -2,7 +2,7 @@
 
 The following ``describe-directories`` example displays details about the specified directory. ::
 
-     aws ds describe-directories \
+    aws ds describe-directories \
         --directory-id d-a1b2c3d4e5
 
 Output::

@@ -70,6 +70,6 @@ Output::
             "LockToken":"2294b3a1-eb60-4aa0-a86f-a3ae04329de9",
             "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
-    } 
+    }
 
 For more information, see `Managing and Using a Web Access Control List (Web ACL) <https://docs.aws.amazon.com/waf/latest/developerguide/web-acl.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

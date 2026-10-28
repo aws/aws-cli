@@ -53,12 +53,12 @@ The following ``create-identity-provider`` example creates a new SAML IdP with m
 Contents of ``SAML-identity-provider.json``::
 
     {
-        "AttributeMapping": { 
+        "AttributeMapping": {
             "email" : "idp_email",
             "email_verified" : "idp_email_verified"
         },
         "IdpIdentifiers": [ "platform" ],
-        "ProviderDetails": { 
+        "ProviderDetails": {
             "MetadataFile": "<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" entityID=\"http://www.example.com/sso\"><md:IDPSSODescriptor WantAuthnRequestsSigned=\"false\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\"><md:KeyDescriptor use=\"signing\"><ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"><ds:X509Data><ds:X509Certificate>[IDP_CERTIFICATE_DATA]</ds:X509Certificate></ds:X509Data></ds:KeyInfo></md:KeyDescriptor><md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://www.example.com/slo/saml\"/><md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://www.example.com/slo/saml\"/><md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat><md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat><md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://www.example.com/sso/saml\"/><md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://www.example.com/sso/saml\"/></md:IDPSSODescriptor></md:EntityDescriptor>",
             "IDPSignout" : "true",
             "RequestSigningAlgorithm" : "rsa-sha256",

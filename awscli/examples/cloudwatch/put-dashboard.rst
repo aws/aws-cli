@@ -11,5 +11,5 @@ Output::
     {
         "DashboardValidationMessages": []
     }
-    
+
 For more information, see `Creating a CloudWatch dashboard <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create_dashboard.html>`__ in the *Amazon CloudWatch User Guide*.

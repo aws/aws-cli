@@ -17,7 +17,7 @@ Contents of ``access-scope-file.json``::
                         ]
                     }
                 }
-             }
+            }
         ],
         "ExcludePaths": [
             {

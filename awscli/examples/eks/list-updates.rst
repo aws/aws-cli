@@ -4,12 +4,12 @@ This example command lists the current updates for a cluster named ``example`` i
 
 Command::
 
-  aws eks list-updates --name example
+    aws eks list-updates --name example
 
 Output::
 
-  {
-      "updateIds": [
-          "10bddb13-a71b-425a-b0a6-71cd03e59161"
-      ]
-  }
+    {
+        "updateIds": [
+            "10bddb13-a71b-425a-b0a6-71cd03e59161"
+        ]
+    }

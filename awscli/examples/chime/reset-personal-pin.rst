@@ -3,7 +3,7 @@
 The following ``reset-personal-pin`` example resets the specified user's personal meeting PIN. ::
 
     aws chime reset-personal-pin \
-        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE 
+        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
         --user-id a1b2c3d4-5678-90ab-cdef-22222EXAMPLE
 
 Output::

@@ -4,7 +4,7 @@ The following example describes your LOA-CFA for interconnect ``dxcon-fh6ayh1d``
 
 .. code::
 
-  aws directconnect describe-interconnect-loa --interconnect-id dxcon-fh6ayh1d --output text --query loa.loaContent|base64 --decode > myLoaCfa.pdf
+    aws directconnect describe-interconnect-loa --interconnect-id dxcon-fh6ayh1d --output text --query loa.loaContent|base64 --decode > myLoaCfa.pdf
 
 **To describe your LOA-CFA for an interconnect using Windows**
 
@@ -12,10 +12,10 @@ The previous example requires the use of the ``base64`` utility to decode the ou
 
 .. code::
 
-  aws directconnect describe-interconnect-loa --interconnect-id dxcon-fh6ayh1d --output text --query loa.loaContent > myLoaCfa.base64 
+    aws directconnect describe-interconnect-loa --interconnect-id dxcon-fh6ayh1d --output text --query loa.loaContent > myLoaCfa.base64
 
 .. code::
 
-  certutil -decode myLoaCfa.base64 myLoaCfa.pdf
-  
+    certutil -decode myLoaCfa.base64 myLoaCfa.pdf
+
 For more information about controlling AWS CLI output, see `Controlling Command Output from the AWS Command Line Interface <https://docs.aws.amazon.com/cli/latest/userguide/controlling-output.html>`_ in the *AWS Command Line Interface User Guide*.

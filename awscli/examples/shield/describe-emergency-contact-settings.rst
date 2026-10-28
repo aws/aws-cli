@@ -13,7 +13,7 @@ Output::
             },
             {
                 "EmailAddress": "ddos-notifications@example.com"
-           }
+            }
         ]
     }
 

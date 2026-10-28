@@ -10,12 +10,12 @@ Output::
     {
         "Build": {
             "BuildArn": "arn:aws:gamelift:us-west-2::build/build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-            "BuildId": "build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
-            "CreationTime": 1496708916.18, 
-            "Name": "My_Game_Server_Build_One", 
-            "OperatingSystem": "AMAZON_LINUX", 
-            "SizeOnDisk": 1304924, 
-            "Status": "READY", 
+            "BuildId": "build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "CreationTime": 1496708916.18,
+            "Name": "My_Game_Server_Build_One",
+            "OperatingSystem": "AMAZON_LINUX",
+            "SizeOnDisk": 1304924,
+            "Status": "READY",
             "Version": "12345.678"
         }
     }

@@ -4,17 +4,17 @@ The following example shows how to request the latest status for a previous requ
 
 Command::
 
-	aws organizations describe-create-account-status --create-account-request-id car-examplecreateaccountrequestid111
-  
+    aws organizations describe-create-account-status --create-account-request-id car-examplecreateaccountrequestid111
+
 Output::
 
-  {
-    "CreateAccountStatus": {
-      "State": "SUCCEEDED",
-      "AccountId": "555555555555",
-      "AccountName": "Beta account",
-      "RequestedTimestamp": 1470684478.687,
-      "CompletedTimestamp": 1470684532.472,
-      "Id": "car-examplecreateaccountrequestid111"
+    {
+        "CreateAccountStatus": {
+            "State": "SUCCEEDED",
+            "AccountId": "555555555555",
+            "AccountName": "Beta account",
+            "RequestedTimestamp": 1470684478.687,
+            "CompletedTimestamp": 1470684532.472,
+            "Id": "car-examplecreateaccountrequestid111"
+        }
     }
-  }

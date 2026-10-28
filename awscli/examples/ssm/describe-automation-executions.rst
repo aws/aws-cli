@@ -4,7 +4,7 @@ The following ``describe-automation-executions`` example displays details about 
 
     aws ssm describe-automation-executions \
         --filters Key=ExecutionId,Values=73c8eef8-f4ee-4a05-820c-e354fEXAMPLE
-  
+
 Output::
 
     {

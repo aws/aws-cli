@@ -27,7 +27,7 @@ Output::
                     "DataScannedInBytes": 0,
                     "TotalExecutionTimeInMillis": 310,
                 "ResultConfiguration": {
-    
+
                     "QueryQueueTimeInMillis": 50,
                     "ServiceProcessingTimeInMillis": 28
                 },

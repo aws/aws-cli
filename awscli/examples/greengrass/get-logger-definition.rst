@@ -4,7 +4,7 @@ The following ``get-logger-definition`` example retrieves information about the 
 
     aws greengrass get-logger-definition \
         --logger-definition-id "49eeeb66-f1d3-4e34-86e3-3617262abf23"
-    
+
 Output::
 
     {

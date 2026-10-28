@@ -8,8 +8,8 @@ The following ``describe-action-targets`` example retrieves information about th
 Output::
 
     {
-        "ActionTargets": [ 
-            { 
+        "ActionTargets": [
+            {
                 "ActionTargetArn": "arn:aws:securityhub:us-west-1:123456789012:action/custom/Remediation",
                 "Description": "Action to send the finding for remediation tracking",
                 "Name": "Send to remediation"

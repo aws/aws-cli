@@ -3,7 +3,7 @@
 The following ``update-dynamic-thing-group`` example updates the specified dynamic thing group. It provides a description and updates the query string to change the group membership criteria. ::
 
     aws iot update-dynamic-thing-group \
-        --thing-group-name "RoomTooWarm" 
+        --thing-group-name "RoomTooWarm"
         --thing-group-properties "thingGroupDescription=\"This thing group contains rooms warmer than 65F.\"" \
         --query-string "attributes.temperature>65"
 

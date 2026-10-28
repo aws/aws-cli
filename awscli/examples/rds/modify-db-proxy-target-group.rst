@@ -11,7 +11,7 @@ The following ``modify-db-proxy-target-group`` example modifies a DB proxy targe
 Output::
 
     {
-    "DBProxyTargetGroup": 
+        "DBProxyTargetGroup":
         {
             "DBProxyName": "proxyExample",
             "TargetGroupName": "default",

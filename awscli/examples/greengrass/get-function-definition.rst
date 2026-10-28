@@ -4,7 +4,7 @@ The following ``get-function-definition`` example displays details for the speci
 
     aws greengrass get-function-definition \
         --function-definition-id "063f5d1a-1dd1-40b4-9b51-56f8993d0f85"
-    
+
 Output::
 
     {

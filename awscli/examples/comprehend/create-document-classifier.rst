@@ -7,8 +7,8 @@ The following ``create-document-classifier`` example begins the training process
         --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
         --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
         --language-code en
-    
-Output:: 
+
+Output::
 
     {
         "DocumentClassifierArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier"

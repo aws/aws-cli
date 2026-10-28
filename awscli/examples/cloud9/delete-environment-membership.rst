@@ -4,8 +4,8 @@ This example deletes the specified environment member from the specified AWS Clo
 
 Command::
 
-  aws cloud9 delete-environment-membership --environment-id 8a34f51ce1e04a08882f1e811bd706EX --user-arn arn:aws:iam::123456789012:user/AnotherDemoUser
+    aws cloud9 delete-environment-membership --environment-id 8a34f51ce1e04a08882f1e811bd706EX --user-arn arn:aws:iam::123456789012:user/AnotherDemoUser
 
 Output::
 
-  None.
+    None.

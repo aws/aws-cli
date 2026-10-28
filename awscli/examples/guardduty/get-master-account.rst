@@ -3,7 +3,7 @@
 The following ``get-master-account`` example displays the status and details of the master account associated with your detector in the current region. ::
 
     aws guardduty get-master-account \
-        --detector-id 12abc34d567e8fa901bc2d34eexample  
+        --detector-id 12abc34d567e8fa901bc2d34eexample
 
 Output::
 

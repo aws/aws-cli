@@ -4,13 +4,13 @@ This example lists the queues that are associated with the specified dead letter
 
 Command::
 
-  aws sqs list-dead-letter-source-queues --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyDeadLetterQueue
+    aws sqs list-dead-letter-source-queues --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyDeadLetterQueue
 
 Output::
 
-  {
-    "queueUrls": [
-      "https://queue.amazonaws.com/80398EXAMPLE/MyQueue",
-      "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue"
-    ]
-  }
+    {
+        "queueUrls": [
+            "https://queue.amazonaws.com/80398EXAMPLE/MyQueue",
+            "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue"
+        ]
+    }

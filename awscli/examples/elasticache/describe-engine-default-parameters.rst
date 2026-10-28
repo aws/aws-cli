@@ -1,6 +1,6 @@
 **To describe engine default parameters**
 
-The following ``describe-engine-default-parameters`` example returns the default engine and system parameter information for the specified cache engine. :: 
+The following ``describe-engine-default-parameters`` example returns the default engine and system parameter information for the specified cache engine. ::
 
     aws elasticache describe-engine-default-parameters \
         --cache-parameter-group-family "redis5.0"

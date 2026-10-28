@@ -4,4 +4,4 @@ This example cancels the upload associated with the task ID import-i-fh95npoc. I
 
 Command::
 
-  aws ec2 cancel-conversion-task --conversion-task-id import-i-fh95npoc
+    aws ec2 cancel-conversion-task --conversion-task-id import-i-fh95npoc

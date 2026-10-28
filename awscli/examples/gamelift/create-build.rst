@@ -3,7 +3,7 @@
 The following ``create-build`` example creates a custom game build resource. It uses zipped files that are stored in an S3 location in an AWS account that you control. This example assumes that you've already created an IAM role that gives Amazon GameLift permission to access the S3 location. Since the request does not specify an operating system, the new build resource defaults to WINDOWS_2012. ::
 
     aws gamelift create-build \
-        --storage-location file://storage-loc.json \ 
+        --storage-location file://storage-loc.json \
         --name MegaFrogRaceServer.NA \
         --build-version 12345.678
 
@@ -15,21 +15,21 @@ Contents of ``storage-loc.json``::
         "RoleArn":"arn:aws:iam::123456789012:role/gamelift"
     }
 
-Output:: 
+Output::
 
     {
         "Build": {
             "BuildArn": "arn:aws:gamelift:us-west-2::build/build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BuildId": "build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-            "CreationTime": 1496708916.18, 
-            "Name": "MegaFrogRaceServer.NA", 
-            "OperatingSystem": "WINDOWS_2012", 
-            "SizeOnDisk": 479303, 
-            "Status": "INITIALIZED", 
+            "CreationTime": 1496708916.18,
+            "Name": "MegaFrogRaceServer.NA",
+            "OperatingSystem": "WINDOWS_2012",
+            "SizeOnDisk": 479303,
+            "Status": "INITIALIZED",
             "Version": "12345.678"
         },
         "StorageLocation": {
-            "Bucket": "MegaFrogRaceServer_NA_build_files", 
+            "Bucket": "MegaFrogRaceServer_NA_build_files",
             "Key": "MegaFrogRaceServer_build_123.zip"
         }
     }
@@ -48,21 +48,21 @@ Output::
     {
         "Build": {
             "BuildArn": "arn:aws:gamelift:us-west-2::build/build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-            "BuildId": "build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
-            "CreationTime": 1496708916.18, 
-            "Name": "MegaFrogRaceServer.NA", 
-            "OperatingSystem": "AMAZON_LINUX", 
-            "SizeOnDisk": 0, 
-            "Status": "INITIALIZED", 
+            "BuildId": "build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "CreationTime": 1496708916.18,
+            "Name": "MegaFrogRaceServer.NA",
+            "OperatingSystem": "AMAZON_LINUX",
+            "SizeOnDisk": 0,
+            "Status": "INITIALIZED",
             "Version": "12345.678"
-        }, 
+        },
         "StorageLocation": {
-            "Bucket": "gamelift-builds-us-west-2", 
+            "Bucket": "gamelift-builds-us-west-2",
             "Key": "123456789012/build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
-        }, 
+        },
         "UploadCredentials": {
-            "AccessKeyId": "AKIAIOSFODNN7EXAMPLE", 
-            "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY", 
+            "AccessKeyId": "AKIAIOSFODNN7EXAMPLE",
+            "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
             "SessionToken": "AgoGb3JpZ2luENz...EXAMPLETOKEN=="
         }
     }

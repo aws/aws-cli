@@ -1,6 +1,6 @@
 **To delete a provisioning template version**
 
-The following ``delete-provisioning-template-version`` example deletes version 2 of the specified provisioning template. :: 
+The following ``delete-provisioning-template-version`` example deletes version 2 of the specified provisioning template. ::
 
     aws iot delete-provisioning-template-version \
         --version-id 2 \

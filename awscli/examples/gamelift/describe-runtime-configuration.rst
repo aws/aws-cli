@@ -5,7 +5,7 @@ The following ``describe-runtime-configuration`` example retrieves details about
     aws gamelift describe-runtime-configuration \
         --fleet-id fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
-Output:: 
+Output::
 
     {
         "RuntimeConfiguration": {

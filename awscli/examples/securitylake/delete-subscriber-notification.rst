@@ -3,7 +3,7 @@
 The following ``delete-subscriber-notification`` example shows how to delete the subscriber notification for specific Security Lake subscriber. ::
 
     aws securitylake delete-subscriber-notification \
-        --subscriber-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" 
+        --subscriber-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
 

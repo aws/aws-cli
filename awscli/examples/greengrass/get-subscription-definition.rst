@@ -4,7 +4,7 @@ The following ``get-subscription-definition`` example retrieves information abou
 
     aws greengrass get-subscription-definition \
         --subscription-definition-id "70e49321-83d5-45d2-bc09-81f4917ae152"
-    
+
 Output::
 
     {

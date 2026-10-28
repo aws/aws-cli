@@ -4,7 +4,7 @@ The following ``list-thing-principals`` example lists the principals (X.509 cert
 
     aws iot list-thing-principals \
         --thing-name MyRaspberryPi
-        
+
 Output::
 
     {

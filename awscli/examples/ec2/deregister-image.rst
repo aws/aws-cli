@@ -4,4 +4,4 @@ This example deregisters the specified AMI. If the command succeeds, no output i
 
 Command::
 
-  aws ec2 deregister-image --image-id ami-4fa54026
+    aws ec2 deregister-image --image-id ami-4fa54026

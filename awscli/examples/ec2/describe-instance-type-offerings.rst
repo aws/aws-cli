@@ -11,38 +11,38 @@ To list the instance types offered in a different Region, specify the Region usi
 
 Output::
 
-  {
-    "InstanceTypeOfferings": [
-        {
-            "InstanceType": "m5.2xlarge",
-            "LocationType": "region",
-            "Location": "us-east-2"
-        },
-        {
-            "InstanceType": "t3.micro",
-            "LocationType": "region",
-            "Location": "us-east-2"
-        },
-        ...
-    ]
-  }
+    {
+        "InstanceTypeOfferings": [
+            {
+                "InstanceType": "m5.2xlarge",
+                "LocationType": "region",
+                "Location": "us-east-2"
+            },
+            {
+                "InstanceType": "t3.micro",
+                "LocationType": "region",
+                "Location": "us-east-2"
+            },
+            ...
+        ]
+    }
 
 **Example 2: To list the instance types offered in an Availability Zone**
 
 The following ``describe-instance-type-offerings`` example lists the instance types offered in the specified Availability Zone. The Availability Zone must be in the specified Region. ::
 
-  aws ec2 describe-instance-type-offerings \
-      --location-type availability-zone \
-      --filters Name=location,Values=us-east-2a \
-      --region us-east-2
+    aws ec2 describe-instance-type-offerings \
+        --location-type availability-zone \
+        --filters Name=location,Values=us-east-2a \
+        --region us-east-2
 
 **Example 3: To check whether an instance type is supported**
 
 The following ``describe-instance-type-offerings`` command indicates whether the ``c5.xlarge`` instance type is supported in the specified Region. ::
 
-  aws ec2 describe-instance-type-offerings \
-      --filters Name=instance-type,Values=c5.xlarge \
-      --region us-east-2
+    aws ec2 describe-instance-type-offerings \
+        --filters Name=instance-type,Values=c5.xlarge \
+        --region us-east-2
 
 The following ``describe-instance-type-offerings`` example lists all C5 instance types that are supported in the specified Region. ::
 

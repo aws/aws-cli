@@ -2,4 +2,4 @@
 
 This example disables the rule named DailyLambdaFunction. The rule is not deleted::
 
-  aws events disable-rule --name "DailyLambdaFunction"
+    aws events disable-rule --name "DailyLambdaFunction"

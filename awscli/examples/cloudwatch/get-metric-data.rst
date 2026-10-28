@@ -102,5 +102,5 @@ Output::
         ],
         "Messages": []
     }
-    
+
 For more information, see `Using math expressions with CloudWatch metrics <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html>`__ in the *Amazon CloudWatch User Guide*.

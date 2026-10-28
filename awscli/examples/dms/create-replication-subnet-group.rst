@@ -9,28 +9,28 @@ The following ``create-replication-subnet-group`` example creates a group consis
 
 Output::
 
-    {   
+    {
         "ReplicationSubnetGroup": {
             "ReplicationSubnetGroupIdentifier": "my-subnet-group",
             "ReplicationSubnetGroupDescription": "my subnet group",
             "VpcId": "vpc-136a4c6a",
             "SubnetGroupStatus": "Complete",
             "Subnets": [
-                {   
+                {
                     "SubnetIdentifier": "subnet-da327bf6",
                     "SubnetAvailabilityZone": {
                         "Name": "us-east-1a"
                     },
                     "SubnetStatus": "Active"
-                },  
-                {   
+                },
+                {
                     "SubnetIdentifier": "subnet-bac383e0",
                     "SubnetAvailabilityZone": {
                         "Name": "us-east-1c"
                     },
                     "SubnetStatus": "Active"
-                },  
-                {   
+                },
+                {
                     "SubnetIdentifier": "subnet-d7c825e8",
                     "SubnetAvailabilityZone": {
                         "Name": "us-east-1e"

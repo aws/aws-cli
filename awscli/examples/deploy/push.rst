@@ -11,5 +11,5 @@ The following ``push`` example bundles and deploys an application revision to Am
 
 The output describes how to use the ``create-deployment`` command to create a deployment that uses the uploaded application revision. ::
 
-    To deploy with this revision, run: 
+    To deploy with this revision, run:
     aws deploy create-deployment --application-name WordPress_App --deployment-config-name <deployment-config-name> --deployment-group-name <deployment-group-name> --s3-location bucket=CodeDeployDemoBucket,key=WordPressApp.zip,bundleType=zip,eTag="cecc9b8EXAMPLE50a6e71fdb88EXAMPLE",version=LFsJAUdEXAMPLEfvKtvi79L8EXAMPLE

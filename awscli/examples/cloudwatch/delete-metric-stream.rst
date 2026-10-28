@@ -3,7 +3,7 @@
 The following ``delete-metric-stream`` example deletes the metric stream named ``QuickPartial-gSCKvO`` in the specified account. ::
 
     aws cloudwatch delete-metric-stream \
-        --name QuickPartial-gSCKvO 
+        --name QuickPartial-gSCKvO
 
 This command produces no output.
 

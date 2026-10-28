@@ -47,7 +47,7 @@ Output::
                 "317f8570EXAMPLE"
             ],
             "message": "Added new class"
-        }   
+        }
     }
 
 

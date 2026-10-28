@@ -21,7 +21,7 @@ Output::
                 "ElasticsearchClusterConfig": {
                     "InstanceType": "c5.large.elasticsearch",
                     "InstanceCount": 1,
-                     "DedicatedMasterEnabled": true,
+                    "DedicatedMasterEnabled": true,
                     "ZoneAwarenessEnabled": false,
                     "DedicatedMasterType": "c5.large.elasticsearch",
                     "DedicatedMasterCount": 3,

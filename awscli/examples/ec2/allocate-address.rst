@@ -2,7 +2,7 @@
 
 The following ``allocate-address`` example allocates an Elastic IP address. Amazon EC2 selects the address from Amazon's address pool. ::
 
-    aws ec2 allocate-address 
+    aws ec2 allocate-address
 
 Output::
 
@@ -66,12 +66,12 @@ The following ``allocate-address`` example allocates a specific /32 Elastic IP a
 
 Output::
 
-    {                                                    
-        "PublicIp": "192.0.2.0",                        
-        "AllocationId": "eipalloc-abcdef01234567890",    
-        "PublicIpv4Pool": "ipam-pool-1234567890abcdef0", 
-        "NetworkBorderGroup": "us-east-1",               
-        "Domain": "vpc"                                  
-    }                                                    
+    {
+        "PublicIp": "192.0.2.0",
+        "AllocationId": "eipalloc-abcdef01234567890",
+        "PublicIpv4Pool": "ipam-pool-1234567890abcdef0",
+        "NetworkBorderGroup": "us-east-1",
+        "Domain": "vpc"
+    }
 
 For more information, see `Allocate sequential Elastic IP addresses from an IPAM pool <https://docs.aws.amazon.com/vpc/latest/ipam/tutorials-eip-pool.html>`__ in the *Amazon VPC IPAM User Guide*.

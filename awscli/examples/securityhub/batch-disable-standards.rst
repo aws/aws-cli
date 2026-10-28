@@ -8,8 +8,8 @@ The following ``batch-disable-standards`` example disables the standard associat
 Output::
 
     {
-        "StandardsSubscriptions": [ 
-            { 
+        "StandardsSubscriptions": [
+            {
                 "StandardsArn": "arn:aws:securityhub:eu-central-1::standards/pci-dss/v/3.2.1",
                 "StandardsInput": { },
                 "StandardsStatus": "DELETING",

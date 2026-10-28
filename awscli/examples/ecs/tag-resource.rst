@@ -3,7 +3,7 @@
 The following ``tag-resource`` example adds a single tag to the specified resource. ::
 
     aws ecs tag-resource \
-        --resource-arn arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster 
+        --resource-arn arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster
         --tags key=key1,value=value1
 
 This command produces no output.

@@ -4,7 +4,7 @@ This ``resume-session`` example resumes a Session Manager session with an instan
 
     aws ssm resume-session \
         --session-id Mary-Major-07a16060613c408b5
-  
+
 Output::
 
     {

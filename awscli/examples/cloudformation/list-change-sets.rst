@@ -2,8 +2,8 @@
 
 The following ``list-change-sets`` example displays a list of the pending change sets for the specified stack. ::
 
-	aws cloudformation list-change-sets \
-	   --stack-name my-stack
+    aws cloudformation list-change-sets \
+        --stack-name my-stack
 
 Output::
 

@@ -4,7 +4,7 @@ The following ``describe-pipe`` example displays information about the Pipe ``De
 
     aws pipes describe-pipe \
         --name Demo_Pipe
-        
+
 Output::
 
     {

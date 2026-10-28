@@ -11,6 +11,6 @@ Output::
     {
         "certificateArn": "arn:aws:iot:us-west-2:123456789012:cert/488b6a7f2acdeb00a77384e63c4e40b18b1b3caaae57b7272ba44c45e3448142",
         "certificateId": "488b6a7f2acdeb00a77384e63c4e40b18b1b3caaae57b7272ba44c45e3448142"
-     }
+    }
 
 For more information, see `RegisterCertificate <https://docs.aws.amazon.com/iot/latest/apireference/API_RegisterCertificate.html>`__ in the *AWS IoT API Reference*.

@@ -1,6 +1,6 @@
 **To modify the description of a scope**
 
-In this scenario, you're an IPAM delegated admin who wants to modify the description of an IPAM scope. 
+In this scenario, you're an IPAM delegated admin who wants to modify the description of an IPAM scope.
 
 To complete this request, you'll need the scope ID, which you can get with `describe-ipam-scopes <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipam-scopes.html>`__.
 
@@ -14,7 +14,7 @@ The following ``modify-ipam-scope`` example updates the description of the scope
 Output::
 
     {
-    "IpamScope": {
+        "IpamScope": {
             "OwnerId": "320805250157",
             "IpamScopeId": "ipam-scope-0d3539a30b57dcdd1",
             "IpamScopeArn": "arn:aws:ec2::320805250157:ipam-scope/ipam-scope-0d3539a30b57dcdd1",

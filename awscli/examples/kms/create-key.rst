@@ -8,7 +8,7 @@ Because this command doesn't specify a key policy, the KMS key gets the `default
 
     aws kms create-key
 
-The ``create-key`` command returns the key metadata, including the key ID and ARN of the new KMS key. You can use these values to identify the KMS key in other AWS KMS operations. The output does not include the tags. To view the tags for a KMS key, use the ``list-resource-tags command``. 
+The ``create-key`` command returns the key metadata, including the key ID and ARN of the new KMS key. You can use these values to identify the KMS key in other AWS KMS operations. The output does not include the tags. To view the tags for a KMS key, use the ``list-resource-tags command``.
 
 Output::
 
@@ -173,7 +173,7 @@ Output::
         }
     }
 
-For more information, see `HMAC keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html>`__ in the *AWS Key Management Service Developer Guide*.  
+For more information, see `HMAC keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
 **Example 6: To create a multi-Region primary KMS key**
@@ -195,7 +195,7 @@ Output::
             "Description": "",
             "Enabled": true,
             "EncryptionAlgorithms": [
-              "SYMMETRIC_DEFAULT"
+                "SYMMETRIC_DEFAULT"
             ],
             "KeyId": "mrk-1234abcd12ab34cd56ef12345678990ab",
             "KeyManager": "CUSTOMER",
@@ -215,7 +215,7 @@ Output::
         }
     }
 
-For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.  
+For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
 **Example 7: To create a KMS key for imported key material**
@@ -227,7 +227,7 @@ The following ``create-key`` example creates a creates a KMS key with no key mat
 
 Output::
 
-   {
+    {
         "KeyMetadata": {
             "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
             "AWSAccountId": "111122223333",
@@ -248,7 +248,7 @@ Output::
         }
     }
 
-For more information, see `Importing key material in AWS KMS keys <https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html>`__ in the *AWS Key Management Service Developer Guide*. 
+For more information, see `Importing key material in AWS KMS keys <https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
 **Example 6: To create a KMS key in an AWS CloudHSM key store**
@@ -285,12 +285,12 @@ Output::
     }
 
 
-For more information, see `AWS CloudHSM key stores <https://docs.aws.amazon.com/kms/latest/developerguide/keystore-cloudhsm.html>`__ in the *AWS Key Management Service Developer Guide*. 
+For more information, see `AWS CloudHSM key stores <https://docs.aws.amazon.com/kms/latest/developerguide/keystore-cloudhsm.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
 **Example 8: To create a KMS key in an external key store**
 
-The following ``create-key`` example creates a creates a KMS key in the specified external key store. The ``--custom-key-store-id``, ``--origin``, and ``--xks-key-id`` parameters are required in this command. 
+The following ``create-key`` example creates a creates a KMS key in the specified external key store. The ``--custom-key-store-id``, ``--origin``, and ``--xks-key-id`` parameters are required in this command.
 
 * The ``--xks-key-id`` parameter specifies the ID of an existing symmetric encryption key in your external key manager. This key serves as the external key material for the KMS key.
 

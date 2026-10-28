@@ -5,12 +5,12 @@ The following ``set-repository-policy`` example attaches a repository policy con
     aws ecr set-repository-policy \
         --repository-name cluster-autoscaler \
         --policy-text file://my-policy.json
-  
+
 Contents of ``my-policy.json``::
 
     {
         "Version" : "2008-10-17",
-        "Statement" : [ 
+        "Statement" : [
             {
                 "Sid" : "allow public pull",
                 "Effect" : "Allow",
@@ -18,12 +18,12 @@ Contents of ``my-policy.json``::
                 "Action" : [
                     "ecr:BatchCheckLayerAvailability",
                     "ecr:BatchGetImage",
-                    "ecr:GetDownloadUrlForLayer" 
+                    "ecr:GetDownloadUrlForLayer"
                 ]
             }
         ]
     }
-  
+
 Output::
 
     {

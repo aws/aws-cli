@@ -21,32 +21,32 @@ Output::
                     "VOLUME"
                 ],
                 "TargetTags": [
-                  {
-                      "Key": "costCenter",
-                      "Value": "115"
-                  }
+                    {
+                        "Key": "costCenter",
+                        "Value": "115"
+                    }
                 ],
                 "Schedules": [
-                  {
-                      "Name": "DailySnapshots",
-                      "CopyTags": true,
-                      "TagsToAdd": [
-                        {
-                            "Key": "type",
-                            "Value": "myDailySnapshot"
+                    {
+                        "Name": "DailySnapshots",
+                        "CopyTags": true,
+                        "TagsToAdd": [
+                            {
+                                "Key": "type",
+                                "Value": "myDailySnapshot"
+                            }
+                        ],
+                        "CreateRule": {
+                            "Interval": 24,
+                            "IntervalUnit": "HOURS",
+                            "Times": [
+                                "03:00"
+                            ]
+                        },
+                        "RetainRule": {
+                            "Count": 5
                         }
-                      ],
-                      "CreateRule": {
-                        "Interval": 24,
-                        "IntervalUnit": "HOURS",
-                        "Times": [
-                            "03:00"
-                        ]
-                      },
-                      "RetainRule": {
-                        "Count": 5
-                      }
-                  }
+                    }
                 ]
             }
         }

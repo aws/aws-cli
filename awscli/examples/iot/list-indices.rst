@@ -6,10 +6,10 @@ The following ``list-indices`` example lists all configured search indices in yo
 
 Output::
 
-   {
-       "indexNames": [
-           "AWS_Things"
-       ]
-   }
+    {
+        "indexNames": [
+            "AWS_Things"
+        ]
+    }
 
 For more information, see `Managing Thing Indexing <https://docs.aws.amazon.com/iot/latest/developerguide/managing-index.html>`__ in the *AWS IoT Developer Guide*.

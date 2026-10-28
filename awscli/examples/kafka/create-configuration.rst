@@ -20,7 +20,7 @@ Output::
     {
         "Arn": "arn:aws:kafka:us-west-2:123456789012:configuration/CustomConfiguration/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE-2",
         "CreationTime": "2019-10-09T15:26:05.548Z",
-        "LatestRevision": 
+        "LatestRevision":
             {
                 "CreationTime": "2019-10-09T15:26:05.548Z",
                 "Description": "Topic autocreation enabled; Apache ZooKeeper timeout 2000 ms; Log rolling 604800000 ms.",

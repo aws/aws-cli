@@ -46,4 +46,4 @@ Output::
         ]
     }
 
-For more information, see `Monitor CIDR usage by resource <https://docs.aws.amazon.com/vpc/latest/ipam/monitor-cidr-compliance-ipam.html>`__ in the *Amazon VPC IPAM User Guide*. 
+For more information, see `Monitor CIDR usage by resource <https://docs.aws.amazon.com/vpc/latest/ipam/monitor-cidr-compliance-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

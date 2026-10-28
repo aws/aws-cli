@@ -4,12 +4,12 @@ This example command returns the Spot Price history for m1.xlarge instances for 
 
 Command::
 
-  aws ec2 describe-spot-price-history --instance-types m1.xlarge --start-time 2014-01-06T07:08:09 --end-time 2014-01-06T08:09:10
+    aws ec2 describe-spot-price-history --instance-types m1.xlarge --start-time 2014-01-06T07:08:09 --end-time 2014-01-06T08:09:10
 
 Output::
 
-  {
-    "SpotPriceHistory": [
+    {
+        "SpotPriceHistory": [
             {
                 "Timestamp": "2014-01-06T07:10:55.000Z",
                 "ProductDescription": "SUSE Linux",
@@ -30,9 +30,9 @@ Output::
                 "InstanceType": "m1.xlarge",
                 "SpotPrice": "0.087000",
                 "AvailabilityZone": "us-west-1a"
-        },
-        ...
-  }
+            },
+            ...
+        }
 
 
 **To describe Spot price history for Linux/UNIX Amazon VPC**
@@ -41,25 +41,25 @@ This example command returns the Spot Price history for m1.xlarge, Linux/UNIX Am
 
 Command::
 
-  aws ec2 describe-spot-price-history --instance-types m1.xlarge --product-description "Linux/UNIX (Amazon VPC)" --start-time 2014-01-06T07:08:09 --end-time 2014-01-06T08:09:10
+    aws ec2 describe-spot-price-history --instance-types m1.xlarge --product-description "Linux/UNIX (Amazon VPC)" --start-time 2014-01-06T07:08:09 --end-time 2014-01-06T08:09:10
 
 Output::
 
-  {
-    "SpotPriceHistory": [
-        {
-            "Timestamp": "2014-01-06T04:32:53.000Z",
-            "ProductDescription": "Linux/UNIX (Amazon VPC)",
-            "InstanceType": "m1.xlarge",
-            "SpotPrice": "0.080000",
-            "AvailabilityZone": "us-west-1a"
-        },
-        {
-            "Timestamp": "2014-01-05T11:28:26.000Z",
-            "ProductDescription": "Linux/UNIX (Amazon VPC)",
-            "InstanceType": "m1.xlarge",
-            "SpotPrice": "0.080000",
-            "AvailabilityZone": "us-west-1c"
-        }
-    ]
-  }
+    {
+        "SpotPriceHistory": [
+            {
+                "Timestamp": "2014-01-06T04:32:53.000Z",
+                "ProductDescription": "Linux/UNIX (Amazon VPC)",
+                "InstanceType": "m1.xlarge",
+                "SpotPrice": "0.080000",
+                "AvailabilityZone": "us-west-1a"
+            },
+            {
+                "Timestamp": "2014-01-05T11:28:26.000Z",
+                "ProductDescription": "Linux/UNIX (Amazon VPC)",
+                "InstanceType": "m1.xlarge",
+                "SpotPrice": "0.080000",
+                "AvailabilityZone": "us-west-1c"
+            }
+        ]
+    }

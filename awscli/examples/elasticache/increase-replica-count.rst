@@ -9,7 +9,7 @@ The following ``increase-replica-count`` example does one of two things. It can 
 
 Output::
 
-   {
+    {
         "ReplicationGroup": {
             "ReplicationGroupId": "my-cluster",
             "Description": " ",

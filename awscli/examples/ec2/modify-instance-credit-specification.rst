@@ -4,15 +4,15 @@ This example modifies the credit option for CPU usage of the specified instance 
 
 Command::
 
-  aws ec2 modify-instance-credit-specification --instance-credit-specification "InstanceId=i-1234567890abcdef0,CpuCredits=unlimited"
+    aws ec2 modify-instance-credit-specification --instance-credit-specification "InstanceId=i-1234567890abcdef0,CpuCredits=unlimited"
 
 Output::
 
-  {
-    "SuccessfulInstanceCreditSpecifications": [
-      {
-        "InstanceId": "i-1234567890abcdef0"
-      }
-    ], 
-    "UnsuccessfulInstanceCreditSpecifications": []
-  }
+    {
+        "SuccessfulInstanceCreditSpecifications": [
+            {
+                "InstanceId": "i-1234567890abcdef0"
+            }
+        ],
+        "UnsuccessfulInstanceCreditSpecifications": []
+    }

@@ -9,11 +9,11 @@ Output::
 
     {
         "messages": [
-            { 
-             "eventType": "EXECUTION_STARTED",
-             "messageId": "f6294f1e-b109-4bbe-9073-f451a2dda2da",
-             "payload": "Flow execution started",
-             "timestamp": 1559247540.656
+            {
+                "eventType": "EXECUTION_STARTED",
+                "messageId": "f6294f1e-b109-4bbe-9073-f451a2dda2da",
+                "payload": "Flow execution started",
+                "timestamp": 1559247540.656
             }
         ]
     }

@@ -101,9 +101,9 @@ Output::
             },
             {
                 "RegionName": "me-central-1",
-                 "Endpoint": "https://rds.me-central-1.amazonaws.com",
-                 "Status": "available",
-                 "SupportsDBInstanceAutomatedBackupsReplication": false
+                "Endpoint": "https://rds.me-central-1.amazonaws.com",
+                "Status": "available",
+                "SupportsDBInstanceAutomatedBackupsReplication": false
             },
             {
                 "RegionName": "me-south-1",
@@ -131,7 +131,7 @@ Output::
             },
             {
                 "RegionName": "us-west-2",
-               "Endpoint": "https://rds.us-west-2.amazonaws.com",
+                "Endpoint": "https://rds.us-west-2.amazonaws.com",
                 "Status": "available",
                 "SupportsDBInstanceAutomatedBackupsReplication": true
             }

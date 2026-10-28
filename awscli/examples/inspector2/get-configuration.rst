@@ -20,7 +20,7 @@ Output::
                 "status": "SUCCESS",
                 "updatedAt": "2024-05-14T21:16:20.237000+00:00"
             }
-         }
+        }
     }
 
 For more information, see `Automated resource scanning with Amazon Inspector <https://docs.aws.amazon.com/inspector/latest/user/scanning-resources.html>`__ in the *Amazon Inspector User Guide*.

@@ -7,8 +7,8 @@ The following ``list-invitations`` example retrieves the behavior graphs that th
 Output::
 
     {
-        "Invitations": [ 
-        { 
+        "Invitations": [
+        {
             "AccountId": "444455556666",
             "AdministratorId": "111122223333",
             "EmailAddress": "mmajor@example.com",

@@ -3,7 +3,7 @@
 The following ``get-approval-rule-template`` example gets the content of an approval rule template named ``1-approver-rule-for-all-pull-requests``. ::
 
     aws codecommit get-approval-rule-template \
-        --approval-rule-template-name 1-approver-rule-for-all-pull-requests 
+        --approval-rule-template-name 1-approver-rule-for-all-pull-requests
 
 Output::
 

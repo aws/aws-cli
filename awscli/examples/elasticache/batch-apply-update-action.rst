@@ -4,7 +4,7 @@ The following ``batch-apply-update-action`` example applies a service update to 
 
     aws elasticache batch-apply-update-action \
         --service-update-name elc-xxxxx406-xxx \
-        --replication-group-ids test-cluster 
+        --replication-group-ids test-cluster
 
 Output::
 

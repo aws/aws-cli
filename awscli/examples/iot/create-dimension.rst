@@ -5,7 +5,7 @@ The following ``create-dimension`` creates a dimension with a single topic filte
     aws iot create-dimension \
         --name TopicFilterForAuthMessages \
         --type TOPIC_FILTER \
-        --string-values device/+/auth 
+        --string-values device/+/auth
 
 Output::
 

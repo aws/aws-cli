@@ -4,18 +4,18 @@ This example creates a queue with the specified name, sets the message retention
 
 Command::
 
-  aws sqs create-queue --queue-name MyQueue --attributes file://create-queue.json
+    aws sqs create-queue --queue-name MyQueue --attributes file://create-queue.json
 
 Input file (create-queue.json)::
 
-  {
-    "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}",
-    "MessageRetentionPeriod": "259200"  
-  }
+    {
+        "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}",
+        "MessageRetentionPeriod": "259200"
+    }
 
 Output::
 
-  {
-    "QueueUrl": "https://queue.amazonaws.com/80398EXAMPLE/MyQueue"
-  }
+    {
+        "QueueUrl": "https://queue.amazonaws.com/80398EXAMPLE/MyQueue"
+    }
 

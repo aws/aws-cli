@@ -7,7 +7,7 @@ The following ``add-skill`` example downloads and installs the aws-serverless sk
 
 Output::
 
-      Installed aws-serverless (v1) to Kiro.
+    Installed aws-serverless (v1) to Kiro.
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 
@@ -21,7 +21,7 @@ The following ``add-skill`` example installs the aws-cdk skill only to Kiro. ::
 
 Output::
 
-      Installed aws-cdk (v1) to Kiro.
+    Installed aws-cdk (v1) to Kiro.
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 
@@ -35,6 +35,6 @@ The following ``add-skill`` example installs version v1 of the aws-serverless sk
 
 Output::
 
-      Installed aws-serverless (v1) to Kiro.
+    Installed aws-serverless (v1) to Kiro.
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.

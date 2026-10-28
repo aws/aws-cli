@@ -4,7 +4,7 @@ The following ``list-job-executions-for-thing`` example lists all jobs that were
 
     aws iot list-job-executions-for-thing \
         --thing-name "MyRaspberryPi"
-        
+
 Output::
 
     {

@@ -8,9 +8,9 @@ The following ``get-bucket-analytics-configuration`` example displays the analyt
 
 Output::
 
-   {
-       "AnalyticsConfiguration": {
-           "StorageClassAnalysis": {},
-           "Id": "1"
-       }
-   }
+    {
+        "AnalyticsConfiguration": {
+            "StorageClassAnalysis": {},
+            "Id": "1"
+        }
+    }

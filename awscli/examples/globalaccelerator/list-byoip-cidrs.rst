@@ -1,6 +1,6 @@
 **To list your address ranges**
 
-The following ``list-byoip-cidr`` example list the bring your own IP address (BYOIP) address ranges that you've provisioned for use with Global Accelerator. ::
+The following ``list-byoip-cidrs`` example list the bring your own IP address (BYOIP) address ranges that you've provisioned for use with Global Accelerator. ::
 
     aws globalaccelerator list-byoip-cidrs
 
@@ -11,7 +11,7 @@ Output::
             {
                 "Cidr": "198.51.100.0/24",
                 "State": "READY"
-            }
+            },
             {
                 "Cidr": "203.0.113.25/24",
                 "State": "READY"

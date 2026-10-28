@@ -1,3 +1,5 @@
+**To list the in-progress multipart uploads for a vault**
+
 The following command shows all of the in-progress multipart uploads for a vault named ``my-vault``::
 
     aws glacier list-multipart-uploads --account-id - --vault-name my-vault

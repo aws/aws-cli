@@ -1,4 +1,4 @@
-**To send an Amazon Simple Notification Service email message when CPU utilization exceeds 70 percent**
+**Example 1: To send an Amazon Simple Notification Service email message when CPU utilization exceeds 70 percent**
 
 The following example uses the ``put-metric-alarm`` command to send an Amazon Simple Notification Service email message when CPU utilization exceeds 70 percent::
 
@@ -6,7 +6,7 @@ The following example uses the ``put-metric-alarm`` command to send an Amazon Si
 
 This command returns to the prompt if successful. If an alarm with the same name already exists, it will be overwritten by the new alarm.
 
-**To specify multiple dimensions**
+**Example 2: To specify multiple dimensions**
 
 The following example illustrates how to specify multiple dimensions. Each dimension is specified as a Name/Value pair, with a comma between the name and the value. Multiple dimensions are separated by a space::
 

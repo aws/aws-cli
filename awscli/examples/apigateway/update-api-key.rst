@@ -1,4 +1,4 @@
-**To change the name for an API Key**
+**Example 1: To change the name for an API Key**
 
 Command::
 
@@ -18,7 +18,7 @@ Output::
         "name": "newName"
     }
 
-**To disable the API Key**
+**Example 2: To disable the API Key**
 
 Command::
 

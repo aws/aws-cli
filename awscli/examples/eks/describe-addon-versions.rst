@@ -1,4 +1,4 @@
-**Example 1: List all the available addons for EKS Cluster**
+**Example 1: To list all the available addons for EKS Cluster**
 
 The following ``describe-addon-versions`` example list all the available AWS addons. ::
 
@@ -52,7 +52,7 @@ Output::
 
 For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: List all the available addons for specified Kubernetes version supported for EKS**
+**Example 2: To list all the available addons for specified Kubernetes version supported for EKS**
 
 The following ``describe-addon-versions`` example list all the available addons for specified Kubernetes version supported for EKS. ::
 
@@ -102,7 +102,7 @@ Output::
 
 For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
 
-**Example 3: List all the available vpc-cni addons version for specified Kubernetes version supported for EKS**
+**Example 3: To list all the available vpc-cni addons version for specified Kubernetes version supported for EKS**
 
 The following ``describe-addon-versions`` example list all the available vpc-cni addons version for specified Kubernetes version supported for EKS. ::
 

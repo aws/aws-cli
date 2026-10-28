@@ -1,3 +1,5 @@
+**To start an inventory retrieval job**
+
 The following command initiates a job to get an inventory of the vault ``my-vault``::
 
     aws glacier initiate-job --account-id - --vault-name my-vault --job-parameters '{"Type": "inventory-retrieval"}'

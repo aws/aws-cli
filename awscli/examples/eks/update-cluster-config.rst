@@ -1,4 +1,4 @@
-**To update cluster endpoint access**
+**Example 1: To update cluster endpoint access**
 
 This example command updates a cluster to disable endpoint public access and enable private endpoint access.
 
@@ -29,7 +29,7 @@ Output::
         }
     }
 
-**To enable logging for a cluster**
+**Example 2: To enable logging for a cluster**
 
 This example command enables all cluster control plane logging types for a cluster named ``example``.
 

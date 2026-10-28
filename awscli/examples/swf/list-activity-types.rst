@@ -1,4 +1,4 @@
-**Listing Activity Types**
+**To list activity types**
 
 To get a list of the activity types for a domain, use ``swf list-activity-types``. The ``--domain`` and
 ``--registration-status`` arguments are required. ::

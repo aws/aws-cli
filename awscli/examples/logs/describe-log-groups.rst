@@ -1,3 +1,5 @@
+**To describe a log group**
+
 The following command describes a log group named ``my-logs``::
 
     aws logs describe-log-groups --log-group-name-prefix my-logs

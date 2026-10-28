@@ -1,3 +1,5 @@
+**To list the active clusters**
+
 The following command lists all active EMR clusters in the current region::
 
     aws emr list-clusters --active

@@ -1,3 +1,5 @@
+**To apply a policy to a bucket**
+
 This example allows all users to retrieve any object in *amzn-s3-demo-bucket* except those in the *MySecretFolder*. It also
 grants ``put`` and ``delete`` permission to the root user of the AWS account ``1234-5678-9012``::
 

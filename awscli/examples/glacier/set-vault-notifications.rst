@@ -1,3 +1,5 @@
+**To configure SNS notifications for a vault**
+
 The following command configures SNS notifications for a vault named ``my-vault``::
 
     aws glacier set-vault-notifications --account-id - --vault-name my-vault --vault-notification-config file://notificationconfig.json

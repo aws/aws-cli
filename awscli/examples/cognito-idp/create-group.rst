@@ -1,4 +1,4 @@
-**To create a group**
+**Example 1: To create a group**
 
 This example creates a group with a description.
 
@@ -18,7 +18,7 @@ Output::
         }
     }
 
-**To create a group with a role and precedence**
+**Example 2: To create a group with a role and precedence**
 
 This example creates a group with a description. It also includes a role and precedence.
 

@@ -1,5 +1,4 @@
-Delete a Cluster Snapshot
--------------------------
+**To delete a cluster snapshot**
 
 This example deletes a cluster snapshot.
 

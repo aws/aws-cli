@@ -1,4 +1,4 @@
-**To describe the attachment attribute of a network interface**
+**Example 1: To describe the attachment attribute of a network interface**
 
 This example command describes the ``attachment`` attribute of the specified network interface.
 
@@ -21,7 +21,7 @@ Output::
         }
     }
 
-**To describe the description attribute of a network interface**
+**Example 2: To describe the description attribute of a network interface**
 
 This example command describes the ``description`` attribute of the specified network interface.
 
@@ -38,7 +38,7 @@ Output::
         }
     }
 
-**To describe the groupSet attribute of a network interface**
+**Example 3: To describe the groupSet attribute of a network interface**
 
 This example command describes the ``groupSet`` attribute of the specified network interface.
 
@@ -58,7 +58,7 @@ Output::
         ]
     }
 
-**To describe the sourceDestCheck attribute of a network interface**
+**Example 4: To describe the sourceDestCheck attribute of a network interface**
 
 This example command describes the ``sourceDestCheck`` attribute of the specified network interface.
 

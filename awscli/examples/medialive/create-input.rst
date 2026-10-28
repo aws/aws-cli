@@ -25,8 +25,6 @@ Contents of ``input-hls-pull-news.json``::
         "Type": "URL_PULL"
     }
 
-**Output:**
-
 The output repeats back the contents of the JSON file, plus the following values. All parameters are ordered alphabetically.
 
 * ``Arn`` for the input. The last part of the ARN is the unique input ID.

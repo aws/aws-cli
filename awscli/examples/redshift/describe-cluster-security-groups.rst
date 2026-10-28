@@ -1,5 +1,4 @@
-Get a Description of All Cluster Security Groups
-------------------------------------------------
+**To get a description of all cluster security groups**
 
 This example returns a description of all cluster security groups for the account.
 By default, the output is in JSON format.

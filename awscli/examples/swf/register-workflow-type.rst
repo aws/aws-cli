@@ -1,4 +1,4 @@
-**Registering a Workflow Type**
+**To register a workflow type**
 
 To register a Workflow type with the AWS CLI, use the ``swf register-workflow-type`` command. ::
 

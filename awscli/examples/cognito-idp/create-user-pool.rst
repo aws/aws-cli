@@ -1,4 +1,4 @@
-**To create a minimally configured user pool**
+**Example 1: To create a minimally configured user pool**
 
 This example creates a user pool named MyUserPool using default values. There are no required attributes
 and no application clients. MFA and advanced security is disabled.
@@ -248,7 +248,7 @@ Output::
         }
     }
 
-**To create a user pool with two required attributes**
+**Example 2: To create a user pool with two required attributes**
 
 This example creates a user pool MyUserPool. The pool is configured to accept
 email as a username attribute. It also sets the email source address to a

@@ -1,4 +1,4 @@
-**To enable deletion protection**
+**Example 1: To enable deletion protection**
 
 This example enables deletion protection for the specified load balancer.
 
@@ -33,7 +33,7 @@ Output::
         ]
     }
 
-**To change the idle timeout**
+**Example 2: To change the idle timeout**
 
 This example changes the idle timeout value for the specified load balancer.
 
@@ -68,7 +68,7 @@ Output::
         ]
     }
 
-**To enable access logs**
+**Example 3: To enable access logs**
 
 This example enables access logs for the specified load balancer. Note that the S3 bucket must exist in the same region as the load balancer and must have a policy attached that grants access to the Elastic Load Balancing service.
 

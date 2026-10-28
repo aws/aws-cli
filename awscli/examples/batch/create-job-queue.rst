@@ -1,4 +1,4 @@
-**To create a low priority job queue with a single compute environment**
+**Example 1: To create a low priority job queue with a single compute environment**
 
 This example creates a job queue called `LowPriority` that uses the `M4Spot` compute environment.
 
@@ -27,7 +27,7 @@ Output::
         "jobQueueName": "LowPriority"
     }
 
-**To create a high priority job queue with two compute environments**
+**Example 2: To create a high priority job queue with two compute environments**
 
 This example creates a job queue called `HighPriority` that uses the `C4OnDemand` compute environment with an order of 1 and the `M4Spot` compute environment with an order of 2. The scheduler will attempt to place jobs on the `C4OnDemand` compute environment first.
 

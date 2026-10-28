@@ -1,4 +1,4 @@
-**Example 1: Upload an object to Amazon S3**
+**Example 1: To upload an object to Amazon S3**
 
 The following ``put-object`` example uploads an object to Amazon S3. ::
 
@@ -9,7 +9,7 @@ The following ``put-object`` example uploads an object to Amazon S3. ::
 
 For more information about uploading objects, see `Uploading Objects < http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html>`__ in the *Amazon S3 Developer Guide*.
 
-**Example 2: Upload a video file to Amazon S3**
+**Example 2: To upload a video file to Amazon S3**
 
 The following ``put-object`` example uploads a video file. ::
 

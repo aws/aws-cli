@@ -1,4 +1,4 @@
-**Creates a message template for messages that are sent through the SMS channel**
+**To create a message template for messages that are sent through the SMS channel**
 
 The following ``create-sms-template`` example creates a SMS message template. ::
 

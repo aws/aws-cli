@@ -1,5 +1,4 @@
-Get a Description of All Cluster Parameter Groups
--------------------------------------------------
+**To get a description of all cluster parameter groups**
 
 This example returns a description of all cluster parameter groups for the
 account, with column headers.  By default, the output is in JSON format.

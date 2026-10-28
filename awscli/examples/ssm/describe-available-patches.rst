@@ -1,4 +1,4 @@
-**To get available patches**
+**Example 1: To get available patches**
 
 The following ``describe-available-patches`` example retrieves details about all available patches for Windows Server 2019 that have a MSRC severity of Critical. ::
 
@@ -43,7 +43,7 @@ Output::
         ]
     }
 
-**To get details of a specific patch**
+**Example 2: To get details of a specific patch**
 
 The following ``describe-available-patches`` example retrieves details about the specified patch. ::
 

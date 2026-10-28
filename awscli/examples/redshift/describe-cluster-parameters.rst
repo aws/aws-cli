@@ -1,5 +1,4 @@
-Retrieve the Parameters for a Specified Cluster Parameter Group
----------------------------------------------------------------
+**To retrieve the parameters for a specified cluster parameter group**
 
 This example retrieves the parameters for the named parameter group.  By default, the output is in JSON format.
 

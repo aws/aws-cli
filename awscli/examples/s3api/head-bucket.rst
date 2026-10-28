@@ -1,3 +1,5 @@
+**To verify access to a bucket**
+
 The following command verifies access to a bucket named ``amzn-s3-demo-bucket``::
 
     aws s3api head-bucket --bucket amzn-s3-demo-bucket

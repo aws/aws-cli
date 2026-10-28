@@ -1,4 +1,4 @@
-**Example 1: Create a SigV4-enabled HealthLake data store**
+**Example 1: To create a SigV4-enabled HealthLake data store**
 
 The following ``create-fhir-datastore`` example demonstrates how to create a new data store in AWS HealthLake. ::
 
@@ -15,7 +15,7 @@ Output::
         "DatastoreId": "(Data store ID)"
     }
 
-**Example 2: Create a SMART on FHIR-enabled HealthLake data store**
+**Example 2: To create a SMART on FHIR-enabled HealthLake data store**
 
 The following ``create-fhir-datastore`` example demonstrates how to create a new SMART on FHIR-enabled data store in AWS HealthLake. ::
 

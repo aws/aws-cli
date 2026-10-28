@@ -1,3 +1,5 @@
+**To cancel a job**
+
 The following command cancels the specified job::
 
     aws importexport cancel-job --job-id EX1ID

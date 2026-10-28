@@ -1,4 +1,4 @@
-**To change the name of the Custom Authorizer**
+**Example 1: To change the name of the Custom Authorizer**
 
 Command::
 
@@ -16,7 +16,7 @@ Output::
         "id": "gfi4n3"
     }
 
-**To change the Lambda Function that is invoked by the Custom Authorizer**
+**Example 2: To change the Lambda Function that is invoked by the Custom Authorizer**
 
 Command::
 

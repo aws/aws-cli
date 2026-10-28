@@ -1,4 +1,4 @@
-**To create a managed compute environment with On-Demand instances**
+**Example 1: To create a managed compute environment with On-Demand instances**
 
 This example creates a managed compute environment with specific C4 instance types that are launched on demand. The compute environment is called `C4OnDemand`.
 
@@ -48,7 +48,7 @@ Output::
         "computeEnvironmentArn": "arn:aws:batch:us-east-1:012345678910:compute-environment/C4OnDemand"
     }
 
-**To create a managed compute environment with Spot Instances**
+**Example 2: To create a managed compute environment with Spot Instances**
 
 This example creates a managed compute environment with the M4 instance type that is launched when the Spot bid price is at or below 20% of the On-Demand price for the instance type. The compute environment is called `M4Spot`.
 

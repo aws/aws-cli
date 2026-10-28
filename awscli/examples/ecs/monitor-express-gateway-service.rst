@@ -1,4 +1,4 @@
-**To monitor an Express Gateway Service deployment**
+**Example 1: To monitor an Express Gateway Service deployment**
 
 The following ``monitor-express-gateway-service`` example monitors an Express Gateway Service deployment, showing all resources associated with the service. ::
 
@@ -8,7 +8,7 @@ This command displays an interactive monitoring interface rather than producing 
 
 For more information, see `Express Gateway Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-overview.html>`__ in the *Amazon Elastic Container Service Developer Guide*.
 
-**To monitor only resources that changed in the latest deployment**
+**Example 2: To monitor only resources that changed in the latest deployment**
 
 The following ``monitor-express-gateway-service`` example monitors an Express Gateway Service but only shows resources that have changed in the most recent deployment. ::
 
@@ -18,7 +18,7 @@ The following ``monitor-express-gateway-service`` example monitors an Express Ga
 
 For more information, see `Express Gateway Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-overview.html>`__ in the *Amazon Elastic Container Service Developer Guide*.
 
-**To monitor with a custom timeout**
+**Example 3: To monitor with a custom timeout**
 
 The following ``monitor-express-gateway-service`` example monitors an Express Gateway Service with a timeout of 60 minutes instead of the default 30 minutes. ::
 

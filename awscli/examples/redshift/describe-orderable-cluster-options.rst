@@ -1,5 +1,4 @@
-Describing All Orderable Cluster Options
-----------------------------------------
+**To describe all orderable cluster options**
 
 This example returns descriptions of all orderable cluster options.  By default, the output is in JSON format.
 

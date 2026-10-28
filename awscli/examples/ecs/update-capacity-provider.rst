@@ -1,4 +1,4 @@
-**Update the capacity provider in an ECS cluster**
+**To update the capacity provider in an ECS cluster**
 
 The following ``update-capacity-provider`` example shows how we can modify the parameters of the capacity provider in an ECS cluster. ::
 

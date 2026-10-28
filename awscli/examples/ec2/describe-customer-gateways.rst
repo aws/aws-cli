@@ -1,4 +1,4 @@
-**To describe your customer gateways**
+**Example 1: To describe your customer gateways**
 
 This example describes your customer gateways.
 
@@ -27,7 +27,7 @@ Output::
         ]
     }
 
-**To describe a specific customer gateway**
+**Example 2: To describe a specific customer gateway**
 
 This example describes the specified customer gateway.
 

@@ -1,6 +1,4 @@
-**To attach a policy to a root, OU, or account**
-
-**Example 1**
+**Example 1: To attach a policy to an OU**
 
 The following example shows how to attach a service control policy (SCP) to an OU: ::
 
@@ -8,7 +6,7 @@ The following example shows how to attach a service control policy (SCP) to an O
         --policy-id p-examplepolicyid111
         --target-id ou-examplerootid111-exampleouid111
 
-**Example 2**
+**Example 2: To attach a policy to an account**
 
 The following example shows how to attach a service control policy directly to an account: ::
 

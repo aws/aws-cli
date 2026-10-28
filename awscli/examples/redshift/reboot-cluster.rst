@@ -1,5 +1,4 @@
-Reboot a Cluster
-----------------
+**To reboot a cluster**
 
 This example reboots a cluster. By default, the output is in JSON format.
 

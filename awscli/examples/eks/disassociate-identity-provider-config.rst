@@ -1,4 +1,4 @@
-**Disassociate identity provider to your Amazon EKS Cluster**
+**To disassociate an identity provider from your Amazon EKS Cluster**
 
 The following ``disassociate-identity-provider-config`` example disassociates an identity provider to your Amazon EKS Cluster. ::
 

@@ -1,4 +1,4 @@
-**To create an HTTP load balancer**
+**Example 1: To create an HTTP load balancer**
 
 This example creates a load balancer with an HTTP listener in a VPC.
 
@@ -25,7 +25,7 @@ Output::
         "DNSName": "my-load-balancer-123456789.us-west-2.elb.amazonaws.com"
     }
 
-**To create an HTTPS load balancer**
+**Example 2: To create an HTTPS load balancer**
 
 This example creates a load balancer with an HTTPS listener in a VPC.
 
@@ -51,7 +51,7 @@ Output::
         "DNSName": "my-load-balancer-123456789.us-west-2.elb.amazonaws.com"
     }
 
-**To create an internal load balancer**
+**Example 3: To create an internal load balancer**
 
 This example creates an internal load balancer with an HTTP listener in a VPC.
 

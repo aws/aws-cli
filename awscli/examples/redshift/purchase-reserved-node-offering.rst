@@ -1,5 +1,4 @@
-Purchase a Reserved Node
-------------------------
+**To purchase a reserved node**
 
 This example shows how to purchase a reserved node offering. The ``reserved-node-offering-id`` is obtained by
 calling ``describe-reserved-node-offerings``.

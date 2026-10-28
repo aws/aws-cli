@@ -1,4 +1,4 @@
-**To describe the status of a single volume**
+**Example 1: To describe the status of a single volume**
 
 This example command describes the status for the volume ``vol-1234567890abcdef0``.
 
@@ -32,7 +32,7 @@ Output::
         ]
     }
 
-**To describe the status of impaired volumes**
+**Example 2: To describe the status of impaired volumes**
 
 This example command describes the status for all volumes that are impaired. In this example output, there are no impaired volumes.
 

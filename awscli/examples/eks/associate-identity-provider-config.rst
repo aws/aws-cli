@@ -1,4 +1,4 @@
-**Associate identity provider to your Amazon EKS Cluster**
+**To associate an identity provider with your Amazon EKS cluster**
 
 The following ``associate-identity-provider-config`` example associates an identity provider to your Amazon EKS Cluster. ::
 

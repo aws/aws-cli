@@ -1,4 +1,4 @@
-**[EC2-Classic] To delete a security group**
+**Example 1: To delete a security group (EC2-Classic)**
 
 This example deletes the security group named ``MySecurityGroup``. If the command succeeds, no output is returned.
 
@@ -6,7 +6,7 @@ Command::
 
     aws ec2 delete-security-group --group-name MySecurityGroup
 
-**[EC2-VPC] To delete a security group**
+**Example 2: To delete a security group (EC2-VPC)**
 
 This example deletes the security group with the ID ``sg-903004f8``. Note that you can't reference a security group for EC2-VPC by name. If the command succeeds, no output is returned.
 

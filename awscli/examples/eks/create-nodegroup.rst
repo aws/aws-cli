@@ -1,4 +1,4 @@
-**Example 1: Creates a managed node group for an Amazon EKS cluster**
+**Example 1: To create a managed node group for an Amazon EKS cluster**
 
 The following ``create-nodegroup`` example creates a managed node group for an Amazon EKS cluster. ::
 
@@ -49,7 +49,7 @@ Output::
 
 For more information, see `Creating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: Creates a managed node group for an Amazon EKS cluster with custom instance-types and disk-size**
+**Example 2: To create a managed node group for an Amazon EKS cluster with custom instance-types and disk-size**
 
 The following ``create-nodegroup`` example creates a managed node group for an Amazon EKS cluster with custom instance-types and disk-size. ::
 
@@ -105,7 +105,7 @@ Output::
 
 For more information, see `Creating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 3: Creates a managed node group for an Amazon EKS cluster with custom instance-types, disk-size, ami-type, capacity-type, update-config, labels, taints and tags.**
+**Example 3: To create a managed node group for an Amazon EKS cluster with custom instance-types, disk-size, ami-type, capacity-type, update-config, labels, taints and tags**
 
 The following ``create-nodegroup`` example creates a managed node group for an Amazon EKS cluster with custom instance-types, disk-size, ami-type, capacity-type, update-config, labels, taints and tags. ::
 

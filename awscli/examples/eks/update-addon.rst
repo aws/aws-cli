@@ -1,4 +1,4 @@
-**Example 1. To update an Amazon EKS add-on with service account role ARN**
+**Example 1: To update an Amazon EKS add-on with service account role ARN**
 
 The following ``update-addon`` example command updates an Amazon EKS add-on with service account role ARN. ::
 
@@ -27,7 +27,7 @@ Output::
 
 For more information, see `Managing Amazon EKS add-ons - Updating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#updating-an-add-on>`__ in the *Amazon EKS User Guide*.
 
-**Example 2. To update an Amazon EKS add-on with specific add-on version**
+**Example 2: To update an Amazon EKS add-on with specific add-on version**
 
 The following ``update-addon`` example command updates an Amazon EKS add-on with specific add-on version. ::
 
@@ -61,7 +61,7 @@ Output::
 
 For more information, see `Managing Amazon EKS add-ons - Updating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#updating-an-add-on>`__ in the *Amazon EKS User Guide*.
 
-**Example 3. To update an Amazon EKS add-on with custom configuration values and resolve conflicts details**
+**Example 3: To update an Amazon EKS add-on with custom configuration values and resolve conflicts details**
 
 The following ``update-addon`` example command updates an Amazon EKS add-on with custom configuration values and resolve conflicts details. ::
 
@@ -105,7 +105,7 @@ Output::
 
 For more information, see `Managing Amazon EKS add-ons - Updating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#updating-an-add-on>`__ in the *Amazon EKS User Guide*.
 
-**Example 4. To update an Amazon EKS add-on with custom JSON configuration values file**
+**Example 4: To update an Amazon EKS add-on with custom JSON configuration values file**
 
 The following ``update-addon`` example command updates an Amazon EKS add-on with custom JSON configuration values and resolve conflicts details. ::
 
@@ -165,7 +165,7 @@ Output::
 
 For more information, see `Managing Amazon EKS add-ons - Updating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#updating-an-add-on>`__ in the *Amazon EKS User Guide*.
 
-**Example 5. To update an Amazon EKS add-on with custom YAML configuration values file**
+**Example 5: To update an Amazon EKS add-on with custom YAML configuration values file**
 
 The following ``update-addon`` example command updates an Amazon EKS add-on with custom YAML configuration values and resolve conflicts details. ::
 

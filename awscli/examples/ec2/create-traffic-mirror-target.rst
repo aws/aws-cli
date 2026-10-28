@@ -1,4 +1,4 @@
-**To create a a Network Load Balancer traffic mirror target**
+**Example 1: To create a Network Load Balancer traffic mirror target**
 
 The following ``create-traffic-mirror-target`` example creates a  Network Load Balancer traffic mirror target. ::
     
@@ -20,7 +20,7 @@ Output::
         "ClientToken": "d5c090f5-8a0f-49c7-8281-72c796a21f72"
     }
 
-**To create a network traffic mirror target**
+**Example 2: To create a network traffic mirror target**
 
 The following ``create-traffic-mirror-target`` example creates a network interface Traffic Mirror target. ::
 

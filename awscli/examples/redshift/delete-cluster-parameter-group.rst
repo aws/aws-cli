@@ -1,5 +1,4 @@
-Delete a Cluster Parameter Group
---------------------------------
+**To delete a cluster parameter group**
 
 This example deletes a cluster parameter group.
 

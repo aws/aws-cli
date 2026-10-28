@@ -1,4 +1,4 @@
-**Retrieves information about a phone number**
+**To retrieve information about a phone number**
 
 The following ``phone-number-validate`` retrieves information about a phone number. ::
 

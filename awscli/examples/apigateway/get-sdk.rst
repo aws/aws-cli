@@ -1,4 +1,4 @@
-**To get the Android SDK for a REST API stage**
+**Example 1: To get the Android SDK for a REST API stage**
 
 Command::
 
@@ -11,7 +11,7 @@ Output::
         "contentDisposition": "attachment; filename=\"android_2016-02-22_23-52Z.zip\""
     }
 
-**To get the IOS SDK for a REST API stage**
+**Example 2: To get the IOS SDK for a REST API stage**
 
 Command::
 
@@ -24,7 +24,7 @@ Output::
         "contentDisposition": "attachment; filename=\"objectivec_2016-02-22_23-52Z.zip\""
     }
 
-**To get the Javascript SDK for a REST API stage**
+**Example 3: To get the Javascript SDK for a REST API stage**
 
 Command::
 

@@ -41,7 +41,7 @@ Output::
 
 For more information, see `IAM identifiers <https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html>`__ in the *AWS IAM User Guide*.
 
-**Example 3: To Create an IAM User with tags**
+**Example 3: To create an IAM user with tags**
 
 The following ``create-user`` command creates an IAM user named ``Bob`` with tags. This example uses the ``--tags`` parameter flag with the following 
 JSON-formatted tags: ``'{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'``. Alternatively, the ``--tags`` flag can be used with tags in the shorthand format: ``'Key=Department,Value=Accounting Key=Location,Value=Seattle'``. ::
@@ -74,7 +74,7 @@ Output::
 
 For more information, see `Tagging IAM users <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags_users.html>`__ in the *AWS IAM User Guide*.
 
-**Example 3: To create an IAM user with a set permissions boundary**
+**Example 4: To create an IAM user with a set permissions boundary**
 
 The following ``create-user`` command creates an IAM user named ``Bob`` with the permissions boundary of AmazonS3FullAccess. ::
 

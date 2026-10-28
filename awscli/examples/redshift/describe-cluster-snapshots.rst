@@ -1,5 +1,4 @@
-Get a Description of All Cluster Snapshots
-------------------------------------------
+**To get a description of all cluster snapshots**
 
 This example returns a description of all cluster snapshots for the
 account.  By default, the output is in JSON format.

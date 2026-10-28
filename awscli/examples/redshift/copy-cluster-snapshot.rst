@@ -1,7 +1,6 @@
-Get a Description of All Cluster Versions
------------------------------------------
+**To copy a cluster snapshot**
 
-This example returns a description of all cluster versions.  By default, the output is in JSON format.
+This example copies a cluster snapshot. By default, the output is in JSON format.
 
 Command::
 

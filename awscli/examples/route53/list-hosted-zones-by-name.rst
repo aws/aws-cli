@@ -1,3 +1,5 @@
+**Example 1: To list hosted zones ordered by domain name**
+
 The following command lists up to 100 hosted zones ordered by domain name::
 
     aws route53 list-hosted-zones-by-name
@@ -30,6 +32,8 @@ Output::
         "IsTruncated": false,
         "MaxItems": "100"
     }
+
+**Example 2: To list hosted zones beginning with a specified domain name**
 
 The following command lists hosted zones ordered by name, beginning with ``www.example.com``::
 

@@ -1,4 +1,4 @@
-**To describe Reserved Instances offerings**
+**Example 1: To describe Reserved Instances offerings**
 
 This example command describes all Reserved Instances available for purchase in the region.
 
@@ -53,7 +53,7 @@ Output::
             ...
         }
 
-**To describe your Reserved Instances offerings using options**
+**Example 2: To describe your Reserved Instances offerings using options**
 
 This example lists Reserved Instances offered by AWS with the following specifications: t1.micro instance types, Windows (Amazon VPC) product, and Heavy Utilization offerings.
 

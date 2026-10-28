@@ -1,4 +1,4 @@
-**Example 1: Configure a trail to log management events and data events by using advanced event selectors**
+**Example 1: To configure a trail to log management events and data events by using advanced event selectors**
 
 You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use advanced event selectors to log all available data event types. You can use either advanced event selectors or basic event selectors, but not both. If you apply advanced event selectors to a trail, any existing basic event selectors are overwritten. 
 
@@ -111,7 +111,7 @@ Output::
 
 For more information, see `Log events by using advanced event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced>`__ in the *AWS CloudTrail User Guide*. 
 
-**Example 2: Configure event selectors for a trail to log all management events and data events**
+**Example 2: To configure event selectors for a trail to log all management events and data events**
 
 You can configure up to 5 event selectors for a trail and up to 250 data resources for a trail. Event selectors are also referred to as basic event selectors. You can use event selectors to log management events and data events for S3 objects, Lambda functions, and DynnamoDB tables. To log data events for other resource types, you must use advanced event selectors.
 
@@ -150,7 +150,7 @@ Output::
 
 For more information, see `Log events by using basic event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-basic>`__ in the *AWS CloudTrail User Guide*. 
 
-**Example 3: Configure event selectors for a trail to log management events, all S3 data events on S3 objects, and all Lambda data events on functions in your account**
+**Example 3: To configure event selectors for a trail to log management events, all S3 data events on S3 objects, and all Lambda data events on functions in your account**
 
 The following ``put-event-selectors`` example creates an event selector for a trail named ``TrailName2`` that includes all management events, and all data events for all Amazon S3 buckets and AWS Lambda functions in the AWS account. ::
 

@@ -1,4 +1,4 @@
-**To list your custom routing accelerators** 
+**To list your custom routing accelerators**
 
 The following ``list-custom-routing-accelerators`` example lists the custom routing accelerators in an AWS account. ::
 

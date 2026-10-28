@@ -1,4 +1,4 @@
-**To gets information about environment members for an AWS Cloud9 development environment**
+**Example 1: To get information about environment members for an AWS Cloud9 development environment**
 
 This example gets information about environment members for the specified AWS Cloud9 development environment.
 
@@ -25,7 +25,7 @@ Output::
         ]
     }
 
-**To get information about the owner of an AWS Cloud9 development environment**
+**Example 2: To get information about the owner of an AWS Cloud9 development environment**
 
 This example gets information about the owner of the specified AWS Cloud9 development environment.
 
@@ -46,7 +46,7 @@ Output::
         ]
     }
 
-**To get information about an environment member for multiple AWS Cloud9 development environments**
+**Example 3: To get information about an environment member for multiple AWS Cloud9 development environments**
 
 This example gets information about the specified environment member for multiple AWS Cloud9 development environments.
 

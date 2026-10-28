@@ -1,4 +1,4 @@
-**Retrieves the content and settings of a message template for messages that are sent through the SMS channel**
+**To retrieve the content and settings of a message template for messages that are sent through the SMS channel**
 
 The following ``get-sms-template`` example retrieves the content and settings of a SMS message template. ::
 

@@ -1,4 +1,4 @@
-**Modify a parameter in a parameter group**
+**To modify a parameter in a parameter group**
 
 The following ``modify-cluster-parameter-group`` example modifies the *wlm_json_configuration* parameter for workload management. It accepts the parameters from a file that contains the JSON contents shown below. ::
 

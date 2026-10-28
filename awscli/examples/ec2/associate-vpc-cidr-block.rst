@@ -20,7 +20,7 @@ Output::
         "VpcId": "vpc-8EXAMPLE"
     }
 
-**Example 2:To associate an additional IPv4 CIDR block with a VPC**
+**Example 2: To associate an additional IPv4 CIDR block with a VPC**
 
 The following ``associate-vpc-cidr-block`` example associates the IPv4 CIDR block ``10.2.0.0/16`` with the specified VPC. ::
 

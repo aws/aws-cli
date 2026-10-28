@@ -1,3 +1,5 @@
+**To set the access control list for a bucket**
+
 This example grants ``full control`` to two AWS users (*user1@example.com* and *user2@example.com*) and ``read``
 permission to everyone::
 

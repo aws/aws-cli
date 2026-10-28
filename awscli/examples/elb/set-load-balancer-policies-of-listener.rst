@@ -1,4 +1,4 @@
-**To replace the policies associated with a listener**
+**Example 1: To replace the policies associated with a listener**
 
 This example replaces the policies that are currently associated with the specified listener.
 
@@ -7,7 +7,7 @@ Command::
     aws elb set-load-balancer-policies-of-listener --load-balancer-name my-load-balancer --load-balancer-port 443 --policy-names my-SSLNegotiation-policy
 
 
-**To remove all policies associated with your listener**
+**Example 2: To remove all policies associated with your listener**
 
 This example removes all policies that are currently associated with the specified listener.
 

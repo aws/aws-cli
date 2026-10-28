@@ -1,4 +1,4 @@
-**To add an AWS managed Config rule**
+**Example 1: To add an AWS managed Config rule**
 
 The following command provides JSON code to add an AWS managed Config rule::
 
@@ -27,7 +27,7 @@ If the command succeeds, AWS Config returns no output. To verify the rule config
 
 .. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-config-rules.html
 
-**To add a customer managed Config rule**
+**Example 2: To add a customer managed Config rule**
 
 The following command provides JSON code to add a customer managed Config rule::
 

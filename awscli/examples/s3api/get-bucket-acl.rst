@@ -1,3 +1,5 @@
+**To retrieve the access control list of a bucket**
+
 The following command retrieves the access control list for a bucket named ``amzn-s3-demo-bucket``::
 
     aws s3api get-bucket-acl --bucket amzn-s3-demo-bucket

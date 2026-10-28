@@ -1,5 +1,4 @@
-Create a Cluster with Minimal Parameters
-----------------------------------------
+**To create a cluster with minimal parameters**
 
 This example creates a cluster with the minimal set of parameters. By default, the output is in JSON format.
 

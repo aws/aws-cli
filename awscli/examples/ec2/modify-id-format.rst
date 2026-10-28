@@ -1,4 +1,4 @@
-**To enable the longer ID format for a resource**
+**Example 1: To enable the longer ID format for a resource**
 
 The following ``modify-id-format`` example enables the longer ID format for the ``instance`` resource type. ::
 
@@ -6,7 +6,7 @@ The following ``modify-id-format`` example enables the longer ID format for the 
         --resource instance \
         --use-long-ids
 
-**To disable the longer ID format for a resource**
+**Example 2: To disable the longer ID format for a resource**
 
 The following ``modify-id-format`` example disables the longer ID format for the ``instance`` resource type. ::
 

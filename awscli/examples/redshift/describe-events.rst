@@ -1,5 +1,4 @@
-Describe All Events
--------------------
+**To describe all events**
 
 this example returns all events. By default, the output is in JSON format.
 

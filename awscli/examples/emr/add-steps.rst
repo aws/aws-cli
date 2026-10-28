@@ -1,4 +1,4 @@
-**1. To add Custom JAR steps to a cluster**
+**Example 1: To add Custom JAR steps to a cluster**
 
 - Command::
 
@@ -21,7 +21,7 @@
         ]
     }
 
-**2. To add Streaming steps to a cluster**
+**Example 2: To add Streaming steps to a cluster**
 
 - Command::
 
@@ -61,7 +61,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
         ]
     }
 
-**3. To add a Streaming step with multiple files to a cluster (JSON only)**
+**Example 3: To add a Streaming step with multiple files to a cluster (JSON only)**
 
 - JSON (multiplefiles.json)::
 
@@ -105,7 +105,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
     }
 
 
-**4. To add Hive steps to a cluster**
+**Example 4: To add Hive steps to a cluster**
 
 - Command::
 
@@ -130,7 +130,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
     }
 
 
-**5. To add Pig steps to a cluster**
+**Example 5: To add Pig steps to a cluster**
 
 - Command::
 
@@ -155,7 +155,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
     }
 
 
-**6. To add Impala steps to a cluster**
+**Example 6: To add Impala steps to a cluster**
 
 - Command::
 

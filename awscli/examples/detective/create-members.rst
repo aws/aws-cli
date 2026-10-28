@@ -1,4 +1,4 @@
-**To invite member accounts to a behavior graph**
+**Example 1: To invite member accounts to a behavior graph**
 
 The following ``create-members`` example invites two AWS accounts to become member accounts in the behavior graph arn:aws:detective:us-east-1:111122223333:graph:123412341234. For each account, the request provides the AWS account ID and the account root user email address. The request includes a custom message to insert into the invitation email. ::
 
@@ -37,7 +37,7 @@ Output::
 
 For more information, see `Inviting member accounts to a behavior graph<https://docs.aws.amazon.com/detective/latest/adminguide/graph-admin-add-member-accounts.html>`__ in the *Amazon Detective Administration Guide*.
 
-**To invite member accounts without sending invitation emails**
+**Example 2: To invite member accounts without sending invitation emails**
 
 The following ``create-members`` example invites two AWS accounts to become member accounts in the behavior graph arn:aws:detective:us-east-1:111122223333:graph:123412341234. For each account, the request provides the AWS account ID and the account root user email address. The member accounts do not receive invitation emails. ::
 

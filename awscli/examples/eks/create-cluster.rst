@@ -1,4 +1,4 @@
-**To create a new cluster**
+**Example 1: To create a new cluster**
 
 This example command creates a cluster named ``prod`` in your default region.
 
@@ -32,7 +32,7 @@ Output::
         }
     }
 
-**To create a new cluster with private endpoint access and logging enabled**
+**Example 2: To create a new cluster with private endpoint access and logging enabled**
 
 This example command creates a cluster named ``example`` in your default region with public endpoint access disabled, private endpoint access enabled, and all logging types enabled.
 

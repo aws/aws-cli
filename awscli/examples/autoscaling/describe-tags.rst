@@ -1,4 +1,4 @@
-**To describe all tags**
+**Example 1: To describe all tags**
 
 This example describes all your tags. ::
 

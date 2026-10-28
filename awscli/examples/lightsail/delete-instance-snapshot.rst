@@ -1,4 +1,4 @@
-**title**
+**To delete a snapshot of an instance**
 
 The following ``delete-instance-snapshot`` example deletes the specified snapshot of an instance. ::
 

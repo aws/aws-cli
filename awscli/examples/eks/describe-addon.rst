@@ -1,4 +1,4 @@
-**Describe actively running EKS addon in your Amazon EKS cluster**
+**To describe an actively running EKS addon in your Amazon EKS cluster**
 
 The following ``describe-addon`` example actively running EKS addon in your Amazon EKS cluster. ::
 

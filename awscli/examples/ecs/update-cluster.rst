@@ -1,4 +1,4 @@
-**Example 1: Update ECS cluster enabling containerInsights**
+**Example 1: To update an ECS cluster to enable containerInsights**
 
 The following ``update-cluster`` updates the containerInsights value to ``enabled`` in an already created cluster. By default, it is disabled. ::
 
@@ -79,7 +79,7 @@ Output::
     }
 
 
-**Example 2: Update ECS cluster to set a default Service Connect namespace**
+**Example 2: To update an ECS cluster to set a default Service Connect namespace**
 
 The following ``update-cluster`` updates ECS cluster by setting a default Service Connect namespace. ::
 

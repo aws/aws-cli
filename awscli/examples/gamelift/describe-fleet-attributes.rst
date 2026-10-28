@@ -1,4 +1,4 @@
-**Example1: To view attributes for a list of fleets**
+**Example 1: To view attributes for a list of fleets**
 
 The following ``describe-fleet-attributes`` example retrieves fleet attributes for two specified fleets. As shown, the requested fleets are deployed with the same build, one for On-Demand instances and one for Spot instances, with some minor configuration differences. ::
 
@@ -55,7 +55,7 @@ Output::
         ]
     }
 
-**Example2: To request attributes for all fleets**
+**Example 2: To request attributes for all fleets**
 
 The following ``describe-fleet-attributes`` returns fleet attributes for all fleets with any status. This example illustrates the use of pagination parameters to return one fleet at a time. ::
 

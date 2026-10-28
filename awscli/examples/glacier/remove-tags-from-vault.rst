@@ -1,3 +1,5 @@
+**To remove a tag from a vault**
+
 The following command removes a tag with the key ``date`` from a vault named ``my-vault``::
 
     aws glacier remove-tags-from-vault --account-id - --vault-name my-vault --tag-keys date

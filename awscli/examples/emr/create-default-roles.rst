@@ -1,4 +1,4 @@
-**1. To create the default IAM role for EC2**
+**To create the default IAM role for EC2**
 
 - Command::
 

@@ -1,3 +1,5 @@
+**To put log events into a log stream**
+
 The following command puts log events to a log stream named ``20150601`` in the log group ``my-logs``::
 
     aws logs put-log-events --log-group-name my-logs --log-stream-name 20150601 --log-events file://events

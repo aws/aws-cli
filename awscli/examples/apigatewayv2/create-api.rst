@@ -1,4 +1,4 @@
-**To create an HTTP API**
+**Example 1: To create an HTTP API**
 
 The following ``create-api`` example creates an HTTP API by using quick create. You can use quick create to create an API with an AWS Lambda or HTTP integration, a default catch-all route, and a default stage that is configured to automatically deploy changes. The following command uses quick create to create an HTTP API that integrates with a Lambda function. ::
 
@@ -21,7 +21,7 @@ Output::
 
 For more information, see `Developing an HTTP API in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html>`__ in the *Amazon API Gateway Developer Guide*.
 
-**To create a WebSocket API**
+**Example 2: To create a WebSocket API**
 
 The following ``create-api`` example creates a WebSocket API with the specified name. ::
 

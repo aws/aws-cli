@@ -1,3 +1,5 @@
+**To package local artifacts and export a template**
+
 Following command exports a template named ``template.json`` by uploading local
 artifacts to S3 bucket ``bucket-name`` and writes the exported template to
 ``packaged-template.json``::

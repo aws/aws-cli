@@ -1,4 +1,4 @@
-**To get the encrypted password**
+**Example 1: To get the encrypted password**
 
 This example gets the encrypted password.
 
@@ -18,7 +18,7 @@ Output::
     DPGzKrF5yLlf3etP2L4ZR6CvG7K1hx7VKOQVN32Dajw=="
     }
 
-**To get the decrypted password**
+**Example 2: To get the decrypted password**
 
 This example gets the decrypted password.
 

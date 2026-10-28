@@ -1,3 +1,5 @@
+**To set configuration values**
+
 Given an empty config file, the following commands::
 
     $ aws configure set aws_access_key_id default_access_key

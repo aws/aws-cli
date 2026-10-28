@@ -1,6 +1,6 @@
-**Note: This command can only be used with HBase on AMI version 2.x and 3.x**
+**Example 1: To schedule a full HBase backup**
 
-**1. To schedule a full HBase backup**
+Note: This command can only be used with HBase on AMI version 2.x and 3.x.
 
 - Command::
 
@@ -13,7 +13,9 @@
     None
 
 
-**2. To schedule an incremental HBase backup**
+**Example 2: To schedule an incremental HBase backup**
+
+Note: This command can only be used with HBase on AMI version 2.x and 3.x.
 
 - Command::
 

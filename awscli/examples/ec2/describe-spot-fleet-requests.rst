@@ -1,4 +1,4 @@
-**To describe your Spot fleet requests**
+**Example 1: To describe your Spot fleet requests**
 
 This example describes all of your Spot fleet requests.
 
@@ -77,7 +77,7 @@ Output::
         ]
     }
 
-**To describe a Spot fleet request**
+**Example 2: To describe a Spot fleet request**
 
 This example describes the specified Spot fleet request.
 

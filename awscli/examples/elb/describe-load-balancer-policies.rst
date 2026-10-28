@@ -1,4 +1,4 @@
-**To describe all policies associated with a load balancer**
+**Example 1: To describe all policies associated with a load balancer**
 
 This example describes all of the policies associated with the specified load balancer.
 
@@ -46,7 +46,7 @@ Output::
         ]
     }
 
-**To describe a specific policy associated with a load balancer**
+**Example 2: To describe a specific policy associated with a load balancer**
 
 This example describes the specified policy associated with the specified load balancer.
 

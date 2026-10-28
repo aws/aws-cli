@@ -1,4 +1,4 @@
-**Example 1: Sync all local objects to the specified bucket**
+**Example 1: To sync all local objects to the specified bucket**
 
 The following ``sync`` command syncs objects from a local directory to the specified prefix and bucket by
 uploading the local files to S3.  A local file will require uploading if the size of the local file is different than
@@ -14,7 +14,7 @@ Output::
     upload: test.txt to s3://amzn-s3-demo-bucket/test.txt
     upload: test2.txt to s3://amzn-s3-demo-bucket/test2.txt
 
-**Example 2: Sync all S3 objects from the specified S3 bucket to another bucket**
+**Example 2: To sync all S3 objects from the specified S3 bucket to another bucket**
 
 The following ``sync`` command syncs objects under a specified prefix and bucket to objects under another specified
 prefix and bucket by copying S3 objects. An S3 object will require copying if the sizes of the two S3 objects differ,
@@ -31,7 +31,7 @@ Output::
     copy: s3://amzn-s3-demo-bucket/test.txt to s3://amzn-s3-demo-bucket2/test.txt
     copy: s3://amzn-s3-demo-bucket/test2.txt to s3://amzn-s3-demo-bucket2/test2.txt
 
-**Example 3: Sync all S3 objects from the specified S3 bucket to the local directory**
+**Example 3: To sync all S3 objects from the specified S3 bucket to the local directory**
 
 The following ``sync`` command syncs files from the specified S3 bucket to the local directory by
 downloading S3 objects. An S3 object will require downloading if the size of the S3 object differs from the size of the
@@ -48,7 +48,7 @@ Output::
     download: s3://amzn-s3-demo-bucket/test.txt to test.txt
     download: s3://amzn-s3-demo-bucket/test2.txt to test2.txt
 
-**Example 4: Sync all local objects to the specified bucket and delete all files that do not match**
+**Example 4: To sync all local objects to the specified bucket and delete all files that do not match**
 
 The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
 uploading the local files to S3.  Because of the ``--delete`` parameter, any files existing under the
@@ -65,7 +65,7 @@ Output::
     upload: test2.txt to s3://amzn-s3-demo-bucket/test2.txt
     delete: s3://amzn-s3-demo-bucket/test3.txt
 
-**Example 5: Sync all local objects to the specified bucket except ``.jpg`` files**
+**Example 5: To sync all local objects to the specified bucket except ``.jpg`` files**
 
 The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
 uploading the local files to S3. Because of the ``--exclude`` parameter, all files matching the pattern
@@ -80,7 +80,7 @@ Output::
 
     upload: test2.txt to s3://amzn-s3-demo-bucket/test2.txt
 
-**Example 6: Sync all local objects to the specified bucket except specified directory files**
+**Example 6: To sync all local objects to the specified bucket except specified directory files**
 
 The following ``sync`` command syncs files under a local directory to objects under a specified prefix and bucket by
 downloading S3 objects.  This example uses the ``--exclude`` parameter flag to exclude a specified directory
@@ -95,7 +95,7 @@ Output::
 
     download: s3://amzn-s3-demo-bucket/test1.txt to test1.txt
 
-**Example 7: Sync all objects between buckets in different regions**
+**Example 7: To sync all objects between buckets in different regions**
 
 The following ``sync`` command syncs files between two buckets in different regions::
 
@@ -107,7 +107,7 @@ Output::
 
     download: s3://my-us-west-2-bucket/test1.txt to s3://my-us-east-1-bucket/test1.txt
 
-**Example 8: Sync to an S3 access point**
+**Example 8: To sync to an S3 access point**
 
 The following ``sync`` command syncs the current directory to the access point (``myaccesspoint``)::
 

@@ -1,4 +1,4 @@
-**To describe Spot price history**
+**Example 1: To describe Spot price history**
 
 This example command returns the Spot Price history for m1.xlarge instances for a particular day in January.
 
@@ -35,7 +35,7 @@ Output::
         }
 
 
-**To describe Spot price history for Linux/UNIX Amazon VPC**
+**Example 2: To describe Spot price history for Linux/UNIX Amazon VPC**
 
 This example command returns the Spot Price history for m1.xlarge, Linux/UNIX Amazon VPC instances for a particular day in January.
 

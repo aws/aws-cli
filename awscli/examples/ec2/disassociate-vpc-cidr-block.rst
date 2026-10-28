@@ -1,4 +1,4 @@
-**To disassociate an IPv6 CIDR block from a VPC**
+**Example 1: To disassociate an IPv6 CIDR block from a VPC**
 
 This example disassociates an IPv6 CIDR block from a VPC using the association ID for the CIDR block.
 
@@ -19,7 +19,7 @@ Output::
         "VpcId": "vpc-a034d6c4"
     }
 
-**To disassociate an IPv4 CIDR block from a VPC**
+**Example 2: To disassociate an IPv4 CIDR block from a VPC**
 
 This example disassociates an IPv4 CIDR block from a VPC.
 

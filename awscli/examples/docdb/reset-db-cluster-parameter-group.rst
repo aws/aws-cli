@@ -1,4 +1,4 @@
-**To reset the specified parameter value to its defaults in an Amazon DocumentDB parameter group**
+**Example 1: To reset the specified parameter value to its defaults in an Amazon DocumentDB parameter group**
 
 The following ``reset-db-cluster-parameter-group`` example resets the parameter ``ttl_monitor`` in the Amazon DocumentDB parameter group ``custom3-6-param-grp`` to its default value. ::
 
@@ -14,7 +14,7 @@ Output::
 
 For more information, see `title <link>`__ in the *Amazon DocumentDB Developer Guide*.
 
-**To reset specified or all parameter values to their defaults in an Amazon DocumentDB parameter group**
+**Example 2: To reset specified or all parameter values to their defaults in an Amazon DocumentDB parameter group**
 
 The following ``reset-db-cluster-parameter-group`` example resets all parameters in the Amazon DocumentDB parameter group ``custom3-6-param-grp`` to their default value. ::
 

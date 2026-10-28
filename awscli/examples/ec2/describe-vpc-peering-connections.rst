@@ -1,4 +1,4 @@
-**To describe your VPC peering connections**
+**Example 1: To describe your VPC peering connections**
 
 This example describes all of your VPC peering connections.
 
@@ -63,7 +63,7 @@ Output::
     }
 
 
-**To describe specific VPC peering connections**
+**Example 2: To describe specific VPC peering connections**
 
 This example describes all of your VPC peering connections that are in the pending-acceptance state.
 

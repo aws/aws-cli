@@ -1,11 +1,3 @@
-These examples use ``us-east-1`` as the AWS Region for deployment. The command
-selects the AWS Region from ``--region``, the ``AWS_DEFAULT_REGION`` environment
-variable, or your AWS CLI configuration. You can use a different AWS Region.
-Endpoint and console URLs reflect the AWS Region used for the deployment. A
-``MultiRegion`` endpoint uses the global endpoint domain. The endpoint
-identifiers are fictitious and do not identify live resources.
-
-
 **Example 1: To create and deploy a starter application**
 
 The following ``deploy`` example creates a TypeScript starter in ``./my-app``
@@ -148,3 +140,10 @@ Output::
 
     https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+
+These examples use ``us-east-1`` as the AWS Region for deployment. The command
+selects the AWS Region from ``--region``, the ``AWS_DEFAULT_REGION`` environment
+variable, or your AWS CLI configuration. You can use a different AWS Region.
+Endpoint and console URLs reflect the AWS Region used for the deployment. A
+``MultiRegion`` endpoint uses the global endpoint domain. The endpoint
+identifiers are fictitious and do not identify live resources.

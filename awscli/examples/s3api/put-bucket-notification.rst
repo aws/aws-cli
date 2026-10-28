@@ -1,3 +1,5 @@
+**To apply a notification configuration to a bucket**
+
 The applies a notification configuration to a bucket named ``amzn-s3-demo-bucket``::
 
     aws s3api put-bucket-notification --bucket amzn-s3-demo-bucket --notification-configuration file://notification.json

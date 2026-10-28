@@ -1,3 +1,5 @@
+**To list the jobs for a vault**
+
 The following command lists in-progress and recently completed jobs for a vault named ``my-vault``::
 
     aws glacier list-jobs --account-id - --vault-name my-vault

@@ -1,4 +1,4 @@
-**Example 1: Delete a bucket**
+**Example 1: To delete a bucket**
 
 The following ``rb`` command removes a bucket.  In this example, the user's bucket is ``amzn-s3-demo-bucket``.  Note that the bucket must be empty in order to remove::
 
@@ -8,7 +8,7 @@ Output::
 
     remove_bucket: amzn-s3-demo-bucket
 
-**Example 2: Force delete a bucket**
+**Example 2: To force delete a bucket**
 
 The following ``rb`` command uses the ``--force`` parameter to first remove all of the objects in the bucket and then
 remove the bucket itself.  In this example, the user's bucket is ``amzn-s3-demo-bucket`` and the objects in ``amzn-s3-demo-bucket`` are

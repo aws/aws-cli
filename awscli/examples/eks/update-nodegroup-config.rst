@@ -1,4 +1,4 @@
-**Example 1: Update a managed node group to add new labels and taint to EKS worker node for an Amazon EKS cluster**
+**Example 1: To update a managed node group to add new labels and taint to EKS worker node for an Amazon EKS cluster**
 
 The following ``update-nodegroup-config`` example updates a managed node group to add new labels and taint to EKS worker node for an Amazon EKS cluster. ::
 
@@ -32,7 +32,7 @@ Output::
 
 For more information, see `Updating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: Update a managed node group to remove labels and taint for the EKS worker node for an Amazon EKS cluster**
+**Example 2: To update a managed node group to remove labels and taint for the EKS worker node for an Amazon EKS cluster**
 
 The following ``update-nodegroup-config`` example updates a managed node group to remove labels and taint for the EKS worker node for an Amazon EKS cluster. ::
 
@@ -66,7 +66,7 @@ Output::
 
 For more information, see `Updating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 3: Update a managed node group to remove and add labels and taint for the EKS worker node for an Amazon EKS cluster**
+**Example 3: To update a managed node group to remove and add labels and taint for the EKS worker node for an Amazon EKS cluster**
 
 The following ``update-nodegroup-config`` example updates a managed node group to remove and add labels and taint for the EKS worker node for an Amazon EKS cluster. ::
 
@@ -109,7 +109,7 @@ Output::
 For more information, see `Updating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
 
-**Example 4: Update a managed node group to update scaling-config and update-config for the EKS worker node for an Amazon EKS cluster**
+**Example 4: To update a managed node group to update scaling-config and update-config for the EKS worker node for an Amazon EKS cluster**
 
 The following ``update-nodegroup-config`` example updates a managed node group to update scaling-config and update-config for the EKS worker node for an Amazon EKS cluster. ::
 

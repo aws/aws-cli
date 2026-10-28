@@ -1,5 +1,4 @@
-Get a Description of All Cluster Subnet Groups
-----------------------------------------------
+**To get a description of all cluster subnet groups**
 
 This example returns a description of all cluster subnet groups.  By default, the output is in JSON format.
 

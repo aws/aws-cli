@@ -1,4 +1,4 @@
-**List all the node groups in an Amazon EKS cluster**
+**To list all the node groups in an Amazon EKS cluster**
 
 The following ``list-nodegroups`` example list all the node groups in an Amazon EKS cluster. ::
 

@@ -1,4 +1,4 @@
-**Activate a contact's contact channel**
+**To activate a contact's contact channel**
 
 The following ``activate-contact-channel`` example activates a contact channel and makes it usable as part of an incident. ::
 

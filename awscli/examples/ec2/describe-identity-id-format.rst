@@ -1,4 +1,4 @@
-**To describe the ID format for an IAM role**
+**Example 1: To describe the ID format for an IAM role**
 
 The following ``describe-identity-id-format`` example describes the ID format received by instances created by the IAM role ``EC2Role`` in your AWS account. ::
 
@@ -18,7 +18,7 @@ The following output indicates that instances created by this role receive IDs i
         ]
     }
 
-**To describe the ID format for an IAM user**
+**Example 2: To describe the ID format for an IAM user**
 
 The following ``describe-identity-id-format`` example describes the ID format received by snapshots created by the IAM user ``AdminUser`` in your AWS account. ::
 

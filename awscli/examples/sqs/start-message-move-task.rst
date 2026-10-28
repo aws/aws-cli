@@ -1,4 +1,4 @@
-*Example 1: *To start a message move task**
+**Example 1: To start a message move task**
 
 The following ``start-message-move-task`` example starts a message move task to redrive messages from the specified dead-letter queue to the source queue. ::
 
@@ -13,7 +13,7 @@ Output::
 
 For more information, see `This is the topic title <https://link.to.the/topic/page>`__ in the *Name of your guide*.
 
-*Example 2: *To start a message move task with a maximum rate**
+**Example 2: To start a message move task with a maximum rate**
 
 The following ``start-message-move-task`` example starts a message move task to redrive messages from the specified dead-letter queue to the specified destination queue at a maximum rate of 50 messages per second.  ::
 

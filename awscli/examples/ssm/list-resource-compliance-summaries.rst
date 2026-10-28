@@ -1,4 +1,4 @@
-**To list resource-level compliance summary counts**
+**Example 1: To list resource-level compliance summary counts**
 
 This example lists resource-level compliance summary counts.
 
@@ -80,7 +80,7 @@ Output::
         "NextToken": "--token string truncated--"
     }
 
-**To list resource-level compliance summaries for a specific compliance type**
+**Example 2: To list resource-level compliance summaries for a specific compliance type**
 
 This example lists resource-level compliance summaries for the Patch compliance type.
 

@@ -1,5 +1,4 @@
-Reset Parameters in a Parameter Group
--------------------------------------
+**To reset parameters in a parameter group**
 
 This example shows how to reset all of the parameters in a parameter group.
 

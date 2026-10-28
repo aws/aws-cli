@@ -1,3 +1,5 @@
+**To deploy a template to a stack**
+
 Following command deploys template named ``template.json`` to a stack named
 ``my-new-stack``::
 

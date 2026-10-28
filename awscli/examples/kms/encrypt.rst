@@ -1,4 +1,4 @@
-**Example 1: To encrypt the contents of a file on Linux or MacOS**
+**Example 1: To encrypt the contents of a file (Linux and macOS)**
 
 The following ``encrypt`` command demonstrates the recommended way to encrypt data with the AWS CLI. ::
 
@@ -31,7 +31,7 @@ The command does several things:
 
     The final part of the command (``> ExampleEncryptedFile``) saves the binary ciphertext to a file to make decryption easier. For an example command that uses the AWS CLI to decrypt data, see the `decrypt examples <decrypt.html#examples>`_.
 
-**Example 2: Using the AWS CLI to encrypt data on Windows**
+**Example 2: To encrypt the contents of a file (Windows)**
 
 This example is the same as the previous one, except that it uses the ``certutil`` tool instead of ``base64``. This procedure requires two commands, as shown in the following example. ::
 
@@ -43,7 +43,7 @@ This example is the same as the previous one, except that it uses the ``certutil
 
     certutil -decode C:\Temp\ExampleEncryptedFile.base64 C:\Temp\ExampleEncryptedFile
 
-**Example 3: Encrypting with an asymmetric KMS key**
+**Example 3: To encrypt the contents of a file with an asymmetric KMS key**
 
 The following ``encrypt`` command shows how to encrypt plaintext with an asymmetric KMS key. The ``--encryption-algorithm`` parameter is required. As in all ``encrypt`` CLI commands, the ``plaintext`` parameter must be base64-encoded, or you must use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file. ::
 

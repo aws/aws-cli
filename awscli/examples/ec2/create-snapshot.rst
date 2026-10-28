@@ -1,4 +1,4 @@
-**To create a snapshot**
+**Example 1: To create a snapshot**
 
 This example command creates a snapshot of the volume with a volume ID of ``vol-1234567890abcdef0`` and a short description to identify the snapshot.
 
@@ -21,7 +21,7 @@ Output::
         "SnapshotId": "snap-066877671789bd71b"
     }
 
-**To create a snapshot with tags**
+**Example 2: To create a snapshot with tags**
 
 This example command creates a snapshot and applies two tags: purpose=prod and costcenter=123.
 

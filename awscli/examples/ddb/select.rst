@@ -1,4 +1,4 @@
-**To scan an entire table**
+**Example 1: To scan an entire table**
 
 This example scans the entire *MusicCollection* table, and then narrows the
 results to songs by the artist "No One You Know". For each item, only the album
@@ -19,7 +19,7 @@ Output::
       AlbumTitle: "Blue Sky Blues"
     ScannedCount: 3
 
-**To query for specific primary keys**
+**Example 2: To query for specific primary keys**
 
 This example queries items in the *MusicCollection* table. The table has a
 hash-and-range primary key (*Artist* and *SongTitle*), but this query only

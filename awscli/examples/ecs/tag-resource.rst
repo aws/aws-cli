@@ -1,4 +1,4 @@
-**To tag a resource**
+**Example 1: To tag a resource**
 
 The following ``tag-resource`` example adds a single tag to the specified resource. ::
 
@@ -8,7 +8,7 @@ The following ``tag-resource`` example adds a single tag to the specified resour
 
 This command produces no output.
 
-**To add multiple tags to a resource**
+**Example 2: To add multiple tags to a resource**
 
 The following ``tag-resource`` example adds multiple tags to the specified resource. ::
 

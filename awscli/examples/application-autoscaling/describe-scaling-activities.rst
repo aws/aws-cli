@@ -27,7 +27,7 @@ Output::
 
 For more information, see `Scaling activities for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scaling-activities.html>`__ in the *Application Auto Scaling User Guide*.
 
-**Example 2:  To describe scaling activities for the specified DynamoDB table**
+**Example 2: To describe scaling activities for the specified DynamoDB table**
 
 The following ``describe-scaling-activities`` example describes the scaling activities for a DynamoDB table called ``TestTable``. The output shows scaling activities initiated by two different scheduled actions. ::
 

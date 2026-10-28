@@ -1,4 +1,4 @@
-**Example 1: Update the Kubernetes version or AMI version of an Amazon EKS managed node group**
+**Example 1: To update the Kubernetes version or AMI version of an Amazon EKS managed node group to the latest available version**
 
 The following ``update-nodegroup-version`` example updates the Kubernetes version or AMI version of an Amazon EKS managed node group to the latest available version for your Kubernetes cluster. ::
 
@@ -31,7 +31,7 @@ Output::
 
 For more information, see `Updating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: Update the Kubernetes version or AMI version of an Amazon EKS managed node group**
+**Example 2: To update the Kubernetes version or AMI version of an Amazon EKS managed node group to a specified AMI release version**
 
 The following ``update-nodegroup-version`` example updates the Kubernetes version or AMI version of an Amazon EKS managed node group to the specified AMI release version. ::
 

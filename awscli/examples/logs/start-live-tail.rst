@@ -1,3 +1,5 @@
+**To start a Live Tail session on a log group**
+
 The following command starts a Live Tail session on a log group named ``my-logs``::
 
     aws logs start-live-tail --log-group-identifiers arn:aws:logs:us-east-1:111111222222:log-group:my-logs

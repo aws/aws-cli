@@ -1,4 +1,4 @@
-**To run a workflow**
+**Example 1: To run a workflow**
 
 The following ``start-run`` example runs a workflow with ID ``1234567``. ::
 
@@ -34,7 +34,7 @@ Output::
 
 For more information, see `Starting a run <https://docs.aws.amazon.com/omics/latest/dev/starting-a-run.html>`__ in the *AWS HealthOmics User Guide*.
 
-**To load source files from Amazon Omics**
+**Example 2: To load source files from Amazon Omics**
 
 You can also load source files from Amazon Omics storage, by using service-specific URIs. The following example `workflow-inputs.json` file uses Amazon Omics URIs for read set and reference genome sources. ::
 

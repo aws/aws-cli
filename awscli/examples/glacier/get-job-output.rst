@@ -1,3 +1,5 @@
+**To get the output of a job**
+
 The following command saves the output from a vault inventory job to a file in the current directory named ``output.json``::
 
     aws glacier get-job-output --account-id - --vault-name my-vault --job-id zbxcm3Z_3z5UkoroF7SuZKrxgGoDc3RloGduS7Eg-RO47Yc6FxsdGBgf_Q2DK5Ejh18CnTS5XW4_XqlNHS61dsO4CnMW output.json

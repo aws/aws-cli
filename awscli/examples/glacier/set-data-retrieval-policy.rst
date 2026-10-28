@@ -1,3 +1,5 @@
+**To set the data retrieval policy for an account**
+
 The following command configures a data retrieval policy for the in-use account::
 
     aws glacier set-data-retrieval-policy --account-id - --policy file://data-retrieval-policy.json

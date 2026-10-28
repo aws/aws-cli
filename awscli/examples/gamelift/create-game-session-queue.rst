@@ -1,4 +1,4 @@
-**Example1: To set up an ordered game session queue**
+**Example 1: To set up an ordered game session queue**
 
 The following ``create-game-session-queue`` example creates a new game session queue with destinations in two regions. It also configures the queue so that game session requests time out after waiting 10 minutes for placement. Since no latency policies are defined, GameLift attempts to place all game sessions with the first destination listed. ::
 
@@ -32,7 +32,7 @@ Output::
         ]
     }
 
-**Example2: To set up a game session queue with player latency policies**
+**Example 2: To set up a game session queue with player latency policies**
 
 The following ``create-game-session-queue`` example creates a new game session queue with two player latency policies. The first policy sets a 100ms latency cap that is enforced during the first minute of a game session placement attempt. The second policy raises the latency cap to 200ms until the placement request times out at 3 minutes. ::
 

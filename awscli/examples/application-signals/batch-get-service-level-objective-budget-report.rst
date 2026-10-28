@@ -3,8 +3,8 @@
 The following ``batch-get-service-level-objective-budget-report`` example retrieves one or more service level objective (SLO) budget reports. ::
 
     aws application-signals batch-get-service-level-objective-budget-report \
-    --timestamp 1735059869 \
-    --slo-ids "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName1" "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName2"
+        --timestamp 1735059869 \
+        --slo-ids "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName1" "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName2"
 
 Output::
 

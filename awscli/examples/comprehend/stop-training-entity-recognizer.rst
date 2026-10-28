@@ -2,7 +2,7 @@
 
 The following ``stop-training-entity-recognizer`` example stops the training of an entity recognizer model while in-progress. ::
 
-    aws comprehend stop-training-entity-recognizer
+    aws comprehend stop-training-entity-recognizer \
         --entity-recognizer-arn "arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/examplerecognizer1"
 
 This command produces no output.

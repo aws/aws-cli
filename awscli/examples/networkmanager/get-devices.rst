@@ -3,8 +3,7 @@
 The following ``get-devices`` example gets the devices in the specified global network. ::
 
     aws networkmanager get-devices \
-        --global-network-id global-network-01231231231231231 \
-        --region us-west-2
+        --global-network-id global-network-01231231231231231
 
 Output::
 

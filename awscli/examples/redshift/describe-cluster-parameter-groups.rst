@@ -21,7 +21,8 @@ Result::
 
 You can also obtain the same information in text format using the ``--output text`` option. ::
 
-    aws redshift describe-cluster-parameter-groups --output text
+    aws redshift describe-cluster-parameter-groups \
+        --output text
 
 Result::
 

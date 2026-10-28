@@ -3,7 +3,7 @@
 The following ``delete-replication-subnet-group`` example deletes a subnet group. ::
 
     aws dms delete-replication-subnet-group \
-    --replication-subnet-group-identifier my-subnet-group
+        --replication-subnet-group-identifier my-subnet-group
 
 Output::
 

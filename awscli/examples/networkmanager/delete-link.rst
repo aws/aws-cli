@@ -3,9 +3,8 @@
 The following ``delete-link`` example deletes the specified link from the specified global network. ::
 
     aws networkmanager delete-link \
-        --global-network-id global-network-01231231231231231  \
-        --link-id link-11112222aaaabbbb1 \
-        --region us-west-2
+        --global-network-id global-network-01231231231231231 \
+        --link-id link-11112222aaaabbbb1
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``accept-handshake`` example accepts a handshake on behalf of Juan's account and thus agrees to the invitation. Bill, the owner of an organization, has previously invited Juan's account to join his organization. ::
 
-    aws organizations accept-handshake --handshake-id h-examplehandshakeid111
+    aws organizations accept-handshake \
+        --handshake-id h-examplehandshakeid111
 
 The output shows the following: ::
 

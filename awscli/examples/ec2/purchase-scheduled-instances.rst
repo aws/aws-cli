@@ -2,7 +2,8 @@
 
 The following ``purchase-scheduled-instances`` example purchases a Scheduled Instance. ::
 
-    aws ec2 purchase-scheduled-instances --purchase-requests file://purchase-request.json
+    aws ec2 purchase-scheduled-instances \
+        --purchase-requests file://purchase-request.json
 
 Purchase-request.json::
 

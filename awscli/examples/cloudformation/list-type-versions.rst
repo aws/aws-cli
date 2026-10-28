@@ -3,11 +3,10 @@
 The following ``list-type-versions`` example returns summary information about the versions of an extension. ::
 
     aws cloudformation list-type-versions \
-      --endpoint https://example.com \
-      --region us-west-2 \
-      --type RESOURCE \
-      --type-name My::Resource::Example \
-      --publisher-id 123456789012
+        --endpoint https://example.com \
+        --type RESOURCE \
+        --type-name My::Resource::Example \
+        --publisher-id 123456789012
 
 This command produces no output.
 

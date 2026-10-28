@@ -2,7 +2,11 @@
 
 The following ``create-load-balancer`` example creates a load balancer with an HTTP listener in a VPC. ::
 
-    aws elb create-load-balancer --load-balancer-name my-load-balancer --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" --subnets subnet-15aaab61 --security-groups sg-a61988c3
+    aws elb create-load-balancer \
+        --load-balancer-name my-load-balancer \
+        --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" \
+        --subnets subnet-15aaab61 \
+        --security-groups sg-a61988c3
 
 Output::
 
@@ -13,7 +17,10 @@ Output::
 
 The following ``create-load-balancer`` example creates a load balancer with an HTTP listener in EC2-Classic. ::
 
-    aws elb create-load-balancer --load-balancer-name my-load-balancer --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" --availability-zones us-west-2a us-west-2b
+    aws elb create-load-balancer \
+        --load-balancer-name my-load-balancer \
+        --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" \
+        --availability-zones us-west-2a us-west-2b
 
 Output::
 
@@ -25,7 +32,11 @@ Output::
 
 The following ``create-load-balancer`` example creates a load balancer with an HTTPS listener in a VPC. ::
 
-    aws elb create-load-balancer --load-balancer-name my-load-balancer --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" "Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80,SSLCertificateId=arn:aws:iam::123456789012:server-certificate/my-server-cert" --subnets subnet-15aaab61 --security-groups sg-a61988c3
+    aws elb create-load-balancer \
+        --load-balancer-name my-load-balancer \
+        --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" "Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80,SSLCertificateId=arn:aws:iam::123456789012:server-certificate/my-server-cert" \
+        --subnets subnet-15aaab61 \
+        --security-groups sg-a61988c3
 
 Output::
 
@@ -35,7 +46,10 @@ Output::
 
 The following ``create-load-balancer`` example creates a load balancer with an HTTPS listener in EC2-Classic. ::
 
-    aws elb create-load-balancer --load-balancer-name my-load-balancer --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" "Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80,SSLCertificateId=arn:aws:iam::123456789012:server-certificate/my-server-cert" --availability-zones us-west-2a us-west-2b
+    aws elb create-load-balancer \
+        --load-balancer-name my-load-balancer \
+        --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" "Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80,SSLCertificateId=arn:aws:iam::123456789012:server-certificate/my-server-cert" \
+        --availability-zones us-west-2a us-west-2b
 
 Output::
 
@@ -47,7 +61,12 @@ Output::
 
 The following ``create-load-balancer`` example creates an internal load balancer with an HTTP listener in a VPC. ::
 
-    aws elb create-load-balancer --load-balancer-name my-load-balancer --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" --scheme internal --subnets subnet-a85db0df --security-groups sg-a61988c3
+    aws elb create-load-balancer \
+        --load-balancer-name my-load-balancer \
+        --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" \
+        --scheme internal \
+        --subnets subnet-a85db0df \
+        --security-groups sg-a61988c3
 
 Output::
 

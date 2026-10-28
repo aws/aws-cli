@@ -2,7 +2,8 @@
 
 The following ``start-crawler`` example starts a crawler. ::
 
-    aws glue start-crawler --name my-crawler
+    aws glue start-crawler \
+        --name my-crawler
 
 Output::
 

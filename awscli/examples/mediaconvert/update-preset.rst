@@ -4,7 +4,7 @@ The following ``update-preset`` example replaces the description for the specifi
 
     aws mediaconvert update-preset \
         --name Customer1 \
-        --description "New description text."
+        --description "New description text." \
         --endpoint-url https://abcd1234.mediaconvert.us-west-2.amazonaws.com
 
 This command produces no output.

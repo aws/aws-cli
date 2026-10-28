@@ -4,8 +4,7 @@ The following ``update-custom-metric`` example updates a custom metric to have a
 
     aws iot update-custom-metric \
         --metric-name batteryPercentage \
-        --display-name 'remaining battery percentage on device' \
-        --region us-east-1
+        --display-name 'remaining battery percentage on device'
 
 Output::
 

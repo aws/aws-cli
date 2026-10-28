@@ -4,7 +4,7 @@ The following ``update-domain-contact`` example updates the contact information 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
-    aws route53domains update-domain-contact \ 
+    aws route53domains update-domain-contact \
         --region us-east-1 \
         --cli-input-json file://C:\temp\update-domain-contact.json
 

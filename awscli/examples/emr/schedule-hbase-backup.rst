@@ -2,9 +2,14 @@
 
 The following ``schedule-hbase-backup`` example schedules a full HBase backup. This command can only be used with HBase on AMI version 2.x and 3.x. ::
 
-    aws emr schedule-hbase-backup --cluster-id j-XXXXXXYY --type full --dir
-        s3://amzn-s3-demo-bucket/backup --interval 10 --unit hours --start-time
-        2014-04-21T05:26:10Z --consistent
+    aws emr schedule-hbase-backup \
+        --cluster-id j-XXXXXXYY \
+        --type full \
+        --dir s3://amzn-s3-demo-bucket/backup \
+        --interval 10 \
+        --unit hours \
+        --start-time 2014-04-21T05:26:10Z \
+        --consistent
 
 Output::
 
@@ -15,9 +20,14 @@ Output::
 
 The following ``schedule-hbase-backup`` example schedules an incremental HBase backup. This command can only be used with HBase on AMI version 2.x and 3.x. ::
 
-    aws emr schedule-hbase-backup --cluster-id j-XXXXXXYY --type incremental
-        --dir s3://amzn-s3-demo-bucket/backup --interval 30 --unit minutes --start-time
-        2014-04-21T05:26:10Z --consistent
+    aws emr schedule-hbase-backup \
+        --cluster-id j-XXXXXXYY \
+        --type incremental \
+        --dir s3://amzn-s3-demo-bucket/backup \
+        --interval 30 \
+        --unit minutes \
+        --start-time 2014-04-21T05:26:10Z \
+        --consistent
 
 Output::
 

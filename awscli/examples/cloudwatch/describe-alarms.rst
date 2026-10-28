@@ -2,7 +2,8 @@
 
 The following ``describe-alarms`` example provides information about the alarm named "myalarm". ::
 
-    aws cloudwatch describe-alarms --alarm-names "myalarm"
+    aws cloudwatch describe-alarms \
+        --alarm-names "myalarm"
 
 Output::
 

@@ -2,7 +2,9 @@
 
 The following ``create-db-security-group`` example creates a new Amazon RDS DB security group. ::
 
-    aws rds create-db-security-group --db-security-group-name mysecgroup --db-security-group-description "My Test Security Group"
+    aws rds create-db-security-group \
+        --db-security-group-name mysecgroup \
+        --db-security-group-description "My Test Security Group"
 
 In the example, the new DB security group is named ``mysecgroup`` and has a description.
 

@@ -2,7 +2,8 @@
 
 The following ``describe-cluster-parameters`` example retrieves the parameters for the named parameter group.  By default, the output is in JSON format. ::
 
-    aws redshift describe-cluster-parameters --parameter-group-name myclusterparametergroup
+    aws redshift describe-cluster-parameters \
+        --parameter-group-name myclusterparametergroup
 
 Result::
 
@@ -31,7 +32,9 @@ Result::
 
 You can also obtain the same information in text format using the ``--output text`` option. ::
 
-    aws redshift describe-cluster-parameters --parameter-group-name myclusterparametergroup --output text
+    aws redshift describe-cluster-parameters \
+        --parameter-group-name myclusterparametergroup \
+        --output text
 
 Result::
 

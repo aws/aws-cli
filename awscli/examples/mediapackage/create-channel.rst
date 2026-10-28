@@ -2,7 +2,8 @@
 
 The following ``create-channel`` example creates a channel named ``sportschannel`` in the current account. ::
 
-    aws mediapackage create-channel --id sportschannel
+    aws mediapackage create-channel \
+        --id sportschannel
 
 Output::
 

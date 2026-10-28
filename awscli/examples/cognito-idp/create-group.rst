@@ -2,7 +2,10 @@
 
 The following ``create-group`` example creates a group with a description. ::
 
-    aws cognito-idp create-group --user-pool-id us-west-2_aaaaaaaaa --group-name MyNewGroup --description "New group."
+    aws cognito-idp create-group \
+        --user-pool-id us-west-2_aaaaaaaaa \
+        --group-name MyNewGroup \
+        --description "New group."
 
 Output::
 
@@ -20,7 +23,12 @@ Output::
 
 The following ``create-group`` example creates a group with a description. It also includes a role and precedence. ::
 
-    aws cognito-idp create-group --user-pool-id us-west-2_aaaaaaaaa --group-name MyNewGroupWithRole --description "New group with a role." --role-arn arn:aws:iam::111111111111:role/MyNewGroupRole --precedence 2
+    aws cognito-idp create-group \
+        --user-pool-id us-west-2_aaaaaaaaa \
+        --group-name MyNewGroupWithRole \
+        --description "New group with a role." \
+        --role-arn arn:aws:iam::111111111111:role/MyNewGroupRole \
+        --precedence 2
 
 Output::
 

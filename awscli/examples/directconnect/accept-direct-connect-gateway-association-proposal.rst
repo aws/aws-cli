@@ -2,10 +2,12 @@
 
 The following ``accept-direct-connect-gateway-association-proposal`` example accepts the specified proposal. ::
 
-    aws directconnect  accept-direct-connect-gateway-association-proposal \
+    aws directconnect accept-direct-connect-gateway-association-proposal \
         --direct-connect-gateway-id 11460968-4ac1-4fd3-bdb2-00599EXAMPLE \
         --proposal-id cb7f41cb-8128-43a5-93b1-dcaedEXAMPLE \
         --associated-gateway-owner-account 111122223333
+
+Output::
 
     {
         "directConnectGatewayAssociation": {

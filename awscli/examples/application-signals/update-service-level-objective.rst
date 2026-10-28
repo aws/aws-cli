@@ -3,7 +3,7 @@
 The following ``update-service-level-objective`` example updates an existing service level objective (SLO). ::
 
     aws application-signals update-service-level-objective \
-    --cli-input-json file://update-slo.json
+        --cli-input-json file://update-slo.json
 
 Contents of ``update-slo.json``::
 

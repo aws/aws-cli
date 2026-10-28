@@ -2,7 +2,10 @@
 
 The following ``validate-configuration-settings`` example validates a CloudWatch custom metrics config document. ::
 
-    aws elasticbeanstalk validate-configuration-settings --application-name my-app --environment-name my-env --option-settings file://options.json
+    aws elasticbeanstalk validate-configuration-settings \
+        --application-name my-app \
+        --environment-name my-env \
+        --option-settings file://options.json
 
 ``options.json`` is a JSON document that includes one or more configuration settings to validate::
 

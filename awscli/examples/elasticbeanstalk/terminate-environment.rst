@@ -2,7 +2,8 @@
 
 The following ``terminate-environment`` example terminates an Elastic Beanstalk environment named ``my-env``. ::
 
-    aws elasticbeanstalk terminate-environment --environment-name my-env
+    aws elasticbeanstalk terminate-environment \
+        --environment-name my-env
 
 Output::
 

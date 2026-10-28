@@ -4,8 +4,7 @@ The following ``modify-db-cluster-parameter-group`` example modifies the values 
 
     aws rds modify-db-cluster-parameter-group \
         --db-cluster-parameter-group-name mydbclusterpg \
-        --parameters "ParameterName=server_audit_logging,ParameterValue=1,ApplyMethod=immediate" \
-                     "ParameterName=server_audit_logs_upload,ParameterValue=1,ApplyMethod=immediate"
+        --parameters "ParameterName=server_audit_logging,ParameterValue=1,ApplyMethod=immediate" "ParameterName=server_audit_logs_upload,ParameterValue=1,ApplyMethod=immediate"
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``describe-instance-associations-status`` example shows details of the associations for an instance. ::
 
-    aws ssm describe-instance-associations-status --instance-id "i-1234567890abcdef0"
+    aws ssm describe-instance-associations-status \
+        --instance-id "i-1234567890abcdef0"
 
 Output::
 

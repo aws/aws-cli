@@ -2,7 +2,9 @@
 
 The following ``describe-budgets`` example retrieves the Cost and Usage budgets for an account. ::
 
-    aws budgets describe-budgets --account-id 111122223333 --max-results 20
+    aws budgets describe-budgets \
+        --account-id 111122223333 \
+        --max-results 20
 
 Output::
 

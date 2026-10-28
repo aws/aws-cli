@@ -28,6 +28,8 @@ The following ``get-component`` example downloads a Hello World component's reci
         --query recipe ^
         --output text > com.example.HelloWorld-1.0.0.yaml.b64
 
+Then, use the ``certutil`` utility to decode the file. ::
+
     certutil -decode com.example.HelloWorld-1.0.0.yaml.b64 com.example.HelloWorld-1.0.0.yaml
 
 For more information, see `Manage components <https://docs.aws.amazon.com/greengrass/v2/developerguide/manage-components.html>`__ in the *AWS IoT Greengrass V2 Developer Guide*.
@@ -41,6 +43,8 @@ The following ``get-component`` example downloads a Hello World component's reci
         --recipe-output-format YAML `
         --query recipe `
         --output text > com.example.HelloWorld-1.0.0.yaml.b64
+
+Then, use the ``certutil`` utility to decode the file. ::
 
     certutil -decode com.example.HelloWorld-1.0.0.yaml.b64 com.example.HelloWorld-1.0.0.yaml
 

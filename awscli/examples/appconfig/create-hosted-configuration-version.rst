@@ -2,12 +2,11 @@
 
 The following ``create-hosted-configuration-version`` example creates a new configuration in the AWS AppConfig hosted configuration store. The configuration content must first be converted to base64. ::
 
-    aws appconfig create-hosted-configuration-version \
+    aws appconfig create-hosted-configuration-version configuration_version_output_file \
         --application-id "339ohji" \
         --configuration-profile-id "ur8hx2f" \
         --content eyAiTmFtZSI6ICJFeGFtcGxlQXBwbGljYXRpb24iLCAiSWQiOiBFeGFtcGxlSUQsICJSYW5rIjogNyB9 \
-        --content-type "application/json" \
-        configuration_version_output_file
+        --content-type "application/json"
 
 Contents of ``configuration_version_output_file``::
 

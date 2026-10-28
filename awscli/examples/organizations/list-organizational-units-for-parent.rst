@@ -2,8 +2,9 @@
 
 The following ``list-organizational-units-for-parent`` example gets a list of OUs in a specified root. ::
 
-    aws organizations list-organizational-units-for-parent --parent-id r-examplerootid111
-
+    aws organizations list-organizational-units-for-parent \
+        --parent-id r-examplerootid111
+  
 The output shows that the specified root contains two OUs and shows details of each: ::
 
     {

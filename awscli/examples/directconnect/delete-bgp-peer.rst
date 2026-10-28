@@ -2,7 +2,10 @@
 
 The following ``delete-bgp-peer`` example deletes the IPv6 BGP peer from virtual interface ``dxvif-fg1vuj3d``. ::
 
-    aws directconnect delete-bgp-peer --virtual-interface-id dxvif-fg1vuj3d --asn 64600 --customer-address 2001:db8:1100:2f0:0:1:9cb4:4216/125
+    aws directconnect delete-bgp-peer \
+        --virtual-interface-id dxvif-fg1vuj3d \
+        --asn 64600 \
+        --customer-address 2001:db8:1100:2f0:0:1:9cb4:4216/125
 
 Output::
 

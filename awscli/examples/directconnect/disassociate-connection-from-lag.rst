@@ -2,7 +2,9 @@
 
 The following ``disassociate-connection-from-lag`` example disassociates the specified connection from the specified LAG. ::
 
-    aws directconnect disassociate-connection-from-lag --lag-id dxlag-fhccu14t --connection-id  dxcon-fg9607vm
+    aws directconnect disassociate-connection-from-lag \
+        --lag-id dxlag-fhccu14t \
+        --connection-id dxcon-fg9607vm
 
 Output::
 

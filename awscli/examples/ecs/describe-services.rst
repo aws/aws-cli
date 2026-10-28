@@ -2,7 +2,8 @@
 
 The following ``describe-services`` example retrieves details for the ``my-http-service`` service in the default cluster. ::
 
-    aws ecs describe-services --services my-http-service
+    aws ecs describe-services \
+        --services my-http-service
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``get-template`` example shows the template for the ``myteststack`` stack. ::
 
-    aws cloudformation get-template --stack-name myteststack
+    aws cloudformation get-template \
+        --stack-name myteststack
 
 Output::
 

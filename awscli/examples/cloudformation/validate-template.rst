@@ -2,7 +2,8 @@
 
 The following ``validate-template`` example validates the ``sampletemplate.json`` template. ::
 
-    aws cloudformation validate-template --template-body file://sampletemplate.json
+    aws cloudformation validate-template \
+        --template-body file://sampletemplate.json
 
 Output::
 

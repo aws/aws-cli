@@ -4,7 +4,8 @@ The following ``set-instance-protection`` example enables instance protection fo
 
     aws autoscaling set-instance-protection \
         --instance-ids i-061c63c5eb45f0416 \
-        --auto-scaling-group-name my-asg --protected-from-scale-in
+        --auto-scaling-group-name my-asg \
+        --protected-from-scale-in
 
 This command produces no output.
 

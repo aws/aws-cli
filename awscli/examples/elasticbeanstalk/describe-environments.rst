@@ -2,7 +2,8 @@
 
 The following ``describe-environments`` example retrieves information about an environment named ``my-env``. ::
 
-    aws elasticbeanstalk describe-environments --environment-names my-env
+    aws elasticbeanstalk describe-environments \
+        --environment-names my-env
 
 Output::
 

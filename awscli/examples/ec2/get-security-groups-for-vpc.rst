@@ -3,8 +3,7 @@
 The following ``get-security-groups-for-vpc`` example shows the security groups that can be associated with network interfaces in the VPC. ::
 
     aws ec2 get-security-groups-for-vpc \
-        --vpc-id vpc-6c31a611 \
-        --region us-east-1
+        --vpc-id vpc-6c31a611
 
 Output::
 

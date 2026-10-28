@@ -1,9 +1,8 @@
 **To retrieve a list of notification rule targets**
 
-The following ``list-targets`` example retrieves a list of all notification rule targets in the specified AWS Region. ::
+The following ``list-targets`` example retrieves a list of all notification rule targets in the current AWS Region. ::
 
-    aws codestar-notifications list-targets \
-        --region us-east-1
+    aws codestar-notifications list-targets
 
 Output::
 

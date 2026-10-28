@@ -2,7 +2,10 @@
 
 The following ``update-authorizer`` example changes the name of the Custom Authorizer. ::
 
-    aws apigateway update-authorizer --rest-api-id 1234123412 --authorizer-id gfi4n3 --patch-operations op='replace',path='/name',value='testAuthorizer'
+    aws apigateway update-authorizer \
+        --rest-api-id 1234123412 \
+        --authorizer-id gfi4n3 \
+        --patch-operations op='replace',path='/name',value='testAuthorizer'
 
 Output::
 
@@ -20,7 +23,10 @@ Output::
 
 The following ``update-authorizer`` example changes the Lambda Function that is invoked by the Custom Authorizer. ::
 
-    aws apigateway update-authorizer --rest-api-id 1234123412 --authorizer-id gfi4n3 --patch-operations op='replace',path='/authorizerUri',value='arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:newAuthorizer/invocations'
+    aws apigateway update-authorizer \
+        --rest-api-id 1234123412 \
+        --authorizer-id gfi4n3 \
+        --patch-operations op='replace',path='/authorizerUri',value='arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:newAuthorizer/invocations'
 
 Output::
 

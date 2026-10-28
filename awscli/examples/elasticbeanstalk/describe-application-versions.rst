@@ -2,7 +2,9 @@
 
 The following ``describe-application-versions`` example retrieves information about an application version labeled ``v2``. ::
 
-    aws elasticbeanstalk describe-application-versions --application-name my-app --version-label "v2"
+    aws elasticbeanstalk describe-application-versions \
+        --application-name my-app \
+        --version-label "v2"
 
 Output::
 

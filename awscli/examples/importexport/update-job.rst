@@ -2,7 +2,11 @@
 
 The following ``update-job`` example updates the specified job. ::
 
-    aws importexport update-job --job-id EX1ID --job-type import --manifest file://manifest.txt --no-validate-only
+    aws importexport update-job \
+        --job-id EX1ID \
+        --job-type import \
+        --manifest file://manifest.txt \
+        --no-validate-only
 
 The output for the update-jobs command looks like the following::
 

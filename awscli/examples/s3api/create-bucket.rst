@@ -41,7 +41,7 @@ desired region. ::
     aws s3api create-bucket \
         --bucket amzn-s3-demo-bucket \
         --region eu-west-1 \
-        --create-bucket-configuration LocationConstraint=eu-west-1 
+        --create-bucket-configuration LocationConstraint=eu-west-1
 
 Output::
 

@@ -133,7 +133,8 @@ The following ``create-fleet`` example creates a fleet of Spot instances with a 
         --script-id script-1111aaaa-22bb-33cc-44dd-5555eeee66ff \
         --ec2-instance-type c4.large \
         --fleet-type SPOT \
-        --certificate-configuration 'CertificateType=GENERATED' --runtime-configuration 'ServerProcesses=[{LaunchPath=/local/game/MainScript.js,Parameters=+map Winter444,ConcurrentExecutions=5}]'
+        --certificate-configuration 'CertificateType=GENERATED' \
+        --runtime-configuration 'ServerProcesses=[{LaunchPath=/local/game/MainScript.js,Parameters=+map Winter444,ConcurrentExecutions=5}]'
 
 Output::
 

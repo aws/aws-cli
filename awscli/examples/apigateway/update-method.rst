@@ -84,7 +84,8 @@ Output::
 
 The following ``update-method`` example modifies the method to required Lambda authorization. ::
 
-    aws apigateway update-method --rest-api-id 1234123412 \
+    aws apigateway update-method \
+        --rest-api-id 1234123412 \
         --resource-id a1b2c3 \
         --http-method GET \
         --patch-operations op="replace",path="/authorizationType",value="CUSTOM" op="replace",path="/authorizerId",value="e4f5g6"

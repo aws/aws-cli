@@ -5,8 +5,7 @@ The following ``update-device`` example updates device ``device-07f6fd08867abc12
     aws networkmanager update-device \
         --global-network-id global-network-01231231231231231 \
         --device-id device-07f6fd08867abc123 \
-        --site-id site-444555aaabbb11223 \
-        --region us-west-2
+        --site-id site-444555aaabbb11223
 
 Output::
 

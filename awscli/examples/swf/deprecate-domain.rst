@@ -3,7 +3,7 @@
 The following ``deprecate-domain`` example deprecates a domain. You can still see a deprecated domain, but cannot create new workflow executions or register types on it. The command has a sole required parameter, ``--name``, which takes the name of the domain to deprecate. ::
 
     aws swf deprecate-domain \
-        --name MyNeatNewDomain ""
+        --name MyNeatNewDomain
 
 As with ``register-domain``, no output is returned. If you use
 ``list-domains`` to view the registered domains, however, you will see
@@ -12,45 +12,54 @@ returned data. ::
 
     aws swf list-domains \
         --registration-status REGISTERED
+
+Output::
+
+    {
+        "domainInfos": [
             {
-                "domainInfos": [
-                    {
-                        "status": "REGISTERED",
-                        "name": "DataFrobotz"
-                    },
-                    {
-                        "status": "REGISTERED",
-                        "name": "erontest"
-                    }
-                ]
+                "status": "REGISTERED",
+                "name": "DataFrobotz"
+            },
+            {
+                "status": "REGISTERED",
+                "name": "erontest"
             }
+        ]
+    }
 
 If you use ``--registration-status DEPRECATED`` with ``list-domains``, you will see your deprecated domain. ::
 
     aws swf list-domains \
         --registration-status DEPRECATED
+
+Output::
+
+    {
+        "domainInfos": [
             {
-                "domainInfos": [
-                    {
-                        "status": "DEPRECATED",
-                        "name": "MyNeatNewDomain"
-                    }
-                ]
+                "status": "DEPRECATED",
+                "name": "MyNeatNewDomain"
             }
+        ]
+    }
 
 You can still use ``describe-domain`` to get information about a deprecated domain. ::
 
     aws swf describe-domain \
         --name MyNeatNewDomain
-            {
-                "domainInfo": {
-                    "status": "DEPRECATED",
-                    "name": "MyNeatNewDomain"
-                },
-                "configuration": {
-                    "workflowExecutionRetentionPeriodInDays": "0"
-                }
-            }
+
+Output::
+
+    {
+        "domainInfo": {
+            "status": "DEPRECATED",
+            "name": "MyNeatNewDomain"
+        },
+        "configuration": {
+            "workflowExecutionRetentionPeriodInDays": "0"
+        }
+    }
 
 See Also
 --------

@@ -17,4 +17,5 @@ Output::
 
 The following ``describe-moving-addresses`` example describes all addresses that are moving to the EC2-VPC platform. ::
 
-    aws ec2 describe-moving-addresses --filters Name=moving-status,Values=MovingToVpc
+    aws ec2 describe-moving-addresses \
+        --filters Name=moving-status,Values=MovingToVpc

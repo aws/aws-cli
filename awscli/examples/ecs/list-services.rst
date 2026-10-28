@@ -2,7 +2,8 @@
 
 The following ``list-services`` example shows how to list the services running in a cluster. ::
 
-    aws ecs list-services --cluster MyCluster
+    aws ecs list-services \
+        --cluster MyCluster
 
 Output::
 

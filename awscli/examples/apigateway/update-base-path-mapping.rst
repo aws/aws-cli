@@ -2,7 +2,10 @@
 
 The following ``update-base-path-mapping`` example changes the base path for a custom domain name. ::
 
-    aws apigateway update-base-path-mapping --domain-name api.domain.tld --base-path prod --patch-operations op='replace',path='/basePath',value='v1'
+    aws apigateway update-base-path-mapping \
+        --domain-name api.domain.tld \
+        --base-path prod \
+        --patch-operations op='replace',path='/basePath',value='v1'
 
 Output::
 

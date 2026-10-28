@@ -2,7 +2,8 @@
 
 The following ``describe-stale-security-groups`` example describes stale security group rules for ``vpc-11223344``. The response shows that ``sg-5fa68d3a`` in your account has a stale ingress SSH rule that references ``sg-279ab042`` in the peer VPC, and that ``sg-fe6fba9a`` in your account has a stale egress SSH rule that references ``sg-ef6fba8b`` in the peer VPC. ::
 
-    aws ec2 describe-stale-security-groups --vpc-id vpc-11223344
+    aws ec2 describe-stale-security-groups \
+        --vpc-id vpc-11223344
 
 Output::
 

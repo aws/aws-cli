@@ -3,7 +3,6 @@
 The following ``stop-activity-stream`` example stops an activity stream in an Aurora cluster named my-pg-cluster. ::
 
     aws rds stop-activity-stream \
-        --region us-east-1 \
         --resource-arn arn:aws:rds:us-east-1:1234567890123:cluster:my-pg-cluster \
         --apply-immediately
 

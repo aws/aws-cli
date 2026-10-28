@@ -43,7 +43,8 @@ Output::
 
 The following ``describe-classic-link-instances`` example lists all of your linked EC2-Classic instances, and filters the response to include only instances that are linked to VPC vpc-88888888. ::
 
-    aws ec2 describe-classic-link-instances --filter "Name=vpc-id,Values=vpc-88888888"
+    aws ec2 describe-classic-link-instances \
+        --filter "Name=vpc-id,Values=vpc-88888888"
 
 Output::
 

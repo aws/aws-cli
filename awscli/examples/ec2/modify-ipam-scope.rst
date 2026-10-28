@@ -6,8 +6,7 @@ To complete this request, you'll need the scope ID, which you can get with `desc
 
     aws ec2 modify-ipam-scope \
         --ipam-scope-id ipam-scope-0d3539a30b57dcdd1 \
-        --description example \
-        --region us-east-1
+        --description example
 
 Output::
 

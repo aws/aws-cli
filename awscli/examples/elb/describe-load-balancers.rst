@@ -8,7 +8,8 @@ The following ``describe-load-balancers`` example describes all of your load bal
 
 The following ``describe-load-balancers`` example describes the specified load balancer. ::
 
-    aws elb describe-load-balancers --load-balancer-name my-load-balancer
+    aws elb describe-load-balancers \
+        --load-balancer-name my-load-balancer
 
 The following example response is for an HTTPS load balancer in a VPC.
 

@@ -2,7 +2,8 @@
 
 The following ``get-deployment-config`` example displays information about a deployment configuration that is associated with the user's AWS account. ::
 
-    aws deploy get-deployment-config --deployment-config-name ThreeQuartersHealthy
+    aws deploy get-deployment-config \
+        --deployment-config-name ThreeQuartersHealthy
 
 Output::
 

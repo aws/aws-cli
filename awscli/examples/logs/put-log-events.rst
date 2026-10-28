@@ -2,7 +2,10 @@
 
 The following ``put-log-events`` example puts log events to a log stream named ``20150601`` in the log group ``my-logs``. ::
 
-    aws logs put-log-events --log-group-name my-logs --log-stream-name 20150601 --log-events file://events
+    aws logs put-log-events \
+        --log-group-name my-logs \
+        --log-stream-name 20150601 \
+        --log-events file://events
 
 Output::
 
@@ -29,7 +32,11 @@ The above example reads a JSON array of events from a file named ``events`` in t
 
 Each subsequent call requires the next sequence token provided by the previous call to be specified with the sequence token option. ::
 
-    aws logs put-log-events --log-group-name my-logs --log-stream-name 20150601 --log-events file://events2 --sequence-token "49542672486831074009579604567656788214806863282469607346"
+    aws logs put-log-events \
+        --log-group-name my-logs \
+        --log-stream-name 20150601 \
+        --log-events file://events2 \
+        --sequence-token "49542672486831074009579604567656788214806863282469607346"
 
 Output::
 

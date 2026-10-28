@@ -3,8 +3,8 @@
 The following ``modify-replication-instance`` example modifies a replication instance so that it uses a Multi-AZ deployment. ::
 
     aws dms modify-replication-instance \
-         --replication-instance-arn arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE \
-         --multi-az
+        --replication-instance-arn arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE \
+        --multi-az
 
 Output::
 

@@ -3,7 +3,8 @@
 The following ``create-user-pool`` example creates a user pool named MyUserPool using default values. There are no required attributes
 and no application clients. MFA and advanced security is disabled. ::
 
-    aws cognito-idp create-user-pool --pool-name MyUserPool
+    aws cognito-idp create-user-pool \
+        --pool-name MyUserPool
 
 Output::
 
@@ -252,7 +253,10 @@ The following ``create-user-pool`` example creates a user pool MyUserPool. The p
 email as a username attribute. It also sets the email source address to a
 validated address using Amazon Simple Email Service. ::
 
-    aws cognito-idp create-user-pool --pool-name MyUserPool --username-attributes "email" --email-configuration=SourceArn="arn:aws:ses:us-east-1:111111111111:identity/jane@example.com",ReplyToEmailAddress="jane@example.com"
+    aws cognito-idp create-user-pool \
+        --pool-name MyUserPool \
+        --username-attributes "email" \
+        --email-configuration SourceArn="arn:aws:ses:us-east-1:111111111111:identity/jane@example.com",ReplyToEmailAddress="jane@example.com"
 
 Output::
 

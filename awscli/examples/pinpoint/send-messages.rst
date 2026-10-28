@@ -4,8 +4,7 @@ The following ``send-messages`` example sends a direct message for an applicatio
 
     aws pinpoint send-messages \
         --application-id 611e3e3cdd47474c9c1399a505665b91 \
-        --message-request file://myfile.json \
-        --region us-west-2
+        --message-request file://myfile.json
 
 Contents of ``myfile.json``::
 

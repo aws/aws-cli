@@ -2,11 +2,10 @@
 
 The following ``invoke`` example invokes the ``my-function`` function synchronously. The ``cli-binary-format`` option is required if you're using AWS CLI version 2. For more information, see `AWS CLI supported global command line options <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-options.html#cli-configure-options-list>`__ in the *AWS Command Line Interface User Guide*. ::
 
-    aws lambda invoke \
+    aws lambda invoke response.json \
         --function-name my-function \
         --cli-binary-format raw-in-base64-out \
-        --payload '{ "name": "Bob" }' \
-        response.json
+        --payload '{ "name": "Bob" }'
 
 Output::
 
@@ -21,12 +20,11 @@ For more information, see `Invoke a Lambda function synchronously <https://docs.
 
 The following ``invoke`` example invokes the ``my-function`` function asynchronously. The ``cli-binary-format`` option is required if you're using AWS CLI version 2. For more information, see `AWS CLI supported global command line options <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-options.html#cli-configure-options-list>`__ in the *AWS Command Line Interface User Guide*. ::
 
-    aws lambda invoke \
+    aws lambda invoke response.json \
         --function-name my-function \
         --invocation-type Event \
         --cli-binary-format raw-in-base64-out \
-        --payload '{ "name": "Bob" }' \
-        response.json
+        --payload '{ "name": "Bob" }'
 
 Output::
 

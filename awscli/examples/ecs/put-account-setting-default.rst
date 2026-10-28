@@ -2,7 +2,9 @@
 
 The following ``put-account-setting-default`` example modifies the default account setting for all IAM users or roles on your account. These changes apply to the entire AWS account unless an IAM user or role explicitly overrides these settings for themselves. ::
 
-    aws ecs put-account-setting-default --name serviceLongArnFormat --value enabled
+    aws ecs put-account-setting-default \
+        --name serviceLongArnFormat \
+        --value enabled
 
 Output::
 

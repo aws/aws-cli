@@ -2,7 +2,9 @@
 
 The following ``list-multipart-uploads`` example shows all of the in-progress multipart uploads for a vault named ``my-vault``. ::
 
-    aws glacier list-multipart-uploads --account-id - --vault-name my-vault
+    aws glacier list-multipart-uploads \
+        --account-id - \
+        --vault-name my-vault
 
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
 

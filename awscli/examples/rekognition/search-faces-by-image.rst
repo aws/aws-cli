@@ -6,6 +6,8 @@ The following ``search-faces-by-image`` example searches for faces in a collecti
         --image '{"S3Object":{"Bucket":"MyImageS3Bucket","Name":"ExamplePerson.jpg"}}' \
         --collection-id MyFaceImageCollection
 
+Output::
+
     {
         "SearchedFaceBoundingBox": {
             "Width": 0.18562500178813934, 

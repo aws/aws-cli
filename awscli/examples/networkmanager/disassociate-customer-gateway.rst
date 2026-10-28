@@ -4,8 +4,7 @@ The following ``disassociate-customer-gateway`` example disassociates the specif
 
     aws networkmanager disassociate-customer-gateway \
         --global-network-id global-network-01231231231231231 \
-        --customer-gateway-arn arn:aws:ec2:us-west-2:123456789012:customer-gateway/cgw-11223344556677889 \
-        --region us-west-2
+        --customer-gateway-arn arn:aws:ec2:us-west-2:123456789012:customer-gateway/cgw-11223344556677889
 
 Output::
 

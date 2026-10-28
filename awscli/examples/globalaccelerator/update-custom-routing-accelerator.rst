@@ -2,7 +2,7 @@
 
 The following ``update-custom-routing-accelerator`` example modifies a custom routing accelerator to change the accelerator name. ::
 
-    aws globalaccelerator --region us-west-2 update-custom-routing-accelerator \
+    aws globalaccelerator update-custom-routing-accelerator \
         --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
         --name ExampleCustomRoutingAcceleratorNew
 

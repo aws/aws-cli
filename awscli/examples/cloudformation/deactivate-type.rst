@@ -3,7 +3,6 @@
 The following ``deactivate-type`` example deactivates a public extension that was previously activated in this account and Region. ::
 
     aws cloudformation deactivate-type \
-        --region us-west-2 \
         --type MODULE \
         --type-name Example::Test::Type::MODULE
 

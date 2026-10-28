@@ -4,11 +4,19 @@ The following ``deploy`` example deploys a template named ``template.json`` to a
 ``my-new-stack``. ::
 
 
-    aws cloudformation deploy --template-file /path_to_template/template.json --stack-name my-new-stack --parameter-overrides Key1=Value1 Key2=Value2 --tags Key1=Value1 Key2=Value2
+    aws cloudformation deploy \
+        --template-file /path_to_template/template.json \
+        --stack-name my-new-stack \
+        --parameter-overrides Key1=Value1 Key2=Value2 \
+        --tags Key1=Value1 Key2=Value2
 
 The following command deploys the same template using parameters from the JSON file ``parameters.json``. ::
 
-    aws cloudformation deploy --template-file /path_to_template/template.json --stack-name my-new-stack --parameter-overrides file://path_to_parameters/parameters.json --tags Key1=Value1 Key2=Value2
+    aws cloudformation deploy \
+        --template-file /path_to_template/template.json \
+        --stack-name my-new-stack \
+        --parameter-overrides file://path_to_parameters/parameters.json \
+        --tags Key1=Value1 Key2=Value2
 
 Supported JSON syntax
 ~~~~~~~~~~~~~~~~~~~~~

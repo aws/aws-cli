@@ -2,7 +2,10 @@
 
 The following ``get-job-output`` example saves the output from a vault inventory job to a file in the current directory named ``output.json``. ::
 
-    aws glacier get-job-output --account-id - --vault-name my-vault --job-id zbxcm3Z_3z5UkoroF7SuZKrxgGoDc3RloGduS7Eg-RO47Yc6FxsdGBgf_Q2DK5Ejh18CnTS5XW4_XqlNHS61dsO4CnMW output.json
+    aws glacier get-job-output output.json \
+        --account-id - \
+        --vault-name my-vault \
+        --job-id zbxcm3Z_3z5UkoroF7SuZKrxgGoDc3RloGduS7Eg-RO47Yc6FxsdGBgf_Q2DK5Ejh18CnTS5XW4_XqlNHS61dsO4CnMW
 
 The ``job-id`` is available in the output of ``aws glacier list-jobs``. Note that the output file name is a positional argument that is not prefixed by an option name. Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
 

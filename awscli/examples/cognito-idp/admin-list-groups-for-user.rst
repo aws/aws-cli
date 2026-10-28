@@ -2,7 +2,9 @@
 
 The following ``admin-list-groups-for-user`` example lists groups for username diego@example.com. ::
 
-    aws cognito-idp admin-list-groups-for-user --user-pool-id us-west-2_aaaaaaaaa --username diego@example.com
+    aws cognito-idp admin-list-groups-for-user \
+        --user-pool-id us-west-2_aaaaaaaaa \
+        --username diego@example.com
 
 Output::
 

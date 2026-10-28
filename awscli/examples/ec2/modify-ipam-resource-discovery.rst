@@ -12,8 +12,7 @@ The command adds the ``us-west-1`` operating Region and removes the ``us-east-2`
     aws ec2 modify-ipam-resource-discovery \
         --ipam-resource-discovery-id ipam-res-disco-0f4ef577a9f37a162 \
         --add-operating-regions RegionName='us-west-1' \
-        --remove-operating-regions RegionName='us-east-2' \
-        --region us-east-1
+        --remove-operating-regions RegionName='us-east-2'
 
 Output::
 

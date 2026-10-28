@@ -19,7 +19,7 @@ The following ``update-lifecycle-policy`` example disables the specified lifecyc
 The following ``update-lifecycle-policy`` example updates the target tags for the specified lifecycle policy. ::
 
     aws dlm update-lifecycle-policy \
-        --policy-id policy-0123456789abcdef0
+        --policy-id policy-0123456789abcdef0 \
         --policy-details file://policyDetails.json
   
 Contents of ``policyDetails.json``. Other details not referenced in this file are not changed by the command. ::

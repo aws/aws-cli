@@ -2,7 +2,7 @@
 
 The following ``create-nat-gateway`` example creates a public NAT gateway in the specified subnet and associates the Elastic IP address with the specified allocation ID. When you create a public NAT gateway, you must associate an Elastic IP address. ::
 
-    aws ec2 create-nat-gateway \ 
+    aws ec2 create-nat-gateway \
         --subnet-id subnet-0250c25a1fEXAMPLE \
         --allocation-id eipalloc-09ad461b0dEXAMPLE
 
@@ -30,7 +30,7 @@ For more information, see `NAT gateways <https://docs.aws.amazon.com/vpc/latest/
 
 The following ``create-nat-gateway`` example creates a private NAT gateway in the specified subnet. A private NAT gateway does not have an associated Elastic IP address. ::
 
-    aws ec2 create-nat-gateway \ 
+    aws ec2 create-nat-gateway \
         --subnet-id subnet-0250c25a1fEXAMPLE \
         --connectivity-type private
 

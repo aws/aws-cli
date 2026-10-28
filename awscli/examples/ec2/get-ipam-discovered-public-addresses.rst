@@ -4,8 +4,7 @@ The following ``get-ipam-discovered-public-addresses`` example shows the discove
 
     aws ec2 get-ipam-discovered-public-addresses \
         --ipam-resource-discovery-id ipam-res-disco-0f4ef577a9f37a162 \
-        --address-region us-east-1 \
-        --region us-east-1
+        --address-region us-east-1
 
 Output::
 

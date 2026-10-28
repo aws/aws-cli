@@ -2,4 +2,5 @@
 
 The following ``generate-client-certificate`` example creates a client-side SSL certificate. ::
 
-    aws apigateway generate-client-certificate --description 'My First Client Certificate'
+    aws apigateway generate-client-certificate \
+        --description 'My First Client Certificate'

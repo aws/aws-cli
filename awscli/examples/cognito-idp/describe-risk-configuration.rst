@@ -2,7 +2,8 @@
 
 The following ``describe-risk-configuration`` example describes the risk configuration associated with pool us-west-2_aaaaaaaaa. ::
 
-    aws cognito-idp describe-risk-configuration --user-pool-id us-west-2_aaaaaaaaa
+    aws cognito-idp describe-risk-configuration \
+        --user-pool-id us-west-2_aaaaaaaaa
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``delete-cluster`` example deletes the specified empty cluster. ::
 
-    aws ecs delete-cluster --cluster MyCluster
+    aws ecs delete-cluster \
+        --cluster MyCluster
 
 Output::
 

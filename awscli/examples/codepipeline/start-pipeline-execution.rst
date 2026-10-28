@@ -2,7 +2,8 @@
 
 The following ``start-pipeline-execution`` example runs the latest revision present in the source stage of a pipeline through the pipeline named "MyFirstPipeline". ::
 
-    aws codepipeline start-pipeline-execution --name MyFirstPipeline
+    aws codepipeline start-pipeline-execution \
+        --name MyFirstPipeline
 
 
 Output::

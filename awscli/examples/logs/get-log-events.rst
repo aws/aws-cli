@@ -2,7 +2,9 @@
 
 The following ``get-log-events`` example retrieves log events from a log stream named ``20150601`` in the log group ``my-logs``. ::
 
-    aws logs get-log-events --log-group-name my-logs --log-stream-name 20150601
+    aws logs get-log-events \
+        --log-group-name my-logs \
+        --log-stream-name 20150601
 
 Output::
 

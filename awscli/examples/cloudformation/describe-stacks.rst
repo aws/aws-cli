@@ -2,7 +2,8 @@
 
 The following ``describe-stacks`` example shows summary information for the ``myteststack`` stack. ::
 
-    aws cloudformation describe-stacks --stack-name myteststack
+    aws cloudformation describe-stacks \
+        --stack-name myteststack
 
 Output::
 

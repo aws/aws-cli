@@ -2,7 +2,8 @@
 
 The following ``lookup-events`` example looks up API activity events by the attribute ``EventName``. ::
 
-    aws cloudtrail lookup-events --lookup-attributes AttributeKey=EventName,AttributeValue=ConsoleLogin
+    aws cloudtrail lookup-events \
+        --lookup-attributes AttributeKey=EventName,AttributeValue=ConsoleLogin
 
 Output::
 

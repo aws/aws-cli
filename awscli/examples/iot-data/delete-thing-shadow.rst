@@ -2,9 +2,8 @@
 
 The following ``delete-thing-shadow`` example deletes the entire shadow document for the device named ``MyRPi``. ::
 
-    aws iot-data delete-thing-shadow \
-        --thing-name MyRPi \
-        "output.txt"
+    aws iot-data delete-thing-shadow "output.txt" \
+        --thing-name MyRPi
 
 The command produces no output on the display, but ``output.txt`` contains information that confirms the version and timestamp of the shadow document that you deleted. ::
 

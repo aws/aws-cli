@@ -2,7 +2,9 @@
 
 The following ``accept-reserved-instances-exchange-quote`` example performs an exchange of the specified Convertible Reserved Instances. ::
 
-    aws ec2 accept-reserved-instances-exchange-quote --reserved-instance-ids 7b8750c3-397e-4da4-bbcb-a45ebexample --target-configurations OfferingId=b747b472-423c-48f3-8cee-679bcexample
+    aws ec2 accept-reserved-instances-exchange-quote \
+        --reserved-instance-ids 7b8750c3-397e-4da4-bbcb-a45ebexample \
+        --target-configurations OfferingId=b747b472-423c-48f3-8cee-679bcexample
 
 Output::
 

@@ -10,8 +10,7 @@ For Linux and macOS, use the following command. ::
 For Windows, use the following command. ::
 
     aws textract detect-document-text \
-        --document "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
-        --region region-name
+        --document "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}"
 
 Output::
 

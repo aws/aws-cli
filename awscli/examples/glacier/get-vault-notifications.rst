@@ -2,7 +2,9 @@
 
 The following ``get-vault-notifications`` example gets a description of the notification configuration for a vault named ``my-vault``. ::
 
-    aws glacier get-vault-notifications --account-id - --vault-name my-vault
+    aws glacier get-vault-notifications \
+        --account-id - \
+        --vault-name my-vault
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``unmonitor-instances`` example disables detailed monitoring for the specified instance. ::
 
-    aws ec2 unmonitor-instances --instance-ids i-1234567890abcdef0
+    aws ec2 unmonitor-instances \
+        --instance-ids i-1234567890abcdef0
 
 Output::
 

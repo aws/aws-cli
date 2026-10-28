@@ -2,4 +2,7 @@
 
 The following ``move-account`` example moves the management account in the organization from the root to an OU. ::
 
-    aws organizations move-account --account-id 333333333333 --source-parent-id r-examplerootid111 --destination-parent-id ou-examplerootid111-exampleouid111
+    aws organizations move-account \
+        --account-id 333333333333 \
+        --source-parent-id r-examplerootid111 \
+        --destination-parent-id ou-examplerootid111-exampleouid111

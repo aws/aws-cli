@@ -2,7 +2,8 @@
 
 The following ``reboot-instances`` example reboots the specified instance. If the command succeeds, no output is returned. ::
 
-    aws ec2 reboot-instances --instance-ids i-1234567890abcdef5
+    aws ec2 reboot-instances \
+        --instance-ids i-1234567890abcdef5
 
 For more information, see `Reboot Your Instance`_ in the *Amazon Elastic Compute Cloud User Guide*.
 

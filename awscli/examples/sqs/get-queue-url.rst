@@ -2,7 +2,8 @@
 
 The following ``get-queue-url`` example gets the specified queue's URL. ::
 
-    aws sqs get-queue-url --queue-name MyQueue
+    aws sqs get-queue-url \
+        --queue-name MyQueue
 
 Output::
 

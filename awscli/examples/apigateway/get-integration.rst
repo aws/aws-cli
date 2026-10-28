@@ -2,7 +2,10 @@
 
 The following ``get-integration`` example gets the integration configuration for the ``GET`` method defined under a REST API's resource. ::
 
-    aws apigateway get-integration --rest-api-id 1234123412 --resource-id y9h6rt --http-method GET
+    aws apigateway get-integration \
+        --rest-api-id 1234123412 \
+        --resource-id y9h6rt \
+        --http-method GET
 
 Output::
 

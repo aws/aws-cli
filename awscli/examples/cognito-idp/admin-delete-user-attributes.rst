@@ -2,5 +2,8 @@
 
 The following ``admin-delete-user-attributes`` example deletes a custom attribute CustomAttr1 for user diego@example.com. ::
 
-    aws cognito-idp admin-delete-user-attributes --user-pool-id us-west-2_aaaaaaaaa --username diego@example.com --user-attribute-names "custom:CustomAttr1"
+    aws cognito-idp admin-delete-user-attributes \
+        --user-pool-id us-west-2_aaaaaaaaa \
+        --username diego@example.com \
+        --user-attribute-names "custom:CustomAttr1"
 

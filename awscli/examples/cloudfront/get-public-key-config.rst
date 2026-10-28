@@ -5,7 +5,8 @@ The following ``get-public-key-config`` example gets metadata about the CloudFro
 `create-public-key <create-public-key.html>`_ and `list-public-keys
 <list-public-keys.html>`_ commands. ::
 
-    aws cloudfront get-public-key-config --id KDFB19YGCR002
+    aws cloudfront get-public-key-config \
+        --id KDFB19YGCR002
 
 Output::
 

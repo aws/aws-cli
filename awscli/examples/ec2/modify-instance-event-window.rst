@@ -3,7 +3,6 @@
 The following ``modify-instance-event-window`` example modifies the time range of an event window. Specify the ``time-range`` parameter to modify the time range. You can't also specify the ``cron-expression`` parameter. ::
 
     aws ec2 modify-instance-event-window \
-        --region us-east-1 \
         --instance-event-window-id iew-0abcdef1234567890 \
         --time-range StartWeekDay=monday,StartHour=2,EndWeekDay=wednesday,EndHour=8
 
@@ -46,7 +45,6 @@ For event window constraints, see `Considerations <https://docs.aws.amazon.com/A
 The following ``modify-instance-event-window`` example modifies the time range of an event window. Specify the ``time-range`` parameter to modify the time range. You can't also specify the ``cron-expression`` parameter. ::
 
     aws ec2 modify-instance-event-window \
-        --region us-east-1 \
         --instance-event-window-id iew-0abcdef1234567890 \
         --time-range '[{"StartWeekDay": "monday", "StartHour": 2, "EndWeekDay": "wednesday", "EndHour": 8},
             {"StartWeekDay": "thursday", "StartHour": 2, "EndWeekDay": "friday", "EndHour": 8}]'
@@ -96,7 +94,6 @@ For event window constraints, see `Considerations <https://docs.aws.amazon.com/A
 The following ``modify-instance-event-window`` example modifies the cron expression of an event window. Specify the ``cron-expression`` parameter to modify the cron expression. You can't also specify the ``time-range`` parameter. ::
 
     aws ec2 modify-instance-event-window \
-        --region us-east-1 \
         --instance-event-window-id iew-0abcdef1234567890 \
         --cron-expression "* 21-23 * * 2,3"
 

@@ -35,11 +35,13 @@ The command does several things:
 
 The following ``encrypt`` example is the same as the previous one, except that it uses the ``certutil`` tool instead of ``base64``. This procedure requires two commands, as shown in the following example. ::
 
-    aws kms encrypt \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
-        --plaintext fileb://ExamplePlaintextFile \
-        --output text \
+    aws kms encrypt ^
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab ^
+        --plaintext fileb://ExamplePlaintextFile ^
+        --output text ^
         --query CiphertextBlob > C:\Temp\ExampleEncryptedFile.base64
+
+Run the ``certutil`` command. ::
 
     certutil -decode C:\Temp\ExampleEncryptedFile.base64 C:\Temp\ExampleEncryptedFile
 

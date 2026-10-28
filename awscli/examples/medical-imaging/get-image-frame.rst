@@ -2,11 +2,10 @@
 
 The following ``get-image-frame`` example gets an image frame. ::
 
-    aws medical-imaging get-image-frame \
+    aws medical-imaging get-image-frame imageframe.jph \
         --datastore-id "12345678901234567890123456789012" \
         --image-set-id "98765412345612345678907890789012" \
-        --image-frame-information imageFrameId=3abf5d5d7ae72f80a0ec81b2c0de3ef4 \
-        imageframe.jph
+        --image-frame-information imageFrameId=3abf5d5d7ae72f80a0ec81b2c0de3ef4
 
 
 Note:

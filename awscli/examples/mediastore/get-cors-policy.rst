@@ -3,8 +3,7 @@
 The following ``get-cors-policy`` example displays the cross-origin resource sharing (CORS) policy that is assigned to the specified container. ::
 
     aws mediastore get-cors-policy \
-        --container-name ExampleContainer \
-        --region us-west-2
+        --container-name ExampleContainer
 
 Output::
 

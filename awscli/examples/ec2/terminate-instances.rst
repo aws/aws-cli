@@ -2,7 +2,8 @@
 
 The following ``terminate-instances`` example terminates the specified instance. ::
 
-    aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
+    aws ec2 terminate-instances \
+        --instance-ids i-1234567890abcdef0
 
 Output::
 

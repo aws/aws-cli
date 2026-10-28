@@ -2,7 +2,9 @@
 
 The following ``get-folder-path`` example retrieves the path information (hierarchy from the root folder) for the specified folder, and includes the names of the parent folders. ::
 
-    aws workdocs get-folder-path --folder-id 50893c0af679524d1a0e0651130ed6d073e1a05f95bd12c42dcde5d35634ed08 --fields NAME
+    aws workdocs get-folder-path \
+        --folder-id 50893c0af679524d1a0e0651130ed6d073e1a05f95bd12c42dcde5d35634ed08 \
+        --fields NAME
 
 Output::
 

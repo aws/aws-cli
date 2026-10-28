@@ -2,10 +2,12 @@
 
 The following ``put-scaling-policy`` example applies a target tracking scaling policy with a predefined metric specification to an Amazon ECS service called web-app in the default cluster. The policy keeps the average CPU utilization of the service at 75 percent, with scale-out and scale-in cooldown periods of 60 seconds. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf. ::
 
-    aws application-autoscaling put-scaling-policy --service-namespace ecs \
+    aws application-autoscaling put-scaling-policy \
+        --service-namespace ecs \
         --scalable-dimension ecs:service:DesiredCount \
         --resource-id service/default/web-app \
-        --policy-name cpu75-target-tracking-scaling-policy --policy-type TargetTrackingScaling \
+        --policy-name cpu75-target-tracking-scaling-policy \
+        --policy-type TargetTrackingScaling \
         --target-tracking-scaling-policy-configuration file://config.json
 
 This example assumes that you have a `config.json` file in the current directory with the following contents::
@@ -39,7 +41,8 @@ Output::
 
 The following ``put-scaling-policy`` example applies a target tracking scaling policy with a customized metric specification to an Amazon ECS service called web-app in the default cluster. The policy keeps the average utilization of the service at 75 percent, with scale-out and scale-in cooldown periods of 60 seconds. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf. ::
 
-    aws application-autoscaling put-scaling-policy --service-namespace ecs \
+    aws application-autoscaling put-scaling-policy \
+        --service-namespace ecs \
         --scalable-dimension ecs:service:DesiredCount \
         --resource-id service/default/web-app \
         --policy-name cms75-target-tracking-scaling-policy \

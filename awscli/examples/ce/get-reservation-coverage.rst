@@ -2,7 +2,10 @@
 
 The following ``get-reservation-coverage`` example retrieves the reservation coverage for EC2 t2.nano instances in the us-east-1 region for July-September of 2017. ::
 
-    aws ce get-reservation-coverage --time-period Start=2017-07-01,End=2017-10-01 --group-by Type=Dimension,Key=REGION --filter file://filters.json
+    aws ce get-reservation-coverage \
+        --time-period Start=2017-07-01,End=2017-10-01 \
+        --group-by Type=Dimension,Key=REGION \
+        --filter file://filters.json
 
 filters.json::
 

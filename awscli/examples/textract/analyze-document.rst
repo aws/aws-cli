@@ -12,8 +12,7 @@ For Windows, use the following command. ::
 
     aws textract analyze-document \
         --document "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
-        --feature-types "[\"TABLES\",\"FORMS\"]" \
-        --region region-name
+        --feature-types "[\"TABLES\",\"FORMS\"]"
 
 Output::
 

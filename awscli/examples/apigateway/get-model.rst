@@ -2,7 +2,9 @@
 
 The following ``get-model`` example gets the configuration for the ``Empty`` model defined under a REST API. ::
 
-    aws apigateway get-model --rest-api-id 1234123412 --model-name Empty
+    aws apigateway get-model \
+        --rest-api-id 1234123412 \
+        --model-name Empty
 
 Output::
 

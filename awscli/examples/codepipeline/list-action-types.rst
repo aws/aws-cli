@@ -2,7 +2,8 @@
 
 The following ``list-action-types`` example uses the ``--action-owner-filter`` option to return only custom actions. Used by itself, the ``list-action-types`` command returns the structure of all actions available to your AWS account. ::
 
-    aws codepipeline list-action-types --action-owner-filter Custom
+    aws codepipeline list-action-types \
+        --action-owner-filter Custom
 
 
 Output::

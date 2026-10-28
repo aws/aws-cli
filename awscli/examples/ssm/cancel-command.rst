@@ -12,7 +12,7 @@ This command produces no output.
 The following ``cancel-command`` example attempts to cancel a command for the specified instance only. ::
 
     aws ssm cancel-command \
-        --command-id "662add3d-5831-4a10-b64a-f2ff3EXAMPLE"
+        --command-id "662add3d-5831-4a10-b64a-f2ff3EXAMPLE" \
         --instance-ids "i-02573cafcfEXAMPLE"
 
 This command produces no output.

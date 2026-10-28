@@ -2,7 +2,8 @@
 
 The following ``disassociate-iam-instance-profile`` example disassociates an IAM instance profile with the association ID ``iip-assoc-05020b59952902f5f``. ::
 
-    aws ec2 disassociate-iam-instance-profile --association-id iip-assoc-05020b59952902f5f
+    aws ec2 disassociate-iam-instance-profile \
+        --association-id iip-assoc-05020b59952902f5f
 
 Output::
 

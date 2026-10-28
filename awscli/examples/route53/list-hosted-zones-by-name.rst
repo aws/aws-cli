@@ -37,7 +37,8 @@ Output::
 
 The following ``list-hosted-zones-by-name`` example lists hosted zones ordered by name, beginning with ``www.example.com``. ::
 
-    aws route53 list-hosted-zones-by-name --dns-name www.example.com
+    aws route53 list-hosted-zones-by-name \
+        --dns-name www.example.com
 
 Output::
 

@@ -2,4 +2,7 @@
 
 The following ``change-password`` example changes a password. ::
 
-    aws cognito-idp change-password --previous-password OldPassword --proposed-password NewPassword --access-token ACCESS_TOKEN
+    aws cognito-idp change-password \
+        --previous-password OldPassword \
+        --proposed-password NewPassword \
+        --access-token ACCESS_TOKEN

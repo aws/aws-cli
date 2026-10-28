@@ -2,7 +2,8 @@
 
 The following ``list-jobs`` example lists the running jobs in the `HighPriority` job queue. ::
 
-    aws batch list-jobs --job-queue HighPriority
+    aws batch list-jobs \
+        --job-queue HighPriority
 
 Output::
 
@@ -20,7 +21,9 @@ Output::
 
 The following ``list-jobs`` example lists jobs in the `HighPriority` job queue that are in the `SUBMITTED` job status. ::
 
-    aws batch list-jobs --job-queue HighPriority --job-status SUBMITTED
+    aws batch list-jobs \
+        --job-queue HighPriority \
+        --job-status SUBMITTED
 
 Output::
 

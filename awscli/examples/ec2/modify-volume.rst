@@ -2,7 +2,9 @@
 
 The following ``modify-volume`` example changes the size of the specified volume to 150GB. ::
 
-    aws ec2 modify-volume --size 150 --volume-id vol-1234567890abcdef0
+    aws ec2 modify-volume \
+        --size 150 \
+        --volume-id vol-1234567890abcdef0
 
 Output::
 

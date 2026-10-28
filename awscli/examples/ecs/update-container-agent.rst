@@ -2,7 +2,9 @@
 
 The following ``update-container-agent`` example updates the container agent on the specified container instance in the default cluster. ::
 
-    aws ecs update-container-agent --cluster default --container-instance a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+    aws ecs update-container-agent \
+        --cluster default \
+        --container-instance a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
 
 Output::
 

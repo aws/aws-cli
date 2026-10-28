@@ -3,9 +3,9 @@
 The following ``authorize-cache-security-group-ingress`` example allows network ingress to a cache security group. ::
 
     aws elasticache authorize-cache-security-group-ingress \
-         --cache-security-group-name  "my-sec-grp" \
-         --ec2-security-group-name "my-ec2-sec-grp" \
-         --ec2-security-group-owner-id "1234567890"
+        --cache-security-group-name "my-sec-grp" \
+        --ec2-security-group-name "my-ec2-sec-grp" \
+        --ec2-security-group-owner-id "1234567890"
 
 The command produces no output.
 

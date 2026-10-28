@@ -2,7 +2,8 @@
 
 The following ``delete-repository`` example deletes an AWS CodeCommit repository. ::
 
-    aws codecommit delete-repository --repository-name MyDemoRepo
+    aws codecommit delete-repository \
+        --repository-name MyDemoRepo
 
 Output::
 

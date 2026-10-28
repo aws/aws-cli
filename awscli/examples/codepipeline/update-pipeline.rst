@@ -9,8 +9,9 @@ Use the following guidelines when creating the pre-defined JSON file:
 
 Run the following command to update the pipeline. ::
 
-    aws codepipeline update-pipeline --cli-input-json file://MyFirstPipeline.json
-
+    aws codepipeline update-pipeline \
+        --cli-input-json file://MyFirstPipeline.json
+  
 Sample JSON file contents::
 
     {

@@ -3,8 +3,8 @@
 The following ``create-core-network`` example creates a core network using an optional description and tags within an AWS Cloud WAN global network. ::
 
     aws networkmanager create-core-network \
-        --global-network-id global-network-0d59060f16a73bc41\
-        --description "Main headquarters location"\
+        --global-network-id global-network-0d59060f16a73bc41 \
+        --description "Main headquarters location" \
         --tags Key=Name,Value="New York City office"
 
 Output::

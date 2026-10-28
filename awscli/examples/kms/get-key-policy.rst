@@ -10,6 +10,8 @@ Because the ``--policy`` parameter of ``put-key-policy`` requires a string, you 
         --query Policy \
         --output text > policy.txt
 
+The following ``put-key-policy`` example uses the ``policy.txt`` file to replace the key policy of the other KMS key. ::
+
     aws kms put-key-policy \
         --policy-name default \
         --key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \

@@ -2,7 +2,8 @@
 
 The following ``delete-webhook`` example deletes a webhook from the specified CodeBuild project. ::
 
-    aws codebuild delete-webhook --project-name my-project
+    aws codebuild delete-webhook \
+        --project-name my-project
     
 This command produces no output.
 

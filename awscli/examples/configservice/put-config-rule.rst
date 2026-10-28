@@ -2,7 +2,8 @@
 
 The following ``put-config-rule`` example provides JSON code to add an AWS managed Config rule. ::
 
-    aws configservice put-config-rule --config-rule file://RequiredTagsForEC2Instances.json
+    aws configservice put-config-rule \
+        --config-rule file://RequiredTagsForEC2Instances.json
 
 ``RequiredTagsForEC2Instances.json`` is a JSON file that contains the rule configuration::
 
@@ -31,7 +32,8 @@ If the command succeeds, AWS Config returns no output. To verify the rule config
 
 The following ``put-config-rule`` example provides JSON code to add a customer managed Config rule. ::
 
-    aws configservice put-config-rule --config-rule file://InstanceTypesAreT2micro.json
+    aws configservice put-config-rule \
+        --config-rule file://InstanceTypesAreT2micro.json
 
 ``InstanceTypesAreT2micro.json`` is a JSON file that contains the rule configuration::
 

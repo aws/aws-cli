@@ -2,7 +2,8 @@
 
 The following ``get-celebrity-info`` example displays information about the specified celebrity. The ``id`` parameter comes from a previous call to ``recognize-celebrities``. ::
 
-    aws rekognition get-celebrity-info --id nnnnnnn
+    aws rekognition get-celebrity-info \
+        --id nnnnnnn
 
 Output::
 

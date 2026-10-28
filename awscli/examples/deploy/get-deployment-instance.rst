@@ -2,7 +2,9 @@
 
 The following ``get-deployment-instance`` example displays information about a deployment instance that is associated with the specified deployment. ::
 
-    aws deploy get-deployment-instance --deployment-id d-QA4G4F9EX --instance-id i-902e9fEX
+    aws deploy get-deployment-instance \
+        --deployment-id d-QA4G4F9EX \
+        --instance-id i-902e9fEX
 
 Output::
 

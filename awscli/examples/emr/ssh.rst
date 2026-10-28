@@ -2,7 +2,9 @@
 
 The following ``ssh`` example opens an ssh connection with the master instance in a cluster with the cluster ID ``j-3SD91U2E1L2QX``. ::
 
-    aws emr ssh --cluster-id j-3SD91U2E1L2QX --key-pair-file ~/.ssh/mykey.pem
+    aws emr ssh \
+        --cluster-id j-3SD91U2E1L2QX \
+        --key-pair-file ~/.ssh/mykey.pem
 
 The key pair file option takes a local path to a private key file.
 

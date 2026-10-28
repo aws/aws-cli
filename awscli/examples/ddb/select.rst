@@ -4,7 +4,8 @@ The following ``select`` example scans the entire *MusicCollection* table, and t
 results to songs by the artist "No One You Know". For each item, only the album
 title and song title are returned. ::
 
-    aws ddb select MusicCollection --projection 'SongTitle, AlbumTitle' \
+    aws ddb select MusicCollection \
+        --projection 'SongTitle, AlbumTitle' \
         --filter 'Artist = "No One You Know"'
 
 Output::
@@ -24,7 +25,8 @@ hash-and-range primary key (*Artist* and *SongTitle*), but this query only
 specifies the hash key value. It returns song titles by the artist named "No
 One You Know". ::
 
-    aws ddb select MusicCollection --projection SongTitle \
+    aws ddb select MusicCollection \
+        --projection SongTitle \
         --key-condition 'Artist = "No One You Know"'
 
 Output::

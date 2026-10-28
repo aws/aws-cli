@@ -78,7 +78,8 @@ User Guide for Linux Instances*.
 The following ``describe-instance-types`` example lists the instance types that support hibernation. You can specify a filter to scope the results to instance types that have a specific characteristic. ::
 
     aws ec2 describe-instance-types \
-        --filters Name=hibernation-supported,Values=true --query 'InstanceTypes[*].InstanceType'
+        --filters Name=hibernation-supported,Values=true \
+        --query 'InstanceTypes[*].InstanceType'
 
 Output::
 

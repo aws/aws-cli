@@ -3,8 +3,7 @@
 The following ``get-customer-gateway-associations`` example gets the customer gateway associations for the specified global network. ::
 
     aws networkmanager get-customer-gateway-associations \
-        --global-network-id global-network-01231231231231231 \
-        --region us-west-2
+        --global-network-id global-network-01231231231231231
 
 Output::
 

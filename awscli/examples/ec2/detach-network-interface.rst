@@ -2,4 +2,5 @@
 
 The following ``detach-network-interface`` example detaches the specified network interface from the specified instance. If the command succeeds, no output is returned. ::
 
-    aws ec2 detach-network-interface --attachment-id eni-attach-66c4350a
+    aws ec2 detach-network-interface \
+        --attachment-id eni-attach-66c4350a

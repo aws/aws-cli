@@ -22,7 +22,9 @@ This command produces no output.
 
 The following ``modify-instance-attribute`` example sets the ``sourceDestCheck`` attribute of the specified instance to ``true``. The instance must be in a VPC. ::
 
-    aws ec2 modify-instance-attribute --instance-id i-1234567890abcdef0 --source-dest-check "{\"Value\": true}"
+    aws ec2 modify-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --source-dest-check "{\"Value\": true}"
 
 This command produces no output.
 
@@ -69,7 +71,8 @@ Now you can reference that file in the following CLI command. ::
 
     aws ec2 modify-instance-attribute \
         --instance-id=i-09b5a14dbca622e76 \
-        --attribute userData --value fileb://UserData.base64.txt
+        --attribute userData \
+        --value fileb://UserData.base64.txt
 
 This command produces no output.
 

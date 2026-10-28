@@ -2,7 +2,8 @@
 
 The following ``get-bucket-policy`` example retrieves the bucket policy for a bucket named ``amzn-s3-demo-bucket``. ::
 
-    aws s3api get-bucket-policy --bucket amzn-s3-demo-bucket
+    aws s3api get-bucket-policy \
+        --bucket amzn-s3-demo-bucket
 
 Output::
 
@@ -17,11 +18,16 @@ make modifications to the file, and then use ``put-bucket-policy`` to
 apply the modified bucket policy.  To download the bucket policy to a file,
 run the following command. ::
 
-    aws s3api get-bucket-policy --bucket amzn-s3-demo-bucket --query Policy --output text > policy.json
+    aws s3api get-bucket-policy \
+        --bucket amzn-s3-demo-bucket \
+        --query Policy \
+        --output text > policy.json
 
 You can then modify the ``policy.json`` file as needed.  Finally you can apply
 this modified policy back to the S3 bucket by running the following command. ::
 
-    aws s3api put-bucket-policy --bucket amzn-s3-demo-bucket --policy file://policy.json
+    aws s3api put-bucket-policy \
+        --bucket amzn-s3-demo-bucket \
+        --policy file://policy.json
 
 The ``put-bucket-policy`` command produces no output.

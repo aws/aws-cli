@@ -4,8 +4,7 @@ The following ``register-transit-gateway`` example registers transit gateway ``t
 
     aws networkmanager register-transit-gateway \
         --global-network-id global-network-01231231231231231 \
-        --transit-gateway-arn arn:aws:ec2:us-west-2:123456789012:transit-gateway/tgw-123abc05e04123abc \
-        --region us-west-2
+        --transit-gateway-arn arn:aws:ec2:us-west-2:123456789012:transit-gateway/tgw-123abc05e04123abc
 
 Output::
 

@@ -2,11 +2,10 @@
 
 The following ``get-hosted-configuration-version`` example retrieves the configuration details of the AWS AppConfig hosted configuration. ::
 
-    aws appconfig get-hosted-configuration-version \
+    aws appconfig get-hosted-configuration-version hosted-configuration-version-output \
         --application-id 339ohji \
         --configuration-profile-id ur8hx2f \
-        --version-number 1 \
-        hosted-configuration-version-output
+        --version-number 1
 
 Contents of ``hosted-configuration-version-output``::
 

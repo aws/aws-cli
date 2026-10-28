@@ -2,7 +2,8 @@
 
 The following ``delete-db-subnet-group`` example deletes the DB subnet group called ``mysubnetgroup``. ::
 
-    aws rds delete-db-subnet-group --db-subnet-group-name mysubnetgroup
+    aws rds delete-db-subnet-group \
+        --db-subnet-group-name mysubnetgroup
 
 This command produces no output.
 

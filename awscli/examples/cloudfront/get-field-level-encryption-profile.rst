@@ -3,7 +3,8 @@
 The following ``get-field-level-encryption-profile`` example gets the CloudFront field-level encryption profile with
 ID ``PPK0UOSIF5WSV``, including its ``ETag``. ::
 
-    aws cloudfront get-field-level-encryption-profile --id PPK0UOSIF5WSV
+    aws cloudfront get-field-level-encryption-profile \
+        --id PPK0UOSIF5WSV
 
 Output::
 

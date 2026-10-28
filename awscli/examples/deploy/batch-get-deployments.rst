@@ -2,7 +2,8 @@
 
 The following ``batch-get-deployments`` example displays information about multiple deployments that are associated with the user's AWS account. ::
 
-    aws deploy batch-get-deployments --deployment-ids d-A1B2C3111 d-A1B2C3222
+    aws deploy batch-get-deployments \
+        --deployment-ids d-A1B2C3111 d-A1B2C3222
 
 Output::
 

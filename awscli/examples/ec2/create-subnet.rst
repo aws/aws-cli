@@ -83,7 +83,7 @@ The following ``create-subnet`` example creates a subnet in the specified VPC wi
 
     aws ec2 create-subnet \
         --vpc-id vpc-081ec835f3EXAMPLE \
-        --ipv6-native \ 
+        --ipv6-native \
         --ipv6-cidr-block 2600:1f16:115:200::/64 \
         --tag-specifications ResourceType=subnet,Tags=[{Key=Name,Value=my-ipv6-only-subnet}]
 

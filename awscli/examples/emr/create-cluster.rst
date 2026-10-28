@@ -280,9 +280,10 @@ When attaching an automatic scaling policy, you must also specify the default ro
 
 The following ``create-cluster`` example specifies the automatic scaling policy for the ``CORE`` instance group using the ``AutoScalingPolicy`` argument with an embedded JSON structure, which specifies the scaling policy configuration. Instance groups with an embedded JSON structure must have the entire collection of arguments enclosed in single quotes. Using single quotes is optional for instance groups without an embedded JSON structure. ::
 
-    aws emr create-cluster
+    aws emr create-cluster \
         --release-label emr-5.9.0 \
-        --use-default-roles --auto-scaling-role EMR_AutoScaling_DefaultRole \
+        --use-default-roles \
+        --auto-scaling-role EMR_AutoScaling_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceType=d2.xlarge,InstanceCount=1 'InstanceGroupType=CORE,InstanceType=d2.xlarge,InstanceCount=2,AutoScalingPolicy={Constraints={MinCapacity=1,MaxCapacity=5},Rules=[{Name=TestRule,Description=TestDescription,Action={Market=ON_DEMAND,SimpleScalingPolicyConfiguration={AdjustmentType=EXACT_CAPACITY,ScalingAdjustment=2}},Trigger={CloudWatchAlarmDefinition={ComparisonOperator=GREATER_THAN,EvaluationPeriods=5,MetricName=TestMetric,Namespace=EMR,Period=3,Statistic=MAXIMUM,Threshold=4.5,Unit=NONE,Dimensions=[{Key=TestKey,Value=TestValue}]}}}]}'
 
 The following example uses a JSON file, ``instancegroupconfig.json``, to specify the configuration of all instance groups in a cluster. The JSON file specifies the automatic scaling policy configuration for the core instance group. ::
@@ -494,7 +495,7 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --release-label emr-5.30.0 \
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
-        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --managed-scaling-policy ComputeLimits='{MinimumCapacityUnits=2,MaximumCapacityUnits=4,UnitType=Instances}'
 
 The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--log-encryption-kms-key-id" to define KMS key ID utilized for Log encryption. ::

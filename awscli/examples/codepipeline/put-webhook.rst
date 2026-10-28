@@ -3,8 +3,7 @@
 The following ``put-webhook`` example creates a webhook for a GitHub version 1 source action. After you create the webhook, you must use the register-webhook-with-third-party command to register it. ::
 
     aws codepipeline put-webhook \
-        --cli-input-json file://webhook_json.json \
-        --region "eu-central-1"
+        --cli-input-json file://webhook_json.json
 
 Contents of ``webhook_json.json``::
 

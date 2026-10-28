@@ -2,7 +2,9 @@
 
 The following ``put-metric-data`` example publishes a custom metric to Amazon CloudWatch. ::
 
-    aws cloudwatch put-metric-data --namespace "Usage Metrics" --metric-data file://metric.json
+    aws cloudwatch put-metric-data \
+        --namespace "Usage Metrics" \
+        --metric-data file://metric.json
 
 The values for the metric itself are stored in the JSON file, ``metric.json``.
 
@@ -25,4 +27,9 @@ For more information, see `Publishing Custom Metrics`_ in the *Amazon CloudWatch
 
 The following ``put-metric-data`` example illustrates how to specify multiple dimensions. Each dimension is specified as a Name=Value pair. Multiple dimensions are separated by a comma. ::
 
-    aws cloudwatch put-metric-data --metric-name Buffers --namespace MyNameSpace --unit Bytes --value 231434333 --dimensions InstanceID=1-23456789,InstanceType=m1.small
+    aws cloudwatch put-metric-data \
+        --metric-name Buffers \
+        --namespace MyNameSpace \
+        --unit Bytes \
+        --value 231434333 \
+        --dimensions InstanceID=1-23456789,InstanceType=m1.small

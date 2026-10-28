@@ -3,8 +3,7 @@
 The following ``batch-get-stream-key`` example gets information about the specified stream keys. ::
 
     aws ivs batch-get-stream-key \
-        --arns arn:aws:ivs:us-west-2:123456789012:stream-key/skSKABCDefgh \
-           arn:aws:ivs:us-west-2:123456789012:stream-key/skSKIJKLmnop
+        --arns arn:aws:ivs:us-west-2:123456789012:stream-key/skSKABCDefgh arn:aws:ivs:us-west-2:123456789012:stream-key/skSKIJKLmnop
 
 Output::
 

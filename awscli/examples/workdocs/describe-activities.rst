@@ -2,7 +2,9 @@
 
 The following ``describe-activities`` example returns a list of the latest user activities for the specified organization, with a limit set for the latest two activities. ::
 
-    aws workdocs describe-activities --organization-id d-926726012c --limit 2
+    aws workdocs describe-activities \
+        --organization-id d-926726012c \
+        --limit 2
 
 Output::
 

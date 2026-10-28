@@ -2,7 +2,8 @@
 
 The following ``batch-get-builds`` example gets information about builds in CodeBuild with the specified IDs. ::
 
-    aws codebuild batch-get-builds --ids codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE
+    aws codebuild batch-get-builds \
+        --ids codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``describe-load-balancer-policies`` example describes all of the policies associated with the specified load balancer. ::
 
-    aws elb describe-load-balancer-policies --load-balancer-name my-load-balancer
+    aws elb describe-load-balancer-policies \
+        --load-balancer-name my-load-balancer
 
 Output::
 
@@ -48,7 +49,9 @@ Output::
 
 The following ``describe-load-balancer-policies`` example describes the specified policy associated with the specified load balancer. ::
 
-    aws elb describe-load-balancer-policies --load-balancer-name my-load-balancer --policy-name my-authentication-policy
+    aws elb describe-load-balancer-policies \
+        --load-balancer-name my-load-balancer \
+        --policy-name my-authentication-policy
 
 Output::
 

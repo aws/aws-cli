@@ -3,7 +3,11 @@
 The following ``create-instance-export-task`` example creates a task to export the instance i-1234567890abcdef0 to the Amazon S3 bucket
 myexportbucket. ::
 
-    aws ec2 create-instance-export-task --description "RHEL5 instance" --instance-id i-1234567890abcdef0 --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=myexportbucket,S3Prefix=RHEL5
+    aws ec2 create-instance-export-task \
+        --description "RHEL5 instance" \
+        --instance-id i-1234567890abcdef0 \
+        --target-environment vmware \
+        --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=myexportbucket,S3Prefix=RHEL5
 
 Output::
 

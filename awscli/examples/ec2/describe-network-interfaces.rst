@@ -108,7 +108,8 @@ Output::
 
 The following ``describe-network-interfaces`` example describes network interfaces that have a tag with the key ``Purpose`` and the value ``Prod``. ::
 
-    aws ec2 describe-network-interfaces --filters Name=tag:Purpose,Values=Prod
+    aws ec2 describe-network-interfaces \
+        --filters Name=tag:Purpose,Values=Prod
 
 Output::
 

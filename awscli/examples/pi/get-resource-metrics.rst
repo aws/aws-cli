@@ -2,7 +2,14 @@
 
 The following ``get-resource-metrics`` example requests data points for the *db.wait_event* dimension group, and for the *db.wait_event.name* dimension within that group. In the response, the relevant data points are grouped by the requested dimension (*db.wait_event.name*). ::
 
-    aws pi get-resource-metrics --service-type RDS --identifier db-LKCGOBK26374TPTDFXOIWVCPPM --start-time 1527026400 --end-time 1527080400 --period-in-seconds 300 --metric db.load.avg --metric-queries file://metric-queries.json
+    aws pi get-resource-metrics \
+        --service-type RDS \
+        --identifier db-LKCGOBK26374TPTDFXOIWVCPPM \
+        --start-time 1527026400 \
+        --end-time 1527080400 \
+        --period-in-seconds 300 \
+        --metric db.load.avg \
+        --metric-queries file://metric-queries.json
 
 The arguments for ``--metric-queries`` are stored in a JSON file, ``metric-queries.json``.  Here are the contents of that file::
 

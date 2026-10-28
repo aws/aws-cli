@@ -2,7 +2,8 @@
 
 The following ``describe-load-balancer-attributes`` example describes the attributes of the specified load balancer. ::
 
-    aws elb describe-load-balancer-attributes --load-balancer-name my-load-balancer
+    aws elb describe-load-balancer-attributes \
+        --load-balancer-name my-load-balancer
 
 Output::
 

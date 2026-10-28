@@ -2,7 +2,9 @@
 
 The following ``retrieve-environment-info`` example retrieves a link to logs from an environment named ``my-env``. ::
 
-    aws elasticbeanstalk retrieve-environment-info --environment-name my-env --info-type tail
+    aws elasticbeanstalk retrieve-environment-info \
+        --environment-name my-env \
+        --info-type tail
 
 Output::
 

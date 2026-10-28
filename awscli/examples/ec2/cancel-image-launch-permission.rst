@@ -3,8 +3,7 @@
 The following ``cancel-image-launch-permission`` example removes your account from the specified AMI's launch permissions. ::
 
     aws ec2 cancel-image-launch-permission \
-        --image-id ami-0123456789example \
-        --region us-east-1
+        --image-id ami-0123456789example
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``create-container`` example creates a new, empty container. ::
 
-    aws mediastore create-container --container-name ExampleContainer
+    aws mediastore create-container \
+        --container-name ExampleContainer
 
 Output::
 

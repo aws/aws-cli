@@ -2,7 +2,9 @@
 
 The following ``update-environment`` example updates an environment named "my-env" to version "v2" of the application to which it belongs. ::
 
-    aws elasticbeanstalk update-environment --environment-name my-env --version-label v2
+    aws elasticbeanstalk update-environment \
+        --environment-name my-env \
+        --version-label v2
 
 This command requires that the "my-env" environment already exists and belongs to an application that has a valid application version with the label "v2".
 
@@ -31,7 +33,9 @@ Output::
 
 The following ``update-environment`` example sets the value of the "PARAM1" variable in the "my-env" environment to "ParamValue". ::
 
-    aws elasticbeanstalk update-environment --environment-name my-env --option-settings Namespace=aws:elasticbeanstalk:application:environment,OptionName=PARAM1,Value=ParamValue
+    aws elasticbeanstalk update-environment \
+        --environment-name my-env \
+        --option-settings Namespace=aws:elasticbeanstalk:application:environment,OptionName=PARAM1,Value=ParamValue
 
 The ``option-settings`` parameter takes a namespace in addition to the name and value of the variable. Elastic Beanstalk supports several namespaces for options in addition to environment variables.
 
@@ -39,7 +43,9 @@ The ``option-settings`` parameter takes a namespace in addition to the name and 
 
 The following ``update-environment`` example configures several options in the ``aws:elb:loadbalancer`` namespace from a file. ::
 
-    aws elasticbeanstalk update-environment --environment-name my-env --option-settings file://options.json
+    aws elasticbeanstalk update-environment \
+        --environment-name my-env \
+        --option-settings file://options.json
 
 ``options.json`` is a JSON object defining several settings::
 

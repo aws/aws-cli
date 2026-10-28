@@ -2,7 +2,8 @@
 
 The following ``get-authorizers`` example gets the list of authorizers for a REST API. ::
 
-    aws apigateway get-authorizers --rest-api-id 1234123412
+    aws apigateway get-authorizers \
+        --rest-api-id 1234123412
 
 Output::
 

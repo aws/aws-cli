@@ -4,9 +4,9 @@ The following ``create-entity-recognizer`` example begins the training process f
 ``entity-list.csv`` contains the following columns: text and type. ::
 
     aws comprehend create-entity-recognizer \
-        --recognizer-name example-entity-recognizer
+        --recognizer-name example-entity-recognizer \
         --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
-        --input-data-config "EntityTypes=[{Type=DEVICE}],Documents={S3Uri=s3://amzn-s3-demo-bucket/trainingdata/raw_text.csv},EntityList={S3Uri=s3://amzn-s3-demo-bucket/trainingdata/entity_list.csv}"
+        --input-data-config "EntityTypes=[{Type=DEVICE}],Documents={S3Uri=s3://amzn-s3-demo-bucket/trainingdata/raw_text.csv},EntityList={S3Uri=s3://amzn-s3-demo-bucket/trainingdata/entity_list.csv}" \
         --language-code en
 
 Output::

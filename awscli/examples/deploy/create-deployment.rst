@@ -50,8 +50,7 @@ That file, in turn, retrieves the following file ``appspec.yaml`` from an S3 buc
 To create the deployment, run the following command. ::
 
     aws deploy create-deployment \
-        --cli-input-json file://create-deployment.json \
-        --region us-east-1
+        --cli-input-json file://create-deployment.json
 
 Output::
 

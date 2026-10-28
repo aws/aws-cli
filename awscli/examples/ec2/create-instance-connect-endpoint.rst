@@ -3,7 +3,6 @@
 The following ``create-instance-connect-endpoint`` example creates an EC2 Instance Connect Endpoint in the specified subnet. ::
 
     aws ec2 create-instance-connect-endpoint \
-        --region us-east-1 \
         --subnet-id subnet-0123456789example
 
 Output::

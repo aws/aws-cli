@@ -3,7 +3,8 @@
 The following ``purchase-reserved-node-offering`` example purchases a reserved node offering. The ``reserved-node-offering-id`` is obtained by
 calling ``describe-reserved-node-offerings``. ::
 
-    aws redshift purchase-reserved-node-offering --reserved-node-offering-id ceb6a579-cf4c-4343-be8b-d832c45ab51c
+    aws redshift purchase-reserved-node-offering \
+        --reserved-node-offering-id ceb6a579-cf4c-4343-be8b-d832c45ab51c
 
 Result::
 

@@ -69,15 +69,24 @@ The following ``describe-security-groups`` example uses filters to scope the res
 
     aws ec2 describe-security-groups \
         --filters Name=ip-permission.from-port,Values=22 Name=ip-permission.to-port,Values=22 Name=ip-permission.cidr,Values='0.0.0.0/0' \
-        --query "SecurityGroups[*].[GroupName]" \
-        --output text
+        --query "SecurityGroups[*].[GroupName]"
 
 Output::
 
-    default
-    my-security-group
-    web-servers
-    launch-wizard-1
+    [
+        [
+            "default"
+        ],
+        [
+            "my-security-group"
+        ],
+        [
+            "web-servers"
+        ],
+        [
+            "launch-wizard-1"
+        ]
+    ]
 
 **Example 3: To describe security groups based on tags**
 

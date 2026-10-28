@@ -2,7 +2,8 @@
 
 The following ``batch-get-projects`` example gets a list of CodeBuild build projects specified by name. ::
 
-    aws codebuild batch-get-projects --names codebuild-demo-project codebuild-demo-project2 my-other-demo-project
+    aws codebuild batch-get-projects \
+        --names codebuild-demo-project codebuild-demo-project2 my-other-demo-project
 
 In the following output, the ``projectsNotFound`` array lists any build project names that were specified, but not found. The ``projects`` array lists details for each build project where information was found. ::
 

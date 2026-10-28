@@ -47,7 +47,8 @@ Output::
 
 The following ``describe-inventory-deletions`` example retrieves details for a specific inventory deletion operation. ::
 
-    aws ssm describe-inventory-deletions --deletion-id "d72ac9e8-1f60-4d40-b1c6-987654321c4d"
+    aws ssm describe-inventory-deletions \
+        --deletion-id "d72ac9e8-1f60-4d40-b1c6-987654321c4d"
 
 Output::
 

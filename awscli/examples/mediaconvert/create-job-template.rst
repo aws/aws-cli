@@ -4,7 +4,6 @@ The following ``create-job-template`` example creates a job template with the tr
 
     aws mediaconvert create-job-template \
         --endpoint-url https://abcd1234.mediaconvert.region-name-1.amazonaws.com \
-        --region region-name-1 \
         --name JobTemplate1 \
         --cli-input-json file://~/job-template.json
 

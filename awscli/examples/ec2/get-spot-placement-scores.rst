@@ -5,7 +5,6 @@ The following ``get-spot-placement-scores`` example first generates a list of al
 To generate all possible parameters that can be specified for the Spot placement score configuration, and save the output directly to a JSON file. ::
 
     aws ec2 get-spot-placement-scores \
-        --region us-east-1 \
         --generate-cli-skeleton input > attributes.json
 
 Output::
@@ -99,7 +98,6 @@ Configure the JSON file. You must provide a value for ``TargetCapacity``. For a 
 Calculate the Spot placement score for the requirements specified in ``attributes.json``. Specify the name and path to your JSON file by using the ``--cli-input-json`` parameter. ::
 
     aws ec2 get-spot-placement-scores \
-        --region us-east-1 \
         --cli-input-json file://attributes.json
 
 Output if ``SingleAvailabilityZone`` is set to ``false`` or omitted (if omitted, it defaults to ``false``). A scored list of Regions is returned. ::

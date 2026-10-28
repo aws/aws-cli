@@ -2,7 +2,8 @@
 
 The following ``describe-assessment-targets`` example describes the assessment target with the ARN of ``arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq``. ::
 
-    aws inspector describe-assessment-targets --assessment-target-arns arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq
+    aws inspector describe-assessment-targets \
+        --assessment-target-arns arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq
 
 Output::
 

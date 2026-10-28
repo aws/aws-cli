@@ -2,7 +2,7 @@
 
 The following ``describe-resource-scan`` example describes the resource scan with the specified scan ID. ::
 
-    aws cloudformation describe-resource-scan --region \
+    aws cloudformation describe-resource-scan \
         --resource-scan-id arn:aws:cloudformation:us-east-1:123456789012:resourceScan/0a699f15-489c-43ca-a3ef-3e6ecfa5da60
 
 Output::

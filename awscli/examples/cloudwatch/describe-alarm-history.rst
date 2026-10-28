@@ -3,7 +3,9 @@
 The following ``describe-alarm-history`` example retrieves history for the Amazon
 CloudWatch alarm named "myalarm". ::
 
-    aws cloudwatch describe-alarm-history --alarm-name "myalarm" --history-item-type StateUpdate
+    aws cloudwatch describe-alarm-history \
+        --alarm-name "myalarm" \
+        --history-item-type StateUpdate
 
 Output::
 

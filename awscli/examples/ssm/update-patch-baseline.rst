@@ -3,9 +3,9 @@
 The following ``update-patch-baseline`` example adds the specified two patches as rejected and one patch as approved to the specified patch baseline. ::
 
     aws ssm update-patch-baseline \
-            --baseline-id "pb-0123456789abcdef0" \
-            --rejected-patches "KB2032276" "MS10-048" \
-            --approved-patches "KB2124261"
+        --baseline-id "pb-0123456789abcdef0" \
+        --rejected-patches "KB2032276" "MS10-048" \
+        --approved-patches "KB2124261"
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``describe-users`` example retrieves details for all the users in the specified organization. ::
 
-    aws workdocs describe-users --organization-id d-926726012c
+    aws workdocs describe-users \
+        --organization-id d-926726012c
 
 Output::
 

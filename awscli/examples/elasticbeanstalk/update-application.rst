@@ -2,7 +2,9 @@
 
 The following ``update-application`` example updates the description of an application named ``my-app``. ::
 
-    aws elasticbeanstalk update-application --application-name my-app --description "my Elastic Beanstalk application"
+    aws elasticbeanstalk update-application \
+        --application-name my-app \
+        --description "my Elastic Beanstalk application"
 
 Output::
 

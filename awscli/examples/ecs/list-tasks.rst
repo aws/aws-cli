@@ -2,7 +2,8 @@
 
 The following ``list-tasks`` example lists all of the tasks in a cluster. ::
 
-    aws ecs list-tasks --cluster default
+    aws ecs list-tasks \
+        --cluster default
 
 Output::
 
@@ -17,7 +18,9 @@ Output::
 
 The following ``list-tasks`` example lists the tasks on a container instance, using the container instance UUID as a filter. ::
 
-    aws ecs list-tasks --cluster default --container-instance a1b2c3d4-5678-90ab-cdef-33333EXAMPLE
+    aws ecs list-tasks \
+        --cluster default \
+        --container-instance a1b2c3d4-5678-90ab-cdef-33333EXAMPLE
 
 Output::
 

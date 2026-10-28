@@ -2,7 +2,10 @@
 
 The following ``create-upload`` example creates an upload for an Android app. ::
 
-    aws devicefarm create-upload --project-arn "arn:aws:devicefarm:us-west-2:123456789012:project:070fc3ca-7ec1-4741-9c1f-d3e044efc506" --name app.apk --type ANDROID_APP
+    aws devicefarm create-upload \
+        --project-arn "arn:aws:devicefarm:us-west-2:123456789012:project:070fc3ca-7ec1-4741-9c1f-d3e044efc506" \
+        --name app.apk \
+        --type ANDROID_APP
 
 You can get the project ARN from the output of `create-project` or `list-projects`.
 

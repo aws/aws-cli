@@ -2,7 +2,8 @@
 
 The following ``list-updates`` example lists the current updates for a cluster named ``example`` in your default region. ::
 
-    aws eks list-updates --name example
+    aws eks list-updates \
+        --name example
 
 Output::
 

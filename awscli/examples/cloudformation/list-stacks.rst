@@ -2,7 +2,8 @@
 
 The following ``list-stacks`` example shows a summary of all stacks that have a status of ``CREATE_COMPLETE``. ::
 
-    aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE
+    aws cloudformation list-stacks \
+        --stack-status-filter CREATE_COMPLETE
 
 Output::
 

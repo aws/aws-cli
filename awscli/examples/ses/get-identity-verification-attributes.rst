@@ -2,7 +2,8 @@
 
 The following ``get-identity-verification-attributes`` example retrieves the Amazon SES verification status for a list of identities. ::
 
-    aws ses get-identity-verification-attributes --identities "user1@example.com" "user2@example.com"
+    aws ses get-identity-verification-attributes \
+        --identities "user1@example.com" "user2@example.com"
 
 Output::
 

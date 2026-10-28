@@ -2,7 +2,8 @@
 
 The following ``create-default-subnet`` example creates a default subnet in Availability Zone ``us-east-2a``. ::
 
-    aws ec2 create-default-subnet --availability-zone us-east-2a
+    aws ec2 create-default-subnet \
+        --availability-zone us-east-2a
 
 Output::
 

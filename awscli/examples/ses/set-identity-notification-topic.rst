@@ -2,7 +2,10 @@
 
 The following ``set-identity-notification-topic`` example specifies the Amazon SNS topic to which a verified email address will receive bounce notifications. ::
 
-    aws ses set-identity-notification-topic --identity user@example.com --notification-type Bounce --sns-topic arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic
+    aws ses set-identity-notification-topic \
+        --identity user@example.com \
+        --notification-type Bounce \
+        --sns-topic arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic
 
 For more information about notifications, see `Using Notifications With Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 

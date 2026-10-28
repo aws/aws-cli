@@ -2,7 +2,8 @@
 
 The following ``list-discovered-resources`` example lists the EC2 instances that AWS Config has discovered. ::
 
-    aws configservice list-discovered-resources --resource-type AWS::EC2::Instance
+    aws configservice list-discovered-resources \
+        --resource-type AWS::EC2::Instance
 
 Output::
 

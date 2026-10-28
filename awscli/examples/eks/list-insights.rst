@@ -3,7 +3,7 @@
 The following ``list-insights`` example returns the list of all insights checked against the specified cluster. ::
 
     aws eks list-insights \
-    --cluster-name eks-customer
+        --cluster-name eks-customer
 
 Output::
 

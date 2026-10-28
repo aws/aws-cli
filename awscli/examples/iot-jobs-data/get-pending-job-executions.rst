@@ -3,7 +3,7 @@
 The following ``get-pending-job-executions`` example displays a list of all jobs that aren't in a terminal state for the specified thing. ::
 
     aws iot-jobs-data get-pending-job-executions \
-        --thing-name MotionSensor1
+        --thing-name MotionSensor1 \
         --endpoint-url https://1234567890abcd.jobs.iot.us-west-2.amazonaws.com
 
 Output::

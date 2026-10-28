@@ -79,7 +79,8 @@ Output::
 
 The following ``describe-spot-fleet-requests`` example describes the specified Spot fleet request. ::
 
-    aws ec2 describe-spot-fleet-requests --spot-fleet-request-ids sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE
+    aws ec2 describe-spot-fleet-requests \
+        --spot-fleet-request-ids sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE
 
 Output::
 

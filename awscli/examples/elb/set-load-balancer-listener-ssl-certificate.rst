@@ -2,5 +2,8 @@
 
 The following ``set-load-balancer-listener-ssl-certificate`` example replaces the existing SSL certificate for the specified HTTPS load balancer. ::
 
-    aws elb set-load-balancer-listener-ssl-certificate --load-balancer-name my-load-balancer --load-balancer-port 443 --ssl-certificate-id arn:aws:iam::123456789012:server-certificate/new-server-cert
+    aws elb set-load-balancer-listener-ssl-certificate \
+        --load-balancer-name my-load-balancer \
+        --load-balancer-port 443 \
+        --ssl-certificate-id arn:aws:iam::123456789012:server-certificate/new-server-cert
 

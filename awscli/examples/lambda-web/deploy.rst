@@ -6,7 +6,9 @@ and deploys it. The command creates or reuses an Amazon Simple Storage Service
 execution role. It then creates the Web Function and endpoint. The target path
 can be new or can identify an existing empty directory. ::
 
-    aws lambda-web deploy --name my-app --hello-world
+    aws lambda-web deploy \
+        --name my-app \
+        --hello-world
 
 Output::
 
@@ -20,7 +22,10 @@ server. The ``--create`` option skips the confirmation prompt. If you omit
 ``--bucket-name`` or ``--execution-role-arn``, the command creates or reuses
 the deployment bucket and execution role as needed. ::
 
-    aws lambda-web deploy --name my-app --code ./app --create
+    aws lambda-web deploy \
+        --name my-app \
+        --code ./app \
+        --create
 
 Output::
 
@@ -32,7 +37,9 @@ Output::
 The following ``deploy`` example deploys a revision to an existing Web
 Function and updates its endpoint. ::
 
-    aws lambda-web deploy --name my-app --code ./app
+    aws lambda-web deploy \
+        --name my-app \
+        --code ./app
 
 Output::
 

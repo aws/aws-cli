@@ -2,7 +2,8 @@
 
 The following ``describe-direct-connect-gateway-associations`` example describes all the associations with Direct Connect gateway ``5f294f92-bafb-4011-916d-9b0bexample``. ::
 
-    aws directconnect describe-direct-connect-gateway-associations --direct-connect-gateway-id 5f294f92-bafb-4011-916d-9b0bexample
+    aws directconnect describe-direct-connect-gateway-associations \
+        --direct-connect-gateway-id 5f294f92-bafb-4011-916d-9b0bexample
 
 Output::
 

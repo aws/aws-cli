@@ -2,7 +2,10 @@
 
 The following ``allocate-private-virtual-interface`` example provisions a private virtual interface to be owned by a different customer. ::
 
-    aws directconnect allocate-private-virtual-interface --connection-id dxcon-ffjrkx17 --owner-account 123456789012 --new-private-virtual-interface-allocation virtualInterfaceName=PrivateVirtualInterface,vlan=1000,asn=65000,authKey=asdf34example,amazonAddress=192.168.1.1/30,customerAddress=192.168.1.2/30
+    aws directconnect allocate-private-virtual-interface \
+        --connection-id dxcon-ffjrkx17 \
+        --owner-account 123456789012 \
+        --new-private-virtual-interface-allocation virtualInterfaceName=PrivateVirtualInterface,vlan=1000,asn=65000,authKey=asdf34example,amazonAddress=192.168.1.1/30,customerAddress=192.168.1.2/30
 
 Output::
 

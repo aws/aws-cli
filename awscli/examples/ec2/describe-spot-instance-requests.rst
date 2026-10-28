@@ -72,15 +72,22 @@ The following ``describe-spot-instance-requests`` example uses filters to scope 
 
     aws ec2 describe-spot-instance-requests \
         --filters Name=launch.instance-type,Values=m3.medium Name=launched-availability-zone,Values=us-east-2a \
-        --query "SpotInstanceRequests[*].[InstanceId]" \
-        --output text
+        --query "SpotInstanceRequests[*].[InstanceId]"
 
 Output::
 
-    i-057750d42936e468a
-    i-001efd250faaa6ffa
-    i-027552a73f021f3bd
-    ...
+    [
+        [
+            "i-057750d42936e468a"
+        ],
+        [
+            "i-001efd250faaa6ffa"
+        ],
+        [
+            "i-027552a73f021f3bd"
+        ],
+        ...
+    ]
 
 For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon Elastic Compute Cloud User Guide*.
 

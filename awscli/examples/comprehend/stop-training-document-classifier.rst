@@ -2,7 +2,7 @@
 
 The following ``stop-training-document-classifier`` example stops the training of a document classifier model while in-progress. ::
 
-    aws comprehend stop-training-document-classifier
+    aws comprehend stop-training-document-classifier \
         --document-classifier-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier
 
 This command produces no output.

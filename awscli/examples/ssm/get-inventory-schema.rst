@@ -51,4 +51,5 @@ Output::
 
 The following ``get-inventory-schema`` example returns the inventory schema for the ``AWS:AWSComponent`` inventory type. ::
 
-    aws ssm get-inventory-schema --type-name "AWS:AWSComponent"
+    aws ssm get-inventory-schema \
+        --type-name "AWS:AWSComponent"

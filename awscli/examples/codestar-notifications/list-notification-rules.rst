@@ -1,8 +1,8 @@
 **To retrieve a list of notification rules**
 
-The following ``list-notification-rules`` example retrieves a list of all notification rules in the specified AWS Region. ::
+The following ``list-notification-rules`` example retrieves a list of all notification rules in the current AWS Region. ::
 
-    aws codestar-notifications list-notification-rules --region us-east-1
+    aws codestar-notifications list-notification-rules
 
 Output::
 

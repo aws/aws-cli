@@ -2,7 +2,8 @@
 
 The following ``get-trail-status`` example returns the delivery and logging details for ``Trail1``. ::
 
-    aws cloudtrail get-trail-status --name Trail1
+    aws cloudtrail get-trail-status \
+        --name Trail1
 
 Output::
 

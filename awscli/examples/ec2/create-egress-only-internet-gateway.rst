@@ -2,7 +2,8 @@
 
 The following ``create-egress-only-internet-gateway`` example creates an egress-only Internet gateway for the specified VPC. ::
 
-    aws ec2 create-egress-only-internet-gateway --vpc-id vpc-0c62a468
+    aws ec2 create-egress-only-internet-gateway \
+        --vpc-id vpc-0c62a468
 
 Output::
 

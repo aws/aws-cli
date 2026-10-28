@@ -3,8 +3,8 @@
 The following ``detect-stack-resource-drift`` example checks a resource named ``MyFunction`` in a stack named ``MyStack`` for drift. ::
 
     aws cloudformation detect-stack-resource-drift \
-       --stack-name MyStack \
-       --logical-resource-id MyFunction
+        --stack-name MyStack \
+        --logical-resource-id MyFunction
 
 The output shows an AWS Lambda function that was modified out-of-band::
 

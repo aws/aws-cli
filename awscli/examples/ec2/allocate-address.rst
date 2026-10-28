@@ -2,7 +2,7 @@
 
 The following ``allocate-address`` example allocates an Elastic IP address. Amazon EC2 selects the address from Amazon's address pool. ::
 
-    aws ec2 allocate-address 
+    aws ec2 allocate-address
 
 Output::
 
@@ -60,7 +60,6 @@ For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWS
 The following ``allocate-address`` example allocates a specific /32 Elastic IP address from an Amazon VPC IP Address Manager (IPAM) pool. ::
 
     aws ec2 allocate-address \
-        --region us-east-1 \
         --ipam-pool-id ipam-pool-1234567890abcdef0 \
         --address 192.0.2.0
 

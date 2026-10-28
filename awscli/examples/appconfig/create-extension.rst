@@ -3,7 +3,6 @@
 The following ``create-extension`` example creates a new extension in AWS AppConfig. ::
 
     aws appconfig create-extension \
-        --region us-west-2 \
         --name S3-backup-extension \
         --actions PRE_CREATE_HOSTED_CONFIGURATION_VERSION=[{Name=S3backup,Uri=arn:aws:lambda:us-west-2:123456789012:function:s3backupfunction,RoleArn=arn:aws:iam::123456789012:role/appconfigextensionrole}] \
         --parameters S3bucket={Required=true}

@@ -2,7 +2,8 @@
 
 The following ``describe-effective-instance-associations`` example retrieves details about the effective associations for an instance. ::
 
-    aws ssm describe-effective-instance-associations --instance-id "i-1234567890abcdef0"
+    aws ssm describe-effective-instance-associations \
+        --instance-id "i-1234567890abcdef0"
 
 Output::
 

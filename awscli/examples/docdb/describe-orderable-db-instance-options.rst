@@ -3,8 +3,7 @@
 The following ``describe-orderable-db-instance-options`` example lists all instance options for Amazon DocumentDB for a region. ::
 
     aws docdb describe-orderable-db-instance-options \
-        --engine docdb \
-        --region us-east-1
+        --engine docdb
 
 Output::
 

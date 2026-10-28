@@ -2,7 +2,8 @@
 
 The following ``list-builds`` example gets a list of CodeBuild IDs sorted in ascending order. ::
 
-    aws codebuild list-builds --sort-order ASCENDING
+    aws codebuild list-builds \
+        --sort-order ASCENDING
 
 The output includes a ``nextToken`` value which indicates that there is more output available. ::
 
@@ -18,7 +19,9 @@ The output includes a ``nextToken`` value which indicates that there is more out
 
 Run this command again and provide the ``nextToken`` value in the previous response as a parameter to get the next part of the output. Repeat until you don't receive a ``nextToken`` value in the response. ::
 
-    aws codebuild list-builds --sort-order ASCENDING --next-token 4AEA6u7J...The full token has been omitted for brevity...MzY2OA==
+    aws codebuild list-builds \
+        --sort-order ASCENDING \
+        --next-token 4AEA6u7J...The full token has been omitted for brevity...MzY2OA==
 
 Next part of the output::
 

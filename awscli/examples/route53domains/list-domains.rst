@@ -4,7 +4,7 @@ The following ``list-domains`` example lists summary information about the domai
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
-    aws route53domains list-domains
+    aws route53domains list-domains \
         --region us-east-1
 
 Output::

@@ -55,7 +55,11 @@ Output::
 
 The following ``describe-reserved-instances-offerings`` example lists Reserved Instances offered by AWS with the following specifications: t1.micro instance types, Windows (Amazon VPC) product, and No Upfront offerings. ::
 
-    aws ec2 describe-reserved-instances-offerings --no-include-marketplace --instance-type "t1.micro" --product-description "Windows (Amazon VPC)" --offering-type "no upfront"
+    aws ec2 describe-reserved-instances-offerings \
+        --no-include-marketplace \
+        --instance-type "t1.micro" \
+        --product-description "Windows (Amazon VPC)" \
+        --offering-type "no upfront"
 
 Output::
 

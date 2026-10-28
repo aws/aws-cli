@@ -4,8 +4,7 @@ The following ``update-global-network`` example updates the description for glob
 
     aws networkmanager update-global-network \
         --global-network-id global-network-01231231231231231 \
-        --description "Head offices" \
-        --region us-west-2
+        --description "Head offices"
 
 Output::
 

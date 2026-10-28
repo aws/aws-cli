@@ -2,7 +2,8 @@
 
 The following ``describe-configurations`` example describes the configurations of two specified servers. The action detects the type of asset from the configuration ID. Only one type of asset is allowed per command. ::
 
-    aws discovery describe-configurations --configuration-ids "d-server-099385097ef9fbcfb" "d-server-0c4f2dd1fee22c6c1"
+    aws discovery describe-configurations \
+        --configuration-ids "d-server-099385097ef9fbcfb" "d-server-0c4f2dd1fee22c6c1"
 
 Output::
 
@@ -92,7 +93,8 @@ Output::
 
 The following ``describe-configurations`` example describes the configurations of two specified applications. The action detects the type of asset from the configuration ID. Only one type of asset is allowed per command. ::
 
-    aws discovery describe-configurations --configuration-ids "d-application-0ac39bc0e4fad0e42" "d-application-02444a45288013764q"
+    aws discovery describe-configurations \
+        --configuration-ids "d-application-0ac39bc0e4fad0e42" "d-application-02444a45288013764q"
 
 Output::
 

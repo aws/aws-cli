@@ -2,8 +2,7 @@
 
 The following ``create-index`` example creates a local index in the AWS Region in which the operation is called. The AWS CLI automatically generates a random ``client-token`` parameter value and includes it in the call to AWS if you don't specify a value. ::
 
-    aws resource-explorer-2 create-index \
-        --region us-east-1
+    aws resource-explorer-2 create-index
 
 Output::
 

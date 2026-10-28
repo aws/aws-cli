@@ -2,7 +2,8 @@
 
 The following ``batch-get-applications`` example displays information about multiple applications that are associated with the user's AWS account. ::
 
-    aws deploy batch-get-applications --application-names WordPress_App MyOther_App
+    aws deploy batch-get-applications \
+        --application-names WordPress_App MyOther_App
 
 Output::
 

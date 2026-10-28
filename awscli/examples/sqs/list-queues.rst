@@ -18,7 +18,8 @@ Output::
 
 The following ``list-queues`` example lists only queues that start with "My". ::
 
-    aws sqs list-queues --queue-name-prefix My
+    aws sqs list-queues \
+        --queue-name-prefix My
 
 Output::
 

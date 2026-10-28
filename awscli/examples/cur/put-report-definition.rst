@@ -2,7 +2,8 @@
 
 The following ``put-report-definition`` example creates a daily AWS Cost and Usage Report that you can upload into Amazon Redshift or Amazon QuickSight. ::
 
-    aws cur put-report-definition --report-definition file://report-definition.json
+    aws cur put-report-definition \
+        --report-definition file://report-definition.json
 
 Contents of ``report-definition.json``::
 

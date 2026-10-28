@@ -2,7 +2,11 @@
 
 The following ``describe-folder-contents`` example describes all the active contents of the specified folder, including its documents and subfolders, sorted by date in ascending order. ::
 
-    aws workdocs describe-folder-contents --folder-id 1ece93e5fe75315c7407c4967918b4fd9da87ddb2a588e67b7fdaf4a98fde678 --sort DATE --order ASCENDING --type ALL
+    aws workdocs describe-folder-contents \
+        --folder-id 1ece93e5fe75315c7407c4967918b4fd9da87ddb2a588e67b7fdaf4a98fde678 \
+        --sort DATE \
+        --order ASCENDING \
+        --type ALL
 
 Output::
 

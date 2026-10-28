@@ -4,10 +4,9 @@ The following ``get-image-set-metadata`` example gets metadata for an image set 
 
 Note: ``outfile`` is a required parameter. ::
 
-    aws medical-imaging get-image-set-metadata \
+    aws medical-imaging get-image-set-metadata studymetadata.json.gz \
         --datastore-id 12345678901234567890123456789012 \
-        --image-set-id ea92b0d8838c72a3f25d00d13616f87e \
-        studymetadata.json.gz
+        --image-set-id ea92b0d8838c72a3f25d00d13616f87e
 
 The returned metadata is compressed with gzip and stored in the studymetadata.json.gz file. To view the contents of the returned JSON object, you must first decompress it.
 
@@ -24,11 +23,10 @@ The following ``get-image-set-metadata`` example gets metadata for an image set 
 
 Note: ``outfile`` is a required parameter. ::
 
-    aws medical-imaging get-image-set-metadata \
+    aws medical-imaging get-image-set-metadata studymetadata.json.gz \
         --datastore-id 12345678901234567890123456789012 \
         --image-set-id ea92b0d8838c72a3f25d00d13616f87e \
-        --version-id 1 \
-        studymetadata.json.gz
+        --version-id 1
 
 The returned metadata is compressed with gzip and stored in the studymetadata.json.gz file. To view the contents of the returned JSON object, you must first decompress it.
 

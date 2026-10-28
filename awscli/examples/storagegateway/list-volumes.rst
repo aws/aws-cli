@@ -5,6 +5,7 @@ To specify which gateway to describe, use the Amazon Resource Name (ARN) of the 
 
 This example specifies a gateway with the id ``sgw-12A3456B`` in account ``123456789012``. ::
 
-    aws storagegateway list-volumes --gateway-arn "arn:aws:storagegateway:us-west-2:123456789012:gateway/sgw-12A3456B"
+    aws storagegateway list-volumes \
+        --gateway-arn "arn:aws:storagegateway:us-west-2:123456789012:gateway/sgw-12A3456B"
 
 This command outputs a JSON block that a list of volumes that includes the type and ARN for each volume.

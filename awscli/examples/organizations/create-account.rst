@@ -2,7 +2,9 @@
 
 The following ``create-account`` example creates a member account in an organization. The member account is configured with the name Production Account and the email address of susan@example.com. Organizations automatically creates an IAM role using the default name of OrganizationAccountAccessRole because the roleName parameter is not specified. Also, the setting that allows IAM users or roles with sufficient permissions to access account billing data is set to the default value of ALLOW because the IamUserAccessToBilling parameter is not specified. Organizations automatically sends Susan a "Welcome to AWS" email. ::
 
-    aws organizations create-account --email susan@example.com --account-name "Production Account"
+    aws organizations create-account \
+        --email susan@example.com \
+        --account-name "Production Account"
 
 The output includes a request object that shows that the status is now ``IN_PROGRESS``: ::
 

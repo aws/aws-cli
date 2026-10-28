@@ -2,7 +2,10 @@
 
 The following ``create-stack`` example creates a stack with the name ``myteststack`` using the ``sampletemplate.json`` template. ::
 
-    aws cloudformation create-stack --stack-name myteststack --template-body file://sampletemplate.json --parameters ParameterKey=KeyPairName,ParameterValue=TestKey ParameterKey=SubnetIDs,ParameterValue=SubnetID1\\,SubnetID2
+    aws cloudformation create-stack \
+        --stack-name myteststack \
+        --template-body file://sampletemplate.json \
+        --parameters ParameterKey=KeyPairName,ParameterValue=TestKey ParameterKey=SubnetIDs,ParameterValue=SubnetID1\\,SubnetID2
 
 Output::
 

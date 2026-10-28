@@ -2,7 +2,8 @@
 
 The following ``delete-direct-connect-gateway-association`` example deletes the Direct Connect gateway association with a transit gateway that has the specified association ID. ::
 
-    aws directconnect delete-direct-connect-gateway-association --association-id  be85116d-46eb-4b43-a27a-da0c2ad648de
+    aws directconnect delete-direct-connect-gateway-association \
+        --association-id be85116d-46eb-4b43-a27a-da0c2ad648de
 
 Output::
 

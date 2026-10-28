@@ -56,7 +56,7 @@ Output::
 The following ``get-contact`` example describes an escalation plan. ::
 
     aws ssm-contacts get-contact \
-    --contact-id "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation"
+        --contact-id "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation"
 
 Output::
 

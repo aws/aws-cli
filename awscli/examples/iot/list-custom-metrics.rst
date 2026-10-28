@@ -2,8 +2,7 @@
 
 The following ``list-custom-metrics`` example lists all of your custom metrics. ::
 
-    aws iot list-custom-metrics \
-        --region us-east-1
+    aws iot list-custom-metrics
 
 Output::
 

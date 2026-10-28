@@ -170,8 +170,7 @@ The following ``create-table`` example uses the specified attributes and key sch
         --attribute-definitions AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S AttributeName=AlbumTitle,AttributeType=S \
         --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
-        --local-secondary-indexes \
-            "[
+        --local-secondary-indexes "[
                 {
                     \"IndexName\": \"AlbumTitleIndex\",
                     \"KeySchema\": [
@@ -262,11 +261,9 @@ The following ``create-table`` example creates a table named ``GameScores`` with
     aws dynamodb create-table \
         --table-name GameScores \
         --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S AttributeName=TopScore,AttributeType=N \
-        --key-schema AttributeName=UserId,KeyType=HASH \
-                    AttributeName=GameTitle,KeyType=RANGE \
+        --key-schema AttributeName=UserId,KeyType=HASH AttributeName=GameTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
-        --global-secondary-indexes \
-            "[
+        --global-secondary-indexes "[
                 {
                     \"IndexName\": \"GameTitleIndex\",
                     \"KeySchema\": [

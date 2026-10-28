@@ -2,7 +2,8 @@
 
 The following ``list-tags`` example lists the tags for ``Trail1`` and ``Trail2``. ::
 
-    aws cloudtrail list-tags --resource-id-list arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1 arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail2
+    aws cloudtrail list-tags \
+        --resource-id-list arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1 arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail2
 
 Output::
 

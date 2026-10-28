@@ -3,7 +3,7 @@
 The following ``list-client-devices-associated-with-core-device`` example lists all client devices associated with a core device. ::
 
     aws greengrassv2 list-client-devices-associated-with-core-device \
-      --core-device-thing-name MyTestGreengrassCore
+        --core-device-thing-name MyTestGreengrassCore
 
 Output::
 

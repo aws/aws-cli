@@ -2,7 +2,8 @@
 
 The following ``list-users`` example lists the users for the specified Amazon Chime account. ::
 
-    aws chime list-users --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+    aws chime list-users \
+        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
 
 Output::
 

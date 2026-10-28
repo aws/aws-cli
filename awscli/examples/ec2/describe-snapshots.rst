@@ -58,14 +58,19 @@ The following ``describe-snapshots`` example uses filters to scope the results t
 
     aws ec2 describe-snapshots \
         --filters Name=volume-id,Values=049df61146c4d7901 \
-        --query "Snapshots[*].[SnapshotId]" \
-        --output text
+        --query "Snapshots[*].[SnapshotId]"
 
 Output::
 
-    snap-1234567890abcdef0
-    snap-08637175a712c3fb9
-    ...
+    [
+        [
+            "snap-1234567890abcdef0"
+        ],
+        [
+            "snap-08637175a712c3fb9"
+        ],
+        ...
+    ]
 
 For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
 

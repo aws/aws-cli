@@ -2,7 +2,9 @@
 
 The following ``describe-instance-attribute`` example describes the instance type of the specified instance. ::
 
-    aws ec2 describe-instance-attribute --instance-id i-1234567890abcdef0 --attribute instanceType
+    aws ec2 describe-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --attribute instanceType
 
 Output::
 
@@ -17,7 +19,9 @@ Output::
 
 The following ``describe-instance-attribute`` example describes the ``disableApiTermination`` attribute of the specified instance. ::
 
-    aws ec2 describe-instance-attribute --instance-id i-1234567890abcdef0 --attribute disableApiTermination
+    aws ec2 describe-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --attribute disableApiTermination
 
 Output::
 
@@ -32,7 +36,9 @@ Output::
 
 The following ``describe-instance-attribute`` example describes the ``blockDeviceMapping`` attribute of the specified instance. ::
 
-    aws ec2 describe-instance-attribute --instance-id i-1234567890abcdef0 --attribute blockDeviceMapping
+    aws ec2 describe-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --attribute blockDeviceMapping
 
 Output::
 

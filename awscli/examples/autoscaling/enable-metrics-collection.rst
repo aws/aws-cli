@@ -16,7 +16,8 @@ The following ``enable-metrics-collection`` example collects data for the ``Grou
 
     aws autoscaling enable-metrics-collection \
         --auto-scaling-group-name my-asg \
-        --metrics GroupDesiredCapacity --granularity "1Minute"
+        --metrics GroupDesiredCapacity \
+        --granularity "1Minute"
 
 This command produces no output.
 

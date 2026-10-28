@@ -55,7 +55,8 @@ Output::
 
 The following ``create-project`` example creates a CodeBuild build project by passing all of the required parameters in a JSON input file. Create the input file template by running the command with only the ``--generate-cli-skeleton parameter``. ::
 
-    aws codebuild create-project --cli-input-json file://create-project.json
+    aws codebuild create-project \
+        --cli-input-json file://create-project.json
 
 The input JSON file ``create-project.json`` contains the following content::
 

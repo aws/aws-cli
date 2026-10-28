@@ -2,7 +2,9 @@
 
 The following ``get-folder`` example demonstrates how to get the contents of a top-level folder from a repository named ``MyDemoRepo``. ::
 
-    aws codecommit get-folder --repository-name MyDemoRepo --folder-path ""
+    aws codecommit get-folder \
+        --repository-name MyDemoRepo \
+        --folder-path ""
 
 Output::
 

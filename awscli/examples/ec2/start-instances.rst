@@ -2,7 +2,8 @@
 
 The following ``start-instances`` example starts the specified Amazon EBS-backed instance. ::
 
-    aws ec2 start-instances --instance-ids i-1234567890abcdef0
+    aws ec2 start-instances \
+        --instance-ids i-1234567890abcdef0
 
 Output::
 

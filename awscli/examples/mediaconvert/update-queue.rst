@@ -3,9 +3,9 @@
 The following ``update-queue`` example pauses the specified queue, by changing its status to ``PAUSED``. ::
 
     aws mediaconvert update-queue \
-    --name Customer1 \
-    --status PAUSED
-    --endpoint-url https://abcd1234.mediaconvert.us-west-2.amazonaws.com
+        --name Customer1 \
+        --status PAUSED \
+        --endpoint-url https://abcd1234.mediaconvert.us-west-2.amazonaws.com
 
 Output::
 

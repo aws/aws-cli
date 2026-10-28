@@ -3,8 +3,7 @@
 The following ``get-sms-template`` example retrieves the content and settings of a SMS message template. ::
 
     aws pinpoint get-sms-template \
-        --template-name TestTemplate \
-        --region us-east-1
+        --template-name TestTemplate
 
 Output::
 

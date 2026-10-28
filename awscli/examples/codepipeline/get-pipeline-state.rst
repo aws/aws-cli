@@ -2,7 +2,8 @@
 
 The following ``get-pipeline-state`` example returns the most recent state of a pipeline named MyFirstPipeline. ::
 
-    aws codepipeline get-pipeline-state --name MyFirstPipeline
+    aws codepipeline get-pipeline-state \
+        --name MyFirstPipeline
 
 
 Output::

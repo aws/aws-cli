@@ -3,7 +3,7 @@
 The following ``batch-import-findings`` example updates a finding. ::
 
     aws securityhub batch-import-findings \
-         --findings '
+        --findings '
             [{
                 "AwsAccountId": "123456789012",
                 "CreatedAt": "2020-05-27T17:05:54.832Z",

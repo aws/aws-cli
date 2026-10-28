@@ -2,8 +2,9 @@
 
 The following ``list-targets-for-policy`` example gets a list of the roots, OUs, and accounts that the specified policy is attached to. ::
 
-    aws organizations list-targets-for-policy --policy-id p-FullAWSAccess
-
+    aws organizations list-targets-for-policy \
+        --policy-id p-FullAWSAccess
+  
 The output includes a list of attachment objects with summary information about the roots, OUs, and accounts the policy is attached to: ::
 
     {

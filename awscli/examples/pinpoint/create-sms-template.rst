@@ -4,8 +4,7 @@ The following ``create-sms-template`` example creates a SMS message template. ::
 
     aws pinpoint create-sms-template \
         --template-name TestTemplate \
-        --sms-template-request file://myfile.json \
-        --region us-east-1
+        --sms-template-request file://myfile.json
 
 Contents of ``myfile.json``::
 

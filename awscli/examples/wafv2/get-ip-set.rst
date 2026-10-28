@@ -4,8 +4,8 @@ The following ``get-ip-set`` example retrieves the IP set with the specified nam
 
     aws wafv2 get-ip-set \
         --name testip \
-        --scope REGIONAL \ 
-        --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
+        --scope REGIONAL \
+        --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

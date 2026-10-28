@@ -3,9 +3,12 @@
 The following ``put-bucket-policy`` example allows all users to retrieve any object in *amzn-s3-demo-bucket* except those in the *MySecretFolder*. It also
 grants ``put`` and ``delete`` permission to the root user of the AWS account ``1234-5678-9012``. ::
 
-    aws s3api put-bucket-policy --bucket amzn-s3-demo-bucket --policy file://policy.json
+    aws s3api put-bucket-policy \
+        --bucket amzn-s3-demo-bucket \
+        --policy file://policy.json
 
-    policy.json:
+Contents of ``policy.json``::
+
     {
         "Statement": [
             {

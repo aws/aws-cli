@@ -3,7 +3,6 @@
 The following ``start-activity-stream`` example starts an asynchronous activity stream to monitor an Aurora cluster named my-pg-cluster. ::
 
     aws rds start-activity-stream \
-        --region us-east-1 \
         --mode async \
         --kms-key-id arn:aws:kms:us-east-1:1234567890123:key/a12c345d-6ef7-890g-h123-456i789jk0l1 \
         --resource-arn arn:aws:rds:us-east-1:1234567890123:cluster:my-pg-cluster \

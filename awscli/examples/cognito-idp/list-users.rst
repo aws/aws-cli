@@ -74,7 +74,7 @@ The following ``list-users`` example lists the attributes of three users who hav
 
     aws cognito-idp list-users \
         --user-pool-id us-west-2_EXAMPLE \
-        --max-items 3 
+        --max-items 3 \
         --query Users\[\*\].Attributes\[\?Value\.contains\(\@\,\'@example.com\'\)\]
 
 Output::

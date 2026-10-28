@@ -3,9 +3,7 @@
 The following ``get-network-insights-access-scope-analysis-findings`` example gets the selected scope analysis findings in your AWS account. ::
 
     aws ec2 get-network-insights-access-scope-analysis-findings \
-        --region us-east-1 \
-        --network-insights-access-scope-analysis-id nis \
-        --nis-123456789111 
+        --network-insights-access-scope-analysis-id nisa-123456789222
 
 Output::
 

@@ -30,7 +30,8 @@ and the following ``~/.aws/credentials`` file::
 To perform bulk profiles update ``list-profiles`` command can be piped with ``set`` command.
 To update the region for all profiles, use the following command. ::
 
-    aws configure list-profiles | xargs -I {} aws configure set region us-west-2 --profile {}
+    aws configure list-profiles | xargs -I {} aws configure set region us-west-2 \
+        --profile {}
 
 will produce the following updated config file::
 
@@ -46,7 +47,8 @@ will produce the following updated config file::
 
 To update the profiles that match the pattern "testing*", use the following command. ::
 
-    aws configure list-profiles | grep 'testing*' | xargs -I {} aws configure set cli_pager '' --profile {}
+    aws configure list-profiles | grep 'testing*' | xargs -I {} aws configure set cli_pager '' \
+        --profile {}
 
 will produce the following updated config file::
 
@@ -66,10 +68,12 @@ To set a parameter in a sub-section, use one of the available sub-section parame
 
 For example, to set the ``sso_start_url`` in the ``my-sso-session`` SSO session sub-section, use the following command. ::
 
-    aws configure set --sso-session my-sso-session sso_start_url https://my-sso-portal.awsapps.com/start
+    aws configure set sso_start_url https://my-sso-portal.awsapps.com/start \
+        --sso-session my-sso-session
 
 To set a nested property, use dotted notation for the parameter name along with a sub-section parameter.
 For example, to set a service-specific endpoint URL for EC2 in a services sub-section called ``my-services``, use the following command. ::
 
-    aws configure set --services my-services ec2.endpoint_url http://localhost:4567
+    aws configure set ec2.endpoint_url http://localhost:4567 \
+        --services my-services
 

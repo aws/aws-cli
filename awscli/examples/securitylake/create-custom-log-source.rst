@@ -5,7 +5,7 @@ The following ``create-custom-log-source`` example adds a custom source as a Sec
     aws securitylake create-custom-log-source \
         --source-name "VPC_FLOW" \
         --event-classes '["DNS_ACTIVITY", "NETWORK_ACTIVITY"]' \
-        --configuration '{"crawlerConfiguration": {"roleArn": "arn:aws:glue:eu-west-2:123456789012:crawler/E1WG1ZNPRXT0D4"},"providerIdentity": {"principal": "029189416600","externalId": "123456789012"}}' --region "us-east-1"
+        --configuration '{"crawlerConfiguration": {"roleArn": "arn:aws:glue:eu-west-2:123456789012:crawler/E1WG1ZNPRXT0D4"},"providerIdentity": {"principal": "029189416600","externalId": "123456789012"}}'
 
 Output::
 

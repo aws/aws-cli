@@ -3,7 +3,7 @@
 The following ``describe-db-cluster-parameters`` example lists the parameters for the Amazon DocumentDB parameter group custom3-6-param-grp. ::
 
     aws docdb describe-db-cluster-parameters \
-         --db-cluster-parameter-group-name custom3-6-param-grp
+        --db-cluster-parameter-group-name custom3-6-param-grp
 
 Output::
 

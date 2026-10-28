@@ -3,8 +3,7 @@
 The following ``register-publisher`` example registers a publisher and accepts the terms and condition parameter. ::
 
     aws cloudformation register-publisher \
-      --region us-west-2 \
-      --accept-terms-and-conditions
+        --accept-terms-and-conditions
 
 Output::
 

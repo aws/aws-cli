@@ -2,7 +2,8 @@
 
 The following ``describe-resize`` example describes the latest resize of a cluster. The request was for 3 nodes of type ``dw.hs1.8xlarge``. ::
 
-    aws redshift describe-resize --cluster-identifier mycluster
+    aws redshift describe-resize \
+        --cluster-identifier mycluster
 
 Result::
 

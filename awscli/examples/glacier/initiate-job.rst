@@ -2,7 +2,10 @@
 
 The following ``initiate-job`` example initiates a job to get an inventory of the vault ``my-vault``. ::
 
-    aws glacier initiate-job --account-id - --vault-name my-vault --job-parameters '{"Type": "inventory-retrieval"}'
+    aws glacier initiate-job \
+        --account-id - \
+        --vault-name my-vault \
+        --job-parameters '{"Type": "inventory-retrieval"}'
 
 Output::
 
@@ -15,7 +18,10 @@ Amazon Glacier requires an account ID argument when performing operations, but y
 
 The following ``initiate-job`` example initiates a job to retrieve an archive from the vault ``my-vault``. ::
 
-    aws glacier initiate-job --account-id - --vault-name my-vault --job-parameters file://job-archive-retrieval.json
+    aws glacier initiate-job \
+        --account-id - \
+        --vault-name my-vault \
+        --job-parameters file://job-archive-retrieval.json
 
 ``job-archive-retrieval.json`` is a JSON file in the local folder that specifies the type of job, archive ID, and some optional parameters::
 

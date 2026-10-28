@@ -2,7 +2,9 @@
 
 The following ``create-security-group`` example creates a security group named ``MySecurityGroup``. ::
 
-    aws ec2 create-security-group --group-name MySecurityGroup --description "My security group"
+    aws ec2 create-security-group \
+        --group-name MySecurityGroup \
+        --description "My security group"
 
 Output::
 
@@ -14,7 +16,10 @@ Output::
 
 The following ``create-security-group`` example creates a security group named ``MySecurityGroup`` for the specified VPC. ::
 
-    aws ec2 create-security-group --group-name MySecurityGroup --description "My security group" --vpc-id vpc-1a2b3c4d
+    aws ec2 create-security-group \
+        --group-name MySecurityGroup \
+        --description "My security group" \
+        --vpc-id vpc-1a2b3c4d
 
 Output::
 

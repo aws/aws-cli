@@ -2,7 +2,8 @@
 
 The following ``put-delivery-channel`` example provides the settings for the delivery channel as JSON code. ::
 
-    aws configservice put-delivery-channel --delivery-channel file://deliveryChannel.json
+    aws configservice put-delivery-channel \
+        --delivery-channel file://deliveryChannel.json
 
 The ``deliveryChannel.json`` file specifies the delivery channel attributes::
 

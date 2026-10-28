@@ -3,7 +3,7 @@
 The following ``get-findings`` example retrieves the full JSON finding details of the specified finding. ::
 
     aws guardduty get-findings \
-        --detector-id 12abc34d567e8fa901bc2d34eexample \ 
+        --detector-id 12abc34d567e8fa901bc2d34eexample \
         --finding-id 1ab92989eaf0e742df4a014d5example
 
 Output::

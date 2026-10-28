@@ -7,8 +7,7 @@ The following ``create-rule-group`` example creates a custom rule group for regi
         --scope REGIONAL \
         --capacity 250 \
         --rules file://waf-rule.json \
-        --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestRuleGroupMetrics \
-        --region us-west-2
+        --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestRuleGroupMetrics
 
 Contents of `file://waf-rule.json`::
 

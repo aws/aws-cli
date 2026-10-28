@@ -40,7 +40,8 @@ Each alias is associated with only one KMS key, but a KMS key can have multiple 
 
 This example uses the key ID of the KMS key for the ``--key-id`` parameter, but you can use a key ID, key ARN, alias name, or alias ARN in this command. ::
 
-    aws kms list-aliases --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+    aws kms list-aliases \
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
 
 Output::
 

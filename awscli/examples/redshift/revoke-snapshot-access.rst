@@ -4,7 +4,9 @@ The following ``revoke-snapshot-access`` example revokes the authorization of th
 restore the snapshot ``my-snapshot-id``. By default, the output is in JSON
 format. ::
 
-    aws redshift revoke-snapshot-access --snapshot-id my-snapshot-id --account-with-restore-access 444455556666
+    aws redshift revoke-snapshot-access \
+        --snapshot-id my-snapshot-id \
+        --account-with-restore-access 444455556666
 
 Result::
 

@@ -2,7 +2,8 @@
 
 The following ``get-upload`` example retrieves information about an upload. ::
 
-    aws devicefarm get-upload --arn "arn:aws:devicefarm:us-west-2:123456789012:upload:070fc3ca-7ec1-4741-9c1f-d3e044efc506/dd72723a-ae9e-4087-09e6-f4cea3599514"
+    aws devicefarm get-upload \
+        --arn "arn:aws:devicefarm:us-west-2:123456789012:upload:070fc3ca-7ec1-4741-9c1f-d3e044efc506/dd72723a-ae9e-4087-09e6-f4cea3599514"
 
 You can get the upload ARN from the output of ``create-upload``.
 

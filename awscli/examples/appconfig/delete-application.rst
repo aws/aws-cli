@@ -3,7 +3,7 @@
 The following ``delete-application`` example deletes the specified application. ::
 
     aws appconfig delete-application \
-    --application-id 339ohji
+        --application-id 339ohji
 
 This command produces no output.
 

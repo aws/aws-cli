@@ -45,7 +45,7 @@ The following ``copy-image`` example uses the ``--copy-image-tags`` parameter to
         --name ami-name \
         --source-region us-west-2 \
         --source-image-id ami-066877671789bd71b \
-        --description "This is my copied image."
+        --description "This is my copied image." \
         --copy-image-tags
 
 Output::

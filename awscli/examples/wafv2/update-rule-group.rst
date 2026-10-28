@@ -7,8 +7,7 @@ The following ``update-rule-group`` example changes the visibility configuration
         --scope REGIONAL \
         --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --lock-token 7b3bcec2-0000-0000-0000-563bf47249f0 \
-        --visibility-config SampledRequestsEnabled=false,CloudWatchMetricsEnabled=false,MetricName=TestMetricsForRuleGroup \
-        --region us-west-2
+        --visibility-config SampledRequestsEnabled=false,CloudWatchMetricsEnabled=false,MetricName=TestMetricsForRuleGroup
 
 Output::
 

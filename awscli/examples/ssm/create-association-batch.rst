@@ -2,7 +2,8 @@
 
 The following ``create-association-batch`` example associates a configuration document with multiple instances. The output returns a list of successful and failed operations, if applicable. ::
 
-    aws ssm create-association-batch --entries "Name=AWS-UpdateSSMAgent,InstanceId=i-1234567890abcdef0" "Name=AWS-UpdateSSMAgent,InstanceId=i-9876543210abcdef0"
+    aws ssm create-association-batch \
+        --entries "Name=AWS-UpdateSSMAgent,InstanceId=i-1234567890abcdef0" "Name=AWS-UpdateSSMAgent,InstanceId=i-9876543210abcdef0"
 
 Output::
 

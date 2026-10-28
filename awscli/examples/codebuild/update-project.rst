@@ -2,7 +2,8 @@
 
 The following ``update-project`` example changes the settings of the specified CodeBuild build project named my-demo-project. ::
 
-    aws codebuild update-project --name "my-demo-project" \
+    aws codebuild update-project \
+        --name "my-demo-project" \
         --description "This project is updated" \
         --source "{\"type\": \"S3\",\"location\": \"codebuild-us-west-2-123456789012-input-bucket/my-source-2.zip\"}" \
         --artifacts {"\"type\": \"S3\",\"location\": \"codebuild-us-west-2-123456789012-output-bucket-2\""} \

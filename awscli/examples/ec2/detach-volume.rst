@@ -2,7 +2,8 @@
 
 The following ``detach-volume`` example detaches the volume (``vol-049df61146c4d7901``) from the instance it is attached to. ::
 
-    aws ec2 detach-volume --volume-id vol-049df61146c4d7901
+    aws ec2 detach-volume \
+        --volume-id vol-049df61146c4d7901
 
 Output::
 

@@ -2,7 +2,12 @@
 
 The following ``create-environment`` example creates a new environment for version "v1" of a java application named "my-app". ::
 
-    aws elasticbeanstalk create-environment --application-name my-app --environment-name my-env --cname-prefix my-app --version-label v1 --solution-stack-name "64bit Amazon Linux 2015.03 v2.0.0 running Tomcat 8 Java 8"
+    aws elasticbeanstalk create-environment \
+        --application-name my-app \
+        --environment-name my-env \
+        --cname-prefix my-app \
+        --version-label v1 \
+        --solution-stack-name "64bit Amazon Linux 2015.03 v2.0.0 running Tomcat 8 Java 8"
 
 Output::
 
@@ -32,7 +37,10 @@ Output::
 
 The following ``create-environment`` example specifies that a JSON file with the name ``myoptions.json`` should be used to override values obtained from the solution stack or the configuration template. ::
 
-    aws elasticbeanstalk create-environment --environment-name sample-env --application-name sampleapp --option-settings file://myoptions.json
+    aws elasticbeanstalk create-environment \
+        --environment-name sample-env \
+        --application-name sampleapp \
+        --option-settings file://myoptions.json
 
 ``myoptions.json`` is a JSON object defining several settings::
 

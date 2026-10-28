@@ -2,7 +2,10 @@
 
 The following ``create-user-import-job`` example creates a user import job named MyImportJob. ::
 
-    aws cognito-idp create-user-import-job --user-pool-id us-west-2_aaaaaaaaa --job-name MyImportJob --cloud-watch-logs-role-arn arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole
+    aws cognito-idp create-user-import-job \
+        --user-pool-id us-west-2_aaaaaaaaa \
+        --job-name MyImportJob \
+        --cloud-watch-logs-role-arn arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole
 
 Output::
 

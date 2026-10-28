@@ -3,9 +3,7 @@
 The following ``create-stack-refactor`` example creates the stack definition for stack refactoring. ::
 
     aws cloudformation create-stack-refactor \
-        --stack-definitions \
-          StackName=Stack1,TemplateBody@=file://template1-updated.yaml \
-          StackName=Stack2,TemplateBody@=file://template2-updated.yaml
+        --stack-definitions StackName=Stack1,TemplateBody@=file://template1-updated.yaml StackName=Stack2,TemplateBody@=file://template2-updated.yaml
 
 Output::
 

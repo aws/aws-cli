@@ -12,7 +12,6 @@ For Windows, use the following command. ::
 
     aws textract start-document-text-detection \
         --document-location "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
-        --region region-name \
         --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
 
 Output::

@@ -2,7 +2,8 @@
 
 The following ``get-csv-header`` example gets the CSV header for a user pool. ::
 
-    aws cognito-idp get-csv-header --user-pool-id us-west-2_aaaaaaaaa
+    aws cognito-idp get-csv-header \
+        --user-pool-id us-west-2_aaaaaaaaa
 
 Output::
 

@@ -20,8 +20,7 @@ The following ``reset-db-parameter-group`` example resets the parameter values f
 
     aws rds reset-db-parameter-group \
         --db-parameter-group-name mypg \
-        --parameters "ParameterName=max_connections,ApplyMethod=immediate" \
-                     "ParameterName=max_allowed_packet,ApplyMethod=immediate"
+        --parameters "ParameterName=max_connections,ApplyMethod=immediate" "ParameterName=max_allowed_packet,ApplyMethod=immediate"
 
 Output::
 

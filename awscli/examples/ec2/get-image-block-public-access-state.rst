@@ -1,9 +1,8 @@
-**To get the block public access state for AMIs in the specified Region**
+**To get the block public access state for AMIs in the current Region**
 
-The following ``get-image-block-public-access-state`` example gets the block public access state for AMIs at the account level in the specified Region. ::
+The following ``get-image-block-public-access-state`` example gets the block public access state for AMIs at the account level in the current Region. ::
 
-    aws ec2 get-image-block-public-access-state \
-        --region us-east-1
+    aws ec2 get-image-block-public-access-state
 
 Output::
 

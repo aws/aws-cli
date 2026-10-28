@@ -2,7 +2,8 @@
 
 The following ``describe-job-queues`` example describes the `HighPriority` job queue. ::
 
-    aws batch describe-job-queues --job-queues HighPriority
+    aws batch describe-job-queues \
+        --job-queues HighPriority
 
 Output::
 

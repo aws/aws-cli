@@ -3,7 +3,7 @@
 The following ``get-resource-policies`` example lists the resource policies associated with the specified response plan. ::
 
     aws ssm-incidents get-resource-policies \
-    --resource-arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan"
+        --resource-arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan"
 
 Output::
 

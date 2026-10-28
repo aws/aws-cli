@@ -2,7 +2,8 @@
 
 The following ``verify-domain-dkim`` example generates DKIM tokens for a domain that has been verified with Amazon SES. ::
 
-    aws ses verify-domain-dkim --domain example.com
+    aws ses verify-domain-dkim \
+        --domain example.com
 
 Output::
 

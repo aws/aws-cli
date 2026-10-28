@@ -1,6 +1,6 @@
 **To get information about a stack set**
 
-The following `describe-stack-set`` example displays details about the specified stack set. ::
+The following ``describe-stack-set`` example displays details about the specified stack set. ::
 
     aws cloudformation describe-stack-set \
         --stack-set-name my-stack-set

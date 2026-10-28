@@ -1,6 +1,6 @@
 **To update a job**
 
-The following command updates the specified job::
+The following command updates the specified job. ::
 
     aws importexport update-job --job-id EX1ID --job-type import --manifest file://manifest.txt --no-validate-only
 

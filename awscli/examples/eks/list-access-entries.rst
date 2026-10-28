@@ -1,6 +1,6 @@
 **To list the access entries for an EKS cluster**
 
-The following ``list-access-entries`` returns the list of access entries associated with the EKS cluster ``eks-customer``. ::
+The following ``list-access-entries`` example returns the list of access entries associated with the EKS cluster ``eks-customer``. ::
 
     aws eks list-access-entries \
         --cluster-name eks-customer

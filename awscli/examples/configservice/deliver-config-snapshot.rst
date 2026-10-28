@@ -1,6 +1,6 @@
 **To deliver a configuration snapshot**
 
-The following command delivers a configuration snapshot to the Amazon S3 bucket that belongs to the default delivery channel::
+The following ``deliver-config-snapshot`` example delivers a configuration snapshot to the Amazon S3 bucket that belongs to the default delivery channel. ::
 
     aws configservice deliver-config-snapshot --delivery-channel-name default
 

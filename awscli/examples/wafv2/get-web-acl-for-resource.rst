@@ -1,6 +1,6 @@
 **To retrieve the web ACL that's associated with an AWS resource**
 
-The following ``get-web-acl-for-resource`` retrieves the JSON for the web ACL that's associated with the specified resource. ::
+The following ``get-web-acl-for-resource`` example retrieves the JSON for the web ACL that's associated with the specified resource. ::
 
     aws wafv2 get-web-acl-for-resource \
         --resource-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/waf-cli-alb/1ea17125f8b25a2a

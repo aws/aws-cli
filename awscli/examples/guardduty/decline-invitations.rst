@@ -1,6 +1,6 @@
 **To decline an invitation to have Guardduty managed by another account in the current region.**
 
-This example shows how to decline a membership invitation. ::
+The following ``decline-invitations`` example declines a membership invitation. ::
 
     aws guardduty decline-invitations \
         --account-ids 111122223333

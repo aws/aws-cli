@@ -1,6 +1,6 @@
 **To return a list of users**
 
-The following `describe-users`` returns a list of users. ::
+The following ``describe-users`` example returns a list of users. ::
 
     aws memorydb describe-users
 

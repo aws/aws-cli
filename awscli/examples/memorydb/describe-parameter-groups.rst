@@ -1,6 +1,6 @@
 **To return a list of parameter groups**
 
-The following `describe-parameter-groups`` returns a list of parameter groups. ::
+The following ``describe-parameter-groups`` example returns a list of parameter groups. ::
 
     aws memorydb describe-parameter-groups
 

@@ -1,6 +1,6 @@
 **To list stack set operation results**
 
-The following command displays the results of an update operation on instances in the specified stack set. ::
+The following ``list-stack-set-operation-results`` example displays the results of an update operation on instances in the specified stack set. ::
 
     aws cloudformation list-stack-set-operation-results \
         --stack-set-name enable-config \

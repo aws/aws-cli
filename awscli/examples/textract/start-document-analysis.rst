@@ -1,15 +1,15 @@
 **To start analyzing text in a multi-page document**
 
-The following ``start-document-analysis`` example shows how to start asynchronous analysis of text in a multi-page document. 
+The following ``start-document-analysis`` example shows how to start asynchronous analysis of text in a multi-page document.
 
-Linux/macOS::
+For Linux and macOS, use the following command. ::
 
     aws textract start-document-analysis \
         --document-location '{"S3Object":{"Bucket":"bucket","Name":"document"}}' \
         --feature-types '["TABLES","FORMS"]' \
         --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
 
-Windows::
+For Windows, use the following command. ::
 
     aws textract start-document-analysis \
         --document-location "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \

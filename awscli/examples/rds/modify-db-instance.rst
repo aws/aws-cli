@@ -57,7 +57,7 @@ For more information, see `Modifying an Amazon RDS DB Instance <https://docs.aws
 
 **Example 2: To associate VPC security group with a DB instance**
 
-The following ``modify-db-instance`` example associates a specific VPC security group and removes DB security groups from a DB instance::
+The following ``modify-db-instance`` example associates a specific VPC security group and removes DB security groups from a DB instance. ::
 
     aws rds modify-db-instance \
         --db-instance-identifier dbName \

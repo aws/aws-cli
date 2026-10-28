@@ -32,7 +32,7 @@ Output::
 
 **Example 3: To create a patch baseline with approval rules stored in a JSON file**
 
-The following ``create-patch-baseline`` example creates a patch baseline for Amazon Linux 2017.09 that approves patches for a production environment seven days after they are released, specifies approval rules for the patch baseline, and specifies a custom repository for patches.  ::
+The following ``create-patch-baseline`` example creates a patch baseline for Amazon Linux 2017.09 that approves patches for a production environment seven days after they are released, specifies approval rules for the patch baseline, and specifies a custom repository for patches. ::
 
     aws ssm create-patch-baseline \
         --cli-input-json file://my-amazon-linux-approval-rules-and-repo.json 

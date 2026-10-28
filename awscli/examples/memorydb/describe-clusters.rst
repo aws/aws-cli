@@ -1,6 +1,6 @@
 **To return a list of clusters**
 
-The following `describe-clusters`` returns a list of clusters. ::
+The following ``describe-clusters`` example returns a list of clusters. ::
 
     aws memorydb describe-clusters
 

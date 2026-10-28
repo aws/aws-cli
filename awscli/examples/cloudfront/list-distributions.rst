@@ -1,6 +1,6 @@
 **To list CloudFront distributions**
 
-The following example gets a list of the CloudFront distributions in your AWS account. ::
+The following ``list-distributions`` example gets a list of the CloudFront distributions in your AWS account. ::
 
     aws cloudfront list-distributions
 

@@ -1,6 +1,6 @@
 **To describe a configuration**
 
-The following ``get-playback-configuration`` displays all of the details of the configuration named ``west_campaign``. ::
+The following ``get-playback-configuration`` example displays all of the details of the configuration named ``west_campaign``. ::
 
     aws mediatailor get-playback-configuration \
         --name west_campaign

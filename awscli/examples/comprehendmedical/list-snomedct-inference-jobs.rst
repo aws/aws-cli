@@ -1,6 +1,6 @@
 **To list all SNOMED CT inference jobs**
 
-The following example shows how the ``list-snomedct-inference-jobs`` operation returns a list of current asynchronous SNOMED CT batch inference jobs. ::
+The following ``list-snomedct-inference-jobs`` example returns a list of current asynchronous SNOMED CT batch inference jobs. ::
 
     aws comprehendmedical list-snomedct-inference-jobs
 

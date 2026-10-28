@@ -1,6 +1,6 @@
 **To start a query**
 
-The following ``start-query-monitor-top-contributors``  example starts the query which returns a query ID to retrieve the top contributors. ::
+The following ``start-query-monitor-top-contributors`` example starts the query which returns a query ID to retrieve the top contributors. ::
 
     aws networkflowmonitor start-query-monitor-top-contributors \
         --monitor-name Demo \

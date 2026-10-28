@@ -1,6 +1,6 @@
 **To list activity types**
 
-To get a list of the activity types for a domain, use ``swf list-activity-types``. The ``--domain`` and
+The following ``list-activity-types`` example gets a list of the activity types for a domain. The ``--domain`` and
 ``--registration-status`` arguments are required. ::
 
     aws swf list-activity-types \
@@ -59,7 +59,7 @@ Output::
         ]
     }
 
-You can use the ``--name`` argument to select only activity types with a particular name::
+You can use the ``--name`` argument to select only activity types with a particular name. ::
 
     aws swf list-activity-types \
         --domain DataFrobtzz \
@@ -83,7 +83,7 @@ Output::
     }
 
 To retrieve results in pages, you can set the ``--maximum-page-size`` argument. If more results are returned than will
-fit in a page of results, a "nextPageToken" will be returned in the result set::
+fit in a page of results, a "nextPageToken" will be returned in the result set. ::
 
     aws swf list-activity-types \
         --domain DataFrobtzz \
@@ -116,7 +116,7 @@ Output::
         ]
     }
 
-You can pass the nextPageToken value to the next call to ``list-activity-types`` in the ``--next-page-token`` argument, retrieving the next page of results::
+You can pass the nextPageToken value to the next call to ``list-activity-types`` in the ``--next-page-token`` argument, retrieving the next page of results. ::
 
     aws swf list-activity-types \
         --domain DataFrobtzz \

@@ -1,8 +1,6 @@
 **Example 1: To describe all the attributes for your AWS account**
 
-This example describes the attributes for your AWS account.
-
-Command::
+The following ``describe-account-attributes`` example describes the attributes for your AWS account. ::
 
     aws ec2 describe-account-attributes
 
@@ -66,9 +64,7 @@ Output::
 
 **Example 2: To describe a single attribute for your AWS account**
 
-This example describes the ``supported-platforms`` attribute for your AWS account.
-
-Command::
+The following ``describe-account-attributes`` example describes the ``supported-platforms`` attribute for your AWS account. ::
 
     aws ec2 describe-account-attributes --attribute-names supported-platforms
 

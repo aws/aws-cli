@@ -1,6 +1,6 @@
 **To get the telemetry metadata**
 
-The following ``get-telemetry-metadata`` command generates information about the data that is collected for the assessment run with the ARN of ``arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE``::
+The following ``get-telemetry-metadata`` example generates information about the data that is collected for the assessment run with the ARN of ``arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE``. ::
 
     aws inspector get-telemetry-metadata --assessment-run-arn arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE
 

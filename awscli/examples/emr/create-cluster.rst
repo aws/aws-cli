@@ -53,7 +53,7 @@ The following ``create-cluster`` example uses the ``--applications`` parameter t
 
 **Example 6: To create a cluster that includes Spark**
 
-The following example installs Spark. ::
+The following ``create-cluster`` example installs Spark. ::
 
     aws emr create-cluster \
         --release-label emr-5.9.0 \
@@ -77,7 +77,7 @@ The following ``create-cluster`` example creates a cluster instance based on the
 
 **Example 8: To customize application configurations**
 
-The following examples use the ``--configurations`` parameter to specify a JSON configuration file that contains application customizations for Hadoop. For more information, see `Configuring Applications <https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html>`__ in the *Amazon EMR Release Guide*.
+The following ``create-cluster`` examples use the ``--configurations`` parameter to specify a JSON configuration file that contains application customizations for Hadoop. For more information, see `Configuring Applications <https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html>`__ in the *Amazon EMR Release Guide*.
 
 Contents of ``configurations.json``::
 
@@ -256,9 +256,7 @@ The following ``create-cluster`` example uses the ``--security-configuration`` p
 
 **Example 15: To create a cluster with additional EBS storage volumes configured for the instance groups**
 
-When specifying additional EBS volumes, the following arguments are required: ``VolumeType``, ``SizeInGB`` if ``EbsBlockDeviceConfigs`` is specified.
-
-The following ``create-cluster`` example creates a cluster with multiple EBS volumes attached to EC2 instances in the core instance group. ::
+The following ``create-cluster`` example creates a cluster with multiple EBS volumes attached to EC2 instances in the core instance group. When specifying additional EBS volumes, the following arguments are required: ``VolumeType``, ``SizeInGB`` if ``EbsBlockDeviceConfigs`` is specified. ::
 
     aws emr create-cluster \
         --release-label emr-5.9.0  \
@@ -406,7 +404,7 @@ Contents of ``multiplefiles.json``::
 
 **Example 19: To add Hive steps when creating a cluster**
 
-The following example add Hive steps when creating a cluster. Hive steps require parameters ``Type`` and ``Args``. Hive steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
+The following ``create-cluster`` example adds Hive steps when creating a cluster. Hive steps require parameters ``Type`` and ``Args``. Hive steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
 
     aws emr create-cluster \
         --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://amzn-s3-demo-bucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] \
@@ -416,7 +414,7 @@ The following example add Hive steps when creating a cluster. Hive steps require
 
 **Example 20: To add Pig steps when creating a cluster**
 
-The following example adds Pig steps when creating a cluster. Pig steps required parameters are ``Type`` and ``Args``. Pig steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
+The following ``create-cluster`` example adds Pig steps when creating a cluster. Pig steps required parameters are ``Type`` and ``Args``. Pig steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
 
     aws emr create-cluster \
         --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://amzn-s3-demo-bucket/pig-apache/output] \
@@ -525,7 +523,7 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
         --auto-termination-policy IdleTimeout=100
 
-The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--os-release-label" to define an Amazon Linux release for cluster launch ::
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--os-release-label" to define an Amazon Linux release for cluster launch. ::
 
     aws emr create-cluster \
         --release-label emr-6.6.0 \

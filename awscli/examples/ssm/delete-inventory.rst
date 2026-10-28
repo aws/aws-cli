@@ -1,8 +1,6 @@
 **Example 1: To delete a custom inventory type**
 
-This example deletes a custom inventory schema.
-
-Command::
+The following ``delete-inventory`` example deletes a custom inventory schema. ::
 
     aws ssm delete-inventory --type-name "Custom:RackInfo" --schema-delete-option "DeleteSchema"
 
@@ -26,9 +24,7 @@ Output::
 
 **Example 2: To disable a custom inventory type**
 
-This example disables a custom inventory schema.
-
-Command::
+The following ``delete-inventory`` example disables a custom inventory schema. ::
 
     aws ssm delete-inventory --type-name "Custom:RackInfo" --schema-delete-option "DisableSchema"
 

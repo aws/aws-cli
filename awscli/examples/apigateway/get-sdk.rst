@@ -1,6 +1,6 @@
 **Example 1: To get the Android SDK for a REST API stage**
 
-Command::
+The following ``get-sdk`` example gets the Android SDK for the ``dev`` stage of a REST API and saves it to a file. ::
 
     aws apigateway get-sdk --rest-api-id 1234123412 --stage-name dev --sdk-type android --parameters groupId='com.mycompany',invokerPackage='com.mycompany.clientsdk',artifactId='Mycompany-client',artifactVersion='1.0.0' /path/to/android_sdk.zip
 
@@ -13,7 +13,7 @@ Output::
 
 **Example 2: To get the IOS SDK for a REST API stage**
 
-Command::
+The following ``get-sdk`` example gets the iOS SDK for the ``dev`` stage of a REST API and saves it to a file. ::
 
     aws apigateway get-sdk --rest-api-id 1234123412 --stage-name dev --sdk-type objectivec --parameters classPrefix='myprefix' /path/to/iOS_sdk.zip
 
@@ -26,7 +26,7 @@ Output::
 
 **Example 3: To get the Javascript SDK for a REST API stage**
 
-Command::
+The following ``get-sdk`` example gets the JavaScript SDK for the ``dev`` stage of a REST API and saves it to a file. ::
 
     aws apigateway get-sdk --rest-api-id 1234123412 --stage-name dev --sdk-type javascript /path/to/javascript_sdk.zip
 

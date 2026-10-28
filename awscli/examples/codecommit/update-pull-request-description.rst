@@ -1,6 +1,6 @@
 **To change the description of a pull request**
 
-This example demonstrates how to change the description of a pull request with the ID of ``47``. ::
+The following ``update-pull-request-description`` example changes the description of a pull request with the ID of ``47``. ::
 
     aws codecommit update-pull-request-description \
         --pull-request-id 47 \

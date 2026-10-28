@@ -1,8 +1,6 @@
 **To get a queue's attributes**
 
-This example gets all of the specified queue's attributes.
-
-Command::
+The following ``get-queue-attributes`` example gets all of the specified queue's attributes. ::
 
     aws sqs get-queue-attributes --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --attribute-names All
 
@@ -25,9 +23,7 @@ Output::
         }
     }
 
-This example gets only the specified queue's maximum message size and visibility timeout attributes.
-
-Command::
+The following ``get-queue-attributes`` example gets only the specified queue's maximum message size and visibility timeout attributes. ::
 
     aws sqs get-queue-attributes --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyNewQueue --attribute-names MaximumMessageSize VisibilityTimeout
 

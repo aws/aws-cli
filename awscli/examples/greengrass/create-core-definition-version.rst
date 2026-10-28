@@ -2,7 +2,7 @@
 
 The following ``create-core-definition-version`` example creates a core definition version and associates it with the specified core definition. The version can contain one core only. Before you can create a core, you must first create and provision the corresponding AWS IoT thing. This process includes the following ``iot`` commands, which return the ``ThingArn`` and ``CertificateArn`` required for the ``create-core-definition-version`` command.
 
-* Create the AWS IoT thing that corresponds to the core device::
+* Create the AWS IoT thing that corresponds to the core device. ::
 
     aws iot create-thing \
         --thing-name "MyCoreDevice"
@@ -50,7 +50,7 @@ Output::
         "policyVersionId": "1"
     }
 
-* Attach the policy to the certificate::
+* Attach the policy to the certificate. ::
 
     aws iot attach-policy \
         --policy-name "Core_Devices" \
@@ -58,7 +58,7 @@ Output::
 
 This command produces no output.
 
-* Attach the thing to the certificate::
+* Attach the thing to the certificate. ::
 
     aws iot attach-thing-principal \
         --thing-name "MyCoreDevice" \
@@ -66,7 +66,7 @@ This command produces no output.
 
 This command produces no output.
 
-* Create the core definition version::
+* Create the core definition version. ::
 
     aws greengrass create-core-definition-version \
         --core-definition-id "582efe12-b05a-409e-9a24-a2ba1bcc4a12" \

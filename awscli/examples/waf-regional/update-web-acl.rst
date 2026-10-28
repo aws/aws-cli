@@ -1,6 +1,6 @@
 **To update a web ACL**
 
-The following ``update-web-acl`` command  deletes an ``ActivatedRule`` object in a WebACL. Because the ``updates`` value contains embedded double quotes, you must surround the entire value in single quotes. ::
+The following ``update-web-acl`` example deletes an ``ActivatedRule`` object in a WebACL. Because the ``updates`` value contains embedded double quotes, you must surround the entire value in single quotes. ::
 
     aws waf-regional update-web-acl \
         --web-acl-id a123fae4-b567-8e90-1234-5ab67ac8ca90 \

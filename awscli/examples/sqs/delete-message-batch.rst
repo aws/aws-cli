@@ -1,8 +1,6 @@
 **To delete multiple messages as a batch**
 
-This example deletes the specified messages.
-
-Command::
+The following ``delete-message-batch`` example deletes the specified messages. ::
 
     aws sqs delete-message-batch --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --entries file://delete-message-batch.json
 

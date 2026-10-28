@@ -1,6 +1,6 @@
 **To add a delegate to a resource**
 
-The following ``associate-delegate-to-resource`` command adds a delegate to a resource. ::
+The following ``associate-delegate-to-resource`` example adds a delegate to a resource. ::
 
     aws workmail associate-delegate-to-resource \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

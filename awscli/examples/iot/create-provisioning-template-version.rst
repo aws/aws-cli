@@ -1,6 +1,6 @@
 **To create a provisioning template version**
 
-The following example creates a version for the specified provisioning template. The body of the new version is supplied in the file ``template.json``. :: 
+The following ``create-provisioning-template-version`` example creates a version for the specified provisioning template. The body of the new version is supplied in the file ``template.json``. ::
 
     aws iot create-provisioning-template-version \
         --template-name widget-template \

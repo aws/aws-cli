@@ -1,8 +1,6 @@
 **To get a quote for exchanging a Convertible Reserved Instance**
 
-This example gets the exchange information for the specified Convertible Reserved Instances.
-
-Command::
+The following ``get-reserved-instances-exchange-quote`` example gets the exchange information for the specified Convertible Reserved Instances. ::
 
     aws ec2 get-reserved-instances-exchange-quote --reserved-instance-ids 7b8750c3-397e-4da4-bbcb-a45ebexample --target-configurations OfferingId=6fea5434-b379-434c-b07b-a7abexample
 

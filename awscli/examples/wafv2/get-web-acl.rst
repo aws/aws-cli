@@ -1,6 +1,6 @@
 **To retrieve a web ACL**
 
-The following ``get-web-acl`` retrieves the web ACL with the specified name, scope, and ID. You can get the ID for a web ACL from the commands ``create-web-acl`` and ``list-web-acls``. ::
+The following ``get-web-acl`` example retrieves the web ACL with the specified name, scope, and ID. You can get the ID for a web ACL from the commands ``create-web-acl`` and ``list-web-acls``. ::
 
     aws wafv2 get-web-acl \
         --name test01 \

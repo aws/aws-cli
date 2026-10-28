@@ -1,6 +1,6 @@
 **To retrieve multiple items from a table**
 
-The following ``batch-get-items`` example reads multiple items from the ``MusicCollection`` table using a batch of three ``GetItem`` requests, and requests the number of read capacity units consumed by the operation. The command returns only the ``AlbumTitle`` attribute. ::
+The following ``batch-get-item`` example reads multiple items from the ``MusicCollection`` table using a batch of three ``GetItem`` requests, and requests the number of read capacity units consumed by the operation. The command returns only the ``AlbumTitle`` attribute. ::
 
     aws dynamodb batch-get-item \
         --request-items file://request-items.json \

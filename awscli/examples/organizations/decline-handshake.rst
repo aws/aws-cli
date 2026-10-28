@@ -1,6 +1,6 @@
 **To decline a handshake sent from another account**
 
-The following example shows that Susan, an admin who is the owner of account 222222222222, declines an invitation to join Bill's organization. The DeclineHandshake operation returns a handshake object, showing that the state is now DECLINED: ::
+The following ``decline-handshake`` example declines an invitation to join Bill's organization on behalf of Susan, an admin who is the owner of account 222222222222. The DeclineHandshake operation returns a handshake object, showing that the state is now DECLINED. ::
 
     aws organizations decline-handshake --handshake-id h-examplehandshakeid111
 

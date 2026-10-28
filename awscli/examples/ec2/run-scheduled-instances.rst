@@ -1,8 +1,6 @@
 **To launch a Scheduled Instance**
 
-This example launches the specified Scheduled Instance in a VPC.
-
-Command::
+The following ``run-scheduled-instances`` example launches the specified Scheduled Instance in a VPC. ::
 
     aws ec2 run-scheduled-instances --scheduled-instance-id sci-1234-1234-1234-1234-123456789012 --instance-count 1 --launch-specification file://launch-specification.json
 
@@ -33,9 +31,7 @@ Output::
         ]
     }
 
-This example launches the specified Scheduled Instance in EC2-Classic.
-
-Command::
+The following ``run-scheduled-instances`` example launches the specified Scheduled Instance in EC2-Classic. ::
 
     aws ec2 run-scheduled-instances --scheduled-instance-id sci-1234-1234-1234-1234-123456789012 --instance-count 1 --launch-specification file://launch-specification.json
 

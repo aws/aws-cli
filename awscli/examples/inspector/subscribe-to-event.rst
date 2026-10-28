@@ -1,6 +1,6 @@
 **To subscribe to an event**
 
-The following example enables the process of sending Amazon SNS notifications about the ``ASSESSMENT_RUN_COMPLETED`` event to the topic with the ARN of ``arn:aws:sns:us-west-2:123456789012:exampletopic`` ::
+The following ``subscribe-to-event`` example enables the process of sending Amazon SNS notifications about the ``ASSESSMENT_RUN_COMPLETED`` event to the topic with the ARN of ``arn:aws:sns:us-west-2:123456789012:exampletopic``. ::
 
     aws inspector subscribe-to-event \
         --event ASSESSMENT_RUN_COMPLETED \

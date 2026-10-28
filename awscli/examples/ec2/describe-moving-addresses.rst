@@ -1,8 +1,6 @@
 **To describe your moving addresses**
 
-This example describes all of your moving Elastic IP addresses.
-
-Command::
+The following ``describe-moving-addresses`` example describes all of your moving Elastic IP addresses. ::
 
     aws ec2 describe-moving-addresses
 
@@ -17,8 +15,6 @@ Output::
         ]
     }
 
-This example describes all addresses that are moving to the EC2-VPC platform.
-
-Command::
+The following ``describe-moving-addresses`` example describes all addresses that are moving to the EC2-VPC platform. ::
 
     aws ec2 describe-moving-addresses --filters Name=moving-status,Values=MovingToVpc

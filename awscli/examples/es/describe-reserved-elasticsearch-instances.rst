@@ -1,6 +1,6 @@
 **To view all reserved instances**
 
-The following ``describe-elasticsearch-domains`` example provides a summary of all instances you have reserved in a region. ::
+The following ``describe-reserved-elasticsearch-instances`` example provides a summary of all instances you have reserved in a region. ::
 
     aws es describe-reserved-elasticsearch-instances
 

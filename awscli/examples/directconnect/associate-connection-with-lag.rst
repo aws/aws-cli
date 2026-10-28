@@ -1,8 +1,6 @@
 **To associate a connection with a LAG**
 
-The following example associates the specified connection with the specified LAG.
-
-Command::
+The following ``associate-connection-with-lag`` example associates the specified connection with the specified LAG. ::
 
     aws directconnect associate-connection-with-lag --lag-id dxlag-fhccu14t --connection-id dxcon-fg9607vm
 

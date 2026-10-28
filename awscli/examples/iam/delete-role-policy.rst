@@ -1,6 +1,6 @@
 **To remove a policy from an IAM role**
 
-The following ``delete-role-policy`` command removes the policy named ``ExamplePolicy`` from the role named ``Test-Role``. ::
+The following ``delete-role-policy`` example removes the policy named ``ExamplePolicy`` from the role named ``Test-Role``. ::
 
     aws iam delete-role-policy \
         --role-name Test-Role \

@@ -1,8 +1,6 @@
 **To update a compute environment**
 
-This example disables the `P2OnDemand` compute environment so it can be deleted.
-
-Command::
+The following ``update-compute-environment`` example disables the `P2OnDemand` compute environment so it can be deleted. ::
 
     aws batch update-compute-environment --compute-environment P2OnDemand --state DISABLED
 

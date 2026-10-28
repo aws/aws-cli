@@ -147,7 +147,7 @@ Output::
 
 **Example 4: To list all tasks for a maintenance window that have a Priority of 1 and use Run Command**
 
-This ``describe-maintenance-window-tasks`` example lists all of the tasks for the specified maintenance window that have a ``Priority`` of ``1`` and use ``Run Command``. ::
+The following ``describe-maintenance-window-tasks`` example lists all of the tasks for the specified maintenance window that have a ``Priority`` of ``1`` and use ``Run Command``. ::
 
     aws ssm describe-maintenance-window-tasks \
         --window-id "mw-ab12cd34eEXAMPLE" \

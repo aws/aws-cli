@@ -1,6 +1,6 @@
 **To delete mailbox permissions**
 
-The following ``delete-mailbox-permissions`` command deletes mailbox permissions that were previously granted to a user or group. The entity represents the user that owns the mailbox, and the grantee represents the user or group for whom to delete permissions. ::
+The following ``delete-mailbox-permissions`` example deletes mailbox permissions that were previously granted to a user or group. The entity represents the user that owns the mailbox, and the grantee represents the user or group for whom to delete permissions. ::
 
     aws workmail delete-mailbox-permissions \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

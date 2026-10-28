@@ -57,7 +57,7 @@ Output::
 
 **Example 2: To request attributes for all fleets**
 
-The following ``describe-fleet-attributes`` returns fleet attributes for all fleets with any status. This example illustrates the use of pagination parameters to return one fleet at a time. ::
+The following ``describe-fleet-attributes`` example returns fleet attributes for all fleets with any status. This example illustrates the use of pagination parameters to return one fleet at a time. ::
 
     aws gamelift describe-fleet-attributes \
         --limit 1

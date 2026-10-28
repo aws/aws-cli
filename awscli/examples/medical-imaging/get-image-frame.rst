@@ -1,6 +1,6 @@
 **To get image set pixel data**
 
-The following ``get-image-frame`` code example gets an image frame. ::
+The following ``get-image-frame`` example gets an image frame. ::
 
     aws medical-imaging get-image-frame \
         --datastore-id "12345678901234567890123456789012" \

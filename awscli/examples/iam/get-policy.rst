@@ -1,6 +1,6 @@
 **To retrieve information about the specified managed policy**
 
-This example returns details about the managed policy whose ARN is ``arn:aws:iam::123456789012:policy/MySamplePolicy``. ::
+The following ``get-policy`` example returns details about the managed policy whose ARN is ``arn:aws:iam::123456789012:policy/MySamplePolicy``. ::
 
     aws iam get-policy \
         --policy-arn arn:aws:iam::123456789012:policy/MySamplePolicy

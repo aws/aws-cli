@@ -1,6 +1,6 @@
 **To update a resource associated to a Profile**
 
-The following ``update-profile-resource-association`` updates a priority of a DNS Firewall rule group that is associated to the Profile. ::
+The following ``update-profile-resource-association`` example updates a priority of a DNS Firewall rule group that is associated to the Profile. ::
 
     aws route53profiles update-profile-resource-association \
         --profile-resource-association-id rpr-001913120a7example \

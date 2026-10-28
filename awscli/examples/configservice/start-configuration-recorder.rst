@@ -1,6 +1,6 @@
 **To start the configuration recorder**
 
-The following command starts the default configuration recorder::
+The following ``start-configuration-recorder`` example starts the default configuration recorder. ::
 
     aws configservice start-configuration-recorder --configuration-recorder-name default
 

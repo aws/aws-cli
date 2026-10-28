@@ -1,8 +1,6 @@
 **Example 1: To list running jobs**
 
-This example lists the running jobs in the `HighPriority` job queue.
-
-Command::
+The following ``list-jobs`` example lists the running jobs in the `HighPriority` job queue. ::
 
     aws batch list-jobs --job-queue HighPriority
 
@@ -20,9 +18,7 @@ Output::
 
 **Example 2: To list submitted jobs**
 
-This example lists jobs in the `HighPriority` job queue that are in the `SUBMITTED` job status.
-
-Command::
+The following ``list-jobs`` example lists jobs in the `HighPriority` job queue that are in the `SUBMITTED` job status. ::
 
     aws batch list-jobs --job-queue HighPriority --job-status SUBMITTED
 

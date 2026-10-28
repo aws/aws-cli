@@ -1,6 +1,6 @@
 **To list the container instances that contain a specific attribute**
 
-The following example lists the attributes for container instances that have the ``stack=production`` attribute in the default cluster. ::
+The following ``list-attributes`` example lists the attributes for container instances that have the ``stack=production`` attribute in the default cluster. ::
 
     aws ecs list-attributes \
         --target-type container-instance \

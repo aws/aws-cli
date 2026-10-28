@@ -28,7 +28,7 @@ Output::
 
 **Example 2: To create a view that returns only resources associated with Amazon EC2**
 
-The following ``create-view`` creates a view in AWS Region ``us-east-1`` that returns only those resources in the Region that are associated with the Amazon EC2 service. The view includes the optional ``Tags`` field on returned results. Because this view is created in the Region that contains the aggregator index, it can include results from all Regions in the account that contain a Resource Explorer index. ::
+The following ``create-view`` example creates a view in AWS Region ``us-east-1`` that returns only those resources in the Region that are associated with the Amazon EC2 service. The view includes the optional ``Tags`` field on returned results. Because this view is created in the Region that contains the aggregator index, it can include results from all Regions in the account that contain a Resource Explorer index. ::
 
     aws resource-explorer-2 create-view \
         --view-name My-EC2-Only-View \

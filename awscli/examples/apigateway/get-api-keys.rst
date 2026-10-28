@@ -1,6 +1,6 @@
 **To get the list of API keys**
 
-Command::
+The following ``get-api-keys`` example gets the list of API keys. ::
 
     aws apigateway get-api-keys
 

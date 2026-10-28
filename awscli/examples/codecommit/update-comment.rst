@@ -1,6 +1,6 @@
 **To update a comment on a commit**
 
-This example demonstrates how to add the content ``"Fixed as requested. I'll update the pull request."`` to a comment with an ID of ``442b498bEXAMPLE5756813``. ::
+The following ``update-comment`` example adds the content ``"Fixed as requested. I'll update the pull request."`` to a comment with an ID of ``442b498bEXAMPLE5756813``. ::
 
     aws codecommit update-comment \
         --comment-id 442b498bEXAMPLE5756813 \

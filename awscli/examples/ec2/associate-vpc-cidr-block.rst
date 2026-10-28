@@ -1,6 +1,6 @@
 **Example 1: To associate an Amazon-provided IPv6 CIDR block with a VPC**
 
-The following ``associate-vpc-cidr-block`` example associates an IPv6 CIDR block with the specified VPC.::
+The following ``associate-vpc-cidr-block`` example associates an IPv6 CIDR block with the specified VPC. ::
 
     aws ec2 associate-vpc-cidr-block \
         --amazon-provided-ipv6-cidr-block \

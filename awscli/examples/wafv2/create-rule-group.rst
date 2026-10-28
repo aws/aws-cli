@@ -1,6 +1,6 @@
 **To create a custom rule group for use in your web ACLs**
 
-The following ``create-rule-group`` command creates a custom rule group for regional use. The rule statements for the group are provided in a JSON-formatted file. ::
+The following ``create-rule-group`` example creates a custom rule group for regional use. The rule statements for the group are provided in a JSON-formatted file. ::
 
     aws wafv2 create-rule-group \
         --name "TestRuleGroup" \

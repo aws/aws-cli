@@ -1,6 +1,6 @@
 **To describe your lifecycle hooks**
 
-This example describes the lifecycle hooks for the specified Auto Scaling group. ::
+The following ``describe-lifecycle-hooks`` example describes the lifecycle hooks for the specified Auto Scaling group. ::
 
     aws autoscaling describe-lifecycle-hooks \
         --auto-scaling-group-name my-asg

@@ -45,24 +45,24 @@ The following ``modify-instance-placement`` example moves an instance to a place
 
 The following ``modify-instance-placement`` example removes an instance from a placement group by stopping the instance, modifying the instance placement, and then restarting the instance. The following example specifies an empty string ("") for the placement group name to indicate that the instance is not to be located in a placement group.
 
-Stop the instance::
+Stop the instance. ::
 
     aws ec2 stop-instances \
         --instance-ids i-0123a456700123456
 
-Modify the placement (Windows Command Prompt)::
+Modify the placement (Windows Command Prompt). ::
 
     aws ec2 modify-instance-placement \
         --instance-id i-0123a456700123456 \
         --group-name ""
 
-Modify the placement (Windows PowerShell, Linux, and macOS)::
+Modify the placement (Windows PowerShell, Linux, and macOS). ::
 
     aws ec2 modify-instance-placement `
         --instance-id i-0123a456700123456 `
         --group-name ''
 
-Restart the instance::
+Restart the instance. ::
 
     aws ec2 start-instances \
         --instance-ids i-0123a456700123456

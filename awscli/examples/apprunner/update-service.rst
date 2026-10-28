@@ -1,9 +1,9 @@
 **To update memory size**
 
-The following ``update-service`` example updates the memory size of instances (scaling units) of an App Runner service to 2048 MiB.
+The following ``update-service`` example updates the memory size of instances (scaling units) of an App Runner service to 4 GB.
 
 When the call succeeds, App Runner starts an asynchronous update process.
-The ``Service`` structure that's returned by the call reflects the new memory value that's being applied by this call.  ::
+The ``Service`` structure that's returned by the call reflects the new memory value that's being applied by this call. ::
 
     aws apprunner update-service \
         --cli-input-json file://input.json

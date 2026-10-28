@@ -1,6 +1,6 @@
 **To list Profile resource associations**
 
-The following ``list-profile-resource-associations`` list the Profile resource associations for the specified Profile. ::
+The following ``list-profile-resource-associations`` example lists the Profile resource associations for the specified Profile. ::
 
     aws route53profiles list-profile-resource-associations \
         --profile-id rp-4987774726example

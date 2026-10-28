@@ -1,6 +1,6 @@
 **Example 1: To update an environment to a new version**
 
-The following command updates an environment named "my-env" to version "v2" of the application to which it belongs::
+The following ``update-environment`` example updates an environment named "my-env" to version "v2" of the application to which it belongs. ::
 
     aws elasticbeanstalk update-environment --environment-name my-env --version-label v2
 
@@ -29,7 +29,7 @@ Output::
 
 **Example 2: To set an environment variable**
 
-The following command sets the value of the "PARAM1" variable in the "my-env" environment to "ParamValue"::
+The following ``update-environment`` example sets the value of the "PARAM1" variable in the "my-env" environment to "ParamValue". ::
 
     aws elasticbeanstalk update-environment --environment-name my-env --option-settings Namespace=aws:elasticbeanstalk:application:environment,OptionName=PARAM1,Value=ParamValue
 
@@ -37,7 +37,7 @@ The ``option-settings`` parameter takes a namespace in addition to the name and 
 
 **Example 3: To configure option settings from a file**
 
-The following command configures several options in the ``aws:elb:loadbalancer`` namespace from a file::
+The following ``update-environment`` example configures several options in the ``aws:elb:loadbalancer`` namespace from a file. ::
 
     aws elasticbeanstalk update-environment --environment-name my-env --option-settings file://options.json
 

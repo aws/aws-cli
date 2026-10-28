@@ -1,6 +1,6 @@
 **To reset a parameter group**
 
-The following `reset-parameter-group`` resets a parameter group. ::
+The following ``reset-parameter-group`` example resets a parameter group. ::
 
     aws memorydb reset-parameter-group \
         --parameter-group-name my-parameter-group \

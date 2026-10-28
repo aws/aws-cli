@@ -1,6 +1,6 @@
 **To view a list of applications**
 
-The following command retrieves information about applications in the current region::
+The following ``describe-applications`` example retrieves information about applications in the current region. ::
 
     aws elasticbeanstalk describe-applications
 

@@ -1,6 +1,6 @@
 **To create a web ACL**
 
-The following ``create-web-acl`` command creates a web ACL for regional use. The rule statements for the web ACL are provided in a JSON-formatted file. ::
+The following ``create-web-acl`` example creates a web ACL for regional use. The rule statements for the web ACL are provided in a JSON-formatted file. ::
 
     aws wafv2 create-web-acl \
         --name TestWebAcl \

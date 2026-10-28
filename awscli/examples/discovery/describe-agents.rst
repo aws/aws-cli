@@ -1,8 +1,6 @@
 **To describe agents with specified collectionStatus states**
 
-This example command describes collection agents with collection status of "STARTED" or "STOPPED".
-
-Command::
+The following ``describe-agents`` example describes collection agents with collection status of "STARTED" or "STOPPED". ::
 
     aws discovery describe-agents --filters name="collectionStatus",values="STARTED","STOPPED",condition="EQUALS" --max-results 3
 

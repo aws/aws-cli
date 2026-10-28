@@ -1,8 +1,6 @@
 **To retrieve service metadata**
 
-This example retrieves the metadata for the Amazon EC2 service code.
-
-Command::
+The following ``describe-services`` example retrieves the metadata for the Amazon EC2 service code. ::
 
     aws pricing describe-services --service-code AmazonEC2 --format-version aws_v1 --max-items 1
 

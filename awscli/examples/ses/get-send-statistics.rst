@@ -1,6 +1,6 @@
 **To get your Amazon SES sending statistics**
 
-The following example uses the ``get-send-statistics`` command to return your Amazon SES sending statistics ::
+The following ``get-send-statistics`` example returns your Amazon SES sending statistics. ::
 
     aws ses get-send-statistics
 

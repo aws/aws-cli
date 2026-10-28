@@ -1,6 +1,6 @@
 **Example 1: To list the Pod Identity associations in an EKS cluster**
 
-The following ``list-pod-identity-associations`` returns the list of Pod Identity associations associated with the EKS cluster named ``eks-customer`` in all namespaces and service accounts. ::
+The following ``list-pod-identity-associations`` example returns the list of Pod Identity associations associated with the EKS cluster named ``eks-customer`` in all namespaces and service accounts. ::
 
     aws eks list-pod-identity-associations \
         --cluster-name eks-customer
@@ -37,7 +37,7 @@ For more information, see `Learn how EKS Pod Identity grants pods access to AWS 
 
 **Example 2: To list the Pod Identity associations in an EKS cluster based on namespace and service account**
 
-The following ``list-pod-identity-associations`` returns the list of Pod Identity associations in the EKS cluster based on namespace and service account. ::
+The following ``list-pod-identity-associations`` example returns the list of Pod Identity associations in the EKS cluster based on namespace and service account. ::
 
     aws eks list-pod-identity-associations \
         --cluster-name eks-customer \

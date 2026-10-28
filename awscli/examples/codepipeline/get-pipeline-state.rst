@@ -1,8 +1,6 @@
 **To get information about the state of a pipeline**
 
-This example returns the most recent state of a pipeline named MyFirstPipeline.
-
-Command::
+The following ``get-pipeline-state`` example returns the most recent state of a pipeline named MyFirstPipeline. ::
 
     aws codepipeline get-pipeline-state --name MyFirstPipeline
 

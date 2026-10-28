@@ -1,6 +1,6 @@
 **To detect text in an image**
 
-The following ``detect-text`` command detects text in the specified image. ::
+The following ``detect-text`` example detects text in the specified image. ::
 
     aws rekognition detect-text \
         --image '{"S3Object":{"Bucket":"MyImageS3Bucket","Name":"ExamplePicture.jpg"}}'

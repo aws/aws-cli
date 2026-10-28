@@ -1,6 +1,6 @@
 **To disable the RootSessions feature in your organization**
 
-The following ``disable-organizations-root-sessions`` command disables root user sessions for privileged tasks across member accounts in your organization. ::
+The following ``disable-organizations-root-sessions`` example disables root user sessions for privileged tasks across member accounts in your organization. ::
 
     aws iam disable-organizations-root-sessions
 

@@ -1,8 +1,6 @@
 **To deregister a job definition**
 
-This example deregisters a job definition called sleep10.
-
-Command::
+The following ``deregister-job-definition`` example deregisters a job definition called sleep10. ::
 
     aws batch deregister-job-definition --job-definition sleep10
 

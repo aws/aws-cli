@@ -1,6 +1,6 @@
 **To terminate an instance in an Auto Scaling group**
 
-This example terminates the specified instance from the specified Auto Scaling group without updating the size of the group. Amazon EC2 Auto Scaling launches a replacement instance after the specified instance terminates. ::
+The following ``terminate-instance-in-auto-scaling-group`` example terminates the specified instance from the specified Auto Scaling group without updating the size of the group. Amazon EC2 Auto Scaling launches a replacement instance after the specified instance terminates. ::
 
     aws autoscaling terminate-instance-in-auto-scaling-group \
         --instance-id i-061c63c5eb45f0416 \

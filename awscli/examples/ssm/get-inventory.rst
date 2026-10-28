@@ -1,8 +1,6 @@
 **To view your inventory**
 
-This example gets the custom metadata for your inventory.
-
-Command::
+The following ``get-inventory`` example gets the custom metadata for your inventory. ::
 
     aws ssm get-inventory
 

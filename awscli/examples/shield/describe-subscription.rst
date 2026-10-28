@@ -1,6 +1,6 @@
 **To retrieve the details of the AWS Shield Advanced protection for the account**
 
-The following ``describe-subscription`` example displays details about the Shield Advanced protection provided for the account.::
+The following ``describe-subscription`` example displays details about the Shield Advanced protection provided for the account. ::
 
     aws shield describe-subscription
 

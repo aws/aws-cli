@@ -1,6 +1,6 @@
 **Example 1: To update a CloudFront distribution's default root object**
 
-The following example updates the default root object to ``index.html`` for the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``. ::
+The following ``update-distribution`` example updates the default root object to ``index.html`` for the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``. ::
 
     aws cloudfront update-distribution \
         --id EDFDVBD6EXAMPLE \
@@ -138,7 +138,7 @@ Output::
 
 **Example 2: To update a CloudFront distribution**
 
-The following example disables the CloudFront distribution with the ID ``EMLARXS9EXAMPLE`` by providing the distribution configuration in a JSON file named ``dist-config-disable.json``. To update a distribution, you must use the ``--if-match`` option to provide the distribution's ``ETag``. To get the
+The following ``update-distribution`` example disables the CloudFront distribution with the ID ``EMLARXS9EXAMPLE`` by providing the distribution configuration in a JSON file named ``dist-config-disable.json``. To update a distribution, you must use the ``--if-match`` option to provide the distribution's ``ETag``. To get the
 ``ETag``, use the `get-distribution <get-distribution.html>`_ or `get-distribution-config <get-distribution-config.html>`_ command. Note that the ``Enabled`` field is set to
 ``false`` in the JSON file.
 

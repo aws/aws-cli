@@ -1,6 +1,6 @@
 **To get the method resource configuration for a HTTP method defined under a REST API's resource**
 
-Command::
+The following ``get-method`` example gets the method resource configuration for the ``GET`` method defined under a REST API's resource. ::
 
     aws apigateway get-method --rest-api-id 1234123412 --resource-id y9h6rt --http-method GET
 

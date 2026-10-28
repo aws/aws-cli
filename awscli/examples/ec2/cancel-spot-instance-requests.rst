@@ -1,8 +1,6 @@
 **To cancel Spot Instance requests**
 
-This example command cancels a Spot Instance request.
-
-Command::
+The following ``cancel-spot-instance-requests`` example cancels a Spot Instance request. ::
 
     aws ec2 cancel-spot-instance-requests --spot-instance-request-ids sir-08b93456
 

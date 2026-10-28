@@ -1,8 +1,6 @@
 **Example 1: To update cluster endpoint access**
 
-This example command updates a cluster to disable endpoint public access and enable private endpoint access.
-
-Command::
+The following ``update-cluster-config`` example updates a cluster to disable endpoint public access and enable private endpoint access. ::
 
     aws eks update-cluster-config --name example \
     --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
@@ -31,9 +29,7 @@ Output::
 
 **Example 2: To enable logging for a cluster**
 
-This example command enables all cluster control plane logging types for a cluster named ``example``.
-
-Command::
+The following ``update-cluster-config`` example enables all cluster control plane logging types for a cluster named ``example``. ::
 
     aws eks update-cluster-config --name example \
     --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":true}]}'

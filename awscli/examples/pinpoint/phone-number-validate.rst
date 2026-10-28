@@ -1,6 +1,6 @@
 **To retrieve information about a phone number**
 
-The following ``phone-number-validate`` retrieves information about a phone number. ::
+The following ``phone-number-validate`` example retrieves information about a phone number. ::
 
     aws pinpoint phone-number-validate \
         --number-validate-request PhoneNumber="+12065550142" \

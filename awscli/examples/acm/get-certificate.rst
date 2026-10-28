@@ -1,6 +1,6 @@
 **To retrieve an ACM certificate**
 
-The following ``get-certificate`` command retrieves the certificate for the specified ARN and the certificate chain::
+The following ``get-certificate`` example retrieves the certificate for the specified ARN and the certificate chain. ::
 
     aws acm get-certificate --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012
 

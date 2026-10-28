@@ -1,6 +1,6 @@
 **To get the results of a face detection operation**
 
-The following ``get-face-detection`` command displays the results of a face detection operation that you started previously by calling ``start-face-detection``. ::
+The following ``get-face-detection`` example displays the results of a face detection operation that you started previously by calling ``start-face-detection``. ::
 
     aws rekognition get-face-detection \
         --job-id 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef 

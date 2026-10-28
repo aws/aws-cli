@@ -1,8 +1,6 @@
 **To describe Spot Instance datafeed subscription for an account**
 
-This example command describes the data feed for the account.
-
-Command::
+The following ``describe-spot-datafeed-subscription`` example describes the data feed for the account. ::
 
     aws ec2 describe-spot-datafeed-subscription
 

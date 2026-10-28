@@ -1,6 +1,6 @@
 **To return information about the specified OpenID Connect provider**
 
-This example returns details about the OpenID Connect provider whose ARN is ``arn:aws:iam::123456789012:oidc-provider/server.example.com``. ::
+The following ``get-open-id-connect-provider`` example returns details about the OpenID Connect provider whose ARN is ``arn:aws:iam::123456789012:oidc-provider/server.example.com``. ::
 
     aws iam get-open-id-connect-provider \
         --open-id-connect-provider-arn arn:aws:iam::123456789012:oidc-provider/server.example.com

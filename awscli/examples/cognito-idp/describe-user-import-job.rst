@@ -1,10 +1,6 @@
 **To describe a user import job**
 
-This example describes a user input job.
-
-For more information about importing users, see `Importing Users into User Pools From a CSV File`_.
-
-Command::
+The following ``describe-user-import-job`` example describes a user import job. ::
 
     aws cognito-idp describe-user-import-job --user-pool-id us-west-2_aaaaaaaaa --job-id import-TZqNQvDRnW
 
@@ -24,5 +20,7 @@ Output::
             "FailedUsers": 0
         }
     }
+
+For more information about importing users, see `Importing Users into User Pools From a CSV File`_.
 
 .. _`Importing Users into User Pools From a CSV File`: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html

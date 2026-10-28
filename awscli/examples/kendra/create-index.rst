@@ -1,6 +1,6 @@
 **To create an Amazon Kendra index**
 
-The following ``create-index`` creates and configures an Amazon Kendra index. You can use ``describe-index`` to view the status of an index, and read any error messages if the status shows an index "FAILED" to completely create. ::
+The following ``create-index`` example creates and configures an Amazon Kendra index. You can use ``describe-index`` to view the status of an index, and read any error messages if the status shows an index "FAILED" to completely create. ::
 
     aws kendra create-index \
         --name "example index 1" \

@@ -1,6 +1,6 @@
 **To describe the cross account access role**
 
-The following ``describe-cross-account-access-role`` command describes the IAM role that enables Amazon Inspector to access your AWS account::
+The following ``describe-cross-account-access-role`` example describes the IAM role that enables Amazon Inspector to access your AWS account. ::
 
     aws inspector describe-cross-account-access-role
 

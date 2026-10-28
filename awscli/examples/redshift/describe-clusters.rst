@@ -1,8 +1,6 @@
 **To get a description of all clusters**
 
-This example returns a description of all clusters for the account.  By default, the output is in JSON format.
-
-Command::
+The following ``describe-clusters`` example returns a description of all clusters for the account.  By default, the output is in JSON format. ::
 
     aws redshift describe-clusters
 
@@ -46,9 +44,7 @@ Result::
         }
     }
 
-You can also obtain the same information in text format using the ``--output text`` option.
-
-Command::
+You can also obtain the same information in text format using the ``--output text`` option. ::
 
     aws redshift describe-clusters --output text
 

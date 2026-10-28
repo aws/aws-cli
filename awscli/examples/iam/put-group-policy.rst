@@ -1,6 +1,6 @@
 **To add a policy to a group**
 
-The following ``put-group-policy`` command adds a policy to the IAM group named ``Admins``. ::
+The following ``put-group-policy`` example adds a policy to the IAM group named ``Admins``. ::
 
     aws iam put-group-policy \
         --group-name Admins \

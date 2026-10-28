@@ -1,6 +1,6 @@
 **To update a CloudFront origin access identity**
 
-The following example updates the origin access identity (OAI) with the ID
+The following ``update-cloud-front-origin-access-identity`` example updates the origin access identity (OAI) with the ID
 ``E74FTE3AEXAMPLE``. The only field that you can update is the OAI's
 ``Comment``.
 
@@ -14,9 +14,7 @@ To get the ``ETag``, use the
 <get-cloud-front-origin-access-identity.html>`_ or
 `get-cloud-front-origin-access-identity-config
 <get-cloud-front-origin-access-identity-config.html>`_ command.
-Use the ``--if-match`` option to provide the OAI's ``ETag``.
-
-::
+Use the ``--if-match`` option to provide the OAI's ``ETag``. ::
 
     aws cloudfront update-cloud-front-origin-access-identity \
         --id E74FTE3AEXAMPLE \
@@ -25,7 +23,7 @@ Use the ``--if-match`` option to provide the OAI's ``ETag``.
             CallerReference=cli-example,Comment="Example OAI Updated"
 
 You can accomplish the same thing by providing the OAI configuration in a JSON
-file, as shown in the following example::
+file, as shown in the following example. ::
 
     aws cloudfront update-cloud-front-origin-access-identity \
         --id E74FTE3AEXAMPLE \

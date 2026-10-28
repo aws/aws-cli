@@ -1,6 +1,6 @@
 **To generate a PIN**
 
-The following ``generate-card-validation-data`` example generate a new random PIN using the Visa PIN scheme. ::
+The following ``generate-pin-data`` example generates a new random PIN using the Visa PIN scheme. ::
 
     aws payment-cryptography-data generate-pin-data \
         --generation-key-identifier arn:aws:payment-cryptography:us-east-2:111122223333:key/37y2tsl45p5zjbh2 \

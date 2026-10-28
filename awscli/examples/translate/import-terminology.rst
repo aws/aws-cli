@@ -1,6 +1,6 @@
 **To import a custom terminology from a file**
 
-The following ``import-terminology`` example  creates a terminology called ``MyTestTerminology`` from the ``test-terminology.csv`` file: ::
+The following ``import-terminology`` example creates a terminology called ``MyTestTerminology`` from the ``test-terminology.csv`` file. ::
 
     aws translate import-terminology \
         --name MyTestTerminology \

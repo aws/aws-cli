@@ -1,6 +1,6 @@
 **To list the active multipart uploads for a bucket**
 
-The following command lists all of the active multipart uploads for a bucket named ``amzn-s3-demo-bucket``::
+The following ``list-multipart-uploads`` example lists all of the active multipart uploads for a bucket named ``amzn-s3-demo-bucket``. ::
 
     aws s3api list-multipart-uploads --bucket amzn-s3-demo-bucket
 

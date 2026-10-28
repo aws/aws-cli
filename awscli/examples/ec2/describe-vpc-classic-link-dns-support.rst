@@ -1,8 +1,6 @@
 **To describe ClassicLink DNS support for your VPCs**
 
-This example describes the ClassicLink DNS support status of all of your VPCs.
-
-Command::
+The following ``describe-vpc-classic-link-dns-support`` example describes the ClassicLink DNS support status of all of your VPCs. ::
 
     aws ec2 describe-vpc-classic-link-dns-support
 

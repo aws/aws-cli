@@ -1,6 +1,6 @@
 **To get a shard iterator**
 
-The following ``get-shard-iterator`` command retrieves a shard iterator for the specified shard. ::
+The following ``get-shard-iterator`` example retrieves a shard iterator for the specified shard. ::
 
     aws dynamodbstreams get-shard-iterator \
         --stream-arn arn:aws:dynamodb:us-west-1:12356789012:table/Music/stream/2019-10-22T18:02:01.576 \

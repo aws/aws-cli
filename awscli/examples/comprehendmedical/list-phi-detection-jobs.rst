@@ -1,6 +1,6 @@
 **To list protected health information (PHI) detection jobs**
 
-The following ``list-phi-detection-jobs`` example lists current protected health information (PHI) detection jobs ::
+The following ``list-phi-detection-jobs`` example lists current protected health information (PHI) detection jobs. ::
 
     aws comprehendmedical list-phi-detection-jobs
 

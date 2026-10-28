@@ -1,6 +1,6 @@
 **To get a list of all tag values**
 
-The following ``get-tag-values`` example displays all of the values used for the specified key for all resources in the  ::
+The following ``get-tag-values`` example displays all of the values used for the specified key for all resources in the current AWS Region. ::
 
     aws resourcegroupstaggingapi get-tag-values \
         --key=Environment

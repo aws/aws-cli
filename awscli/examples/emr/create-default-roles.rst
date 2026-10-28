@@ -1,6 +1,6 @@
 **To create the default IAM role for EC2**
 
-- Command::
+The following ``create-default-roles`` example creates the default IAM role for EC2. ::
 
     aws emr create-default-roles
 

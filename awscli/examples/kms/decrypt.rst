@@ -1,6 +1,6 @@
 **Example 1: To decrypt an encrypted message with a symmetric KMS key (Linux and macOS)**
 
-The following ``decrypt`` command example demonstrates the recommended way to decrypt data with the AWS CLI. This version shows how to decrypt data under a symmetric KMS key.
+The following ``decrypt`` example demonstrates the recommended way to decrypt data with the AWS CLI. This version shows how to decrypt data under a symmetric KMS key.
 
 * Provide the ciphertext in a file.
 
@@ -33,7 +33,7 @@ For more information, see `Decrypt <https://docs.aws.amazon.com/kms/latest/APIRe
 
 **Example 2: To decrypt an encrypted message with a symmetric KMS key (Windows command prompt)**
 
-The following example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
+The following ``decrypt`` example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
 
 Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 
@@ -57,7 +57,7 @@ For more information, see `Decrypt <https://docs.aws.amazon.com/kms/latest/APIRe
 
 **Example 3: To decrypt an encrypted message with an asymmetric KMS key (Linux and macOS)**
 
-The following ``decrypt`` command example shows how to decrypt data encrypted under an RSA asymmetric KMS key.
+The following ``decrypt`` example shows how to decrypt data encrypted under an RSA asymmetric KMS key.
 
 When using an asymmetric KMS key, the ``encryption-algorithm`` parameter, which specifies the algorithm used to encrypt the plaintext, is required.
 

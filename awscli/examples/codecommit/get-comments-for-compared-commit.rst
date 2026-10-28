@@ -1,6 +1,6 @@
 **To view comments on a commit**
 
-This example demonstrates how to view view comments made on the comparison between two commits in a repository named ``MyDemoRepo``. ::
+The following ``get-comments-for-compared-commit`` example displays comments made on the comparison between two commits in a repository named ``MyDemoRepo``. ::
 
     aws codecommit get-comments-for-compared-commit \
         --repository-name MyDemoRepo \

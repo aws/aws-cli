@@ -1,8 +1,6 @@
 **Example 1: To create a new cluster**
 
-This example command creates a cluster named ``prod`` in your default region.
-
-Command::
+The following ``create-cluster`` example creates a cluster named ``prod`` in your default region. ::
 
     aws eks create-cluster --name prod \
         --role-arn arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-J7ONKE3BQ4PI \
@@ -34,9 +32,7 @@ Output::
 
 **Example 2: To create a new cluster with private endpoint access and logging enabled**
 
-This example command creates a cluster named ``example`` in your default region with public endpoint access disabled, private endpoint access enabled, and all logging types enabled.
-
-Command::
+The following ``create-cluster`` example creates a cluster named ``example`` in your default region with public endpoint access disabled, private endpoint access enabled, and all logging types enabled. ::
 
     aws eks create-cluster --name example --kubernetes-version 1.12 \
         --role-arn arn:aws:iam::012345678910:role/example-cluster-ServiceRole-1XWBQWYSFRE2Q \

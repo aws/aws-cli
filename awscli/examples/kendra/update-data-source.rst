@@ -1,6 +1,6 @@
 **To update an Amazon Kendra data source connector**
 
-The following ``update-data-source`` updates the configuration of an Amazon Kendra data source connector. If the action is successful, the service either sends back no output, the HTTP status code 200, or the AWS CLI return code 0. You can use ``describe-data-source`` to view the configuration and status of a data source connector. ::
+The following ``update-data-source`` example updates the configuration of an Amazon Kendra data source connector. If the action is successful, the service either sends back no output, the HTTP status code 200, or the AWS CLI return code 0. You can use ``describe-data-source`` to view the configuration and status of a data source connector. ::
 
     aws kendra update-data-source \
         --id exampledatasource1 \

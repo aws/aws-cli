@@ -1,6 +1,6 @@
 **To view events for an environment**
 
-The following command retrieves events for an environment named ``my-env``::
+The following ``describe-events`` example retrieves events for an environment named ``my-env``. ::
 
     aws elasticbeanstalk describe-events --environment-name my-env
 

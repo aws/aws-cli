@@ -1,6 +1,6 @@
 **To stop a composition**
 
-The following ``stop-composition`` stops the composition specified by the given ARN (Amazon Resource Name). ::
+The following ``stop-composition`` example stops the composition specified by the given ARN (Amazon Resource Name). ::
 
     aws ivs-realtime stop-composition \
         --arn "arn:aws:ivs:ap-northeast-1:123456789012:composition/abcdABCDefgh"

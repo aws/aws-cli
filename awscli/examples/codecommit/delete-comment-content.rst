@@ -1,6 +1,6 @@
 **To delete the content of a comment**
 
-You can only delete the content of a comment if you created the comment. This example demonstrates how to delete the content of a comment with the system-generated ID of ``ff30b348EXAMPLEb9aa670f``. ::
+The following ``delete-comment-content`` example deletes the content of a comment with the system-generated ID of ``ff30b348EXAMPLEb9aa670f``. You can only delete the content of a comment if you created the comment. ::
 
     aws codecommit delete-comment-content \
         --comment-id ff30b348EXAMPLEb9aa670f

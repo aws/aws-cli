@@ -1,6 +1,6 @@
 **To describe rules packages**
 
-The following ``describe-rules-packages`` command describes the rules package with the ARN of ``arn:aws:inspector:us-west-2:758058086616:rulespackage/0-9hgA516p``::
+The following ``describe-rules-packages`` example describes the rules package with the ARN of ``arn:aws:inspector:us-west-2:758058086616:rulespackage/0-9hgA516p``. ::
 
     aws inspector describe-rules-packages --rules-package-arns arn:aws:inspector:us-west-2:758058086616:rulespackage/0-9hgA516p
 

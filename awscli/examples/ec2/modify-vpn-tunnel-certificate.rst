@@ -1,6 +1,6 @@
 **To rotate a VPN tunnel certificate**
 
-The following ``modify-vpn-tunnel-certificate`` example rotates the certificate for the specified tunnel for a VPN connection ::
+The following ``modify-vpn-tunnel-certificate`` example rotates the certificate for the specified tunnel for a VPN connection. ::
 
     aws ec2 modify-vpn-tunnel-certificate \
         --vpn-tunnel-outside-ip-address 203.0.113.17 \

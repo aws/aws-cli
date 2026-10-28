@@ -1,8 +1,6 @@
 **Example 1: To list compliance items for a specific instance**
 
-This example lists all compliance items for the specified instance.
-
-Command::
+The following ``list-compliance-items`` example lists all compliance items for the specified instance. ::
 
     aws ssm list-compliance-items --resource-ids "i-1234567890abcdef0" --resource-types "ManagedInstance"
 
@@ -49,18 +47,14 @@ Output::
 
 **Example 2: To list compliance items for a specific instance and association ID**
 
-This example lists all compliance items for the specified instance and association ID.
-
-Command::
+The following ``list-compliance-items`` example lists all compliance items for the specified instance and association ID. ::
 
     aws ssm list-compliance-items --resource-ids "i-1234567890abcdef0" --resource-types "ManagedInstance" --filters "Key=ComplianceType,Values=Association,Type=EQUAL" "Key=Id,Values=e4c2ed6d-516f-41aa-aa2a-0123456789ab,Type=EQUAL"
 
 
 **Example 3: To list compliance items for an instance after a specific date and time**
 
-This example lists all compliance items for an instance after the specified date and time.
-
-Command::
+The following ``list-compliance-items`` example lists all compliance items for an instance after the specified date and time. ::
 
     aws ssm list-compliance-items --resource-ids "i-1234567890abcdef0" --resource-types "ManagedInstance" --filters "Key=ExecutionTime,Values=2019-02-18T16:00:00Z,Type=GREATER_THAN"
 

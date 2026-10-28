@@ -1,6 +1,6 @@
 **To get information about an API's stage**
 
-Command::
+The following ``get-stage`` example gets information about the ``dev`` stage of a REST API. ::
 
     aws apigateway get-stage --rest-api-id 1234123412 --stage-name dev
 

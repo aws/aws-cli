@@ -1,6 +1,6 @@
 **To view information about the AWS resources in your environment**
 
-The following command retrieves information about resources in an environment named ``my-env``::
+The following ``describe-environment-resources`` example retrieves information about resources in an environment named ``my-env``. ::
 
     aws elasticbeanstalk describe-environment-resources --environment-name my-env
 

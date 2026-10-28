@@ -1,8 +1,6 @@
 **To delete a repository**
 
-This example shows how to delete an AWS CodeCommit repository.
-
-Command::
+The following ``delete-repository`` example deletes an AWS CodeCommit repository. ::
 
     aws codecommit delete-repository --repository-name MyDemoRepo
 

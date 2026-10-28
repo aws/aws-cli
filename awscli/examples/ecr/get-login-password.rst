@@ -1,6 +1,6 @@
 **To retrieve a password to authenticate to a registry**
 
-The following ``get-login-password`` displays a password that you can use with a container client of your choice to authenticate to any Amazon ECR registry that your IAM principal has access to. ::
+The following ``get-login-password`` example displays a password that you can use with a container client of your choice to authenticate to any Amazon ECR registry that your IAM principal has access to. ::
 
     aws ecr get-login-password
 

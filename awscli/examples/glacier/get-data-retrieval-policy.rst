@@ -1,6 +1,6 @@
 **To get the data retrieval policy for an account**
 
-The following command gets the data retrieval policy for the in-use account::
+The following ``get-data-retrieval-policy`` example gets the data retrieval policy for the in-use account. ::
 
     aws glacier get-data-retrieval-policy --account-id -
 

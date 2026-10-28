@@ -1,8 +1,6 @@
 **To create a route table**
 
-This example creates a route table for the specified VPC.
-
-Command::
+The following ``create-route-table`` example creates a route table for the specified VPC. ::
 
     aws ec2 create-route-table --vpc-id vpc-a01106c2
 

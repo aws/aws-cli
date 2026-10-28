@@ -1,8 +1,6 @@
 **To disassociate a connection from a LAG**
 
-The following example disassociates the specified connection from the specified LAG.
-
-Command::
+The following ``disassociate-connection-from-lag`` example disassociates the specified connection from the specified LAG. ::
 
     aws directconnect disassociate-connection-from-lag --lag-id dxlag-fhccu14t --connection-id  dxcon-fg9607vm
 

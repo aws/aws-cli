@@ -1,6 +1,6 @@
 **To create an AWS Cloud9 EC2 development environment**
 
-This following ``create-environment-ec2`` example creates an AWS Cloud9 development environment with the specified settings, launches an Amazon Elastic Compute Cloud (Amazon EC2) instance, and then connects from the instance to the environment. ::
+The following ``create-environment-ec2`` example creates an AWS Cloud9 development environment with the specified settings, launches an Amazon Elastic Compute Cloud (Amazon EC2) instance, and then connects from the instance to the environment. ::
 
     aws cloud9 create-environment-ec2 \
         --name my-demo-env \

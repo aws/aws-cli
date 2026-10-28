@@ -1,6 +1,6 @@
 **To describe an Amazon S3 batch operations job**
 
-The following ``describe-job`` provides configuration parameters and status for the specified batch operations job. ::
+The following ``describe-job`` example provides configuration parameters and status for the specified batch operations job. ::
 
     aws s3control describe-job \
         --account-id 123456789012 \

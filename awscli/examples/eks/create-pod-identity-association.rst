@@ -28,7 +28,7 @@ For more information, see `Learn how EKS Pod Identity grants pods access to AWS 
 
 **Example 2: To create an EKS Pod Identity association in EKS cluster with tags**
 
-The following ``create-pod-identity-association`` creates an EKS Pod Identity association between a service account and an IAM role in the EKS cluster with tags. ::
+The following ``create-pod-identity-association`` example creates an EKS Pod Identity association between a service account and an IAM role in the EKS cluster with tags. ::
 
     aws eks create-pod-identity-association \
         --cluster-name eks-customer \

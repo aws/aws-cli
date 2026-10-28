@@ -1,8 +1,6 @@
 **Example 1: To describe the status of a single volume**
 
-This example command describes the status for the volume ``vol-1234567890abcdef0``.
-
-Command::
+The following ``describe-volume-status`` example describes the status for the volume ``vol-1234567890abcdef0``. ::
 
     aws ec2 describe-volume-status --volume-ids vol-1234567890abcdef0
 
@@ -34,9 +32,7 @@ Output::
 
 **Example 2: To describe the status of impaired volumes**
 
-This example command describes the status for all volumes that are impaired. In this example output, there are no impaired volumes.
-
-Command::
+The following ``describe-volume-status`` example describes the status for all volumes that are impaired. In this example output, there are no impaired volumes. ::
 
     aws ec2 describe-volume-status --filters Name=volume-status.status,Values=impaired
 

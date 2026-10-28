@@ -1,8 +1,6 @@
 **To update a group**
 
-This example updates the description and precedence for MyGroup.
-
-Command::
+The following ``update-group`` example updates the description and precedence for MyGroup. ::
 
     aws cognito-idp update-group --user-pool-id us-west-2_aaaaaaaaa --group-name MyGroup --description "New description" --precedence 2
 

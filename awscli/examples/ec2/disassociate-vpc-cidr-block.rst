@@ -1,8 +1,6 @@
 **Example 1: To disassociate an IPv6 CIDR block from a VPC**
 
-This example disassociates an IPv6 CIDR block from a VPC using the association ID for the CIDR block.
-
-Command::
+The following ``disassociate-vpc-cidr-block`` example disassociates an IPv6 CIDR block from a VPC using the association ID for the CIDR block. ::
 
     aws ec2 disassociate-vpc-cidr-block --association-id vpc-cidr-assoc-eca54085
 
@@ -21,9 +19,7 @@ Output::
 
 **Example 2: To disassociate an IPv4 CIDR block from a VPC**
 
-This example disassociates an IPv4 CIDR block from a VPC.
-
-Command::
+The following ``disassociate-vpc-cidr-block`` example disassociates an IPv4 CIDR block from a VPC. ::
 
     aws ec2 disassociate-vpc-cidr-block --association-id vpc-cidr-assoc-0287ac6b
 

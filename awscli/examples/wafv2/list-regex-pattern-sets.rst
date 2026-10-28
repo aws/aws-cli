@@ -1,6 +1,6 @@
 **To retrieve a list of regex pattern sets**
 
-The following ``list-regex-pattern-sets`` retrieves all regex pattern sets for the account that are defined in the region ``us-west-2``. ::
+The following ``list-regex-pattern-sets`` example retrieves all regex pattern sets for the account that are defined in the region ``us-west-2``. ::
 
     aws wafv2 list-regex-pattern-sets \
     --scope REGIONAL \

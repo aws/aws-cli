@@ -1,6 +1,6 @@
 **To move instances into standby mode**
 
-This example puts the specified instance into standby mode. This is useful for updating or troubleshooting an instance that is currently in service. ::
+The following ``enter-standby`` example puts the specified instance into standby mode. This is useful for updating or troubleshooting an instance that is currently in service. ::
 
     aws autoscaling enter-standby \
         --instance-ids i-061c63c5eb45f0416 \

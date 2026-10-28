@@ -1,6 +1,6 @@
 **To view the event selector settings for a trail**
 
-The following ``get-event-selectors`` command returns the settings for ``Trail1``::
+The following ``get-event-selectors`` example returns the settings for ``Trail1``. ::
 
     aws cloudtrail get-event-selectors --trail-name Trail1
 

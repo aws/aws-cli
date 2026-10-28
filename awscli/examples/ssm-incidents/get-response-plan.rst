@@ -1,6 +1,6 @@
 **To get details of a response plan**
 
-The following ``command-name`` example gets details about a specified response plan in your AWS account. ::
+The following ``get-response-plan`` example gets details about a specified response plan in your AWS account. ::
 
     aws ssm-incidents get-response-plan \
         --arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan"

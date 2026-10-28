@@ -1,6 +1,6 @@
 **To add a tag to a pipeline**
 
-This example adds the specified tag to the specified pipeline::
+The following ``add-tags`` example adds the specified tag to the specified pipeline. ::
 
     aws datapipeline add-tags --pipeline-id df-00627471SOVYZEXAMPLE --tags key=environment,value=production key=owner,value=sales
 

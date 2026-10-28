@@ -1,6 +1,6 @@
 **To detach a load balancer target group from an Auto Scaling group**
 
-This example detaches the specified load balancer target group from the specified Auto Scaling group. ::
+The following ``detach-load-balancer-target-groups`` example detaches the specified load balancer target group from the specified Auto Scaling group. ::
 
     aws autoscaling detach-load-balancer-target-groups \
         --auto-scaling-group-name my-asg \

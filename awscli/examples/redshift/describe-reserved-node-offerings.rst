@@ -1,9 +1,7 @@
 **To describe reserved node offerings**
 
-This example shows all of the reserved node offerings that are available for
-purchase.
-
-Command::
+The following ``describe-reserved-node-offerings`` example shows all of the reserved node offerings that are available for
+purchase. ::
 
     aws redshift describe-reserved-node-offerings
 

@@ -1,8 +1,6 @@
 **To list all of the discovered servers meeting a set of filter conditions**
 
-This example command lists discovered servers matching either of two hostname patterns and not running Ubuntu.
-
-Command::
+The following ``list-configurations`` example lists discovered servers matching either of two hostname patterns and not running Ubuntu. ::
 
     aws discovery list-configurations --configuration-type SERVER --filters name="server.hostName",values="172-31-35","172-31-42",condition="CONTAINS" name="server.osName",values="Ubuntu",condition="NOT_CONTAINS"
 

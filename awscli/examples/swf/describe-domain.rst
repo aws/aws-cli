@@ -1,7 +1,6 @@
 **To get information about a domain**
 
-To get detailed information about a particular domain, use the
-``swf describe-domain`` command. There is one required parameter:
+The following ``describe-domain`` example gets detailed information about a particular domain. There is one required parameter:
 ``--name``, which takes the name of the domain you want information
 about. ::
 

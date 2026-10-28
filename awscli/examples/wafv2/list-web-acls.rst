@@ -1,6 +1,6 @@
 **To retrieve the web ACLs for a scope**
 
-The following ``list-web-acls`` retrieves all web ACLs that are defined for the account for the specified scope. ::
+The following ``list-web-acls`` example retrieves all web ACLs that are defined for the account for the specified scope. ::
 
     aws wafv2 list-web-acls \
         --scope REGIONAL

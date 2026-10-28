@@ -1,6 +1,6 @@
 **To create a contact channel**
 
-Creates a contact channel of type SMS for the contact Akua Mansa. Contact channels can be created of type SMS, EMAIL, or VOICE. ::
+The following ``create-contact-channel`` example creates a contact channel of type SMS for the contact Akua Mansa. Contact channels can be created of type SMS, EMAIL, or VOICE. ::
 
     aws ssm-contacts create-contact-channel \
         --contact-id "arn:aws:ssm-contacts:us-east-1:111122223333:contact/akuam" \

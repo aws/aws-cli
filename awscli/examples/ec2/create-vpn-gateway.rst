@@ -1,8 +1,6 @@
 **Example 1: To create a virtual private gateway**
 
-This example creates a virtual private gateway.
-
-Command::
+The following ``create-vpn-gateway`` example creates a virtual private gateway. ::
 
     aws ec2 create-vpn-gateway --type ipsec.1
 
@@ -20,9 +18,7 @@ Output::
 
 **Example 2: To create a virtual private gateway with a specific Amazon-side ASN**
 
-This example creates a virtual private gateway and specifies the Autonomous System Number (ASN) for the Amazon side of the BGP session.
-
-Command::
+The following ``create-vpn-gateway`` example creates a virtual private gateway and specifies the Autonomous System Number (ASN) for the Amazon side of the BGP session. ::
 
     aws ec2 create-vpn-gateway --type ipsec.1 --amazon-side-asn 65001
 

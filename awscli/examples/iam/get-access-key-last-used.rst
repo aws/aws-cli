@@ -1,6 +1,6 @@
 **To retrieve information about when the specified access key was last used**
 
-The following example retrieves information about when the access key ``ABCDEXAMPLE`` was last used. ::
+The following ``get-access-key-last-used`` example retrieves information about when the access key ``ABCDEXAMPLE`` was last used. ::
 
     aws iam get-access-key-last-used \
         --access-key-id ABCDEXAMPLE

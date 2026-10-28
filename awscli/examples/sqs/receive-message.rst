@@ -1,8 +1,6 @@
 **To receive a message**
 
-This example receives up to 10 available messages, returning all available attributes.
-
-Command::
+The following ``receive-message`` example receives up to 10 available messages, returning all available attributes. ::
 
     aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --attribute-names All --message-attribute-names All --max-number-of-messages 10
 
@@ -36,9 +34,7 @@ Output::
         ]
     }
 
-This example receives the next available message, returning only the SenderId and SentTimestamp attributes as well as the PostalCode message attribute.
-
-Command::
+The following ``receive-message`` example receives the next available message, returning only the SenderId and SentTimestamp attributes as well as the PostalCode message attribute. ::
 
     aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --attribute-names SenderId SentTimestamp --message-attribute-names PostalCode
 

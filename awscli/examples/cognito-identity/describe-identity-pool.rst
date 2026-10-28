@@ -1,8 +1,6 @@
 **To describe an identity pool**
 
-This example describes an identity pool.
-
-Command::
+The following ``describe-identity-pool`` example describes the specified identity pool. ::
 
     aws cognito-identity describe-identity-pool --identity-pool-id "us-west-2:11111111-1111-1111-1111-111111111111"
 

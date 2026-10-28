@@ -1,9 +1,6 @@
 **To specify the health check settings for your backend EC2 instances**
 
-This example specifies the health check settings used to evaluate the health of your backend EC2 instances.
-
-
-Command::
+The following ``configure-health-check`` example specifies the health check settings used to evaluate the health of your backend EC2 instances. ::
 
     aws elb configure-health-check --load-balancer-name my-load-balancer --health-check Target=HTTP:80/png,Interval=30,UnhealthyThreshold=2,HealthyThreshold=2,Timeout=3
 

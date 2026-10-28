@@ -1,6 +1,6 @@
 **To update the encryption configuration**
 
-The following ``put-encryption-config``example updates the encryption configuration for AWS X-Ray data to use the default AWS managed KMS key ``aws/xray``. ::
+The following ``put-encryption-config`` example updates the encryption configuration for AWS X-Ray data to use the default AWS managed KMS key ``aws/xray``. ::
 
     aws xray put-encryption-config \
         --type KMS \

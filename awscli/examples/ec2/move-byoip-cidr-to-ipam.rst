@@ -2,7 +2,7 @@
 
 The following ``move-byoip-cidr-to-ipam`` example transfers a BYOIP CIDR to IPAM.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 move-byoip-cidr-to-ipam \
         --region us-west-2 \
@@ -10,7 +10,7 @@ The following ``move-byoip-cidr-to-ipam`` example transfers a BYOIP CIDR to IPAM
         --ipam-pool-owner 111111111111 \
         --cidr 130.137.249.0/24
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 move-byoip-cidr-to-ipam ^
         --region us-west-2 ^

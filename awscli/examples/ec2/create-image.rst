@@ -35,7 +35,7 @@ For more information about specifying a block device mapping for your AMI, see `
 
 **Example 3: To tag an AMI and snapshots on creation**
 
-The following ``create-image`` example creates an AMI, and tags the AMI and the snapshots with the same tag ``cost-center=cc123`` ::
+The following ``create-image`` example creates an AMI, and tags the AMI and the snapshots with the same tag ``cost-center=cc123``. ::
 
     aws ec2 create-image \
         --instance-id i-1234567890abcdef0 \

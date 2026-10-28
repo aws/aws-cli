@@ -1,6 +1,6 @@
 **To modify a replication group**
 
-The following ``modify-replication-group`` disables Multi-AZ using the Redis engine. ::
+The following ``modify-replication-group`` example disables Multi-AZ using the Redis engine. ::
 
     aws elasticache modify-replication-group \
         --replication-group-id test-cluster \

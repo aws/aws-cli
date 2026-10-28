@@ -1,7 +1,7 @@
 **To list CloudFront public keys**
 
-The following example gets a list of the CloudFront public keys in your AWS
-account::
+The following ``list-public-keys`` example gets a list of the CloudFront public keys in your AWS
+account. ::
 
     aws cloudfront list-public-keys
 

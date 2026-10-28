@@ -1,6 +1,6 @@
 **To check the availability of a CNAME**
 
-The following command checks the availability of the subdomain ``my-cname.elasticbeanstalk.com``::
+The following ``check-dns-availability`` example checks the availability of the subdomain ``my-cname.elasticbeanstalk.com``. ::
 
     aws elasticbeanstalk check-dns-availability --cname-prefix my-cname
 

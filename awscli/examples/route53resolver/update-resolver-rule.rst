@@ -38,7 +38,7 @@ Output::
 
 **Example 2: To update settings Resolver endpoint using a file for ``config`` settings**
 
-You can alternatively include the ``config`` settings in a JSON file and then specify that file when you call ``update-resolver-rule``. ::
+The following ``update-resolver-rule`` example updates the same settings as Example 1. You can alternatively include the ``config`` settings in a JSON file and then specify that file when you call ``update-resolver-rule``. ::
 
     aws route53resolver update-resolver-rule \
         --resolver-rule-id rslvr-rr-1247fa64f3example \

@@ -1,6 +1,6 @@
 **To create a code review.**
 
-The following ``create-code-review`` creates a review of code in the ``mainline`` branch of an AWS CodeCommit repository that is named ``my-repository-name``. ::
+The following ``create-code-review`` example creates a review of code in the ``mainline`` branch of an AWS CodeCommit repository that is named ``my-repository-name``. ::
 
     aws codeguru-reviewer create-code-review \
         --name my-code-review \

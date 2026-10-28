@@ -1,6 +1,6 @@
 **Example 1: To describe the scaling policies of a specified group**
 
-This example describes the scaling policies for the specified Auto Scaling group. ::
+The following ``describe-policies`` example describes the scaling policies for the specified Auto Scaling group. ::
 
     aws autoscaling describe-policies \
         --auto-scaling-group-name my-asg
@@ -67,7 +67,7 @@ For more information, see `Dynamic scaling <https://docs.aws.amazon.com/autoscal
 
 **Example 2: To describe the scaling policies of a specified name**
 
-To return specific scaling policies, use the ``--policy-names`` option. ::
+The following ``describe-policies`` example uses the ``--policy-names`` option to return specific scaling policies. ::
 
     aws autoscaling describe-policies \
         --auto-scaling-group-name my-asg \
@@ -79,7 +79,7 @@ For more information, see `Dynamic scaling <https://docs.aws.amazon.com/autoscal
 
 **Example 3: To describe a number of scaling policies**
 
-To return a specific number of policies, use the ``--max-items`` option. ::
+The following ``describe-policies`` example uses the ``--max-items`` option to return a specific number of policies. ::
 
     aws autoscaling describe-policies \
         --auto-scaling-group-name my-asg \

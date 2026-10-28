@@ -1,6 +1,6 @@
 **To detach a policy from a user**
 
-This example removes the managed policy with the ARN ``arn:aws:iam::123456789012:policy/TesterPolicy`` from the user ``Bob``. ::
+The following ``detach-user-policy`` example removes the managed policy with the ARN ``arn:aws:iam::123456789012:policy/TesterPolicy`` from the user ``Bob``. ::
 
     aws iam detach-user-policy \
         --user-name Bob \

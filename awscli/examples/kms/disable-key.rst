@@ -1,6 +1,6 @@
 **To temporarily disable a KMS key**
 
-The following ``disable-key`` command disables a customer managed KMS key. To re-enable the KMS key, use the ``enable-key`` command. ::
+The following ``disable-key`` example disables a customer managed KMS key. To re-enable the KMS key, use the ``enable-key`` command. ::
 
     aws kms disable-key \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab

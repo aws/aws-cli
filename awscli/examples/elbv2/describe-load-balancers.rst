@@ -1,8 +1,6 @@
 **Example 1: To describe a load balancer**
 
-This example describes the specified load balancer.
-
-Command::
+The following ``describe-load-balancers`` example describes the specified load balancer. ::
 
     aws elbv2 describe-load-balancers --load-balancer-arns arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188
 
@@ -42,8 +40,6 @@ Output::
 
 **Example 2: To describe all load balancers**
 
-This example describes all of your load balancers.
-
-Command::
+The following ``describe-load-balancers`` example describes all of your load balancers. ::
 
     aws elbv2 describe-load-balancers

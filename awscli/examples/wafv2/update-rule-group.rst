@@ -1,6 +1,6 @@
 **To update a custom rule group**
 
-The following ``update-rule-group`` changes the visibility configuration for an existing custom rule group. This call requires an ID, which you can obtain from the call, ``list-rule-groups``, and a lock token which you can obtain from the calls, ``list-rule-groups`` and ``get-rule-group``. This call also returns a lock token that you can use for a subsequent update. ::
+The following ``update-rule-group`` example changes the visibility configuration for an existing custom rule group. This call requires an ID, which you can obtain from the call, ``list-rule-groups``, and a lock token which you can obtain from the calls, ``list-rule-groups`` and ``get-rule-group``. This call also returns a lock token that you can use for a subsequent update. ::
 
     aws wafv2 update-rule-group \
         --name TestRuleGroup \

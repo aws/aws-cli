@@ -1,6 +1,6 @@
 **To start a replication task**
 
-The following ``command-name`` example lists the available widgets in your AWS account. ::
+The following ``start-replication-task`` example starts the specified replication task with the ``reload-target`` start type. ::
 
     aws dms start-replication-task \
         --replication-task-arn arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII \

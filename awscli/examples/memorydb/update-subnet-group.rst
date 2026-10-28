@@ -1,6 +1,6 @@
 **To update a subnet group**
 
-The following `update-subnet-group`` updates a subnet group's subnet ID. ::
+The following ``update-subnet-group`` example updates a subnet group's subnet ID. ::
 
     aws memorydb update-subnet-group \
         --subnet-group-name my-sg \

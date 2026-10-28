@@ -1,8 +1,6 @@
 **To associate a hosted connection with a LAG**
 
-The following example associates the specified hosted connection with the specified LAG.
-
-Command::
+The following ``associate-hosted-connection`` example associates the specified hosted connection with the specified LAG. ::
 
     aws directconnect associate-hosted-connection --parent-connection-id dxlag-fhccu14t --connection-id dxcon-fg9607vm
 

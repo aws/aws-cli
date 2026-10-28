@@ -43,7 +43,7 @@ Output::
 
 **Example 2: To list all targets for a maintenance window matching a specific owner information value**
 
-This ``describe-maintenance-window-targets`` example lists all of the targets for a maintenance window with a specific value. ::
+The following ``describe-maintenance-window-targets`` example lists all of the targets for a maintenance window with a specific value. ::
 
     aws ssm describe-maintenance-window-targets \
         --window-id "mw-0ecb1226ddEXAMPLE" \

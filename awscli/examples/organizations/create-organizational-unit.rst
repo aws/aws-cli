@@ -1,6 +1,6 @@
 **To create an OU in a root or parent OU**
 
-The following example shows how to create an OU that is named AccountingOU: ::
+The following ``create-organizational-unit`` example creates an OU that is named AccountingOU. ::
 
     aws organizations create-organizational-unit --parent-id r-examplerootid111 --name AccountingOU
 

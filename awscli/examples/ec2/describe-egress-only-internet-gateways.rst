@@ -1,8 +1,6 @@
 **To describe your egress-only Internet gateways**
 
-This example describes your egress-only Internet gateways.
-
-Command::
+The following ``describe-egress-only-internet-gateways`` example describes your egress-only Internet gateways. ::
 
     aws ec2 describe-egress-only-internet-gateways
 

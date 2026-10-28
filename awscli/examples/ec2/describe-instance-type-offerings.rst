@@ -38,7 +38,7 @@ The following ``describe-instance-type-offerings`` example lists the instance ty
 
 **Example 3: To check whether an instance type is supported**
 
-The following ``describe-instance-type-offerings`` command indicates whether the ``c5.xlarge`` instance type is supported in the specified Region. ::
+The following ``describe-instance-type-offerings`` example indicates whether the ``c5.xlarge`` instance type is supported in the specified Region. ::
 
     aws ec2 describe-instance-type-offerings \
         --filters Name=instance-type,Values=c5.xlarge \

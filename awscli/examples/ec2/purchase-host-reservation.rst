@@ -1,8 +1,6 @@
 **To purchase a Dedicated Host Reservation**
 
-This example purchases the specified Dedicated Host Reservation offering for the specified Dedicated Host in your account.
-
-Command::
+The following ``purchase-host-reservation`` example purchases the specified Dedicated Host Reservation offering for the specified Dedicated Host in your account. ::
 
     aws ec2 purchase-host-reservation --offering-id hro-03f707bf363b6b324 --host-id-set h-013abcd2a00cbd123
 

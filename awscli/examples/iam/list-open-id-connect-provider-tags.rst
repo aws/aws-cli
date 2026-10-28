@@ -1,6 +1,6 @@
 **To list the tags attached to an OpenID Connect (OIDC)-compatible identity provider**
 
-The following ``list-open-id-connect-provider-tags`` command retrieves the list of tags associated with the specified OIDC identity provider. ::
+The following ``list-open-id-connect-provider-tags`` example retrieves the list of tags associated with the specified OIDC identity provider. ::
 
     aws iam list-open-id-connect-provider-tags \
         --open-id-connect-provider-arn arn:aws:iam::123456789012:oidc-provider/server.example.com

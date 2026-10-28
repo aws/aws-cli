@@ -1,6 +1,6 @@
 **To stop the configuration recorder**
 
-The following command stops the default configuration recorder::
+The following ``stop-configuration-recorder`` example stops the default configuration recorder. ::
 
     aws configservice stop-configuration-recorder --configuration-recorder-name default
 

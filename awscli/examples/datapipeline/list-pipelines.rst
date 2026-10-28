@@ -1,6 +1,6 @@
 **To list your pipelines**
 
-This example lists your pipelines::
+The following ``list-pipelines`` example lists your pipelines. ::
 
     aws datapipeline list-pipelines
 

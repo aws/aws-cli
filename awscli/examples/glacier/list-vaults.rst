@@ -1,6 +1,6 @@
 **To list the vaults**
 
-The following command lists the vaults in the default account and region::
+The following ``list-vaults`` example lists the vaults in the default account and region. ::
 
     aws glacier list-vaults --account-id -
 

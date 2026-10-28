@@ -1,6 +1,6 @@
 **To list your resource data sync configurations**
 
-This example retrieves information about your resource data sync configurations. ::
+The following ``list-resource-data-sync`` example retrieves information about your resource data sync configurations. ::
 
     aws ssm list-resource-data-sync
 

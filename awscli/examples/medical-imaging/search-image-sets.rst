@@ -1,6 +1,6 @@
 **Example 1: To search image sets with an EQUAL operator**
 
-The following ``search-image-sets`` code example uses the EQUAL operator to search image sets based on a specific value. ::
+The following ``search-image-sets`` example uses the EQUAL operator to search image sets based on a specific value. ::
 
     aws medical-imaging search-image-sets \
         --datastore-id 12345678901234567890123456789012 \
@@ -41,7 +41,7 @@ Output::
 
 **Example 2: To search image sets with a BETWEEN operator using DICOMStudyDate and DICOMStudyTime**
 
-The following ``search-image-sets`` code example searches for image sets with DICOM Studies generated between January 1, 1990 (12:00 AM) and January 1, 2023 (12:00 AM).
+The following ``search-image-sets`` example searches for image sets with DICOM Studies generated between January 1, 1990 (12:00 AM) and January 1, 2023 (12:00 AM).
 
 Note:
 DICOMStudyTime is optional. If it is not present, 12:00 AM (start of the day) is the time value for the dates provided for filtering. ::
@@ -96,7 +96,7 @@ Output::
 
 **Example 3: To search image sets with a BETWEEN operator using createdAt (time studies were previously persisted)**
 
-The following ``search-image-sets`` code example searches for image sets with DICOM Studies persisted in HealthImaging between the time ranges in UTC time zone.
+The following ``search-image-sets`` example searches for image sets with DICOM Studies persisted in HealthImaging between the time ranges in UTC time zone.
 
 Note:
 Provide createdAt in example format ("1985-04-12T23:20:50.52Z"). ::
@@ -146,7 +146,7 @@ Output::
 
 **Example 4: To search image sets with an EQUAL operator on DICOMSeriesInstanceUID and BETWEEN on updatedAt and sort response in ASC order on updatedAt field**
 
-The following ``search-image-sets`` code example searches for image sets with an EQUAL operator on DICOMSeriesInstanceUID and BETWEEN on updatedAt and sort response in ASC order on updatedAt field.
+The following ``search-image-sets`` example searches for image sets with an EQUAL operator on DICOMSeriesInstanceUID and BETWEEN on updatedAt and sorts the response in ASC order on the updatedAt field.
 
 Note:
 Provide updatedAt in example format ("1985-04-12T23:20:50.52Z"). ::

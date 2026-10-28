@@ -1,6 +1,6 @@
 **To decrease the number of node groups in a global replication group**
 
-The following ``decrease-node-groups-in-global-replication-group`` decreases the node group count using the Redis engine. ::
+The following ``decrease-node-groups-in-global-replication-group`` example decreases the node group count using the Redis engine. ::
 
     aws elasticache decrease-node-groups-in-global-replication-group \
         --global-replication-group-id sgaui-test \

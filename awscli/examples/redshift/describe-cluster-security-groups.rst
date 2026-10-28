@@ -1,9 +1,7 @@
 **To get a description of all cluster security groups**
 
-This example returns a description of all cluster security groups for the account.
-By default, the output is in JSON format.
-
-Command::
+The following ``describe-cluster-security-groups`` example returns a description of all cluster security groups for the account.
+By default, the output is in JSON format. ::
 
     aws redshift describe-cluster-security-groups
 

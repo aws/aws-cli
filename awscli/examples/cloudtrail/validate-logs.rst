@@ -1,6 +1,6 @@
 **To validate a log file**
 
-The following ``validate-logs`` command validates the logs for ``Trail1``::
+The following ``validate-logs`` example validates the logs for ``Trail1``. ::
 
     aws cloudtrail validate-logs --trail-arn arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1 --start-time 20160129T19:00:00Z
 

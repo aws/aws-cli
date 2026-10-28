@@ -1,6 +1,6 @@
 **To change the IAM Role ARN for logging to CloudWatch Logs**
 
-Command::
+The following ``update-account`` example changes the IAM Role ARN for logging to CloudWatch Logs. ::
 
     aws apigateway update-account --patch-operations op='replace',path='/cloudwatchRoleArn',value='arn:aws:iam::123412341234:role/APIGatewayToCloudWatchLogs'
 

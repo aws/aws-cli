@@ -1,6 +1,6 @@
 **Example 1: To retrieve an SSH public key attached to an IAM user in SSH encoded form**
 
-The following ``get-ssh-public-key`` command retrieves the specified SSH public key from the IAM user ``sofia``. The output is in SSH encoding. ::
+The following ``get-ssh-public-key`` example retrieves the specified SSH public key from the IAM user ``sofia``. The output is in SSH encoding. ::
 
     aws iam get-ssh-public-key \
         --user-name sofia \
@@ -22,7 +22,7 @@ Output::
 
 **Example 2: To retrieve an SSH public key attached to an IAM user in PEM encoded form**
 
-The following ``get-ssh-public-key`` command retrieves the specified SSH public key from the IAM user ``sofia``. The output is in PEM encoding. ::
+The following ``get-ssh-public-key`` example retrieves the specified SSH public key from the IAM user ``sofia``. The output is in PEM encoding. ::
 
     aws iam get-ssh-public-key \
         --user-name sofia \

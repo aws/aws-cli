@@ -1,8 +1,6 @@
 **Example 1: To create a low priority job queue with a single compute environment**
 
-This example creates a job queue called `LowPriority` that uses the `M4Spot` compute environment.
-
-Command::
+The following ``create-job-queue`` example creates a job queue called `LowPriority` that uses the `M4Spot` compute environment. ::
 
     aws batch create-job-queue --cli-input-json file://<path_to_json_file>/LowPriority.json
 
@@ -29,9 +27,7 @@ Output::
 
 **Example 2: To create a high priority job queue with two compute environments**
 
-This example creates a job queue called `HighPriority` that uses the `C4OnDemand` compute environment with an order of 1 and the `M4Spot` compute environment with an order of 2. The scheduler will attempt to place jobs on the `C4OnDemand` compute environment first.
-
-Command::
+The following ``create-job-queue`` example creates a job queue called `HighPriority` that uses the `C4OnDemand` compute environment with an order of 1 and the `M4Spot` compute environment with an order of 2. The scheduler will attempt to place jobs on the `C4OnDemand` compute environment first. ::
 
     aws batch create-job-queue --cli-input-json file://<path_to_json_file>/HighPriority.json
 

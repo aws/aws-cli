@@ -1,6 +1,6 @@
 **Example 1: To generate an HMAC for a message**
 
-The following ``generate-mac`` command generates an HMAC for a message, an HMAC KMS key, and a MAC algorithm. The algorithm must be supported by the specified HMAC KMS key.
+The following ``generate-mac`` example generates an HMAC for a message, an HMAC KMS key, and a MAC algorithm. The algorithm must be supported by the specified HMAC KMS key.
 
 In AWS CLI v2, the value of the ``message`` parameter must be Base64-encoded. Or, you can save the message in a file and use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file.
 
@@ -25,7 +25,7 @@ For more information about using HMAC KMS keys in AWS KMS, see `HMAC keys in AWS
 
 **Example 2: To save an HMAC in a file (Linux and macOs)**
 
-The following ``generate-mac``  example generates an HMAC for a short message stored in a local file. The command also gets the ``Mac`` property from the response, Base64-decodes it and saves it in the ExampleMac file. You can use the MAC file in a ``verify-mac`` command that verifies the MAC.
+The following ``generate-mac`` example generates an HMAC for a short message stored in a local file. The command also gets the ``Mac`` property from the response, Base64-decodes it and saves it in the ExampleMac file. You can use the MAC file in a ``verify-mac`` command that verifies the MAC.
 
 The ``generate-mac`` command requires a Base64-encoded message and a MAC algorithm that your HMAC KMS key supports. To get the MAC algorithms that your KMS key supports, use the ``describe-key`` command.
 

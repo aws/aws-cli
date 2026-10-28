@@ -1,6 +1,6 @@
 **To list all configurations**
 
-The following ``list-playback-configurations`` displays all of the details of the configuration on the current AWS account. ::
+The following ``list-playback-configurations`` example displays all of the details of the configuration on the current AWS account. ::
 
     aws mediatailor list-playback-configurations 
 

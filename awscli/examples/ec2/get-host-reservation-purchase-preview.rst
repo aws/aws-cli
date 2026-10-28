@@ -1,8 +1,6 @@
 **To get a purchase preview for a Dedicated Host Reservation**
 
-This example provides a preview of the costs for a specified Dedicated Host Reservation for the specified Dedicated Host in your account.
-
-Command::
+The following ``get-host-reservation-purchase-preview`` example provides a preview of the costs for a specified Dedicated Host Reservation for the specified Dedicated Host in your account. ::
 
     aws ec2 get-host-reservation-purchase-preview --offering-id hro-03f707bf363b6b324 --host-id-set h-013abcd2a00cbd123
 

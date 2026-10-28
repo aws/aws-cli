@@ -60,7 +60,7 @@ Output::
 
 **Example 2: To get all patches defined by an AWS managed patch baseline**
 
-The following ``describe-effective-patches-for-patch-baseline`` example returns the patches defined by an AWS managed patch baseline. Note that for an AWS managed baseline, the complete baseline ARN is required for ``--baseline-id`` ::
+The following ``describe-effective-patches-for-patch-baseline`` example returns the patches defined by an AWS managed patch baseline. Note that for an AWS managed baseline, the complete baseline ARN is required for ``--baseline-id``. ::
 
     aws ssm describe-effective-patches-for-patch-baseline \
         --baseline-id "arn:aws:ssm:us-east-2:733109147000:patchbaseline/pb-020d361a05defe4ed"

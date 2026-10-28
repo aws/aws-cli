@@ -1,6 +1,6 @@
 **To list assessment runs**
 
-The following ``list-assessment-runs`` command lists all existing assessment runs. ::
+The following ``list-assessment-runs`` example lists all existing assessment runs. ::
 
     aws inspector list-assessment-runs
 

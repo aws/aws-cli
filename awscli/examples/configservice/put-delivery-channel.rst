@@ -1,6 +1,6 @@
 **To create a delivery channel**
 
-The following command provides the settings for the delivery channel as JSON code::
+The following ``put-delivery-channel`` example provides the settings for the delivery channel as JSON code. ::
 
     aws configservice put-delivery-channel --delivery-channel file://deliveryChannel.json
 

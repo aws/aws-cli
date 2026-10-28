@@ -1,8 +1,6 @@
 **To copy a cluster snapshot**
 
-This example copies a cluster snapshot. By default, the output is in JSON format.
-
-Command::
+The following ``copy-cluster-snapshot`` example creates a copy of the automated snapshot ``cm:examplecluster-2013-01-22-19-27-58`` named ``my-saved-snapshot-copy``.  By default, the output is in JSON format. ::
 
     aws redshift copy-cluster-snapshot --source-snapshot-identifier cm:examplecluster-2013-01-22-19-27-58 --target-snapshot-identifier my-saved-snapshot-copy
 

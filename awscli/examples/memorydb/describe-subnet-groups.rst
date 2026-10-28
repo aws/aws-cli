@@ -1,6 +1,6 @@
 **To return a list of subnet groups**
 
-The following `describe-subnet-groups`` returns a list of subnet groups. ::
+The following ``describe-subnet-groups`` example returns a list of subnet groups. ::
 
     aws memorydb describe-subnet-groups
 

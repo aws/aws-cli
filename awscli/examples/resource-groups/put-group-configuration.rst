@@ -1,6 +1,6 @@
 **To attach a service configuration to a resource group**
 
-Example 1: The following ``put-group-configuration`` example specifies that the resource group is to contain only Amazon EC2 capacity reservations for instances in the ``C5`` or ``M5`` families. ::
+The following ``put-group-configuration`` example specifies that the resource group is to contain only Amazon EC2 capacity reservations for instances in the ``C5`` or ``M5`` families. ::
 
     aws resource-groups put-group-configuration \
         --group MyTestGroup \

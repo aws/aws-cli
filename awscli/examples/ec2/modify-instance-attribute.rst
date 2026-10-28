@@ -28,9 +28,7 @@ This command produces no output.
 
 **Example 4: To modify the deleteOnTermination attribute of the root volume**
 
-The following ``modify-instance-attribute`` example sets the ``deleteOnTermination`` attribute for the root volume of the specified Amazon EBS-backed instance to ``false``. By default, this attribute is ``true`` for the root volume.
-
-Command::
+The following ``modify-instance-attribute`` example sets the ``deleteOnTermination`` attribute for the root volume of the specified Amazon EBS-backed instance to ``false``. By default, this attribute is ``true`` for the root volume. ::
 
     aws ec2 modify-instance-attribute \
         --instance-id i-1234567890abcdef0 \
@@ -67,7 +65,7 @@ Output::
     Output Length = 152
     CertUtil: -encode command completed successfully.
 
-Now you can reference that file in the CLI command that follows::
+Now you can reference that file in the following CLI command. ::
 
     aws ec2 modify-instance-attribute \
         --instance-id=i-09b5a14dbca622e76 \

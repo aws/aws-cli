@@ -1,6 +1,6 @@
 **To obtain the capacity used by a set of rules**
 
-The following ``check-capacity`` retrieves the capacity requirements for a rule set that contains a rate-based rule statement, and an AND rule statement that contains nested rules. ::
+The following ``check-capacity`` example retrieves the capacity requirements for a rule set that contains a rate-based rule statement, and an AND rule statement that contains nested rules. ::
 
     aws wafv2 check-capacity \
         --scope REGIONAL \

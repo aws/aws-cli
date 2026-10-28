@@ -1,6 +1,6 @@
 **Example 1: To associate a document using instance IDs**
 
-This example associates a configuration document with an instance, using instance IDs. ::
+The following ``create-association`` example associates a configuration document with an instance, using instance IDs. ::
 
     aws ssm create-association \
         --instance-id "i-0cb2b964d3e14fd9f" \
@@ -40,7 +40,7 @@ For more information, see `CreateAssociation <https://docs.aws.amazon.com/system
 
 **Example 2: To associate a document using targets**
 
-This example associates a configuration document with an instance, using targets. ::
+The following ``create-association`` example associates a configuration document with an instance, using targets. ::
 
     aws ssm create-association \
         --name "AWS-UpdateSSMAgent" \
@@ -80,7 +80,7 @@ For more information, see `CreateAssociation <https://docs.aws.amazon.com/system
 
 **Example 3: To create an association that runs only once**
 
-This example creates a new association that only runs once on the specified date and time. Associations created with a date in the past or present (by the time it is processed the date is in the past) run immediately. ::
+The following ``create-association`` example creates a new association that only runs once on the specified date and time. Associations created with a date in the past or present (by the time it is processed the date is in the past) run immediately. ::
 
     aws ssm create-association \
         --name "AWS-UpdateSSMAgent" \

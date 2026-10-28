@@ -1,6 +1,6 @@
 **To accept a handshake from another account**
 
-Bill, the owner of an organization, has previously invited Juan's account to join his organization. The following example shows Juan's account accepting the handshake and thus agreeing to the invitation. ::
+The following ``accept-handshake`` example accepts a handshake on behalf of Juan's account and thus agrees to the invitation. Bill, the owner of an organization, has previously invited Juan's account to join his organization. ::
 
     aws organizations accept-handshake --handshake-id h-examplehandshakeid111
 

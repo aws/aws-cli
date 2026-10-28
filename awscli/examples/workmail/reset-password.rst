@@ -1,6 +1,6 @@
 **To reset a user's password**
 
-The following ``reset-password`` command resets the password for the specified user. ::
+The following ``reset-password`` example resets the password for the specified user. ::
 
     aws workmail reset-password \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

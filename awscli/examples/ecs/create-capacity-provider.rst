@@ -1,6 +1,6 @@
 **To create a capacity provider**
 
-The following create-capacity-provider example creates a capacity provider that uses an Auto Scaling group named MyASG, has managed scaling and managed termination protection enabled. This configuration is used for Amazon ECS cluster auto scaling. ::
+The following ``create-capacity-provider`` example creates a capacity provider that uses an Auto Scaling group named MyASG, has managed scaling and managed termination protection enabled. This configuration is used for Amazon ECS cluster auto scaling. ::
 
     aws ecs create-capacity-provider \
         --name "MyCapacityProvider" \

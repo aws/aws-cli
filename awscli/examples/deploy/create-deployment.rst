@@ -47,7 +47,7 @@ That file, in turn, retrieves the following file ``appspec.yaml`` from an S3 buc
               ContainerPort: 80
             PlatformVersion: "LATEST"
 
-Command::
+To create the deployment, run the following command. ::
 
     aws deploy create-deployment \
         --cli-input-json file://create-deployment.json \

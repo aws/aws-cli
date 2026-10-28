@@ -1,8 +1,6 @@
 **To purge a queue**
 
-This example deletes all messages in the specified queue.
-
-Command::
+The following ``purge-queue`` example deletes all messages in the specified queue. ::
 
     aws sqs purge-queue --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyNewQueue
 

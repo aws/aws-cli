@@ -1,8 +1,6 @@
 **To enable detailed monitoring for an instance**
 
-This example command enables detailed monitoring for the specified instance.
-
-Command::
+The following ``monitor-instances`` example enables detailed monitoring for the specified instance. ::
 
     aws ec2 monitor-instances --instance-ids i-1234567890abcdef0
 

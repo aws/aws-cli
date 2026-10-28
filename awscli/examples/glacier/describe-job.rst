@@ -1,6 +1,6 @@
 **To describe a job**
 
-The following command retrieves information about an inventory retrieval job on a vault named ``my-vault``::
+The following ``describe-job`` example retrieves information about an inventory retrieval job on a vault named ``my-vault``. ::
 
     aws glacier describe-job --account-id - --vault-name my-vault --job-id zbxcm3Z_3z5UkoroF7SuZKrxgGoDc3RloGduS7Eg-RO47Yc6FxsdGBgf_Q2DK5Ejh18CnTS5XW4_XqlNHS61dsO4CnMW
 

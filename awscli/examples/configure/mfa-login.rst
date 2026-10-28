@@ -1,6 +1,6 @@
 **Example 1: To create a new profile with temporary MFA credentials**
 
-The following ``mfa-login`` command creates a new profile with temporary credentials obtained using MFA authentication. ::
+The following ``mfa-login`` example creates a new profile with temporary credentials obtained using MFA authentication. ::
 
     aws configure mfa-login
 
@@ -15,7 +15,7 @@ Output::
 
 **Example 2: To create credentials when no default profile exists**
 
-If you don't have a default profile configured, the ``mfa-login`` command will prompt you for your AWS credentials first. ::
+The following ``mfa-login`` example prompts you for your AWS credentials first if you don't have a default profile configured. ::
 
     aws configure mfa-login
 
@@ -33,7 +33,7 @@ Output::
 
 **Example 3: To update an existing profile with temporary MFA credentials**
 
-The following ``mfa-login`` command updates an existing profile with temporary credentials obtained using MFA authentication. ::
+The following ``mfa-login`` example updates an existing profile with temporary credentials obtained using MFA authentication. ::
 
     aws configure mfa-login --profile myprofile --update-profile mfaprofile
 

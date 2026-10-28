@@ -1,6 +1,6 @@
 **To update a configuration template**
 
-The following command removes the configured CloudWatch custom health metrics configuration ``ConfigDocument`` from a saved configuration template named ``my-template``::
+The following ``update-configuration-template`` example removes the configured CloudWatch custom health metrics configuration ``ConfigDocument`` from a saved configuration template named ``my-template``. ::
 
     aws elasticbeanstalk update-configuration-template --template-name my-template --application-name my-app --options-to-remove Namespace=aws:elasticbeanstalk:healthreporting:system,OptionName=ConfigDocument
 

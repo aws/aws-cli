@@ -1,6 +1,6 @@
 **To update the contact information for a domain**
 
-The following ``update-domain-contact`` command updates the contact information for a domain, getting the parameters from the JSON-formatted file ``C:\temp\update-domain-contact.json``. 
+The following ``update-domain-contact`` example updates the contact information for a domain, getting the parameters from the JSON-formatted file ``C:\temp\update-domain-contact.json``. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 

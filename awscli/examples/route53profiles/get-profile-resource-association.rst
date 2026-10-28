@@ -1,6 +1,6 @@
 **To get information about a resource associated to a Profile**
 
-The following ``get-profile-resource-association`` returns information about the specified resource association to a Profile. ::
+The following ``get-profile-resource-association`` example returns information about the specified resource association to a Profile. ::
 
     aws route53profiles get-profile-resource-association \
         --profile-resource-association-id rpr-001913120a7example

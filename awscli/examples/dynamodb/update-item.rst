@@ -73,7 +73,7 @@ For more information, see `Writing an Item <https://docs.aws.amazon.com/amazondy
 
 **Example 2: To update an item conditionally**
 
-The following example updates an item in the ``MusicCollection`` table, but only if the existing item does not already have a ``Year`` attribute. ::
+The following ``update-item`` example updates an item in the ``MusicCollection`` table, but only if the existing item does not already have a ``Year`` attribute. ::
 
     aws dynamodb update-item \
         --table-name MusicCollection \

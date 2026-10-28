@@ -1,6 +1,6 @@
 **To create a dimension**
 
-The following ``create-dimension`` creates a dimension with a single topic filter called ``TopicFilterForAuthMessages``. ::
+The following ``create-dimension`` example creates a dimension with a single topic filter called ``TopicFilterForAuthMessages``. ::
 
     aws iot create-dimension \
         --name TopicFilterForAuthMessages \

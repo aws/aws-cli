@@ -1,13 +1,11 @@
 **Example 1: To request a Spot fleet in the subnet with the lowest price**
 
-This example command creates a Spot fleet request with two launch specifications that differ only by subnet.
+The following ``request-spot-fleet`` example creates a Spot fleet request with two launch specifications that differ only by subnet.
 The Spot fleet launches the instances in the specified subnet with the lowest price.
 If the instances are launched in a default VPC, they receive a public IP address by default.
 If the instances are launched in a nondefault VPC, they do not receive a public IP address by default.
 
-Note that you can't specify different subnets from the same Availability Zone in a Spot fleet request.
-
-Command::
+Note that you can't specify different subnets from the same Availability Zone in a Spot fleet request. ::
 
     aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
 
@@ -44,12 +42,10 @@ Output::
 
 **Example 2: To request a Spot fleet in the Availability Zone with the lowest price**
 
-This example command creates a Spot fleet request with two launch specifications that differ only by Availability Zone.
+The following ``request-spot-fleet`` example creates a Spot fleet request with two launch specifications that differ only by Availability Zone.
 The Spot fleet launches the instances in the specified Availability Zone with the lowest price.
-If your account supports EC2-VPC only, Amazon EC2 launches the Spot instances in the default subnet of the Availability Zone.
-If your account supports EC2-Classic, Amazon EC2 launches the instances in EC2-Classic in the Availability Zone.
-
-Command::
+If your account supports EC2-VPC only, Amazon EC2 launches the Spot instances in the default subnet of the Availability Zone. 
+If your account supports EC2-Classic, Amazon EC2 launches the instances in EC2-Classic in the Availability Zone. ::
 
     aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
 
@@ -81,11 +77,9 @@ Config.json::
 
 **Example 3: To launch Spot instances in a subnet and assign them public IP addresses**
 
-This example command assigns public addresses to instances launched in a nondefault VPC.
+The following ``request-spot-fleet`` example assigns public addresses to instances launched in a nondefault VPC.
 Note that when you specify a network interface, you must include the subnet ID and security group ID
-using the network interface.
-
-Command::
+using the network interface. ::
 
     aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
 
@@ -117,11 +111,9 @@ Config.json::
 
 **Example 4: To request a Spot fleet using the diversified allocation strategy**
 
-This example command creates a Spot fleet request that launches 30 instances using the diversified allocation strategy.
+The following ``request-spot-fleet`` example creates a Spot fleet request that launches 30 instances using the diversified allocation strategy.
 The launch specifications differ by instance type. The Spot fleet distributes the instances
-across the launch specifications such that there are 10 instances of each type.
-
-Command::
+across the launch specifications such that there are 10 instances of each type. ::
 
     aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
 

@@ -1,8 +1,6 @@
 **Example 1: To modify Reserved Instances**
 
-This example command moves a Reserved Instance to another Availability Zone in the same region.
-
-Command::
+The following ``modify-reserved-instances`` example moves a Reserved Instance to another Availability Zone in the same region. ::
 
     aws ec2 modify-reserved-instances --reserved-instances-ids b847fa93-e282-4f55-b59a-1342f5bd7c02 --target-configurations AvailabilityZone=us-west-1c,Platform=EC2-Classic,InstanceCount=10
 
@@ -15,9 +13,7 @@ Output::
 
 **Example 2: To modify the network platform of Reserved Instances**
 
-This example command converts EC2-Classic Reserved Instances to EC2-VPC.
-
-Command::
+The following ``modify-reserved-instances`` example converts EC2-Classic Reserved Instances to EC2-VPC. ::
 
     aws ec2 modify-reserved-instances --reserved-instances-ids f127bd27-edb7-44c9-a0eb-0d7e09259af0 --target-configurations AvailabilityZone=us-west-1c,Platform=EC2-VPC,InstanceCount=5
 
@@ -31,9 +27,9 @@ For more information, see `Modifying Your Reserved Instances`_ in the *Amazon EC
 
 **Example 3: To modify the instance size of Reserved Instances**
 
-This example command modifies a Reserved Instance that has 10 m1.small Linux/UNIX instances in us-west-1c so that 8
+The following ``modify-reserved-instances`` example modifies a Reserved Instance that has 10 m1.small Linux/UNIX instances in us-west-1c so that 8
 m1.small instances become 2 m1.large instances, and the remaining 2 m1.small become 1 m1.medium instance in the same
-Availability Zone.  Command::
+Availability Zone. ::
 
     aws ec2 modify-reserved-instances --reserved-instances-ids 1ba8e2e3-3556-4264-949e-63ee671405a9 --target-configurations AvailabilityZone=us-west-1c,Platform=EC2-Classic,InstanceCount=2,InstanceType=m1.large AvailabilityZone=us-west-1c,Platform=EC2-Classic,InstanceCount=1,InstanceType=m1.medium
 

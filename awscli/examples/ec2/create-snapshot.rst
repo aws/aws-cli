@@ -1,8 +1,6 @@
 **Example 1: To create a snapshot**
 
-This example command creates a snapshot of the volume with a volume ID of ``vol-1234567890abcdef0`` and a short description to identify the snapshot.
-
-Command::
+The following ``create-snapshot`` example creates a snapshot of the volume with a volume ID of ``vol-1234567890abcdef0`` and a short description to identify the snapshot. ::
 
     aws ec2 create-snapshot --volume-id vol-1234567890abcdef0 --description "This is my root volume snapshot"
 
@@ -23,9 +21,7 @@ Output::
 
 **Example 2: To create a snapshot with tags**
 
-This example command creates a snapshot and applies two tags: purpose=prod and costcenter=123.
-
-Command::
+The following ``create-snapshot`` example creates a snapshot and applies two tags: purpose=prod and costcenter=123. ::
 
     aws ec2 create-snapshot --volume-id vol-1234567890abcdef0 --description 'Prod backup' --tag-specifications 'ResourceType=snapshot,Tags=[{Key=purpose,Value=prod},{Key=costcenter,Value=123}]'
 

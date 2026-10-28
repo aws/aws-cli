@@ -1,8 +1,6 @@
 **To create a repository**
 
-This example creates a repository and associates it with the user's AWS account.
-
-Command::
+The following ``create-repository`` example creates a repository and associates it with the user's AWS account. ::
 
     aws codecommit create-repository --repository-name MyDemoRepo --repository-description "My demonstration repository"
 

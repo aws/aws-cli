@@ -1,6 +1,6 @@
 **To disassociate a repository association**
 
-The following ``disassociate-repository`` disassociates a repository association that is using an AWS CodeCommit repository. ::
+The following ``disassociate-repository`` example disassociates a repository association that is using an AWS CodeCommit repository. ::
 
     aws codeguru-reviewer disassociate-repository \
         --association-arn arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111

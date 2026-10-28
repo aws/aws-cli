@@ -1,6 +1,6 @@
 **To list assessment templates**
 
-The following ``list-assessment-templates`` command lists all existing assessment templates::
+The following ``list-assessment-templates`` example lists all existing assessment templates. ::
 
     aws inspector list-assessment-templates
 

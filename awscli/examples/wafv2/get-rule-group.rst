@@ -1,6 +1,6 @@
 **To retrieve a specific custom rule group**
 
-The following ``get-rule-group`` retrieves the custom rule group with the specified name, scope, and ID. You can get the ID for a rule group from the commands ``create-rule-group`` and ``list-rule-groups``. ::
+The following ``get-rule-group`` example retrieves the custom rule group with the specified name, scope, and ID. You can get the ID for a rule group from the commands ``create-rule-group`` and ``list-rule-groups``. ::
 
     aws wafv2 get-rule-group \
         --name ff \

@@ -1,7 +1,7 @@
 **To delete an alarm**
 
-The following example uses the ``delete-alarms`` command to delete the Amazon CloudWatch alarm
-named "myalarm"::
+The following ``delete-alarms`` example deletes the Amazon CloudWatch alarm
+named "myalarm". ::
 
     aws cloudwatch delete-alarms --alarm-names myalarm
 

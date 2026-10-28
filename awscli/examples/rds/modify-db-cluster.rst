@@ -71,7 +71,7 @@ For more information, see `Modifying an Amazon Aurora DB Cluster <https://docs.a
 
 **Example 2: To associate VPC security group with a DB cluster**
 
-The following ``modify-db-instance`` example associates a specific VPC security group and removes DB security groups from a DB cluster. ::
+The following ``modify-db-cluster`` example associates a specific VPC security group and removes DB security groups from a DB cluster. ::
 
     aws rds modify-db-cluster \
         --db-cluster-identifier dbName \

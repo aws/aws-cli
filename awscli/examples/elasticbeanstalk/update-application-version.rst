@@ -1,6 +1,6 @@
 **To change an application version's description**
 
-The following command updates the description of an application version named ``22a0-stage-150819_185942``::
+The following ``update-application-version`` example updates the description of an application version named ``22a0-stage-150819_185942``. ::
 
     aws elasticbeanstalk update-application-version --version-label 22a0-stage-150819_185942 --application-name my-app --description "new description"
 

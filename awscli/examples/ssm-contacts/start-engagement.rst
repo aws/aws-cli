@@ -1,6 +1,6 @@
 **Example 1: To page a contact's contact channels**
 
-The following ``start-engagement`` pages contact's contact channels. Sender, subject, public-subject, and public-content are all free from fields. Incident Manager sends the subject and content to the provided VOICE or EMAIL contact channels. Incident Manager sends the public-subject and public-content to the provided SMS contact channels. Sender is used to track who started the engagement. ::
+The following ``start-engagement`` example pages a contact's contact channels. Sender, subject, public-subject, and public-content are all free from fields. Incident Manager sends the subject and content to the provided VOICE or EMAIL contact channels. Incident Manager sends the public-subject and public-content to the provided SMS contact channels. Sender is used to track who started the engagement. ::
 
     aws ssm-contacts start-engagement \
         --contact-id  "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam" \
@@ -20,7 +20,7 @@ For more information, see `Contacts <https://docs.aws.amazon.com/incident-manage
 
 **Example 2: To page a contact in the provided escalation plan.**
 
-The following ``start-engagement`` engages contact's through an escalation plan. Each contact is paged according to their engagement plan. ::
+The following ``start-engagement`` example engages contacts through an escalation plan. Each contact is paged according to their engagement plan. ::
 
     aws ssm-contacts start-engagement \
         --contact-id  "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation" \

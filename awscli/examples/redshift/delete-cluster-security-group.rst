@@ -1,8 +1,6 @@
 **To delete a cluster security group**
 
-This example deletes a cluster security group.
-
-Command::
+The following ``delete-cluster-security-group`` example deletes a cluster security group. ::
 
     aws redshift delete-cluster-security-group --cluster-security-group-name mysecuritygroup
 

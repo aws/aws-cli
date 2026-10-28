@@ -1,6 +1,6 @@
 **To create a collection**
 
-The following ``create-collection`` command creates a collection with the specified name. ::
+The following ``create-collection`` example creates a collection with the specified name. ::
 
     aws rekognition create-collection \
         --collection-id "MyCollection"

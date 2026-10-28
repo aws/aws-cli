@@ -21,7 +21,7 @@ Output::
 
 **Example 2: To request usage data for all fleets**
 
-The following ``describe-fleet-utilization`` returns fleet usage data for all fleets with any status. This example uses pagination parameters to return data for two fleets at a time. ::
+The following ``describe-fleet-utilization`` example returns fleet usage data for all fleets with any status. This example uses pagination parameters to return data for two fleets at a time. ::
 
     aws gamelift describe-fleet-utilization \
         --limit 2

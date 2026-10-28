@@ -1,6 +1,6 @@
 **To get the entries for a prefix list**
 
-The following ``get-managed-prefix-list-entries`` gets the entries for the specified prefix list. ::
+The following ``get-managed-prefix-list-entries`` example gets the entries for the specified prefix list. ::
 
     aws ec2 get-managed-prefix-list-entries \
         --prefix-list-id pl-0123456abcabcabc1

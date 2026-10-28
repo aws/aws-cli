@@ -1,6 +1,6 @@
 **To move instances out of standby mode**
 
-This example moves the specified instance out of standby mode. ::
+The following ``exit-standby`` example moves the specified instance out of standby mode. ::
 
     aws autoscaling exit-standby \
         --instance-ids i-061c63c5eb45f0416 \

@@ -1,8 +1,6 @@
 **To retrieve details for specified users**
 
-This example retrieves details for all the users in the specified organization.
-
-Command::
+The following ``describe-users`` example retrieves details for all the users in the specified organization. ::
 
     aws workdocs describe-users --organization-id d-926726012c
 

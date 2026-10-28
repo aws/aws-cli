@@ -1,8 +1,6 @@
 **To describe Amazon FPGA images**
 
-This example describes AFIs that are owned by account ``123456789012``.
-
-Command::
+The following ``describe-fpga-images`` example describes AFIs that are owned by account ``123456789012``. ::
 
     aws ec2 describe-fpga-images --filters Name=owner-id,Values=123456789012
 

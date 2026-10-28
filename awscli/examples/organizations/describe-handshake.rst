@@ -1,6 +1,6 @@
 **To get information about a handshake**
 
-The following example shows you how to request details about a handshake. The handshake ID comes either from the original call to ``InviteAccountToOrganization``, or from a call to ``ListHandshakesForAccount`` or ``ListHandshakesForOrganization``: ::
+The following ``describe-handshake`` example requests details about a handshake. The handshake ID comes either from the original call to ``InviteAccountToOrganization``, or from a call to ``ListHandshakesForAccount`` or ``ListHandshakesForOrganization``. ::
 
     aws organizations describe-handshake --handshake-id h-examplehandshakeid111
 

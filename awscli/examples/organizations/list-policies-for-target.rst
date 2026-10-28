@@ -1,6 +1,6 @@
 **To retrieve a list of the SCPs attached directly to an account**
 
-The following example shows how to get a list of all service control policies (SCPs), as specified by the Filter parameter, that are directly attached to an account: ::
+The following ``list-policies-for-target`` example gets a list of all service control policies (SCPs), as specified by the ``--filter`` parameter, that are directly attached to an account. ::
 
     aws organizations list-policies-for-target --filter SERVICE_CONTROL_POLICY --target-id 444444444444
 

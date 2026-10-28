@@ -1,6 +1,6 @@
 **To share a response plan and incidents**
 
-The following ``command-name`` example adds a resource policy to the Example-Response-Plan that shares the response plan and associated incidents with the specified principal. ::
+The following ``put-resource-policy`` example adds a resource policy to the Example-Response-Plan that shares the response plan and associated incidents with the specified principal. ::
 
     aws ssm-incidents put-resource-policy \
         --resource-arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan" \

@@ -1,8 +1,6 @@
 **To change the default launch template version**
 
-This example specifies version 2 of the specified launch template as the default version.
-
-Command::
+The following ``modify-launch-template`` example specifies version 2 of the specified launch template as the default version. ::
 
     aws ec2 modify-launch-template --launch-template-id lt-0abcd290751193123 --default-version 2
 

@@ -1,6 +1,6 @@
 **To invite an account to join an organization**
 
-The following example shows the master account owned by bill@example.com inviting the account owned by juan@example.com to join an organization: ::
+The following ``invite-account-to-organization`` example invites the account owned by juan@example.com to join an organization from the master account owned by bill@example.com. ::
 
     aws organizations invite-account-to-organization --target '{"Type": "EMAIL", "Id": "juan@example.com"}' --notes "This is a request for Juan's account to join Bill's organization."
 

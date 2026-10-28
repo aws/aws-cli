@@ -1,7 +1,7 @@
 **To list workflow types**
 
-To get a list of the workflow types for a domain, use ``swf list-workflow-types``. The ``--domain`` and
-``--registration-status`` arguments are required. Here's a simple example. ::
+The following ``list-workflow-types`` example gets a list of the workflow types for a domain. The ``--domain`` and
+``--registration-status`` arguments are required. ::
 
     aws swf list-workflow-types \
         --domain DataFrobtzz \

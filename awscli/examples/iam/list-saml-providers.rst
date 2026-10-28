@@ -1,6 +1,6 @@
 **To list the SAML providers in the AWS account**
 
-This example retrieves the list of SAML 2.0 providers created in the current AWS account. ::
+The following ``list-saml-providers`` example retrieves the list of SAML 2.0 providers created in the current AWS account. ::
 
     aws iam list-saml-providers
 

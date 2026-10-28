@@ -1,6 +1,6 @@
 **Example 1: To list hosted zones ordered by domain name**
 
-The following command lists up to 100 hosted zones ordered by domain name::
+The following ``list-hosted-zones-by-name`` example lists up to 100 hosted zones ordered by domain name. ::
 
     aws route53 list-hosted-zones-by-name
 
@@ -35,7 +35,7 @@ Output::
 
 **Example 2: To list hosted zones beginning with a specified domain name**
 
-The following command lists hosted zones ordered by name, beginning with ``www.example.com``::
+The following ``list-hosted-zones-by-name`` example lists hosted zones ordered by name, beginning with ``www.example.com``. ::
 
     aws route53 list-hosted-zones-by-name --dns-name www.example.com
 

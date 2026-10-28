@@ -1,6 +1,6 @@
 **To get a pipeline definition**
 
-This example gets the pipeline definition for the specified pipeline::
+The following ``get-pipeline-definition`` example gets the pipeline definition for the specified pipeline. ::
 
     aws datapipeline get-pipeline-definition --pipeline-id df-00627471SOVYZEXAMPLE
 

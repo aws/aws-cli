@@ -2,13 +2,13 @@
 
 The following ``modify-address-attribute`` examples modify the domain name attribute of an elastic IP address.
 
-Linux::
+Linux command. ::
 
     aws ec2 modify-address-attribute \
         --allocation-id eipalloc-abcdef01234567890 \
         --domain-name example.com
 
-Windows::
+Windows command. ::
 
     aws ec2 modify-address-attribute ^
         --allocation-id eipalloc-abcdef01234567890 ^

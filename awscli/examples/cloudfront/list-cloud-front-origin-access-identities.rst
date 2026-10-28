@@ -1,7 +1,7 @@
 **To list CloudFront origin access identities**
 
-The following example gets a list of the CloudFront origin access identities
-(OAIs) in your AWS account::
+The following ``list-cloud-front-origin-access-identities`` example gets a list of the CloudFront origin access identities
+(OAIs) in your AWS account. ::
 
     aws cloudfront list-cloud-front-origin-access-identities
 

@@ -1,6 +1,6 @@
 **To create a new application version**
 
-The following command creates a new version, "v1" of an application named "MyApp"::
+The following ``create-application-version`` example creates a new version, "v1" of an application named "MyApp". ::
 
     aws elasticbeanstalk create-application-version --application-name MyApp --version-label v1 --description MyAppv1 --source-bundle S3Bucket="amzn-s3-demo-bucket",S3Key="sample.war" --auto-create-application
 

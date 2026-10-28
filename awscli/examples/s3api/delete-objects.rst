@@ -1,6 +1,6 @@
 **To delete an object by using a JSON file**
 
-The following command deletes an object from a bucket named ``amzn-s3-demo-bucket``::
+The following ``delete-objects`` example deletes an object from a bucket named ``amzn-s3-demo-bucket``. ::
 
     aws s3api delete-objects --bucket amzn-s3-demo-bucket --delete file://delete.json
 

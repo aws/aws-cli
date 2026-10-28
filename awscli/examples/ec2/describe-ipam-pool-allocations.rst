@@ -2,11 +2,11 @@
 
 The following ``describe-ipam-pool-allocations`` example describes all IPAM pool allocations owned by you.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 describe-ipam-pool-allocations
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 describe-ipam-pool-allocations
 
@@ -36,12 +36,12 @@ Output::
 
 The following ``describe-ipam-pool-allocations`` example describes a specific IPAM pool allocation by its ID.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 describe-ipam-pool-allocations \
         --ipam-pool-allocation-ids ipam-pool-alloc-018ecc28043b54ba38e2cd99943cebfbd
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 describe-ipam-pool-allocations ^
         --ipam-pool-allocation-ids ipam-pool-alloc-018ecc28043b54ba38e2cd99943cebfbd

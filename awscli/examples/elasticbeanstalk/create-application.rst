@@ -1,6 +1,6 @@
 **To create a new application**
 
-The following command creates a new application named "MyApp"::
+The following ``create-application`` example creates a new application named "MyApp". ::
 
     aws elasticbeanstalk create-application --application-name MyApp --description "my application"
 

@@ -1,6 +1,6 @@
 **To retrieve information for a group**
 
-The following ``describe-group`` command retrieves information about the specified group. ::
+The following ``describe-group`` example retrieves information about the specified group. ::
 
     aws workmail describe-group \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

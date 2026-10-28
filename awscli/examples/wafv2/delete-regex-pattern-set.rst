@@ -1,6 +1,6 @@
 **To delete a regex pattern set**
 
-The following ``delete-regex-pattern-set`` updates the settings for the specified regex pattern set. This call requires an ID, which you can obtain from the call, ``list-regex-pattern-sets``, and a lock token, which you can obtain from the call ``list-regex-pattern-sets`` or the call ``get-regex-pattern-set``. ::
+The following ``delete-regex-pattern-set`` example deletes the specified regex pattern set. This call requires an ID, which you can obtain from the call, ``list-regex-pattern-sets``, and a lock token, which you can obtain from the call ``list-regex-pattern-sets`` or the call ``get-regex-pattern-set``. ::
 
     aws wafv2 delete-regex-pattern-set \
         --name regexPatterSet01 \

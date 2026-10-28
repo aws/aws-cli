@@ -1,6 +1,6 @@
 **To return a list of snapshots**
 
-The following `describe-snapshots`` returns a list of snapshots. ::
+The following ``describe-snapshots`` example returns a list of snapshots. ::
 
     aws memorydb describe-snapshots
 

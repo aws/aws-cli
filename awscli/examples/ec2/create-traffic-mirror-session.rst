@@ -1,6 +1,6 @@
 **To create a traffic mirror session**
 
-The following ``create-traffic-mirror-session`` command creates a traffic mirror session for the specified source and target for 25 bytes of the packet. ::
+The following ``create-traffic-mirror-session`` example creates a traffic mirror session for the specified source and target for 25 bytes of the packet. ::
 
     aws ec2 create-traffic-mirror-session \
         --description 'example session' \

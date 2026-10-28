@@ -1,6 +1,6 @@
 **Example 1: To describe the specified launch configuration**
 
-This example describes the specified launch configuration. ::
+The following ``describe-launch-configurations`` example describes the specified launch configuration. ::
 
     aws autoscaling describe-launch-configurations \
         --launch-configuration-names my-launch-config
@@ -51,7 +51,7 @@ Output::
 
 **Example 2: To describe a specified number of launch configurations**
 
-To return a specific number of launch configurations, use the ``--max-items`` option. ::
+The following ``describe-launch-configurations`` example uses the ``--max-items`` option to return a specific number of launch configurations. ::
 
     aws autoscaling describe-launch-configurations \
         --max-items 1

@@ -1,6 +1,6 @@
 **To describe scheduled actions**
 
-The following ``describe-scheduled-actions`` example displays details for the scheduled actions for the specified service namespace::
+The following ``describe-scheduled-actions`` example displays details for the scheduled actions for the specified service namespace. ::
 
     aws application-autoscaling describe-scheduled-actions \
         --service-namespace dynamodb

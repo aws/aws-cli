@@ -1,8 +1,6 @@
 **To describe Reserved Instances modifications**
 
-This example command describes all the Reserved Instances modification requests that have been submitted for your account.
-
-Command::
+The following ``describe-reserved-instances-modifications`` example describes all the Reserved Instances modification requests that have been submitted for your account. ::
 
     aws ec2 describe-reserved-instances-modifications
 

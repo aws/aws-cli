@@ -1,8 +1,6 @@
 **To view the structure of a pipeline**
 
-This example returns the structure of a pipeline named MyFirstPipeline.
-
-Command::
+The following ``get-pipeline`` example returns the structure of a pipeline named MyFirstPipeline. ::
 
     aws codepipeline get-pipeline --name MyFirstPipeline
 

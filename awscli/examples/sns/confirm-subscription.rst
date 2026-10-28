@@ -1,6 +1,6 @@
 **To confirm a subscription**
 
-The following ``confirm-subscription`` command completes the confirmation process started when you subscribed to an SNS topic named ``my-topic``. The --token parameter comes from the confirmation message sent to the notification endpoint specified in the subscribe call. ::
+The following ``confirm-subscription`` example completes the confirmation process started when you subscribed to an SNS topic named ``my-topic``. The --token parameter comes from the confirmation message sent to the notification endpoint specified in the subscribe call. ::
 
     aws sns confirm-subscription \
         --topic-arn arn:aws:sns:us-west-2:123456789012:my-topic \

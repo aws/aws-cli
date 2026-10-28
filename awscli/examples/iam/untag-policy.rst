@@ -1,6 +1,6 @@
 **To remove a tag from a customer managed policy**
 
-The following ``untag-policy`` command removes any tag with the key name 'Department' from the specified customer managed policy. ::
+The following ``untag-policy`` example removes any tag with the key name 'Department' from the specified customer managed policy. ::
 
     aws iam untag-policy \
         --policy-arn arn:aws:iam::452925170507:policy/billing-access \

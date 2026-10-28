@@ -1,6 +1,6 @@
 **To associate an access policy and its scope to the access entry of the cluster**
 
-The following ``associate-access-policy`` associates an access policy and its scope to the access entry of the specified cluster. ::
+The following ``associate-access-policy`` example associates an access policy and its scope to the access entry of the specified cluster. ::
 
     aws eks associate-access-policy \
         --cluster-name eks-customer \

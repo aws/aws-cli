@@ -1,8 +1,6 @@
 **To describe a user pool client**
 
-This example describes a user pool client.
-
-Command::
+The following ``describe-user-pool-client`` example describes a user pool client. ::
 
     aws cognito-idp describe-user-pool-client --user-pool-id us-west-2_aaaaaaaaa --client-id 38fjsnc484p94kpqsnet7mpld0
 

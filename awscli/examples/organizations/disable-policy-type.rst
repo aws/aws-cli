@@ -1,6 +1,6 @@
 **To disable a policy type in a root**
 
-The following example shows how to disable the service control policy (SCP) policy type in a root: ::
+The following ``disable-policy-type`` example disables the service control policy (SCP) policy type in a root. ::
 
     aws organizations disable-policy-type --root-id r-examplerootid111 --policy-type SERVICE_CONTROL_POLICY
 

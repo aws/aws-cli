@@ -1,6 +1,6 @@
 **To subscribe to AWS Config**
 
-The following command creates the default delivery channel and configuration recorder. The command also specifies the Amazon S3 bucket and Amazon SNS topic to which AWS Config will deliver configuration information::
+The following ``subscribe`` example creates the default delivery channel and configuration recorder. The command also specifies the Amazon S3 bucket and Amazon SNS topic to which AWS Config will deliver configuration information. ::
 
     aws configservice subscribe --s3-bucket config-bucket-123456789012 --sns-topic arn:aws:sns:us-east-1:123456789012:config-topic --iam-role arn:aws:iam::123456789012:role/ConfigRole-A1B2C3D4E5F6
 

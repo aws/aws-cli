@@ -1,6 +1,6 @@
 **To list timeline events of an incident**
 
-The following ``command-name`` example lists the timeline events of the specified incident. ::
+The following ``list-timeline-events`` example lists the timeline events of the specified incident. ::
 
     aws ssm-incidents list-timeline-events \
         --incident-record-arn "arn:aws:ssm-incidents::111122223333:incident-record/Example-Response-Plan/6ebcc812-85f5-b7eb-8b2f-283e4d844308"

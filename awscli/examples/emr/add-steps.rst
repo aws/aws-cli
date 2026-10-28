@@ -1,6 +1,6 @@
 **Example 1: To add Custom JAR steps to a cluster**
 
-- Command::
+The following ``add-steps`` example adds two Custom JAR steps to the specified cluster. ::
 
     aws emr add-steps --cluster-id j-XXXXXXXX --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3
 
@@ -23,7 +23,7 @@
 
 **Example 2: To add Streaming steps to a cluster**
 
-- Command::
+The following ``add-steps`` example adds a Streaming step to the specified cluster. ::
 
     aws emr add-steps --cluster-id j-XXXXXXXX --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=[-files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://amzn-s3-demo-bucket/wordcount/output]
 
@@ -48,7 +48,7 @@
 
 NOTE: JSON arguments must include options and values as their own items in the list.
 
-- Command (using step.json)::
+The following ``add-steps`` example adds the Streaming step that is defined in the ``step.json`` file. ::
 
     aws emr add-steps --cluster-id j-XXXXXXXX --steps file://./step.json
 
@@ -62,6 +62,8 @@ NOTE: JSON arguments must include options and values as their own items in the l
     }
 
 **Example 3: To add a Streaming step with multiple files to a cluster (JSON only)**
+
+The following ``add-steps`` example adds a Streaming step with multiple files to the specified cluster. The step is defined in the ``multiplefiles.json`` file.
 
 - JSON (multiplefiles.json)::
 
@@ -84,7 +86,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
         }
     ]
 
-- Command::
+The following command adds the step that is defined in the ``multiplefiles.json`` file. ::
 
     aws emr add-steps --cluster-id j-XXXXXXXX  --steps file://./multiplefiles.json
 
@@ -107,7 +109,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
 **Example 4: To add Hive steps to a cluster**
 
-- Command::
+The following ``add-steps`` example adds two Hive steps to the specified cluster. ::
 
     aws emr add-steps --cluster-id j-XXXXXXXX --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,Args=[-f,s3://amzn-s3-demo-bucket/myhivescript.q,-d,INPUT=s3://amzn-s3-demo-bucket/myhiveinput,-d,OUTPUT=s3://amzn-s3-demo-bucket/myhiveoutput,arg1,arg2] Type=HIVE,Name='Hive steps',ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://amzn-s3-demo-bucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs]
 
@@ -132,7 +134,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
 **Example 5: To add Pig steps to a cluster**
 
-- Command::
+The following ``add-steps`` example adds two Pig steps to the specified cluster. ::
 
     aws emr add-steps --cluster-id j-XXXXXXXX --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://amzn-s3-demo-bucket/mypigscript.pig,-p,INPUT=s3://amzn-s3-demo-bucket/mypiginput,-p,OUTPUT=s3://amzn-s3-demo-bucket/mypigoutput,arg1,arg2] Type=PIG,Name='Pig program',Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://amzn-s3-demo-bucket/pig-apache/output,arg1,arg2]
 
@@ -157,7 +159,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
 **Example 6: To add Impala steps to a cluster**
 
-- Command::
+The following ``add-steps`` example adds an Impala step to the specified cluster. ::
 
     aws emr add-steps --cluster-id j-XXXXXXXX --steps Type=IMPALA,Name='Impala program',ActionOnFailure=CONTINUE,Args=--impala-script,s3://myimpala/input,--console-output-path,s3://myimpala/output
 

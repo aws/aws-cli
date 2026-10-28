@@ -1,8 +1,6 @@
 **To describe your network interface permissions**
 
-This example describes all of your network interface permissions.
-
-Command::
+The following ``describe-network-interface-permissions`` example describes all of your network interface permissions. ::
 
     aws ec2 describe-network-interface-permissions
 

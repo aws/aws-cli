@@ -1,6 +1,6 @@
 **To view environment health**
 
-The following command retrieves health information for instances in an environment named ``my-env``::
+The following ``describe-instances-health`` example retrieves health information for instances in an environment named ``my-env``. ::
 
     aws elasticbeanstalk describe-instances-health --environment-name my-env --attribute-names All
 

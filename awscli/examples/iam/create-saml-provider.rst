@@ -1,6 +1,6 @@
 **To create a SAML provider**
 
-This example creates a new SAML provider in IAM named ``MySAMLProvider``. It is described by the SAML metadata document found in the file ``SAMLMetaData.xml``. ::
+The following ``create-saml-provider`` example creates a new SAML provider in IAM named ``MySAMLProvider``. It is described by the SAML metadata document found in the file ``SAMLMetaData.xml``. ::
 
     aws iam create-saml-provider \
         --saml-metadata-document file://SAMLMetaData.xml \

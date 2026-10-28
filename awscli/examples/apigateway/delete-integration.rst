@@ -1,5 +1,5 @@
 **To delete an integration for a given resource and method in an API**
 
-Command::
+The following ``delete-integration`` example deletes an integration for a given resource and method in an API. ::
 
     aws apigateway delete-integration --rest-api-id 1234123412 --resource-id a1b2c3 --http-method GET

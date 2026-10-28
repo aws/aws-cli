@@ -1,6 +1,6 @@
 **To list composition storage configurations**
 
-The following ``list-storage-configurations`` lists all composition storage configurations for your AWS account, in the AWS region where the API request is processed. ::
+The following ``list-storage-configurations`` example lists all composition storage configurations for your AWS account, in the AWS region where the API request is processed. ::
 
     aws ivs-realtime list-storage-configurations
 

@@ -64,7 +64,7 @@ Output::
 
 **Example 2: To list all parameters matching specific metadata**
 
-This ``describe-parameters`` example lists all parameters matching a filter.
+The following ``describe-parameters`` example lists all parameters matching a filter. ::
 
     aws ssm describe-parameters \
         --filters "Key=Type,Values=StringList"

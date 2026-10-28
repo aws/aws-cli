@@ -1,8 +1,6 @@
 **Example 1: To list the updates for a cluster**
 
-This example command lists the current updates for a cluster named ``example`` in your default region.
-
-Command::
+The following ``list-updates`` example lists the current updates for a cluster named ``example`` in your default region. ::
 
     aws eks list-updates --name example
 

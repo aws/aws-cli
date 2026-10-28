@@ -1,8 +1,6 @@
 **To create a customer gateway**
 
-This example creates a customer gateway with the specified IP address for its outside interface.
-
-Command::
+The following ``create-customer-gateway`` example creates a customer gateway with the specified IP address for its outside interface. ::
 
     aws ec2 create-customer-gateway --type ipsec.1 --public-ip 12.1.2.3 --bgp-asn 65534
 

@@ -1,8 +1,6 @@
 **To get information about AWS Cloud9 development environments**
 
-This example gets information about the specified AWS Cloud9 development environments.
-
-Command::
+The following ``describe-environments`` example gets information about the specified AWS Cloud9 development environments. ::
 
     aws cloud9 describe-environments --environment-ids 685f892f431b45c2b28cb69eadcdb0EX 349c86d4579e4e7298d500ff57a6b2EX
 

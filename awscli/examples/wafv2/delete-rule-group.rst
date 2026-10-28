@@ -1,6 +1,6 @@
 **To delete a custom rule group**
 
-The following ``delete-rule-group`` deletes the specified custom rule group. This call requires an ID, which you can obtain from the call, ``list-rule-groups``, and a lock token, which you can obtain from the call ``list-rule-groups`` or the call ``get-rule-group``. ::
+The following ``delete-rule-group`` example deletes the specified custom rule group. This call requires an ID, which you can obtain from the call, ``list-rule-groups``, and a lock token, which you can obtain from the call ``list-rule-groups`` or the call ``get-rule-group``. ::
 
     aws wafv2 delete-rule-group \
         --name TestRuleGroup \

@@ -1,6 +1,6 @@
 **To delete a version of a managed policy**
 
-This example deletes the version identified as ``v2`` from the policy whose ARN is ``arn:aws:iam::123456789012:policy/MySamplePolicy``. ::
+The following ``delete-policy-version`` example deletes the version identified as ``v2`` from the policy whose ARN is ``arn:aws:iam::123456789012:policy/MyPolicy``. ::
 
     aws iam delete-policy-version \
         --policy-arn arn:aws:iam::123456789012:policy/MyPolicy \

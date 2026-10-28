@@ -1,8 +1,6 @@
 **Example 1: To get inventory deletions**
 
-This example retrieves details for inventory deletion operations.
-
-Command::
+The following ``describe-inventory-deletions`` example retrieves details for inventory deletion operations. ::
 
     aws ssm describe-inventory-deletions
 
@@ -47,9 +45,7 @@ Output::
 
 **Example 2: To get details of a specific inventory deletion**
 
-This example retrieves details for a specific inventory deletion operation.
-
-Command::
+The following ``describe-inventory-deletions`` example retrieves details for a specific inventory deletion operation. ::
 
     aws ssm describe-inventory-deletions --deletion-id "d72ac9e8-1f60-4d40-b1c6-987654321c4d"
 

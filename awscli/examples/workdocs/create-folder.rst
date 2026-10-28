@@ -1,8 +1,6 @@
 **To create a folder**
 
-This example creates a folder.
-
-Command::
+The following ``create-folder`` example creates a folder. ::
 
     aws workdocs create-folder --name documents --parent-folder-id 1ece93e5fe75315c7407c4967918b4fd9da87ddb2a588e67b7fdaf4a98fde678
 

@@ -1,6 +1,6 @@
 **To update an Amazon Kendra index**
 
-The following ``update-index`` updates the configuration of an Amazon Kendra index. If the action is successful, the service either sends back no output, the HTTP status code 200, or the AWS CLI return code 0. You can use ``describe-index`` to view the configuration and status of an index. ::
+The following ``update-index`` example updates the configuration of an Amazon Kendra index. If the action is successful, the service either sends back no output, the HTTP status code 200, or the AWS CLI return code 0. You can use ``describe-index`` to view the configuration and status of an index. ::
 
     aws kendra update-index \
         --id enterpriseindex1 \

@@ -1,6 +1,6 @@
 **To view details about multiple repositories**
 
-This example shows details about multiple AWS CodeCommit repositories. ::
+The following ``batch-get-repositories`` example shows details about multiple AWS CodeCommit repositories. ::
 
     aws codecommit batch-get-repositories \
         --repository-names MyDemoRepo MyOtherDemoRepo

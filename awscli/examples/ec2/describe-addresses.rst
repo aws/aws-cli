@@ -1,6 +1,6 @@
 **Example 1: To retrieve details about all of your Elastic IP addresses**
 
-The following ``describe addresses`` example displays details about your Elastic IP addresses. ::
+The following ``describe-addresses`` example displays details about your Elastic IP addresses. ::
 
     aws ec2 describe-addresses
 

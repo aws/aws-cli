@@ -1,6 +1,6 @@
 **To create an Amazon Kendra data source connector**
 
-The following ``create-data-source`` creates and configures an Amazon Kendra data source connector. You can use ``describe-data-source`` to view the status of a data source connector, and read any error messages if the status shows a data source connector "FAILED" to completely create. ::
+The following ``create-data-source`` example creates and configures an Amazon Kendra data source connector. You can use ``describe-data-source`` to view the status of a data source connector, and read any error messages if the status shows a data source connector "FAILED" to completely create. ::
 
     aws kendra create-data-source \
         --name "example data source 1" \

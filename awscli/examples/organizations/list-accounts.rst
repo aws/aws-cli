@@ -1,6 +1,6 @@
 **To retrieve a list of all of the accounts in an organization**
 
-The following example shows you how to request a list of the accounts in an organization: ::
+The following ``list-accounts`` example requests a list of the accounts in an organization. ::
 
     aws organizations list-accounts
 

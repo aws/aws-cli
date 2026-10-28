@@ -1,6 +1,6 @@
 **Example 1: To describe scaling activities for the specified group**
 
-This example describes the scaling activities for the specified Auto Scaling group. ::
+The following ``describe-scaling-activities`` example describes the scaling activities for the specified Auto Scaling group. ::
 
     aws autoscaling describe-scaling-activities \
         --auto-scaling-group-name my-asg
@@ -27,7 +27,7 @@ For more information, see `Verify a scaling activity for an Auto Scaling group <
 
 **Example 2: To describe the scaling activities for a deleted group**
 
-To describe scaling activities after the Auto Scaling group has been deleted, add the ``--include-deleted-groups`` option. ::
+The following ``describe-scaling-activities`` example uses the ``--include-deleted-groups`` option to describe scaling activities after the Auto Scaling group has been deleted. ::
 
     aws autoscaling describe-scaling-activities \
         --auto-scaling-group-name my-asg \
@@ -58,7 +58,7 @@ For more information, see `Troubleshoot Amazon EC2 Auto Scaling <https://docs.aw
 
 **Example 3: To describe a specified number of scaling activities**
 
-To return a specific number of activities, use the ``--max-items`` option. ::
+The following ``describe-scaling-activities`` example uses the ``--max-items`` option to return a specific number of activities. ::
 
     aws autoscaling describe-scaling-activities \
         --max-items 1

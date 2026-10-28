@@ -1,8 +1,6 @@
 **To disable detailed monitoring for an instance**
 
-This example command disables detailed monitoring for the specified instance.
-
-Command::
+The following ``unmonitor-instances`` example disables detailed monitoring for the specified instance. ::
 
     aws ec2 unmonitor-instances --instance-ids i-1234567890abcdef0
 

@@ -1,6 +1,6 @@
 **To terminate an environment**
 
-The following command terminates an Elastic Beanstalk environment named ``my-env``::
+The following ``terminate-environment`` example terminates an Elastic Beanstalk environment named ``my-env``. ::
 
     aws elasticbeanstalk terminate-environment --environment-name my-env
 

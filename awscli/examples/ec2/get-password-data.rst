@@ -1,8 +1,6 @@
 **Example 1: To get the encrypted password**
 
-This example gets the encrypted password.
-
-Command::
+The following ``get-password-data`` example gets the encrypted password. ::
 
     aws ec2 get-password-data --instance-id i-1234567890abcdef0
 
@@ -20,9 +18,7 @@ Output::
 
 **Example 2: To get the decrypted password**
 
-This example gets the decrypted password.
-
-Command::
+The following ``get-password-data`` example gets the decrypted password. ::
 
     aws ec2 get-password-data --instance-id  i-1234567890abcdef0 --priv-launch-key C:\Keys\MyKeyPair.pem
 

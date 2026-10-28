@@ -1,6 +1,6 @@
 **To delete an existing group**
 
-The following ``delete-group`` command deletes an existing group from Amazon WorkMail. ::
+The following ``delete-group`` example deletes an existing group from Amazon WorkMail. ::
 
     aws workmail delete-group \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

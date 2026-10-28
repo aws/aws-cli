@@ -1,7 +1,7 @@
 **To get a CloudFront field-level encryption configuration**
 
-The following example gets the CloudFront field-level encryption configuration
-with the ID ``C3KM2WVD605UAY``, including its ``ETag``::
+The following ``get-field-level-encryption`` example gets the CloudFront field-level encryption configuration
+with the ID ``C3KM2WVD605UAY``, including its ``ETag``. ::
 
     aws cloudfront get-field-level-encryption --id C3KM2WVD605UAY
 

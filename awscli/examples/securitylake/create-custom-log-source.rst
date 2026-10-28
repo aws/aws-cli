@@ -1,6 +1,6 @@
 **To add a custom source as an Amazon Security Lake source**
 
-The following ``create-custom-logsource`` example adds a custom source as a Security Lake source in the designated log provider account and the designated Region. ::
+The following ``create-custom-log-source`` example adds a custom source as a Security Lake source in the designated log provider account and the designated Region. ::
 
     aws securitylake create-custom-log-source \
         --source-name "VPC_FLOW" \

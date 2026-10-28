@@ -1,6 +1,6 @@
 **To create an RSA key pair and issue an X.509 certificate**
 
-The following ``create-keys-and-certificate`` creates a 2048-bit RSA key pair and issues an X.509 certificate using the issued public key. Because this is the only time that AWS IoT provides the private key for this certificate, be sure to keep it in a secure location. ::
+The following ``create-keys-and-certificate`` example creates a 2048-bit RSA key pair and issues an X.509 certificate using the issued public key. Because this is the only time that AWS IoT provides the private key for this certificate, be sure to keep it in a secure location. ::
 
     aws iot create-keys-and-certificate \
         --certificate-pem-outfile "myTest.cert.pem" \

@@ -1,14 +1,14 @@
 **To analyze text in a document**
 
-The following ``analyze-document`` example shows how to analyze text in a document. 
+The following ``analyze-document`` example shows how to analyze text in a document.
 
-Linux/macOS::
+For Linux and macOS, use the following command. ::
 
     aws textract analyze-document \
         --document '{"S3Object":{"Bucket":"bucket","Name":"document"}}' \
         --feature-types '["TABLES","FORMS"]'
 
-Windows::
+For Windows, use the following command. ::
 
     aws textract analyze-document \
         --document "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \

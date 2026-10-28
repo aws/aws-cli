@@ -1,8 +1,6 @@
 **To describe active job definitions**
 
-This example describes all of your active job definitions.
-
-Command::
+The following ``describe-job-definitions`` example describes all of your active job definitions. ::
 
     aws batch describe-job-definitions --status ACTIVE
 

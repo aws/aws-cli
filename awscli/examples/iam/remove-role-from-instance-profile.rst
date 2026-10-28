@@ -1,6 +1,6 @@
 **To remove a role from an instance profile**
 
-The following ``remove-role-from-instance-profile`` command removes the role named ``Test-Role`` from the instance
+The following ``remove-role-from-instance-profile`` example removes the role named ``Test-Role`` from the instance
 profile named ``ExampleInstanceProfile``. ::
 
     aws iam remove-role-from-instance-profile \

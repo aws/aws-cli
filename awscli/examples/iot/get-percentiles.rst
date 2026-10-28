@@ -1,6 +1,6 @@
 **To group the aggregated values that match the query into percentile groupings**
 
-You can use the following setup script to create 10 things representing 10 temperature sensors. Each new thing has 1 attribute. ::
+The following ``get-percentiles`` example groups the temperature values reported by temperature sensors into percentile groupings. To set up the example, you can use the following setup script to create 10 things representing 10 temperature sensors. Each new thing has 1 attribute. ::
 
     # Bash script. If in other shells, type `bash` before running
     Temperatures=(70 71 72 73 74 75 47 97 98 99)

@@ -1,6 +1,6 @@
 **To upload a layer part**
 
-This following ``upload-layer-part`` uploads an image layer part to the ``layer-test`` repository. ::
+The following ``upload-layer-part`` example uploads an image layer part to the ``layer-test`` repository. ::
 
     aws ecr upload-layer-part \
         --repository-name layer-test \

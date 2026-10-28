@@ -1,6 +1,6 @@
 **Example 1: To view specific inventory type entries for an instance**
 
-This following ``list-inventory-entries`` example lists the inventory entries for the AWS:Application inventory type on a specific instance. ::
+The following ``list-inventory-entries`` example lists the inventory entries for the AWS:Application inventory type on a specific instance. ::
 
     aws ssm list-inventory-entries \
         --instance-id "i-1234567890abcdef0" \

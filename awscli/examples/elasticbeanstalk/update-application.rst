@@ -1,6 +1,6 @@
 **To change an application's description**
 
-The following command updates the description of an application named ``my-app``::
+The following ``update-application`` example updates the description of an application named ``my-app``. ::
 
     aws elasticbeanstalk update-application --application-name my-app --description "my Elastic Beanstalk application"
 

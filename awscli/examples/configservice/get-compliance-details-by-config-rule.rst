@@ -1,6 +1,6 @@
 **To get the evaluation results for an AWS Config rule**
 
-The following command returns the evaluation results for all of the resources that don't comply with an AWS Config rule named ``InstanceTypesAreT2micro``::
+The following ``get-compliance-details-by-config-rule`` example returns the evaluation results for all of the resources that don't comply with an AWS Config rule named ``InstanceTypesAreT2micro``. ::
 
     aws configservice get-compliance-details-by-config-rule --config-rule-name InstanceTypesAreT2micro --compliance-types NON_COMPLIANT
 

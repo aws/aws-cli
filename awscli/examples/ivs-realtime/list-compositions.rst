@@ -1,6 +1,6 @@
 **To get a list of compositions**
 
-The following ``list-compositions`` lists all compositions for your AWS account, in the AWS region where the API request is processed. ::
+The following ``list-compositions`` example lists all compositions for your AWS account, in the AWS region where the API request is processed. ::
 
     aws ivs-realtime list-compositions
 

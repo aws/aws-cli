@@ -1,6 +1,6 @@
 **To retrieve load forecast data**
 
-This example retrieves load forecast data for a scalable resource (an Auto Scaling group) that is associated with the specified scaling plan. ::
+The following ``get-scaling-plan-resource-forecast-data`` example retrieves load forecast data for a scalable resource (an Auto Scaling group) that is associated with the specified scaling plan. ::
 
     aws autoscaling-plans get-scaling-plan-resource-forecast-data \
         --scaling-plan-name my-scaling-plan \

@@ -1,8 +1,6 @@
 **To describe an identity provider**
 
-This example describes an identity provider named Facebook.
-
-Command::
+The following ``describe-identity-provider`` example describes an identity provider named Facebook. ::
 
     aws cognito-idp describe-identity-provider --user-pool-id us-west-2_aaaaaaaaa --provider-name Facebook
 

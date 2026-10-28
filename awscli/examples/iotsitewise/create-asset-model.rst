@@ -7,7 +7,7 @@ The following ``create-asset-model`` example creates an asset model that defines
 - Temperature C - The temperature data stream from a wind turbine in Celsius
 - Temperature F - The mapped temperature data points from Celsius to Fahrenheit
 
-::
+The asset model definition is in the ``create-wind-turbine-model.json`` file. ::
 
     aws iotsitewise create-asset-model \
         --cli-input-json file://create-wind-turbine-model.json

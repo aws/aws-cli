@@ -1,6 +1,6 @@
 **To get the method response resource configuration for a HTTP method defined under a REST API's resource**
 
-Command::
+The following ``get-method-response`` example gets the method response resource configuration for the ``200`` status code of the ``GET`` method defined under a REST API's resource. ::
 
     aws apigateway get-method-response --rest-api-id 1234123412 --resource-id y9h6rt --http-method GET --status-code 200
 

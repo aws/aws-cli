@@ -1,8 +1,6 @@
 **To send a message**
 
-This example sends a message with the specified message body, delay period, and message attributes, to the specified queue.
-
-Command::
+The following ``send-message`` example sends a message with the specified message body, delay period, and message attributes, to the specified queue. ::
 
     aws sqs send-message --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --message-body "Information about the largest city in Any Region." --delay-seconds 10 --message-attributes file://send-message.json
 

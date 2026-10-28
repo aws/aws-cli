@@ -1,6 +1,6 @@
 **To fail over a shard**
 
-The following `failover-shard`` fails over a shard. ::
+The following ``failover-shard`` example fails over a shard. ::
 
     aws memorydb failover-shard \
         --cluster-name my-cluster --shard-name 0001

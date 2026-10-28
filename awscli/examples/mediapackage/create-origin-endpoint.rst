@@ -1,6 +1,6 @@
 **To create an origin endpoint**
 
-The following ``create-origin-endpoint`` command creates an origin endpoint named ``cmafsports`` with the package settings provided in a JSON file and specified endpoint settings. ::
+The following ``create-origin-endpoint`` example creates an origin endpoint named ``cmafsports`` with the package settings provided in a JSON file and specified endpoint settings. ::
 
     aws mediapackage create-origin-endpoint \
         --channel-id sportschannel \

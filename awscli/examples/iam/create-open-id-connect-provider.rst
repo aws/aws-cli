@@ -1,13 +1,13 @@
 **To create an OpenID Connect (OIDC) provider**
 
-To create an OpenID Connect (OIDC) provider, we recommend using the ``--cli-input-json`` parameter to pass a JSON file that contains the required parameters. When you create an OIDC provider, you must pass the URL of the provider, and the URL must begin with ``https://``. It can be difficult to pass the URL as a command line parameter, because the colon (:) and forward slash (/) characters have special meaning in some command line environments. Using the ``--cli-input-json`` parameter gets around this limitation.
+The following ``create-open-id-connect-provider`` example creates an OpenID Connect (OIDC) provider. To create the provider, we recommend using the ``--cli-input-json`` parameter to pass a JSON file that contains the required parameters. When you create an OIDC provider, you must pass the URL of the provider, and the URL must begin with ``https://``. It can be difficult to pass the URL as a command line parameter, because the colon (:) and forward slash (/) characters have special meaning in some command line environments. Using the ``--cli-input-json`` parameter gets around this limitation.
 
 To use the ``--cli-input-json`` parameter, start by using the ``create-open-id-connect-provider`` command with the ``--generate-cli-skeleton`` parameter, as in the following example. ::
 
     aws iam create-open-id-connect-provider \
         --generate-cli-skeleton > create-open-id-connect-provider.json
 
-The previous command creates a JSON file called create-open-id-connect-provider.json that you can use to fill in the information for a subsequent ``create-open-id-connect-provider`` command. For example::
+The previous command creates a JSON file called create-open-id-connect-provider.json that you can use to fill in the information for a subsequent ``create-open-id-connect-provider`` command. For example, the file might look like the following. ::
 
     {
         "Url": "https://server.example.com",

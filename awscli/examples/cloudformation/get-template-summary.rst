@@ -1,6 +1,6 @@
 **To display a template summary**
 
-The following command displays summary information about the resources and metadata for the specified template file. ::
+The following ``get-template-summary`` example displays summary information about the resources and metadata for the specified template file. ::
 
     aws cloudformation get-template-summary \
         --template-body file://template.yaml

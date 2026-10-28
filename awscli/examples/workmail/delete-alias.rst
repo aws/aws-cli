@@ -1,6 +1,6 @@
 **To delete an alias**
 
-The following ``delete-alias`` command deletes the alias for the specified entity (user or group). ::
+The following ``delete-alias`` example deletes the alias for the specified entity (user or group). ::
 
     aws workmail delete-alias \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

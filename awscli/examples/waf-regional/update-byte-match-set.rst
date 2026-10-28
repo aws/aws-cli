@@ -1,6 +1,6 @@
 **To update a byte match set**
 
-The following ``update-byte-match-set`` command  deletes a ``ByteMatchTuple`` object (filter) in a ``ByteMatchSet``. Because the ``updates`` value has embedded double quotes, you must surround the value with single quotes. ::
+The following ``update-byte-match-set`` example deletes a ``ByteMatchTuple`` object (filter) in a ``ByteMatchSet``. Because the ``updates`` value has embedded double quotes, you must surround the value with single quotes. ::
 
     aws waf-regional update-byte-match-set \
         --cli-binary-format raw-in-base64-out \

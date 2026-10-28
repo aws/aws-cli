@@ -1,6 +1,6 @@
 **To retrieve a list of the roots in an organization**
 
-This example shows you how to get the list of roots for an organization: ::
+The following ``list-roots`` example gets the list of roots for an organization. ::
 
     aws organizations list-roots
 

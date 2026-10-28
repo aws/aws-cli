@@ -1,6 +1,6 @@
 **To retrieve a list of all policies in an organization of a certain type**
 
-The following example shows you how to get a list of SCPs, as specified by the filter parameter: ::
+The following ``list-policies`` example gets a list of SCPs, as specified by the ``--filter`` parameter. ::
 
     aws organizations list-policies --filter SERVICE_CONTROL_POLICY
 

@@ -1,6 +1,6 @@
 **To get the details about an account**
 
-The following example shows you how to request details about an account: ::
+The following ``describe-account`` example requests details about an account. ::
 
     aws organizations describe-account --account-id 555555555555
 

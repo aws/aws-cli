@@ -1,6 +1,6 @@
 **To create a multipart upload**
 
-The following command creates a multipart upload in the bucket ``amzn-s3-demo-bucket`` with the key ``multipart/01``::
+The following ``create-multipart-upload`` example creates a multipart upload in the bucket ``amzn-s3-demo-bucket`` with the key ``multipart/01``. ::
 
     aws s3api create-multipart-upload --bucket amzn-s3-demo-bucket --key 'multipart/01'
 

@@ -1,6 +1,6 @@
 **Example 1: To copy an AMI to another Region**
 
-The following ``copy-image`` example command copies the specified AMI from the ``us-west-2`` Region to the ``us-east-1`` Region and adds a short description. ::
+The following ``copy-image`` example copies the specified AMI from the ``us-west-2`` Region to the ``us-east-1`` Region and adds a short description. ::
 
     aws ec2 copy-image \
         --region us-east-1 \
@@ -19,7 +19,7 @@ For more information, see `Copy an AMI <https://docs.aws.amazon.com/AWSEC2/lates
 
 **Example 2: To copy an AMI to another Region and encrypt the backing snapshot**
 
-The following ``copy-image`` command copies the specified AMI from the ``us-west-2`` Region to the current Region and encrypts the backing snapshot using the specified KMS key. ::
+The following ``copy-image`` example copies the specified AMI from the ``us-west-2`` Region to the current Region and encrypts the backing snapshot using the specified KMS key. ::
 
     aws ec2 copy-image \
         --source-region us-west-2 \
@@ -38,7 +38,7 @@ For more information, see `Copy an AMI <https://docs.aws.amazon.com/AWSEC2/lates
 
 **Example 3: To include your user-defined AMI tags when copying an AMI**
 
-The following ``copy-image`` command uses the ``--copy-image-tags`` parameter to copy your user-defined AMI tags when copying the AMI. ::
+The following ``copy-image`` example uses the ``--copy-image-tags`` parameter to copy your user-defined AMI tags when copying the AMI. ::
 
     aws ec2 copy-image \
         --region us-east-1 \

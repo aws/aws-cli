@@ -1,6 +1,6 @@
 **To modify a global replication group**
 
-The following ``modify-global-replication-group`` modifies the properties of a global replication group, in this case disabling automatic failover, using the Redis engine. ::
+The following ``modify-global-replication-group`` example modifies the properties of a global replication group, in this case disabling automatic failover, using the Redis engine. ::
 
     aws elasticache modify-global-replication-group \
         --global-replication-group-id sgaui-pat-group \

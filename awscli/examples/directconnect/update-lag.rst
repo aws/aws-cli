@@ -1,8 +1,6 @@
 **To update a LAG**
 
-The following example changes the name of the specified LAG.
-
-Command::
+The following ``update-lag`` example changes the name of the specified LAG. ::
 
     aws directconnect update-lag --lag-id dxlag-ffjhj9lx --lag-name 2ConnLag
 

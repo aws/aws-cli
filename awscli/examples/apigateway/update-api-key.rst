@@ -1,6 +1,6 @@
 **Example 1: To change the name for an API Key**
 
-Command::
+The following ``update-api-key`` example changes the name for an API Key. ::
 
     aws apigateway update-api-key --api-key sNvjQDMReA1eEQPNAW8r37XsU2rDD7fc7m2SiMnu --patch-operations op='replace',path='/name',value='newName'
 
@@ -20,7 +20,7 @@ Output::
 
 **Example 2: To disable the API Key**
 
-Command::
+The following ``update-api-key`` example disables the API Key. ::
 
     aws apigateway update-api-key --api-key sNvjQDMReA1eEQPNAW8r37XsU2rDD7fc7m2SiMnu --patch-operations op='replace',path='/enabled',value='false'
 

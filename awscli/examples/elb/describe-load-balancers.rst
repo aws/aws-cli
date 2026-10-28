@@ -1,16 +1,12 @@
 **Example 1: To describe your load balancers**
 
-This example describes all of your load balancers.
-
-Command::
+The following ``describe-load-balancers`` example describes all of your load balancers. ::
 
     aws elb describe-load-balancers
 
 **Example 2: To describe one of your load balancers**
 
-This example describes the specified load balancer.
-
-Command::
+The following ``describe-load-balancers`` example describes the specified load balancer. ::
 
     aws elb describe-load-balancers --load-balancer-name my-load-balancer
 

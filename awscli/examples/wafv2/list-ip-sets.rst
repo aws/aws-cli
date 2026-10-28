@@ -1,6 +1,6 @@
 **To retrieve a list of IP sets**
 
-The following ``list-ip-sets`` retrieves all IP sets for the account that have regional scope. ::
+The following ``list-ip-sets`` example retrieves all IP sets for the account that have regional scope. ::
 
     aws wafv2 list-ip-sets \
         --scope REGIONAL

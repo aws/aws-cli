@@ -1,6 +1,6 @@
 **To get a dicom import job's properties**
 
-The following ``get-dicom-import-job`` code example gets a dicom import job's properties. ::
+The following ``get-dicom-import-job`` example gets a dicom import job's properties. ::
 
     aws medical-imaging get-dicom-import-job \
         --datastore-id "12345678901234567890123456789012" \

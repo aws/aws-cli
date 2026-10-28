@@ -19,7 +19,7 @@ Output::
 
 **Example 2: To list the registered task definitions in a family**
 
-The following `list-task-definitions` example lists the task definition revisions of a specified family. ::
+The following ``list-task-definitions`` example lists the task definition revisions of a specified family. ::
 
     aws ecs list-task-definitions --family-prefix wordpress
 

@@ -1,8 +1,6 @@
 **Example 1: To list resource-level compliance summary counts**
 
-This example lists resource-level compliance summary counts.
-
-Command::
+The following ``list-resource-compliance-summaries`` example lists resource-level compliance summary counts. ::
 
     aws ssm list-resource-compliance-summaries
 
@@ -82,9 +80,7 @@ Output::
 
 **Example 2: To list resource-level compliance summaries for a specific compliance type**
 
-This example lists resource-level compliance summaries for the Patch compliance type.
-
-Command::
+The following ``list-resource-compliance-summaries`` example lists resource-level compliance summaries for the Patch compliance type. ::
 
     aws ssm list-resource-compliance-summaries --filters "Key=ComplianceType,Values=Patch,Type=EQUAL"
 

@@ -1,6 +1,6 @@
 **To list projects**
 
-The following retrieves a list of projects::
+The following ``list-projects`` example retrieves a list of projects. ::
 
     aws devicefarm list-projects
 

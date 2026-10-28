@@ -1,6 +1,6 @@
 **To create an Amazon Elasticsearch Service domain**
 
-The following ``create-elasticsearch-domain`` command creates a new Amazon Elasticsearch Service domain within a VPC and restricts access to a single user. Amazon ES infers the VPC ID from the specified subnet and security group IDs. ::
+The following ``create-elasticsearch-domain`` example creates a new Amazon Elasticsearch Service domain within a VPC and restricts access to a single user. Amazon ES infers the VPC ID from the specified subnet and security group IDs. ::
 
     aws es create-elasticsearch-domain \
         --domain-name vpc-cli-example \

@@ -1,6 +1,6 @@
 **To get API Gateway account settings**
 
-Command::
+The following ``get-account`` example gets the API Gateway account settings. ::
 
     aws apigateway get-account
 

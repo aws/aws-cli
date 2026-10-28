@@ -1,6 +1,6 @@
 **Example 1: To update an ECS cluster to enable containerInsights**
 
-The following ``update-cluster`` updates the containerInsights value to ``enabled`` in an already created cluster. By default, it is disabled. ::
+The following ``update-cluster`` example updates the containerInsights value to ``enabled`` in an already created cluster. By default, it is disabled. ::
 
     aws ecs update-cluster \
         --cluster ECS-project-update-cluster \
@@ -81,7 +81,7 @@ Output::
 
 **Example 2: To update an ECS cluster to set a default Service Connect namespace**
 
-The following ``update-cluster`` updates ECS cluster by setting a default Service Connect namespace. ::
+The following ``update-cluster`` example updates an ECS cluster by setting a default Service Connect namespace. ::
 
     aws ecs update-cluster \
         --cluster ECS-project-update-cluster \

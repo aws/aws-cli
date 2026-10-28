@@ -1,8 +1,6 @@
 **To describe a user pool client**
 
-This example describes a user pool domain named my-domain.
-
-Command::
+The following ``describe-user-pool-domain`` example describes a user pool domain named my-domain. ::
 
     aws cognito-idp describe-user-pool-domain --domain my-domain
 

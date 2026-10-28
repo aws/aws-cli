@@ -1,6 +1,6 @@
 **Example 1: To list all aliases in an AWS account and Region**
 
-The following example uses the ``list-aliases`` command to list all aliases in the default Region of the AWS account. The output includes aliases associated with AWS managed KMS keys and customer managed KMS keys. ::
+The following ``list-aliases`` example lists all aliases in the default Region of the AWS account. The output includes aliases associated with AWS managed KMS keys and customer managed KMS keys. ::
 
     aws kms list-aliases
 
@@ -34,7 +34,7 @@ Output::
 
 **Example 2: To list all aliases for a particular KMS key**
 
-The following example uses the ``list-aliases`` command and its ``key-id`` parameter to list all aliases that are associated with a particular KMS key.
+The following ``list-aliases`` example uses the ``key-id`` parameter to list all aliases that are associated with a particular KMS key.
 
 Each alias is associated with only one KMS key, but a KMS key can have multiple aliases. This command is very useful because the AWS KMS console lists only one alias for each KMS key. To find all aliases for a KMS key, you must use the ``list-aliases`` command.
 

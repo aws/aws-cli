@@ -1,6 +1,6 @@
 **To get information about a medical custom vocabulary**
 
-The following ``get-medical-vocabulary`` example gets information on a medical custom vocabulary. You can use the VocabularyState parameter to see the processing state of the vocabulary. If it's READY, you can use it in the StartMedicalTranscriptionJob operation.::
+The following ``get-medical-vocabulary`` example gets information on a medical custom vocabulary. You can use the VocabularyState parameter to see the processing state of the vocabulary. If it's READY, you can use it in the StartMedicalTranscriptionJob operation. ::
 
     aws transcribe get-medical-vocabulary \
         --vocabulary-name medical-vocab-example

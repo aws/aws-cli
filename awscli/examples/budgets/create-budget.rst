@@ -1,6 +1,6 @@
 **To create a Cost and Usage budget**
 
-The following ``create-budget`` command creates a Cost and Usage budget. ::
+The following ``create-budget`` example creates a Cost and Usage budget. ::
 
     aws budgets create-budget \
         --account-id 111122223333 \

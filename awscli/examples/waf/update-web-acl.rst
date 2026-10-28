@@ -1,6 +1,6 @@
 **To update a web ACL**
 
-The following ``update-web-acl`` command deletes an ``ActivatedRule`` object in a WebACL.
+The following ``update-web-acl`` example deletes an ``ActivatedRule`` object in a WebACL. ::
 
     aws waf update-web-acl \
         --web-acl-id a123fae4-b567-8e90-1234-5ab67ac8ca90 \

@@ -1,8 +1,6 @@
 **To cancel a bundle task**
 
-This example cancels bundle task ``bun-2a4e041c``.
-
-Command::
+The following ``cancel-bundle-task`` example cancels bundle task ``bun-2a4e041c``. ::
 
     aws ec2 cancel-bundle-task --bundle-id bun-2a4e041c
 

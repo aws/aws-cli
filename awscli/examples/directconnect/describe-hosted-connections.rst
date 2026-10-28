@@ -1,8 +1,6 @@
 **To list connections on an interconnect**
 
-The following example lists connections that have been provisioned on the given interconnect.
-
-Command::
+The following ``describe-hosted-connections`` example lists connections that have been provisioned on the given interconnect. ::
 
     aws directconnect describe-hosted-connections --connection-id dxcon-fgktov66
 

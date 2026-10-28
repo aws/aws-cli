@@ -1,6 +1,6 @@
 **To get information about the current organization**
 
-The following example shows you how to request details about an organization: ::
+The following ``describe-organization`` example requests details about an organization. ::
 
     aws organizations describe-organization
 

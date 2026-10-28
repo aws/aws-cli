@@ -1,8 +1,6 @@
 **To restore a cluster from a snapshot**
 
-This example restores a cluster from a snapshot.
-
-Command::
+The following ``restore-from-cluster-snapshot`` example restores a cluster from a snapshot. ::
 
     aws redshift restore-from-cluster-snapshot --cluster-identifier mycluster-clone --snapshot-identifier my-snapshot-id
 

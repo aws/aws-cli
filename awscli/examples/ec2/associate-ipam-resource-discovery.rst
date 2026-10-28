@@ -1,6 +1,6 @@
 **To associate a resource discovery with an IPAM**
 
-In this example, you are an IPAM delegated admin and a resource discovery has been created and shared with you by another AWS account so that you can use IPAM to manage and monitor resource CIDRs owned by the other account.
+The following ``associate-ipam-resource-discovery`` example associates a resource discovery with an IPAM. In this example, you are an IPAM delegated admin and a resource discovery has been created and shared with you by another AWS account so that you can use IPAM to manage and monitor resource CIDRs owned by the other account.
 
 Note
 
@@ -8,7 +8,7 @@ Note
 * The resource discovery that you are associating must have first been shared with your account using AWS RAM.
 * The ``--region`` you enter must match the home Region of the IPAM you are associating it with.
 
-The following ``associate-ipam-resource-discovery`` example associates a resource discovery with an IPAM. ::
+To associate the resource discovery with the IPAM, run the following command. ::
 
     aws ec2 associate-ipam-resource-discovery \
         --ipam-id ipam-005f921c17ebd5107 \

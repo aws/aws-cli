@@ -1,6 +1,6 @@
 **To delete an existing resource**
 
-The following ``delete-resource`` command deletes an existing resource from Amazon WorkMail. ::
+The following ``delete-resource`` example deletes an existing resource from Amazon WorkMail. ::
 
     aws workmail delete-resource \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

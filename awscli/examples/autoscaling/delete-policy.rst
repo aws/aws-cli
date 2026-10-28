@@ -1,6 +1,6 @@
 **To delete a scaling policy**
 
-This example deletes the specified scaling policy. ::
+The following ``delete-policy`` example deletes the specified scaling policy. ::
 
     aws autoscaling delete-policy \
         --auto-scaling-group-name my-asg \

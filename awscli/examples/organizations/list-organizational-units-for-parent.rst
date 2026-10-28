@@ -1,6 +1,6 @@
 **To retrieve a list of the OUs in a parent OU or root**
 
-The following example shows you how to get a list of OUs in a specified root: ::
+The following ``list-organizational-units-for-parent`` example gets a list of OUs in a specified root. ::
 
     aws organizations list-organizational-units-for-parent --parent-id r-examplerootid111
 

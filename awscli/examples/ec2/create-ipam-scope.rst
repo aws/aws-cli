@@ -2,14 +2,14 @@
 
 The following ``create-ipam-scope`` example creates an IPAM scope.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 create-ipam-scope \
         --ipam-id ipam-08440e7a3acde3908 \
         --description "Example description" \
         --tag-specifications 'ResourceType=ipam-scope,Tags=[{Key=Name,Value="Example name value"}]'
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 create-ipam-scope ^
         --ipam-id ipam-08440e7a3acde3908 ^

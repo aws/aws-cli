@@ -1,6 +1,6 @@
 **To retrieve information about a FIDO security key**
 
-The following ``get-mfa-device`` command example retrieves information about the specified FIDO security key. ::
+The following ``get-mfa-device`` example retrieves information about the specified FIDO security key. ::
 
     aws iam get-mfa-device \
         --serial-number arn:aws:iam::123456789012:u2f/user/alice/fidokeyname-EXAMPLEBN5FHTECLFG7EXAMPLE

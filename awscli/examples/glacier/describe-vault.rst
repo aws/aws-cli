@@ -1,6 +1,6 @@
 **To describe a vault**
 
-The following command retrieves data about a vault named ``my-vault``::
+The following ``describe-vault`` example retrieves data about a vault named ``my-vault``. ::
 
     aws glacier describe-vault --vault-name my-vault --account-id -
 

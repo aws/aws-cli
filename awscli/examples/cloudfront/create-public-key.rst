@@ -1,13 +1,11 @@
 **To create a CloudFront public key**
 
-The following example creates a CloudFront public key by providing the
+The following ``create-public-key`` example creates a CloudFront public key by providing the
 parameters in a JSON file named ``pub-key-config.json``. Before you can use
 this command, you must have a PEM-encoded public key. For more information, see
 `Create an RSA Key Pair
 <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html#field-level-encryption-setting-up-step1>`_
-in the *Amazon CloudFront Developer Guide*.
-
-::
+in the *Amazon CloudFront Developer Guide*. ::
 
     aws cloudfront create-public-key \
         --public-key-config file://pub-key-config.json

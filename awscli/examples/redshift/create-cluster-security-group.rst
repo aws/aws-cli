@@ -1,8 +1,6 @@
 **To create a cluster security group**
 
-This example creates a new cluster security group. By default, the output is in JSON format.
-
-Command::
+The following ``create-cluster-security-group`` example creates a new cluster security group. By default, the output is in JSON format. ::
 
     aws redshift create-cluster-security-group --cluster-security-group-name mysecuritygroup --description "This is my cluster security group"
 
@@ -25,9 +23,7 @@ Result::
         }
     }
 
-You can also obtain the same information in text format using the ``--output text`` option.
-
-Command::
+You can also obtain the same information in text format using the ``--output text`` option. ::
 
     aws redshift create-cluster-security-group --cluster-security-group-name mysecuritygroup --description "This is my cluster security group" --output text
 

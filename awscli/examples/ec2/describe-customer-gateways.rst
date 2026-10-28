@@ -1,8 +1,6 @@
 **Example 1: To describe your customer gateways**
 
-This example describes your customer gateways.
-
-Command::
+The following ``describe-customer-gateways`` example describes your customer gateways. ::
 
     aws ec2 describe-customer-gateways
 
@@ -29,9 +27,7 @@ Output::
 
 **Example 2: To describe a specific customer gateway**
 
-This example describes the specified customer gateway.
-
-Command::
+The following ``describe-customer-gateways`` example describes the specified customer gateway. ::
 
     aws ec2 describe-customer-gateways --customer-gateway-ids cgw-0e11f167
 

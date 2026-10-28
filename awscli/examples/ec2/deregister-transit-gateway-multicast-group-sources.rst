@@ -1,6 +1,6 @@
 **To deregister a source from the transit gateway multicast group**
 
-This example deregisters the specified network interface group source from the multicast group. ::
+The following ``deregister-transit-gateway-multicast-group-sources`` example deregisters the specified network interface group source from the multicast group. ::
 
     aws ec2 deregister-transit-gateway-multicast-group-sources \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef79d6e597 \

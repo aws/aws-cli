@@ -1,6 +1,6 @@
 **To delete faces from a collection**
 
-The following ``delete-faces`` command deletes the specified face from a collection. ::
+The following ``delete-faces`` example deletes the specified face from a collection. ::
 
     aws rekognition delete-faces \
         --collection-id MyCollection

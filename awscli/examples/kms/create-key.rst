@@ -41,7 +41,7 @@ For more information, see `Creating keys <https://docs.aws.amazon.com/kms/latest
 
 **Example 2: To create an asymmetric RSA KMS key for encryption and decryption**
 
-The following ``create-key`` example creates a KMS key that contains an asymmetric RSA key pair for encryption and decryption. The key spec and key usage can't be changed after the key is created.::
+The following ``create-key`` example creates a KMS key that contains an asymmetric RSA key pair for encryption and decryption. The key spec and key usage can't be changed after the key is created. ::
 
     aws kms create-key \
        --key-spec RSA_4096 \
@@ -76,7 +76,7 @@ For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.c
 
 **Example 3: To create an asymmetric elliptic curve KMS key for signing and verification**
 
-To create an asymmetric KMS key that contains an asymmetric elliptic curve (ECC) key pair for signing and verification. The ``--key-usage`` parameter is required even though ``SIGN_VERIFY`` is the only valid value for ECC KMS keys. The key spec and key usage can't be changed after the key is created.::
+The following ``create-key`` example creates an asymmetric KMS key that contains an asymmetric elliptic curve (ECC) key pair for signing and verification. The ``--key-usage`` parameter is required even though ``SIGN_VERIFY`` is the only valid value for ECC KMS keys. The key spec and key usage can't be changed after the key is created. ::
 
     aws kms create-key \
         --key-spec ECC_NIST_P521 \
@@ -110,7 +110,7 @@ For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.c
 
 **Example 4: To create an asymmetric ML-DSA KMS key for signing and verification**
 
-This example creates a module-lattice digital signature algorithm (ML-DSA) key for signing and verification. The key-usage parameter is required even though ``SIGN_VERIFY`` is the only valid value for ML-DSA keys. ::
+The following ``create-key`` example creates a module-lattice digital signature algorithm (ML-DSA) key for signing and verification. The key-usage parameter is required even though ``SIGN_VERIFY`` is the only valid value for ML-DSA keys. ::
 
     aws kms create-key \
         --key-spec ML_DSA_65 \

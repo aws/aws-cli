@@ -1,6 +1,6 @@
 **To send a raw email using Amazon SES**
 
-The following example uses the ``send-raw-email`` command to send an email with a TXT attachment::
+The following ``send-raw-email`` example sends an email with a TXT attachment. ::
 
     aws ses send-raw-email \
         --cli-binary-format raw-in-base64-out \

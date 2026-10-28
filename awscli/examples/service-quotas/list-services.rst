@@ -1,6 +1,6 @@
 **To list the available services**
 
-The following command lists the services that are available in Service Quotas. ::
+The following ``list-services`` example lists the services that are available in Service Quotas. ::
 
     aws service-quotas list-services
 

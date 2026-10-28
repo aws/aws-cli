@@ -1,6 +1,6 @@
 **To update an access entry for an EKS cluster**
 
-The following ``update-access-entry`` updates an access entry for the EKS cluster by adding the Kubernetes group ``tester``. ::
+The following ``update-access-entry`` example updates an access entry for the EKS cluster by adding the Kubernetes group ``tester``. ::
 
     aws eks update-access-entry \
         --cluster-name eks-customer \

@@ -1,6 +1,6 @@
 **To set up the credential helper included in the AWS CLI with AWS CodeCommit**
 
-The ``credential-helper`` utility is not designed to be called directly from the AWS CLI. Instead it is intended to be used as a parameter with the ``git config`` command to set up your local computer. It enables Git to use HTTPS and a cryptographically signed version of your IAM user credentials or Amazon EC2 instance role whenever Git needs to authenticate with AWS to interact with CodeCommit repositories. ::
+The following ``credential-helper`` example configures Git to use the credential helper included in the AWS CLI with AWS CodeCommit. The ``credential-helper`` utility is not designed to be called directly from the AWS CLI. Instead it is intended to be used as a parameter with the ``git config`` command to set up your local computer. It enables Git to use HTTPS and a cryptographically signed version of your IAM user credentials or Amazon EC2 instance role whenever Git needs to authenticate with AWS to interact with CodeCommit repositories. ::
 
     git config --global credential.helper '!aws codecommit credential-helper $@' 
     git config --global credential.UseHttpPath true

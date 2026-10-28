@@ -1,13 +1,13 @@
 **To modify the operating regions of a resource discovery**
 
-In this example, you're an IPAM delegated admin who wants to modify the operating regions of a resource discovery.
+The following ``modify-ipam-resource-discovery`` example modifies the operating regions of a non-default resource discovery in your AWS account. In this example, you're an IPAM delegated admin.
 
 To complete this request:
 
 * You cannot modify a default resource discovery and you must be the owner of the resource discovery.
 * You need the resource discovery ID, which you can get with `describe-ipam-resource-discoveries <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipam-resource-discoveries.html>`__.
 
-The following ``modify-ipam-resource-discovery`` example modifies a non-default resource discovery in your AWS account. ::
+The command adds the ``us-west-1`` operating Region and removes the ``us-east-2`` operating Region. ::
 
     aws ec2 modify-ipam-resource-discovery \
         --ipam-resource-discovery-id ipam-res-disco-0f4ef577a9f37a162 \

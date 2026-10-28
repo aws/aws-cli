@@ -1,6 +1,6 @@
 **To get the results of an unsafe content operation**
 
-The following ``get-content-moderation`` command displays the results of an unsafe content operation that you started previously by calling ``start-content-moderation``. ::
+The following ``get-content-moderation`` example displays the results of an unsafe content operation that you started previously by calling ``start-content-moderation``. ::
 
     aws rekognition get-content-moderation \
         --job-id 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef

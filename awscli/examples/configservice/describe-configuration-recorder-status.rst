@@ -1,6 +1,6 @@
 **To get status information for the configuration recorder**
 
-The following command returns the status of the default configuration recorder::
+The following ``describe-configuration-recorder-status`` example returns the status of the default configuration recorder. ::
 
     aws configservice describe-configuration-recorder-status
 

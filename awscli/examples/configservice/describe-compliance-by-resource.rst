@@ -1,6 +1,6 @@
 **To get compliance information for your AWS resources**
 
-The following command returns compliance information for each EC2 instance that is recorded by AWS Config and that violates one or more rules::
+The following ``describe-compliance-by-resource`` example returns compliance information for each EC2 instance that is recorded by AWS Config and that violates one or more rules. ::
 
     aws configservice describe-compliance-by-resource --resource-type AWS::EC2::Instance --compliance-types NON_COMPLIANT
 

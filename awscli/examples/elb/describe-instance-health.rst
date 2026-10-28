@@ -1,8 +1,6 @@
 **Example 1: To describe the health of the instances for a load balancer**
 
-This example describes the health of the instances for the specified load balancer.
-
-Command::
+The following ``describe-instance-health`` example describes the health of the instances for the specified load balancer. ::
 
     aws elb describe-instance-health --load-balancer-name my-load-balancer
 
@@ -27,9 +25,7 @@ Output::
 
 **Example 2: To describe the health of an instance for a load balancer**
 
-This example describes the health of the specified instance for the specified load balancer.
-
-Command::
+The following ``describe-instance-health`` example describes the health of the specified instance for the specified load balancer. ::
 
     aws elb describe-instance-health --load-balancer-name my-load-balancer --instances i-7299c809
 

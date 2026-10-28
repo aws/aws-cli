@@ -1,6 +1,6 @@
 **To list security configurations in the current region**
  
-Command::
+The following ``list-security-configurations`` example lists the security configurations in the current region. ::
  
     aws emr list-security-configurations
 

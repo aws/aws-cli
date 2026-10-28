@@ -2,13 +2,13 @@
 
 The following ``allocate-ipam-pool-cidr`` example allocates a CIDR from an IPAM pool.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 allocate-ipam-pool-cidr \
         --ipam-pool-id ipam-pool-0533048da7d823723 \
         --netmask-length 24
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 allocate-ipam-pool-cidr ^
         --ipam-pool-id ipam-pool-0533048da7d823723 ^

@@ -1,8 +1,6 @@
 **To describe Dedicated Host Reservations in your account**
 
-This example describes the Dedicated Host Reservations in your account.
-
-Command::
+The following ``describe-host-reservations`` example describes the Dedicated Host Reservations in your account. ::
 
     aws ec2 describe-host-reservations
 

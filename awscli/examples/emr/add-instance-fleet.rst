@@ -1,8 +1,6 @@
 **To add a task instance fleet to a cluster**
 
-This example adds a new task instance fleet to the cluster specified.
-
-Command::
+The following ``add-instance-fleet`` example adds a new task instance fleet to the cluster specified. ::
 
     aws emr add-instance-fleet --cluster-id 'j-12ABCDEFGHI34JK' --instance-fleet  InstanceFleetType=TASK,TargetSpotCapacity=1,LaunchSpecifications={SpotSpecification='{TimeoutDurationMinutes=20,TimeoutAction=TERMINATE_CLUSTER}'},InstanceTypeConfigs=['{InstanceType=m3.xlarge,BidPrice=0.5}']
 

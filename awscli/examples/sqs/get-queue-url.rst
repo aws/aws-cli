@@ -1,8 +1,6 @@
 **To get a queue URL**
 
-This example gets the specified queue's URL.
-
-Command::
+The following ``get-queue-url`` example gets the specified queue's URL. ::
 
     aws sqs get-queue-url --queue-name MyQueue
 

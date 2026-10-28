@@ -1,6 +1,6 @@
 **Example 1: To list your registered domains**
 
-The following ``list-domains`` command example lists the ``REGISTERED`` SWF domains that you have registered for your account. ::
+The following ``list-domains`` example lists the ``REGISTERED`` SWF domains that you have registered for your account. ::
 
     aws swf list-domains \
         --registration-status REGISTERED
@@ -24,7 +24,7 @@ For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/la
 
 **Example 2: To list your deprecated domains**
 
-The following ``list-domains`` command example lists the ``DEPRECATED`` SWF domains that you have registered for your account. Deprecated domains are domains that can not register new workflows or activities, but that can still be queried. ::
+The following ``list-domains`` example lists the ``DEPRECATED`` SWF domains that you have registered for your account. Deprecated domains are domains that can not register new workflows or activities, but that can still be queried. ::
 
     aws swf list-domains \
         --registration-status DEPRECATED
@@ -45,7 +45,7 @@ For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/la
 
 **Example 3: To list the first page of registered domains**
 
-The following ``list-domains`` command example lists the first page ``REGISTERED`` SWF domains that you have registered for your account using the ``--maximum-page-size`` option. ::
+The following ``list-domains`` example lists the first page ``REGISTERED`` SWF domains that you have registered for your account using the ``--maximum-page-size`` option. ::
 
     aws swf list-domains \
         --registration-status REGISTERED \
@@ -67,7 +67,7 @@ For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/la
 
 **Example 4: To list the specified single page of registered domains**
 
-The following ``list-domains`` command example lists the first page ``REGISTERED`` SWF domains that you have registered for your account using the ``--maximum-page-size`` option.
+The following ``list-domains`` example lists the first page ``REGISTERED`` SWF domains that you have registered for your account using the ``--maximum-page-size`` option.
 
 When you make the call again, this time supplying the value of ``nextPageToken`` in the ``--next-page-token`` argument, you'll get another page of results. ::
 

@@ -454,7 +454,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Updates the specified connector. For request body, specify only one parameter: either <code>capacity</code> or <code>connectorConfiguration</code>.</p>",
+      "documentation":"<p>Updates the specified connector. In the request body, you can update either the connector's worker setting or its connector configuration, but not both in the same request. To update the worker setting, specify one or more of <code>capacity</code>, <code>plugins</code>, <code>workerConfiguration</code>, or <code>useDefaultWorkerConfiguration</code>. To update the connector configuration, specify only <code>connectorConfiguration</code>.</p>",
       "idempotent":true
     }
   },
@@ -1212,6 +1212,25 @@
       },
       "documentation":"<p>A summary of the custom plugin.</p>"
     },
+    "CustomPluginUpdate":{
+      "type":"structure",
+      "required":[
+        "customPluginArn",
+        "revision"
+      ],
+      "members":{
+        "customPluginArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom plugin.</p>"
+        },
+        "revision":{
+          "shape":"__longMin1",
+          "documentation":"<p>The revision of the custom plugin.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Details about a custom plugin to use when you update a connector via <code>UpdateConnector</code>.</p>"
+    },
     "DeleteConnectorRequest":{
       "type":"structure",
       "required":["connectorArn"],
@@ -1917,6 +1936,17 @@
       },
       "documentation":"<p>The description of the plugin.</p>"
     },
+    "PluginUpdate":{
+      "type":"structure",
+      "required":["customPlugin"],
+      "members":{
+        "customPlugin":{
+          "shape":"CustomPluginUpdate",
+          "documentation":"<p>The custom plugin to use for the connector.</p>"
+        }
+      },
+      "documentation":"<p>A custom plugin to use when you update a connector via <code>UpdateConnector</code>.</p>"
+    },
     "ProvisionedCapacity":{
       "type":"structure",
       "required":[
@@ -2313,6 +2343,18 @@
           "documentation":"<p>The current version of the connector that you want to update.</p>",
           "location":"querystring",
           "locationName":"currentVersion"
+        },
+        "plugins":{
+          "shape":"__listOfPluginUpdate",
+          "documentation":"<p><important> <p>Amazon MSK Connect does not currently support specifying multiple plugins as a list. To use more than one plugin for your connector, you can create a single custom plugin using a ZIP file that bundles multiple plugins together.</p> </important> <p>Specifies which plugin to use for the connector. You must specify a single-element list containing one <code>customPlugin</code> object. If you don't specify this parameter, the connector keeps its current plugin.</p></p>"
+        },
+        "workerConfiguration":{
+          "shape":"WorkerConfigurationUpdate",
+          "documentation":"<p>The worker configuration to use with the connector. Specify the Amazon Resource Name (ARN) and the revision of the worker configuration. You can't specify both <code>workerConfiguration</code> and <code>useDefaultWorkerConfiguration</code> in the same request. If you specify neither parameter, the connector keeps its current worker configuration.</p>"
+        },
+        "useDefaultWorkerConfiguration":{
+          "shape":"__boolean",
+          "documentation":"<p>Specifies whether to switch the connector to the default worker configuration that Amazon MSK Connect provides. If <code>true</code>, the connector stops using its custom worker configuration and uses the default worker configuration instead. If <code>false</code> or not specified, the connector keeps its current worker configuration. You can't specify both <code>useDefaultWorkerConfiguration</code> and <code>workerConfiguration</code> in the same request.</p>"
         }
       }
     },
@@ -2471,6 +2513,25 @@
       },
       "documentation":"<p>The summary of a worker configuration.</p>"
     },
+    "WorkerConfigurationUpdate":{
+      "type":"structure",
+      "required":[
+        "revision",
+        "workerConfigurationArn"
+      ],
+      "members":{
+        "revision":{
+          "shape":"__longMin1",
+          "documentation":"<p>The revision of the worker configuration.</p>",
+          "box":true
+        },
+        "workerConfigurationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the worker configuration.</p>"
+        }
+      },
+      "documentation":"<p>The worker configuration to use when you update a connector via <code>UpdateConnector</code>.</p>"
+    },
     "WorkerLogDelivery":{
       "type":"structure",
       "members":{
@@ -2510,7 +2571,22 @@
     "WorkerSetting":{
       "type":"structure",
       "members":{
-        "capacity":{"shape":"CapacityDescription"}
+        "capacity":{
+          "shape":"CapacityDescription",
+          "documentation":"<p>Specifies the compute capacity settings of the connector.</p>"
+        },
+        "plugins":{
+          "shape":"__listOfPluginDescription",
+          "documentation":"<p>Specifies which plugins the connector uses.</p>"
+        },
+        "workerConfiguration":{
+          "shape":"WorkerConfigurationDescription",
+          "documentation":"<p>Specifies which worker configuration the connector uses.</p>"
+        },
+        "useDefaultWorkerConfiguration":{
+          "shape":"__boolean",
+          "documentation":"<p>Specifies whether the connector uses the default worker configuration instead of a custom worker configuration.</p>"
+        }
       },
       "documentation":"<p>Details about worker setting of a connector</p>"
     },
@@ -2549,6 +2625,10 @@
     "__listOfPluginDescription":{
       "type":"list",
       "member":{"shape":"PluginDescription"}
+    },
+    "__listOfPluginUpdate":{
+      "type":"list",
+      "member":{"shape":"PluginUpdate"}
     },
     "__listOfWorkerConfigurationSummary":{
       "type":"list",

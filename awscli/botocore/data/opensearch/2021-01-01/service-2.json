@@ -64,6 +64,23 @@
       ],
       "documentation":"<p> Adds a new data source in Amazon OpenSearch Service so that you can perform direct queries on external data. </p>"
     },
+    "AddReplicationPeer":{
+      "name":"AddReplicationPeer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/replication/addPeer"
+      },
+      "input":{"shape":"AddReplicationPeerRequest"},
+      "output":{"shape":"AddReplicationPeerResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Starts replicating a domain to a peer domain in another AWS Region. A domain can have one peer. The domain you call becomes the primary and the peer becomes the secondary, which receives a copy of the primary's indexes and serves read requests.</p> <p>Replication is established asynchronously. Use the <code>DescribeDomainReplication</code> operation to check whether the relationship has reached the <code>ACTIVE</code> state.</p>"
+    },
     "AddTags":{
       "name":"AddTags",
       "http":{
@@ -184,6 +201,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Cancels a scheduled service software update for an Amazon OpenSearch Service domain. You can only perform this operation before the <code>AutomatedUpdateDate</code> and when the domain's <code>UpdateStatus</code> is <code>PENDING_UPDATE</code>. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">Service software updates in Amazon OpenSearch Service</a>.</p>"
+    },
+    "CompareDomainConfiguration":{
+      "name":"CompareDomainConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/compareDomainConfiguration"
+      },
+      "input":{"shape":"CompareDomainConfigurationRequest"},
+      "output":{"shape":"CompareDomainConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Compares the metadata of two domains and reports where they differ. Use this operation to check that a secondary domain is configured consistently with its primary before you rely on it, because replication copies index data but does not copy domain metadata such as index templates, ingest pipelines, or security roles.</p> <p>You choose which categories to compare. The response reports, for each category, how many items match, how many exist on only one domain, and which fields diverge.</p>",
+      "readonly":true
     },
     "CreateApplication":{
       "name":"CreateApplication",
@@ -583,6 +617,23 @@
       ],
       "documentation":"<p>Returns information about domain and nodes, including data nodes, master nodes, ultrawarm nodes, Availability Zone(s), standby nodes, node configurations, and node states.</p>"
     },
+    "DescribeDomainReplication":{
+      "name":"DescribeDomainReplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/replication"
+      },
+      "input":{"shape":"DescribeDomainReplicationRequest"},
+      "output":{"shape":"DescribeDomainReplicationResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Describes the replication arrangement that a domain participates in, including the domain's role and the state of its relationship with each peer.</p> <p>A domain that is not replicating is returned with an empty <code>Peers</code> list and no <code>Role</code>. Returns <code>ResourceNotFoundException</code> if the domain does not exist.</p>",
+      "readonly":true
+    },
     "DescribeDomains":{
       "name":"DescribeDomains",
       "http":{
@@ -798,6 +849,22 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>Dissociates multiple packages from a domain simultaneously.</p>"
+    },
+    "FailoverReplication":{
+      "name":"FailoverReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/replication/failover"
+      },
+      "input":{"shape":"FailoverReplicationRequest"},
+      "output":{"shape":"FailoverReplicationResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Promotes a secondary domain to primary without coordinating with the current primary. Use this operation when the primary is unreachable and you cannot wait for it to recover.</p> <p>Writes that had not yet replicated when the primary became unreachable are lost. You must set <code>AllowDataLoss</code> to acknowledge this. To promote a domain without losing writes, use the <code>SwitchoverReplication</code> operation instead.</p> <p>Call this operation in the Region of the domain you want to promote.</p>"
     },
     "GetApplication":{
       "name":"GetApplication",
@@ -1381,6 +1448,22 @@
       ],
       "documentation":"<p>Allows the remote Amazon OpenSearch Service domain owner to reject an inbound cross-cluster connection request.</p>"
     },
+    "RemoveReplicationPeer":{
+      "name":"RemoveReplicationPeer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/replication/removePeer"
+      },
+      "input":{"shape":"RemoveReplicationPeerRequest"},
+      "output":{"shape":"RemoveReplicationPeerResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Stops replicating a domain to its peer. Replication ends for both domains, and each domain keeps the data it holds at that point. Neither domain is deleted.</p>"
+    },
     "RemoveTags":{
       "name":"RemoveTags",
       "http":{
@@ -1480,6 +1563,22 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Schedules a service software update for an Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">Service software updates in Amazon OpenSearch Service</a>.</p>"
+    },
+    "SwitchoverReplication":{
+      "name":"SwitchoverReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/replication/switchover"
+      },
+      "input":{"shape":"SwitchoverReplicationRequest"},
+      "output":{"shape":"SwitchoverReplicationResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Promotes a secondary domain to primary, coordinating with the current primary so that no writes are lost. Use this operation for planned role changes, such as testing your recovery procedure or moving write traffic to another Region.</p> <p>Call this operation in the Region of the domain you want to promote. If the current primary is unreachable, use the <code>FailoverReplication</code> operation instead.</p>"
     },
     "UpdateApplication":{
       "name":"UpdateApplication",
@@ -1911,6 +2010,41 @@
         "DataSourceArn":{
           "shape":"String",
           "documentation":"<p> The unique, system-generated identifier that represents the data source. </p>"
+        }
+      }
+    },
+    "AddReplicationPeerRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "PeerDomainArn"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "PeerDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain to replicate to. The peer must be in a different Region from the domain you are calling, and in the same AWS account.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>When <code>true</code>, validates the request and reports whether replication could be established, without changing either domain.</p>"
+        }
+      }
+    },
+    "AddReplicationPeerResponse":{
+      "type":"structure",
+      "members":{
+        "DomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain that is now replicating to the peer.</p>"
+        },
+        "Status":{
+          "shape":"ReplicationStatus",
+          "documentation":"<p>The state of the replication relationship. This is <code>PENDING_SETUP</code> immediately after the request is accepted.</p>"
         }
       }
     },
@@ -2778,6 +2912,40 @@
         "delete_failed"
       ]
     },
+    "CategoryDiffResult":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"DiffStatus",
+          "documentation":"<p>Whether the category was compared successfully. <code>compared</code> means the result is complete; <code>error</code> means the category could not be read.</p>"
+        },
+        "InSync":{
+          "shape":"DiffCount",
+          "documentation":"<p>The number of items that are identical on both domains.</p>"
+        },
+        "SourceOnly":{
+          "shape":"DiffCount",
+          "documentation":"<p>The number of items that exist only on the source domain.</p>"
+        },
+        "TargetOnly":{
+          "shape":"DiffCount",
+          "documentation":"<p>The number of items that exist only on the target domain.</p>"
+        },
+        "Diverged":{
+          "shape":"DiffCount",
+          "documentation":"<p>The number of items that exist on both domains but differ.</p>"
+        },
+        "Items":{
+          "shape":"DiffItems",
+          "documentation":"<p>The names of the items that differ, and for diverging items, the fields that differ.</p>"
+        },
+        "Truncated":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether <code>Items</code> omits some differences because the category contained more than the response can carry. The counts remain complete when this is <code>true</code>.</p>"
+        }
+      },
+      "documentation":"<p>The result of comparing one metadata category between two domains.</p>"
+    },
     "ChangeProgressDetails":{
       "type":"structure",
       "members":{
@@ -3052,6 +3220,51 @@
     "CommitMessage":{
       "type":"string",
       "max":160
+    },
+    "CompareDomainConfigurationCategoryMap":{
+      "type":"map",
+      "key":{"shape":"MetadataCategory"},
+      "value":{"shape":"CategoryDiffResult"},
+      "max":20
+    },
+    "CompareDomainConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "SourceDomainArn",
+        "TargetDomainArn",
+        "Categories"
+      ],
+      "members":{
+        "SourceDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain to compare from.</p>"
+        },
+        "TargetDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain to compare against.</p>"
+        },
+        "Categories":{
+          "shape":"MetadataCategoryList",
+          "documentation":"<p>The metadata categories to compare. At least one is required, and only the categories you name are read and returned.</p> <ul> <li> <p> <code>aliases</code> </p> </li> <li> <p> <code>alerting_monitors</code> </p> </li> <li> <p> <code>cluster_settings</code> </p> </li> <li> <p> <code>component_templates</code> </p> </li> <li> <p> <code>ingest_pipelines</code> </p> </li> <li> <p> <code>ism_policies</code> — index state management policies</p> </li> <li> <p> <code>security_action_groups</code> </p> </li> <li> <p> <code>security_internal_users</code> </p> </li> <li> <p> <code>security_role_mappings</code> </p> </li> <li> <p> <code>security_roles</code> </p> </li> <li> <p> <code>templates</code> — index templates</p> </li> </ul> <p>The set of categories grows over time, so this list is not fixed. A category the service does not recognise is rejected with the supported categories named in the error message.</p>"
+        }
+      }
+    },
+    "CompareDomainConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "SourceDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain that was compared from.</p>"
+        },
+        "TargetDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain that was compared against.</p>"
+        },
+        "Categories":{
+          "shape":"CompareDomainConfigurationCategoryMap",
+          "documentation":"<p>The comparison result for each category you requested, keyed by category name.</p>"
+        }
+      }
     },
     "CompatibleVersionsList":{
       "type":"list",
@@ -4120,6 +4333,34 @@
       },
       "documentation":"<p>The result of a <code>DescribeDomainNodes</code> request. Contains information about the nodes on the requested domain. </p>"
     },
+    "DescribeDomainReplicationRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      }
+    },
+    "DescribeDomainReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "DomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain described.</p>"
+        },
+        "Role":{
+          "shape":"ReplicationRole",
+          "documentation":"<p>The domain's role in the arrangement, either <code>PRIMARY</code> or <code>SECONDARY</code>. Absent when the domain is not replicating.</p>"
+        },
+        "Peers":{
+          "shape":"ReplicationPeerList",
+          "documentation":"<p>The domains that this domain replicates with. Each entry carries the state of that one relationship. Empty when the domain is not replicating.</p>"
+        }
+      }
+    },
     "DescribeDomainRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -4544,6 +4785,56 @@
         "dataSourceArn":{"shape":"ARN"}
       }
     },
+    "DiffCount":{
+      "type":"integer",
+      "min":0
+    },
+    "DiffFieldPath":{
+      "type":"string",
+      "max":512
+    },
+    "DiffFieldPolicy":{
+      "type":"string",
+      "enum":["redacted"]
+    },
+    "DiffFieldValue":{
+      "type":"string",
+      "max":10240
+    },
+    "DiffItemName":{
+      "type":"string",
+      "max":256
+    },
+    "DiffItemNameList":{
+      "type":"list",
+      "member":{"shape":"DiffItemName"},
+      "max":1000
+    },
+    "DiffItems":{
+      "type":"structure",
+      "members":{
+        "SourceOnly":{
+          "shape":"DiffItemNameList",
+          "documentation":"<p>The names of items that exist only on the source domain.</p>"
+        },
+        "TargetOnly":{
+          "shape":"DiffItemNameList",
+          "documentation":"<p>The names of items that exist only on the target domain.</p>"
+        },
+        "Diverged":{
+          "shape":"DivergentItemList",
+          "documentation":"<p>The items that exist on both domains but differ, with the diverging fields.</p>"
+        }
+      },
+      "documentation":"<p>The items that differ within one metadata category.</p>"
+    },
+    "DiffStatus":{
+      "type":"string",
+      "enum":[
+        "compared",
+        "error"
+      ]
+    },
     "DirectQueryDataSource":{
       "type":"structure",
       "members":{
@@ -4680,6 +4971,52 @@
           "documentation":"<p>A list of package details for the packages that were dissociated from the domain.</p>"
         }
       }
+    },
+    "DivergentField":{
+      "type":"structure",
+      "members":{
+        "Path":{
+          "shape":"DiffFieldPath",
+          "documentation":"<p>The location of the field within the item.</p>"
+        },
+        "SourceValue":{
+          "shape":"DiffFieldValue",
+          "documentation":"<p>The field's value on the source domain.</p>"
+        },
+        "TargetValue":{
+          "shape":"DiffFieldValue",
+          "documentation":"<p>The field's value on the target domain.</p>"
+        },
+        "Policy":{
+          "shape":"DiffFieldPolicy",
+          "documentation":"<p>How the comparison treats this field.</p>"
+        }
+      },
+      "documentation":"<p>A single field that differs between the source and target copies of an item.</p>"
+    },
+    "DivergentFieldList":{
+      "type":"list",
+      "member":{"shape":"DivergentField"},
+      "max":100
+    },
+    "DivergentItem":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"DiffItemName",
+          "documentation":"<p>The name of the item.</p>"
+        },
+        "Fields":{
+          "shape":"DivergentFieldList",
+          "documentation":"<p>The fields of the item that differ.</p>"
+        }
+      },
+      "documentation":"<p>An item that exists on both domains but whose contents differ.</p>"
+    },
+    "DivergentItemList":{
+      "type":"list",
+      "member":{"shape":"DivergentItem"},
+      "max":1000
     },
     "DomainArn":{
       "type":"string",
@@ -5507,6 +5844,42 @@
         }
       },
       "documentation":"<p>Options to filter the scope of saved objects to export during a migration.</p>"
+    },
+    "FailoverReplicationRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "PeerDomainArn",
+        "AllowDataLoss"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "PeerDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the relationship's current primary. The request is rejected if this domain is no longer the peer of the domain you are calling.</p>"
+        },
+        "AllowDataLoss":{
+          "shape":"Boolean",
+          "documentation":"<p>Acknowledges that writes which had not yet replicated are lost. You must set this to <code>true</code>; the request is rejected otherwise.</p>"
+        }
+      }
+    },
+    "FailoverReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "DomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain being promoted.</p>"
+        },
+        "Status":{
+          "shape":"ReplicationStatus",
+          "documentation":"<p>The state of the replication relationship. This is <code>FAILING_OVER</code> while the promotion is in progress.</p>"
+        }
+      }
     },
     "Filter":{
       "type":"structure",
@@ -7481,6 +7854,17 @@
       "max":1024,
       "min":0
     },
+    "MetadataCategory":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "MetadataCategoryList":{
+      "type":"list",
+      "member":{"shape":"MetadataCategory"},
+      "max":20,
+      "min":1
+    },
     "MigrationError":{
       "type":"structure",
       "members":{
@@ -8582,6 +8966,37 @@
       },
       "documentation":"<p>Represents the output of a <code>RejectInboundConnection</code> operation.</p>"
     },
+    "RemoveReplicationPeerRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "PeerDomainArn"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "PeerDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the peer to stop replicating with. Both domains are named so that the request identifies exactly one replication relationship.</p>"
+        }
+      }
+    },
+    "RemoveReplicationPeerResponse":{
+      "type":"structure",
+      "members":{
+        "DomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain that is no longer replicating.</p>"
+        },
+        "Status":{
+          "shape":"ReplicationStatus",
+          "documentation":"<p>The state of the replication relationship. This is <code>PENDING_REMOVAL</code> while replication is being stopped.</p>"
+        }
+      }
+    },
     "RemoveTagsRequest":{
       "type":"structure",
       "required":[
@@ -8599,6 +9014,56 @@
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>RemoveTags</code> operation.</p>"
+    },
+    "ReplicationPeer":{
+      "type":"structure",
+      "members":{
+        "PeerDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the peer domain.</p>"
+        },
+        "PeerRole":{
+          "shape":"ReplicationRole",
+          "documentation":"<p>The peer's role in the relationship, either <code>PRIMARY</code> or <code>SECONDARY</code>.</p>"
+        },
+        "Status":{
+          "shape":"ReplicationStatus",
+          "documentation":"<p>The state of the relationship:</p> <ul> <li> <p> <code>PENDING_SETUP</code> - replication is being established.</p> </li> <li> <p> <code>ACTIVE</code> - replication is running.</p> </li> <li> <p> <code>SWITCHING_OVER</code> - a planned promotion is in progress.</p> </li> <li> <p> <code>FAILING_OVER</code> - an unplanned promotion is in progress.</p> </li> <li> <p> <code>PENDING_REMOVAL</code> - replication is being stopped.</p> </li> <li> <p> <code>DETACHED</code> - the relationship has ended.</p> </li> <li> <p> <code>EJECTED</code> - a failover promoted the other domain. The former primary keeps the data it had when it was ejected and stays read-only until you remove the peer, or discard that data and pair again.</p> </li> <li> <p> <code>FAILED</code> - setup or teardown could not complete. You can still remove the relationship.</p> </li> </ul> <p>A relationship that is removed successfully no longer appears in <code>Peers</code>.</p>"
+        },
+        "StatusMessage":{
+          "shape":"ReplicationStatusMessage",
+          "documentation":"<p>An explanation of why the relationship is in its current state, when more detail is available.</p>"
+        }
+      },
+      "documentation":"<p>A domain that another domain replicates with, and the state of that relationship.</p>"
+    },
+    "ReplicationPeerList":{
+      "type":"list",
+      "member":{"shape":"ReplicationPeer"}
+    },
+    "ReplicationRole":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "SECONDARY"
+      ]
+    },
+    "ReplicationStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_SETUP",
+        "ACTIVE",
+        "SWITCHING_OVER",
+        "FAILING_OVER",
+        "PENDING_REMOVAL",
+        "DETACHED",
+        "EJECTED",
+        "FAILED"
+      ]
+    },
+    "ReplicationStatusMessage":{
+      "type":"string",
+      "max":2048
     },
     "RequestId":{
       "type":"string",
@@ -9431,6 +9896,37 @@
         "UserId",
         "Email"
       ]
+    },
+    "SwitchoverReplicationRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "PeerDomainArn"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "PeerDomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the relationship's current primary. The request is rejected if this domain is no longer the peer of the domain you are calling.</p>"
+        }
+      }
+    },
+    "SwitchoverReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "DomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain being promoted.</p>"
+        },
+        "Status":{
+          "shape":"ReplicationStatus",
+          "documentation":"<p>The state of the replication relationship. This is <code>SWITCHING_OVER</code> while the promotion is in progress.</p>"
+        }
+      }
     },
     "TLSSecurityPolicy":{
       "type":"string",

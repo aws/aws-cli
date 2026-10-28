@@ -424,6 +424,13 @@
       "max":256,
       "min":1
     },
+    "ContentDisposition":{
+      "type":"string",
+      "enum":[
+        "INLINE",
+        "ATTACHMENT"
+      ]
+    },
     "ContentType":{
       "type":"string",
       "max":255,
@@ -542,6 +549,10 @@
         "UrlExpiryInSeconds":{
           "shape":"URLExpiryInSeconds",
           "documentation":"<p>The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>"
+        },
+        "UrlContentDisposition":{
+          "shape":"ContentDisposition",
+          "documentation":"<p>Specifies how a browser handles the file at the pre-signed URL. The following values are valid:</p> <dl> <dt>INLINE</dt> <dd> <p>Displays the file in the browser.</p> </dd> <dt>ATTACHMENT</dt> <dd> <p>Downloads the file. This is the default behavior.</p> </dd> </dl>"
         }
       }
     },
@@ -789,6 +800,11 @@
         "REJECTED"
       ]
     },
+    "MetadataUrl":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
     "MostRecent":{
       "type":"integer",
       "max":100,
@@ -959,7 +975,7 @@
         },
         "Content":{
           "shape":"ChatContent",
-          "documentation":"<p>The content of the message. </p> <ul> <li> <p>For <code>text/plain</code> and <code>text/markdown</code>, the Length Constraints are Minimum of 1, Maximum of 1024. </p> </li> <li> <p>For <code>application/json</code>, the Length Constraints are Minimum of 1, Maximum of 12000. </p> </li> <li> <p>For <code>application/vnd.amazonaws.connect.message.interactive.response</code>, the Length Constraints are Minimum of 1, Maximum of 12288.</p> </li> </ul>"
+          "documentation":"<p>The content of the message. Maximum of 16,384 bytes for all content types (<code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>).</p> <p>Some messaging channels enforce lower limits. For channel-specific message size limits, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/feature-limits.html#chat-message-size-limits\">Chat message size limits by channel</a> in the <i>Amazon Connect Customer Administrator Guide</i>.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -1107,7 +1123,7 @@
       "type":"structure",
       "members":{
         "Url":{
-          "shape":"UploadMetadataUrl",
+          "shape":"MetadataUrl",
           "documentation":"<p>This is the pre-signed URL that can be used for uploading the file to Amazon S3 when used in response to <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_StartAttachmentUpload.html\">StartAttachmentUpload</a>.</p>"
         },
         "UrlExpiry":{
@@ -1115,30 +1131,25 @@
           "documentation":"<p>The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>"
         },
         "HeadersToInclude":{
-          "shape":"UploadMetadataSignedHeaders",
+          "shape":"UrlMetadataSignedHeaders",
           "documentation":"<p>The headers to be provided while uploading the file to the URL.</p>"
         }
       },
       "documentation":"<p>Fields to be used while uploading the attachment.</p>"
     },
-    "UploadMetadataSignedHeaders":{
+    "UrlMetadataSignedHeaders":{
       "type":"map",
-      "key":{"shape":"UploadMetadataSignedHeadersKey"},
-      "value":{"shape":"UploadMetadataSignedHeadersValue"}
+      "key":{"shape":"UrlMetadataSignedHeadersKey"},
+      "value":{"shape":"UrlMetadataSignedHeadersValue"}
     },
-    "UploadMetadataSignedHeadersKey":{
+    "UrlMetadataSignedHeadersKey":{
       "type":"string",
       "max":128,
       "min":1
     },
-    "UploadMetadataSignedHeadersValue":{
+    "UrlMetadataSignedHeadersValue":{
       "type":"string",
       "max":256,
-      "min":1
-    },
-    "UploadMetadataUrl":{
-      "type":"string",
-      "max":2000,
       "min":1
     },
     "ValidationException":{
@@ -1296,5 +1307,5 @@
       "documentation":"<p>The websocket for the participant's connection.</p>"
     }
   },
-  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Participant_Service.html\">Participant Service actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Participant_Service.html\">Participant Service data types</a> </p> </li> </ul> <p>Connect Customer is an easy-to-use omnichannel cloud contact center service that enables companies of any size to deliver superior customer service at a lower cost. Connect Customer communications capabilities make it easy for companies to deliver personalized interactions across communication channels, including chat. </p> <p>Use the Connect Customer Participant Service to manage participants (for example, agents, customers, and managers listening in), and to send messages and events within a chat contact. The APIs in the service enable the following: sending chat messages, attachment sharing, managing a participant's connection state and message events, and retrieving chat transcripts.</p>"
+  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Participant_Service.html\">Participant Service actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Participant_Service.html\">Participant Service data types</a> </p> </li> </ul> <p>Use the Connect Customer Participant Service to manage participants (for example, agents, customers, and managers listening in), and to send messages and events within a chat contact. The APIs in the service enable the following: sending chat messages, attachment sharing, managing a participant's connection state and message events, and retrieving chat transcripts.</p>"
 }

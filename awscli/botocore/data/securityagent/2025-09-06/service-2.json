@@ -1751,6 +1751,10 @@
         "trustedCaCertificates":{
           "shape":"TrustedCaCertificateList",
           "documentation":"<p>The trust anchors used to validate target endpoint TLS certificates. Provide these for endpoints served by a private or internal certificate authority (CA), an intermediate CA, or a self-signed certificate.</p>"
+        },
+        "clientCertificates":{
+          "shape":"ClientCertificateList",
+          "documentation":"<p>The client certificates for mutual TLS (mTLS) authentication to target hosts. Each certificate is stored in Secrets Manager and scoped to specific target origins.</p>"
         }
       },
       "documentation":"<p>The collection of assets used in a pentest configuration, including endpoints, actors, documents, source code repositories, and integrated repositories.</p>"
@@ -3022,6 +3026,50 @@
         "BEST_EFFORT_DELETE",
         "RETAIN_ALL"
       ]
+    },
+    "ClientCertificate":{
+      "type":"structure",
+      "required":[
+        "name",
+        "secretArn",
+        "origins"
+      ],
+      "members":{
+        "name":{
+          "shape":"ClientCertificateName",
+          "documentation":"<p>A customer-chosen name for this client certificate, used in error messages and console display.</p>"
+        },
+        "secretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Secrets Manager secret containing the certificate and private key.</p>"
+        },
+        "origins":{
+          "shape":"ClientCertificateOriginList",
+          "documentation":"<p>The origins (scheme://host[:port]) this certificate applies to. Paths are not supported. Each hostname can have at most one client certificate.</p>"
+        }
+      },
+      "documentation":"<p>A client certificate for mutual TLS (mTLS) authentication to target hosts.</p>"
+    },
+    "ClientCertificateList":{
+      "type":"list",
+      "member":{"shape":"ClientCertificate"},
+      "documentation":"<p>A list of client certificates for mTLS authentication.</p>",
+      "max":10,
+      "min":0
+    },
+    "ClientCertificateName":{
+      "type":"string",
+      "documentation":"<p>A customer-chosen name for a client certificate, used in error messages and console display.</p>",
+      "max":100,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9\\-_]*"
+    },
+    "ClientCertificateOriginList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>The list of origins that a client certificate applies to.</p>",
+      "max":10,
+      "min":1
     },
     "ClientId":{
       "type":"string",
@@ -7535,6 +7583,10 @@
         "trustedCaCertificates":{
           "shape":"TrustedCaCertificateList",
           "documentation":"<p>The trust anchors used to validate target endpoint TLS certificates during the pentest job.</p>"
+        },
+        "clientCertificates":{
+          "shape":"ClientCertificateList",
+          "documentation":"<p>The client certificates for mutual TLS (mTLS) authentication to target hosts during the pentest job.</p>"
         },
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",

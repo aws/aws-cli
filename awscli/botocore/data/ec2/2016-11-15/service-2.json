@@ -5591,6 +5591,16 @@
       "output":{"shape":"GetCapacityManagerMonitoredTagKeysResult"},
       "documentation":"<p> Retrieves the tag keys that are currently being monitored by EC2 Capacity Manager. Monitored tag keys are included as dimensions in capacity metric data, enabling you to group and filter metrics by tag values. </p>"
     },
+    "GetCapacityManagerSupportabilityScores":{
+      "name":"GetCapacityManagerSupportabilityScores",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityManagerSupportabilityScoresRequest"},
+      "output":{"shape":"GetCapacityManagerSupportabilityScoresResult"},
+      "documentation":"<p> Scores how well each instance type and Availability Zone combination can support a capacity request, based on current Amazon EC2 capacity. The response includes a score for each combination and an aggregate score for all combinations in the request. This action doesn't launch or reserve instances, and a score doesn't guarantee that a later launch will succeed. </p> <p> Call this action in the Region where you turned on Capacity Manager. A single request can include Availability Zones in any Region. Real-time supportability checks are available only to Amazon Web Services Support customers on the Unified Operations plan. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-manager-supportability.html\">Check supportability</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "GetCapacityReservationUsage":{
       "name":"GetCapacityReservationUsage",
       "http":{
@@ -13279,6 +13289,19 @@
         "locationName":"item"
       }
     },
+    "CapacityAmount":{
+      "type":"integer",
+      "min":1
+    },
+    "CapacityAvailabilityZoneIdList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      },
+      "max":10,
+      "min":0
+    },
     "CapacityBlock":{
       "type":"structure",
       "members":{
@@ -13925,6 +13948,34 @@
         "disabled"
       ]
     },
+    "CapacityManagerSupportabilityScore":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p> The instance type. </p>",
+          "locationName":"instanceType"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p> The ID of the Availability Zone. </p>",
+          "locationName":"availabilityZoneId"
+        },
+        "Score":{
+          "shape":"SupportabilityScore",
+          "documentation":"<p> How well the combination can support the requested capacity right now. <code>high</code> means that the combination holds several times the requested amount. <code>medium</code> means that it can cover the request with little to spare. <code>low</code> means that it holds less than the requested amount. </p>",
+          "locationName":"score"
+        }
+      },
+      "documentation":"<p> The supportability score for a single instance type and Availability Zone combination. </p>"
+    },
+    "CapacityManagerSupportabilityScoreSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityManagerSupportabilityScore",
+        "locationName":"item"
+      }
+    },
     "CapacityManagerTagDimension":{
       "type":"structure",
       "members":{
@@ -14408,6 +14459,21 @@
           "documentation":"<p>Information about the instance types for which to reserve the capacity.</p>",
           "locationName":"instanceTypeSpecificationSet"
         },
+        "InstanceRequirements":{
+          "shape":"InstanceRequirementsRequest",
+          "documentation":"<p>Reserved for internal use.</p>",
+          "locationName":"instanceRequirements"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>Reserved for internal use.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>Reserved for internal use.</p>",
+          "locationName":"availabilityZoneId"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags assigned to the Capacity Reservation Fleet.</p>",
@@ -14856,6 +14922,13 @@
       "enum":[
         "default",
         "dedicated"
+      ]
+    },
+    "CapacityUnit":{
+      "type":"string",
+      "enum":[
+        "vcpus",
+        "instances"
       ]
     },
     "CarrierGateway":{
@@ -16971,6 +17044,18 @@
           "shape":"ReservationFleetInstanceSpecificationList",
           "documentation":"<p>Information about the instance types for which to reserve the capacity.</p>",
           "locationName":"InstanceTypeSpecification"
+        },
+        "InstanceRequirements":{
+          "shape":"InstanceRequirementsRequest",
+          "documentation":"<p>Reserved for internal use.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>Reserved for internal use.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>Reserved for internal use.</p>"
         },
         "Tenancy":{
           "shape":"FleetCapacityReservationTenancy",
@@ -41046,6 +41131,62 @@
         }
       }
     },
+    "GetCapacityManagerSupportabilityScoresRequest":{
+      "type":"structure",
+      "required":[
+        "MarketType",
+        "CapacityAmount",
+        "CapacityUnit",
+        "CapacityAvailabilityZoneIds"
+      ],
+      "members":{
+        "MarketType":{
+          "shape":"SupportabilityMarketType",
+          "documentation":"<p> The capacity market to score. </p>"
+        },
+        "CapacityAmount":{
+          "shape":"CapacityAmount",
+          "documentation":"<p> The amount of capacity that you need, in the unit that you specify for <code>CapacityUnit</code>. Each score is relative to this amount. </p>"
+        },
+        "CapacityUnit":{
+          "shape":"CapacityUnit",
+          "documentation":"<p> The unit for <code>CapacityAmount</code>. </p>"
+        },
+        "CapacityAvailabilityZoneIds":{
+          "shape":"CapacityAvailabilityZoneIdList",
+          "documentation":"<p> The IDs of the Availability Zones to score, such as <code>use1-az1</code>. You can specify Availability Zones in different Regions. You can specify up to 10 Availability Zones. </p>",
+          "locationName":"CapacityAvailabilityZoneId"
+        },
+        "InstanceTypes":{
+          "shape":"SupportabilityInstanceTypeList",
+          "documentation":"<p> The instance types to score. You can specify up to 50 instance types. </p> <p> Specify either <code>InstanceTypes</code> or <code>InstanceRequirementsWithMetadata</code>, but not both. </p>",
+          "locationName":"InstanceType"
+        },
+        "InstanceRequirementsWithMetadata":{
+          "shape":"InstanceRequirementsWithMetadataRequest",
+          "documentation":"<p> The attributes that the instance types must have, such as vCPU and memory ranges. Capacity Manager resolves the attributes into matching instance types and scores each one. </p> <p> Specify either <code>InstanceTypes</code> or <code>InstanceRequirementsWithMetadata</code>, but not both. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        }
+      }
+    },
+    "GetCapacityManagerSupportabilityScoresResult":{
+      "type":"structure",
+      "members":{
+        "AggregateScore":{
+          "shape":"SupportabilityScore",
+          "documentation":"<p> The score for all instance type and Availability Zone combinations in the request together. A <code>high</code> aggregate score with lower individual scores means that no single combination can support the full request, but the combinations together can. </p>",
+          "locationName":"aggregateScore"
+        },
+        "CapacityManagerSupportabilityScores":{
+          "shape":"CapacityManagerSupportabilityScoreSet",
+          "documentation":"<p> The score for each instance type and Availability Zone combination in the request. </p>",
+          "locationName":"capacityManagerSupportabilityScoreSet"
+        }
+      }
+    },
     "GetCapacityReservationUsageRequest":{
       "type":"structure",
       "required":["CapacityReservationId"],
@@ -57618,7 +57759,17 @@
         "spot-total-count-inst",
         "spot-total-count-vcpu",
         "spot-interruption-rate-inst",
-        "spot-interruption-rate-vcpu"
+        "spot-interruption-rate-vcpu",
+        "capacity-total-requested-vcpu",
+        "capacity-total-fulfilled-vcpu",
+        "spot-capacity-total-requested-vcpu",
+        "spot-capacity-total-fulfilled-vcpu",
+        "capacity-request-fulfillment-rate",
+        "avg-inst-az-count-per-requested-vcpu",
+        "inst-az-fulfillment-rate",
+        "spot-capacity-request-fulfillment-rate",
+        "spot-avg-inst-az-count-per-requested-vcpu",
+        "spot-inst-az-fulfillment-rate"
       ]
     },
     "MetricDataResult":{
@@ -75286,6 +75437,30 @@
         "insufficient-data",
         "not-applicable",
         "initializing"
+      ]
+    },
+    "SupportabilityInstanceTypeList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      },
+      "max":50,
+      "min":0
+    },
+    "SupportabilityMarketType":{
+      "type":"string",
+      "enum":[
+        "on-demand",
+        "spot"
+      ]
+    },
+    "SupportabilityScore":{
+      "type":"string",
+      "enum":[
+        "high",
+        "medium",
+        "low"
       ]
     },
     "SupportedAdditionalProcessorFeature":{

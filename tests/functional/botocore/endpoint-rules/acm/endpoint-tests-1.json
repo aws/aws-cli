@@ -634,7 +634,7 @@
             }
         },
         {
-            "documentation": "ACM-ACME in us-gov-west-1 returns partition error",
+            "documentation": "ACM-ACME standard endpoint for us-gov-west-1",
             "params": {
                 "Region": "us-gov-west-1",
                 "UseFIPS": false,
@@ -642,7 +642,23 @@
                 "ServiceType": "ACM-ACME"
             },
             "expect": {
-                "error": "ACME operations are only available in commercial AWS partitions"
+                "endpoint": {
+                    "url": "https://acm-acme.us-gov-west-1.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "ACM-ACME standard endpoint for us-gov-east-1",
+            "params": {
+                "Region": "us-gov-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ServiceType": "ACM-ACME"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://acm-acme.us-gov-east-1.api.aws"
+                }
             }
         },
         {
@@ -654,7 +670,45 @@
                 "ServiceType": "ACM-ACME"
             },
             "expect": {
-                "error": "ACME operations are only available in commercial AWS partitions"
+                "error": "ACME operations are only available in the aws and aws-us-gov partitions"
+            }
+        },
+        {
+            "documentation": "ACM-ACME in cn-northwest-1 returns partition error",
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ServiceType": "ACM-ACME"
+            },
+            "expect": {
+                "error": "ACME operations are only available in the aws and aws-us-gov partitions"
+            }
+        },
+        {
+            "documentation": "ACM-ACME with DualStack enabled for us-gov-west-1",
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "ServiceType": "ACM-ACME"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://acm-acme.us-gov-west-1.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "ACM-ACME FIPS in us-gov-west-1 returns error",
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "ServiceType": "ACM-ACME"
+            },
+            "expect": {
+                "error": "FIPS endpoints are not available for ACME operations"
             }
         }
     ]

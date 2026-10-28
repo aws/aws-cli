@@ -7,3 +7,29 @@ The following ``create-certificate-authority`` example creates a private certifi
         --revocation-configuration file://C:\revoke_config.txt \
         --certificate-authority-type "SUBORDINATE" \
         --idempotency-token 98256344
+
+Contents of ``C:\ca_config.txt``::
+
+    {
+        "KeyAlgorithm": "RSA_2048",
+        "SigningAlgorithm": "SHA256WITHRSA",
+        "Subject": {
+            "Country": "US",
+            "Organization": "Example Corp",
+            "OrganizationalUnit": "Sales",
+            "State": "WA",
+            "Locality": "Seattle",
+            "CommonName": "www.example.com"
+        }
+    }
+
+Contents of ``C:\revoke_config.txt``::
+
+    {
+        "CrlConfiguration": {
+            "Enabled": true,
+            "ExpirationInDays": 7,
+            "CustomCname": "crl.example.com",
+            "S3BucketName": "amzn-s3-demo-bucket"
+        }
+    }

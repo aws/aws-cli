@@ -42,7 +42,9 @@ The following ``create-environment`` example specifies that a JSON file with the
         --application-name sampleapp \
         --option-settings file://myoptions.json
 
-``myoptions.json`` is a JSON object defining several settings::
+``myoptions.json`` is a JSON object defining several settings.
+
+Contents of ``myoptions.json``::
 
     [
         {

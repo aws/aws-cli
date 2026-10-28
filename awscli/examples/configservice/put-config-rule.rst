@@ -5,7 +5,9 @@ The following ``put-config-rule`` example provides JSON code to add an AWS manag
     aws configservice put-config-rule \
         --config-rule file://RequiredTagsForEC2Instances.json
 
-``RequiredTagsForEC2Instances.json`` is a JSON file that contains the rule configuration::
+``RequiredTagsForEC2Instances.json`` is a JSON file that contains the rule configuration.
+
+Contents of ``RequiredTagsForEC2Instances.json``::
 
     {
         "ConfigRuleName": "RequiredTagsForEC2Instances",
@@ -35,7 +37,9 @@ The following ``put-config-rule`` example provides JSON code to add a customer m
     aws configservice put-config-rule \
         --config-rule file://InstanceTypesAreT2micro.json
 
-``InstanceTypesAreT2micro.json`` is a JSON file that contains the rule configuration::
+``InstanceTypesAreT2micro.json`` is a JSON file that contains the rule configuration.
+
+Contents of ``InstanceTypesAreT2micro.json``::
 
     {
         "ConfigRuleName": "InstanceTypesAreT2micro",

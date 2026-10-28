@@ -7,18 +7,20 @@ The following ``create-job`` example creates an import job from a manifest file.
         --manifest file://manifest \
         --no-validate-only
 
-The file ``manifest`` is a YAML formatted text file in the current directory with the following content::
+The file ``manifest`` is a YAML formatted text file in the current directory.
+
+Contents of ``manifest``::
 
     manifestVersion: 2.0;
     returnAddress:
-    name: Jane Roe
-    company: Example Corp.
-    street1: 123 Any Street
-    city: Anytown
-    stateOrProvince: WA
-    postalCode: 91011-1111
-    phoneNumber: 206-555-1111
-    country: USA
+        name: Jane Roe
+        company: Example Corp.
+        street1: 123 Any Street
+        city: Anytown
+        stateOrProvince: WA
+        postalCode: 91011-1111
+        phoneNumber: 206-555-1111
+        country: USA
     deviceId: 49382
     eraseDevice: yes
     notificationEmail: john.doe@example.com;jane.roe@example.com

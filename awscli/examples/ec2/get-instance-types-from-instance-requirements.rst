@@ -90,10 +90,9 @@ Preview the instance types that have the attributes specified in ``attributes.js
         --cli-input-json file://attributes.json \
         --output table
 
-Contents of ``attributes.json`` file::
+Contents of ``attributes.json``::
 
     {
-        
         "ArchitectureTypes": [
             "x86_64"
         ],

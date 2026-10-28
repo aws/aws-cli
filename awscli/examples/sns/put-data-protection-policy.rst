@@ -16,4 +16,26 @@ The following ``put-data-protection-policy`` example loads parameters from a fil
         --resource-arn arn:aws:sns:us-west-2:123456789012:MyTopic \
         --data-protection-policy file://policy.json
 
+Contents of ``policy.json``::
+
+    {
+        "Name": "data_protection_policy",
+        "Description": "Example data protection policy",
+        "Version": "2021-06-01",
+        "Statement": [
+            {
+                "DataDirection": "Inbound",
+                "Principal": [
+                    "*"
+                ],
+                "DataIdentifier": [
+                    "arn:aws:dataprotection::aws:data-identifier/CreditCardNumber"
+                ],
+                "Operation": {
+                    "Deny": {}
+                }
+            }
+        ]
+    }
+
 This command produces no output.

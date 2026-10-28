@@ -6,6 +6,30 @@ The following ``put-domain-permissions-policy`` example attaches a permission po
         --domain test-domain \
         --policy-document file://PATH/TO/policy.json
 
+Contents of ``policy.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "ContributorPolicy",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::111122223333:root"
+                },
+                "Action": [
+                    "codeartifact:CreateRepository",
+                    "codeartifact:DescribeDomain",
+                    "codeartifact:GetAuthorizationToken",
+                    "codeartifact:GetDomainPermissionsPolicy",
+                    "codeartifact:ListRepositoriesInDomain",
+                    "sts:GetServiceBearerToken"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+
 Output::
 
     {

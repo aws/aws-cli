@@ -34,7 +34,7 @@ Output::
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``SampleText1.txt.out`` with line indents for readability::
+Contents of ``SampleText1.txt.out``::
 
     {
         "Entities": [

@@ -12,18 +12,33 @@ Contents of ``cors.json``::
     {
         "CORSRules": [
             {
-                "AllowedOrigins": ["http://www.example.com"],
-                "AllowedHeaders": ["*"],
-                "AllowedMethods": ["PUT", "POST", "DELETE"],
+                "AllowedOrigins": [
+                    "http://www.example.com"
+                ],
+                "AllowedHeaders": [
+                    "*"
+                ],
+                "AllowedMethods": [
+                    "PUT",
+                    "POST",
+                    "DELETE"
+                ],
                 "MaxAgeSeconds": 3000,
-                "ExposeHeaders": ["x-amz-server-side-encryption"]
+                "ExposeHeaders": [
+                    "x-amz-server-side-encryption"
+                ]
             },
             {
-                "AllowedOrigins": ["*"],
-                "AllowedHeaders": ["Authorization"],
-                "AllowedMethods": ["GET"],
+                "AllowedOrigins": [
+                    "*"
+                ],
+                "AllowedHeaders": [
+                    "Authorization"
+                ],
+                "AllowedMethods": [
+                    "GET"
+                ],
                 "MaxAgeSeconds": 3000
             }
         ]
     }
-

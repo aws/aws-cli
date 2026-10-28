@@ -6,7 +6,7 @@ The following ``set-queue-attributes`` example sets the specified queue to a del
         --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyNewQueue \
         --attributes file://set-queue-attributes.json
 
-Input file (set-queue-attributes.json)::
+Contents of ``set-queue-attributes.json``::
 
     {
         "DelaySeconds": "10",

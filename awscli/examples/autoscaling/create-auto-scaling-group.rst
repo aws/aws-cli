@@ -87,7 +87,7 @@ The following ``create-auto-scaling-group`` example creates an Auto Scaling grou
     aws autoscaling create-auto-scaling-group \
         --cli-input-json file://~/config.json
 
-Contents of ``config.json`` file::
+Contents of ``config.json``::
 
     {
         "AutoScalingGroupName": "my-asg",

@@ -8,6 +8,23 @@ The following ``create-policy`` example creates a service control policy (SCP) n
         --type SERVICE_CONTROL_POLICY \
         --description "Allows delegation of all S3 actions"
 
+Contents of ``policy.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:*"
+                ],
+                "Resource": [
+                    "*"
+                ]
+            }
+        ]
+    }
+
 The output includes a policy object with details about the new policy: ::
 
     {

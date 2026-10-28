@@ -6,6 +6,10 @@ The following ``upload-ssh-public-key`` example uploads the public key found in 
         --user-name sofia \
         --ssh-public-key-body file://sshkey.pub
 
+Contents of ``sshkey.pub``::
+
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQEXAMPLE... sofia@example.com
+
 Output::
 
     {

@@ -14,6 +14,13 @@ in the *Amazon CloudFront Developer Guide*. ::
         --private-key file://cf-signer-priv-key.pem \
         --date-less-than 2020-01-01
 
+Contents of ``cf-signer-priv-key.pem``::
+
+    -----BEGIN RSA PRIVATE KEY-----
+    EXAMPLEPRIVATEKEYMIIEowIBAAKCAQEAxPMbCA2Ks0lnd7IR+3pwwd3H/7jPGwj8
+    bLUmore7bX+oeGpZ6QmLAe/1UOWcmZX2u70dYcSIzB1ofZtcn4cJEXAMPLEKEY...
+    -----END RSA PRIVATE KEY-----
+
 Output::
 
     https://d111111abcdef8.cloudfront.net/private-content/private-file.html?Expires=1577836800&Signature=v7tTOShSbp6U853uAIy3IWkegvCyg5kfulm2m7qLAc8NX-wtRFXbLSAmRep3uqYsckuij8c0KE97OQE1QadcusZa3uU~ez6QVoQ9-FSsaiB3hgB-DNxZyCu4~zrx-RfZkI7ZZQXDOEOVjurup2dXIb~obJEymOUMiADckQI-FwnC0utB7ax8Y2sjU7GeP9fcU9sT~I50MUgaxqqZo6-CUOAlER55-pnuuJRc3pCWZKtEI~3YMZ5Gbfv1sF~egkphOYzbGm7iO9~L0YK4S2naC57EmoByvCdiphA6XjXdZmoLzKXEjtniryC0k-mVm99RVz2QQQDJX9hGmhjz3uj7rw__&Key-Pair-Id=APKAEIBAERJR2EXAMPLE
@@ -49,6 +56,13 @@ CloudFront key group. ::
         --key-pair-id K2JCJMDEHXQW5F \
         --private-key file://cf-signer-ecdsa-priv-key.pem \
         --date-less-than 2020-01-01
+
+Contents of ``cf-signer-ecdsa-priv-key.pem``::
+
+    -----BEGIN EC PRIVATE KEY-----
+    EXAMPLEPRIVATEKEYMHcCAQEEIOdA2Ks0lnd7IR+3pwwd3H/7jPGwj8bLUmore7bX
+    +oeGoAoGCCqGSM49AwEHoUQDQgAEEXAMPLEKEY...
+    -----END EC PRIVATE KEY-----
 
 Output::
 

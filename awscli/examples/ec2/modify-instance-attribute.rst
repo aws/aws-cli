@@ -42,7 +42,7 @@ This command produces no output.
 
 The following ``modify-instance-attribute`` example adds the contents of the file ``UserData.txt`` as the UserData for the specified instance.
 
-Contents of original file ``UserData.txt``::
+Contents of ``UserData.txt``::
 
     #!/bin/bash
     yum update -y

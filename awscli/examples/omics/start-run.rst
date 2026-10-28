@@ -13,7 +13,7 @@ The following ``start-run`` example runs a workflow with ID ``1234567``. ::
         --log-level ALL \
         --parameters file://workflow-inputs.json
 
-`workflow-inputs.json` is a JSON document with the following content. ::
+Contents of ``workflow-inputs.json``::
 
     {
         "sample_name": "NA12878",
@@ -36,7 +36,7 @@ For more information, see `Starting a run <https://docs.aws.amazon.com/omics/lat
 
 **Example 2: To load source files from Amazon Omics**
 
-The following ``start-run`` example loads source files from Amazon Omics storage by using service-specific URIs. The `workflow-inputs.json` file for this example uses Amazon Omics URIs for read set and reference genome sources. ::
+The following ``start-run`` example loads source files from Amazon Omics storage by using service-specific URIs. The ``workflow-inputs.json`` file for this example uses Amazon Omics URIs for read set and reference genome sources. ::
 
     {
         "sample_name": "NA12878",

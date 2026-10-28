@@ -6,6 +6,24 @@ The following ``register-certificate`` example registers the ``deviceCert.pem`` 
         --certificate-pem file://deviceCert.pem \
         --ca-certificate-pem file://rootCA.pem
 
+Contents of ``deviceCert.pem``::
+
+    -----BEGIN CERTIFICATE-----
+    MIIDWTCCAkGgAwIBAgIUEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEwDQYJKoZI
+    hvcNAQELBQAwTDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24xEDAO
+    ...
+    EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLE==
+    -----END CERTIFICATE-----
+
+Contents of ``rootCA.pem``::
+
+    -----BEGIN CERTIFICATE-----
+    MIIDWTCCAkGgAwIBAgIUEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEwDQYJKoZI
+    hvcNAQELBQAwTDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24xEDAO
+    ...
+    EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLE==
+    -----END CERTIFICATE-----
+
 Output::
 
     {

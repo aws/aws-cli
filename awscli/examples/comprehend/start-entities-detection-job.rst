@@ -34,7 +34,7 @@ Output::
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``output.txt`` with line indents for readability::
+Contents of ``output.txt``::
 
     {
     "Entities": [
@@ -198,7 +198,7 @@ Output::
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``output.txt`` with line indents for readability::
+Contents of ``output.txt``::
 
     {
     "Entities": [

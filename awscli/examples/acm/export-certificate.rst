@@ -6,6 +6,10 @@ The following ``export-certificate`` example exports a private certificate, cert
         --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 \
         --passphrase file://path-to-passphrase-file
 
+Contents of ``path-to-passphrase-file``::
+
+    examplePassphrase123
+
 To export the certificate, chain, and private key to a local file, use the following command. ::
 
     aws acm export-certificate \

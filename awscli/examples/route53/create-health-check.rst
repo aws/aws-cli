@@ -6,6 +6,18 @@ The following ``create-health-check`` example creates a health check using the c
         --caller-reference 2014-04-01-18:47 \
         --health-check-config file://C:\awscli\route53\create-health-check.json
 
+Contents of ``C:\awscli\route53\create-health-check.json``::
+
+    {
+        "IPAddress": "192.0.2.44",
+        "Port": 80,
+        "Type": "HTTP",
+        "ResourcePath": "/index.html",
+        "FullyQualifiedDomainName": "www.example.com",
+        "RequestInterval": 30,
+        "FailureThreshold": 3
+    }
+
 JSON syntax::
 
     {

@@ -7,16 +7,16 @@ When you create an EC2 Fleet, use a JSON file to specify information about the i
     aws ec2 create-fleet \
         --cli-input-json file://file_name.json
 
-Contents of file_name.json::
+Contents of ``file_name.json``::
 
     {
         "LaunchTemplateConfigs": [
-        {
-            "LaunchTemplateSpecification": {
-            "LaunchTemplateId": "lt-0e8c754449b27161c",
-            "Version": "1"
+            {
+                "LaunchTemplateSpecification": {
+                    "LaunchTemplateId": "lt-0e8c754449b27161c",
+                    "Version": "1"
+                }
             }
-        }
         ],
         "TargetCapacitySpecification": {
             "TotalTargetCapacity": 2,
@@ -39,7 +39,7 @@ When you create an EC2 Fleet, use a JSON file to specify information about the i
     aws ec2 create-fleet \
         --cli-input-json file://file_name.json
 
-Contents of file_name.json::
+Contents of ``file_name.json``::
 
     {
         "LaunchTemplateConfigs": [
@@ -72,20 +72,20 @@ When you create an EC2 Fleet, use a JSON file to specify information about the i
     aws ec2 create-fleet \
         --cli-input-json file://file_name.json
 
-Contents of file_name.json::
+Contents of ``file_name.json``::
 
     {
         "LaunchTemplateConfigs": [
-        {
-            "LaunchTemplateSpecification": {
-            "LaunchTemplateId": "lt-0e8c754449b27161c",
-            "Version": "1"
+            {
+                "LaunchTemplateSpecification": {
+                    "LaunchTemplateId": "lt-0e8c754449b27161c",
+                    "Version": "1"
+                }
             }
-        }
         ],
         "TargetCapacitySpecification": {
             "TotalTargetCapacity": 2,
-            "OnDemandTargetCapacity":1,
+            "OnDemandTargetCapacity": 1,
             "DefaultTargetCapacityType": "spot"
         }
     }
@@ -105,33 +105,33 @@ When you create an EC2 Fleet, use a JSON file to specify information about the i
     aws ec2 create-fleet \
         --cli-input-json file://file_name.json
 
-Contents of file_name.json::
+Contents of ``file_name.json``::
 
     {
         "LaunchTemplateConfigs": [
-        {
-            "LaunchTemplateSpecification": {
-            "LaunchTemplateId": "lt-0e8c754449b27161c",
-            "Version": "1"
-            },
-            "Overrides": [
-                {
-                    "InstanceType": "c4.large",
-                    "WeightedCapacity": 1,
-                    "SubnetId": "subnet-a4f6c5d3"
+            {
+                "LaunchTemplateSpecification": {
+                    "LaunchTemplateId": "lt-0e8c754449b27161c",
+                    "Version": "1"
                 },
-                {
-                    "InstanceType": "c3.large",
-                    "WeightedCapacity": 1,
-                    "SubnetId": "subnet-a4f6c5d3"
-                },
-                {
-                    "InstanceType": "c5.large",
-                    "WeightedCapacity": 1,
-                    "SubnetId": "subnet-a4f6c5d3"
-                }
-            ]
-        }
+                "Overrides": [
+                    {
+                        "InstanceType": "c4.large",
+                        "WeightedCapacity": 1,
+                        "SubnetId": "subnet-a4f6c5d3"
+                    },
+                    {
+                        "InstanceType": "c3.large",
+                        "WeightedCapacity": 1,
+                        "SubnetId": "subnet-a4f6c5d3"
+                    },
+                    {
+                        "InstanceType": "c5.large",
+                        "WeightedCapacity": 1,
+                        "SubnetId": "subnet-a4f6c5d3"
+                    }
+                ]
+            }
         ],
         "TargetCapacitySpecification": {
             "TotalTargetCapacity": 2,

@@ -13,8 +13,7 @@ in the *Amazon CloudFront Developer Guide*. ::
     aws cloudfront create-field-level-encryption-profile \
         --field-level-encryption-profile-config file://fle-profile-config.json
 
-The file ``fle-profile-config.json`` is a JSON document in the current folder
-that contains the following::
+Contents of ``fle-profile-config.json``::
 
     {
         "Name": "ExampleFLEProfile",

@@ -16,6 +16,13 @@ in the *Amazon CloudFront Developer Guide*. ::
         --date-less-than 2020-01-01 \
         --hash-algorithm SHA256
 
+Contents of ``cf-signer-priv-key.pem``::
+
+    -----BEGIN RSA PRIVATE KEY-----
+    EXAMPLEPRIVATEKEYMIIEowIBAAKCAQEAxPMbCA2Ks0lnd7IR+3pwwd3H/7jPGwj8
+    bLUmore7bX+oeGpZ6QmLAe/1UOWcmZX2u70dYcSIzB1ofZtcn4cJEXAMPLEKEY...
+    -----END RSA PRIVATE KEY-----
+
 Output::
 
     {

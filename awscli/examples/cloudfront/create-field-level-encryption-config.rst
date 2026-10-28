@@ -15,8 +15,7 @@ in the *Amazon CloudFront Developer Guide*. ::
     aws cloudfront create-field-level-encryption-config \
         --field-level-encryption-config file://fle-config.json
 
-The file ``fle-config.json`` is a JSON document in the current
-folder that contains the following::
+Contents of ``fle-config.json``::
 
     {
         "CallerReference": "cli-example",

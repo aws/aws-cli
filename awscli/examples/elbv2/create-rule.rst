@@ -29,7 +29,7 @@ The following ``create-rule`` example creates a rule that provides a fixed respo
         --conditions file://conditions-host.json \
         --actions file://actions-fixed-response.json
 
-Contents of ``conditions-host.json`` ::
+Contents of ``conditions-host.json``::
 
     [
         {
@@ -40,7 +40,7 @@ Contents of ``conditions-host.json`` ::
         }
     ]
 
-Contents of ``actions-fixed-response.json`` ::
+Contents of ``actions-fixed-response.json``::
 
     [
         {
@@ -63,7 +63,7 @@ The following ``create-rule`` example creates a rule that authenticates the user
         --conditions file://conditions-source-ip.json \
         --actions file://actions-authenticate.json
 
-Contents of ``conditions-source-ip.json`` ::
+Contents of ``conditions-source-ip.json``::
 
     [
         {
@@ -74,7 +74,7 @@ Contents of ``conditions-source-ip.json`` ::
         }
     ]
 
-Contents of ``actions-authenticate.json`` ::
+Contents of ``actions-authenticate.json``::
 
     [
         {

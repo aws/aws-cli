@@ -7,6 +7,14 @@ The following ``create-stack-set`` example creates a stack set using the specifi
         --template-body file://template.yaml \
         --description "SNS topic"
 
+Contents of ``template.yaml``::
+
+    AWSTemplateFormatVersion: "2010-09-09"
+    Description: SNS topic
+    Resources:
+      MyTopic:
+        Type: AWS::SNS::Topic
+
 Output::
 
     {

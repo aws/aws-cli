@@ -17,6 +17,24 @@ The following ``put-key-policy`` example uses the ``policy.txt`` file to replace
         --key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
         --policy file://policy.txt
 
+Contents of ``policy.txt``::
+
+    {
+        "Version": "2012-10-17",
+        "Id": "key-default-1",
+        "Statement": [
+            {
+                "Sid": "Enable IAM User Permissions",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::123456789012:root"
+                },
+                "Action": "kms:*",
+                "Resource": "*"
+            }
+        ]
+    }
+
 This command produces no output.
 
 For more information, see `PutKeyPolicy <https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html>`__ in the *AWS KMS API Reference*.

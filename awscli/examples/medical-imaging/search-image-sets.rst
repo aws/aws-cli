@@ -6,7 +6,7 @@ The following ``search-image-sets`` example uses the EQUAL operator to search im
         --datastore-id 12345678901234567890123456789012 \
         --search-criteria file://search-criteria.json
 
-Contents of ``search-criteria.json`` ::
+Contents of ``search-criteria.json``::
 
     {
         "filters": [{
@@ -50,7 +50,7 @@ DICOMStudyTime is optional. If it is not present, 12:00 AM (start of the day) is
         --datastore-id 12345678901234567890123456789012 \
         --search-criteria file://search-criteria.json
 
-Contents of ``search-criteria.json`` ::
+Contents of ``search-criteria.json``::
 
     {
         "filters": [{
@@ -106,7 +106,7 @@ Provide createdAt in example format ("1985-04-12T23:20:50.52Z"). ::
         --search-criteria  file://search-criteria.json
 
 
-Contents of ``search-criteria.json`` ::
+Contents of ``search-criteria.json``::
 
     {
         "filters": [{
@@ -156,7 +156,7 @@ Provide updatedAt in example format ("1985-04-12T23:20:50.52Z"). ::
         --search-criteria  file://search-criteria.json
 
 
-Contents of ``search-criteria.json`` ::
+Contents of ``search-criteria.json``::
 
     {
         "filters": [{

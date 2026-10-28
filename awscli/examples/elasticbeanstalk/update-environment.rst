@@ -47,7 +47,7 @@ The following ``update-environment`` example configures several options in the `
         --environment-name my-env \
         --option-settings file://options.json
 
-``options.json`` is a JSON object defining several settings::
+Contents of ``options.json``::
 
     [
         {

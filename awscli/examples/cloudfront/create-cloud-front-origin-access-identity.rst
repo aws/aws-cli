@@ -12,8 +12,7 @@ file, as shown in the following example. ::
     aws cloudfront create-cloud-front-origin-access-identity \
         --cloud-front-origin-access-identity-config file://OAI-config.json
 
-The file ``OAI-config.json`` is a JSON document in the current directory that
-contains the following::
+Contents of ``OAI-config.json``::
 
     {
         "CallerReference": "cli-example",

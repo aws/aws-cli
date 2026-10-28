@@ -7,7 +7,7 @@ The following ``update-policy-template`` example modifies the specified template
         --statement file://template1.txt \
         --policy-store-id PSEXAMPLEabcdefg111111
 
-Contents of file ``template1.txt``::
+Contents of ``template1.txt``::
 
     permit(
         principal in ?principal,

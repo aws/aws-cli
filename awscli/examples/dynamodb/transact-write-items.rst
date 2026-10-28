@@ -7,7 +7,7 @@ The following ``transact-write-items`` example updates one item and deletes anot
         --return-consumed-capacity TOTAL \
         --return-item-collection-metrics SIZE
 
-Contents of the ``transact-items.json`` file::
+Contents of ``transact-items.json``::
 
     [
         {
@@ -84,7 +84,7 @@ The following ``transact-write-items`` example uses a client request token to ma
         --transact-items file://transact-items.json \
         --client-request-token abc123
 
-Contents of the ``transact-items.json`` file::
+Contents of ``transact-items.json``::
 
     [
         {

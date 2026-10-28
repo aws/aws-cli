@@ -33,7 +33,13 @@ The following ``create-security-configuration`` example creates a security confi
         "Name": "MySecurityConfig"
     }
 
-- JSON equivalent (contents of security_configuration.json)::
+The following ``create-security-configuration`` example creates the same security configuration by using the ``security_configuration.json`` file. ::
+
+    aws emr create-security-configuration \
+        --name "MySecurityConfig" \
+        --security-configuration file://./security_configuration.json
+
+Contents of ``security_configuration.json``::
 
     {
         "EncryptionConfiguration": {
@@ -56,12 +62,6 @@ The following ``create-security-configuration`` example creates a security confi
             }
         }
     }
-
-The following ``create-security-configuration`` example creates the same security configuration by using the ``security_configuration.json`` file. ::
-
-    aws emr create-security-configuration \
-        --name "MySecurityConfig" \
-        --security-configuration file://./security_configuration.json
 
 - Output::
 
@@ -100,7 +100,13 @@ The following ``create-security-configuration`` example creates a security confi
         "Name": "MySecurityConfig"
     }
 
-- JSON equivalent (contents of security_configuration.json)::
+The following ``create-security-configuration`` example creates the same security configuration by using the ``security_configuration.json`` file. ::
+
+    aws emr create-security-configuration \
+        --name "MySecurityConfig" \
+        --security-configuration file://./security_configuration.json
+
+Contents of ``security_configuration.json``::
 
     {
         "AuthenticationConfiguration": {
@@ -118,12 +124,6 @@ The following ``create-security-configuration`` example creates a security confi
             }
         }
     }
-
-The following ``create-security-configuration`` example creates the same security configuration by using the ``security_configuration.json`` file. ::
-
-    aws emr create-security-configuration \
-        --name "MySecurityConfig" \
-        --security-configuration file://./security_configuration.json
 
 - Output::
 

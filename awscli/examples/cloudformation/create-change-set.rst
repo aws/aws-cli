@@ -8,6 +8,24 @@ The following ``create-change-set`` example creates a change set with the ``CAPA
         --template-body file://template.yaml \
         --capabilities CAPABILITY_IAM
 
+Contents of ``template.yaml``::
+
+    AWSTemplateFormatVersion: '2010-09-09'
+    Description: Stack that includes an IAM role
+    Resources:
+      MyRole:
+        Type: AWS::IAM::Role
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service: lambda.amazonaws.com
+                Action: sts:AssumeRole
+          ManagedPolicyArns:
+            - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
 Output::
 
     {

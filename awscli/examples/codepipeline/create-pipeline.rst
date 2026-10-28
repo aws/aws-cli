@@ -5,7 +5,7 @@ The following ``create-pipeline`` example creates a pipeline in AWS CodePipeline
     aws codepipeline create-pipeline \
         --cli-input-json file://MySecondPipeline.json
 
-JSON file sample contents::
+Contents of ``MySecondPipeline.json``::
 
     {
         "pipeline": {

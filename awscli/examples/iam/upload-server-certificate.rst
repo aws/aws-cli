@@ -8,6 +8,27 @@ The following ``upload-server-certificate`` example uploads a server certificate
         --private-key file://my_private_key.pem \
         --certificate-chain file://my_certificate_chain_file.pem
 
+Contents of ``public_key_cert_file.pem``::
+
+    -----BEGIN CERTIFICATE-----
+    MIIDXTCCAkWgAwIBAgIJAEXAMPLE...
+    -----END CERTIFICATE-----
+
+Contents of ``my_private_key.pem``::
+
+    -----BEGIN PRIVATE KEY-----
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAAEXAMPLE...
+    -----END PRIVATE KEY-----
+
+Contents of ``my_certificate_chain_file.pem``::
+
+    -----BEGIN CERTIFICATE-----
+    MIIEkjCCA3qgAwIBAgIQEXAMPLE...
+    -----END CERTIFICATE-----
+    -----BEGIN CERTIFICATE-----
+    MIIDSjCCAjKgAwIBAgIQEXAMPLE...
+    -----END CERTIFICATE-----
+
 Output::
 
     {

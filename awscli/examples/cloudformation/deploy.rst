@@ -18,6 +18,13 @@ The following command deploys the same template using parameters from the JSON f
         --parameter-overrides file://path_to_parameters/parameters.json \
         --tags Key1=Value1 Key2=Value2
 
+Contents of ``parameters.json``::
+
+    [
+        "Key1=Value1",
+        "Key2=Value2"
+    ]
+
 Supported JSON syntax
 ~~~~~~~~~~~~~~~~~~~~~
 

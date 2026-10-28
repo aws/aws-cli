@@ -39,7 +39,13 @@ The following ``add-steps`` example adds a Streaming step to the specified clust
 
     Name, ActionOnFailure
 
-- JSON equivalent (contents of step.json)::
+The following ``add-steps`` example adds the Streaming step that is defined in the ``step.json`` file. ::
+
+    aws emr add-steps \
+        --cluster-id j-XXXXXXXX \
+        --steps file://./step.json
+
+Contents of ``step.json``::
 
     [
         {
@@ -51,12 +57,6 @@ The following ``add-steps`` example adds a Streaming step to the specified clust
     ]
 
 NOTE: JSON arguments must include options and values as their own items in the list.
-
-The following ``add-steps`` example adds the Streaming step that is defined in the ``step.json`` file. ::
-
-    aws emr add-steps \
-        --cluster-id j-XXXXXXXX \
-        --steps file://./step.json
 
 - Output::
 
@@ -71,7 +71,13 @@ The following ``add-steps`` example adds the Streaming step that is defined in t
 
 The following ``add-steps`` example adds a Streaming step with multiple files to the specified cluster. The step is defined in the ``multiplefiles.json`` file.
 
-- JSON (multiplefiles.json)::
+The following command adds the step that is defined in the ``multiplefiles.json`` file. ::
+
+    aws emr add-steps \
+        --cluster-id j-XXXXXXXX \
+        --steps file://./multiplefiles.json
+
+Contents of ``multiplefiles.json``::
 
     [
         {
@@ -88,15 +94,10 @@ The following ``add-steps`` example adds a Streaming step with multiple files to
                 "-input",
                 "s3://amzn-s3-demo-bucket/input",
                 "-output",
-                "s3://amzn-s3-demo-bucket/output"]
+                "s3://amzn-s3-demo-bucket/output"
+            ]
         }
     ]
-
-The following command adds the step that is defined in the ``multiplefiles.json`` file. ::
-
-    aws emr add-steps \
-        --cluster-id j-XXXXXXXX \
-        --steps file://./multiplefiles.json
 
 - Required parameters::
 

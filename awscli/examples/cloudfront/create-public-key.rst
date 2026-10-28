@@ -10,10 +10,7 @@ in the *Amazon CloudFront Developer Guide*. ::
     aws cloudfront create-public-key \
         --public-key-config file://pub-key-config.json
 
-The file ``pub-key-config.json`` is a JSON document in the current folder that
-contains the following. Note that the public key is encoded in PEM format.
-
-::
+Contents of ``pub-key-config.json``::
 
     {
         "CallerReference": "cli-example",

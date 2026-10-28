@@ -6,6 +6,27 @@ The following ``change-resource-record-sets`` example creates a resource record 
         --hosted-zone-id Z1R8UBAEXAMPLE \
         --change-batch file://C:\awscli\route53\change-resource-record-sets.json
 
+Contents of ``C:\awscli\route53\change-resource-record-sets.json``::
+
+    {
+        "Comment": "Create a basic A record for www.example.com",
+        "Changes": [
+            {
+                "Action": "CREATE",
+                "ResourceRecordSet": {
+                    "Name": "www.example.com",
+                    "Type": "A",
+                    "TTL": 300,
+                    "ResourceRecords": [
+                        {
+                            "Value": "192.0.2.44"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+
 For more information, see `POST ChangeResourceRecordSets`_ in the *Amazon Route 53 API Reference*.
 
 .. _`POST ChangeResourceRecordSets`: http://docs.aws.amazon.com/Route53/latest/APIReference/API_ChangeResourceRecordSets.html

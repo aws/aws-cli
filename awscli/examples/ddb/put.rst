@@ -10,8 +10,9 @@ The following ``put`` example adds two new items from a file to the *MusicCollec
 
     aws ddb put MusicCollection file://items.json
 
-The items to add to the table are in a JSON file, ``items.json``. Here are the
-contents of that file::
+The items to add to the table are in a JSON file, ``items.json``.
+
+Contents of ``items.json``::
 
     [
         {

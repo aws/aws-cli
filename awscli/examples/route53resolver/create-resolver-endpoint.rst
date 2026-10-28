@@ -37,7 +37,7 @@ The following ``create-resolver-endpoint`` example creates an outbound resolver 
     aws route53resolver create-resolver-endpoint \
         --cli-input-json file://c:\temp\create-outbound-resolver-endpoint.json
 
-Contents of ``create-outbound-resolver-endpoint.json``::
+Contents of ``c:\temp\create-outbound-resolver-endpoint.json``::
 
     {
         "CreatorRequestId": "2020-01-01-18:47",
@@ -53,7 +53,9 @@ Contents of ``create-outbound-resolver-endpoint.json``::
             }
         ],
         "Name": "my-outbound-endpoint",
-        "SecurityGroupIds": [ "sg-05cd7b25d6example" ],
+        "SecurityGroupIds": [
+            "sg-05cd7b25d6example"
+        ],
         "Tags": [
             {
                 "Key": "my-key-name",

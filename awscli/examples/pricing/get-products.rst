@@ -8,7 +8,7 @@ The following ``get-products`` example retrieves a list of products that match t
         --max-results 1 \
         --service-code AmazonEC2
 
-filters.json::
+Contents of ``filters.json``::
 
     [
         {

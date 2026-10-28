@@ -13,7 +13,7 @@ which contains the dominant language of each of the text files as well as the pr
         --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
         --language-code en
 
-Contents of Sampletext1.txt::
+Contents of ``Sampletext1.txt``::
 
     "Physics is the natural science that involves the study of matter and its motion and behavior through space and time, along with related concepts such as energy and force."
 

@@ -5,7 +5,7 @@ The following ``create-job-queue`` example creates a job queue called `LowPriori
     aws batch create-job-queue \
         --cli-input-json file://<path_to_json_file>/LowPriority.json
 
-JSON file format::
+Contents of ``LowPriority.json``::
 
     {
         "jobQueueName": "LowPriority",
@@ -33,7 +33,7 @@ The following ``create-job-queue`` example creates a job queue called `HighPrior
     aws batch create-job-queue \
         --cli-input-json file://<path_to_json_file>/HighPriority.json
 
-JSON file format::
+Contents of ``HighPriority.json``::
 
     {
         "jobQueueName": "HighPriority",

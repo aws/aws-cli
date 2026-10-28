@@ -8,7 +8,7 @@ The following ``send-message`` example sends a message with the specified messag
         --delay-seconds 10 \
         --message-attributes file://send-message.json
 
-Input file (send-message.json)::
+Contents of ``send-message.json``::
 
     {
         "City": {
@@ -32,5 +32,3 @@ Output::
         "MD5OfMessageAttributes": "00484c68...59e48f06",
         "MessageId": "da68f62c-0c07-4bee-bf5f-7e856EXAMPLE"
     }
-
-

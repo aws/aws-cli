@@ -18,7 +18,9 @@ The following ``put-configuration-recorder`` example creates a configuration rec
         --configuration-recorder name=default,roleARN=arn:aws:iam::123456789012:role/config-role \
         --recording-group file://recordingGroup.json
 
-`recordingGroup.json` is a JSON file that specifies the types of resources that AWS Config will record::
+``recordingGroup.json`` is a JSON file that specifies the types of resources that AWS Config will record.
+
+Contents of ``recordingGroup.json``::
 
     {
         "allSupported": false,
@@ -50,21 +52,23 @@ The following ``put-configuration-recorder`` example creates a configuration rec
         --configuration-recorder name=default,roleARN=arn:aws:iam::123456789012:role/config-role \
         --recording-group file://recordingGroup.json
 
-`recordingGroup.json` is a JSON file that specifies the types of resources that AWS Config will record::
+``recordingGroup.json`` is a JSON file that specifies the types of resources that AWS Config will record.
+
+Contents of ``recordingGroup.json``::
 
     {
         "allSupported": false,
-        "exclusionByResourceTypes": { 
+        "exclusionByResourceTypes": {
             "resourceTypes": [
-            "AWS::Redshift::ClusterSnapshot",
-            "AWS::RDS::DBClusterSnapshot",
-            "AWS::CloudFront::StreamingDistribution"
-        ]
+                "AWS::Redshift::ClusterSnapshot",
+                "AWS::RDS::DBClusterSnapshot",
+                "AWS::CloudFront::StreamingDistribution"
+            ]
         },
-            "includeGlobalResourceTypes": false,
-            "recordingStrategy": {
-            "useOnly": "EXCLUSION_BY_RESOURCE_TYPES" 
-        },
+        "includeGlobalResourceTypes": false,
+        "recordingStrategy": {
+            "useOnly": "EXCLUSION_BY_RESOURCE_TYPES"
+        }
     }
 
 Before you can specify resource types to excluding from recording: 1) You must set the allSupported and includeGlobalResourceTypes options to false or omit them, and 2) You must set the useOnly field of RecordingStrategy to EXCLUSION_BY_RESOURCE_TYPES.

@@ -5,7 +5,7 @@ The following ``delete-custom-action-type`` example deletes a custom action in A
     aws codepipeline delete-custom-action-type \
         --cli-input-json file://DeleteMyCustomAction.json
 
-JSON file sample contents::
+Contents of ``DeleteMyCustomAction.json``::
 
     {
         "category": "Build",

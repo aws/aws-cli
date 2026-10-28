@@ -100,6 +100,34 @@ Calculate the Spot placement score for the requirements specified in ``attribute
     aws ec2 get-spot-placement-scores \
         --cli-input-json file://attributes.json
 
+Contents of ``attributes.json``::
+
+    {
+        "TargetCapacity": 500,
+        "TargetCapacityUnitType": "vcpu",
+        "RegionNames": [
+            "us-east-1",
+            "us-west-1"
+        ],
+        "InstanceRequirementsWithMetadata": {
+            "ArchitectureTypes": [
+                "x86_64"
+            ],
+            "VirtualizationTypes": [
+                "hvm"
+            ],
+            "InstanceRequirements": {
+                "VCpuCount": {
+                    "Min": 4,
+                    "Max": 6
+                },
+                "MemoryMiB": {
+                    "Min": 2048
+                }
+            }
+        }
+    }
+
 Output if ``SingleAvailabilityZone`` is set to ``false`` or omitted (if omitted, it defaults to ``false``). A scored list of Regions is returned. ::
 
     "Recommendation": [

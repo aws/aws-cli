@@ -30,4 +30,26 @@ this modified policy back to the S3 bucket by running the following command. ::
         --bucket amzn-s3-demo-bucket \
         --policy file://policy.json
 
+Contents of ``policy.json``::
+
+    {
+        "Version": "2008-10-17",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::amzn-s3-demo-bucket/*"
+            },
+            {
+                "Sid": "",
+                "Effect": "Deny",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::amzn-s3-demo-bucket/secret/*"
+            }
+        ]
+    }
+
 The ``put-bucket-policy`` command produces no output.

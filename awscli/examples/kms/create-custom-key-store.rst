@@ -10,6 +10,15 @@ To specify the file input for the ``trust-anchor-certificate`` command in the AW
         --key-store-password kmsPswd \
         --trust-anchor-certificate file://customerCA.crt
 
+Contents of ``customerCA.crt``::
+
+    -----BEGIN CERTIFICATE-----
+    MIIDWTCCAkGgAwIBAgIUEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEwDQYJKoZI
+    hvcNAQELBQAwTDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24xEDAO
+    ...
+    EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLE==
+    -----END CERTIFICATE-----
+
 Output::
 
     {

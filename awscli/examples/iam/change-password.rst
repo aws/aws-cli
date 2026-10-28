@@ -5,17 +5,19 @@ The following ``change-password`` example changes the password for your IAM user
     aws iam change-password \
         --generate-cli-skeleton > change-password.json
 
-The previous command creates a JSON file called change-password.json that you can use to fill in your old and new passwords. For example, the file might look like the following. ::
-
-    {
-        "OldPassword": "3s0K_;xh4~8XXI",
-        "NewPassword": "]35d/{pB9Fo9wJ"
-    }
+The previous command creates a JSON file called change-password.json that you can use to fill in your old and new passwords.
 
 Next, to change your password, use the ``change-password`` command again, this time passing the ``--cli-input-json`` parameter to specify your JSON file. The following ``change-password`` command uses the ``--cli-input-json`` parameter with a JSON file called change-password.json. ::
 
     aws iam change-password \
         --cli-input-json file://change-password.json
+
+Contents of ``change-password.json``::
+
+    {
+        "OldPassword": "3s0K_;xh4~8XXI",
+        "NewPassword": "]35d/{pB9Fo9wJ"
+    }
 
 This command produces no output.
 

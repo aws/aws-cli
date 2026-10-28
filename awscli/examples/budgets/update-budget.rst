@@ -6,7 +6,7 @@ The following ``update-budget`` example replaces a Cost and Usage budget with a 
         --account-id 111122223333 \
         --new-budget file://new-budget.json
 
-new-budget.json::
+Contents of ``new-budget.json``::
 
     {
         "BudgetLimit": {
@@ -16,7 +16,9 @@ new-budget.json::
         "BudgetName": "Example Budget",
         "BudgetType": "COST",
         "CostFilters": {
-            "AZ" : [ "us-east-1" ]
+            "AZ": [
+                "us-east-1"
+            ]
         },
         "CostTypes": {
             "IncludeCredit": false,

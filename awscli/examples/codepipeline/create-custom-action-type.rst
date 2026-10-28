@@ -4,8 +4,8 @@ The following ``create-custom-action-type`` example creates a custom action for 
 
     aws codepipeline create-custom-action-type \
         --cli-input-json file://MyCustomAction.json
-  
-Contents of JSON file ``MyCustomAction.json``::
+
+Contents of ``MyCustomAction.json``::
 
     {
         "category": "Build",

@@ -5,6 +5,16 @@ The following ``estimate-template-cost`` example generates a cost estimate for a
     aws cloudformation estimate-template-cost \
         --template-body file://template.yaml
 
+Contents of ``template.yaml``::
+
+    AWSTemplateFormatVersion: "2010-09-09"
+    Resources:
+      MyInstance:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: ami-0abcdef1234567890
+          InstanceType: t3.micro
+
 Output::
 
     {

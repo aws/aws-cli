@@ -28,8 +28,10 @@ The following ``is-authorized`` example requests the same authorization decision
 
 The output indicates that the ``Deny`` was implicit because the list of ``DeterminingPolicies`` is empty. ::
 
-    aws verifiedpermissions create-policy \
-        --definition file://definition2.txt \
+    aws verifiedpermissions is-authorized \
+        --principal entityType=User,entityId=bob \
+        --action actionType=Action,actionId=view \
+        --resource entityType=Photo,entityId=VactionPhoto94.jpg \
         --policy-store-id PSEXAMPLEabcdefg111111
 
 Output::

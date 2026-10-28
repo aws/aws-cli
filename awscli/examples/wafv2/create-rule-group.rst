@@ -9,7 +9,7 @@ The following ``create-rule-group`` example creates a custom rule group for regi
         --rules file://waf-rule.json \
         --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestRuleGroupMetrics
 
-Contents of `file://waf-rule.json`::
+Contents of ``waf-rule.json``::
 
     [
         {

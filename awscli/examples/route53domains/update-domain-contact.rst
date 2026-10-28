@@ -8,7 +8,7 @@ This command runs only in the ``us-east-1`` Region. If your default region is se
         --region us-east-1 \
         --cli-input-json file://C:\temp\update-domain-contact.json
 
-Contents of ``update-domain-contact.json``::
+Contents of ``C:\temp\update-domain-contact.json``::
 
     {
         "AdminContact": {

@@ -8,6 +8,10 @@ The following ``create-tenant-database`` example creates a tenant database in an
         --master-username tenantadmin \
         --master-user-password file://master_user_password.txt
 
+Contents of ``master_user_password.txt``::
+
+    Example-Passw0rd
+
 Output::
 
     {

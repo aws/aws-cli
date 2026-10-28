@@ -34,7 +34,7 @@ Output::
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``output.txt`` with line indents for readability::
+Contents of ``output.txt``::
 
     {
         "File": "SampleText1.txt",

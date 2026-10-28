@@ -14,7 +14,7 @@ Alternatively, you can use a JSON file to specify the input, as shown in the fol
         --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1  \
         --updates file://change.json 
 
-Content of the ``change.json`` ::
+Contents of ``change.json``::
 
     [
         { 

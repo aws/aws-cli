@@ -32,7 +32,7 @@ Output::
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``output.txt`` with line of indents for readability::
+Contents of ``output.txt``::
 
     {
         "File": "SampleMovieReview1.txt",

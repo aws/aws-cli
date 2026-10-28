@@ -6,7 +6,9 @@ The following ``put-bucket-notification`` example applies a notification configu
         --bucket amzn-s3-demo-bucket \
         --notification-configuration file://notification.json
 
-The file ``notification.json`` is a JSON document in the current folder that specifies an SNS topic and an event type to monitor::
+The file ``notification.json`` is a JSON document in the current folder that specifies an SNS topic and an event type to monitor.
+
+Contents of ``notification.json``::
 
     {
         "TopicConfiguration": {

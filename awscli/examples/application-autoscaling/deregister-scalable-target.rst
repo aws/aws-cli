@@ -14,6 +14,6 @@ The following ``deregister-scalable-target`` example deregisters a scalable targ
         --scalable-dimension custom-resource:ResourceType:Property \
         --resource-id file://~/custom-resource-id.txt
 
-Contents of custom-resource-id.txt file::
+Contents of ``custom-resource-id.txt``::
 
     https://example.execute-api.us-west-2.amazonaws.com/prod/scalableTargetDimensions/1-23456789

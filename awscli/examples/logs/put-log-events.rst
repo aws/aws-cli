@@ -1,19 +1,13 @@
 **To put log events into a log stream**
 
-The following ``put-log-events`` example puts log events to a log stream named ``20150601`` in the log group ``my-logs``. ::
+The following ``put-log-events`` example puts log events to a log stream named ``20150601`` in the log group ``my-logs``. The command reads a JSON array of events from a file named ``events`` in the current directory. ::
 
     aws logs put-log-events \
         --log-group-name my-logs \
         --log-stream-name 20150601 \
         --log-events file://events
 
-Output::
-
-    {
-        "nextSequenceToken": "49542672486831074009579604567656788214806863282469607346"
-    }
-
-The above example reads a JSON array of events from a file named ``events`` in the current directory::
+Contents of ``events``::
 
     [
         {
@@ -30,6 +24,12 @@ The above example reads a JSON array of events from a file named ``events`` in t
         }
     ]
 
+Output::
+
+    {
+        "nextSequenceToken": "49542672486831074009579604567656788214806863282469607346"
+    }
+
 Each subsequent call requires the next sequence token provided by the previous call to be specified with the sequence token option. ::
 
     aws logs put-log-events \
@@ -37,6 +37,19 @@ Each subsequent call requires the next sequence token provided by the previous c
         --log-stream-name 20150601 \
         --log-events file://events2 \
         --sequence-token "49542672486831074009579604567656788214806863282469607346"
+
+Contents of ``events2``::
+
+    [
+        {
+            "timestamp": 1433190184362,
+            "message": "Example Event 4"
+        },
+        {
+            "timestamp": 1433190184364,
+            "message": "Example Event 5"
+        }
+    ]
 
 Output::
 

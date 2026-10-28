@@ -10,12 +10,14 @@ If your account supports EC2-Classic, Amazon EC2 launches the instances in EC2-C
         --type "one-time" \
         --launch-specification file://specification.json
 
-Specification.json::
+Contents of ``specification.json``::
 
     {
         "ImageId": "ami-1a2b3c4d",
         "KeyName": "my-key-pair",
-        "SecurityGroupIds": [ "sg-1a2b3c4d" ],
+        "SecurityGroupIds": [
+            "sg-1a2b3c4d"
+        ],
         "InstanceType": "m3.medium",
         "Placement": {
             "AvailabilityZone": "us-west-2a"
@@ -76,11 +78,13 @@ do not receive a public IP address by default. ::
         --type "one-time" \
         --launch-specification file://specification.json
 
-Specification.json::
+Contents of ``specification.json``::
 
     {
         "ImageId": "ami-1a2b3c4d",
-        "SecurityGroupIds": [ "sg-1a2b3c4d" ],
+        "SecurityGroupIds": [
+            "sg-1a2b3c4d"
+        ],
         "InstanceType": "m3.medium",
         "SubnetId": "subnet-1a2b3c4d",
         "IamInstanceProfile": {
@@ -139,7 +143,7 @@ using the network interface. ::
         --type "one-time" \
         --launch-specification file://specification.json
 
-Specification.json::
+Contents of ``specification.json``::
 
     {
         "ImageId": "ami-1a2b3c4d",
@@ -149,7 +153,9 @@ Specification.json::
             {
                 "DeviceIndex": 0,
                 "SubnetId": "subnet-1a2b3c4d",
-                "Groups": [ "sg-1a2b3c4d" ],
+                "Groups": [
+                    "sg-1a2b3c4d"
+                ],
                 "AssociatePublicIpAddress": true
             }
         ],

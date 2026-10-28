@@ -7,6 +7,69 @@ The following ``create-job-template`` example creates a job template with the tr
         --name JobTemplate1 \
         --cli-input-json file://~/job-template.json
 
+Contents of ``job-template.json``::
+
+    {
+        "Description": "Job template that creates an MP4 output with H.264 video and AAC audio",
+        "Settings": {
+            "TimecodeConfig": {
+                "Source": "ZEROBASED"
+            },
+            "Inputs": [
+                {
+                    "AudioSelectors": {
+                        "Audio Selector 1": {
+                            "DefaultSelection": "DEFAULT"
+                        }
+                    },
+                    "VideoSelector": {},
+                    "TimecodeSource": "ZEROBASED"
+                }
+            ],
+            "OutputGroups": [
+                {
+                    "Name": "File Group",
+                    "OutputGroupSettings": {
+                        "Type": "FILE_GROUP_SETTINGS",
+                        "FileGroupSettings": {
+                            "Destination": "s3://amzn-s3-demo-bucket/output/"
+                        }
+                    },
+                    "Outputs": [
+                        {
+                            "ContainerSettings": {
+                                "Container": "MP4"
+                            },
+                            "VideoDescription": {
+                                "CodecSettings": {
+                                    "Codec": "H_264",
+                                    "H264Settings": {
+                                        "RateControlMode": "QVBR",
+                                        "MaxBitrate": 5000000,
+                                        "SceneChangeDetect": "TRANSITION_DETECTION",
+                                        "QualityTuningLevel": "SINGLE_PASS"
+                                    }
+                                }
+                            },
+                            "AudioDescriptions": [
+                                {
+                                    "CodecSettings": {
+                                        "Codec": "AAC",
+                                        "AacSettings": {
+                                            "Bitrate": 96000,
+                                            "CodingMode": "CODING_MODE_2_0",
+                                            "SampleRate": 48000
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
 If you create your job template JSON file by using ``get-job-template`` and then modifying the file, remove the ``JobTemplate`` object, but keep the `Settings` child object inside it. Also, make sure to remove the following key-value pairs: ``LastUpdated``, ``Arn``, ``Type``, and ``CreatedAt``. You can specific the category, description, name, and queue either in the JSON file or at the command line.
 
 To get your account-specific endpoint, use ``describe-endpoints``, or send the command without the endpoint. The service returns an error and your endpoint.

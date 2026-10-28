@@ -134,6 +134,14 @@ class Example:
             self.lines = f.read().splitlines()
         self.blocks = _parse_blocks(self.lines)
 
+    @property
+    def command_path(self):
+        parts = self.relpath.split('/')
+        name = parts[-1][: -len('.rst')]
+        if name == '_examples':
+            return parts[:-1]
+        return parts[:-1] + [name]
+
 
 def _indent(line):
     return len(line) - len(line.lstrip(' '))
@@ -237,6 +245,24 @@ def check_whitespace(example):
     return errors
 
 
+def check_location(example, command_table):
+    path = example.command_path
+    table = command_table
+    for i, name in enumerate(path):
+        if name not in table:
+            break
+        table = table[name].subcommand_table
+    else:
+        return []
+    command = ' '.join(path)
+    error = f'No command "aws {command}" for example file "{example.relpath}"'
+    if i == len(path) - 1 and 'wait' in table:
+        if name in table['wait'].subcommand_table:
+            waiter_path = '/'.join(path[:i] + ['wait', name + '.rst'])
+            error += f'; waiter examples belong in {waiter_path}'
+    return [error]
+
+
 def _is_description(filename):
     if filename == '_examples.rst':
         return False
@@ -334,6 +360,11 @@ def command_validator():
     # instance and use it for all the validation tests.
     driver = create_clidriver()
     return CommandValidator(driver)
+
+
+@pytest.fixture(scope="module")
+def command_table():
+    return create_clidriver().subcommand_table
 
 
 @pytest.mark.parametrize("command, subcommand", EXAMPLE_COMMAND_TESTS)
@@ -600,6 +631,13 @@ def test_example_whitespace(example_file):
     example = Example(example_file)
     errors = check_whitespace(example)
     _assert_follows_rule('whitespace', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_location(command_table, example_file):
+    example = Example(example_file)
+    errors = check_location(example, command_table)
+    _assert_follows_rule('location', example, errors)
 
 
 def test_example_style_exceptions_exist():

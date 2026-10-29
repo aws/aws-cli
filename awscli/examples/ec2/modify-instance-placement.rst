@@ -31,18 +31,18 @@ Output::
 
 The following ``modify-instance-placement`` example moves an instance to a placement group by stopping the instance, modifying the instance placement, and then restarting the instance.
 
-Stop the instance::
+Stop the instance. ::
 
     aws ec2 stop-instances \
         --instance-ids i-0123a456700123456
 
-Modify the placement::
+Modify the placement. ::
 
     aws ec2 modify-instance-placement \
         --instance-id i-0123a456700123456 \
         --group-name MySpreadGroup
 
-Restart the instance::
+Restart the instance. ::
 
     aws ec2 start-instances \
         --instance-ids i-0123a456700123456

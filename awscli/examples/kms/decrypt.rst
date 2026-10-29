@@ -24,8 +24,7 @@ Before running this command, replace the example key ID with a valid key ID from
         --ciphertext-blob fileb://ExampleEncryptedFile \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
         --output text \
-        --query Plaintext | base64 \
-        --decode > ExamplePlaintextFile
+        --query Plaintext | base64 --decode > ExamplePlaintextFile
 
 This command produces no output. The output from the ``decrypt`` command is base64-decoded and saved in a file.
 
@@ -68,8 +67,7 @@ Before running this command, replace the example key ID with a valid key ID from
         --key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
         --encryption-algorithm RSAES_OAEP_SHA_256 \
         --output text \
-        --query Plaintext | base64 \
-        --decode > ExamplePlaintextFile
+        --query Plaintext | base64 --decode > ExamplePlaintextFile
 
 This command produces no output. The output from the ``decrypt`` command is base64-decoded and saved in a file.
 

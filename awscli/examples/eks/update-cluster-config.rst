@@ -4,7 +4,7 @@ The following ``update-cluster-config`` example updates a cluster to disable end
 
     aws eks update-cluster-config \
         --name example \
-    --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
+        --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
 
 Output::
 
@@ -34,7 +34,7 @@ The following ``update-cluster-config`` example enables all cluster control plan
 
     aws eks update-cluster-config \
         --name example \
-    --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":true}]}'
+        --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":true}]}'
 
 Output::
 

@@ -6,8 +6,7 @@ The following ``encrypt`` example demonstrates the recommended way to encrypt da
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
         --plaintext fileb://ExamplePlaintextFile \
         --output text \
-        --query CiphertextBlob | base64 \
-        --decode > ExampleEncryptedFile
+        --query CiphertextBlob | base64 --decode > ExampleEncryptedFile
 
 The command does several things:
 
@@ -54,7 +53,6 @@ The following ``encrypt`` example shows how to encrypt plaintext with an asymmet
         --encryption-algorithm RSAES_OAEP_SHA_256 \
         --plaintext fileb://ExamplePlaintextFile \
         --output text \
-        --query CiphertextBlob | base64 \
-        --decode > ExampleEncryptedFile
+        --query CiphertextBlob | base64 --decode > ExampleEncryptedFile
 
 This command produces no output.

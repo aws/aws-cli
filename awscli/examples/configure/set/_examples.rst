@@ -30,8 +30,7 @@ and the following ``~/.aws/credentials`` file::
 To perform bulk profiles update ``list-profiles`` command can be piped with ``set`` command.
 To update the region for all profiles, use the following command. ::
 
-    aws configure list-profiles | xargs -I {} aws configure set region us-west-2 \
-        --profile {}
+    aws configure list-profiles | xargs -I {} aws configure set region us-west-2 --profile {}
 
 will produce the following updated config file::
 
@@ -47,8 +46,7 @@ will produce the following updated config file::
 
 To update the profiles that match the pattern "testing*", use the following command. ::
 
-    aws configure list-profiles | grep 'testing*' | xargs -I {} aws configure set cli_pager '' \
-        --profile {}
+    aws configure list-profiles | grep 'testing*' | xargs -I {} aws configure set cli_pager '' --profile {}
 
 will produce the following updated config file::
 

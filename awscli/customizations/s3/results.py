@@ -127,7 +127,7 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
             if isinstance(e, FatalError):
                 error_result_cls = ErrorResult
             self._result_queue.put(error_result_cls(exception=e))
-        elif self._is_precondition_failed(e):
+        elif self._is_existing_object_skipped(future, e):
             LOGGER.debug(
                 f"warning: Skipping file {self._src} as it already exists on {self._dest}"
             )
@@ -148,11 +148,13 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
                 )
             )
 
-    def _is_precondition_failed(self, exception):
+    def _is_existing_object_skipped(self, future, exception):
+        # --no-overwrite sends IfNoneMatch, which fails if the object exists.
         return (
             hasattr(exception, 'response')
             and exception.response.get('Error', {}).get('Code')
             == 'PreconditionFailed'
+            and 'IfNoneMatch' in future.meta.call_args.extra_args
         )
 
 

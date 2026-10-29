@@ -3402,6 +3402,42 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             result.stdout, self.expected_download_content.decode('utf-8')
         )
 
+    def fail_crt_requests_with_precondition_failed(self, operation_name):
+        precondition_error = S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=412,
+            headers=[],
+            body=b'<Error><Code>PreconditionFailed</Code></Error>',
+            operation_name=operation_name,
+        )
+
+        def fail_request(**kwargs):
+            kwargs['on_done'](error=precondition_error)
+            return FakeCRTS3Request(future=FakeCRTFuture())
+
+        self.mock_crt_client.return_value.make_request.side_effect = (
+            fail_request
+        )
+
+    def test_no_overwrite_upload_skips_existing_object_using_crt_client(self):
+        self.fail_crt_requests_with_precondition_failed('PutObject')
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key', '--no-overwrite']
+        result = self.run_command(cmdline)
+        self.assertNotIn('upload', result.stdout)
+
+    def test_download_fails_when_object_modified_using_crt_client(self):
+        self.fail_crt_requests_with_precondition_failed('GetObject')
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response()
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 1)
+        self.assertIn('download failed', result.stderr)
+        self.assertIn('PreconditionFailed', result.stderr)
+
     def test_upload_without_region_redirects_from_global_endpoint(self):
         del self.cli_runner.env['AWS_DEFAULT_REGION']
         self.cli_runner.env['AWS_EC2_METADATA_DISABLED'] = 'true'

@@ -18,7 +18,6 @@ Output::
                 "Message": "FULL_ITERATION: Flywheel iteration performed all functions successfully.",
                 "EvaluatedModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier/version/1",
                 "EvaluatedModelMetrics": {
-                    "AverageF1Score": 0.7742663922375772,
                     "AverageF1Score": 0.9876464664646313,
                     "AveragePrecision": 0.9800000253081214,
                     "AverageRecall": 0.9445600253081214,
@@ -35,7 +34,6 @@ Output::
                 "Message": "FULL_ITERATION: Flywheel iteration performed all functions successfully.",
                 "EvaluatedModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/spamvshamclassify/version/1",
                 "EvaluatedModelMetrics": {
-                    "AverageF1Score": 0.7742663922375772,
                     "AverageF1Score": 0.9767700253081214,
                     "AveragePrecision": 0.9767700253081214,
                     "AverageRecall": 0.9767700253081214,

@@ -29,9 +29,13 @@ The following ``generate-mac`` example generates an HMAC for a short message sto
 
 The ``generate-mac`` command requires a Base64-encoded message and a MAC algorithm that your HMAC KMS key supports. To get the MAC algorithms that your KMS key supports, use the ``describe-key`` command.
 
-Before running this command, replace the example key ID with a valid key ID from your AWS account. The key ID must represent an asymmetric KMS key with a key usage of GENERATE_VERIFY_MAC. ::
+Before running this command, replace the example key ID with a valid key ID from your AWS account. The key ID must represent an asymmetric KMS key with a key usage of GENERATE_VERIFY_MAC.
+
+First, Base64-encode the message and save it in the ``EncodedMessage`` file. ::
 
     echo 'hello world' | base64 > EncodedMessage
+
+Then, generate the HMAC for the encoded message. ::
 
     aws kms generate-mac \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \

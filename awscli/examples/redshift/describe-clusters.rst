@@ -15,7 +15,7 @@ Output::
                     "Address": "mycluster.coqoarplqhsn.us-east-1.redshift.amazonaws.com"
                 },
                 "ClusterVersion": "1.0",
-                "PubliclyAccessible": "true",
+                "PubliclyAccessible": true,
                 "MasterUsername": "adminuser",
                 "ClusterParameterGroups": [
                     {
@@ -38,10 +38,7 @@ Output::
                 "DBName": "dev",
                 "NumberOfNodes": 2,
                 "PendingModifiedValues": {}
-        } ],
-        "ResponseMetadata": {
-            "RequestId": "65b71cac-64df-11e2-8f5b-e90bd6c77476"
-        }
+        } ]
     }
 
 You can also obtain the same information in text format using the ``--output text`` option. ::
@@ -56,5 +53,4 @@ Output::
     in-sync     default.redshift-1.0
     active      default
     PENDINGMODIFIEDVALUES
-    RESPONSEMETADATA    934281a8-64df-11e2-b07c-f7fbdd006c67
 

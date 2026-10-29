@@ -6,6 +6,6 @@ The following ``detach-load-balancer-target-groups`` example detaches the specif
         --auto-scaling-group-name my-asg \
         --target-group-arns arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
-This command produces no output
+This command produces no output.
 
 For more information, see `Attaching a load balancer to your Auto Scaling group <https://docs.aws.amazon.com/autoscaling/ec2/userguide/attach-load-balancer-asg.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

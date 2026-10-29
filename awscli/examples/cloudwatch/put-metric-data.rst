@@ -1,6 +1,6 @@
 **Example 1: To publish a custom metric to Amazon CloudWatch**
 
-The following ``put-metric-data`` example publishes a custom metric to Amazon CloudWatch. This command produces no output. ::
+The following ``put-metric-data`` example publishes a custom metric to Amazon CloudWatch. ::
 
     aws cloudwatch put-metric-data \
         --namespace "Usage Metrics" \
@@ -17,13 +17,15 @@ Contents of ``metric.json``::
         }
     ]
 
+This command produces no output.
+
 For more information, see `Publishing Custom Metrics`_ in the *Amazon CloudWatch Developer Guide*.
 
 .. _`Publishing Custom Metrics`: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html
 
 **Example 2: To specify multiple dimensions**
 
-The following ``put-metric-data`` example illustrates how to specify multiple dimensions. Each dimension is specified as a Name=Value pair. Multiple dimensions are separated by a comma. This command produces no output. ::
+The following ``put-metric-data`` example illustrates how to specify multiple dimensions. Each dimension is specified as a Name=Value pair. Multiple dimensions are separated by a comma. ::
 
     aws cloudwatch put-metric-data \
         --metric-name Buffers \
@@ -31,3 +33,5 @@ The following ``put-metric-data`` example illustrates how to specify multiple di
         --unit Bytes \
         --value 231434333 \
         --dimensions InstanceID=1-23456789,InstanceType=m1.small
+
+This command produces no output.

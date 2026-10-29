@@ -57,7 +57,8 @@ The following ``describe-snapshots`` example uses filters to scope the results t
 
     aws ec2 describe-snapshots \
         --filters Name=volume-id,Values=049df61146c4d7901 \
-        --query "Snapshots[*].[SnapshotId]"
+        --query "Snapshots[*].[SnapshotId]" \
+        --output text
 
 Output::
 

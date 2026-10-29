@@ -13,16 +13,7 @@ Output::
 
     {
         "RevisionId": "35d87451-f796-4a3f-a618-95a3671b0a0c",
-        "Statement":
-        {
-            "Sid":"xaccount",
-            "Effect":"Allow",
-            "Principal":{
-                "AWS":"arn:aws:iam::210987654321:root"
-            },
-            "Action":"lambda:GetLayerVersion",
-            "Resource":"arn:aws:lambda:us-east-2:123456789012:layer:my-layer:1"
-        }
+        "Statement": "{\"Sid\":\"xaccount\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::210987654321:root\"},\"Action\":\"lambda:GetLayerVersion\",\"Resource\":\"arn:aws:lambda:us-east-2:123456789012:layer:my-layer:1\"}"
     }
 
 For more information, see `AWS Lambda Layers <https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html>`__ in the *AWS Lambda Developer Guide*.

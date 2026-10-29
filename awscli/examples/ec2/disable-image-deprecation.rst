@@ -8,8 +8,7 @@ The following ``disable-image-deprecation`` example cancels the deprecation of a
 Output::
 
     {
-        "RequestID": "11aabb229-4eac-35bd-99ed-be587EXAMPLE",
-        "Return": "true"
+        "Return": true
     }
 
 For more information, see `Deprecate an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-deprecate.html>`__ in the *Amazon EC2 User Guide*.

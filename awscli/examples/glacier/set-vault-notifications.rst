@@ -1,11 +1,13 @@
 **To configure SNS notifications for a vault**
 
-The following ``set-vault-notifications`` example configures SNS notifications for a vault named ``my-vault``. This command produces no output. ::
+The following ``set-vault-notifications`` example configures SNS notifications for a vault named ``my-vault``. ::
 
     aws glacier set-vault-notifications \
         --account-id - \
         --vault-name my-vault \
         --vault-notification-config file://notificationconfig.json
+
+This command produces no output.
 
 ``notificationconfig.json`` is a JSON file in the current folder that specifies an SNS topic and the events to publish.
 

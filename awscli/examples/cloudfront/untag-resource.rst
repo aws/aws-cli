@@ -1,11 +1,13 @@
 **To remove tags from a CloudFront distribution**
 
 The following ``untag-resource`` example removes two tags from a CloudFront distribution by using
-command line arguments. This command produces no output. ::
+command line arguments. ::
 
     aws cloudfront untag-resource \
         --resource arn:aws:cloudfront::123456789012:distribution/EDFDVBD6EXAMPLE \
         --tag-keys Items=Name,Project
+
+This command produces no output.
 
 Instead of using command line arguments, you can provide the tag keys in a JSON
 file, as shown in the following example. ::

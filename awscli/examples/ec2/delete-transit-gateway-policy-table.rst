@@ -8,15 +8,13 @@ The following ``delete-transit-gateway-policy-table`` example deletes the specif
 Output::
 
     {
-        "TransitGatewayPolicyTables": [
-            {
-                "TransitGatewayPolicyTableId": "tgw-ptb-0a16f134b78668a81",
-                "TransitGatewayId": "tgw-067f8505c18f0bd6e",
-                "State": "deleting",
-                "CreationTime": "2023-11-28T16:36:43+00:00",
-                "Tags": []
-            }
-        ]
+        "TransitGatewayPolicyTable": {
+            "TransitGatewayPolicyTableId": "tgw-ptb-0a16f134b78668a81",
+            "TransitGatewayId": "tgw-067f8505c18f0bd6e",
+            "State": "deleting",
+            "CreationTime": "2023-11-28T16:36:43+00:00",
+            "Tags": []
+        }
     }
 
 For more information, see `Transit gateway policy tables <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-policy-tables.html>`__ in the *Transit Gateway User Guide*.

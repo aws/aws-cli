@@ -34,10 +34,10 @@ Output::
         "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/new_hls",
         "Id":"new_hls",
         "PackagingGroupId":"hls_chicken",
-        "HlsManifests":{ 
+        "HlsPackage":{ 
             "SegmentDurationSeconds":6,
             "UseAudioRenditionGroup":false,
-            "HlsMarkers":[ 
+            "HlsManifests":[ 
                 { 
                     "AdMarkers":"NONE",
                     "IncludeIframeOnlyStream":false,

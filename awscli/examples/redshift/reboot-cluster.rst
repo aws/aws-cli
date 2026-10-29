@@ -15,7 +15,7 @@ Output::
                 "Address": "mycluster.coqoarplqhsn.us-east-1.redshift.amazonaws.com"
             },
             "ClusterVersion": "1.0",
-            "PubliclyAccessible": "true",
+            "PubliclyAccessible": true,
             "MasterUsername": "adminuser",
             "ClusterParameterGroups": [
                 {
@@ -40,9 +40,6 @@ Output::
             "DBName": "dev",
             "NumberOfNodes": 2,
             "PendingModifiedValues": {}
-        },
-        "ResponseMetadata": {
-            "RequestId": "61c8b564-64e8-11e2-8f7d-3b939af52818"
         }
     }
 

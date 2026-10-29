@@ -8,7 +8,7 @@ The following ``describe-security-group-references`` example describes the secur
 Output::
 
     {
-        "SecurityGroupsReferenceSet": [
+        "SecurityGroupReferenceSet": [
             {
                 "ReferencingVpcId": "vpc-aaaaaaaa ",
                 "GroupId": "sg-bbbbb22222",

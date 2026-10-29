@@ -34,10 +34,7 @@ Output::
                     { "Name": "us-east-1c" } ],
                 "ClusterVersion": "1.0",
                 "ClusterType": "single-node"
-            } ],
-        "ResponseMetadata": {
-            "RequestId": "f6000035-64cb-11e2-9135-ff82df53a51a"
-        }
+            } ]
     }
 
 You can also obtain the same information in text format using the ``--output text`` option. ::
@@ -59,6 +56,5 @@ Output::
     us-east-1a
     us-east-1b
     us-east-1c
-    RESPONSEMETADATA    e648696b-64cb-11e2-bec0-17624ad140dd
 
 

@@ -2,7 +2,9 @@
 
 The following ``untag-resource`` example removes the tag ``MyTag`` and its value from the thing group ``LightBulbs``. ::
 
-    command
+    aws iot untag-resource \
+        --resource-arn "arn:aws:iot:us-west-2:094249569039:thinggroup/LightBulbs" \
+        --tag-keys MyTag
 
 This command produces no output.
 

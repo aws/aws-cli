@@ -44,12 +44,10 @@ Output::
                 "Arn": "arn:aws:servicediscovery:us-west-2:123456789111:service/srv-abcd1234xmpl5678",
                 "ResourceOwner": "123456789111",
                 "Name": "shared-service",
-                "NamespaceId": "ns-abcd1234xmpl5678",
                 "Type": "HTTP",
                 "Description": "Service in shared namespace",
                 "DnsConfig": {},
                 "CreateDate": "2025-01-13T13:35:21.874000-06:00",
-                "CreatorRequestId": "abcd1234-5678-90ab-cdef-xmpl12345678",
                 "CreatedByAccount": "123456789012"
             }
         ]

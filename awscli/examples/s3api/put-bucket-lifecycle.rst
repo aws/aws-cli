@@ -1,10 +1,12 @@
 **To apply a lifecycle configuration to a bucket**
 
-The following ``put-bucket-lifecycle`` example applies a lifecycle configuration to the bucket ``amzn-s3-demo-bucket``. This command produces no output. ::
+The following ``put-bucket-lifecycle`` example applies a lifecycle configuration to the bucket ``amzn-s3-demo-bucket``. ::
 
     aws s3api put-bucket-lifecycle \
         --bucket amzn-s3-demo-bucket \
         --lifecycle-configuration file://lifecycle.json
+
+This command produces no output.
 
 The file ``lifecycle.json`` is a JSON document in the current folder that specifies two rules.
 

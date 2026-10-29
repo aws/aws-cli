@@ -11,7 +11,7 @@ The following ``create-network-insights-path`` example creates a path. The sourc
 Output::
 
     {
-        "NetworkInsightsPaths": {
+        "NetworkInsightsPath": {
             "NetworkInsightsPathId": "nip-0b26f224f1d131fa8",
             "NetworkInsightsPathArn": "arn:aws:ec2:us-east-1:123456789012:network-insights-path/nip-0b26f224f1d131fa8",
             "CreatedDate": "2021-01-20T22:43:46.933Z",

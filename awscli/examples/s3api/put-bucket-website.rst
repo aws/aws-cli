@@ -1,10 +1,12 @@
 **To apply a static website configuration to a bucket**
 
-The following ``put-bucket-website`` example applies a static website configuration to a bucket named ``amzn-s3-demo-bucket``. This command produces no output. ::
+The following ``put-bucket-website`` example applies a static website configuration to a bucket named ``amzn-s3-demo-bucket``. ::
 
     aws s3api put-bucket-website \
         --bucket amzn-s3-demo-bucket \
         --website-configuration file://website.json
+
+This command produces no output.
 
 The file ``website.json`` is a JSON document in the current folder that specifies index and error pages for the website.
 

@@ -8,7 +8,7 @@ The following ``get-group-certificate-configuration`` example retrieves the conf
 Output::
 
     {
-        "CertificateAuthorityExpiryInMilliseconds": 2524607999000,
-        "CertificateExpiryInMilliseconds": 604800000,
+        "CertificateAuthorityExpiryInMilliseconds": "2524607999000",
+        "CertificateExpiryInMilliseconds": "604800000",
         "GroupId": "1013db12-8b58-45ff-acc7-704248f66731"
     }

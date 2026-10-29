@@ -25,7 +25,7 @@ Contents of ``policy.json``::
         ]
     }
 
-To apply the logging policy, use ``put-bucket-logging``. This command produces no output. ::
+To apply the logging policy, use ``put-bucket-logging``. ::
 
     aws s3api put-bucket-logging \
         --bucket amzn-s3-demo-bucket \
@@ -39,6 +39,8 @@ Contents of ``logging.json``::
             "TargetPrefix": "Logs/"
         }
     }
+
+This command produces no output.
 
 .. Note:: The ``put-bucket-policy`` command is required to grant ``s3:PutObject`` permissions to the logging service principal.
 
@@ -54,7 +56,7 @@ the log files, and no one else has any access. First, grant S3 permission with `
         --grant-write URI=http://acs.amazonaws.com/groups/s3/LogDelivery \
         --grant-read-acp URI=http://acs.amazonaws.com/groups/s3/LogDelivery
 
-Then apply the logging policy using ``put-bucket-logging``. This command produces no output. ::
+Then apply the logging policy using ``put-bucket-logging``. ::
 
     aws s3api put-bucket-logging \
         --bucket amzn-s3-demo-bucket \
@@ -77,6 +79,8 @@ Contents of ``logging.json``::
             ]
         }
     }
+
+This command produces no output.
 
 .. Note:: the ``put-bucket-acl`` command is required to grant S3's log delivery system the necessary permissions (write and read-acp permissions).
 

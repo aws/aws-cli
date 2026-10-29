@@ -15,7 +15,7 @@ Output::
         "Cluster": {
             "NodeType": "dw.hs1.xlarge",
             "ClusterVersion": "1.0",
-            "PubliclyAccessible": "true",
+            "PubliclyAccessible": true,
             "MasterUsername": "adminuser",
             "ClusterParameterGroups": [
                 {
@@ -38,9 +38,6 @@ Output::
             "PendingModifiedValues": {
                 "MasterUserPassword": "****"
             }
-        },
-        "ResponseMetadata": {
-            "RequestId": "7cf4bcfc-64dd-11e2-bea9-49e0ce183f07"
         }
     }
 

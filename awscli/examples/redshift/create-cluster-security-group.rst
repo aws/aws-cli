@@ -9,19 +9,12 @@ The following ``create-cluster-security-group`` example creates a new cluster se
 Output::
 
     {
-        "create_cluster_security_group_response": {
-            "create_cluster_security_group_result": {
-                "cluster_security_group": {
-                    "description": "This is my cluster security group",
-                    "owner_id": "300454760768",
-                    "cluster_security_group_name": "mysecuritygroup",
-                    "ec2_security_groups": [],
-                    "ip_ranges": []
-                }
-            },
-            "response_metadata": {
-                "request_id": "5df486a0-343a-11e2-b0d8-d15d0ef48549"
-            }
+        "ClusterSecurityGroup": {
+            "ClusterSecurityGroupName": "mysecuritygroup",
+            "Description": "This is my cluster security group",
+            "EC2SecurityGroups": [],
+            "IPRanges": [],
+            "Tags": []
         }
     }
 
@@ -35,6 +28,5 @@ You can also obtain the same information in text format using the ``--output tex
 Output::
 
     This is my cluster security group   300454760768    mysecuritygroup
-    a0c0bfab-343a-11e2-95d2-c3dc9fe8ab57
 
 

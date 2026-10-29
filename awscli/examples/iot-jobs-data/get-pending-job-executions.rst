@@ -15,8 +15,8 @@ Output::
             {
                 "executionNumber": 2939653338,
                 "jobId": "SampleJob",
-                "lastUpdatedAt": 1567701875.743,
-                "queuedAt": 1567701902.444,
+                "lastUpdatedAt": 1567701875,
+                "queuedAt": 1567701902,
                 "versionNumber": 3
             }
         ]

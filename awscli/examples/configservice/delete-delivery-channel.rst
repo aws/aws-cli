@@ -1,6 +1,8 @@
 **To delete a delivery channel**
 
-The following ``delete-delivery-channel`` example deletes the default delivery channel. This command produces no output. ::
+The following ``delete-delivery-channel`` example deletes the default delivery channel. ::
 
     aws configservice delete-delivery-channel \
         --delivery-channel-name default
+
+This command produces no output.

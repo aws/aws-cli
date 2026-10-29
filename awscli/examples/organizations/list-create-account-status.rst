@@ -14,9 +14,9 @@ Output::
             {
                 "AccountId": "444444444444",
                 "AccountName": "Developer Test Account",
-                "CompletedTimeStamp": 1481835812.143,
+                "CompletedTimestamp": 1481835812.143,
                 "Id": "car-examplecreateaccountrequestid111",
-                "RequestedTimeStamp": 1481829432.531,
+                "RequestedTimestamp": 1481829432.531,
                 "State": "SUCCEEDED"
             }
         ]
@@ -38,7 +38,7 @@ Output::
             {
                 "State": "IN_PROGRESS",
                 "Id": "car-examplecreateaccountrequestid111",
-                "RequestedTimeStamp": 1481829432.531,
+                "RequestedTimestamp": 1481829432.531,
                 "AccountName": "Production Account"
             }
         ]

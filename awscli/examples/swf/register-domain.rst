@@ -1,11 +1,13 @@
 **To register a domain**
 
 The following ``register-domain`` example registers a new domain. There are two required parameters, ``--name``, which takes the domain name, and ``--workflow-execution-retention-period-in-days``, which takes an integer to specify the number of days to retain workflow execution data on this domain, up to a maximum period of 90 days (for more information, see the `SWF FAQ <https://aws.amazon.com/swf/faqs/#retain_limit>`). Workflow execution data
-will not be retained after the specified number of days have passed. This command produces no output. ::
+will not be retained after the specified number of days have passed. ::
 
     aws swf register-domain \
         --name MyNeatNewDomain \
         --workflow-execution-retention-period-in-days 0
+
+This command produces no output.
 
 When you register a domain, nothing is returned, but you can use ``swf list-domains`` or ``swf describe-domain`` to see the new domain. ::
 

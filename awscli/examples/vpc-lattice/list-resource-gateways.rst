@@ -15,7 +15,7 @@ Output::
                 "ipAddressType": "IPV4",
                 "lastUpdatedAt": "2025-02-01T00:57:44.351000+00:00",
                 "name": "my-resource-gateway",
-                "seurityGroupIds": [
+                "securityGroupIds": [
                     "sg-087ffd596c5fe962c"
                 ],
                 "status": "ACTIVE",

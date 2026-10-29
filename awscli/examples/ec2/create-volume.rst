@@ -19,7 +19,7 @@ Output::
         "State": "creating",
         "Iops": 240,
         "SnapshotId": "",
-        "CreateTime": "YYYY-MM-DDTHH:MM:SS.000Z",
+        "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 80
     }
 
@@ -51,7 +51,7 @@ Output::
         "State": "creating",
         "Iops": 1000,
         "SnapshotId": "snap-066877671789bd71b",
-        "CreateTime": "YYYY-MM-DDTHH:MM:SS.000Z",
+        "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 500
     }
 
@@ -76,7 +76,7 @@ Output::
         "State": "creating",
         "Iops": 240,
         "SnapshotId": "",
-        "CreateTime": "YYYY-MM-DDTHH:MM:SS.000Z",
+        "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 80
     }
 
@@ -126,6 +126,6 @@ Output::
         "State": "creating",
         "Iops": 240,
         "SnapshotId": "",
-        "CreateTime": "YYYY-MM-DDTHH:MM:SS.000Z",
+        "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 80
     }

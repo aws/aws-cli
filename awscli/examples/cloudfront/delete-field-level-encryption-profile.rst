@@ -12,10 +12,12 @@ To get the ``ETag``, use the
 <get-field-level-encryption-profile.html>`_ or
 `get-field-level-encryption-profile-config
 <get-field-level-encryption-profile-config.html>`_ command.
-Use the ``--if-match`` option to provide the profile's ``ETag``. This command produces no output. ::
+Use the ``--if-match`` option to provide the profile's ``ETag``. ::
 
     aws cloudfront delete-field-level-encryption-profile \
         --id PPK0UOSIF5WSV \
         --if-match EJETYFJ9CL66D
+
+This command produces no output.
 
 When successful, this command has no output.

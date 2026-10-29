@@ -6,10 +6,10 @@ This command is the same for all custom key stores, including AWS CloudHSM key s
 
 Before running this command, replace the example custom key store ID with a valid one. ::
 
-    $ aws kms disconnect-custom-key-store \
+    aws kms disconnect-custom-key-store \
         --custom-key-store-id cks-1234567890abcdef0
 
-This command produces no output.  verify that the command was effective, use the ``describe-custom-key-stores`` command.
+This command produces no output. To verify that the command was effective, use the ``describe-custom-key-stores`` command.
 
 For more information about disconnecting an AWS CloudHSM key store, see `Connecting and disconnecting an AWS CloudHSM key store <https://docs.aws.amazon.com/kms/latest/developerguide/disconnect-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
 

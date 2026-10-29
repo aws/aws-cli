@@ -14,9 +14,8 @@ Output::
                 "jobDefinitionArn": "arn:aws:batch:us-east-1:012345678910:job-definition/sleep60:1",
                 "containerProperties": {
                     "mountPoints": [],
-                    "parameters": {},
                     "image": "busybox",
-                    "environment": {},
+                    "environment": [],
                     "vcpus": 1,
                     "command": [
                         "sleep",
@@ -26,6 +25,7 @@ Output::
                     "memory": 128,
                     "ulimits": []
                 },
+                "parameters": {},
                 "type": "container",
                 "jobDefinitionName": "sleep60",
                 "revision": 1

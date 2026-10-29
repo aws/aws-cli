@@ -9,5 +9,5 @@ The following ``modify-vpc-endpoint-service-configuration`` example changes the 
 Output::
 
     {
-        "ReturnValue": true
+        "Return": true
     }

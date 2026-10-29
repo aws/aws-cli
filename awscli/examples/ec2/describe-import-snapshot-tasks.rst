@@ -16,7 +16,7 @@ Output::
                 "ImportTaskId": "import-snap-1234567890abcdef0",
                 "SnapshotTaskDetail": {
                     "Description": "My server VMDK",
-                    "DiskImageSize": "705638400.0",
+                    "DiskImageSize": 705638400.0,
                     "Format": "VMDK",
                     "Progress": "42",
                     "Status": "active",
@@ -41,7 +41,7 @@ Output::
                 "ImportTaskId": "import-snap-1234567890abcdef0",
                 "SnapshotTaskDetail": {
                     "Description": "My server VMDK",
-                    "DiskImageSize": "705638400.0",
+                    "DiskImageSize": 705638400.0,
                     "Format": "VMDK",
                     "SnapshotId": "snap-1234567890abcdef0",
                     "Status": "completed",

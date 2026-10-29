@@ -40,6 +40,6 @@ This example sets the following attributes:
 
 - ``configSnapshotDeliveryProperties`` - Contains the ``deliveryFrequency`` attribute, which sets how often AWS Config delivers configuration snapshots and how often it invokes evaluations for periodic Config rules.
 
-If the command succeeds, it produces no output. To verify the settings of your delivery channel, run the `describe-delivery-channels`__ command.
+This command produces no output. To verify the settings of your delivery channel, run the `describe-delivery-channels`__ command.
 
 .. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-delivery-channels.html

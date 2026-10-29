@@ -11,18 +11,16 @@ Output::
         "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/DASH",
         "Id":"DASH",
         "PackagingGroupId":"Packaging_group_1",
-        "DashPackage":[ 
-            { 
-                "SegmentDurationSeconds":"2"
-            },
-            { 
-                "DashManifests":{ 
+        "DashPackage":{
+            "SegmentDurationSeconds":2,
+            "DashManifests":[
+                {
                     "ManifestName":"index",
-                    "MinBufferTimeSeconds":"30",
+                    "MinBufferTimeSeconds":30,
                     "Profile":"NONE"
                 }
-            }
-        ]
+            ]
+        }
     }
 
 For more information, see `Viewing Packaging Configuration Details <https://docs.aws.amazon.com/mediapackage/latest/ug/pkg-cfig-view.html>`__ in the *AWS Elemental MediaPackage User Guide*.

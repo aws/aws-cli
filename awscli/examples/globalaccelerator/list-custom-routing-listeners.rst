@@ -16,8 +16,7 @@ Output::
                         "FromPort": 5000,
                         "ToPort": 10000
                     }
-                ],
-                "Protocol": "TCP"
+                ]
             }
         ]
     }

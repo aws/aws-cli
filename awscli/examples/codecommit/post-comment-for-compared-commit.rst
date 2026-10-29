@@ -24,16 +24,15 @@ Output::
             "content": "Can you add a test case for this?",
             "creationDate": 1508369612.203,
             "deleted": false,
-            "commentId": "abc123-EXAMPLE",
+            "inReplyTo": "abc123-EXAMPLE",
             "lastModifiedDate": 1508369612.203,
             "callerReactions": [],
-            "reactionCounts": []
+            "reactionCounts": {}
         },
-        "location": { 
+        "location": {
             "filePath": "cl_sample.js",
             "filePosition": 1232,
             "relativeFileVersion": "AFTER"
-        ,
+        },
         "repositoryName": "MyDemoRepo"
-        }
     }

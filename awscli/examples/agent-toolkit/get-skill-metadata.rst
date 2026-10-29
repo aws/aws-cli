@@ -9,15 +9,21 @@ Output::
 
     {
         "name": "aws-serverless",
-        "version": "v1",
+        "skillVersion": "v1",
         "description": "Build, deploy, and manage serverless applications on AWS using Lambda, API Gateway, Step Functions, and SAM/CDK.",
         "categories": [
             "aws-core"
         ],
         "files": [
-            "SKILL.md",
-            "references/architecture.md",
-            "references/best-practices.md"
+            {
+                "path": "SKILL.md"
+            },
+            {
+                "path": "references/architecture.md"
+            },
+            {
+                "path": "references/best-practices.md"
+            }
         ]
     }
 
@@ -35,14 +41,18 @@ Output::
 
     {
         "name": "aws-serverless",
-        "version": "v1",
+        "skillVersion": "v1",
         "description": "Build, deploy, and manage serverless applications on AWS using Lambda, API Gateway, Step Functions, and SAM/CDK.",
         "categories": [
             "aws-core"
         ],
         "files": [
-            "SKILL.md",
-            "references/architecture.md"
+            {
+                "path": "SKILL.md"
+            },
+            {
+                "path": "references/architecture.md"
+            }
         ]
     }
 

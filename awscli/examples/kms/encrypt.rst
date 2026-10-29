@@ -42,11 +42,13 @@ The following ``encrypt`` example is the same as the previous one, except that i
         --output text ^
         --query CiphertextBlob > C:\Temp\ExampleEncryptedFile.base64
 
+This command produces no output. The base64-encoded ciphertext is saved to ``C:\Temp\ExampleEncryptedFile.base64``.
+
 Run the ``certutil`` command. ::
 
     certutil -decode C:\Temp\ExampleEncryptedFile.base64 C:\Temp\ExampleEncryptedFile
 
-This example produces no output. The ciphertext is saved to ``C:\Temp\ExampleEncryptedFile``.
+The ciphertext is saved to ``C:\Temp\ExampleEncryptedFile``.
 
 **Example 3: To encrypt the contents of a file with an asymmetric KMS key**
 

@@ -7,7 +7,7 @@ The following ``register-workflow-type`` example registers a workflow type. ::
         --name "MySimpleWorkflow" \
         --workflow-version "v1"
 
-If successful, the command produces no output.
+This command produces no output.
 
 On an error (for example, if you try to register the same workflow typetwice, or specify a domain that doesn't exist) you will get a response in JSON. ::
 

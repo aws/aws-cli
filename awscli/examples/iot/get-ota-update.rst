@@ -11,8 +11,8 @@ Output::
         "otaUpdateInfo": {
             "otaUpdateId": "ota12345",
             "otaUpdateArn": "arn:aws:iot:us-west-2:123456789012:otaupdate/itsaupdate",
-            "creationDate": 1557863215.995,
-            "lastModifiedDate": 1557863215.995,
+            "creationDate": "2019-05-14T19:46:55.995000+00:00",
+            "lastModifiedDate": "2019-05-14T19:46:55.995000+00:00",
             "description": "A critical update needed right away.",
             "targets": [
                 "device1",
@@ -31,7 +31,7 @@ Output::
                     "fileLocation": {
                         "stream": {
                             "streamId": "004",
-                            "fileId":123
+                            "fileId": 123
                         }
                     },
                     "codeSigning": {
@@ -39,7 +39,6 @@ Output::
                     }
                 }
             ],
-            "roleArn": "arn:aws:iam:123456789012:role/service-role/my_ota_role",
             "otaUpdateStatus": "CREATE_COMPLETE",
             "awsIotJobId": "job54321",
             "awsIotJobArn": "arn:aws:iot:us-west-2:123456789012:job/job54321",

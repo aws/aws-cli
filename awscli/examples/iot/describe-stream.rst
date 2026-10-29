@@ -15,7 +15,7 @@ Output::
             "description": "This stream is used for Amazon FreeRTOS OTA Update 12345.",
             "files": [
                 {
-                    "fileId": "123",
+                    "fileId": 123,
                     "s3Location": {
                         "bucket":"codesign-ota-bucket",
                         "key":"48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"

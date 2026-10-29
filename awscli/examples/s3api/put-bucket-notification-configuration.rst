@@ -1,6 +1,6 @@
 **To enable the specified notifications to a bucket**
 
-The following ``put-bucket-notification-configuration`` example applies a notification configuration to a bucket named ``amzn-s3-demo-bucket``. The file ``notification.json`` is a JSON document in the current folder that specifies an SNS topic and an event type to monitor. This command produces no output. ::
+The following ``put-bucket-notification-configuration`` example applies a notification configuration to a bucket named ``amzn-s3-demo-bucket``. The file ``notification.json`` is a JSON document in the current folder that specifies an SNS topic and an event type to monitor. ::
 
     aws s3api put-bucket-notification-configuration \
         --bucket amzn-s3-demo-bucket \
@@ -18,6 +18,8 @@ Contents of ``notification.json``::
             }
         ]
     }
+
+This command produces no output.
 
 The SNS topic must have an IAM policy attached to it that allows Amazon S3 to publish to it. ::
 

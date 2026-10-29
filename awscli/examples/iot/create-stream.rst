@@ -28,7 +28,7 @@ Output::
         "streamId": "stream12345",
         "streamArn": "arn:aws:iot:us-west-2:123456789012:stream/stream12345",
         "description": "This stream is used for Amazon FreeRTOS OTA Update 12345.",
-        "streamVersion": "1"
+        "streamVersion": 1
     }
 
 For more information, see `CreateStream <https://docs.aws.amazon.com/iot/latest/apireference/API_CreateStream.html>`__ in the *AWS IoT API Reference*.

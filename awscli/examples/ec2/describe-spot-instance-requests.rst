@@ -72,7 +72,8 @@ The following ``describe-spot-instance-requests`` example uses filters to scope 
 
     aws ec2 describe-spot-instance-requests \
         --filters Name=launch.instance-type,Values=m3.medium Name=launched-availability-zone,Values=us-east-2a \
-        --query "SpotInstanceRequests[*].[InstanceId]"
+        --query "SpotInstanceRequests[*].[InstanceId]" \
+        --output text
 
 Output::
 

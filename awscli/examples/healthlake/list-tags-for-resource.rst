@@ -8,10 +8,16 @@ The following ``list-tags-for-resource`` example lists the tags associated with 
 Output::
 
     {
-        "tags": {
-            "key": "value",
-            "key1": "value1"
-        }
+        "Tags": [
+            {
+                "Key": "key",
+                "Value": "value"
+            },
+            {
+                "Key": "key1",
+                "Value": "value1"
+            }
+        ]
     }
 
 For more information, see `Tagging resources in AWS HealthLake <https://docs.aws.amazon.com/healthlake/latest/devguide/tagging.html>`__ in the AWS HealthLake Developer Guide.

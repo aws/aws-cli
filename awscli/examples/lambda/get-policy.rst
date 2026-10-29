@@ -8,20 +8,7 @@ The following ``get-policy`` example displays policy information about the ``my-
 Output::
 
     {
-        "Policy": {
-            "Version":"2012-10-17",
-            "Id":"default",
-            "Statement":
-            [
-                {
-                    "Sid":"iot-events",
-                    "Effect":"Allow",
-                    "Principal": {"Service":"iotevents.amazonaws.com"},
-                    "Action":"lambda:InvokeFunction",
-                    "Resource":"arn:aws:lambda:us-west-2:123456789012:function:my-function"
-                }
-            ]
-        },
+        "Policy": "{\"Version\":\"2012-10-17\",\"Id\":\"default\",\"Statement\":[{\"Sid\":\"iot-events\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"iotevents.amazonaws.com\"},\"Action\":\"lambda:InvokeFunction\",\"Resource\":\"arn:aws:lambda:us-west-2:123456789012:function:my-function\"}]}",
         "RevisionId": "93017fc9-59cb-41dc-901b-4845ce4bf668"
     }
 

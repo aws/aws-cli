@@ -14,24 +14,24 @@ Output::
                 "AdministratorId": "111122223333",
                 "EmailAddress": "mmajor@example.com",
                 "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-                "InvitedTime": 1579826107000,
+                "InvitedTime": "2020-01-24T00:35:07.000000+00:00",
                 "MasterId": "111122223333",
                 "Status": "INVITED",
-                "UpdatedTime": 1579826107000
+                "UpdatedTime": "2020-01-24T00:35:07.000000+00:00"
             },
             { 
                 "AccountId": "123456789012",
                 "AdministratorId": "111122223333",
                 "EmailAddress": "jstiles@example.com",
                 "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-                "InvitedTime": 1579826107000,
+                "InvitedTime": "2020-01-24T00:35:07.000000+00:00",
                 "MasterId": "111122223333",
                 "PercentOfGraphUtilization": 2,
-                "PercentOfGraphUtilizationUpdatedTime": 1586287843,
+                "PercentOfGraphUtilizationUpdatedTime": "2020-04-07T19:30:43.000000+00:00",
                 "Status": "ENABLED",
-                "UpdatedTime": 1579973711000,
+                "UpdatedTime": "2020-01-25T17:35:11.000000+00:00",
                 "VolumeUsageInBytes": 200,
-                "VolumeUsageUpdatedTime": 1586287843
+                "VolumeUsageUpdatedTime": "2020-04-07T19:30:43.000000+00:00"
             }
         ]
     }

@@ -64,7 +64,6 @@ Output::
                 ]
             }
         ],
-        "UnmappedAttributes": [],
         "ModelVersion": "1.0.0"
     }
 

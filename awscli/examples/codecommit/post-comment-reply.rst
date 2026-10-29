@@ -17,9 +17,9 @@ Output::
             "content": "Good catch. I'll remove them.",
             "creationDate": 1508369829.136,
             "deleted": false,
-            "CommentId": "abcd1234EXAMPLEb5678efgh",
+            "inReplyTo": "abcd1234EXAMPLEb5678efgh",
             "lastModifiedDate": 150836912.221,
             "callerReactions": [],
-            "reactionCounts": []
+            "reactionCounts": {}
         }
     }

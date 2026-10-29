@@ -21,11 +21,8 @@ Output::
             "NodeType": "dw.hs1.xlarge",
             "ClusterIdentifier": "examplecluster",
             "Port": 5439,
-            "NumberOfNodes": "2",
+            "NumberOfNodes": 2,
             "SnapshotIdentifier": "my-saved-snapshot-copy"
-        },
-        "ResponseMetadata": {
-            "RequestId": "3b279691-64e3-11e2-bec0-17624ad140dd"
         }
     }
 

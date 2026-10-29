@@ -9,8 +9,8 @@ The following ``get-branch`` example gets information about a branch in an AWS C
 Output::
 
     {
-        "BranchInfo": {
-            "commitID": "317f8570EXAMPLE",
+        "branch": {
+            "commitId": "317f8570EXAMPLE",
             "branchName": "MyNewBranch"
         }
     }

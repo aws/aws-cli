@@ -26,7 +26,7 @@ Output::
             "Endpoint": "proxyEndpoint.endpoint.proxyExample-ab0cd1efghij.us-east-1.rds.amazonaws.com",
             "CreatedDate": "2023-04-05T16:09:33.452000+00:00",
             "TargetRole": "READ_WRITE",
-            "IsDefault": "false"
+            "IsDefault": false
         }
     }
 

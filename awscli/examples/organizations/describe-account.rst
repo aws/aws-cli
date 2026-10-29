@@ -14,7 +14,7 @@ Output::
             "Name": "Beta account",
             "Email": "anika@example.com",
             "JoinedMethod": "INVITED",
-            "JoinedTimeStamp": 1481756563.134,
+            "JoinedTimestamp": 1481756563.134,
             "Paths": [
                 "o-exampleorgid/r-examplerootid111/555555555555/"
             ],

@@ -9,7 +9,7 @@ The following ``delete-branch`` example deletes a branch in an AWS CodeCommit re
 Output::
 
     {
-        "branch": {
+        "deletedBranch": {
             "commitId": "317f8570EXAMPLE",
             "branchName": "MyNewBranch"
         }

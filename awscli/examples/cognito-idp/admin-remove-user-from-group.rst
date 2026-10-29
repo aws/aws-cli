@@ -1,8 +1,10 @@
 **To remove a user from a group**
 
-The following ``admin-remove-user-from-group`` example removes jane@example.com from SampleGroup. This command produces no output. ::
+The following ``admin-remove-user-from-group`` example removes jane@example.com from SampleGroup. ::
 
     aws cognito-idp admin-remove-user-from-group \
         --user-pool-id us-west-2_aaaaaaaaa \
         --username jane@example.com \
         --group-name SampleGroup
+
+This command produces no output.

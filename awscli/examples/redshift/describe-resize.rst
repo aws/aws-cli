@@ -11,9 +11,6 @@ Output::
         "Status": "NONE",
         "TargetClusterType": "multi-node",
         "TargetNodeType": "dw.hs1.8xlarge",
-        "ResponseMetadata": {
-            "RequestId": "9f52b0b4-7733-11e2-aa9b-318b2909bd27"
-        },
-        "TargetNumberOfNodes": "3"
+        "TargetNumberOfNodes": 3
     }
 

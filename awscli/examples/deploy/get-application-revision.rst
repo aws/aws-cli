@@ -13,7 +13,9 @@ Output::
         "revisionInfo": {
             "description": "Application revision registered by Deployment ID: d-A1B2C3111",
             "registerTime": 1411076520.009,
-            "deploymentGroups": "WordPress_DG",
+            "deploymentGroups": [
+                "WordPress_DG"
+            ],
             "lastUsedTime": 1411076520.009,
             "firstUsedTime": 1411076520.009
         },

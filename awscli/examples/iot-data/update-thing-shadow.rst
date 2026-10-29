@@ -7,7 +7,9 @@ The following ``update-thing-shadow`` example modifies the current state of the 
         --thing-name MyRPi \
         --payload '{"state":{"reported":{"moisture":"okay"}}}'
 
-The command produces no output on the display, but the following shows the contents of ``output.txt``::
+This command produces no output. The response payload is saved to ``output.txt``.
+
+Contents of ``output.txt``::
 
     {
         "state": {

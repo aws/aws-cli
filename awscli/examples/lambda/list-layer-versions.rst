@@ -8,7 +8,7 @@ The following ``list-layer-versions`` example displays information about the ver
 Output::
 
     {
-        "Layers": [
+        "LayerVersions": [
             {
                 "LayerVersionArn": "arn:aws:lambda:us-east-2:123456789012:layer:my-layer:2",
                 "Version": 2,

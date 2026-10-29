@@ -161,18 +161,22 @@ Output::
 
 **Example 11: To upload a local file stream to S3**
 
-The following ``cp`` example uploads a local file stream from standard input to a specified bucket and key. This command produces no output. ::
+The following ``cp`` example uploads a local file stream from standard input to a specified bucket and key. ::
 
     aws s3 cp - s3://amzn-s3-demo-bucket/stream.txt
+
+This command produces no output.
 
 .. WARNING:: PowerShell may alter the encoding of or add a CRLF to piped input.
 
 **Example 12: To upload a local file stream that is larger than 50GB to S3**
 
-The following ``cp`` example uploads a 51GB local file stream from standard input to a specified bucket and key.  The ``--expected-size`` option must be provided, or the upload may fail when it reaches the default part limit of 10,000. This command produces no output. ::
+The following ``cp`` example uploads a 51GB local file stream from standard input to a specified bucket and key.  The ``--expected-size`` option must be provided, or the upload may fail when it reaches the default part limit of 10,000. ::
 
     aws s3 cp - s3://amzn-s3-demo-bucket/stream.txt \
         --expected-size 54760833024
+
+This command produces no output.
 
 **Example 13: To download an S3 object as a local file stream**
 

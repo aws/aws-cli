@@ -33,33 +33,44 @@ Contents of ``filters.json``::
 Output::
 
     {
-        "TotalSize": 6,
-        "DimensionValues": [
+        "CoveragesByTime": [
             {
-                "Attributes": {},
-                "Value": "Amazon ElastiCache"
-            },
-            {
-                "Attributes": {},
-                "Value": "EC2 - Other"
-            },
-            {
-                "Attributes": {},
-                "Value": "Amazon Elastic Compute Cloud - Compute"
-            },
-            {
-                "Attributes": {},
-                "Value": "Amazon Elastic Load Balancing"
-            },
-            {
-                "Attributes": {},
-                "Value": "Amazon Elastic MapReduce"
-            },
-            {
-                "Attributes": {},
-                "Value": "Amazon Elasticsearch Service"
+                "TimePeriod": {
+                    "Start": "2017-07-01",
+                    "End": "2017-10-01"
+                },
+                "Groups": [
+                    {
+                        "Attributes": {
+                            "region": "us-east-1"
+                        },
+                        "Coverage": {
+                            "CoverageHours": {
+                                "OnDemandHours": "3000",
+                                "ReservedHours": "1000",
+                                "TotalRunningHours": "4000",
+                                "CoverageHoursPercentage": "25"
+                            }
+                        }
+                    }
+                ],
+                "Total": {
+                    "CoverageHours": {
+                        "OnDemandHours": "3000",
+                        "ReservedHours": "1000",
+                        "TotalRunningHours": "4000",
+                        "CoverageHoursPercentage": "25"
+                    }
+                }
             }
         ],
-        "ReturnSize": 6
+        "Total": {
+            "CoverageHours": {
+                "OnDemandHours": "3000",
+                "ReservedHours": "1000",
+                "TotalRunningHours": "4000",
+                "CoverageHoursPercentage": "25"
+            }
+        }
     }
 

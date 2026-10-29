@@ -17,8 +17,10 @@ Windows command. ::
 Output::
 
     {
-        "IpamPoolCidr": {
-            "Cidr": "10.0.0.0/24",
-            "State": "provisioned"
-        }
+        "IpamPoolCidrs": [
+            {
+                "Cidr": "10.0.0.0/24",
+                "State": "provisioned"
+            }
+        ]
     }

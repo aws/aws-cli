@@ -21,7 +21,7 @@ Output::
                 ],
                 "FindingProviderFields": {
                     "Severity": {
-                        "Original": 0,
+                        "Original": "0",
                         "Label": "INFORMATIONAL"
                     },
                     "Types": [
@@ -33,7 +33,7 @@ Output::
                 "CreatedAt": "2020-06-02T14:02:49.159Z",
                 "UpdatedAt": "2020-06-02T14:02:52.397Z",
                 "Severity": {
-                    "Original": 0,
+                    "Original": "0",
                     "Label": "INFORMATIONAL",
                     "Normalized": 0
                 },
@@ -109,7 +109,7 @@ Output::
                 ],
                 "FindingProviderFields": {
                     "Severity": {
-                        "Original": 90,
+                        "Original": "90",
                         "Label": "CRITICAL"
                     },
                     "Types": [
@@ -121,7 +121,7 @@ Output::
                 "CreatedAt": "2020-05-21T20:16:34.752Z",
                 "UpdatedAt": "2020-06-09T08:16:36.430Z",
                 "Severity": {
-                    "Original": 90,
+                    "Original": "90",
                     "Label": "CRITICAL",
                     "Normalized": 90
                 },

@@ -12,10 +12,12 @@ To get the ``ETag``, use the
 <get-cloud-front-origin-access-identity.html>`_ or
 `get-cloud-front-origin-access-identity-config
 <get-cloud-front-origin-access-identity-config.html>`_ command.
-Use the ``--if-match`` option to provide the OAI's ``ETag``. This command produces no output. ::
+Use the ``--if-match`` option to provide the OAI's ``ETag``. ::
 
     aws cloudfront delete-cloud-front-origin-access-identity \
         --id E74FTE3AEXAMPLE \
         --if-match E2QWRUHEXAMPLE
+
+This command produces no output.
 
 When successful, this command has no output.

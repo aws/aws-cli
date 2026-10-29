@@ -26,7 +26,7 @@ Contents of ``instanceTypeSpecification.json``::
 Output::
 
     {
-        "Status": "submitted", 
+        "State": "submitted", 
         "TotalFulfilledCapacity": 0.0, 
         "CapacityReservationFleetId": "crf-abcdef01234567890", 
         "TotalTargetCapacity": 24

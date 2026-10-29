@@ -7,19 +7,16 @@ The following ``describe-reserved-nodes`` example shows a reserved node offering
 Output::
 
     {
-        "ResponseMetadata": {
-            "RequestId": "bc29ce2e-7600-11e2-9949-4b361e7420b7"
-        },
         "ReservedNodes": [
             {
                 "OfferingType": "Heavy Utilization",
-                "FixedPrice": "",
+                "FixedPrice": 3000.0,
                 "NodeType": "dw.hs1.xlarge",
                 "ReservedNodeId": "1ba8e2e3-bc01-4d65-b35d-a4a3e931547e",
-                "UsagePrice": "",
+                "UsagePrice": 0.0,
                 "RecurringCharges": [
                     {
-                        "RecurringChargeAmount": "",
+                        "RecurringChargeAmount": 0.21,
                         "RecurringChargeFrequency": "Hourly"
                     } ],
                 "NodeCount": 1,

@@ -1,8 +1,9 @@
 **To display detailed information about a thing**
 
-The following ``delete-thing`` example deletes a thing from the AWS IoT registry for your AWS account. 
+The following ``delete-thing`` example deletes a thing from the AWS IoT registry for your AWS account. ::
 
-    aws iot delete-thing --thing-name "FourthBulb"
+    aws iot delete-thing \
+        --thing-name "FourthBulb"
 
 This command produces no output.
 

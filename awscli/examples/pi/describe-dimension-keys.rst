@@ -76,15 +76,10 @@ Output::
     {
         "AlignedEndTime": 1.5270804E9,
         "AlignedStartTime": 1.5270264E9,
-        "Identifier": "db-abcdefg123456789",
-        "MetricList": [
+        "Keys": [
             {
-                "Keys": [
-                    {
-                        "Dimensions": {"db.sql.id": "AKIAIOSFODNN7EXAMPLE", "db.sql.statement": "SELECT * FROM customers WHERE customer_id = 123"},
-                        "Total": 25.5,"Partitions": [12.3, 13.2]
-                    }
-                ]
+                "Dimensions": {"db.sql.id": "AKIAIOSFODNN7EXAMPLE", "db.sql.statement": "SELECT * FROM customers WHERE customer_id = 123"},
+                "Total": 25.5,"Partitions": [12.3, 13.2]
             }
         ]
     }

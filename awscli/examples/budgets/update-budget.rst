@@ -1,6 +1,6 @@
 **To replace a budget for a Cost and Usage budget**
 
-The following ``update-budget`` example replaces a Cost and Usage budget with a new budget. This command produces no output. ::
+The following ``update-budget`` example replaces a Cost and Usage budget with a new budget. ::
 
     aws budgets update-budget \
         --account-id 111122223333 \
@@ -39,4 +39,6 @@ Contents of ``new-budget.json``::
         },
         "TimeUnit": "MONTHLY"
     }
+
+This command produces no output.
 

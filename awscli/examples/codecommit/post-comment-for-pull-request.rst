@@ -25,10 +25,9 @@ Output::
             "content": "These don't appear to be used anywhere. Can we remove them?",
             "creationDate": 1508369622.123,
             "deleted": false,
-            "CommentId": "",
             "lastModifiedDate": 1508369622.123,
             "callerReactions": [],
-            "reactionCounts": []
+            "reactionCounts": {}
         },
         "location": {
             "filePath": "ahs_count.py",

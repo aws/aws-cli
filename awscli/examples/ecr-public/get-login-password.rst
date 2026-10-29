@@ -8,7 +8,7 @@ The following ``get-login-password`` example retrieves and displays an authentic
         --username AWS \
         --password-stdin public.ecr.aws
 
-This command produces no output in the terminal but instead pipes the output to Docker.
+This command produces no output. The authentication token is piped to Docker.
 
 For more information, see `Authenticate to the public registry <https://docs.aws.amazon.com/AmazonECR/latest/public/public-registries.html#public-registry-auth>`__ in the *Amazon ECR Public*.
 
@@ -22,6 +22,6 @@ The following ``get-login-password`` example retrieves and displays an authentic
         --username AWS \
         --password-stdin public.ecr.aws/<your-public-registry-custom-alias>
 
-This command produces no output in the terminal but insteads pipes the output to Docker.
+This command produces no output. The authentication token is piped to Docker.
 
 For more information, see `Authenticate to your own Amazon ECR Public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-registries.html#public-registry-auth>`__ in the *Amazon ECR Public*.

@@ -10,7 +10,7 @@ Output::
         "GraphList": [ 
             { 
                 "Arn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-                "CreatedTime": 1579736111000
+                "CreatedTime": "2020-01-22T23:35:11+00:00"
             }
         ]
     }

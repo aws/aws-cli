@@ -14,15 +14,15 @@ Output::
             {
                 "ConnectionName": "my-connection",
                 "ProviderType": "Bitbucket",
-                "Status": "PENDING",
-                "ARN": "arn:aws:codestar-connections:us-east-1:123456789012:connection/aEXAMPLE-8aad-4d5d-8878-dfcab0bc441f",
+                "ConnectionStatus": "PENDING",
+                "ConnectionArn": "arn:aws:codestar-connections:us-east-1:123456789012:connection/aEXAMPLE-8aad-4d5d-8878-dfcab0bc441f",
                 "OwnerAccountId": "123456789012"
             },
             {
                 "ConnectionName": "my-other-connection",
                 "ProviderType": "Bitbucket",
-                "Status": "AVAILABLE",
-                "ARN": "arn:aws:codestar-connections:us-east-1:123456789012:connection/aEXAMPLE-8aad-4d5d-8878-dfcab0bc441f",
+                "ConnectionStatus": "AVAILABLE",
+                "ConnectionArn": "arn:aws:codestar-connections:us-east-1:123456789012:connection/aEXAMPLE-8aad-4d5d-8878-dfcab0bc441f",
                 "OwnerAccountId": "123456789012"
             }
         ],

@@ -140,7 +140,7 @@ Output::
                 "DICOMStudyTime": "140728",
                 "DICOMNumberOfStudyRelatedSeries": 1
             },
-            "lastUpdatedAt": "2022-12-06T21:40:59.429000+00:00"
+            "updatedAt": "2022-12-06T21:40:59.429000+00:00"
         }]
     }
 
@@ -198,7 +198,7 @@ Output::
                 "DICOMStudyTime": "140728",
                 "DICOMNumberOfStudyRelatedSeries": 1
             },
-            "lastUpdatedAt": "2022-12-06T21:40:59.429000+00:00"
+            "updatedAt": "2022-12-06T21:40:59.429000+00:00"
         }]
     }
 

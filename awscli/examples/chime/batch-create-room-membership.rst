@@ -10,18 +10,6 @@ The following ``batch-create-room-membership`` example adds multiple users to a 
 Output::
 
     {
-        "ResponseMetadata": {
-            "RequestId": "169ba401-d886-475f-8b3f-e01eac6fadfb",
-            "HTTPStatusCode": 201,
-            "HTTPHeaders": {
-                "x-amzn-requestid": "169ba401-d886-475f-8b3f-e01eac6fadfb",
-                "content-type": "application/json",
-                "content-length": "13",
-                "date": "Mon, 02 Dec 2019 22:46:58 GMT",
-                "connection": "keep-alive"
-            },
-            "RetryAttempts": 0
-        },
         "Errors": []
     }
 

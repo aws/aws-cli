@@ -23,6 +23,8 @@ run the following command. ::
         --query Policy \
         --output text > policy.json
 
+This command produces no output.
+
 You can then modify the ``policy.json`` file as needed.  Finally you can apply
 this modified policy back to the S3 bucket by running the following command. ::
 
@@ -52,4 +54,4 @@ Contents of ``policy.json``::
         ]
     }
 
-The ``put-bucket-policy`` command produces no output.
+This command produces no output.

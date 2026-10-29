@@ -28,9 +28,6 @@ Output::
             "SubnetGroupStatus": "Complete",
             "Description": "My subnet group",
             "ClusterSubnetGroupName": "mysubnetgroup"
-        },
-        "ResponseMetadata": {
-            "RequestId": "8da93e89-8372-f936-93a8-873918938197a"
         }
     }
 

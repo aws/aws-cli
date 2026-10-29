@@ -10,7 +10,7 @@ The following ``attach-volume`` example attaches a volume (``vol-1234567890abcde
 Output::
 
     {
-        "AttachTime": "YYYY-MM-DDTHH:MM:SS.000Z",
+        "AttachTime": "2024-03-10T21:47:12.000Z",
         "InstanceId": "i-01474ef662b89480",
         "VolumeId": "vol-1234567890abcdef0",
         "State": "attaching",

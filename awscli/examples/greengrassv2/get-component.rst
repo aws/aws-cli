@@ -8,7 +8,7 @@ The following ``get-component`` example downloads a Hello World component's reci
 
 #. Saves the decoded text to a file. The final section of the command (``> com.example.HelloWorld-1.0.0.json``) saves the decoded text to a file.
 
-The following command downloads the recipe. This command produces no output. ::
+The following command downloads the recipe. ::
 
     aws greengrassv2 get-component \
         --arn arn:aws:greengrass:us-west-2:123456789012:components:com.example.HelloWorld:versions:1.0.0 \
@@ -16,17 +16,21 @@ The following command downloads the recipe. This command produces no output. ::
         --query recipe \
         --output text | base64 --decode > com.example.HelloWorld-1.0.0.json
 
+This command produces no output.
+
 For more information, see `Manage components <https://docs.aws.amazon.com/greengrass/v2/developerguide/manage-components.html>`__ in the *AWS IoT Greengrass V2 Developer Guide*.
 
 **Example 2: To download a component's recipe in YAML format (Windows CMD)**
 
-The following ``get-component`` example downloads a Hello World component's recipe to a file in YAML format. This command uses the ``certutil`` utility. This command produces no output. ::
+The following ``get-component`` example downloads a Hello World component's recipe to a file in YAML format. This command uses the ``certutil`` utility. ::
 
     aws greengrassv2 get-component ^
         --arn arn:aws:greengrass:us-west-2:675946970638:components:com.example.HelloWorld:versions:1.0.0 ^
         --recipe-output-format YAML ^
         --query recipe ^
         --output text > com.example.HelloWorld-1.0.0.yaml.b64
+
+This command produces no output.
 
 Then, use the ``certutil`` utility to decode the file. ::
 
@@ -36,13 +40,15 @@ For more information, see `Manage components <https://docs.aws.amazon.com/greeng
 
 **Example 3: To download a component's recipe in YAML format (Windows PowerShell)**
 
-The following ``get-component`` example downloads a Hello World component's recipe to a file in YAML format. This command uses the ``certutil`` utility. This command produces no output. ::
+The following ``get-component`` example downloads a Hello World component's recipe to a file in YAML format. This command uses the ``certutil`` utility. ::
 
     aws greengrassv2 get-component `
         --arn arn:aws:greengrass:us-west-2:675946970638:components:com.example.HelloWorld:versions:1.0.0 `
         --recipe-output-format YAML `
         --query recipe `
         --output text > com.example.HelloWorld-1.0.0.yaml.b64
+
+This command produces no output.
 
 Then, use the ``certutil`` utility to decode the file. ::
 

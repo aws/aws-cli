@@ -5,6 +5,6 @@ The following ``start-configuration-recorder`` example starts the default config
     aws configservice start-configuration-recorder \
         --configuration-recorder-name default
 
-If the command succeeds, it produces no output. To verify that AWS Config is recording your resources, run the `get-status`__ command.
+This command produces no output. To verify that AWS Config is recording your resources, run the `get-status`__ command.
 
 .. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/get-status.html

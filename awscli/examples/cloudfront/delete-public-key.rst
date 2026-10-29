@@ -12,10 +12,12 @@ To get the ``ETag``, use the
 <get-public-key.html>`_ or
 `get-public-key-config
 <get-public-key-config.html>`_ command.
-Use the ``--if-match`` option to provide the public key's ``ETag``. This command produces no output. ::
+Use the ``--if-match`` option to provide the public key's ``ETag``. ::
 
     aws cloudfront delete-public-key \
         --id KDFB19YGCR002 \
         --if-match E2QWRUHEXAMPLE
+
+This command produces no output.
 
 When successful, this command has no output.

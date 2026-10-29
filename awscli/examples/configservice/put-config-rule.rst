@@ -26,7 +26,7 @@ Contents of ``RequiredTagsForEC2Instances.json``::
 
 For the ``ComplianceResourceTypes`` attribute, this JSON code limits the scope to resources of the ``AWS::EC2::Instance`` type, so AWS Config will evaluate only EC2 instances against the rule. Because the rule is a managed rule, the ``Owner`` attribute is set to ``AWS``, and the ``SourceIdentifier`` attribute is set to the rule identifier, ``REQUIRED_TAGS``. For the ``InputParameters`` attribute, the tag keys that the rule requires, ``CostCenter`` and ``Owner``, are specified.
 
-If the command succeeds, it produces no output. To verify the rule configuration, run the `describe-config-rules`__ command, and specify the rule name.
+This command produces no output. To verify the rule configuration, run the `describe-config-rules`__ command, and specify the rule name.
 
 .. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-config-rules.html
 
@@ -64,7 +64,7 @@ Contents of ``InstanceTypesAreT2micro.json``::
 
 For the ``ComplianceResourceTypes`` attribute, this JSON code limits the scope to resources of the ``AWS::EC2::Instance`` type, so AWS Config will evaluate only EC2 instances against the rule. Because this rule is a customer managed rule, the ``Owner`` attribute is set to ``CUSTOM_LAMBDA``, and the ``SourceIdentifier`` attribute is set to the ARN of the AWS Lambda function. The ``SourceDetails`` object is required. The parameters that are specified for the ``InputParameters`` attribute are passed to the AWS Lambda function when AWS Config invokes it to evaluate resources against the rule.
 
-If the command succeeds, it produces no output. To verify the rule configuration, run the `describe-config-rules`__ command, and specify the rule name.
+This command produces no output. To verify the rule configuration, run the `describe-config-rules`__ command, and specify the rule name.
 
 .. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-config-rules.html
 

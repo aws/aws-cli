@@ -9,7 +9,7 @@ The following ``describe-agents`` example describes collection agents with colle
 Output::
 
     {
-        "Snapshots": [
+        "agentsInfo": [
             {
                 "version": "1.0.40.0",
                 "agentType": "EC2",

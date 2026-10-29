@@ -50,6 +50,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
     ExcludeAnnotationDirectiveSubscriber,
+    FullObjectChecksumUnavailableSubscriber,
     ProvideETagSubscriber,
     ProvideFullObjectChecksumSubscriber,
     ProvideLastModifiedTimeSubscriber,
@@ -753,6 +754,9 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         actual_subscribers = download_call_kwargs['subscribers']
         subscriber_types = [type(s) for s in actual_subscribers]
         self.assertIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
 
     def test_submit_without_full_object_checksum(self):
         fileinfo = self.create_file_info(self.key)
@@ -761,8 +765,11 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         actual_subscribers = download_call_kwargs['subscribers']
         subscriber_types = [type(s) for s in actual_subscribers]
         self.assertNotIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
 
-    def test_submit_with_composite_checksum_does_not_add_subscriber(self):
+    def test_submit_with_composite_checksum_marks_unavailable(self):
         fileinfo = self.create_file_info(
             self.key,
             associated_response_data={
@@ -775,6 +782,66 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         actual_subscribers = download_call_kwargs['subscribers']
         subscriber_types = [type(s) for s in actual_subscribers]
         self.assertNotIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+        self.assertIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def get_download_subscriber_types(self, associated_response_data):
+        fileinfo = self.create_file_info(
+            self.key, associated_response_data=associated_response_data
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        return [type(s) for s in download_call_kwargs['subscribers']]
+
+    def test_uncombinable_full_object_checksum_not_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {'ChecksumType': 'FULL_OBJECT', 'ChecksumSHA256': 'abc123=='}
+        )
+        self.assertNotIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def test_no_checksum_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {'Size': 100, 'ETag': '"foo"'}
+        )
+        self.assertIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def test_listed_full_object_checksum_not_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {
+                'Size': 100,
+                'ChecksumType': 'FULL_OBJECT',
+                'ChecksumAlgorithm': ['CRC64NVME'],
+            }
+        )
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def test_listed_composite_checksum_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {
+                'Size': 100,
+                'ChecksumType': 'COMPOSITE',
+                'ChecksumAlgorithm': ['CRC32'],
+            }
+        )
+        self.assertIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def test_listed_checksum_without_type_not_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {'Size': 100, 'ChecksumAlgorithm': ['CRC32']}
+        )
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
 
 
 class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):

@@ -13,7 +13,14 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscrt.s3 import S3RequestTlsMode, S3RequestType, S3ResponseError
+from awscrt.s3 import (
+    S3ChecksumAlgorithm,
+    S3ChecksumConfig,
+    S3ChecksumValidationMode,
+    S3RequestTlsMode,
+    S3RequestType,
+    S3ResponseError,
+)
 from botocore.response import StreamingBody
 
 from awscli.compat import BytesIO, OrderedDict
@@ -3364,6 +3371,120 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             expected_path='/key2',
             expected_recv_startswith=os.path.join(self.files.rootdir, 'key2'),
         )
+
+    def get_crt_checksum_configs(self):
+        return [
+            crt_request[1]['checksum_config']
+            for crt_request in self.get_crt_make_request_calls()
+        ]
+
+    def get_crt_if_match_headers(self):
+        return [
+            crt_request[1]['request'].headers.get('If-Match')
+            for crt_request in self.get_crt_make_request_calls()
+        ]
+
+    def test_download_passes_full_object_checksum_to_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response(
+            headers={
+                'x-amz-checksum-crc64nvme': 'abcdefghijk=',
+                'x-amz-checksum-type': 'FULL_OBJECT',
+            }
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    expected_checksum='abcdefghijk=',
+                    expected_checksum_algorithm=S3ChecksumAlgorithm.CRC64NVME,
+                )
+            ],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'])
+
+    def test_download_without_full_object_checksum_using_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response(
+            headers={
+                'x-amz-checksum-crc32': 'abcdef==-2',
+                'x-amz-checksum-type': 'COMPOSITE',
+            }
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    response_validation_mode=(
+                        S3ChecksumValidationMode.REQUEST_ONLY
+                    ),
+                )
+            ],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'])
+
+    def test_recursive_download_without_checksum_using_crt_client(self):
+        cmdline = [
+            's3',
+            'cp',
+            's3://bucket/',
+            self.files.rootdir,
+            '--recursive',
+        ]
+        self.add_botocore_list_objects_response(['key1', 'key2'])
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    response_validation_mode=(
+                        S3ChecksumValidationMode.REQUEST_ONLY
+                    ),
+                )
+            ]
+            * 2,
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'] * 2)
+
+    def test_recursive_download_with_full_object_checksum_using_crt_client(
+        self,
+    ):
+        cmdline = [
+            's3',
+            'cp',
+            's3://bucket/',
+            self.files.rootdir,
+            '--recursive',
+        ]
+        self.add_botocore_list_objects_response(
+            ['key1', 'key2'],
+            extra_xml=(
+                '<ChecksumAlgorithm>CRC64NVME</ChecksumAlgorithm>'
+                '<ChecksumType>FULL_OBJECT</ChecksumType>'
+            ),
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [S3ChecksumConfig(validate_response=True)] * 2,
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'] * 2)
+
+    def test_streaming_download_keeps_crt_checksum_lookup(self):
+        cmdline = ['s3', 'cp', 's3://bucket/key', '-']
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [S3ChecksumConfig(validate_response=True)],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), [None])
 
     def test_does_not_use_crt_client_for_copies(self):
         cmdline = ['s3', 'cp', 's3://bucket/key', 's3://otherbucket/']

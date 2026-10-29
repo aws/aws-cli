@@ -39,6 +39,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
     ExcludeAnnotationDirectiveSubscriber,
+    FullObjectChecksumUnavailableSubscriber,
     OnDoneFilteredSubscriber,
     ProvideETagSubscriber,
     ProvideFullObjectChecksumSubscriber,
@@ -96,16 +97,13 @@ class TestProvideEtagSubscriber:
         subscriber.on_queued(transfer_future)
         assert transfer_meta.etag == etag
 
-    def test_does_not_try_to_set_etag_on_crt_transfer_future(self, caplog):
-        caplog.set_level(logging.DEBUG)
+    def test_etag_set_on_crt_transfer_future(self):
         crt_transfer_future = mock.Mock(spec=CRTTransferFuture)
         crt_transfer_future.meta = CRTTransferMeta()
 
         subscriber = ProvideETagSubscriber('myetag')
         subscriber.on_queued(crt_transfer_future)
-        assert not hasattr(crt_transfer_future.meta, 'etag')
-
-        assert "Not providing object ETag." in caplog.text
+        assert crt_transfer_future.meta.etag == 'myetag'
 
 
 class TestProvideFullObjectChecksumSubscriber:
@@ -119,17 +117,46 @@ class TestProvideFullObjectChecksumSubscriber:
         subscriber.on_queued(transfer_future)
         assert transfer_meta.full_object_checksum == checksum_info
 
-    def test_does_not_try_to_set_on_crt_transfer_future(self, caplog):
-        caplog.set_level(logging.DEBUG)
+    def test_checksum_set_on_crt_transfer_future(self):
         crt_transfer_future = mock.Mock(spec=CRTTransferFuture)
         crt_transfer_future.meta = CRTTransferMeta()
+        checksum_info = FullObjectChecksum('crc32', 'abc123==')
+
+        subscriber = ProvideFullObjectChecksumSubscriber(checksum_info)
+        subscriber.on_queued(crt_transfer_future)
+        assert crt_transfer_future.meta.full_object_checksum == checksum_info
+
+    def test_does_not_try_to_set_when_unsupported(self, caplog):
+        caplog.set_level(logging.DEBUG)
+        transfer_future = mock.Mock(spec=TransferFuture)
+        transfer_future.meta = object()
 
         subscriber = ProvideFullObjectChecksumSubscriber(
             FullObjectChecksum('crc32', 'abc123==')
         )
-        subscriber.on_queued(crt_transfer_future)
-        assert not hasattr(crt_transfer_future.meta, 'full_object_checksum')
+        subscriber.on_queued(transfer_future)
         assert "Not providing full object checksum." in caplog.text
+
+
+class TestFullObjectChecksumUnavailableSubscriber:
+    def test_marks_crt_transfer_future(self):
+        crt_transfer_future = mock.Mock(spec=CRTTransferFuture)
+        crt_transfer_future.meta = CRTTransferMeta()
+
+        subscriber = FullObjectChecksumUnavailableSubscriber()
+        subscriber.on_queued(crt_transfer_future)
+        assert crt_transfer_future.meta.full_object_checksum_unavailable
+
+    def test_does_not_try_to_mark_transfer_future(self, caplog):
+        caplog.set_level(logging.DEBUG)
+        transfer_meta = TransferMeta()
+        transfer_future = mock.Mock(spec=TransferFuture)
+        transfer_future.meta = transfer_meta
+
+        subscriber = FullObjectChecksumUnavailableSubscriber()
+        subscriber.on_queued(transfer_future)
+        assert not hasattr(transfer_meta, 'full_object_checksum_unavailable')
+        assert "Not marking full object checksum unavailable." in caplog.text
 
 
 class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):

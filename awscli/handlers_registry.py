@@ -535,6 +535,9 @@ PLUGIN_REGISTRY = {
             'register_agent_toolkit_commands',
         )
     ],
+    'building-command-table.athena': [
+        ('awscli.customizations.athena', 'register')
+    ],
     'building-command-table.bedrock-agent-runtime': [
         ('awscli.customizations.removals', 'register_removals')
     ],

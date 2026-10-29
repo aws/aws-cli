@@ -22,6 +22,7 @@ at the man output, we look one step before at the generated rst output
 
 """
 
+import contextlib
 import json
 import os
 import re
@@ -64,6 +65,10 @@ EXAMPLES_DIR = os.path.join(
 
 ALLOWED_FILENAME_CHAR_REGEX = re.compile(r'([a-z0-9_\-\.]*$)')
 HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
+# Tokens that end the arguments passed to the CLI.  A lone "<" is a
+# redirect, but "<value>" is a placeholder.
+SHELL_OPERATORS = {'<', '&&', '||', ';', '&', '2>', '2>&1'}
+SHELL_OPERATOR_PREFIXES = ('>', '|')
 
 # Used by the checks that the examples follow the AWS CLI code example
 # style guide: https://aws.github.io/aws-cli/docs_styleguide.html
@@ -1149,21 +1154,19 @@ class CommandValidator:
             # Strip newlines from arguments that may have been included due to
             # backslash line continuations in the RST examples
             command_parts = [part.lstrip('\n') for part in command_parts]
+            # Only the arguments before a redirect or pipe, such as
+            # "> skeleton.json", are passed to the CLI.
+            for i, part in enumerate(command_parts):
+                if part in SHELL_OPERATORS or part.startswith(
+                    SHELL_OPERATOR_PREFIXES
+                ):
+                    command_parts = command_parts[:i]
+                    break
         except Exception as e:
             raise AssertionError(
                 "Failed to parse this example as shell command: %s\n\n"
                 "Error:\n%s\n" % (command, e)
             )
-
-        # TODO - for now skip validation if command uses
-        # --cli-input-json, --cli-input-yaml, or --generate-cli-skeleton
-        if any(
-            arg.startswith('--cli-input-json')
-            or arg.startswith('--cli-input-yaml')
-            or arg == '--generate-cli-skeleton'
-            for arg in command_parts
-        ):
-            return
 
         try:
             # Parse global args
@@ -1198,15 +1201,16 @@ class CommandValidator:
 
             # Validate all arguments using the operation's argument parser
             arg_table = operation_cmd.arg_table
-            operation_parser = ArgTableArgParser(arg_table)
-
             errors = []
-            operation_parser._print_message = (
-                lambda message, file: errors.append(message)
-            )
-
             try:
-                operation_parser.parse_known_args(remaining_args)
+                with self._cli_required_args(
+                    service_name, operation_name, arg_table, remaining_args
+                ):
+                    operation_parser = ArgTableArgParser(arg_table)
+                    operation_parser._print_message = (
+                        lambda message, file: errors.append(message)
+                    )
+                    operation_parser.parse_known_args(remaining_args)
             except (SystemExit, Exception) as e:
                 error_msg = [
                     f'Invalid CLI command: {command}\n\n',
@@ -1224,6 +1228,32 @@ class CommandValidator:
                 f"File: {filename}\n"
                 f"Error: {e}"
             )
+
+    @contextlib.contextmanager
+    def _cli_required_args(
+        self, service_name, operation_name, arg_table, args
+    ):
+        """Apply the CLI's rules for which arguments are required.
+
+        Arguments such as ``--cli-input-json`` and ``--generate-cli-skeleton``
+        make all other arguments optional when they are used.  The CLI does
+        this in a handler for the event emitted below, which changes the
+        argument table in place, so the original values are restored
+        afterwards for the other examples that use the same operation.
+        """
+        required = {name: arg.required for name, arg in arg_table.items()}
+        try:
+            self.driver.session.emit(
+                'before-building-argument-table-parser.'
+                f'{service_name}.{operation_name}',
+                argument_table=arg_table,
+                args=args,
+                session=self.driver.session,
+            )
+            yield
+        finally:
+            for name, arg in arg_table.items():
+                arg.required = required[name]
 
 
 class CollectCLICommands(docutils.nodes.GenericNodeVisitor):

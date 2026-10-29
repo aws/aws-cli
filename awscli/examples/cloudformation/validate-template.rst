@@ -9,13 +9,10 @@ Contents of ``sampletemplate.json``::
 
     {
         "AWSTemplateFormatVersion": "2010-09-09",
-        "Description": "AWS CloudFormation Sample Template S3_Bucket: Sample template showing how to create a publicly accessible S3 bucket. **WARNING** This template creates an S3 bucket. You will be billed for the AWS resources used if you create a stack from this template.",
+        "Description": "AWS CloudFormation Sample Template S3_Bucket: Sample template showing how to create an S3 bucket. **WARNING** This template creates an S3 bucket. You will be billed for the AWS resources used if you create a stack from this template.",
         "Resources": {
             "S3Bucket": {
                 "Type": "AWS::S3::Bucket",
-                "Properties": {
-                    "AccessControl": "PublicRead"
-                },
                 "DeletionPolicy": "Retain"
             }
         },
@@ -32,7 +29,7 @@ Contents of ``sampletemplate.json``::
 Output::
 
     {
-        "Description": "AWS CloudFormation Sample Template S3_Bucket: Sample template showing how to create a publicly accessible S3 bucket. **WARNING** This template creates an S3 bucket. You will be billed for the AWS resources used if you create a stack from this template.",
+        "Description": "AWS CloudFormation Sample Template S3_Bucket: Sample template showing how to create an S3 bucket. **WARNING** This template creates an S3 bucket. You will be billed for the AWS resources used if you create a stack from this template.",
         "Parameters": [],
         "Capabilities": []
     }

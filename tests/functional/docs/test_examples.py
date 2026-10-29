@@ -70,6 +70,9 @@ ERROR_LINE_RE = re.compile(r'^Line (\d+):')
 LIST_ITEM_RE = re.compile(r'^(\s*(?:[*+-]|\d+\.|#\.)\s+)\S')
 # An OS named as the shell the example runs in, as opposed to a resource
 # such as "Windows AMIs" or "maintenance windows".
+CONTENTS_HEADER_RE = re.compile(r'^Contents of ``(?P<name>[^`]+)``::$')
+LOOSE_CONTENTS_HEADER_RE = re.compile(r'^Contents of\b', re.IGNORECASE)
+FILE_REF_RE = re.compile(r'(?<!\w)file://(?P<path>[^\s\'"]+)')
 OPTION_RE = re.compile(r'(?:^|\s)--(?P<name>[A-Za-z0-9][\w-]*)')
 # A pipe, redirect or command separator ends the arguments of an aws
 # command, e.g. "--output text | base64 --decode".  "<value>" is a
@@ -515,6 +518,42 @@ def check_command(example):
     return errors
 
 
+def check_file_contents(example):
+    shown = set()
+    errors = []
+    for block in example.blocks:
+        if block.kind != 'para':
+            continue
+        header = block.lines[-1].strip()
+        match = CONTENTS_HEADER_RE.match(header)
+        if match:
+            shown.add(match.group('name'))
+            shown.add(os.path.basename(match.group('name')))
+            if block.lines[-1][:1].isspace():
+                lineno = block.lineno + len(block.lines) - 1
+                errors.append(
+                    f'Line {lineno}: the "Contents of" line must not be '
+                    'indented'
+                )
+        elif LOOSE_CONTENTS_HEADER_RE.match(header) and header.endswith('::'):
+            lineno = block.lineno + len(block.lines) - 1
+            errors.append(
+                f'Line {lineno}: use the format "Contents of ``<file>``::"'
+            )
+    for block in example.commands:
+        for offset, line in enumerate(block.lines):
+            for match in FILE_REF_RE.finditer(line):
+                ref = match.group('path')
+                if ref in shown or os.path.basename(ref) in shown:
+                    continue
+                name = os.path.basename(ref)
+                errors.append(
+                    f'Line {block.lineno + offset}: file://{ref} has no '
+                    f'"Contents of ``{name}``::" block'
+                )
+    return errors
+
+
 def _is_description(filename):
     if filename == '_examples.rst':
         return False
@@ -911,6 +950,13 @@ def test_example_command(example_file):
     example = Example(example_file)
     errors = check_command(example)
     _assert_follows_rule('command', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_file_contents(example_file):
+    example = Example(example_file)
+    errors = check_file_contents(example)
+    _assert_follows_rule('file-contents', example, errors)
 
 
 def test_example_style_exceptions_exist():

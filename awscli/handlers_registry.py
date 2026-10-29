@@ -560,7 +560,11 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.cloudtrail', 'initialize')
     ],
     'building-command-table.cloudwatch': [
-        ('awscli.customizations.cloudwatch', 'register_rename_otel_commands')
+        ('awscli.customizations.cloudwatch', 'register_rename_otel_commands'),
+        (
+            'awscli.customizations.cloudwatch_alarm_metric_sweep',
+            'register',
+        ),
     ],
     'building-command-table.codeartifact': [
         (

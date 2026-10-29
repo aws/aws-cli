@@ -3821,6 +3821,28 @@
       "member":{"shape":"AllowedClient"},
       "min":1
     },
+    "AllowedPort":{
+      "type":"structure",
+      "members":{
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>A single port that is reachable through the runtime's session URL.</p>"
+        },
+        "portRange":{
+          "shape":"PortRange",
+          "documentation":"<p>An inclusive range of ports that are reachable through the runtime's session URL.</p>"
+        }
+      },
+      "documentation":"<p>A port or port range that is reachable through the runtime's session URL. Specify exactly one of <code>port</code> or <code>portRange</code>.</p>",
+      "union":true
+    },
+    "AllowedPorts":{
+      "type":"list",
+      "member":{"shape":"AllowedPort"},
+      "documentation":"<p>Additional ports on the AgentCore Runtime that are reachable through the runtime's session URL. The list can contain up to five non-overlapping entries.</p>",
+      "max":5,
+      "min":1
+    },
     "AllowedQueryParameters":{
       "type":"list",
       "member":{"shape":"HttpQueryParameterName"},
@@ -5821,7 +5843,10 @@
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>Configuration for HTTP request headers that will be passed through to the runtime.</p>"
         },
-        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
+        "protocolConfiguration":{
+          "shape":"ProtocolConfiguration",
+          "documentation":"<p>The protocol configuration for the AgentCore Runtime, including the protocol, port, and path on which the agent server is available.</p>"
+        },
         "lifecycleConfiguration":{
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The life cycle configuration for the AgentCore Runtime.</p>"
@@ -5845,6 +5870,10 @@
         "platformVersion":{
           "shape":"PlatformVersion",
           "documentation":"<p>The version of the runtime platform to use for the AgentCore Runtime.</p>"
+        },
+        "allowedPorts":{
+          "shape":"AllowedPorts",
+          "documentation":"<p>The additional ports on the AgentCore Runtime that are reachable through the runtime's session URL. Specify one to five non-overlapping entries, each containing either a single port or an inclusive port range. Ports must be between <code>8000</code> and <code>12000</code>, excluding the reserved port <code>8443</code>.</p>"
         }
       }
     },
@@ -11569,7 +11598,10 @@
           "shape":"AgentRuntimeArtifact",
           "documentation":"<p>The artifact of the AgentCore Runtime.</p>"
         },
-        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
+        "protocolConfiguration":{
+          "shape":"ProtocolConfiguration",
+          "documentation":"<p>The protocol configuration for the AgentCore Runtime, including the protocol, port, and path on which the agent server is available.</p>"
+        },
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Environment variables set in the AgentCore Runtime environment.</p>"
@@ -11597,6 +11629,10 @@
         "platformVersion":{
           "shape":"PlatformVersion",
           "documentation":"<p>The version of the runtime platform used by the AgentCore Runtime.</p>"
+        },
+        "allowedPorts":{
+          "shape":"AllowedPorts",
+          "documentation":"<p>The additional ports on the AgentCore Runtime that are reachable through the runtime's session URL.</p>"
         }
       }
     },
@@ -20141,6 +20177,31 @@
         "IGNORE_ALL_FINDINGS"
       ]
     },
+    "Port":{
+      "type":"integer",
+      "documentation":"<p>A port between <code>8000</code> and <code>12000</code>. Port <code>8443</code> is reserved and cannot be used.</p>",
+      "box":true,
+      "max":12000,
+      "min":8000
+    },
+    "PortRange":{
+      "type":"structure",
+      "required":[
+        "from",
+        "to"
+      ],
+      "members":{
+        "from":{
+          "shape":"Port",
+          "documentation":"<p>The first port in the inclusive range.</p>"
+        },
+        "to":{
+          "shape":"Port",
+          "documentation":"<p>The last port in the inclusive range.</p>"
+        }
+      },
+      "documentation":"<p>An inclusive range of ports. The value of <code>from</code> must be less than or equal to the value of <code>to</code>.</p>"
+    },
     "PortalUrlType":{
       "type":"string",
       "max":2000,
@@ -20248,6 +20309,14 @@
         "serverProtocol":{
           "shape":"ServerProtocol",
           "documentation":"<p>The server protocol for the agent runtime. This field specifies which protocol the agent runtime uses to communicate with clients.</p>"
+        },
+        "port":{
+          "shape":"ServerPort",
+          "documentation":"<p>The port on which the agent server listens. The port must be between <code>8000</code> and <code>12000</code>, excluding the reserved port <code>8443</code>. When this field is omitted, the default is <code>8080</code> for <code>HTTP</code> and <code>AGUI</code>, <code>8000</code> for <code>MCP</code>, and <code>9000</code> for <code>A2A</code>.</p>"
+        },
+        "path":{
+          "shape":"ServerPath",
+          "documentation":"<p>The path on which the agent server accepts requests. The path must begin with <code>/</code>. When this field is omitted, the default is <code>/invocations</code> for <code>HTTP</code> and <code>AGUI</code>, <code>/mcp</code> for <code>MCP</code>, and <code>/</code> for <code>A2A</code>.</p>"
         }
       },
       "documentation":"<p>The protocol configuration for an agent runtime. This structure defines how the agent runtime communicates with clients.</p>"
@@ -21651,6 +21720,20 @@
         }
       },
       "documentation":"<p>The server definition for an MCP descriptor. Contains the schema version and inline content for the MCP server configuration.</p>"
+    },
+    "ServerPath":{
+      "type":"string",
+      "documentation":"<p>The path on which the agent server accepts requests. The path must begin with <code>/</code> and can contain up to 2,048 characters.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"/[A-Za-z0-9\\-._~/%]*"
+    },
+    "ServerPort":{
+      "type":"integer",
+      "documentation":"<p>A port between <code>8000</code> and <code>12000</code>. Port <code>8443</code> is reserved and cannot be used.</p>",
+      "box":true,
+      "max":12000,
+      "min":8000
     },
     "ServerProtocol":{
       "type":"string",
@@ -23232,7 +23315,10 @@
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>The updated configuration for HTTP request headers that will be passed through to the runtime.</p>"
         },
-        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
+        "protocolConfiguration":{
+          "shape":"ProtocolConfiguration",
+          "documentation":"<p>The updated protocol configuration for the AgentCore Runtime, including the protocol, port, and path on which the agent server is available.</p>"
+        },
         "lifecycleConfiguration":{
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The updated life cycle configuration for the AgentCore Runtime.</p>"
@@ -23256,6 +23342,10 @@
         "platformVersion":{
           "shape":"PlatformVersion",
           "documentation":"<p>The updated version of the runtime platform to use for the AgentCore Runtime.</p>"
+        },
+        "allowedPorts":{
+          "shape":"AllowedPorts",
+          "documentation":"<p>The updated additional ports on the AgentCore Runtime that are reachable through the runtime's session URL. Specify one to five non-overlapping entries, each containing either a single port or an inclusive port range. Ports must be between <code>8000</code> and <code>12000</code>, excluding the reserved port <code>8443</code>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

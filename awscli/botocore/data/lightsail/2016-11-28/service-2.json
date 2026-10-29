@@ -8127,6 +8127,10 @@
         "instanceName":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the instance.</p>"
+        },
+        "includeHealthStatus":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether to include the instance health status checks in the response of your request.</p> <p>When set to <code>true</code>, the response includes the <code>instanceStatus</code> and <code>systemStatus</code> of the instance. When omitted or set to <code>false</code>, the response doesn't include them.</p>"
         }
       }
     },
@@ -8205,6 +8209,10 @@
         "pageToken":{
           "shape":"string",
           "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetInstances</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>"
+        },
+        "includeHealthStatus":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether to include the instance health status checks of each instance in the response of your request.</p> <p>When set to <code>true</code>, the response includes the <code>instanceStatus</code> and <code>systemStatus</code> of each instance. When omitted or set to <code>false</code>, the response doesn't include them.</p>"
         }
       }
     },
@@ -9171,6 +9179,14 @@
         "metadataOptions":{
           "shape":"InstanceMetadataOptions",
           "documentation":"<p>The metadata options for the Amazon Lightsail instance.</p>"
+        },
+        "instanceStatus":{
+          "shape":"InstanceHealthStatus",
+          "documentation":"<p>Reports impaired functionality that stems from issues internal to the instance, such as impaired reachability.</p> <p>This value is returned only when you set <code>includeHealthStatus</code> to <code>true</code> in your request.</p>"
+        },
+        "systemStatus":{
+          "shape":"InstanceHealthStatus",
+          "documentation":"<p>Reports impaired functionality that stems from issues related to the systems that support an instance, such as hardware failures and network connectivity problems.</p> <p>This value is returned only when you set <code>includeHealthStatus</code> to <code>true</code> in your request.</p>"
         }
       },
       "documentation":"<p>Describes an instance (a virtual private server).</p>"
@@ -9321,6 +9337,65 @@
         "unused",
         "draining",
         "unavailable"
+      ]
+    },
+    "InstanceHealthStatus":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"InstanceHealthStatusValue",
+          "documentation":"<p>The status.</p> <p>The following values are possible:</p> <ul> <li> <p> <code>ok</code> - All checks are passing. The instance is reachable.</p> </li> <li> <p> <code>impaired</code> - One or more checks have failed.</p> </li> <li> <p> <code>initializing</code> - The instance was recently started, and the checks are in progress.</p> </li> <li> <p> <code>insufficient-data</code> - There isn't enough data yet to determine the result.</p> </li> <li> <p> <code>not-applicable</code> - The check doesn't apply because the instance isn't running.</p> </li> </ul>"
+        },
+        "details":{
+          "shape":"InstanceHealthStatusDetailList",
+          "documentation":"<p>The system instance health or instance health.</p>"
+        }
+      },
+      "documentation":"<p>Describes the status of an Amazon Lightsail instance.</p>"
+    },
+    "InstanceHealthStatusDetail":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"InstanceHealthStatusDetailName",
+          "documentation":"<p>The type of instance status. The only possible value is <code>reachability</code>.</p>"
+        },
+        "status":{
+          "shape":"InstanceHealthStatusDetailValue",
+          "documentation":"<p>The status.</p> <p>The following values are possible:</p> <ul> <li> <p> <code>passed</code> - The check passed.</p> </li> <li> <p> <code>failed</code> - The check failed.</p> </li> <li> <p> <code>initializing</code> - The check is in progress.</p> </li> <li> <p> <code>insufficient-data</code> - There isn't enough data yet to determine the result.</p> </li> </ul>"
+        },
+        "impairedSince":{
+          "shape":"IsoDate",
+          "documentation":"<p>The time when a status check failed. For an instance that was launched and impaired, this is the time when the instance was launched.</p>"
+        }
+      },
+      "documentation":"<p>Describes the instance status.</p>"
+    },
+    "InstanceHealthStatusDetailList":{
+      "type":"list",
+      "member":{"shape":"InstanceHealthStatusDetail"}
+    },
+    "InstanceHealthStatusDetailName":{
+      "type":"string",
+      "enum":["reachability"]
+    },
+    "InstanceHealthStatusDetailValue":{
+      "type":"string",
+      "enum":[
+        "passed",
+        "failed",
+        "insufficient-data",
+        "initializing"
+      ]
+    },
+    "InstanceHealthStatusValue":{
+      "type":"string",
+      "enum":[
+        "ok",
+        "impaired",
+        "initializing",
+        "insufficient-data",
+        "not-applicable"
       ]
     },
     "InstanceHealthSummary":{

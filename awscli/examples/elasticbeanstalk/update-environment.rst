@@ -102,7 +102,7 @@ Output::
         "VersionLabel": "7f58-stage-150812_025409",
         "Status": "Updating",
         "EnvironmentId": "e-wtp2rpqsej",
-        "EndpointURL": "awseb-e-w-AWSEBLoa-14XB83101Q4L-104QXY80921.sa-east-1.elb.amazonaws.com",
+        "EndpointURL": "awseb-e-w-AWSEBLoa-14XB83101Q4L-104QXY80921.us-west-2.elb.amazonaws.com",
         "SolutionStackName": "64bit Amazon Linux 2015.03 v2.0.0 running Tomcat 8 Java 8",
         "CNAME": "my-env.elasticbeanstalk.com",
         "Health": "Grey",

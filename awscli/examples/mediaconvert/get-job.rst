@@ -15,11 +15,11 @@ Output::
     {
         "Job": {
             "Status": "ERROR",
-            "Queue": "arn:aws:mediaconvert:region-name-1:012345678998:queues/Queue1",
+            "Queue": "arn:aws:mediaconvert:region-name-1:123456789012:queues/Queue1",
             "Settings": {
                 "Inputs": [
                     {
-                        "FileInput": "s3://my-input-bucket/file-name.mp4"
+                        "FileInput": "s3://amzn-s3-demo-bucket/file-name.mp4"
                     }
                 ],
                 "OutputGroups": [
@@ -41,10 +41,10 @@ Output::
                     }
                 ]
             },
-            "ErrorMessage": "Unable to open input file [s3://my-input-bucket/file-name.mp4]: [Failed probe/open: [Failed to read data: AssumeRole failed]]",
+            "ErrorMessage": "Unable to open input file [s3://amzn-s3-demo-bucket/file-name.mp4]: [Failed probe/open: [Failed to read data: AssumeRole failed]]",
             "ErrorCode": 1434,
-            "Role": "arn:aws:iam::012345678998:role/MediaConvertServiceRole",
-            "Arn": "arn:aws:mediaconvert:us-west-1:012345678998:jobs/1234567890987-1ab2c3",
+            "Role": "arn:aws:iam::123456789012:role/MediaConvertServiceRole",
+            "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:jobs/1234567890987-1ab2c3",
             "UserMetadata": {},
             "Timing": {
                 "FinishTime": 1517442131,

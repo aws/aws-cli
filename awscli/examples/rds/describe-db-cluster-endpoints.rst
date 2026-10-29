@@ -10,25 +10,25 @@ Output::
         "DBClusterEndpoints": [
             {
                 "DBClusterIdentifier": "my-database-1",
-                "Endpoint": "my-database-1.cluster-cnpexample.us-east-1.rds.amazonaws.com",
+                "Endpoint": "my-database-1.cluster-cnpexample.us-west-2.rds.amazonaws.com",
                 "Status": "creating",
                 "EndpointType": "WRITER"
             },
             {
                 "DBClusterIdentifier": "my-database-1",
-                "Endpoint": "my-database-1.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+                "Endpoint": "my-database-1.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
                 "Status": "creating",
                 "EndpointType": "READER"
             },
             {
                 "DBClusterIdentifier": "mydbcluster",
-                "Endpoint": "mydbcluster.cluster-cnpexamle.us-east-1.rds.amazonaws.com",
+                "Endpoint": "mydbcluster.cluster-cnpexamle.us-west-2.rds.amazonaws.com",
                 "Status": "available",
                 "EndpointType": "WRITER"
             },
             {
                 "DBClusterIdentifier": "mydbcluster",
-                "Endpoint": "mydbcluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+                "Endpoint": "mydbcluster.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
                 "Status": "available",
                 "EndpointType": "READER"
             }
@@ -48,7 +48,7 @@ Output::
         "DBClusterEndpoints": [
             {
                 "Status": "available",
-                "Endpoint": "serverless-cluster.cluster-cnpexample.us-east-1.rds.amazonaws.com",
+                "Endpoint": "serverless-cluster.cluster-cnpexample.us-west-2.rds.amazonaws.com",
                 "DBClusterIdentifier": "serverless-cluster",
                 "EndpointType": "WRITER"
             }

@@ -10,11 +10,11 @@ Output::
         "NotificationRules": [
             {
                 "Id": "dc82df7a-EXAMPLE",
-                "Arn": "arn:aws:codestar-notifications:us-east-1:123456789012:notificationrule/dc82df7a-EXAMPLE"
+                "Arn": "arn:aws:codestar-notifications:us-west-2:123456789012:notificationrule/dc82df7a-EXAMPLE"
             },
             {
                 "Id": "8d1f0983-EXAMPLE",
-                "Arn": "arn:aws:codestar-notifications:us-east-1:123456789012:notificationrule/8d1f0983-EXAMPLE"
+                "Arn": "arn:aws:codestar-notifications:us-west-2:123456789012:notificationrule/8d1f0983-EXAMPLE"
             }
         ]
     }

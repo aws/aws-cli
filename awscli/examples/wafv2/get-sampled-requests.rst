@@ -27,7 +27,7 @@ Output::
                     "Headers": [
                         {
                             "Name": "Host",
-                            "Value": "alb-test-1EXAMPLE1.us-east-1.elb.amazonaws.com"
+                            "Value": "alb-test-1EXAMPLE1.us-west-2.elb.amazonaws.com"
                         },
                         {
                             "Name": "Content-Length",
@@ -62,7 +62,7 @@ Output::
                     "Headers": [
                         {
                             "Name": "Host",
-                            "Value": "alb-test-1EXAMPLE1.us-east-1.elb.amazonaws.com"
+                            "Value": "alb-test-1EXAMPLE1.us-west-2.elb.amazonaws.com"
                         },
                         {
                             "Name": "Content-Length",
@@ -97,7 +97,7 @@ Output::
                     "Headers": [
                         {
                             "Name": "Host",
-                            "Value": "alb-test-1EXAMPLE1.us-east-1.elb.amazonaws.com"
+                            "Value": "alb-test-1EXAMPLE1.us-west-2.elb.amazonaws.com"
                         },
                         {
                             "Name": "Content-Length",
@@ -132,7 +132,7 @@ Output::
                     "Headers": [
                         {
                             "Name": "Host",
-                            "Value": "alb-test-1EXAMPLE1.us-east-1.elb.amazonaws.com"
+                            "Value": "alb-test-1EXAMPLE1.us-west-2.elb.amazonaws.com"
                         },
                         {
                             "Name": "Content-Length",

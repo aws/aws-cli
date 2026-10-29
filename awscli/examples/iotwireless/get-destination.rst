@@ -8,7 +8,7 @@ The following ``get-destination`` example gets information about the destination
 Output::
 
     {
-        "Arn": "arn:aws:iotwireless:us-east-1:123456789012:Destination/IoTWirelessDestination",
+        "Arn": "arn:aws:iotwireless:us-west-2:123456789012:Destination/IoTWirelessDestination",
         "Name": "IoTWirelessDestination",
         "Expression": "IoTWirelessRule",
         "ExpressionType": "RuleName",

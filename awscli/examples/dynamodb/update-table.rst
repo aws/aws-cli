@@ -47,7 +47,7 @@ Output::
             "TableSizeBytes": 182,
             "ItemCount": 2,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
-            "TableId": "abcd0123-01ab-23cd-0123-abcdef123456",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED",
                 "LastUpdateToPayPerRequestDateTime": "2020-07-28T13:14:48.366000-07:00"
@@ -129,7 +129,7 @@ Output::
             "TableSizeBytes": 182,
             "ItemCount": 2,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
-            "TableId": "abcd0123-01ab-23cd-0123-abcdef123456",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED",
                 "LastUpdateToPayPerRequestDateTime": "2020-07-28T13:14:48.366000-07:00"
@@ -211,7 +211,7 @@ Output::
             "TableSizeBytes": 182,
             "ItemCount": 2,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
-            "TableId": "abcd0123-01ab-23cd-0123-abcdef123456",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED",
                 "LastUpdateToPayPerRequestDateTime": "2020-07-28T13:14:48.366000-07:00"
@@ -323,7 +323,7 @@ Output::
             "TableSizeBytes": 182,
             "ItemCount": 2,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
-            "TableId": "abcd0123-01ab-23cd-0123-abcdef123456",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED",
                 "LastUpdateToPayPerRequestDateTime": "2020-07-28T13:14:48.366000-07:00"

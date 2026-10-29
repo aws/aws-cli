@@ -25,7 +25,7 @@ Output::
                 },
                 "Instances": [],
                 "State": "available",
-                "AvailabilityZone": "eu-west-1a",
+                "AvailabilityZone": "us-west-2a",
                 "AvailableCapacity": {
                     "AvailableInstanceCapacity": [
                         {

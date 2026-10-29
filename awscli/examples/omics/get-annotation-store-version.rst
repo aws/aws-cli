@@ -12,7 +12,7 @@ Output::
         "storeId": "4934045d1c6d",
         "id": "2a3f4a44aa7b",
         "status": "ACTIVE",
-        "versionArn": "arn:aws:omics:us-west-2:555555555555:annotationStore/my_annotation_store/version/my_version",
+        "versionArn": "arn:aws:omics:us-west-2:123456789012:annotationStore/my_annotation_store/version/my_version",
         "name": "my_annotation_store",
         "versionName": "my_version",
         "creationTime": "2023-07-21T17:15:49.251040+00:00",

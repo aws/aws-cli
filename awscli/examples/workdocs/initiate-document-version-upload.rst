@@ -23,7 +23,7 @@ Output::
                 "Status": "INITIALIZED",
                 "CreatedTimestamp": 1536773972.914,
                 "ModifiedTimestamp": 1536773972.914,
-                "CreatorId": "arn:aws:iam::123456789123:user/EXAMPLE"
+                "CreatorId": "arn:aws:iam::123456789012:user/EXAMPLE"
             },
             "ResourceState": "ACTIVE"
         },

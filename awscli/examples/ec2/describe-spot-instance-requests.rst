@@ -42,14 +42,14 @@ Output::
                         }
                     ],
                     "Placement": {
-                        "AvailabilityZone": "us-east-2b",
+                        "AvailabilityZone": "us-west-2b",
                         "Tenancy": "default"
                     },
                     "Monitoring": {
                         "Enabled": false
                     }
                 },
-                "LaunchedAvailabilityZone": "us-east-2b",
+                "LaunchedAvailabilityZone": "us-west-2b",
                 "ProductDescription": "Linux/UNIX",
                 "SpotInstanceRequestId": "sir-08b93456",
                 "SpotPrice": "0.010000",
@@ -71,7 +71,7 @@ Output::
 The following ``describe-spot-instance-requests`` example uses filters to scope the results to Spot Instance requests with the specified instance type in the specified Availability Zone. The example uses the ``--query`` parameter to display only the instance IDs. ::
 
     aws ec2 describe-spot-instance-requests \
-        --filters Name=launch.instance-type,Values=m3.medium Name=launched-availability-zone,Values=us-east-2a \
+        --filters Name=launch.instance-type,Values=m3.medium Name=launched-availability-zone,Values=us-west-2a \
         --query "SpotInstanceRequests[*].[InstanceId]" \
         --output text
 
@@ -117,14 +117,14 @@ Output::
                         }
                     ],
                     "Placement": {
-                        "AvailabilityZone": "us-east-2b",
+                        "AvailabilityZone": "us-west-2b",
                         "Tenancy": "default"
                     },
                     "Monitoring": {
                         "Enabled": false
                     }
                 },
-                "LaunchedAvailabilityZone": "us-east-2b",
+                "LaunchedAvailabilityZone": "us-west-2b",
                 "ProductDescription": "Linux/UNIX",
                 "SpotInstanceRequestId": "sir-0a1b2c3d",
                 "SpotPrice": "0.010000",

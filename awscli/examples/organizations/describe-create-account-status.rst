@@ -10,7 +10,7 @@ Output::
     {
         "CreateAccountStatus": {
             "State": "SUCCEEDED",
-            "AccountId": "555555555555",
+            "AccountId": "123456789444",
             "AccountName": "Beta account",
             "RequestedTimestamp": 1470684478.687,
             "CompletedTimestamp": 1470684532.472,

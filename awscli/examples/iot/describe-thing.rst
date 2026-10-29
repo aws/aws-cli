@@ -10,7 +10,7 @@ Output::
     {
         "defaultClientId": "MyLightBulb",
         "thingName": "MyLightBulb",
-        "thingId": "40da2e73-c6af-406e-b415-15acae538797",
+        "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/MyLightBulb",
         "thingTypeName": "LightBulb",
         "attributes": {

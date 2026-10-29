@@ -8,8 +8,8 @@ The following ``delete-fhir-datastore`` example demonstrates how to delete a dat
 Output::
 
     {
-        "DatastoreEndpoint": "https://healthlake.us-east-1.amazonaws.com/datastore/(Data store ID)/r4/",
-        "DatastoreArn": "arn:aws:healthlake:us-east-1:(AWS Account ID):datastore/(Data store ID)",
+        "DatastoreEndpoint": "https://healthlake.us-west-2.amazonaws.com/datastore/(Data store ID)/r4/",
+        "DatastoreArn": "arn:aws:healthlake:us-west-2:(AWS Account ID):datastore/(Data store ID)",
         "DatastoreStatus": "DELETING",
         "DatastoreId": "(Data store ID)"
     }

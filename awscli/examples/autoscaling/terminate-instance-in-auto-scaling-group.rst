@@ -11,7 +11,7 @@ Output::
     {
         "Activities": [
             {
-                "ActivityId": "8c35d601-793c-400c-fcd0-f64a27530df7",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AutoScalingGroupName": "my-asg",
                 "Description": "Terminating EC2 instance: i-061c63c5eb45f0416",
                 "Cause": "",

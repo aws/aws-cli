@@ -16,7 +16,7 @@ Output::
             "Status": "ACTIVE",
             "Name": "Queue1",
             "LastUpdated": 1518034928,
-            "Arn": "arn:aws:mediaconvert:region-name-1:012345678998:queues/Queue1",
+            "Arn": "arn:aws:mediaconvert:region-name-1:123456789012:queues/Queue1",
             "Type": "CUSTOM",
             "CreatedAt": 1518034928,
             "Description": "Keep this queue empty unless job is urgent."

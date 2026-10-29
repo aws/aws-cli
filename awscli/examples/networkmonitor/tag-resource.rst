@@ -3,7 +3,7 @@
 The following ``tag-resource`` example tags a monitor named ``Example_NetworkMonitor`` with ``Environment=Dev`` and ``Application=PetStore`` tags. ::
 
     aws networkmonitor tag-resource \
-        --resource-arn arn:aws:networkmonitor:region:012345678910:monitor/Example_NetworkMonitor \
+        --resource-arn arn:aws:networkmonitor:region:123456789012:monitor/Example_NetworkMonitor \
         --tags Environment=Dev,Application=PetStore
 
 This command produces no output.

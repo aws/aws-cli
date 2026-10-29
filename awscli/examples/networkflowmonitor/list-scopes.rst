@@ -9,9 +9,9 @@ Output::
     {
         "scopes": [
             {
-                "scopeId": "fdc20616-6bb4-4242-a24e-a748e65ca7ac",
+                "scopeId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "status": "SUCCEEDED",
-                "scopeArn": "arn:aws:networkflowmonitor:us-east-1:123456789012:scope/fdc20616-6bb4-4242-a24e-a748e65ca7ac"
+                "scopeArn": "arn:aws:networkflowmonitor:us-west-2:123456789012:scope/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ]
     }

@@ -88,8 +88,8 @@ Contents of ``create-wind-turbine-model.json``::
 Output::
 
     {
-        "assetModelId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
-        "assetModelArn": "arn:aws:iotsitewise:us-west-2:123456789012:asset-model/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+        "assetModelId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "assetModelArn": "arn:aws:iotsitewise:us-west-2:123456789012:asset-model/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "assetModelStatus": {
             "state": "CREATING"
         }

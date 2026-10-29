@@ -12,5 +12,5 @@ Output::
         "LastModified": "Fri, 19 Jul 2019 21:50:31 GMT",
         "ContentType": "image/jpeg",
         "ContentLength": 3860266,
-        "ETag": "2aa333bbcc8d8d22d777e999c88d4aa9eeeeee4dd89ff7f555555555555da6d3"
+        "ETag": "2aa333bbcc8d8d22d777e999c88d4aa9eeeeee4dd89ff7f55555a555555da6d3"
     }

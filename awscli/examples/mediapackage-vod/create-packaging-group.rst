@@ -8,7 +8,7 @@ The following ``create-packaging-group`` example lists all of the packaging grou
 Output::
 
     {
-        "Arn": "arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-groups/hls_chicken", 
+        "Arn": "arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-groups/hls_chicken", 
         "Id": "hls_chicken" 
     }
 

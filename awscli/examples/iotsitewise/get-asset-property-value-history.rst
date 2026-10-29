@@ -3,8 +3,8 @@
 The following ``get-asset-property-value-history`` example retrieves a wind turbine asset's total power values for a 20 minute period in time. ::
 
     aws iotsitewise get-asset-property-value-history \
-        --asset-id a1b2c3d4-5678-90ab-cdef-33333EXAMPLE \
-        --property-id a1b2c3d4-5678-90ab-cdef-66666EXAMPLE \
+        --asset-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333 \
+        --property-id a1b2c3d4-5678-90ab-cdef-EXAMPLE66666 \
         --start-date 1580851800 \
         --end-date 1580853000
 

@@ -1,10 +1,10 @@
 **To update a replication set**
 
-The following ``update-replication-set`` example deletes the us-east-2 Region from the replication set. ::
+The following ``update-replication-set`` example deletes the us-west-2 Region from the replication set. ::
 
     aws ssm-incidents update-replication-set \
-        --arn "arn:aws:ssm-incidents::111122223333:replication-set/a2bcc5c9-0f53-8047-7fef-c20749989b40" \
-        --actions '[{"deleteRegionAction": {"regionName": "us-east-2"}}]'
+        --arn "arn:aws:ssm-incidents::123456789012:replication-set/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --actions '[{"deleteRegionAction": {"regionName": "us-west-2"}}]'
 
 This command produces no output.
 

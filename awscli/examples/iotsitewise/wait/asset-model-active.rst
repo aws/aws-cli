@@ -3,7 +3,7 @@
 The following ``wait asset-model-active`` example pauses and resumes only after it can confirm that the specified asset model is active. ::
 
     aws iotsitewise wait asset-model-active \
-        --asset-model-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+        --asset-model-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

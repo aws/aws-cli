@@ -3,14 +3,14 @@
 The following ``describe-action-targets`` example retrieves information about the custom action identified by the specified ARN. ::
 
     aws securityhub describe-action-targets \
-        --action-target-arns "arn:aws:securityhub:us-west-1:123456789012:action/custom/Remediation"
+        --action-target-arns "arn:aws:securityhub:us-west-2:123456789012:action/custom/Remediation"
 
 Output::
 
     {
         "ActionTargets": [ 
             { 
-                "ActionTargetArn": "arn:aws:securityhub:us-west-1:123456789012:action/custom/Remediation",
+                "ActionTargetArn": "arn:aws:securityhub:us-west-2:123456789012:action/custom/Remediation",
                 "Description": "Action to send the finding for remediation tracking",
                 "Name": "Send to remediation"
             }

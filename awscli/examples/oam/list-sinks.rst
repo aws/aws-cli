@@ -9,8 +9,8 @@ Output::
     {
         "Items": [
             {
-                "Arn": "arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345",
-                "Id": "a1b2c3d4-5678-90ab-cdef-example12345",
+                "Arn": "arn:aws:oam:us-west-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Name": "DemoSink"
             }
         ]

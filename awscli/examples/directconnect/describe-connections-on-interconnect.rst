@@ -18,7 +18,7 @@ Output::
                 "bandwidth": "500Mbps",
                 "location": "TIVIT",
                 "connectionName": "mydcinterconnect",
-                "region": "sa-east-1"
+                "region": "us-west-2"
             }
         ]
     }

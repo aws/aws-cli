@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes 2 tags from the cloudwatch alarm named ``demo`` in the specified account. ::
 
     aws cloudwatch untag-resource \
-        --resource-arn arn:aws:cloudwatch:us-east-1:123456789012:alarm:demo \
+        --resource-arn arn:aws:cloudwatch:us-west-2:123456789012:alarm:demo \
         --tag-keys stack team
 
 This command produces no output.

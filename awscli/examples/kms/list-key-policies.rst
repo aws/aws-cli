@@ -7,7 +7,7 @@ Because the only valid key policy name is ``default``, this command is not usefu
 To specify the KMS key, use the ``key-id`` parameter. This example uses a key ID value, but you can use a key ID or key ARN in this command. ::
 
     aws kms list-key-policies \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

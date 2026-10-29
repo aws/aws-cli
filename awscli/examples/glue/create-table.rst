@@ -13,7 +13,7 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                 "Location":"my-testing-stream", \
                 "Parameters":{ \
                     "typeOfData":"kinesis","streamName":"my-testing-stream", \
-                    "kinesisUrl":"https://kinesis.us-east-1.amazonaws.com" \
+                    "kinesisUrl":"https://kinesis.us-west-2.amazonaws.com" \
                 }, \
                 "SerdeInfo":{ \
                     "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"} \
@@ -22,7 +22,7 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                 "classification":"json"} \
             }' \
         --profile my-profile \
-        --endpoint https://glue.us-east-1.amazonaws.com
+        --endpoint https://glue.us-west-2.amazonaws.com
 
 This command produces no output.
 
@@ -52,7 +52,7 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                 "separatorChar":","} \
             }' \
         --profile my-profile \
-        --endpoint https://glue.us-east-1.amazonaws.com
+        --endpoint https://glue.us-west-2.amazonaws.com
 
 This command produces no output.
 
@@ -71,7 +71,7 @@ describes a AWS Simple Storage Service (AWS S3) data store. ::
                     {"Name":"s2", "Type":"int"}, \
                     {"Name":"s3", "Type":"string"}
                 ], \
-                "Location":"s3://bucket-path/", \
+                "Location":"s3://amzn-s3-demo-bucket/", \
                 "SerdeInfo":{ \
                     "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"} \
             }, \
@@ -79,7 +79,7 @@ describes a AWS Simple Storage Service (AWS S3) data store. ::
                 "classification":"json"} \
             }' \
         --profile my-profile \
-        --endpoint https://glue.us-east-1.amazonaws.com
+        --endpoint https://glue.us-west-2.amazonaws.com
 
 This command produces no output.
 

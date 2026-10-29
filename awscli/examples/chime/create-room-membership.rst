@@ -3,24 +3,24 @@
 The following ``create-room-membership`` example adds the specified user to the chat room as a chat room member. ::
 
     aws chime create-room-membership \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45 \
-        --room-id abcd1e2d-3e45-6789-01f2-3g45h67i890j \
-        --member-id 1ab2345c-67de-8901-f23g-45h678901j2k
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --room-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
+        --member-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 Output::
 
     {
         "RoomMembership": {
-            "RoomId": "abcd1e2d-3e45-6789-01f2-3g45h67i890j",
+            "RoomId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "Member": {
-                "MemberId": "1ab2345c-67de-8901-f23g-45h678901j2k",
+                "MemberId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "MemberType": "User",
                 "Email": "janed@example.com",
                 "FullName": "Jane Doe",
-                "AccountId": "12a3456b-7c89-012d-3456-78901e23fg45"
+                "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             },
             "Role": "Member",
-            "InvitedBy": "arn:aws:iam::111122223333:user/alejandro",
+            "InvitedBy": "arn:aws:iam::123456789012:user/alejandro",
             "UpdatedTimestamp": "2019-12-02T22:36:41.969Z"
         }
     }

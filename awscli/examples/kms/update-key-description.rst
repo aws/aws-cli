@@ -6,7 +6,7 @@ The following ``update-key-description`` example adds a description to a custome
 * The ``--description`` parameter specifies the new description. The value of this parameter replaces the current description of the KMS key, if any. ::
 
     aws kms update-key-description \
-        --key-id arn:aws:kms:us-west-2:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --description "IT Department test key"
 
 This command produces no output. To view the description of a KMS key, use the ``describe-key`` command. 
@@ -21,7 +21,7 @@ The following ``update-key-description`` example deletes the description to a cu
 * The ``--description`` parameter with an empty string value ('') deletes the existing description. ::
 
     aws kms update-key-description \
-        --key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --description ''
 
 This command produces no output. To view the description of a KMS key, use the the describe-key command.

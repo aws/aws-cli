@@ -28,7 +28,7 @@ Output::
                 "subjectId": "mySubject",
                 "sampleId": "mySample",
                 "generatedFrom": "1000 Genomes",
-                "referenceArn": "arn:aws:omics:us-west-2:845448930428:referenceStore/8168613728/reference/2190697383",
+                "referenceArn": "arn:aws:omics:us-west-2:123456789012:referenceStore/8168613728/reference/2190697383",
                 "name": "HG00146",
                 "description": "BAM for HG00146",
                 "creationTime": "2023-11-29T19:23:33.116516+00:00"
@@ -40,7 +40,7 @@ Output::
                 "subjectId": "mySubject",
                 "sampleId": "mySample",
                 "generatedFrom": "1000 Genomes",
-                "referenceArn": "arn:aws:omics:us-west-2:845448930428:referenceStore/8168613728/reference/2190697383",
+                "referenceArn": "arn:aws:omics:us-west-2:123456789012:referenceStore/8168613728/reference/2190697383",
                 "name": "HG00147",
                 "description": "BAM for HG00147",
                 "creationTime": "2023-11-29T19:23:47.007866+00:00"

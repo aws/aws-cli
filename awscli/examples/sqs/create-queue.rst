@@ -9,7 +9,7 @@ The following ``create-queue`` example creates a queue with the specified name, 
 Contents of ``create-queue.json``::
 
     {
-        "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}",
+        "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-west-2:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}",
         "MessageRetentionPeriod": "259200"
     }
 

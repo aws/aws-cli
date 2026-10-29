@@ -3,17 +3,17 @@
 The following ``describe-gateway`` example describes a gateway. ::
 
     aws iotsitewise describe-gateway \
-        --gateway-id a1b2c3d4-5678-90ab-cdef-1a1a1EXAMPLE
+        --gateway-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "gatewayId": "a1b2c3d4-5678-90ab-cdef-1a1a1EXAMPLE",
+        "gatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "gatewayName": "ExampleCorpGateway",
-        "gatewayArn": "arn:aws:iotsitewise:us-west-2:123456789012:gateway/a1b2c3d4-5678-90ab-cdef-1a1a1EXAMPLE",
+        "gatewayArn": "arn:aws:iotsitewise:us-west-2:123456789012:gateway/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "gatewayPlatform": {
             "greengrass": {
-                "groupArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/groups/a1b2c3d4-5678-90ab-cdef-1b1b1EXAMPLE"
+                "groupArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/groups/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         },
         "gatewayCapabilitySummaries": [

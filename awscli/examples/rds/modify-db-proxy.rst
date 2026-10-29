@@ -11,7 +11,7 @@ Output::
     {
         "DBProxy": {
             "DBProxyName": "proxyExample",
-            "DBProxyArn": "arn:aws:rds:us-east-1:123456789012:db-proxy:prx-0123a01b12345c0ab",
+            "DBProxyArn": "arn:aws:rds:us-west-2:123456789012:db-proxy:prx-0123a01b12345c0ab",
             "Status": "modifying",
             "EngineFamily": "PostgreSQL",
             "VpcId": "sg-1234567",
@@ -26,12 +26,12 @@ Output::
                 {
                     "Description": "proxydescription1",
                     "AuthScheme": "SECRETS",
-                    "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789123:secret:proxysecret1-Abcd1e",
+                    "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789012:secret:proxysecret1-Abcd1e",
                     "IAMAuth": "DISABLED"
                 }
             ],
             "RoleArn": "arn:aws:iam::12345678912:role/ProxyPostgreSQLRole",
-            "Endpoint": "proxyExample.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
+            "Endpoint": "proxyExample.proxy-ab0cd1efghij.us-west-2.rds.amazonaws.com",
             "RequireTLS": true,
             "IdleClientTimeout": 1800,
             "DebugLogging": false,

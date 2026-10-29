@@ -149,11 +149,11 @@ Output::
                 "VpcId": "vpc-838475fe",
                 "AvailabilityZones": [
                     {
-                        "ZoneName": "us-east-1b",
+                        "ZoneName": "us-west-2b",
                         "SubnetId": "subnet-a62583f9"
                     },
                 {
-                        "ZoneName": "us-east-1a",
+                        "ZoneName": "us-west-2a",
                         "SubnetId": "subnet-dc83f691"
                     }
                 ],
@@ -162,7 +162,7 @@ Output::
                 "State": {
                     "Code": "provisioning"
                 },
-                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:850631746142:loadbalancer/gwy/my-gateway-load-balancer/dfbb5a7d32cdee79"
+                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/gwy/my-gateway-load-balancer/dfbb5a7d32cdee79"
             }
         ]
     }

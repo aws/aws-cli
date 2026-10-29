@@ -3,7 +3,7 @@
 The following ``tag-resource`` example tags an AWS Control Tower enabled control. ::
 
     aws controltower tag-resource \
-        --resource-arn "arn:aws:controltower:us-east-1:123456789012:enabledcontrol/2H2AWUG4SKG81855" \
+        --resource-arn "arn:aws:controltower:us-west-2:123456789012:enabledcontrol/2H2AWUG4SKG81855" \
         --tags "TestTagKey=TestTagValue"
 
 This command produces no output.

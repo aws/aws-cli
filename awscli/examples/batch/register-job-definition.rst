@@ -10,7 +10,7 @@ The following ``register-job-definition`` example registers a job definition for
 Output::
 
     {
-        "jobDefinitionArn": "arn:aws:batch:us-east-1:012345678910:job-definition/sleep30:1",
+        "jobDefinitionArn": "arn:aws:batch:us-west-2:123456789012:job-definition/sleep30:1",
         "jobDefinitionName": "sleep30",
         "revision": 1
     }

@@ -4,7 +4,7 @@ The following ``create-store-image-task`` example stores an AMI in an S3 bucket.
 
     aws ec2 create-store-image-task \
         --image-id ami-1234567890abcdef0 \
-        --bucket my-ami-bucket
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

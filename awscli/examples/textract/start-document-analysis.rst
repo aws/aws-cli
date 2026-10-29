@@ -5,14 +5,14 @@ The following ``start-document-analysis`` example shows how to start asynchronou
 For Linux and macOS, use the following command. ::
 
     aws textract start-document-analysis \
-        --document-location '{"S3Object":{"Bucket":"bucket","Name":"document"}}' \
+        --document-location '{"S3Object":{"Bucket":"amzn-s3-demo-bucket","Name":"document"}}' \
         --feature-types '["TABLES","FORMS"]' \
         --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
 
 For Windows, use the following command. ::
 
     aws textract start-document-analysis \
-        --document-location "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
+        --document-location "{\"S3Object\":{\"Bucket\":\"amzn-s3-demo-bucket\",\"Name\":\"document\"}}" \
         --feature-types "[\"TABLES\", \"FORMS\"]" \
         --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
 

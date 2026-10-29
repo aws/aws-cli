@@ -14,7 +14,7 @@ Output::
         "bandwidth": "1Gbps",
         "location": "TIVIT",
         "connectionName": "Connection to AWS",
-        "region": "sa-east-1"
+        "region": "us-west-2"
     }
 
 For more information, see `Delete a Direct Connect connection <https://docs.aws.amazon.com/directconnect/latest/UserGuide/deleteconnection.html>`__ in the *AWS Direct Connect User Guide*.

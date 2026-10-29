@@ -5,16 +5,16 @@ The following ``create-custom-log-source`` example adds a custom source as a Sec
     aws securitylake create-custom-log-source \
         --source-name "VPC_FLOW" \
         --event-classes '["DNS_ACTIVITY", "NETWORK_ACTIVITY"]' \
-        --configuration '{"crawlerConfiguration": {"roleArn": "arn:aws:glue:eu-west-2:123456789012:crawler/E1WG1ZNPRXT0D4"},"providerIdentity": {"principal": "029189416600","externalId": "123456789012"}}'
+        --configuration '{"crawlerConfiguration": {"roleArn": "arn:aws:glue:us-west-2:123456789012:crawler/E1WG1ZNPRXT0D4"},"providerIdentity": {"principal": "123456789111","externalId": "123456789012"}}'
 
 Output::
 
     {
         "source": {
             "attributes": {
-                "crawlerArn": "arn:aws:glue:eu-west-2:123456789012:crawler/E1WG1ZNPRXT0D4",
-                "databaseArn": "arn:aws:glue:eu-west-2:123456789012:database/E1WG1ZNPRXT0D4",
-                "tableArn": "arn:aws:glue:eu-west-2:123456789012:table/E1WG1ZNPRXT0D4"
+                "crawlerArn": "arn:aws:glue:us-west-2:123456789012:crawler/E1WG1ZNPRXT0D4",
+                "databaseArn": "arn:aws:glue:us-west-2:123456789012:database/E1WG1ZNPRXT0D4",
+                "tableArn": "arn:aws:glue:us-west-2:123456789012:table/E1WG1ZNPRXT0D4"
             },
             "provider": {
                 "location": "amzn-s3-demo-bucket--usw2-az1--x-s3",

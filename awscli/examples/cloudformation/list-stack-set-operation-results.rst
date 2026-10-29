@@ -4,24 +4,24 @@ The following ``list-stack-set-operation-results`` example displays the results 
 
     aws cloudformation list-stack-set-operation-results \
         --stack-set-name enable-config \
-        --operation-id 35d45ebc-ed88-xmpl-ab59-0197a1fc83a0
+        --operation-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "Summaries": [
             {
-                "Account": "223456789012",
+                "Account": "123456789111",
                 "Region": "us-west-2",
                 "Status": "SUCCEEDED",
                 "AccountGateResult": {
                     "Status": "SKIPPED",
-                    "StatusReason": "Function not found: arn:aws:lambda:eu-west-1:223456789012:function:AWSCloudFormationStackSetAccountGate"
+                    "StatusReason": "Function not found: arn:aws:lambda:us-west-2:123456789111:function:AWSCloudFormationStackSetAccountGate"
                 }
             },
             {
-                "Account": "223456789012",
-                "Region": "ap-south-1",
+                "Account": "123456789222",
+                "Region": "us-west-2",
                 "Status": "CANCELLED",
                 "StatusReason": "Cancelled since failure tolerance has exceeded"
             }

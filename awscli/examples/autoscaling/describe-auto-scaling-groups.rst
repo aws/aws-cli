@@ -11,7 +11,7 @@ Output::
         "AutoScalingGroups": [
             {
                 "AutoScalingGroupName": "my-asg",
-                "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:930d940e-891e-4781-a11a-7b0acd480f03:autoScalingGroupName/my-asg",
+                "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/my-asg",
                 "LaunchTemplate": {
                     "LaunchTemplateName": "my-launch-template",
                     "Version": "1",
@@ -217,7 +217,7 @@ The following ``describe-auto-scaling-groups`` example describes the Auto Scalin
 
     aws autoscaling describe-auto-scaling-groups \
         --max-items 75 \
-        --region us-east-1
+        --region us-west-2
 
 Output::
 
@@ -225,7 +225,7 @@ Output::
         "AutoScalingGroups": [
             {
                 "AutoScalingGroupName": "my-asg",
-                "AutoScalingGroupARN": "arn:aws:autoscaling:us-east-1:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE55555:autoScalingGroupName/my-asg",
+                "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE55555:autoScalingGroupName/my-asg",
                 "LaunchTemplate": {
                     "LaunchTemplateName": "my-launch-template",
                     "Version": "1",
@@ -236,9 +236,9 @@ Output::
                 "DesiredCapacity": 1,
                 "DefaultCooldown": 300,
                 "AvailabilityZones": [
-                    "us-east-1a",
-                    "us-east-1b",
-                    "us-east-1c"
+                    "us-west-2a",
+                    "us-west-2b",
+                    "us-west-2c"
                 ],
                 "LoadBalancerNames": [],
                 "TargetGroupARNs": [],
@@ -248,7 +248,7 @@ Output::
                     {
                         "InstanceId": "i-0123456789abcdef0",
                         "InstanceType": "t2.micro",
-                        "AvailabilityZone": "us-east-1a",
+                        "AvailabilityZone": "us-west-2a",
                         "HealthStatus": "Healthy",
                         "LifecycleState": "InService",
                         "ProtectedFromScaleIn": false,
@@ -287,7 +287,7 @@ Output::
         "AutoScalingGroups": [
             {
                 "AutoScalingGroupName": "my-asg",
-                "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:930d940e-891e-4781-a11a-7b0acd480f03:autoScalingGroupName/my-asg",
+                "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/my-asg",
                 "LaunchTemplate": {
                     "LaunchTemplateName": "my-launch-template",
                     "Version": "1",
@@ -356,7 +356,7 @@ Output::
     [
         {
             "AutoScalingGroupName": "my-asg",
-            "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:930d940e-891e-4781-a11a-7b0acd480f03:autoScalingGroupName/my-asg",
+            "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/my-asg",
             "LaunchConfigurationName": "my-lc",
             "MinSize": 0,
             "MaxSize": 1,

@@ -3,7 +3,7 @@
 The following ``get-view`` example displays the details about a view specified by its ARN. ::
 
     aws resource-explorer-2 get-view \
-        --view-arn arn:aws:resource-explorer-2:us-east-1:123456789012:view/EC2-Only-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111
+        --view-arn arn:aws:resource-explorer-2:us-west-2:123456789012:view/EC2-Only-View/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -21,7 +21,7 @@ Output::
             "LastUpdatedAt" : "2022-07-13T21:33:45.249Z",
             "Owner" : "123456789012",
             "Scope" : "arn:aws:iam::123456789012:root",
-            "ViewArn" : "arn:aws:resource-explorer-2:us-east-1:123456789012:view/EC2-Only-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111"
+            "ViewArn" : "arn:aws:resource-explorer-2:us-west-2:123456789012:view/EC2-Only-View/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }
 

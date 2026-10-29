@@ -3,17 +3,17 @@
 The following ``create-reserved-instances-listing`` example creates a listing for the specified Reserved Instance in the Reserved Instance Marketplace. ::
 
     aws ec2 create-reserved-instances-listing \
-        --reserved-instances-id 5ec28771-05ff-4b9b-aa31-9e57dexample \
+        --reserved-instances-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --instance-count 3 \
         --price-schedules CurrencyCode=USD,Price=25.50 \
-        --client-token 550e8400-e29b-41d4-a716-446655440000
+        --client-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "ReservedInstancesListings": [
             {
-                "ClientToken": "550e8400-e29b-41d4-a716-446655440000",
+                "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "CreateDate": "2024-05-14T18:12:30.000Z",
                 "InstanceCounts": [
                     {
@@ -41,8 +41,8 @@ Output::
                         "Term": 11
                     }
                 ],
-                "ReservedInstancesId": "5ec28771-05ff-4b9b-aa31-9e57dexample",
-                "ReservedInstancesListingId": "8ba8f2f2-5ab8-4ac6-b6f1-1a2b3example",
+                "ReservedInstancesId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "ReservedInstancesListingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "Status": "active",
                 "StatusMessage": "active",
                 "Tags": [],

@@ -17,7 +17,7 @@ Output::
             "RoleName": "Test-Role",
             "Path": "/",
             "RoleLastUsed": {
-                "Region": "us-east-1",
+                "Region": "us-west-2",
                 "LastUsedDate": "2019-11-13T17:14:00Z"
             },
             "Arn": "arn:aws:iam::123456789012:role/Test-Role"

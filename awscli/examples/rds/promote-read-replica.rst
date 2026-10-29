@@ -9,7 +9,7 @@ Output::
 
     {
         "DBInstance": {
-            "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:test-instance-repl",
+            "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:test-instance-repl",
             "StorageType": "standard",
             "ReadReplicaSourceDBInstanceIdentifier": "test-instance",
             "DBInstanceStatus": "modifying"

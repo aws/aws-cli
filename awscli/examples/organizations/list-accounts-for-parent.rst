@@ -12,27 +12,27 @@ Output::
     {
         "Accounts": [
             {
-                "Arn": "arn:aws:organizations::111111111111:account/o-exampleorgid/333333333333",
+                "Arn": "arn:aws:organizations::123456789012:account/o-exampleorgid/123456789222",
                 "JoinedMethod": "INVITED",
                 "JoinedTimestamp": 1481835795.536,
-                "Id": "333333333333",
+                "Id": "123456789222",
                 "Name": "Development Account",
                 "Email": "juan@example.com",
                 "Paths": [
-                    "o-exampleorgid/r-examplerootid111/111111111111/"
+                    "o-exampleorgid/r-examplerootid111/123456789012/"
                 ],
                 "State": "ACTIVE",
                 "Status": "ACTIVE"
             },
             {
-                "Arn": "arn:aws:organizations::111111111111:account/o-exampleorgid/444444444444",
+                "Arn": "arn:aws:organizations::123456789012:account/o-exampleorgid/123456789333",
                 "JoinedMethod": "INVITED",
                 "JoinedTimestamp": 1481835812.143,
-                "Id": "444444444444",
+                "Id": "123456789333",
                 "Name": "Test Account",
                 "Email": "anika@example.com",
                 "Paths": [
-                    "o-exampleorgid/r-examplerootid111/111111111111/"
+                    "o-exampleorgid/r-examplerootid111/123456789012/"
                 ],
                 "State": "ACTIVE",
                 "Status": "ACTIVE"

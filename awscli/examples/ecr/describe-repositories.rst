@@ -9,14 +9,14 @@ Output::
     {
         "repositories": [
             {
-                "registryId": "012345678910",
+                "registryId": "123456789012",
                 "repositoryName": "ubuntu",
-                "repositoryArn": "arn:aws:ecr:us-west-2:012345678910:repository/ubuntu"
+                "repositoryArn": "arn:aws:ecr:us-west-2:123456789012:repository/ubuntu"
             },
             {
-                "registryId": "012345678910",
+                "registryId": "123456789012",
                 "repositoryName": "test",
-                "repositoryArn": "arn:aws:ecr:us-west-2:012345678910:repository/test"
+                "repositoryArn": "arn:aws:ecr:us-west-2:123456789012:repository/test"
             }
         ]
     }

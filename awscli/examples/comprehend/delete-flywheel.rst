@@ -3,7 +3,7 @@
 The following ``delete-flywheel`` example deletes a flywheel. The data lake or the model associated with the flywheel is not deleted. ::
 
     aws comprehend delete-flywheel \
-        --flywheel-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel-1
+        --flywheel-arn arn:aws:comprehend:us-west-2:123456789012:flywheel/example-flywheel-1
 
 This command produces no output.
 

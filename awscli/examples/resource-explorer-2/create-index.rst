@@ -7,7 +7,7 @@ The following ``create-index`` example creates a local index in the AWS Region i
 Output::
 
     {
-        "Arn": "arn:aws:resource-explorer-2:us-east-1:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222c",
+        "Arn": "arn:aws:resource-explorer-2:us-west-2:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222c",
         "CreatedAt": "2022-11-01T20:00:59.149Z",
         "State": "CREATING"
     }

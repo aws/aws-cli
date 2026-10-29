@@ -10,19 +10,19 @@ Output::
     {
         "InstanceConnectEndpoint": {
             "VpcId": "vpc-0123abcd",
-            "InstanceConnectEndpointArn": "arn:aws:ec2:us-east-1:111111111111:instance-connect-endpoint/eice-0123456789example",
-            "AvailabilityZone": "us-east-1a",
+            "InstanceConnectEndpointArn": "arn:aws:ec2:us-west-2:123456789012:instance-connect-endpoint/eice-0123456789example",
+            "AvailabilityZone": "us-west-2a",
             "NetworkInterfaceIds": [
                 "eni-0123abcd"
             ],
             "PreserveClientIp": true,
             "Tags": [],
-            "FipsDnsName": "eice-0123456789example.0123abcd.fips.ec2-instance-connect-endpoint.us-east-1.amazonaws.com",
+            "FipsDnsName": "eice-0123456789example.0123abcd.fips.ec2-instance-connect-endpoint.us-west-2.amazonaws.com",
             "StateMessage": "",
             "State": "create-complete",
-            "DnsName": "eice-0123456789example.0123abcd.ec2-instance-connect-endpoint.us-east-1.amazonaws.com",
+            "DnsName": "eice-0123456789example.0123abcd.ec2-instance-connect-endpoint.us-west-2.amazonaws.com",
             "SubnetId": "subnet-0123abcd",
-            "OwnerId": "111111111111",
+            "OwnerId": "123456789012",
             "SecurityGroupIds": [
                 "sg-0123abcd"
             ],

@@ -3,7 +3,7 @@
 The following ``delete-endpoint`` example deletes an endpoint. ::
 
     aws dms delete-endpoint \
-        --endpoint-arn arn:aws:dms:us-east-1:123456789012:endpoint:OUJJVXO4XZ4CYTSEG5XGMN2R3Y
+        --endpoint-arn arn:aws:dms:us-west-2:123456789012:endpoint:OUJJVXO4XZ4CYTSEG5XGMN2R3Y
 
 Output::
 
@@ -13,9 +13,9 @@ Output::
             "EndpointType": "SOURCE",
             "EngineName": "s3",
             "EngineDisplayName": "Amazon S3",
-            "ExtraConnectionAttributes": "bucketFolder=sourcedata;bucketName=my-corp-data;compressionType=NONE;csvDelimiter=,;csvRowDelimiter=\\n;",
+            "ExtraConnectionAttributes": "bucketFolder=sourcedata;bucketName=amzn-s3-demo-bucket;compressionType=NONE;csvDelimiter=,;csvRowDelimiter=\\n;",
             "Status": "deleting",
-            "EndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:OUJJVXO4XZ4CYTSEG5XGMN2R3Y",
+            "EndpointArn": "arn:aws:dms:us-west-2:123456789012:endpoint:OUJJVXO4XZ4CYTSEG5XGMN2R3Y",
             "SslMode": "none",
             "ServiceAccessRoleArn": "arn:aws:iam::123456789012:role/my-s3-access-role",
             "S3Settings": {
@@ -23,7 +23,7 @@ Output::
                 "CsvRowDelimiter": "\\n",
                 "CsvDelimiter": ",",
                 "BucketFolder": "sourcedata",
-                "BucketName": "my-corp-data",
+                "BucketName": "amzn-s3-demo-bucket",
                 "CompressionType": "NONE",
                 "EnableStatistics": true
             }

@@ -4,8 +4,8 @@ The following ``create-replication-task`` example creates a replication task. ::
 
     aws dms create-replication-task \
         --replication-task-identifier movedata \
-        --source-endpoint-arn arn:aws:dms:us-east-1:123456789012:endpoint:6GGI6YPWWGAYUVLKIB732KEVWA \
-        --target-endpoint-arn arn:aws:dms:us-east-1:123456789012:endpoint:EOM4SFKCZEYHZBFGAGZT3QEC5U \
+        --source-endpoint-arn arn:aws:dms:us-west-2:123456789012:endpoint:6GGI6YPWWGAYUVLKIB732KEVWA \
+        --target-endpoint-arn arn:aws:dms:us-west-2:123456789012:endpoint:EOM4SFKCZEYHZBFGAGZT3QEC5U \
         --replication-instance-arn $RI_ARN \
         --migration-type full-load \
         --table-mappings file://table-mappings.json
@@ -33,13 +33,13 @@ Output::
     {
         "ReplicationTask": {
             "ReplicationTaskIdentifier": "movedata",
-            "SourceEndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:6GGI6YPWWGAYUVLKIB732KEVWA",
-            "TargetEndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:EOM4SFKCZEYHZBFGAGZT3QEC5U",
-            "ReplicationInstanceArn": "arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE",
+            "SourceEndpointArn": "arn:aws:dms:us-west-2:123456789012:endpoint:6GGI6YPWWGAYUVLKIB732KEVWA",
+            "TargetEndpointArn": "arn:aws:dms:us-west-2:123456789012:endpoint:EOM4SFKCZEYHZBFGAGZT3QEC5U",
+            "ReplicationInstanceArn": "arn:aws:dms:us-west-2:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE",
             "MigrationType": "full-load",
             "Status": "creating",
             "ReplicationTaskCreationDate": 1590524772.505,
-            "ReplicationTaskArn": "arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII"
+            "ReplicationTaskArn": "arn:aws:dms:us-west-2:123456789012:task:K55IUCGBASJS5VHZJIINA45FII"
         }
     }
 

@@ -9,7 +9,7 @@ Output::
 
     {
         "deploymentConfigInfo": {
-            "deploymentConfigId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "deploymentConfigId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "minimumHealthyHosts": {
                 "type": "FLEET_PERCENT",
                 "value": 75

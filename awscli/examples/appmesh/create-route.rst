@@ -58,7 +58,7 @@ Output::
                 "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/apps/virtualRouter/serviceBgrpc/route/grpcRoute",
                 "createdAt": 1572010806.008,
                 "lastUpdatedAt": 1572010806.008,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "routeName": "grpcRoute",
@@ -177,7 +177,7 @@ Output::
                 "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/apps/virtualRouter/serviceBhttp2/route/http2Route",
                 "createdAt": 1572011008.352,
                 "lastUpdatedAt": 1572011008.352,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "routeName": "http2Route",
@@ -270,7 +270,7 @@ Output::
                 "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/apps/virtualRouter/serviceBtcp/route/tcpRoute",
                 "createdAt": 1572011436.26,
                 "lastUpdatedAt": 1572011436.26,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "routeName": "tcpRoute",

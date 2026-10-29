@@ -6,12 +6,12 @@ This command runs only in the ``us-east-1`` Region. If your default region is se
 
     aws route53domains get-operation-detail \
         --region us-east-1 \
-        --operation-id edbd8d63-7fe7-4343-9bc5-54033example
+        --operation-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "OperationId": "edbd8d63-7fe7-4343-9bc5-54033example",
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Status": "SUCCESSFUL",
         "DomainName": "example.com",
         "Type": "DOMAIN_LOCK",

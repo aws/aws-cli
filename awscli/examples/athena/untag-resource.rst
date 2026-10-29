@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the ``Specialization`` and ``Focus`` keys and their associated values from the ``dynamo_db_catalog`` data catalog resource. ::
 
     aws athena untag-resource \
-        --resource-arn arn:aws:athena:us-west-2:111122223333:datacatalog/dynamo_db_catalog \
+        --resource-arn arn:aws:athena:us-west-2:123456789012:datacatalog/dynamo_db_catalog \
         --tag-keys Specialization Focus
 
 This command produces no output. To see the results, use the ``list-tags-for-resource`` command.

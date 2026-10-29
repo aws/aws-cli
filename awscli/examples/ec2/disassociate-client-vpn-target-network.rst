@@ -3,7 +3,7 @@
 The following ``disassociate-client-vpn-target-network`` example disassociates the target network that's associated with the ``cvpn-assoc-12312312312312312`` association ID for the specified Client VPN endpoint. ::
 
     aws ec2 disassociate-client-vpn-target-network \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde \
+        --client-vpn-endpoint-id cvpn-endpoint-123456789012abcde \
         --association-id cvpn-assoc-12312312312312312
 
 Output::

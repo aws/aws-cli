@@ -12,7 +12,7 @@ Output::
     {
         "operations": [
             {
-                "id": "ced16fc1-f401-4556-8d82-1EXAMPLEb982",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "MEAN-1-Copy",
                 "resourceType": "InstanceSnapshot",
                 "createdAt": 1571075581.498,
@@ -46,7 +46,7 @@ Output::
     {
         "operations": [
             {
-                "id": "91116b79-119c-4451-b44a-dEXAMPLEd97b",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "MEAN-1-1571075291-Copy",
                 "resourceType": "InstanceSnapshot",
                 "createdAt": 1571075695.069,
@@ -80,7 +80,7 @@ Output::
     {
         "operations": [
             {
-                "id": "be3e6754-cd1d-48e6-ad9f-2EXAMPLE1805",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "WordPress-1-10142019",
                 "resourceType": "InstanceSnapshot",
                 "createdAt": 1571082412.311,
@@ -115,7 +115,7 @@ Output::
     {
         "operations": [
             {
-                "id": "dffa128b-0b07-476e-b390-bEXAMPLE3775",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "resourceName": "WordPress-1-10142019",
                 "resourceType": "InstanceSnapshot",
                 "createdAt": 1571082493.422,

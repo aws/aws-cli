@@ -21,7 +21,7 @@ Output::
             {
                 "IpamId": "ipam-08440e7a3acde3908",
                 "IpamScopeId": "ipam-scope-02fc38cd4c48e7d38",
-                "ResourceRegion": "us-east-2",
+                "ResourceRegion": "us-west-2",
                 "ResourceOwnerId": "123456789012",
                 "ResourceId": "vpc-621b8709",
                 "ResourceName": "Default AWS VPC",

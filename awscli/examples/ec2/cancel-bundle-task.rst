@@ -14,7 +14,7 @@ Output::
             "Storage": {
                 "S3": {
                     "Prefix": "winami",
-                    "Bucket": "bundletasks"
+                    "Bucket": "amzn-s3-demo-bucket"
                 }
             },
             "State": "cancelling",

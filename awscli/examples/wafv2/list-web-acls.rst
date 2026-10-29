@@ -14,7 +14,7 @@ Output::
                 "ARN":"arn:aws:wafv2:us-west-2:123456789012:regional/webacl/Testt/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Description":"sssss",
                 "Name":"Testt",
-                "LockToken":"7f36cb30-74ef-4cff-8cd4-a77e1aba1746",
+                "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ]

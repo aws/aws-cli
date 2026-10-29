@@ -3,7 +3,7 @@
 The following ``disassociate-signin-delegate-groups-from-account`` example disassociates the specified sign-in delegate group from the specified Amazon Chime account. ::
 
     aws chime disassociate-signin-delegate-groups-from-account \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45 \
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --group-names "my_users"
 
 This command produces no output.

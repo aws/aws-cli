@@ -18,7 +18,7 @@ Output::
                         "SequenceNumber": 1,
                         "Component": {
                             "Id": "eni-02e3d42d5cceca67d",
-                            "Arn": "arn:aws:ec2:us-east-1:936459623503:network-interface/eni-02e3d32d9cceca17d"
+                            "Arn": "arn:aws:ec2:us-west-2:123456789012:network-interface/eni-02e3d32d9cceca17d"
                         },
                         "OutboundHeader": {
                             "DestinationAddresses": [

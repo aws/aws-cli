@@ -22,7 +22,7 @@ Output::
         "CodeSha256": "PFn4S+er27qk+UuZSTKEQfNKG/XNn7QJs90mJgq6oH8=",
         "FunctionName": "my-function",
         "CodeSize": 308,
-        "RevisionId": "873282ed-4cd3-4dc8-a069-d0c647e470c6",
+        "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "MemorySize": 128,
         "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function",
         "Version": "$LATEST",

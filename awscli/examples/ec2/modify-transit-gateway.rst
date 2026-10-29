@@ -3,14 +3,14 @@
 The following ``modify-transit-gateway`` example modifies the specified transit gateway by enabling ECMP support for VPN attachments. ::
 
     aws ec2 modify-transit-gateway \
-        --transit-gateway-id tgw-111111222222aaaaa \
+        --transit-gateway-id tgw-1111112222aaaaaaa \
         --options VpnEcmpSupport=enable
 
 Output::
 
     {
         "TransitGateway": {
-            "TransitGatewayId": "tgw-111111222222aaaaa",
+            "TransitGatewayId": "tgw-1111112222aaaaaaa",
             "TransitGatewayArn": "64512",
             "State": "modifying",
             "OwnerId": "123456789012",

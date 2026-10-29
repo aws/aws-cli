@@ -11,7 +11,7 @@ Contents of ``input.json``::
         "ServiceName": "python-app",
         "SourceConfiguration": {
             "AuthenticationConfiguration": {
-                "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
+                "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
             },
             "AutoDeploymentsEnabled": true,
             "CodeRepository": {
@@ -43,17 +43,17 @@ Contents of ``input.json``::
 Output::
 
     {
-        "OperationId": "17fe9f55-7e91-4097-b243-fcabbb69a4cf",
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Service": {
             "CreatedAt": "2020-11-20T19:05:25Z",
             "UpdatedAt": "2020-11-20T19:05:25Z",
-            "ServiceArn": "arn:aws:apprunner:us-east-1:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
+            "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
             "ServiceId": "8fe1e10304f84fd2b0df550fe98a71fa",
             "ServiceName": "python-app",
-            "ServiceUrl": "psbqam834h.us-east-1.awsapprunner.com",
+            "ServiceUrl": "psbqam834h.us-west-2.awsapprunner.com",
             "SourceConfiguration": {
                 "AuthenticationConfiguration": {
-                    "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
+                    "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
                 },
                 "AutoDeploymentsEnabled": true,
                 "CodeRepository": {
@@ -99,7 +99,7 @@ Contents of ``input.json``::
         "ServiceName": "python-app",
         "SourceConfiguration": {
             "AuthenticationConfiguration": {
-                "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
+                "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
             },
             "AutoDeploymentsEnabled": true,
             "CodeRepository": {
@@ -131,17 +131,17 @@ Contents of ``input.json``::
 Output::
 
     {
-        "OperationId": "17fe9f55-7e91-4097-b243-fcabbb69a4cf",
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Service": {
             "CreatedAt": "2020-11-20T19:05:25Z",
             "UpdatedAt": "2020-11-20T19:05:25Z",
-            "ServiceArn": "arn:aws:apprunner:us-east-1:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
+            "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
             "ServiceId": "8fe1e10304f84fd2b0df550fe98a71fa",
             "ServiceName": "python-app",
-            "ServiceUrl": "psbqam834h.us-east-1.awsapprunner.com",
+            "ServiceUrl": "psbqam834h.us-west-2.awsapprunner.com",
             "SourceConfiguration": {
                 "AuthenticationConfiguration": {
-                    "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
+                    "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
                 },
                 "AutoDeploymentsEnabled": true,
                 "CodeRepository": {
@@ -191,7 +191,7 @@ Contents of ``input.json``::
             },
             "AutoDeploymentsEnabled": true,
             "ImageRepository": {
-                "ImageIdentifier": "123456789012.dkr.ecr.us-east-1.amazonaws.com/golang-app:latest",
+                "ImageIdentifier": "123456789012.dkr.ecr.us-west-2.amazonaws.com/golang-app:latest",
                 "ImageConfiguration": {
                     "Port": "8080",
                     "RuntimeEnvironmentVariables": {
@@ -210,21 +210,21 @@ Contents of ``input.json``::
 Output::
 
     {
-        "OperationId": "17fe9f55-7e91-4097-b243-fcabbb69a4cf",
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Service": {
             "CreatedAt": "2020-11-06T23:15:30Z",
             "UpdatedAt": "2020-11-06T23:15:30Z",
-            "ServiceArn": "arn:aws:apprunner:us-east-1:123456789012:service/golang-container-app/51728f8a20ce46d39b25398a6c8e9d1a",
+            "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/golang-container-app/51728f8a20ce46d39b25398a6c8e9d1a",
             "ServiceId": "51728f8a20ce46d39b25398a6c8e9d1a",
             "ServiceName": "golang-container-app",
-            "ServiceUrl": "psbqam834h.us-east-1.awsapprunner.com",
+            "ServiceUrl": "psbqam834h.us-west-2.awsapprunner.com",
             "SourceConfiguration": {
                 "AuthenticationConfiguration": {
                     "AccessRoleArn": "arn:aws:iam::123456789012:role/my-ecr-role"
                 },
                 "AutoDeploymentsEnabled": true,
                 "ImageRepository": {
-                    "ImageIdentifier": "123456789012.dkr.ecr.us-east-1.amazonaws.com/golang-app:latest",
+                    "ImageIdentifier": "123456789012.dkr.ecr.us-west-2.amazonaws.com/golang-app:latest",
                     "ImageConfiguration": {
                         "Port": "8080",
                         "RuntimeEnvironmentVariables": {

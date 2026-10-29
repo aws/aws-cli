@@ -10,7 +10,7 @@ Output::
 
     {
         "update": {
-            "id": "3141b835-8103-423a-8e68-12c2521ffa4d",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "InProgress",
             "type": "AssociateEncryptionConfig",
             "params": [

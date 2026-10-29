@@ -8,7 +8,7 @@ Output::
 
     {
         "SloSummaries": [{
-            "Arn": "arn:aws:application-signals:us-east-1:123456789101:slo/test",
+            "Arn": "arn:aws:application-signals:us-west-2:123456789012:slo/test",
             "Name": "test",
             "CreatedTime": "2024-12-24T22:01:21.116000+05:30"
         }]

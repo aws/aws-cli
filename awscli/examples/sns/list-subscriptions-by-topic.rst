@@ -14,7 +14,7 @@ Output::
                 "Endpoint": "my-email@example.com",
                 "Protocol": "email",
                 "TopicArn": "arn:aws:sns:us-west-2:123456789012:my-topic",
-                "SubscriptionArn": "arn:aws:sns:us-west-2:123456789012:my-topic:8a21d249-4329-4871-acc6-7be709c6ea7f"
+                "SubscriptionArn": "arn:aws:sns:us-west-2:123456789012:my-topic:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ]
     }

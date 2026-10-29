@@ -8,7 +8,7 @@ The following ``describe-packaging-configuration`` example displays all of the d
 Output::
 
     { 
-        "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/DASH",
+        "Arn":"arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-configurations/DASH",
         "Id":"DASH",
         "PackagingGroupId":"Packaging_group_1",
         "DashPackage":{

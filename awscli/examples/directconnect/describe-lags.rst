@@ -23,7 +23,7 @@ Output::
                         "bandwidth": "10Gbps",
                         "location": "EqDC2",
                         "connectionName": "Requested Connection 1 for Lag dxlag-fgsu9erb",
-                        "region": "us-east-1"
+                        "region": "us-west-2"
                     },
                     {
                         "ownerAccount": "123456789012",
@@ -33,13 +33,13 @@ Output::
                         "bandwidth": "10Gbps",
                         "location": "EqDC2",
                         "connectionName": "Requested Connection 2 for Lag dxlag-fgsu9erb",
-                        "region": "us-east-1"
+                        "region": "us-west-2"
                     }
                 ],
                 "lagId": "dxlag-fgsu9erb",
                 "minimumLinks": 0,
                 "connectionsBandwidth": "10Gbps",
-                "region": "us-east-1",
+                "region": "us-west-2",
                 "location": "EqDC2"
             }
         ]

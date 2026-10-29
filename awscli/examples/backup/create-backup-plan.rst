@@ -8,8 +8,8 @@ The following ``create-backup-plan`` example creates the specified backup plan w
 Output::
 
     {
-        "BackupPlanId": "1fa3895c-a7f5-484a-a371-2dd6a1a9f729",
-        "BackupPlanArn": "arn:aws:backup:us-west-2:123456789012:backup-plan:1fa3895c-a7f5-484a-a371-2dd6a1a9f729",
+        "BackupPlanId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "BackupPlanArn": "arn:aws:backup:us-west-2:123456789012:backup-plan:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreationDate": 1568928754.747,
         "VersionId": "ZjQ2ZTI5YWQtZDg5Yi00MzYzLWJmZTAtMDI1MzhlMDhjYjEz"
     }

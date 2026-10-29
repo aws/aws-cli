@@ -18,7 +18,7 @@ Output::
         "beforeBlobId": "80906a4cEXAMPLE",
         "beforeCommitId": "6e147360EXAMPLE",
         "comment": {
-            "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+            "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
             "clientRequestToken": "",
             "commentId": "553b509bEXAMPLE56198325",
             "content": "Can you add a test case for this?",

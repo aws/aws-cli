@@ -11,7 +11,7 @@ Output::
     {
         "routes": [
             {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualRouter/vrServiceB/route/toVnServiceB",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualRouter/vrServiceB/route/toVnServiceB",
                 "meshName": "app1",
                 "routeName": "toVnServiceB-weighted",
                 "virtualRouterName": "vrServiceB"

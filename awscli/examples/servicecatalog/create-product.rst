@@ -20,7 +20,7 @@ Contents of ``create-product-input.json``::
         "Tags": [
             {
                 "Key": "region",
-                "Value": "us-east-1"
+                "Value": "us-west-2"
             }
         ],
         "ProvisioningArtifactParameters": {
@@ -39,7 +39,7 @@ Output::
         "Tags": [
             {
                 "Key": "region",
-                "Value": "us-east-1"
+                "Value": "us-west-2"
             }
         ],
         "ProductViewDetail": {

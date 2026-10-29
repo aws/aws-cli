@@ -9,7 +9,7 @@ Output::
     {
         "ProfileSummaries": [
             {
-                "Arn": "arn:aws:route53profiles:us-east-1:123456789012:profile/rp-4987774726example",
+                "Arn": "arn:aws:route53profiles:us-west-2:123456789012:profile/rp-4987774726example",
                 "Id": "rp-4987774726example",
                 "Name": "test",
                 "ShareStatus": "NOT_SHARED"

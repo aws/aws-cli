@@ -3,8 +3,8 @@
 The following ``start-resource-scan`` example mmediately starts a scan of the policies applied to the specified resource in your AWS account. ::
 
     aws accessanalyzer start-resource-scan \
-        --analyzer-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account \
-        --resource-arn arn:aws:iam::111122223333:role/Cognito_testpoolAuth_Role
+        --analyzer-arn arn:aws:access-analyzer:us-west-2:123456789012:analyzer/ConsoleAnalyzer-account \
+        --resource-arn arn:aws:iam::123456789012:role/Cognito_testpoolAuth_Role
 
 This command produces no output.
 

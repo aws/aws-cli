@@ -3,7 +3,7 @@
 The following ``describe-schemas`` example lists the available tables at an endpoint. ::
 
     aws dms describe-schemas \
-        --endpoint-arn "arn:aws:dms:us-east-1:123456789012:endpoint:6GGI6YPWWGAYUVLKIB732KEVWA"
+        --endpoint-arn "arn:aws:dms:us-west-2:123456789012:endpoint:6GGI6YPWWGAYUVLKIB732KEVWA"
 
 Output::
 

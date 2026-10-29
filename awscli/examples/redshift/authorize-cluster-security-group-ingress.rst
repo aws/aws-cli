@@ -5,7 +5,7 @@ The following ``authorize-cluster-security-group-ingress`` example authorizes ac
     aws redshift authorize-cluster-security-group-ingress \
         --cluster-security-group-name mysecuritygroup \
         --ec2-security-group-name myec2securitygroup \
-        --ec2-security-group-owner-id 123445677890
+        --ec2-security-group-owner-id 123456789012
 
 Output::
 
@@ -17,7 +17,7 @@ Output::
                 {
                     "Status": "authorizing",
                     "EC2SecurityGroupName": "myec2securitygroup",
-                    "EC2SecurityGroupOwnerId": "123445677890",
+                    "EC2SecurityGroupOwnerId": "123456789012",
                     "Tags": []
                 }
             ],

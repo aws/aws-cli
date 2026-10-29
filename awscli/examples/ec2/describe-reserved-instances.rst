@@ -9,9 +9,9 @@ Output::
     {
         "ReservedInstances": [
             {
-                "ReservedInstancesId": "b847fa93-e282-4f55-b59a-1342fexample",
+                "ReservedInstancesId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "OfferingType": "No Upfront",
-                "AvailabilityZone": "us-west-1c",
+                "AvailabilityZone": "us-west-2c",
                 "End": "2016-08-14T21:34:34.000Z",
                 "ProductDescription": "Linux/UNIX",
                 "UsagePrice": 0.00,
@@ -37,19 +37,19 @@ For more information, see `Reserved Instances for Amazon EC2 overview <https://d
 
 **Example 2: To describe your Reserved Instances using filters**
 
-The following ``describe-reserved-instances`` example filters the response to include only three-year, t2.micro Linux/UNIX Reserved Instances in us-east-1e. ::
+The following ``describe-reserved-instances`` example filters the response to include only three-year, t2.micro Linux/UNIX Reserved Instances in us-west-2c. ::
 
     aws ec2 describe-reserved-instances \
-        --filters Name=duration,Values=94608000 Name=instance-type,Values=t2.micro Name=product-description,Values=Linux/UNIX Name=availability-zone,Values=us-east-1e
+        --filters Name=duration,Values=94608000 Name=instance-type,Values=t2.micro Name=product-description,Values=Linux/UNIX Name=availability-zone,Values=us-west-2c
 
 Output::
 
     {
         "ReservedInstances": [
             {
-                "ReservedInstancesId": "f127bd27-edb7-44c9-a0eb-0d7e09259af0",
+                "ReservedInstancesId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "OfferingType": "All Upfront",
-                "AvailabilityZone": "us-east-1e",
+                "AvailabilityZone": "us-west-2c",
                 "End": "2018-03-26T21:34:34.000Z",
                 "ProductDescription": "Linux/UNIX",
                 "UsagePrice": 0.00,

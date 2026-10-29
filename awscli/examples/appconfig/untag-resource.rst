@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the group1 tag from the specified application. ::
 
     aws appconfig untag-resource \
-        --resource-arn arn:aws:appconfig:us-east-1:111122223333:application/339ohji \
+        --resource-arn arn:aws:appconfig:us-west-2:123456789012:application/339ohji \
         --tag-keys '["group1"]'
 
 This command produces no output.

@@ -10,7 +10,7 @@ Output::
     {
         "Targets": [
             {
-                "Endpoint": "database1.ab0cd1efghij.us-east-1.rds.amazonaws.com",
+                "Endpoint": "database1.ab0cd1efghij.us-west-2.rds.amazonaws.com",
                 "TrackedClusterId": "database1",
                 "RdsResourceId": "database1-instance-1",
                 "Port": 3306,

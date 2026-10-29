@@ -9,7 +9,7 @@ Output::
 
     {
         "metricName": "myCustomMetric",
-        "metricArn": "arn:aws:iot:us-east-1:1234564789012:custommetric/myCustomMetric",
+        "metricArn": "arn:aws:iot:us-west-2:1234564789012:custommetric/myCustomMetric",
         "metricType": "number",
         "displayName": "My custom metric",
         "creationDate": "2020-11-17T23:02:12.879000-09:00",

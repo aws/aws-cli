@@ -15,7 +15,7 @@ Output::
             "Status": "PAUSED",
             "ProgressingJobsCount": 0,
             "CreatedAt": 1526428516,
-            "Arn": "arn:aws:mediaconvert:us-west-1:123456789012:queues/Customer1",
+            "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:queues/Customer1",
             "Name": "Customer1",
             "SubmittedJobsCount": 0,
             "PricingPlan": "ON_DEMAND",

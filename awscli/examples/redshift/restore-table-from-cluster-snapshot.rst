@@ -16,7 +16,7 @@ Output::
 
     {
         "TableRestoreStatus": {
-            "TableRestoreRequestId": "a123a12b-abc1-1a1a-a123-a1234ab12345",
+            "TableRestoreRequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Status": "PENDING",
             "RequestTime": "2019-12-20T00:20:16.402Z",
             "ClusterIdentifier": "mycluster",

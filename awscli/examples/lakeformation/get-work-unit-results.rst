@@ -3,7 +3,7 @@
 The following ``get-work-unit-results`` example returns the work units resulting from the query. ::
 
     aws lakeformation get-work-unit-results \
-        --query-id='1234273f-4a62-4cda-8d98-69615ee8be9b' \
+        --query-id='a1b2c3d4-5678-90ab-cdef-EXAMPLE11111' \
         --work-unit-id '0' \
         --work-unit-token 'B2fMSdmQXe9umX8Ux8XCo4=' outfile
 

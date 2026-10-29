@@ -5,7 +5,7 @@ The following ``start-snomedct-inference-job`` example starts a SNOMED CT infere
     aws comprehendmedical start-snomedct-inference-job \
         --input-data-config "S3Bucket=comp-med-input" \
         --output-data-config "S3Bucket=comp-med-output" \
-        --data-access-role-arn arn:aws:iam::867139942017:role/ComprehendMedicalBatchProcessingRole \
+        --data-access-role-arn arn:aws:iam::123456789012:role/ComprehendMedicalBatchProcessingRole \
         --language-code en
 
 Output::

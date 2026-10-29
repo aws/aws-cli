@@ -9,10 +9,10 @@ Output::
 
     {
         "task": {
-            "taskArn": "arn:aws:ecs:us-west-2:130757420319:task/default/666fdccc2e2d4b6894dd422f4eeee8f8",
-            "clusterArn": "arn:aws:ecs:us-west-2:130757420319:cluster/default",
-            "taskDefinitionArn": "arn:aws:ecs:us-west-2:130757420319:task-definition/sleep360:3",
-            "containerInstanceArn": "arn:aws:ecs:us-west-2:130757420319:container-instance/default/765936fadbdd46b5991a4bd70c2a43d4",
+            "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/default/666fdccc2e2d4b6894dd422f4eeee8f8",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/default",
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:3",
+            "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/default/765936fadbdd46b5991a4bd70c2a43d4",
             "overrides": {
                 "containerOverrides": []
             },

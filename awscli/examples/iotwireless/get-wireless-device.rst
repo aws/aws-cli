@@ -3,21 +3,21 @@
 The following ``get-wireless-device`` example lists the available widgets in your AWS account. ::
 
     aws iotwireless get-wireless-device \
-        --identifier "1ffd32c8-8130-4194-96df-622f072a315f" \
+        --identifier "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --identifier-type WirelessDeviceID
 
 Output::
 
     {
         "Name": "myLoRaWANDevice", 
-        "ThingArn": "arn:aws:iot:us-east-1:123456789012:thing/44b87eb4-9bce-423d-b5fc-973f5ecc358b", 
+        "ThingArn": "arn:aws:iot:us-west-2:123456789012:thing/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222", 
         "DestinationName": "IoTWirelessDestination", 
-        "Id": "1ffd32c8-8130-4194-96df-622f072a315f", 
-        "ThingName": "44b87eb4-9bce-423d-b5fc-973f5ecc358b", 
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+        "ThingName": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222", 
         "Type": "LoRaWAN", 
         "LoRaWAN": {
-            "DeviceProfileId": "ab0c23d3-b001-45ef-6a01-2bc3de4f5333", 
-            "ServiceProfileId": "fe98dc76-cd12-001e-2d34-5550432da100", 
+            "DeviceProfileId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333", 
+            "ServiceProfileId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444", 
             "OtaaV1_1": {
                 "AppKey": "3f4ca100e2fc675ea123f4eb12c4a012", 
                 "JoinEui": "b4c231a359bc2e3d", 
@@ -25,7 +25,7 @@ Output::
             }, 
             "DevEui": "ac12efc654d23fc2"
         }, 
-        "Arn": "arn:aws:iotwireless:us-east-1:123456789012:WirelessDevice/1ffd32c8-8130-4194-96df-622f072a315f", 
+        "Arn": "arn:aws:iotwireless:us-west-2:123456789012:WirelessDevice/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
         "Description": "My LoRaWAN wireless device"
     }
 

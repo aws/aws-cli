@@ -37,7 +37,7 @@ You can also obtain the same information in text format using the ``--output tex
 
 Output::
 
-    RESPONSEMETADATA    cdac40aa-64cc-11e2-9e70-918437dd236d
+    RESPONSEMETADATA    a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
     Sets the display format for date and time values.   string  True    engine-default  ISO, MDY        datestyle
     Sets the number of digits displayed for floating-point values       integer True    -15-2   engine-default  0       extra_float_digits
     This parameter applies a user-defined label to a group of queries that are run during the same session..    string  True    engine-default  default query_group

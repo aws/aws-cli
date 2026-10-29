@@ -23,9 +23,9 @@ Output::
 
     {
         "IpamResourceDiscovery":{
-            "OwnerId": "149977607591",
+            "OwnerId": "123456789012",
             "IpamResourceDiscoveryId": "ipam-res-disco-0257046d8aa78b8bc",
-            "IpamResourceDiscoveryArn": "arn:aws:ec2::149977607591:ipam-resource-discovery/ipam-res-disco-0257046d8aa78b8bc", 
+            "IpamResourceDiscoveryArn": "arn:aws:ec2::123456789012:ipam-resource-discovery/ipam-res-disco-0257046d8aa78b8bc", 
             "IpamResourceDiscoveryRegion": "us-east-1",
             "Description": "'Example-resource-discovery'",
             "OperatingRegions":[

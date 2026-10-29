@@ -5,7 +5,7 @@ The following ``remove-role-from-db-instance`` example removes the role named ``
     aws rds remove-role-from-db-instance \
         --db-instance-identifier test-instance \
         --feature-name S3_INTEGRATION \
-        --role-arn arn:aws:iam::111122223333:role/rds-s3-integration-role
+        --role-arn arn:aws:iam::123456789012:role/rds-s3-integration-role
 
 This command produces no output.
 

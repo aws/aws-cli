@@ -11,7 +11,7 @@ Output::
         "actionName": "AddThingsToQuarantineGroupAction",
         "actionType": "ADD_THINGS_TO_THING_GROUP",
         "actionArn": "arn:aws:iot:us-west-2:123456789012:mitigationaction/AddThingsToQuarantineGroupAction",
-        "actionId": "2fd2726d-98e1-4abf-b10f-09465ccd6bfa",
+        "actionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "roleArn": "arn:aws:iam::123456789012:role/service-role/MoveThingsToQuarantineGroupRole",
         "actionParams": {
             "addThingsToThingGroupParams": {

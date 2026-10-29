@@ -12,7 +12,7 @@ Output::
         "DBInstance": {
             "IAMDatabaseAuthenticationEnabled": false,
             "MonitoringInterval": 0,
-            "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:test-instance-repl",
+            "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:test-instance-repl",
             "ReadReplicaSourceDBInstanceIdentifier": "test-instance",
             "DBInstanceIdentifier": "test-instance-repl"
         }

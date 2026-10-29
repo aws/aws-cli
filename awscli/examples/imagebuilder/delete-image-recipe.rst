@@ -3,7 +3,7 @@
 The following ``delete-image-recipe`` example deletes an image recipe by specifying its ARN. ::
 
     aws imagebuilder delete-image-recipe \
-        --image-recipe-arn arn:aws:imagebuilder:us-east-1:123456789012:image-recipe/mybasicrecipe/2019.12.03
+        --image-recipe-arn arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/mybasicrecipe/2019.12.03
 
 Output::
 

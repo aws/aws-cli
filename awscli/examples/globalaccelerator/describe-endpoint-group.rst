@@ -3,7 +3,7 @@
 The following ``describe-endpoint-group`` example retrieves details about an endpoint group with the following endpoints: an Amazon EC2 instance, an ALB, and an NLB. ::
 
     aws globalaccelerator describe-endpoint-group \
-        --endpoint-group-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/6789vxyz-vxyz-6789-vxyz-6789lmnopqrs/endpoint-group/ab88888example
+        --endpoint-group-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222/endpoint-group/ab88888example
 
 Output::
 
@@ -17,15 +17,15 @@ Output::
             },
             {
                 "Weight": 128,
-                "EndpointId": "arn:aws:elasticloadbalancing:us-east-1:000123456789:loadbalancer/app/ALBTesting/alb01234567890xyz"
+                "EndpointId": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/ALBTesting/alb01234567890xyz"
             },
             {
                 "Weight": 128,
-                "EndpointId": "arn:aws:elasticloadbalancing:us-east-1:000123456789:loadbalancer/net/NLBTesting/alb01234567890qrs"
+                "EndpointId": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/NLBTesting/alb01234567890qrs"
             }
             ],
-            "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/6789vxyz-vxyz-6789-vxyz-6789lmnopqrs/endpoint-group/4321abcd-abcd-4321-abcd-4321abcdefg",
-            "EndpointGroupRegion": "us-east-1"
+            "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222/endpoint-group/4321abcd-abcd-4321-abcd-4321abcdefg",
+            "EndpointGroupRegion": "us-west-2"
         }
     }
 

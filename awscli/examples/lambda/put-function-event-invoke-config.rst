@@ -11,7 +11,7 @@ Output::
 
     {
         "LastModified": 1573686021.479,
-        "FunctionArn": "arn:aws:lambda:us-east-2:123456789012:function:my-function:$LATEST",
+        "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:$LATEST",
         "MaximumRetryAttempts": 0,
         "MaximumEventAgeInSeconds": 3600,
         "DestinationConfig": {

@@ -10,7 +10,7 @@ Output::
         "DBProxies": [
             {
                 "DBProxyName": "proxyExample1",
-                "DBProxyArn": "arn:aws:rds:us-east-1:123456789012:db-proxy:prx-0123a01b12345c0ab",
+                "DBProxyArn": "arn:aws:rds:us-west-2:123456789012:db-proxy:prx-0123a01b12345c0ab",
                 "Status": "available",
                 "EngineFamily": "PostgreSQL",
                 "VpcId": "vpc-1234567",
@@ -25,12 +25,12 @@ Output::
                     {
                         "Description": "proxydescription1",
                         "AuthScheme": "SECRETS",
-                        "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789123:secret:secretName-1234f",
+                        "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789012:secret:secretName-1234f",
                         "IAMAuth": "DISABLED"
                     }
                 ],
                 "RoleArn": "arn:aws:iam::12345678912:role/ProxyPostgreSQLRole",
-                "Endpoint": "proxyExample1.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
+                "Endpoint": "proxyExample1.proxy-ab0cd1efghij.us-west-2.rds.amazonaws.com",
                 "RequireTLS": false,
                 "IdleClientTimeout": 1800,
                 "DebugLogging": false,
@@ -39,7 +39,7 @@ Output::
             },
             {
                 "DBProxyName": "proxyExample2",
-                "DBProxyArn": "arn:aws:rds:us-east-1:123456789012:db-proxy:prx-1234a12b23456c1ab",
+                "DBProxyArn": "arn:aws:rds:us-west-2:123456789012:db-proxy:prx-1234a12b23456c1ab",
                 "Status": "available",
                 "EngineFamily": "PostgreSQL",
                 "VpcId": "sg-1234567",
@@ -54,12 +54,12 @@ Output::
                     {
                         "Description": "proxydescription2",
                         "AuthScheme": "SECRETS",
-                        "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789123:secret:secretName-1234f",
+                        "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789012:secret:secretName-1234f",
                         "IAMAuth": "DISABLED"
                     }
                 ],
                 "RoleArn": "arn:aws:iam::12345678912:role/ProxyPostgreSQLRole",
-                "Endpoint": "proxyExample2.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
+                "Endpoint": "proxyExample2.proxy-ab0cd1efghij.us-west-2.rds.amazonaws.com",
                 "RequireTLS": false,
                 "IdleClientTimeout": 1800,
                 "DebugLogging": false,

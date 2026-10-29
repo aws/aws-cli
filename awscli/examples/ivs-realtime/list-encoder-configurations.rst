@@ -9,12 +9,12 @@ Output::
     {  
         "encoderConfigurations": [
             {
-                "arn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/abcdABCDefgh",
+                "arn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/abcdABCDefgh",
                 "name": "test-ec-1",
                 "tags": {}
             },
             {
-                "arn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABCefgEFGabc",
+                "arn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABCefgEFGabc",
                 "name": "test-ec-2",
                 "tags": {}
             }

@@ -10,7 +10,7 @@ Output::
     {
         "TagOptions": [],
         "ProductViewDetail": {
-            "ProductARN": "arn:aws:catalog:us-west-2:687558542028:product/prod-abcdcek6yhbxi",
+            "ProductARN": "arn:aws:catalog:us-west-2:123456789012:product/prod-abcdcek6yhbxi",
             "ProductViewSummary": {
                 "SupportEmail": "test@amazon.com",
                 "Type": "CLOUD_FORMATION_TEMPLATE",

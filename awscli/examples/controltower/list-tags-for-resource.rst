@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags for AWS Control Tower Enabled Controls. ::
 
     aws controltower list-tags-for-resource \
-        --resource-arn "arn:aws:controltower:us-east-1:123456789012:enabledcontrol/2H2AWUG4SKG81855"
+        --resource-arn "arn:aws:controltower:us-west-2:123456789012:enabledcontrol/2H2AWUG4SKG81855"
 
 Output::
 

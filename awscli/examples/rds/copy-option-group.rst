@@ -17,7 +17,7 @@ Output::
             "OptionGroupDescription": "My option group copy",
             "AllowsVpcAndNonVpcInstanceMemberships": true,
             "EngineName": "oracle-ee",
-            "OptionGroupArn": "arn:aws:rds:us-east-1:123456789012:og:new-option-group"
+            "OptionGroupArn": "arn:aws:rds:us-west-2:123456789012:og:new-option-group"
         }
     }
 

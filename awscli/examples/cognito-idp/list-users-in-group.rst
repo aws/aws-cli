@@ -11,11 +11,11 @@ Output::
     {
         "Users": [
             {
-                "Username": "acf10624-80bb-401a-ac61-607bee2110ec",
+                "Username": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Attributes": [
                     {
                         "Name": "sub",
-                        "Value": "acf10624-80bb-401a-ac61-607bee2110ec"
+                        "Value": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                     },
                     {
                         "Name": "custom:CustomAttr1",
@@ -32,11 +32,11 @@ Output::
                 "UserStatus": "CONFIRMED"
             },
             {
-                "Username": "22704aa3-fc10-479a-97eb-2af5806bd327",
+                "Username": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Attributes": [
                     {
                         "Name": "sub",
-                        "Value": "22704aa3-fc10-479a-97eb-2af5806bd327"
+                        "Value": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                     },
                     {
                         "Name": "email_verified",

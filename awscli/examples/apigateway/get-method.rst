@@ -22,7 +22,7 @@ Output::
                 }
             },
             "cacheKeyParameters": [],
-            "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:My_Function/invocations",
+            "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789012:function:My_Function/invocations",
             "httpMethod": "POST",
             "cacheNamespace": "y9h6rt",
             "type": "AWS"

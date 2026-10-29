@@ -10,7 +10,7 @@ Output::
     {
         "executionSummaries": [
             {
-                "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/my_thing",
+                "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/my_thing",
                 "jobExecutionSummary": {
                     "status": "QUEUED",
                     "queuedAt": "2022-03-07T15:58:42.195000-08:00",

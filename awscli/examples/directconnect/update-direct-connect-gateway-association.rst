@@ -3,23 +3,23 @@
 The following ``update-direct-connect-gateway-association`` example adds the specified CIDR block to a Direct Connect gateway association. ::
 
     aws directconnect update-direct-connect-gateway-association \
-        --association-id 820a6e4f-5374-4004-8317-3f64bEXAMPLE \
+        --association-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --add-allowed-prefixes-to-direct-connect-gateway cidr=192.168.2.0/30
 
 Output::
 
     {
         "directConnectGatewayAssociation": {
-            "directConnectGatewayId": "11460968-4ac1-4fd3-bdb2-00599EXAMPLE",
-            "directConnectGatewayOwnerAccount": "111122223333",
+            "directConnectGatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "directConnectGatewayOwnerAccount": "123456789012",
             "associationState": "updating",
             "associatedGateway": {
                 "id": "tgw-02f776b1a7EXAMPLE",
                 "type": "transitGateway",
-                "ownerAccount": "111122223333",
-                "region": "us-east-1"
+                "ownerAccount": "123456789012",
+                "region": "us-west-2"
             },
-            "associationId": "820a6e4f-5374-4004-8317-3f64bEXAMPLE",
+            "associationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "allowedPrefixesToDirectConnectGateway": [
                 {
                     "cidr": "192.168.2.0/30"

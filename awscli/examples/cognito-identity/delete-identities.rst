@@ -3,7 +3,7 @@
 The following ``delete-identities`` example deletes the specified identity. ::
 
     aws cognito-identity delete-identities \
-        --identity-ids-to-delete "us-west-2:11111111-1111-1111-1111-111111111111"
+        --identity-ids-to-delete "us-west-2:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 

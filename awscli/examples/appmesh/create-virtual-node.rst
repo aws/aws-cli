@@ -33,10 +33,10 @@ Output::
         "virtualNode": {
             "meshName": "app1",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualNode/vnServiceBv1",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualNode/vnServiceBv1",
                 "createdAt": 1563810019.874,
                 "lastUpdatedAt": 1563810019.874,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "spec": {
@@ -110,10 +110,10 @@ Output::
         "virtualNode": {
             "meshName": "app1",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualNode/vnServiceA",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualNode/vnServiceA",
                 "createdAt": 1563810859.465,
                 "lastUpdatedAt": 1563810859.465,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "spec": {

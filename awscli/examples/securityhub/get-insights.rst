@@ -3,7 +3,7 @@
 The following ``get-insights`` example retrieves the configuration details for the insight with the specified ARN. ::
 
     aws securityhub get-insights \
-        --insight-arns "arn:aws:securityhub:us-west-1:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+        --insight-arns "arn:aws:securityhub:us-west-2:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
@@ -25,7 +25,7 @@ Output::
                     ]
                 },
                 "GroupByAttribute": "ResourceId",
-                "InsightArn": "arn:aws:securityhub:us-west-1:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "InsightArn": "arn:aws:securityhub:us-west-2:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Name": "Critical role findings"
             }
         ]

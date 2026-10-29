@@ -16,7 +16,7 @@ The following ``wait services-stable`` example pauses and continues only after t
 
     aws ecs wait services-stable \
         --cluster MyCluster \
-        --tasks arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-44444EXAMPLE
+        --tasks arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444
 
 This command produces no output.
 

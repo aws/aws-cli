@@ -19,7 +19,7 @@ Output::
 
     {
         "ClusterArn": "arn:aws:kafka:us-west-2:123456789012:cluster/MessagingCluster/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE-2",
-        "ClusterOperationArn": "arn:aws:kafka:us-west-2:123456789012:cluster-operation/V123450123/a1b2c3d4-1234-abcd-cdef-22222EXAMPLE-2/a1b2c3d4-abcd-1234-bcde-33333EXAMPLE"
+        "ClusterOperationArn": "arn:aws:kafka:us-west-2:123456789012:cluster-operation/V123450123/a1b2c3d4-1234-abcd-cdef-22222EXAMPLE-2/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
     }
 
 The output returns an ARN for this ``update-cluster-configuration`` operation. To determine if this operation is complete, use the ``describe-cluster-operation`` command with this ARN as input.

@@ -3,7 +3,7 @@
 The following ``disassociate-role-from-group`` example disassociates the IAM role from the specified Greengrass group. ::
 
     aws greengrass disassociate-role-from-group \
-        --group-id 2494ee3f-7f8a-4e92-a78b-d205f808b84b
+        --group-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

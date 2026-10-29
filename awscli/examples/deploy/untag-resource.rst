@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes two tags with keys Name and Type from an application named testApp in CodeDeploy. ::
 
     aws deploy untag-resource \
-        --resource-arn  arn:aws:codedeploy:us-west-2:111122223333:application:testApp \
+        --resource-arn  arn:aws:codedeploy:us-west-2:123456789012:application:testApp \
         --tag-keys Name Type
 
 This command produces no output.

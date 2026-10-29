@@ -12,12 +12,12 @@ Output::
             {
                 "Name": "finance-ap",
                 "NetworkOrigin": "Internet",
-                "Bucket": "business-records"
+                "Bucket": "amzn-s3-demo-bucket1"
             },
             {
                 "Name": "managers-ap",
                 "NetworkOrigin": "Internet",
-                "Bucket": "business-records"
+                "Bucket": "amzn-s3-demo-bucket1"
             },
             {
                 "Name": "private-network-ap",
@@ -25,28 +25,28 @@ Output::
                 "VpcConfiguration": {
                     "VpcId": "1a2b3c"
                 },
-                "Bucket": "business-records"
+                "Bucket": "amzn-s3-demo-bucket1"
             },
             {
                 "Name": "customer-ap",
                 "NetworkOrigin": "Internet",
-                "Bucket": "external-docs"
+                "Bucket": "amzn-s3-demo-bucket2"
             },
             {
                 "Name": "public-ap",
                 "NetworkOrigin": "Internet",
-                "Bucket": "external-docs"
+                "Bucket": "amzn-s3-demo-bucket2"
             }
         ]
     }
 
 **Example 2: To retrieve a list of all access points for a bucket**
 
-The following ``list-access-points`` example retrieves a list of all access points attached to the bucket ``external-docs`` owned by account 123456789012. ::
+The following ``list-access-points`` example retrieves a list of all access points attached to the bucket ``amzn-s3-demo-bucket2`` owned by account 123456789012. ::
 
     aws s3control list-access-points \
         --account-id 123456789012 \
-        --bucket external-docs
+        --bucket amzn-s3-demo-bucket2
 
 Output::
 
@@ -55,12 +55,12 @@ Output::
             {
                 "Name": "customer-ap",
                 "NetworkOrigin": "Internet",
-                "Bucket": "external-docs"
+                "Bucket": "amzn-s3-demo-bucket2"
             },
             {
                 "Name": "public-ap",
                 "NetworkOrigin": "Internet",
-                "Bucket": "external-docs"
+                "Bucket": "amzn-s3-demo-bucket2"
             }
         ]
     }

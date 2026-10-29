@@ -3,7 +3,7 @@
 The following ``describe-budget`` example retrieves the specified Cost and Usage budget. ::
 
     aws budgets describe-budget \
-        --account-id 111122223333 \
+        --account-id 123456789012 \
         --budget-name "Example Budget"
 
 Output::
@@ -46,7 +46,7 @@ Output::
             },
             "CostFilters": {
                 "AZ": [
-                    "us-east-1"
+                    "us-west-2"
                 ]
             }
         }

@@ -27,7 +27,7 @@ Output::
         "ComputeRedundancy": 0,
         "Status": "deleting",
         "PubliclyAccessible": true,
-        "Endpoint": "limitless-test-cluster.limitless-cekycexample.us-east-2.rds.amazonaws.com"
+        "Endpoint": "limitless-test-cluster.limitless-cekycexample.us-west-2.rds.amazonaws.com"
     }
 
 For more information, see `Deleting Aurora DB clusters and DB instances <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DeleteCluster.html>`__ in the *Amazon Aurora User Guide*.

@@ -12,7 +12,7 @@ Output::
         "ResolverEndpoint": {
             "Id": "rslvr-in-497098ad5example",
             "CreatorRequestId": "AWSConsole.25.0123456789",
-            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-endpoint/rslvr-in-497098ad5example",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-endpoint/rslvr-in-497098ad5example",
             "Name": "my-inbound-endpoint",
             "SecurityGroupIds": [
                 "sg-05cd7b25d6example"

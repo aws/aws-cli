@@ -8,7 +8,7 @@ The following ``delete-repository-policy`` example deletes the repository policy
 Output::
 
     {
-        "registryId": "012345678910",
+        "registryId": "123456789012",
         "repositoryName": "cluster-autoscaler",
         "policyText": "{\n  \"Version\" : \"2008-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"allow public pull\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : \"*\",\n    \"Action\" : [ \"ecr:BatchCheckLayerAvailability\", \"ecr:BatchGetImage\", \"ecr:GetDownloadUrlForLayer\" ]\n  } ]\n}"
     }

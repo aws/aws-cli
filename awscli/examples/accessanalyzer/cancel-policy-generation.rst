@@ -3,7 +3,7 @@
 The following ``cancel-policy-generation`` example cancels the requested policy generation job id. ::
 
     aws accessanalyzer cancel-policy-generation \
-        --job-id 923a56b0-ebb8-4e80-8a3c-a11ccfbcd6f2
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

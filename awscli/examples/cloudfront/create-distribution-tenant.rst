@@ -40,7 +40,7 @@ Contents of ``tenant.json``::
                 "Action": "disable"
             },
             "Certificate": {
-                "Arn": "arn:aws:acm:us-east-1:123456789012:certificate/ec53f564-ea5a-4e4a-a0a2-e3c989449abc"
+                "Arn": "arn:aws:acm:us-east-1:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         }
     }
@@ -73,7 +73,7 @@ Output::
                     "Action": "disable"
                 },
                 "Certificate": {
-                    "Arn": "arn:aws:acm:us-east-1:123456789012:certificate/ec53f564-ea5a-4e4a-a0a2-e3c989449abc"
+                    "Arn": "arn:aws:acm:us-east-1:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 },
                 "GeoRestrictions": {
                     "RestrictionType": "whitelist",

@@ -25,7 +25,7 @@ The following ``get-token`` example gets an authentication token for an Amazon E
 
     aws eks get-token \
         --cluster-name my-eks-cluster \
-        --role-arn arn:aws:iam::111122223333:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM
+        --role-arn arn:aws:iam::123456789012:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM
 
 Output::
 

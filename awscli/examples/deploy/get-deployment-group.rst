@@ -24,7 +24,7 @@ Output::
                     "Key": "Name"
                 }
             ],
-            "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "serviceRoleArn": "arn:aws:iam::123456789012:role/CodeDeployDemoRole",
             "deploymentGroupName": "WordPress_DG"
         }

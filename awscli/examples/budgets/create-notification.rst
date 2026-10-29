@@ -3,7 +3,7 @@
 The following ``create-notification`` example creates a notification for the specified Cost and Usage budget. ::
 
     aws budgets create-notification \
-        --account-id 111122223333 \
+        --account-id 123456789012 \
         --budget-name "Example Budget" \
         --notification NotificationType=ACTUAL,ComparisonOperator=GREATER_THAN,Threshold=80,ThresholdType=PERCENTAGE \
         --subscriber SubscriptionType=EMAIL,Address=example@example.com

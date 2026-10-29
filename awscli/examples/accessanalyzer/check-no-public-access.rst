@@ -14,7 +14,7 @@ Contents of ``check-no-public-access-myfile.json``::
             {
                 "Sid": "CheckNoPublicAccess",
                 "Effect": "Allow",
-                "Principal": { "AWS": "arn:aws:iam::111122223333:user/JohnDoe" },
+                "Principal": { "AWS": "arn:aws:iam::123456789012:user/JohnDoe" },
                 "Action": [
                     "s3:GetObject"
                 ]

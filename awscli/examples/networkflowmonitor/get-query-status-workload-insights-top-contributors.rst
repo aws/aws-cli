@@ -3,8 +3,8 @@
 The following ``get-query-status-workload-insights-top-contributors`` example displays the current status of the query in the specified account. ::
 
     aws networkflowmonitor get-query-status-workload-insights-top-contributors \
-        --scope-id e21cda79-30a0-4c12-9299-d8629d76d8cf \
-        --query-id f2a87c70-3e5a-362e-8beb-4747d13d8419
+        --scope-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --query-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 

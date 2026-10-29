@@ -17,7 +17,7 @@ Output::
             ],
             "MinimumEngineVersion": "6.2",
             "Clusters": [],
-            "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:acl/new-acl-1"
+            "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:acl/new-acl-1"
         }
     }
 

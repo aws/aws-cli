@@ -3,7 +3,7 @@
 The following ``tag-resource`` example tags a specified contact with the provided tag key value pair. ::
 
     aws ssm-contacts tag-resource \
-        --resource-arn "arn:aws:ssm-contacts:us-east-1:111122223333:contact/akuam" \
+        --resource-arn "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam" \
         --tags '[{"Key":"group1","Value":"1"}]'
 
 This command produces no output.

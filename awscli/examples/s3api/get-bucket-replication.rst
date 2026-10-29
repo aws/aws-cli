@@ -1,9 +1,9 @@
 **To retrieve the replication configuration of a bucket**
 
-The following ``get-bucket-replication`` example retrieves the replication configuration for a bucket named ``amzn-s3-demo-bucket``. ::
+The following ``get-bucket-replication`` example retrieves the replication configuration for a bucket named ``amzn-s3-demo-bucket1``. ::
 
     aws s3api get-bucket-replication \
-        --bucket amzn-s3-demo-bucket
+        --bucket amzn-s3-demo-bucket1
 
 Output::
 
@@ -14,7 +14,7 @@ Output::
                     "Status": "Enabled",
                     "Prefix": "",
                     "Destination": {
-                        "Bucket": "arn:aws:s3:::amzn-s3-demo-bucket-backup",
+                        "Bucket": "arn:aws:s3:::amzn-s3-demo-bucket2",
                         "StorageClass": "STANDARD"
                     },
                     "ID": "ZmUwNzE4ZmQ4tMjVhOS00MTlkLOGI4NDkzZTIWJjNTUtYTA1"

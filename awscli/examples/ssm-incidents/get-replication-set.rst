@@ -3,16 +3,16 @@
 The following ``get-replication-set`` example gets the details of the replication set Incident Manager uses to replicate and encrypt data in your Amazon Web Services account. ::
 
     aws ssm-incidents get-replication-set \
-        --arn "arn:aws:ssm-incidents::111122223333:replication-set/c4bcb603-4bf9-bb3f-413c-08df53673b57"
+        --arn "arn:aws:ssm-incidents::123456789012:replication-set/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
         "replicationSet": {
-            "createdBy": "arn:aws:sts::111122223333:assumed-role/Admin/username",
+            "createdBy": "arn:aws:sts::123456789012:assumed-role/Admin/username",
             "createdTime": "2021-05-14T17:57:22.010000+00:00",
             "deletionProtected": false,
-            "lastModifiedBy": "arn:aws:sts::111122223333:assumed-role/Admin/username",
+            "lastModifiedBy": "arn:aws:sts::123456789012:assumed-role/Admin/username",
             "lastModifiedTime": "2021-05-14T17:57:22.010000+00:00",
             "regionMap": {
                 "us-east-1": {

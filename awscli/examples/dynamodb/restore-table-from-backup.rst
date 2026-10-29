@@ -41,7 +41,7 @@ Output::
             "TableSizeBytes": 0,
             "ItemCount": 0,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection2",
-            "TableId": "114865c9-5ef3-496c-b4d1-c4cbdd2d44fb",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED"
             },

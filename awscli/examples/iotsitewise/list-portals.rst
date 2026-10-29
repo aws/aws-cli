@@ -9,10 +9,10 @@ Output::
     {
         "portalSummaries": [
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "name": "WindFarmPortal",
                 "description": "A portal that contains wind farm projects for Example Corp.",
-                "startUrl": "https://a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE.app.iotsitewise.aws",
+                "startUrl": "https://a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.app.iotsitewise.aws",
                 "creationDate": "2020-02-04T23:01:52.90248068Z",
                 "lastUpdateDate": "2020-02-04T23:01:52.90248078Z",
                 "roleArn": "arn:aws:iam::123456789012:role/service-role/MySiteWiseMonitorServiceRole"

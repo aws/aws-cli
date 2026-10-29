@@ -3,13 +3,13 @@
 The following ``describe-entity-recognizer`` example gets the properties of a custom entity recognizer model. ::
 
     aws comprehend describe-entity-recognizer \
-        --entity-recognizer-arn arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/business-recongizer-1/version/1
+        --entity-recognizer-arn arn:aws:comprehend:us-west-2:123456789012:entity-recognizer/business-recongizer-1/version/1
 
 Output:: 
 
     {
         "EntityRecognizerProperties": {
-            "EntityRecognizerArn": "arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/business-recongizer-1/version/1",
+            "EntityRecognizerArn": "arn:aws:comprehend:us-west-2:123456789012:entity-recognizer/business-recongizer-1/version/1",
             "LanguageCode": "en",
             "Status": "TRAINED",
             "SubmitTime": "2023-06-14T20:44:59.631000+00:00",
@@ -51,7 +51,7 @@ Output::
                     }
                 ]
             },
-            "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role",
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role",
             "VersionName": "1"
         }
     }

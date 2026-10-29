@@ -3,7 +3,7 @@
 The following ``cancel-job`` example cancels a job with the specified job ID. ::
 
     aws batch cancel-job \
-        --job-id bcf0b186-a532-4122-842e-2ccab8d54efb \
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --reason "Cancelling job."
 
 This command produces no output.

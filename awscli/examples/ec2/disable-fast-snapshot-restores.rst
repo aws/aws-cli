@@ -3,7 +3,7 @@
 The following ``disable-fast-snapshot-restores`` example disables fast snapshot restore for the specified snapshot in the specified Availability Zone. ::
 
     aws ec2 disable-fast-snapshot-restores \
-        --availability-zones us-east-2a \
+        --availability-zones us-west-2a \
         --source-snapshot-ids snap-1234567890abcdef0
 
 Output::
@@ -12,7 +12,7 @@ Output::
         "Successful": [
             {
                 "SnapshotId": "snap-1234567890abcdef0",
-                "AvailabilityZone": "us-east-2a",
+                "AvailabilityZone": "us-west-2a",
                 "State": "disabling",
                 "StateTransitionReason": "Client.UserInitiated",
                 "OwnerId": "123456789012",

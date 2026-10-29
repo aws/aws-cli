@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example retrieves a list of all tags attached to the specified pipeline resource. ::
 
     aws codepipeline list-tags-for-resource \
-        --resource-arn arn:aws:codepipeline:us-east-1:123456789012:MyPipeline
+        --resource-arn arn:aws:codepipeline:us-west-2:123456789012:MyPipeline
 
 Output::
 

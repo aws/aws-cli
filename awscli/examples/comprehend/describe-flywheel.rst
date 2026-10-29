@@ -4,15 +4,15 @@ The following ``describe-flywheel`` example gets the properties of a flywheel. I
 that is trained to classify documents as either spam or nonspam, or, "ham". ::
 
     aws comprehend describe-flywheel \
-        --flywheel-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel
+        --flywheel-arn arn:aws:comprehend:us-west-2:123456789012:flywheel/example-flywheel
 
 Output::
 
     {
         "FlywheelProperties": {
-            "FlywheelArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel",
-            "ActiveModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-model/version/1",
-            "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role",
+            "FlywheelArn": "arn:aws:comprehend:us-west-2:123456789012:flywheel/example-flywheel",
+            "ActiveModelArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier/example-model/version/1",
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role",
             "TaskConfig": {
                 "LanguageCode": "en",
                 "DocumentClassificationConfig": {

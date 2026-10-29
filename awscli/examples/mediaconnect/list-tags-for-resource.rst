@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example displays the tag keys and values associated with the specified MediaConnect resource. ::
 
     aws mediaconnect list-tags-for-resource \
-        --resource-arn arn:aws:mediaconnect:us-east-1:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:BasketballGame
+        --resource-arn arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:BasketballGame
 
 Output::
 

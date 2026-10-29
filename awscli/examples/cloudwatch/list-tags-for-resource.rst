@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists all the tags associated with an alarm named ``demo`` in the specified account. ::
 
     aws cloudwatch list-tags-for-resource \
-        --resource-arn arn:aws:cloudwatch:us-east-1:123456789012:alarm:demo
+        --resource-arn arn:aws:cloudwatch:us-west-2:123456789012:alarm:demo
 
 Output::
 

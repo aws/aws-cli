@@ -1,9 +1,9 @@
 **To create a grant**
 
-The following ``create-grant`` example creates a grant that allows the ``exampleUser`` user to use the ``decrypt`` command on the ``1234abcd-12ab-34cd-56ef-1234567890ab`` example KMS key. The retiring principal is the ``adminRole`` role. The grant uses the ``EncryptionContextSubset`` grant constraint to allow this permission only when the encryption context in the ``decrypt`` request includes the ``"Department": "IT"`` key-value pair. ::
+The following ``create-grant`` example creates a grant that allows the ``exampleUser`` user to use the ``decrypt`` command on the ``a1b2c3d4-5678-90ab-cdef-EXAMPLE11111`` example KMS key. The retiring principal is the ``adminRole`` role. The grant uses the ``EncryptionContextSubset`` grant constraint to allow this permission only when the encryption context in the ``decrypt`` request includes the ``"Department": "IT"`` key-value pair. ::
 
     aws kms create-grant \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --grantee-principal arn:aws:iam::123456789012:user/exampleUser \
         --operations Decrypt \
         --constraints EncryptionContextSubset={Department=IT} \

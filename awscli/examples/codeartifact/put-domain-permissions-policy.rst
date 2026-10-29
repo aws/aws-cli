@@ -15,7 +15,7 @@ Contents of ``policy.json``::
                 "Sid": "ContributorPolicy",
                 "Effect": "Allow",
                 "Principal": {
-                    "AWS": "arn:aws:iam::111122223333:root"
+                    "AWS": "arn:aws:iam::123456789012:root"
                 },
                 "Action": [
                     "codeartifact:CreateRepository",
@@ -34,7 +34,7 @@ Output::
 
     {
         "policy": {
-            "resourceArn": "arn:aws:codeartifact:region-id:111122223333:domain/test-domain",
+            "resourceArn": "arn:aws:codeartifact:region-id:123456789012:domain/test-domain",
             "document": "{ ...policy document content...}",
             "revision": "MQlyyTQRASRU3HB58gBtSDHXG7Q3hvxxxxxxx="
         }

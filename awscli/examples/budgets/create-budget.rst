@@ -3,7 +3,7 @@
 The following ``create-budget`` example creates a Cost and Usage budget. ::
 
     aws budgets create-budget \
-        --account-id 111122223333 \
+        --account-id 123456789012 \
         --budget file://budget.json \
         --notifications-with-subscribers file://notifications-with-subscribers.json
         

@@ -3,7 +3,7 @@
 The following ``revoke-client-vpn-ingress`` example revokes a rule for internet access (``0.0.0.0/0``) for all groups. ::
 
     aws ec2 revoke-client-vpn-ingress \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde \
+        --client-vpn-endpoint-id cvpn-endpoint-123456789abcabcde \
         --target-network-cidr 0.0.0.0/0 \
         --revoke-all-groups
 

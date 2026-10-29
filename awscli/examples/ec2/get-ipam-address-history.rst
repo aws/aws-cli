@@ -24,7 +24,7 @@ Output::
         "HistoryRecords": [
             {
                 "ResourceOwnerId": "123456789012",
-                "ResourceRegion": "us-west-1",
+                "ResourceRegion": "us-west-2",
                 "ResourceType": "vpc",
                 "ResourceId": "vpc-06cbefa9ee907e1c0",
                 "ResourceCidr": "10.0.0.0/16",
@@ -36,7 +36,7 @@ Output::
             },
             {
                 "ResourceOwnerId": "123456789012",
-                "ResourceRegion": "us-east-2",
+                "ResourceRegion": "us-west-2",
                 "ResourceType": "vpc",
                 "ResourceId": "vpc-042702f474812c9ad",
                 "ResourceCidr": "10.0.0.0/16",
@@ -48,7 +48,7 @@ Output::
             },
             {
                 "ResourceOwnerId": "123456789012",
-                "ResourceRegion": "us-east-2",
+                "ResourceRegion": "us-west-2",
                 "ResourceType": "vpc",
                 "ResourceId": "vpc-042b8a44f64267d67",
                 "ResourceCidr": "10.0.0.0/16",

@@ -4,7 +4,7 @@ The following ``update-maintenance-window-target`` example updates only the name
 
     aws ssm update-maintenance-window-target \
         --window-id "mw-0c5ed765acEXAMPLE" \
-        --window-target-id "57e8344e-fe64-4023-8191-6bf05EXAMPLE" \
+        --window-target-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --name "NewName" \
         --no-replace
 
@@ -13,7 +13,7 @@ Output::
     {
         "Description": "",
         "OwnerInformation": "",
-        "WindowTargetId": "57e8344e-fe64-4023-8191-6bf05EXAMPLE",
+        "WindowTargetId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "WindowId": "mw-0c5ed765acEXAMPLE",
         "Targets": [
             {

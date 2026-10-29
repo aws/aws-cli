@@ -10,7 +10,7 @@ Output::
     {
         "PackagingConfigurations":[
             {
-                "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/CMAF",
+                "Arn":"arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-configurations/CMAF",
                 "Id":"CMAF",
                 "PackagingGroupId":"Packaging_group_1",
                 "CmafPackage":{
@@ -27,7 +27,7 @@ Output::
                 }
             },
             {
-                "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/DASH",
+                "Arn":"arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-configurations/DASH",
                 "Id":"DASH",
                 "PackagingGroupId":"Packaging_group_1",
                 "DashPackage":{
@@ -42,7 +42,7 @@ Output::
                 }
             },
             {
-                "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/HLS",
+                "Arn":"arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-configurations/HLS",
                 "Id":"HLS",
                 "PackagingGroupId":"Packaging_group_1",
                 "HlsPackage":{
@@ -60,7 +60,7 @@ Output::
                 }
             },
             {
-                "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/New_config_0_copy",
+                "Arn":"arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-configurations/New_config_0_copy",
                 "Id":"New_config_0_copy",
                 "PackagingGroupId":"Packaging_group_1",
                 "HlsPackage":{
@@ -69,7 +69,7 @@ Output::
                     "Encryption":{
                         "EncryptionMethod":"AWS_128",
                         "SpekeKeyProvider":{
-                            "RoleArn":"arn:aws:iam:111122223333::role/SPEKERole",
+                            "RoleArn":"arn:aws:iam:123456789012::role/SPEKERole",
                             "Url":"https://lfgubdvs97.execute-api.us-west-2.amazonaws.com/EkeStage/copyProtection/",
                             "SystemIds":[
                                 "81376844-f976-481e-a84e-cc25d39b0b33"

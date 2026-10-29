@@ -4,7 +4,7 @@ The following ``list-policies-for-target`` example gets a list of all service co
 
     aws organizations list-policies-for-target \
         --filter SERVICE_CONTROL_POLICY \
-        --target-id 444444444444
+        --target-id 123456789333
   
 The output includes a list of policy structures with summary information about the policies. The list does not include policies that apply to the account because of inheritance from its location in an OU hierarchy.
 

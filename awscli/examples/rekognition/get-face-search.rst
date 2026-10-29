@@ -72,10 +72,10 @@ Output::
                                 "Left": 0.5901259779930115, 
                                 "Height": 0.2514039874076843
                             }, 
-                            "FaceId": "056a95fa-2060-4159-9cab-7ed4daa030fa", 
+                            "FaceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
                             "ExternalImageId": "image3.jpg", 
                             "Confidence": 100.0, 
-                            "ImageId": "08f8a078-8929-37fd-8e8f-aadf690e8232"
+                            "ImageId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                         }, 
                         "Similarity": 98.44476318359375
                     }

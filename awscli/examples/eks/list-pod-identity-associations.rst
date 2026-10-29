@@ -13,21 +13,21 @@ Output::
                 "clusterName": "eks-customer",
                 "namespace": "default",
                 "serviceAccount": "default",
-                "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-9njjin9gfghecgocd",
+                "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-9njjin9gfghecgocd",
                 "associationId": "a-9njjin9gfghecgocd"
             },
             {
                 "clusterName": "eks-customer",
                 "namespace": "kube-system",
                 "serviceAccount": "eks-customer",
-                "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-dvtacahdvjn01ffbc",
+                "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-dvtacahdvjn01ffbc",
                 "associationId": "a-dvtacahdvjn01ffbc"
             },
             {
                 "clusterName": "eks-customer",
                 "namespace": "kube-system",
                 "serviceAccount": "coredns",
-                "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-yrpsdroc4ei7k6xps",
+                "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-yrpsdroc4ei7k6xps",
                 "associationId": "a-yrpsdroc4ei7k6xps"
             }
         ]
@@ -52,7 +52,7 @@ Output::
                 "clusterName": "eks-customer",
                 "namespace": "kube-system",
                 "serviceAccount": "eks-customer",
-                "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-dvtacahdvjn01ffbc",
+                "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-dvtacahdvjn01ffbc",
                 "associationId": "a-dvtacahdvjn01ffbc"
             }
         ]

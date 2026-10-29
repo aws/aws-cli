@@ -23,7 +23,7 @@ Output::
         "Placement": {
             "Tenancy": "default",
             "GroupName": "",
-            "AvailabilityZone": "us-east-1a"
+            "AvailabilityZone": "us-west-2a"
         },
         "InstanceType": "t2.micro",
         "NetworkInterfaces": [

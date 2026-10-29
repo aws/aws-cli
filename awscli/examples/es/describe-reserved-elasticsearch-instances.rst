@@ -13,7 +13,7 @@ Output::
             "ReservationName": "my-reservation",
             "PaymentOption": "PARTIAL_UPFRONT",
             "UsagePrice": 0.0,
-            "ReservedElasticsearchInstanceId": "9a8a7a6a-5a4a-3a2a-1a0a-9a8a7a6a5a4a",
+            "ReservedElasticsearchInstanceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "RecurringCharges": [{
                 "RecurringChargeAmount": 0.603,
                 "RecurringChargeFrequency": "Hourly"

@@ -9,7 +9,7 @@ The following ``start-image-scan`` example starts an image scan for and specifie
 Output::
 
     {
-        "registryId": "012345678910",
+        "registryId": "123456789012",
         "repositoryName": "sample-repo",
         "imageId": {
             "imageDigest": "sha256:74b2c688c700ec95a93e478cdb959737c148df3fbf5ea706abe0318726e885e6"

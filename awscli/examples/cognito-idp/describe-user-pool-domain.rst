@@ -10,7 +10,7 @@ Output::
     {
         "DomainDescription": {
             "UserPoolId": "us-west-2_aaaaaaaaa",
-            "AWSAccountId": "111111111111",
+            "AWSAccountId": "123456789012",
             "Domain": "my-domain",
             "S3Bucket": "aws-cognito-prod-pdx-assets",
             "CloudFrontDistribution": "aaaaaaaaaaaaa.cloudfront.net",

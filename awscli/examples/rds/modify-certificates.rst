@@ -14,7 +14,7 @@ Output::
             "Thumbprint": "EXAMPLE123456789012",
             "ValidFrom": "2019-09-19T18:16:53Z",
             "ValidTill": "2024-08-22T17:08:50Z",
-            "CertificateArn": "arn:aws:rds:us-east-1::cert:rds-ca-2019",
+            "CertificateArn": "arn:aws:rds:us-west-2::cert:rds-ca-2019",
             "CustomerOverride": true,
             "CustomerOverrideValidTill": "2024-08-22T17:08:50Z"
         }

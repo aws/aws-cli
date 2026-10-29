@@ -13,7 +13,7 @@ Contents of ``create-component.json``::
         "description": "An example component that builds, validates and tests an image",
         "changeDescription": "Initial version.",
         "platform": "Windows",
-        "uri": "s3://s3-bucket-name/s3-bucket-path/component.yaml"
+        "uri": "s3://amzn-s3-demo-bucket/s3-bucket-path/component.yaml"
     }
 
 Output::

@@ -19,7 +19,7 @@ Output::
             },
             {
                 "PolicyArn": "arn:aws:fms:us-west-2:123456789012:policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
-                "PolicyId": "457c9b21-fc94-406c-ae63-21217395ba72",
+                "PolicyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "PolicyName": "test",
                 "ResourceType": "AWS::EC2::Instance",
                 "SecurityServiceType": "SECURITY_GROUPS_COMMON",

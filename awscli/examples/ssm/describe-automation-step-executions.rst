@@ -3,7 +3,7 @@
 The following ``describe-automation-step-executions`` example displays details about the steps of an Automation execution. ::
 
     aws ssm describe-automation-step-executions \
-        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE
+        --automation-execution-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -24,7 +24,7 @@ Output::
                         "running"
                     ]
                 },
-                "StepExecutionId": "95e70479-cf20-4d80-8018-7e4e2EXAMPLE",
+                "StepExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "OverriddenParameters": {}
             }
         ]
@@ -35,8 +35,8 @@ Output::
 The following ``describe-automation-step-executions`` example displays details about a specific step of an Automation execution. ::
 
     aws ssm describe-automation-step-executions \
-        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE \
-        --filters Key=StepExecutionId,Values=95e70479-cf20-4d80-8018-7e4e2EXAMPLE
+        --automation-execution-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --filters Key=StepExecutionId,Values=a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
@@ -57,7 +57,7 @@ Output::
                         "running"
                     ]
                 },
-                "StepExecutionId": "95e70479-cf20-4d80-8018-7e4e2EXAMPLE",
+                "StepExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "OverriddenParameters": {}
             }
         ]

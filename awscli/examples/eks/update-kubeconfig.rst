@@ -7,7 +7,7 @@ The following ``update-kubeconfig`` example configures your kubectl by creating 
 
 Output::
 
-    Updated context arn:aws:eks:us-east-2:111122223333:cluster/my-eks-cluster in /Users/xxx/.kube/config
+    Updated context arn:aws:eks:us-west-2:123456789012:cluster/my-eks-cluster in /Users/xxx/.kube/config
 
 For more information, see `Creating or updating a kubeconfig file for an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html>`__ in the *Amazon EKS User Guide*.
 
@@ -17,11 +17,11 @@ The following ``update-kubeconfig`` example configures your kubectl by creating 
 
     aws eks update-kubeconfig \
         --name my-eks-cluster \
-        --role-arn arn:aws:iam::111122223333:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM
+        --role-arn arn:aws:iam::123456789012:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM
 
 Output::
 
-    Updated context arn:aws:eks:us-east-2:111122223333:cluster/my-eks-cluster in /Users/xxx/.kube/config
+    Updated context arn:aws:eks:us-west-2:123456789012:cluster/my-eks-cluster in /Users/xxx/.kube/config
 
 For more information, see `Creating or updating a kubeconfig file for an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html>`__ in the *Amazon EKS User Guide*.
 
@@ -31,7 +31,7 @@ The following ``update-kubeconfig`` example configures your kubectl by creating 
 
     aws eks update-kubeconfig \
         --name my-eks-cluster \
-        --role-arn arn:aws:iam::111122223333:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM \
+        --role-arn arn:aws:iam::123456789012:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM \
         --alias stage-eks-cluster \
         --user-alias john
 
@@ -47,7 +47,7 @@ The following ``update-kubeconfig`` example configures your kubectl by creating 
 
     aws eks update-kubeconfig \
         --name my-eks-cluster \
-        --role-arn arn:aws:iam::111122223333:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM \
+        --role-arn arn:aws:iam::123456789012:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM \
         --alias stage-eks-cluster \
         --user-alias john \
         --verbose
@@ -58,7 +58,7 @@ Output::
     Entries:
 
     context:
-    cluster: arn:aws:eks:us-east-2:111122223333:cluster/my-eks-cluster
+    cluster: arn:aws:eks:us-west-2:123456789012:cluster/my-eks-cluster
     user: john
     name: stage-eks-cluster
 
@@ -68,7 +68,7 @@ Output::
         apiVersion: client.authentication.k8s.io/v1beta1
         args:
         - --region
-        - us-east-2
+        - us-west-2
         - eks
         - get-token
         - --cluster-name
@@ -76,12 +76,12 @@ Output::
         - --output
         - json
         - --role
-        - arn:aws:iam::111122223333:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM
+        - arn:aws:iam::123456789012:role/eksctl-EKS-Linux-Cluster-v1-24-cluster-ServiceRole-j1k7AfTIQtnM
         command: aws
 
     cluster:
     certificate-authority-data: xxx_CA_DATA_xxx
-    server: https://DALSJ343KE23J3RN45653DSKJTT647TYD.yl4.us-east-2.eks.amazonaws.com
-    name: arn:aws:eks:us-east-2:111122223333:cluster/my-eks-cluster
+    server: https://DALSJ343KE23J3RN45653DSKJTT647TYD.yl4.us-west-2.eks.amazonaws.com
+    name: arn:aws:eks:us-west-2:123456789012:cluster/my-eks-cluster
 
 For more information, see `Creating or updating a kubeconfig file for an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html>`__ in the *Amazon EKS User Guide*.

@@ -9,7 +9,7 @@ Output::
     {
         "landingZones": [
             {
-                "arn": "arn:aws:controltower:us-east-1:123456789012:landingzone/13CJG46WZKXXX4X5"
+                "arn": "arn:aws:controltower:us-west-2:123456789012:landingzone/13CJG46WZKXXX4X5"
             }
         ]
     }

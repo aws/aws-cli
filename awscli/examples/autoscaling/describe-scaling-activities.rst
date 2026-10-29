@@ -10,7 +10,7 @@ Output::
     {
         "Activities": [
             {
-                "ActivityId": "f9f2d65b-f1f2-43e7-b46d-d86756459699",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Description": "Launching a new EC2 instance: i-0d44425630326060f",
                 "AutoScalingGroupName": "my-asg",
                 "Cause": "At 2020-10-30T19:35:51Z a user request update of AutoScalingGroup constraints to min: 0, max: 16, desired: 16 changing the desired capacity from 0 to 16.  At 2020-10-30T19:36:07Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 16.",
@@ -38,7 +38,7 @@ Output::
     {
         "Activities": [
             {
-                "ActivityId": "e1f5de0e-f93e-1417-34ac-092a76fba220",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Description": "Launching a new EC2 instance.  Status Reason: Your Spot request price of 0.001 is lower than the minimum required Spot request fulfillment price of 0.0031. Launching EC2 instance failed.",
                 "AutoScalingGroupName": "my-asg",
                 "Cause": "At 2021-01-13T20:47:24Z a user request update of AutoScalingGroup constraints to min: 1, max: 5, desired: 3 changing the desired capacity from 0 to 3.  At 2021-01-13T20:47:27Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 3.",
@@ -49,7 +49,7 @@ Output::
                 "Progress": 100,
                 "Details": "{\"Subnet ID\":\"subnet-5ea0c127\",\"Availability Zone\":\"us-west-2b\"}",
                 "AutoScalingGroupState": "Deleted",
-                "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:283179a2-f3ce-423d-93f6-66bb518232f7:autoScalingGroupName/my-asg"
+                "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE33333:autoScalingGroupName/my-asg"
             }
         ]
     }
@@ -68,7 +68,7 @@ Output::
     {
         "Activities": [
             {
-                "ActivityId": "f9f2d65b-f1f2-43e7-b46d-d86756459699",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Description": "Launching a new EC2 instance: i-0d44425630326060f",
                 "AutoScalingGroupName": "my-asg",
                 "Cause": "At 2020-10-30T19:35:51Z a user request update of AutoScalingGroup constraints to min: 0, max: 16, desired: 16 changing the desired capacity from 0 to 16.  At 2020-10-30T19:36:07Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 16.",

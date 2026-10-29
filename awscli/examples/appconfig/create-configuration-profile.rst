@@ -6,7 +6,7 @@ The following ``create-configuration-profile`` example creates a configuration p
         --application-id "339ohji" \
         --name "Example-Configuration-Profile" \
         --location-uri "ssm-parameter://Example-Parameter" \
-        --retrieval-role-arn "arn:aws:iam::111122223333:role/Example-App-Config-Role"
+        --retrieval-role-arn "arn:aws:iam::123456789012:role/Example-App-Config-Role"
 
 Output::
 
@@ -16,7 +16,7 @@ Output::
         "Id": "ur8hx2f",
         "LocationUri": "ssm-parameter://Example-Parameter",
         "Name": "Example-Configuration-Profile",
-        "RetrievalRoleArn": "arn:aws:iam::111122223333:role/Example-App-Config-Role",
+        "RetrievalRoleArn": "arn:aws:iam::123456789012:role/Example-App-Config-Role",
         "Type": null,
         "Validators": null
     }

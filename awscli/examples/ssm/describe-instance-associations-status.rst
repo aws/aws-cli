@@ -10,7 +10,7 @@ Output::
     {
         "InstanceAssociationStatusInfos": [
             {
-                "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Name": "AWS-GatherSoftwareInventory",
                 "DocumentVersion": "1",
                 "AssociationVersion": "1",
@@ -21,7 +21,7 @@ Output::
                 "AssociationName": "Inventory-Association"
             },
             {
-                "AssociationId": "5c5a31f6-6dae-46f9-944c-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Name": "AWS-UpdateSSMAgent",
                 "DocumentVersion": "1",
                 "AssociationVersion": "1",

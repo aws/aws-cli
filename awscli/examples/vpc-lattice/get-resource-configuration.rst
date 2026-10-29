@@ -10,7 +10,7 @@ Output::
     {
         "allowAssociationToShareableServiceNetwork": true,
         "amazonManaged": false,
-        "arn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourceconfiguration/rcfg-07129f3acded87625",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourceconfiguration/rcfg-07129f3acded87625",
         "createdAt": "2025-02-01T00:57:35.871000+00:00",
         "id": "rcfg-07129f3acded87625",
         "lastUpdatedAt": "2025-02-01T00:57:46.874000+00:00",

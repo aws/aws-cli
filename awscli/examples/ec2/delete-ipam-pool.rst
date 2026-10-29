@@ -12,19 +12,19 @@ To delete the pool, use the following command. ::
     aws ec2 delete-ipam-pool \
         --ipam-pool-id ipam-pool-050c886a3ca41cd5b \
         --cascade \
-        --region us-east-1
+        --region us-west-2
 
 Output::
 
     {
         "IpamPool": {
-            "OwnerId": "320805250157",
+            "OwnerId": "123456789012",
             "IpamPoolId": "ipam-pool-050c886a3ca41cd5b",
-            "IpamPoolArn": "arn:aws:ec2::320805250157:ipam-pool/ipam-pool-050c886a3ca41cd5b",
-            "IpamScopeArn": "arn:aws:ec2::320805250157:ipam-scope/ipam-scope-0a158dde35c51107b",
+            "IpamPoolArn": "arn:aws:ec2::123456789012:ipam-pool/ipam-pool-050c886a3ca41cd5b",
+            "IpamScopeArn": "arn:aws:ec2::123456789012:ipam-scope/ipam-scope-0a158dde35c51107b",
             "IpamScopeType": "private",
-            "IpamArn": "arn:aws:ec2::320805250157:ipam/ipam-005f921c17ebd5107",
-            "IpamRegion": "us-east-1",
+            "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-005f921c17ebd5107",
+            "IpamRegion": "us-west-2",
             "Locale": "None",
             "PoolDepth": 1,
             "State": "delete-in-progress",

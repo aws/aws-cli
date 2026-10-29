@@ -8,7 +8,7 @@ The following ``deregister-resource`` example deregisters the resource as manage
 Contents of ``input.json``::
 
     {
-        "ResourceArn": "arn:aws:s3:::lf-emr-athena-result-123"
+        "ResourceArn": "arn:aws:s3:::amzn-s3-demo-bucket"
     }
 
 This command produces no output.

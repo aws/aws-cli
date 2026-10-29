@@ -44,7 +44,7 @@ Output::
                         }
                     ]
                 },
-                "Arn": "arn:aws:mediaconvert:us-east-1:003235472598:presets/SimpleMP4",
+                "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:presets/SimpleMP4",
                 "Type": "CUSTOM",
                 "LastUpdated": 1568843141,
                 "Description": "Creates basic MP4 file. No filtering or preproccessing."
@@ -82,7 +82,7 @@ Output::
                         }
                     ]
                 },
-                "Arn": "arn:aws:mediaconvert:us-east-1:003235472598:presets/SimpleTS",
+                "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:presets/SimpleTS",
                 "Type": "CUSTOM",
                 "LastUpdated": 1568843113,
                 "Description": "Create a basic transport stream."
@@ -144,7 +144,7 @@ Output::
                 }
             },
             {
-                "Arn": "arn:aws:mediaconvert:us-east-1:123456789012:presets/System-Xdcam_HD_1080i_29_97fps_35mpbs",
+                "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:presets/System-Xdcam_HD_1080i_29_97fps_35mpbs",
                 "Name": "System-Xdcam_HD_1080i_29_97fps_35mpbs",
                 "CreatedAt": 1568321790,
                 "Description": "XDCAM MPEG HD, 1920x1080i, 29.97fps, 35mbps",

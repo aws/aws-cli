@@ -4,7 +4,7 @@ The following ``revoke-grant`` example deletes a grant from a KMS key. The follo
 
     aws kms revoke-grant \
         --grant-id 1234a2345b8a4e350500d432bccf8ecd6506710e1391880c4f7f7140160c9af3 \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output. To confirm that the grant was revoked, use the ``list-grants`` command.
 

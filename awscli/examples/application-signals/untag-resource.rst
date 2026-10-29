@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes one or more tags from the specified resource. ::
 
     aws application-signals untag-resource \
-        --resource-arn "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName" \
+        --resource-arn "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName" \
         --tag-keys "test"
 
 This command produces no output.

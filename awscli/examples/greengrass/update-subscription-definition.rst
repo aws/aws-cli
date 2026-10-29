@@ -3,7 +3,7 @@
 The following ``update-subscription-definition`` example updates the name for the specified subscription definition. If you want to change details for the subscription, use the ``create-subscription-definition-version`` command to create a new version. ::
 
     aws greengrass update-subscription-definition \
-        --subscription-definition-id "fa81bc84-3f59-4377-a84b-5d0134da359b" \
+        --subscription-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --name "ObsoleteSubscription"
 
 This command produces no output.

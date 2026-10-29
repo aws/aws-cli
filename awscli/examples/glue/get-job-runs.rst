@@ -10,7 +10,7 @@ Output::
     {
         "JobRuns": [
             {
-                "Id": "jr_012e176506505074d94d761755e5c62538ee1aad6f17d39f527e9140cf0c9a5e",
+                "Id": "jr_012e1765065050a4d94d761755e5c62538ee1aad6f17d39f527e9140cf0c9a5e",
                 "Attempt": 0,
                 "JobName": "my-testing-job",
                 "StartedOn": 1602873931.255,
@@ -22,7 +22,7 @@ Output::
                     "--enable-metrics": "",
                     "--enable-spark-ui": "true",
                     "--job-bookmark-option": "job-bookmark-enable",
-                    "--spark-event-logs-path": "s3://aws-glue-assets-111122223333-us-east-1/sparkHistoryLogs/"
+                    "--spark-event-logs-path": "s3://amzn-s3-demo-bucket/sparkHistoryLogs/"
                 },
                 "PredecessorRuns": [],
                 "AllocatedCapacity": 10,

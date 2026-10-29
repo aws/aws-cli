@@ -5,7 +5,7 @@ The following ``put-composite-alarm`` example creates a composite alarm named ``
     aws cloudwatch put-composite-alarm \
         --alarm-name ProdAlarm \
         --alarm-rule "ALARM(CPUUtilizationTooHigh) AND ALARM(MemUsageTooHigh)" \
-        --alarm-actions arn:aws:sns:us-east-1:123456789012:demo \
+        --alarm-actions arn:aws:sns:us-west-2:123456789012:demo \
         --actions-enabled
 
 This command produces no output.

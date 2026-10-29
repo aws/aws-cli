@@ -10,7 +10,7 @@ Output::
 
     {
         "instanceSummary": {
-            "instanceId": "arn:aws:ec2:us-east-1:80398EXAMPLE:instance/i-902e9fEX",
+            "instanceId": "arn:aws:ec2:us-west-2:80398EXAMPLE:instance/i-902e9fEX",
             "lifecycleEvents": [
                 {
                     "status": "Succeeded",

@@ -39,7 +39,7 @@ Output::
             },
             {
                 "ConfigurationPolicyId": "SELF_MANAGED_SECURITY_HUB",
-                "TargetId": "111122223333",
+                "TargetId": "123456789012",
                 "TargetType": "ACCOUNT",
                 "AssociationType": "APPLIED",
                 "UpdatedAt": "2023-11-28T22:01:26.409000+00:00",

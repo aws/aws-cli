@@ -3,7 +3,7 @@
 The following ``update-wireless-gateway`` example updates the description of your wireless gateway. ::
 
     aws iotwireless update-wireless-gateway \
-        --id "3285bdc7-5a12-4991-84ed-dadca65e342e" \
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --description "Using my LoRaWAN gateway"
 
 This command produces no output.

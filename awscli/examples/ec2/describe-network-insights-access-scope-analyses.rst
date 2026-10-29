@@ -10,7 +10,7 @@ Output::
         "NetworkInsightsAccessScopeAnalyses": [
             {
                 "NetworkInsightsAccessScopeAnalysisId": "nisa-123456789111",
-                "NetworkInsightsAccessScopeAnalysisArn": "arn:aws:ec2:us-east-1:123456789012:network-insights-access-scope-analysis/nisa-123456789111",
+                "NetworkInsightsAccessScopeAnalysisArn": "arn:aws:ec2:us-west-2:123456789012:network-insights-access-scope-analysis/nisa-123456789111",
                 "NetworkInsightsAccessScopeId": "nis-123456789222",
                 "Status": "succeeded",
                 "StartDate": "2022-01-25T19:45:36.842000+00:00",

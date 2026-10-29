@@ -7,7 +7,7 @@ The following ``list-enabled-products-for-import`` example returns the list of s
 Output::
 
     {
-        "ProductSubscriptions": [ "arn:aws:securityhub:us-west-1:123456789012:product-subscription/crowdstrike/crowdstrike-falcon", "arn:aws:securityhub:us-west-1:123456789012:product-subscription/aws/securityhub" ]
+        "ProductSubscriptions": [ "arn:aws:securityhub:us-west-2:123456789012:product-subscription/crowdstrike/crowdstrike-falcon", "arn:aws:securityhub:us-west-2:123456789012:product-subscription/aws/securityhub" ]
     }
 
 For more information, see `Managing product integrations <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-integrations-managing.html>`__ in the *AWS Security Hub User Guide*.

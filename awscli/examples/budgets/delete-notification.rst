@@ -3,7 +3,7 @@
 The following ``delete-notification`` example deletes the specified notification from the specified budget. ::
 
     aws budgets delete-notification \
-        --account-id 111122223333 \
+        --account-id 123456789012 \
         --budget-name "Example Budget" \
         --notification NotificationType=ACTUAL,ComparisonOperator=GREATER_THAN,Threshold=80,ThresholdType=PERCENTAGE
 

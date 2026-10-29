@@ -14,7 +14,7 @@ Output::
             "Enabled": true,
             "FromAddress": "sender@example.com",
             "Id": "email",
-            "Identity": "arn:aws:ses:us-east-1:AIDACKCEVSQ6C2EXAMPLE:identity/sender@example.com",
+            "Identity": "arn:aws:ses:us-west-2:AIDACKCEVSQ6C2EXAMPLE:identity/sender@example.com",
             "IsArchived": false,
             "LastModifiedDate": "2019-10-08T18:27:23.990Z",
             "MessagesPerSecond": 1,

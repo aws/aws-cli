@@ -4,7 +4,7 @@ The following ``assume-root`` example retrieves a set of short-term credentials 
 
     aws sts assume-root \
         --duration-seconds 900 \
-        --target-principal 111122223333 \
+        --target-principal 123456789012 \
         --task-policy-arn arn=arn:aws:iam::aws:policy/root-task/S3UnlockBucketPolicy
 
 Output::

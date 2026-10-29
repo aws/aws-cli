@@ -9,11 +9,11 @@ Output::
     {
         "Entries": [
             {
-                "Arn": "arn:aws:cloudwatch:us-east-1:123456789012:metric-stream/QuickFull-GuaFbs",
+                "Arn": "arn:aws:cloudwatch:us-west-2:123456789012:metric-stream/QuickFull-GuaFbs",
                 "CreationDate": "2024-10-11T18:48:59.187000+00:00",
                 "LastUpdateDate": "2024-10-11T18:48:59.187000+00:00",
                 "Name": "QuickFull-GuaFbs",
-                "FirehoseArn": "arn:aws:firehose:us-east-1:123456789012:deliverystream/MetricStreams-QuickFull-GuaFbs-WnySbECG",
+                "FirehoseArn": "arn:aws:firehose:us-west-2:123456789012:deliverystream/MetricStreams-QuickFull-GuaFbs-WnySbECG",
                 "State": "running",
                 "OutputFormat": "json"
             }

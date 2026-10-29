@@ -16,7 +16,7 @@ Output::
                 "DBInstanceStatus": "available",
                 "MasterUsername": "masterawsuser",
                 "Endpoint": {
-                    "Address": "mydbinstancecf.abcexample.us-east-1.rds.amazonaws.com",
+                    "Address": "mydbinstancecf.abcexample.us-west-2.rds.amazonaws.com",
                     "Port": 3306,
                     "HostedZoneId": "Z2R2ITUGPM61AM"
                 }

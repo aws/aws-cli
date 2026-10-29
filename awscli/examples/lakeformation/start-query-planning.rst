@@ -9,7 +9,7 @@ Contents of ``input.json``::
 
     {
         "QueryPlanningContext": {
-            "CatalogId": "012345678901",
+            "CatalogId": "123456789012",
             "DatabaseName": "tpc"
         },
         "QueryString": "select * from dl_tpc_household_demographics_gov where hd_income_band_sk=9"
@@ -18,5 +18,5 @@ Contents of ``input.json``::
 Output::
 
     {
-        "QueryId": "772a273f-4a62-4cda-8d98-69615ee8be9b"
+        "QueryId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }

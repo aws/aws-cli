@@ -9,7 +9,7 @@ The following ``delete-inventory`` example deletes a custom inventory schema. ::
 Output::
 
     {
-        "DeletionId": "d72ac9e8-1f60-4d40-b1c6-bf8c78c68c4d",
+        "DeletionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "TypeName": "Custom:RackInfo",
         "DeletionSummary": {
             "TotalCount": 1,
@@ -37,7 +37,7 @@ The following ``delete-inventory`` example disables a custom inventory schema. :
 Output::
 
     {
-        "DeletionId": "6961492a-8163-44ec-aa1e-923364dd0850",
+        "DeletionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "TypeName": "Custom:RackInformation",
         "DeletionSummary": {
             "TotalCount": 0,

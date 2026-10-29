@@ -5,7 +5,7 @@ The following ``set-identity-notification-topic`` example specifies the Amazon S
     aws ses set-identity-notification-topic \
         --identity user@example.com \
         --notification-type Bounce \
-        --sns-topic arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic
+        --sns-topic arn:aws:sns:us-west-2:EXAMPLE65304:MyTopic
 
 This command produces no output.
 

@@ -9,7 +9,7 @@ Output::
 
     {
         "ManagedCertificateDetails": {
-            "CertificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/655dc1fe-6d37-451d-a013-c2db3a034abc",
+            "CertificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CertificateStatus": "pending-validation",
             "ValidationTokenHost": "self-hosted",
             "ValidationTokenDetails": [

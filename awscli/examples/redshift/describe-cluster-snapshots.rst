@@ -13,11 +13,11 @@ Output::
                 "Status": "available",
                 "SnapshotCreateTime": "2013-07-17T22:02:22.852Z",
                 "EstimatedSecondsToCompletion": -1,
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "ClusterVersion": "1.0",
                 "MasterUsername": "adminuser",
                 "Encrypted": false,
-                "OwnerAccount": "111122223333",
+                "OwnerAccount": "123456789012",
                 "BackupProgressInMegaBytes": 20.0,
                 "ElapsedTimeInSeconds": 0,
                 "DBName": "dev",
@@ -34,7 +34,7 @@ Output::
             },
             {
                 "EstimatedSecondsToCompletion": 0,
-                "OwnerAccount": "111122223333",
+                "OwnerAccount": "123456789012",
                 "CurrentBackupRateInMegaBytesPerSecond": 0.1534,
                 "ActualIncrementalBackupSizeInMegaBytes": 11.0,
                 "NumberOfNodes": 2,
@@ -43,7 +43,7 @@ Output::
                 "MasterUsername": "adminuser",
                 "AccountsWithRestoreAccess": [
                     {
-                        "AccountId": "444455556666"
+                        "AccountId": "123456789111"
                 } ],
                 "TotalBackupSizeInMegaBytes": 20.0,
                 "DBName": "dev",
@@ -52,7 +52,7 @@ Output::
                 "ElapsedTimeInSeconds": 0,
                 "ClusterIdentifier": "mycluster",
                 "SnapshotCreateTime": "2013-07-17T22:04:18.947Z",
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "NodeType": "dw.hs1.xlarge",
                 "Encrypted": false,
                 "SnapshotType": "manual",

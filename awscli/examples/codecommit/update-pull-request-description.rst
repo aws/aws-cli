@@ -10,7 +10,7 @@ Output::
 
     {
         "pullRequest": { 
-            "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+            "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
             "clientRequestToken": "",
             "creationDate": 1508530823.155,
             "description": "Updated the pull request to remove unused global variable.",

@@ -18,21 +18,21 @@ Output::
                     {
                         "SubnetIdentifier": "subnet-da327bf6",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1a"
+                            "Name": "us-west-2a"
                         },
                         "SubnetStatus": "Active"
                     },
                     {
                         "SubnetIdentifier": "subnet-bac383e0",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1c"
+                            "Name": "us-west-2c"
                         },
                         "SubnetStatus": "Active"
                     },
                     {
                         "SubnetIdentifier": "subnet-d7c825e8",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1e"
+                            "Name": "us-west-2d"
                         },
                         "SubnetStatus": "Active"
                     }

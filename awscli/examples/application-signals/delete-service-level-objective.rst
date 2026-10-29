@@ -3,7 +3,7 @@
 The following ``delete-service-level-objective`` example deletes the specified service level objective. ::
 
     aws application-signals delete-service-level-objective \
-        --id "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName"
+        --id "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName"
 
 This command produces no output.
 

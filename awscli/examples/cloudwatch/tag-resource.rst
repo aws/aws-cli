@@ -3,7 +3,7 @@
 The following ``tag-resource`` example adds 2 tags to the cloudwatch alarm named ``demo`` in the specified account. ::
 
     aws cloudwatch tag-resource \
-        --resource-arn arn:aws:cloudwatch:us-east-1:123456789012:alarm:demo \
+        --resource-arn arn:aws:cloudwatch:us-west-2:123456789012:alarm:demo \
         --tags Key=stack,Value=Production Key=team,Value=Devops
 
 This command produces no output.

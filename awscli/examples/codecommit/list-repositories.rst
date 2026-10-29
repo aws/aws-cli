@@ -10,11 +10,11 @@ Output::
         "repositories": [
             {
                 "repositoryName": "MyDemoRepo",
-                "repositoryId": "f7579e13-b83e-4027-aaef-650c0EXAMPLE"
+                "repositoryId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             },
             {
                 "repositoryName": "MyOtherDemoRepo",
-                "repositoryId": "cfc29ac4-b0cb-44dc-9990-f6f51EXAMPLE"
+                "repositoryId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ]
     }

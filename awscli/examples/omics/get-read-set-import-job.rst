@@ -20,7 +20,7 @@ Output::
                 "sampleId": "bam-sample",
                 "sourceFileType": "BAM",
                 "sourceFiles": {
-                    "source1": "s3://omics-artifacts-01d6xmpl4e72dd32/HG00100.chrom20.ILLUMINA.bwa.GBR.low_coverage.20101123.bam",
+                    "source1": "s3://amzn-s3-demo-bucket/HG00100.chrom20.ILLUMINA.bwa.GBR.low_coverage.20101123.bam",
                     "source2": ""
                 },
                 "status": "IN_PROGRESS",
@@ -37,8 +37,8 @@ Output::
                 "sampleId": "fastq-sample",
                 "sourceFileType": "FASTQ",
                 "sourceFiles": {
-                    "source1": "s3://omics-artifacts-01d6xmpl4e72dd32/SRR233106_1.filt.fastq.gz",
-                    "source2": "s3://omics-artifacts-01d6xmpl4e72dd32/SRR233106_2.filt.fastq.gz"
+                    "source1": "s3://amzn-s3-demo-bucket/SRR233106_1.filt.fastq.gz",
+                    "source2": "s3://amzn-s3-demo-bucket/SRR233106_2.filt.fastq.gz"
                 },
                 "status": "IN_PROGRESS",
                 "statusMessage": "The source job is currently in progress.",
@@ -54,7 +54,7 @@ Output::
                 "sampleId": "cram-sample",
                 "sourceFileType": "CRAM",
                 "sourceFiles": {
-                    "source1": "s3://omics-artifacts-01d6xmpl4e72dd32/HG00096.alt_bwamem_GRCh38DH.20150718.GBR.low_coverage.cram",
+                    "source1": "s3://amzn-s3-demo-bucket/HG00096.alt_bwamem_GRCh38DH.20150718.GBR.low_coverage.cram",
                     "source2": ""
                 },
                 "status": "IN_PROGRESS",

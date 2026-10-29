@@ -18,7 +18,7 @@ Output::
             "autoRegistrationStatus": "DISABLE",
             "lastModifiedDate": 1569365372.053,
             "customerVersion": 1,
-            "generationId": "c5c2eb95-140b-4f49-9393-6aaac85b2a90",
+            "generationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "validity": {
                 "notBefore": 1569360675.0,
                 "notAfter": 1884720675.0

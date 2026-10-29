@@ -3,13 +3,13 @@
 The following ``get-landing-zone`` example gets details of an AWS Control Tower landing zone. ::
 
     aws controltower get-landing-zone \
-        --landing-zone-identifier arn:aws:controltower:us-east-1:123456789012:landingzone/13CJG46WZKXXX4X5
+        --landing-zone-identifier arn:aws:controltower:us-west-2:123456789012:landingzone/13CJG46WZKXXX4X5
 
 Output::
 
     {
         "landingZone": {
-            "arn": "arn:aws:controltower:us-east-1:123456789012:landingzone/13CJG46WZKXXX4X5",
+            "arn": "arn:aws:controltower:us-west-2:123456789012:landingzone/13CJG46WZKXXX4X5",
             "driftStatus": {
                 "status": "IN_SYNC"
             },
@@ -19,10 +19,9 @@ Output::
                     "enabled": true
                 },
                 "securityRoles": {
-                    "accountId": "098765432101"
+                    "accountId": "123456789111"
                 },
                 "governedRegions": [
-                    "us-east-1",
                     "us-west-2"
                 ],
                 "organizationStructure": {
@@ -31,12 +30,12 @@ Output::
                     }
                 },
                 "centralizedLogging": {
-                    "accountId": "111122223333",
+                    "accountId": "123456789222",
                     "configurations": {
                         "loggingBucket": {
                             "retentionDays": 365
                         },
-                        "kmsKeyArn": "arn:aws:kms:us-east-1:123456789012:key/example-key-id",
+                        "kmsKeyArn": "arn:aws:kms:us-west-2:123456789012:key/example-key-id",
                         "accessLoggingBucket": {
                             "retentionDays": 3650
                         }

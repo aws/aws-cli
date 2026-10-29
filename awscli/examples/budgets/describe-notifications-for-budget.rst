@@ -3,7 +3,7 @@
 The following ``describe-notifications-for-budget`` example retrieves the notifications for a Cost and Usage budget. ::
 
     aws budgets describe-notifications-for-budget \
-        --account-id 111122223333 \
+        --account-id 123456789012 \
         --budget-name "Example Budget" \
         --max-results 5
 

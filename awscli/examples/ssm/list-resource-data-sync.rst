@@ -11,9 +11,9 @@ Output::
             {
                 "SyncName": "MyResourceDataSync",
                 "S3Destination": {
-                    "BucketName": "ssm-resource-data-sync",
+                    "BucketName": "amzn-s3-demo-bucket",
                     "SyncFormat": "JsonSerDe",
-                    "Region": "us-east-1"
+                    "Region": "us-west-2"
                 },
                 "LastSyncTime": 1550261472.003,
                 "LastSuccessfulSyncTime": 1550261472.003,

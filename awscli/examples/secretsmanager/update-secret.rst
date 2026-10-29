@@ -21,7 +21,7 @@ The following ``update-secret`` example updates the KMS key used to encrypt the 
 
     aws secretsmanager update-secret \
         --secret-id MyTestSecret \
-        --kms-key-id arn:aws:kms:us-west-2:123456789012:key/EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE
+        --kms-key-id arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

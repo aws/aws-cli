@@ -9,10 +9,10 @@ Output::
 
     {
         "OpsItem": {
-            "CreatedBy": "arn:aws:sts::111222333444:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
+            "CreatedBy": "arn:aws:sts::123456789012:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
             "CreatedTime": "2019-12-04T15:52:16.793000-08:00",
             "Description": "CloudWatch Event Rule SSMOpsItems-EC2-instance-terminated was triggered. Your EC2 instance has terminated. See below for more details.",
-            "LastModifiedBy": "arn:aws:sts::111222333444:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
+            "LastModifiedBy": "arn:aws:sts::123456789012:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
             "LastModifiedTime": "2019-12-04T15:52:16.793000-08:00",
             "Notifications": [],
             "RelatedOpsItems": [],
@@ -30,7 +30,7 @@ Output::
                     "Type": "SearchableString"
                 },
                 "/aws/resources": {
-                    "Value": "[{\"arn\":\"arn:aws:ec2:us-east-2:111222333444:instance/i-05adec7e97EXAMPLE\"}]",
+                    "Value": "[{\"arn\":\"arn:aws:ec2:us-west-2:123456789012:instance/i-05adec7e97EXAMPLE\"}]",
                     "Type": "SearchableString"
                 },
                 "event-time": {

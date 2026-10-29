@@ -113,7 +113,7 @@ Output::
                 "CreateDate": "2013-10-14T18:57:48Z",
                 "GroupPolicyList": [
                     {
-                        "PolicyName": "policygen-201310141157",
+                        "PolicyName": "policygen-20131014",
                         "PolicyDocument": {
                             "Version": "2012-10-17",
                             "Statement": [

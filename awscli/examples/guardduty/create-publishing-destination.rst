@@ -5,7 +5,7 @@ The following ``create-publishing-destination`` example shows how to set up a pu
     aws guardduty create-publishing-destination \
         --detector-id b6b992d6d2f48e64bc59180bfexample \
         --destination-type S3 \
-        --destination-properties 'DestinationArn=arn:aws:s3:::amzn-s3-demo-bucket,KmsKeyArn=arn:aws:kms:us-west-1:111122223333:key/84cee9c5-dea1-401a-ab6d-e1de7example'
+        --destination-properties 'DestinationArn=arn:aws:s3:::amzn-s3-demo-bucket,KmsKeyArn=arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111'
 
 Output::
 

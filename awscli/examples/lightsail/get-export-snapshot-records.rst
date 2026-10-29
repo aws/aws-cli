@@ -10,7 +10,7 @@ Output::
         "exportSnapshotRecords": [
             {
                 "name": "ExportSnapshotRecord-d2da10ce-0b3c-4ae1-ab3a-2EXAMPLEa586",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:ExportSnapshotRecord/076c7060-b0cc-4162-98f0-2EXAMPLEe28e",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:ExportSnapshotRecord/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "createdAt": 1543534665.678,
                 "location": {
                     "availabilityZone": "all",
@@ -22,9 +22,9 @@ Output::
                     "resourceType": "InstanceSnapshot",
                     "createdAt": 1540339310.706,
                     "name": "WordPress-512MB-Oregon-1-1540339219",
-                    "arn": "arn:aws:lightsail:us-west-2:111122223333:InstanceSnapshot/5446f534-ed60-4c17-b4a5-bEXAMPLEf8b7",
+                    "arn": "arn:aws:lightsail:us-west-2:123456789012:InstanceSnapshot/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                     "fromResourceName": "WordPress-512MB-Oregon-1",
-                    "fromResourceArn": "arn:aws:lightsail:us-west-2:111122223333:Instance/4b8f1f24-e4d1-4cf3-88ff-cEXAMPLEa397",
+                    "fromResourceArn": "arn:aws:lightsail:us-west-2:123456789012:Instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "instanceSnapshotInfo": {
                         "fromBundleId": "nano_2_0",
                         "fromBlueprintId": "wordpress_4_9_8",
@@ -44,7 +44,7 @@ Output::
             },
             {
                 "name": "ExportSnapshotRecord-1c94e884-40ff-4fe1-9302-0EXAMPLE14c2",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:ExportSnapshotRecord/fb392ce8-6567-4013-9bfd-3EXAMPLE5b4c",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:ExportSnapshotRecord/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "createdAt": 1543432110.2,
                 "location": {
                     "availabilityZone": "all",
@@ -56,9 +56,9 @@ Output::
                     "resourceType": "InstanceSnapshot",
                     "createdAt": 1540833603.545,
                     "name": "LAMP_PHP_5-512MB-Oregon-1-1540833565",
-                    "arn": "arn:aws:lightsail:us-west-2:111122223333:InstanceSnapshot/82334399-b5f2-49ec-8382-0EXAMPLEe45f",
+                    "arn": "arn:aws:lightsail:us-west-2:123456789012:InstanceSnapshot/a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                     "fromResourceName": "LAMP_PHP_5-512MB-Oregon-1",
-                    "fromResourceArn": "arn:aws:lightsail:us-west-2:111122223333:Instance/863b9f35-ab1e-4418-bdd2-1EXAMPLEbab2",
+                    "fromResourceArn": "arn:aws:lightsail:us-west-2:123456789012:Instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE66666",
                     "instanceSnapshotInfo": {
                         "fromBundleId": "nano_2_0",
                         "fromBlueprintId": "lamp_5_6_37_2",

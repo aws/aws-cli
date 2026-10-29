@@ -4,7 +4,7 @@ The following ``create-traffic-mirror-target`` example creates a  Network Load B
     
     aws ec2 create-traffic-mirror-target \
         --description 'Example Network Load Balancer Target' \
-        --network-load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:111122223333:loadbalancer/net/NLB/7cdec873EXAMPLE
+        --network-load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/NLB/7cdec873EXAMPLE
 
 Output::
 
@@ -13,11 +13,11 @@ Output::
             "Type": "network-load-balancer",
             "Tags": [],
             "Description": "Example Network Load Balancer Target",
-            "OwnerId": "111122223333",
-            "NetworkLoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:724145273726:loadbalancer/net/NLB/7cdec873EXAMPLE",
+            "OwnerId": "123456789012",
+            "NetworkLoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/NLB/7cdec873EXAMPLE",
             "TrafficMirrorTargetId": "tmt-0dabe9b0a6EXAMPLE"
         },
-        "ClientToken": "d5c090f5-8a0f-49c7-8281-72c796a21f72"
+        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 **Example 2: To create a network traffic mirror target**
@@ -31,12 +31,12 @@ The following ``create-traffic-mirror-target`` example creates a network interfa
 Output::
 
     {
-        "ClientToken": "5289a345-0358-4e62-93d5-47ef3061d65e",
+        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "TrafficMirrorTarget": {
             "Description": "Network interface target",
             "NetworkInterfaceId": "eni-01f6f631eEXAMPLE",
             "TrafficMirrorTargetId": "tmt-02dcdbe2abEXAMPLE",
-            "OwnerId": "111122223333",
+            "OwnerId": "123456789012",
             "Type": "network-interface",
             "Tags": []
         }

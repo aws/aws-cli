@@ -24,7 +24,7 @@ The following ``update-secret-version-stage`` example adds a staging label to a 
     aws secretsmanager update-secret-version-stage \
         --secret-id MyTestSecret \
         --version-stage STAGINGLABEL1 \
-        --move-to-version-id EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE
+        --move-to-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 Output::
 

@@ -5,13 +5,13 @@ The following ``analyze-document`` example shows how to analyze text in a docume
 For Linux and macOS, use the following command. ::
 
     aws textract analyze-document \
-        --document '{"S3Object":{"Bucket":"bucket","Name":"document"}}' \
+        --document '{"S3Object":{"Bucket":"amzn-s3-demo-bucket","Name":"document"}}' \
         --feature-types '["TABLES","FORMS"]'
 
 For Windows, use the following command. ::
 
     aws textract analyze-document \
-        --document "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
+        --document "{\"S3Object\":{\"Bucket\":\"amzn-s3-demo-bucket\",\"Name\":\"document\"}}" \
         --feature-types "[\"TABLES\",\"FORMS\"]"
 
 Output::
@@ -49,14 +49,14 @@ Output::
                     {
                         "Type": "CHILD", 
                         "Ids": [
-                            "87586964-d50d-43e2-ace5-8a890657b9a0", 
-                            "a1e72126-21d9-44f4-a8d6-5c385f9002ba", 
-                            "e889d012-8a6b-4d2e-b7cd-7a8b327d876a"
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222", 
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
                         ]
                     }
                 ], 
                 "BlockType": "PAGE", 
-                "Id": "c2227f12-b25d-4e1f-baea-1ee180d926b2"
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
             }
         ], 
         "DocumentMetadata": {

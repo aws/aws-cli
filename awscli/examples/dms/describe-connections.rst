@@ -11,9 +11,9 @@ Output::
             {
                 "Status": "successful",
                 "ReplicationInstanceIdentifier": "test",
-                "EndpointArn": "arn:aws:dms:us-east-arn:aws:dms:us-east-1:123456789012:endpoint:ZW5UAN6P4E77EC7YWHK4RZZ3BE",
+                "EndpointArn": "arn:aws:dms:us-east-arn:aws:dms:us-west-2:123456789012:endpoint:ZW5UAN6P4E77EC7YWHK4RZZ3BE",
                 "EndpointIdentifier": "testsrc1",
-                "ReplicationInstanceArn": "arn:aws:dms:us-east-1:123456789012:rep:6UTDJGBOUS3VI3SUWA66XFJCJQ"
+                "ReplicationInstanceArn": "arn:aws:dms:us-west-2:123456789012:rep:6UTDJGBOUS3VI3SUWA66XFJCJQ"
             }
         ]
     }

@@ -13,7 +13,7 @@ Output::
                 "CurrencyCode": "USD",
                 "UsagePrice": 0.0,
                 "ProductDescription": "oracle-se2(li)",
-                "ReservedDBInstancesOfferingId": "005bdee3-9ef4-4182-aa0c-58ef7cb6c2f8",
+                "ReservedDBInstancesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "MultiAZ": true,
                 "DBInstanceClass": "db.m4.xlarge",
                 "OfferingType": "Partial Upfront",

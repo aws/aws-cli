@@ -10,7 +10,7 @@ Output::
         "Summaries": [
             {
                 "StackSetName": "enable-config",
-                "StackSetId": "enable-config:296a3360-xmpl-40af-be78-9341e95bf743",
+                "StackSetId": "enable-config:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Description": "Enable AWS Config",
                 "Status": "ACTIVE"
             }

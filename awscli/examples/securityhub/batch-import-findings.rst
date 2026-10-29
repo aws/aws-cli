@@ -19,12 +19,12 @@ The following ``batch-import-findings`` example updates a finding. ::
                 },
                 "GeneratorId": "TestGeneratorId",
                 "Id": "Id1",
-                "ProductArn": "arn:aws:securityhub:us-west-1:123456789012:product/123456789012/default",
+                "ProductArn": "arn:aws:securityhub:us-west-2:123456789012:product/123456789012/default",
                 "Resources": [
                     {
-                        "Id": "arn:aws:cloudtrail:us-west-1:123456789012:trail/TrailName",
+                        "Id": "arn:aws:cloudtrail:us-west-2:123456789012:trail/TrailName",
                         "Partition": "aws",
-                        "Region": "us-west-1",
+                        "Region": "us-west-2",
                         "Type": "AwsCloudTrailTrail"
                     }
                 ],

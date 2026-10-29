@@ -5,7 +5,7 @@ The following ``create-device-pool`` example creates an Android device pool for 
     aws devicefarm create-device-pool \
         --name pool1 \
         --rules file://device-pool-rules.json \
-        --project-arn "arn:aws:devicefarm:us-west-2:123456789012:project:070fc3ca-7ec1-4741-9c1f-d3e044efc506"
+        --project-arn "arn:aws:devicefarm:us-west-2:123456789012:project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 You can get the project ARN from the output of ``create-project`` or ``list-projects``. The file ``device-pool-rules.json`` is a JSON document in the current folder that specifies the device platform.
 
@@ -32,7 +32,7 @@ Output::
             ],
             "type": "PRIVATE",
             "name": "pool1",
-            "arn": "arn:aws:devicefarm:us-west-2:123456789012:devicepool:070fc3ca-7ec1-4741-9c1f-d3e044efc506/2aa8d2a9-5e73-47ca-b929-659cb34b7dcd"
+            "arn": "arn:aws:devicefarm:us-west-2:123456789012:devicepool:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
         }
     }
 

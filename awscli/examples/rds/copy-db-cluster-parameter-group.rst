@@ -12,7 +12,7 @@ Output::
     {
         "DBClusterParameterGroup": {
             "DBClusterParameterGroupName": "mydbclusterpgcopy",
-            "DBClusterParameterGroupArn": "arn:aws:rds:us-east-1:123456789012:cluster-pg:mydbclusterpgcopy",
+            "DBClusterParameterGroupArn": "arn:aws:rds:us-west-2:123456789012:cluster-pg:mydbclusterpgcopy",
             "DBParameterGroupFamily": "aurora-mysql5.7",
             "Description": "Copy of mydbclusterpg parameter group"
         }

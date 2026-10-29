@@ -5,7 +5,7 @@ The following ``create-user-import-job`` example creates a user import job named
     aws cognito-idp create-user-import-job \
         --user-pool-id us-west-2_aaaaaaaaa \
         --job-name MyImportJob \
-        --cloud-watch-logs-role-arn arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole
+        --cloud-watch-logs-role-arn arn:aws:iam::123456789012:role/CognitoCloudWatchLogsRole
 
 Output::
 
@@ -17,7 +17,7 @@ Output::
             "PreSignedUrl": "PRE_SIGNED_URL",
             "CreationDate": 1548271795.471,
             "Status": "Created",
-            "CloudWatchLogsRoleArn": "arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole",
+            "CloudWatchLogsRoleArn": "arn:aws:iam::123456789012:role/CognitoCloudWatchLogsRole",
             "ImportedUsers": 0,
             "SkippedUsers": 0,
             "FailedUsers": 0

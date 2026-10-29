@@ -9,22 +9,22 @@ Output::
     {
         "landingZoneOperations": [
             {
-                "operationIdentifier": "202ee056-5147-49fd-a7ad-8161e3bf043a",
+                "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "operationType": "RESET",
                 "status": "SUCCEEDED"
             },
             {
-                "operationIdentifier": "dbd4a4b1-baf9-48cc-bd71-6b923d0f2339",
+                "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "operationType": "RESET",
                 "status": "SUCCEEDED"
             },
             {
-                "operationIdentifier": "e6261ab8-3247-4052-af31-1afe7bb0593e",
+                "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "operationType": "UPDATE",
                 "status": "SUCCEEDED"
             },
             {
-                "operationIdentifier": "507c6c87-89a8-435f-8697-b257a800f129",
+                "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "operationType": "UPDATE",
                 "status": "SUCCEEDED"
             }

@@ -3,7 +3,7 @@
 The following ``update-dashboard`` example changes the title of a dashboard's line chart that displays total generated power for a wind farm. ::
 
     aws iotsitewise update-dashboard \
-        --dashboard-id a1b2c3d4-5678-90ab-cdef-dddddEXAMPLE \
+        --dashboard-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --dashboard-name "Wind Farm" \
         --dashboard-definition file://update-wind-farm-dashboard.json
 
@@ -22,8 +22,8 @@ Contents of ``update-wind-farm-dashboard.json``::
                     {
                         "label": "Power",
                         "type": "iotsitewise",
-                        "assetId": "a1b2c3d4-5678-90ab-cdef-44444EXAMPLE",
-                        "propertyId": "a1b2c3d4-5678-90ab-cdef-99999EXAMPLE"
+                        "assetId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+                        "propertyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE99999"
                     }
                 ]
             }

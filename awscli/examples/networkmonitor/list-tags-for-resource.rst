@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example returns a list of the tags for a monitor named ``Example_NetworkMonitor``. ::
 
     aws networkmonitor list-tags-for-resource \
-        --resource-arn arn:aws:networkmonitor:region:012345678910:monitor/Example_NetworkMonitor
+        --resource-arn arn:aws:networkmonitor:region:123456789012:monitor/Example_NetworkMonitor
 
 Output::
 

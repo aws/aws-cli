@@ -15,7 +15,7 @@ Contents of ``policy.json``::
             {
                 "Effect": "Allow",
                 "Principal": {
-                    "AWS": "arn:aws:iam::111122223333:root"
+                    "AWS": "arn:aws:iam::123456789012:root"
                 },
                 "Action": [
                     "codeartifact:DescribePackageVersion",
@@ -37,7 +37,7 @@ Output::
 
     {
         "policy": {
-            "resourceArn": "arn:aws:codeartifact:region-id:111122223333:repository/test-domain/test-repo",
+            "resourceArn": "arn:aws:codeartifact:region-id:123456789012:repository/test-domain/test-repo",
             "document": "{ ...policy document content...}",
             "revision": "MQlyyTQRASRU3HB58gBtSDHXG7Q3hvxxxxxxx="
         }

@@ -3,7 +3,7 @@
 The following ``disable-key-rotation`` example disables automatic rotation of a customer managed KMS key. To reenable automatic rotation, use the ``enable-key-rotation`` command. ::
 
     aws kms disable-key-rotation \
-        --key-id arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output. To verify that automatic rotation is disable for the KMS key, use the ``get-key-rotation-status`` command.
 

@@ -3,7 +3,7 @@
 The following ``put-attributes`` example applies an attribute with the name stack and the value production to a container instance. ::
 
     aws ecs put-attributes \
-        --attributes name=stack,value=production,targetId=arn:aws:ecs:us-west-2:130757420319:container-instance/1c3be8ed-df30-47b4-8f1e-6e68ebd01f34
+        --attributes name=stack,value=production,targetId=arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
         
 Output::
 
@@ -11,7 +11,7 @@ Output::
         "attributes": [
             {
                 "name": "stack",
-                "targetId": "arn:aws:ecs:us-west-2:130757420319:container-instance/1c3be8ed-df30-47b4-8f1e-6e68ebd01f34",
+                "targetId": "arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "value": "production"
             }
         ]

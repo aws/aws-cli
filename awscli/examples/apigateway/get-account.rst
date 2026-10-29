@@ -7,7 +7,7 @@ The following ``get-account`` example gets the API Gateway account settings. ::
 Output::
 
     {
-        "cloudwatchRoleArn": "arn:aws:iam::123412341234:role/APIGatewayToCloudWatchLogsRole",
+        "cloudwatchRoleArn": "arn:aws:iam::123456789012:role/APIGatewayToCloudWatchLogsRole",
         "throttleSettings": {
             "rateLimit": 500.0,
             "burstLimit": 1000

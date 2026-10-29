@@ -12,27 +12,27 @@ Output::
         "BlueGreenDeployment": {
             "BlueGreenDeploymentIdentifier": "bgd-v53303651eexfake",
             "BlueGreenDeploymentName": "bgd-cli-test-instance",
-            "Source": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance",
-            "Target": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-green-blhi1e",
+            "Source": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance",
+            "Target": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-green-blhi1e",
             "SwitchoverDetails": [
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-green-blhi1e",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-green-blhi1e",
                     "Status": "AVAILABLE"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-1",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-1-green-k5fv7u",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-1",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-1-green-k5fv7u",
                     "Status": "AVAILABLE"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-2",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-2-green-ggsh8m",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-2",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-2-green-ggsh8m",
                     "Status": "AVAILABLE"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-3",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-3-green-o2vwm0",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-3",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-3-green-o2vwm0",
                     "Status": "AVAILABLE"
                 }
             ],
@@ -75,37 +75,37 @@ Output::
         "BlueGreenDeployment": {
             "BlueGreenDeploymentIdentifier": "bgd-wi89nwzglccsfake",
             "BlueGreenDeploymentName": "my-blue-green-deployment",
-            "Source": "arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-mysql-cluster",
-            "Target": "arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-mysql-cluster-green-3ud8z6",
+            "Source": "arn:aws:rds:us-west-2:123456789012:cluster:my-aurora-mysql-cluster",
+            "Target": "arn:aws:rds:us-west-2:123456789012:cluster:my-aurora-mysql-cluster-green-3ud8z6",
             "SwitchoverDetails": [
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-mysql-cluster",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-mysql-cluster-green-3ud8z6",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:cluster:my-aurora-mysql-cluster",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:cluster:my-aurora-mysql-cluster-green-3ud8z6",
                     "Status": "AVAILABLE"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-1",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-1-green-bvxc73",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-1",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-1-green-bvxc73",
                     "Status": "AVAILABLE"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-2",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-2-green-7wc4ie",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-2",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-2-green-7wc4ie",
                     "Status": "AVAILABLE"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-3",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-3-green-p4xxkz",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-3",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-3-green-p4xxkz",
                     "Status": "AVAILABLE"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:cluster-endpoint:my-excluded-member-endpoint",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:cluster-endpoint:my-excluded-member-endpoint-green-np1ikl",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:cluster-endpoint:my-excluded-member-endpoint",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:cluster-endpoint:my-excluded-member-endpoint-green-np1ikl",
                     "Status": "AVAILABLE"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:cluster-endpoint:my-reader-endpoint",
-                    "TargetMember": "arn:aws:rds:us-east-1:123456789012:cluster-endpoint:my-reader-endpoint-green-miszlf",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:cluster-endpoint:my-reader-endpoint",
+                    "TargetMember": "arn:aws:rds:us-west-2:123456789012:cluster-endpoint:my-reader-endpoint-green-miszlf",
                     "Status": "AVAILABLE"
                 }
             ],

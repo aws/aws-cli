@@ -17,8 +17,8 @@ Output::
         "VolumeSize": 8,
         "StartTime": "2018-02-28T21:06:01.000Z",
         "Progress": "",
-        "OwnerId": "012345678910",
-        "SnapshotId": "snap-066877671789bd71b"
+        "OwnerId": "123456789012",
+        "SnapshotId": "snap-0abcdef1234567890"
     }
 
 For more information, see `Create Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-snapshot.html>`__ in the *Amazon EBS User Guide*.
@@ -52,7 +52,7 @@ Output::
         "VolumeSize": 8,
         "StartTime": "2018-02-28T21:06:06.000Z",
         "Progress": "",
-        "OwnerId": "012345678910",
+        "OwnerId": "123456789012",
         "SnapshotId": "snap-09ed24a70bc19bbe4"
     }
 

@@ -48,7 +48,7 @@ Output::
                 "OverallSeverity": "UNSPECIFIED",
                 "ExecutionSummary": {
                     "ExecutionTime": 1550248550.0,
-                    "ExecutionId": "7abb6378-a4a5-4f10-8312-0123456789ab",
+                    "ExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "ExecutionType": "Command"
                 },
                 "CompliantSummary": {
@@ -99,7 +99,7 @@ Output::
                 "OverallSeverity": "UNSPECIFIED",
                 "ExecutionSummary": {
                     "ExecutionTime": 1550248550.0,
-                    "ExecutionId": "7abb6378-a4a5-4f10-8312-0123456789ab",
+                    "ExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "ExecutionType": "Command"
                 },
                 "CompliantSummary": {

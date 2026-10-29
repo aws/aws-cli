@@ -14,7 +14,7 @@ Output::
         "ResolverRule": {
             "Id": "rslvr-rr-1247fa64f3example",
             "CreatorRequestId": "2020-01-02-18:47",
-            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-rule/rslvr-rr-1247fa64f3example",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-rule/rslvr-rr-1247fa64f3example",
             "DomainName": "www.example.com.",
             "Status": "COMPLETE",
             "StatusMessage": "[Trace id: 1-5dcc90b9-8a8ee860aba1ebd89example] Successfully updated Resolver Rule.",
@@ -31,7 +31,7 @@ Output::
                 }
             ],
             "ResolverEndpointId": "rslvr-out-7b89ed0d25example",
-            "OwnerId": "111122223333",
+            "OwnerId": "123456789012",
             "ShareStatus": "NOT_SHARED"
         }
     }
@@ -67,7 +67,7 @@ Output::
         "ResolverRule": {
             "Id": "rslvr-rr-1247fa64f3example",
             "CreatorRequestId": "2020-01-02-18:47",
-            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-rule/rslvr-rr-1247fa64f3example",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-rule/rslvr-rr-1247fa64f3example",
             "DomainName": "www.example.com.",
             "Status": "COMPLETE",
             "StatusMessage": "[Trace id: 1-5dcc90b9-8a8ee860aba1ebd89example] Successfully updated Resolver Rule.",
@@ -84,7 +84,7 @@ Output::
                 }
             ],
             "ResolverEndpointId": "rslvr-out-7b89ed0d25example",
-            "OwnerId": "111122223333",
+            "OwnerId": "123456789012",
             "ShareStatus": "NOT_SHARED"
         }
     }

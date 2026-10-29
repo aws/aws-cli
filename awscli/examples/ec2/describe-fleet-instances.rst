@@ -3,7 +3,7 @@
 The following ``describe-fleet-instances`` example describes the running instances for the specified EC2 Fleet. ::
 
     aws ec2 describe-fleet-instances \
-        --fleet-id 12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE
+        --fleet-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

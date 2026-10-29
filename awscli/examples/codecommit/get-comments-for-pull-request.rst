@@ -19,7 +19,7 @@ Output::
                 "beforeCommitId": "317f8570EXAMPLE",
                 "comments": [ 
                     { 
-                        "authorArn": "arn:aws:iam::111111111111:user/Saanvi_Sarkar",
+                        "authorArn": "arn:aws:iam::123456789012:user/Saanvi_Sarkar",
                         "clientRequestToken": "",
                         "commentId": "abcd1234EXAMPLEb5678efgh",
                         "content": "These don't appear to be used anywhere. Can we remove them?",
@@ -34,7 +34,7 @@ Output::
                         }
                     },
                     {
-                        "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+                        "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
                         "clientRequestToken": "",
                         "commentId": "442b498bEXAMPLE5756813",
                         "content": "Good catch. I'll remove them.",

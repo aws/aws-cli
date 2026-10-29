@@ -4,7 +4,7 @@ The following ``disassociate-access-policy`` example removes the access policy a
 
     aws eks disassociate-access-policy \
         --cluster-name eks-customer \
-        --principal-arn arn:aws:iam::111122223333:role/Admin \
+        --principal-arn arn:aws:iam::123456789012:role/Admin \
         --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy
 
 This command produces no output.

@@ -12,7 +12,7 @@ Output::
             {
                 "TransitGatewayMulticastDomainId": "tgw-mcast-domain-000fb24d04EXAMPLE",
                 "TransitGatewayId": "tgw-0bf0bffefaEXAMPLE",
-                "TransitGatewayMulticastDomainArn": "arn:aws:ec2:us-east-1:123456789012:transit-gateway-multicast-domain/tgw-mcast-domain-000fb24d04EXAMPLE",
+                "TransitGatewayMulticastDomainArn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway-multicast-domain/tgw-mcast-domain-000fb24d04EXAMPLE",
                 "OwnerId": "123456789012",
                 "Options": {
                     "Igmpv2Support": "disable",

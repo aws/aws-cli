@@ -3,13 +3,13 @@
 The following ``describe-access-policy`` example describes an access policy that grants a user administrative access to a web portal for a wind farm company. ::
 
     aws iotsitewise describe-access-policy \
-        --access-policy-id a1b2c3d4-5678-90ab-cdef-cccccEXAMPLE
+        --access-policy-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "accessPolicyId": "a1b2c3d4-5678-90ab-cdef-cccccEXAMPLE",
-        "accessPolicyArn": "arn:aws:iotsitewise:us-west-2:123456789012:access-policy/a1b2c3d4-5678-90ab-cdef-cccccEXAMPLE",
+        "accessPolicyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "accessPolicyArn": "arn:aws:iotsitewise:us-west-2:123456789012:access-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "accessPolicyIdentity": {
             "user": {
                 "id": "a1b2c3d4e5-a1b2c3d4-5678-90ab-cdef-bbbbbEXAMPLE"
@@ -17,7 +17,7 @@ Output::
         },
         "accessPolicyResource": {
             "portal": {
-                "id": "a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE"
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         },
         "accessPolicyPermission": "ADMINISTRATOR",

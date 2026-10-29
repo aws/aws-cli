@@ -19,7 +19,7 @@ Output::
         "beforeBlobId": "80906a4cEXAMPLE",
         "beforeCommitId": "317f8570EXAMPLE",
         "comment": {
-            "authorArn": "arn:aws:iam::111111111111:user/Saanvi_Sarkar",
+            "authorArn": "arn:aws:iam::123456789012:user/Saanvi_Sarkar",
             "clientRequestToken": "123Example",
             "commentId": "abcd1234EXAMPLEb5678efgh",
             "content": "These don't appear to be used anywhere. Can we remove them?",

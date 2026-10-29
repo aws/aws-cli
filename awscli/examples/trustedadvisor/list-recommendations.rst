@@ -9,13 +9,13 @@ Output::
     {
         "recommendationSummaries": [
             {
-                "arn": "arn:aws:trustedadvisor::000000000000:recommendation/55fa4d2e-bbb7-491a-833b-5773e9589578",
+                "arn": "arn:aws:trustedadvisor::123456789012:recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "name": "MFA Recommendation",
                 "awsServices": [
                     "iam"
                 ],
                 "checkArn": "arn:aws:trustedadvisor:::check/7DAFEmoDos",
-                "id": "55fa4d2e-bbb7-491a-833b-5773e9589578",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "lastUpdatedAt": "2023-11-01T15:57:58.673Z",
                 "pillarSpecificAggregates": {
                     "costOptimizing": {
@@ -36,13 +36,13 @@ Output::
                 "type": "standard"
             },
             {
-                "arn": "arn:aws:trustedadvisor::000000000000:recommendation/8b602b6f-452d-4cb2-8a9e-c7650955d9cd",
+                "arn": "arn:aws:trustedadvisor::123456789012:recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "name": "RDS clusters quota warning",
                 "awsServices": [
                     "rds"
                 ],
                 "checkArn": "arn:aws:trustedadvisor:::check/gjqMBn6pjz",
-                "id": "8b602b6f-452d-4cb2-8a9e-c7650955d9cd",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "lastUpdatedAt": "2023-11-01T15:58:17.397Z",
                 "pillarSpecificAggregates": {
                     "costOptimizing": {
@@ -80,13 +80,13 @@ Output::
 
     {
         "recommendationSummaries": [{
-            "arn": "arn:aws:trustedadvisor::000000000000:recommendation/55fa4d2e-bbb7-491a-833b-5773e9589578",
+            "arn": "arn:aws:trustedadvisor::123456789012:recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "name": "MFA Recommendation",
             "awsServices": [
                 "iam"
             ],
             "checkArn": "arn:aws:trustedadvisor:::check/7DAFEmoDos",
-            "id": "55fa4d2e-bbb7-491a-833b-5773e9589578",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "lastUpdatedAt": "2023-11-01T15:57:58.673Z",
             "pillarSpecificAggregates": {
                 "costOptimizing": {
@@ -124,13 +124,13 @@ Output::
 
     {
         "recommendationSummaries": [{
-            "arn": "arn:aws:trustedadvisor::000000000000:recommendation/8b602b6f-452d-4cb2-8a9e-c7650955d9cd",
+            "arn": "arn:aws:trustedadvisor::123456789012:recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "name": "RDS clusters quota warning",
             "awsServices": [
                 "rds"
             ],
             "checkArn": "arn:aws:trustedadvisor:::check/gjqMBn6pjz",
-            "id": "8b602b6f-452d-4cb2-8a9e-c7650955d9cd",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "lastUpdatedAt": "2023-11-01T15:58:17.397Z",
             "pillarSpecificAggregates": {
                 "costOptimizing": {

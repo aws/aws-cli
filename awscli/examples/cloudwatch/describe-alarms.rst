@@ -11,12 +11,12 @@ Output::
         "MetricAlarms": [
             {
                 "EvaluationPeriods": 2,
-                "AlarmArn": "arn:aws:cloudwatch:us-east-1:123456789012:alarm:myalarm",
+                "AlarmArn": "arn:aws:cloudwatch:us-west-2:123456789012:alarm:myalarm",
                 "StateUpdatedTimestamp": "2014-04-09T18:59:06.442Z",
                 "AlarmConfigurationUpdatedTimestamp": "2012-12-27T00:49:54.032Z",
                 "ComparisonOperator": "GreaterThanThreshold",
                 "AlarmActions": [
-                    "arn:aws:sns:us-east-1:123456789012:myHighCpuAlarm"
+                    "arn:aws:sns:us-west-2:123456789012:myHighCpuAlarm"
                 ],
                 "Namespace": "AWS/EC2",
                 "AlarmDescription": "CPU usage exceeds 70 percent",

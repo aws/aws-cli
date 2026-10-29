@@ -66,10 +66,10 @@ Output::
             "LastUpdatedTimeStamp": 1595634764.029,
             "ProviderType": "CodeCommit",
             "CreatedTimeStamp": 1595634764.029,
-            "Owner": "544120495673",
+            "Owner": "123456789012",
             "State": "Associating",
             "StateReason": "Pending Repository Association",
-            "AssociationArn": "arn:aws:codeguru-reviewer:us-west-2:544120495673:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+            "AssociationArn": "arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }
 

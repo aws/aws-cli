@@ -11,8 +11,8 @@ Output::
         "computeEnvironments": [
             {
                 "status": "VALID",
-                "serviceRole": "arn:aws:iam::012345678910:role/AWSBatchServiceRole",
-                "computeEnvironmentArn": "arn:aws:batch:us-east-1:012345678910:compute-environment/P2OnDemand",
+                "serviceRole": "arn:aws:iam::123456789012:role/AWSBatchServiceRole",
+                "computeEnvironmentArn": "arn:aws:batch:us-west-2:123456789012:compute-environment/P2OnDemand",
                 "computeResources": {
                     "subnets": [
                         "subnet-220c0e0a",
@@ -36,7 +36,7 @@ Output::
                     "ec2KeyPair": "id_rsa"
                 },
                 "statusReason": "ComputeEnvironment Healthy",
-                "ecsClusterArn": "arn:aws:ecs:us-east-1:012345678910:cluster/P2OnDemand_Batch_2c06f29d-d1fe-3a49-879d-42394c86effc",
+                "ecsClusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/P2OnDemand_Batch_2c06f29d-d1fe-3a49-879d-42394c86effc",
                 "state": "ENABLED",
                 "computeEnvironmentName": "P2OnDemand",
                 "type": "MANAGED"

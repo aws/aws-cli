@@ -3,7 +3,7 @@
 The following ``cancel-reserved-instances-listing`` example cancels the specified Reserved Instance listing. ::
 
     aws ec2 cancel-reserved-instances-listing \
-        --reserved-instances-listing-id 5ec28771-05ff-4b9b-aa31-9e57dexample
+        --reserved-instances-listing-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -39,7 +39,7 @@ Output::
                     }
                 ],
                 "ReservedInstancesId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-                "ReservedInstancesListingId": "5ec28771-05ff-4b9b-aa31-9e57dexample",
+                "ReservedInstancesListingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Status": "cancelled",
                 "StatusMessage": "cancelled",
                 "Tags": [],

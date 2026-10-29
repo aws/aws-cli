@@ -9,9 +9,9 @@ Output::
     {
         "DeliveryChannels": [
             {
-                "snsTopicARN": "arn:aws:sns:us-east-1:123456789012:config-topic",
+                "snsTopicARN": "arn:aws:sns:us-west-2:123456789012:config-topic",
                 "name": "default",
-                "s3BucketName": "config-bucket-123456789012"
+                "s3BucketName": "amzn-s3-demo-bucket"
             }
         ]
     }

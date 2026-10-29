@@ -3,7 +3,7 @@
 The following ``get-wireless-gateway-certificate`` example gets the certificate ID associated with a wireless gateway that has the specified ID. ::
 
     aws iotwireless get-wireless-gateway-certificate \
-        --id "6c44ab31-8b4d-407a-bed3-19b6c7cda551"
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 

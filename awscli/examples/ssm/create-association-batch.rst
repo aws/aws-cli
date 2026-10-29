@@ -25,7 +25,7 @@ Output::
                     "DetailedStatus": "Creating"
                 },
                 "DocumentVersion": "$DEFAULT",
-                "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Targets": [
                     {
                         "Key": "InstanceIds",
@@ -51,7 +51,7 @@ Output::
                     "DetailedStatus": "Creating"
                 },
                 "DocumentVersion": "$DEFAULT",
-                "AssociationId": "9c9f7f20-5154-4fed-a83e-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Targets": [
                     {
                         "Key": "InstanceIds",

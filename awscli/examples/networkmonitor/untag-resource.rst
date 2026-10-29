@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes a ``tag-keys`` parameter with the key-value pair of ``Environment Application`` from its association with a monitor named ``Example_NetworkMonitor``. ::
 
     aws networkmonitor untag-resource \
-        --resource-arn arn:aws:networkmonitor:region:012345678910:monitor/Example_NetworkMonitor \
+        --resource-arn arn:aws:networkmonitor:region:123456789012:monitor/Example_NetworkMonitor \
         --tag-keys Environment Application
 
 This command produces no output.

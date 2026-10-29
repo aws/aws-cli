@@ -3,7 +3,7 @@
 The following ``update-response-plan`` example removes a chat channel from the specified response plan. ::
 
     aws ssm-incidents update-response-plan \
-        --arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan" \
+        --arn "arn:aws:ssm-incidents::123456789012:response-plan/Example-Response-Plan" \
         --chat-channel '{"empty":{}}'
 
 This command produces no output.

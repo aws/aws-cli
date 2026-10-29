@@ -9,7 +9,7 @@ The following ``update-job-queue`` example disables a job queue so that it can b
 Output::
 
     {
-        "jobQueueArn": "arn:aws:batch:us-east-1:012345678910:job-queue/GPGPU",
+        "jobQueueArn": "arn:aws:batch:us-west-2:123456789012:job-queue/GPGPU",
         "jobQueueName": "GPGPU"
     }
 

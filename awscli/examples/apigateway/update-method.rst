@@ -25,7 +25,7 @@ Output::
         "methodIntegration": {
             "type": "AWS",
             "httpMethod": "POST",
-            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789111:function:hello-world/invocations",
+            "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789111:function:hello-world/invocations",
             "passthroughBehavior": "WHEN_NO_MATCH",
             "contentHandling": "CONVERT_TO_TEXT",
             "timeoutInMillis": 29000,
@@ -65,7 +65,7 @@ Output::
         "methodIntegration": {
             "type": "AWS",
             "httpMethod": "POST",
-            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789111:function:hello-world/invocations",
+            "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789111:function:hello-world/invocations",
             "passthroughBehavior": "WHEN_NO_MATCH",
             "contentHandling": "CONVERT_TO_TEXT",
             "timeoutInMillis": 29000,
@@ -106,7 +106,7 @@ Output::
         "methodIntegration": {
             "type": "AWS",
             "httpMethod": "POST",
-            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789111:function:hello-world/invocations",
+            "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789111:function:hello-world/invocations",
             "passthroughBehavior": "WHEN_NO_MATCH",
             "contentHandling": "CONVERT_TO_TEXT",
             "timeoutInMillis": 29000,

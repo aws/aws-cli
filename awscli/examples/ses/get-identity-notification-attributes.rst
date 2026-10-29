@@ -11,9 +11,9 @@ Output::
         "NotificationAttributes": {
             "user1@example.com": {
                 "ForwardingEnabled": false,
-                "ComplaintTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic",
-                "BounceTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic",
-                "DeliveryTopic": "arn:aws:sns:us-east-1:EXAMPLE65304:MyTopic"
+                "ComplaintTopic": "arn:aws:sns:us-west-2:EXAMPLE65304:MyTopic",
+                "BounceTopic": "arn:aws:sns:us-west-2:EXAMPLE65304:MyTopic",
+                "DeliveryTopic": "arn:aws:sns:us-west-2:EXAMPLE65304:MyTopic"
             },
             "user2@example.com": {
                 "ForwardingEnabled": true

@@ -68,7 +68,7 @@ Output::
         "PublicIp": "192.0.2.0",                        
         "AllocationId": "eipalloc-abcdef01234567890",    
         "PublicIpv4Pool": "ipam-pool-1234567890abcdef0", 
-        "NetworkBorderGroup": "us-east-1",               
+        "NetworkBorderGroup": "us-west-2",               
         "Domain": "vpc"                                  
     }                                                    
 

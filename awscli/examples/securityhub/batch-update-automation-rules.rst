@@ -23,7 +23,7 @@ The following ``batch-update-automation-rules`` example updates the specified au
                         "Comparison": "EQUALS" \
                     }] \
                 }, \
-                "RuleArn": "arn:aws:securityhub:us-east-1:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", \
+                "RuleArn": "arn:aws:securityhub:us-west-2:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", \
                 "RuleOrder": 1, \
                 "RuleStatus": "DISABLED" \
             } \
@@ -33,7 +33,7 @@ Output::
 
     {
         "ProcessedAutomationRules": [
-            "arn:aws:securityhub:us-east-1:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+            "arn:aws:securityhub:us-west-2:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         ],
         "UnprocessedAutomationRules": []
     }

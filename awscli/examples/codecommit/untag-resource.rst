@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the tag with the specified key from the repository named ``MyDemoRepo``. ::
 
     aws codecommit untag-resource \
-        --resource-arn arn:aws:codecommit:us-west-2:111111111111:MyDemoRepo \
+        --resource-arn arn:aws:codecommit:us-west-2:123456789012:MyDemoRepo \
         --tag-keys Status
 
 This command produces no output.

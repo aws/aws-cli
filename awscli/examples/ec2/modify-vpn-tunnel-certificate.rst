@@ -27,7 +27,7 @@ Output::
                     "OutsideIpAddress": "203.0.113.17",
                     "Status": "DOWN",
                     "StatusMessage": "IPSEC IS DOWN",
-                    "CertificateArn": "arn:aws:acm:us-east-1:123456789101:certificate/c544d8ce-20b8-4fff-98b0-example"
+                    "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/c544d8ce-20b8-4fff-98b0-example"
                 },
                 {
                     "AcceptedRouteCount": 0,
@@ -35,7 +35,7 @@ Output::
                     "OutsideIpAddress": "203.0.114.18",
                     "Status": "DOWN",
                     "StatusMessage": "IPSEC IS DOWN",
-                    "CertificateArn": "arn:aws:acm:us-east-1:123456789101:certificate/5ab64566-761b-4ad3-b259-example"
+                    "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/5ab64566-761b-4ad3-b259-example"
                 }
             ]
         }

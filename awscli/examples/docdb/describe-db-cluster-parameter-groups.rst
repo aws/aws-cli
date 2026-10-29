@@ -11,7 +11,7 @@ Output::
         "DBClusterParameterGroups": [
             {
                 "DBParameterGroupFamily": "docdb3.6",
-                "DBClusterParameterGroupArn": "arn:aws:rds:us-east-1:123456789012:cluster-pg:custom3-6-param-grp",
+                "DBClusterParameterGroupArn": "arn:aws:rds:us-west-2:123456789012:cluster-pg:custom3-6-param-grp",
                 "Description": "Custom docdb3.6 parameter group",
                 "DBClusterParameterGroupName": "custom3-6-param-grp"
             }

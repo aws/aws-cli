@@ -3,7 +3,7 @@
 The following ``wait asset-not-exists`` example pauses and resumes only after it can confirm that the specified asset doesn't exist. ::
 
     aws iotsitewise wait asset-not-exists \
-        --asset-id a1b2c3d4-5678-90ab-cdef-33333EXAMPLE
+        --asset-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 This command produces no output.
 

@@ -3,7 +3,7 @@
 The following ``start-fhir-export-job`` example shows how to start a FHIR export job using AWS HealthLake. ::
 
     aws healthlake start-fhir-export-job \
-        --output-data-config '{"S3Configuration": {"S3Uri":"s3://(Bucket Name)/(Prefix Name)/","KmsKeyId":"arn:aws:kms:us-east-1:012345678910:key/d330e7fc-b56c-4216-a250-f4c43ef46e83"}}' \
+        --output-data-config '{"S3Configuration": {"S3Uri":"s3://(Bucket Name)/(Prefix Name)/","KmsKeyId":"arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"}}' \
         --datastore-id (Data store ID) \
         --data-access-role-arn arn:aws:iam::(AWS Account ID):role/(Role Name)
 

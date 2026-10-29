@@ -31,9 +31,9 @@ Output::
                     {
                         "customLogSource": {
                             "attributes": {
-                                "crawlerArn": "arn:aws:glue:eu-west-2:123456789012:crawler/E1WG1ZNPRXT0D4",
-                                "databaseArn": "arn:aws:glue:eu-west-2:123456789012:database/E1WG1ZNPRXT0D4",
-                                "tableArn": "arn:aws:glue:eu-west-2:123456789012:table/E1WG1ZNPRXT0D4"
+                                "crawlerArn": "arn:aws:glue:us-west-2:123456789012:crawler/E1WG1ZNPRXT0D4",
+                                "databaseArn": "arn:aws:glue:us-west-2:123456789012:database/E1WG1ZNPRXT0D4",
+                                "tableArn": "arn:aws:glue:us-west-2:123456789012:table/E1WG1ZNPRXT0D4"
                             },
                             "provider": {
                                 "location": "amzn-s3-demo-bucket--usw2-az1--x-s3",
@@ -43,8 +43,8 @@ Output::
                         }
                     }
                 ],
-                "subscriberArn": "arn:aws:securitylake:eu-west-2:123456789012:subscriber/E1WG1ZNPRXT0D4",
-                "subscriberEndpoint": "arn:aws:sqs:eu-west-2:123456789012:AmazonSecurityLake-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111-Main-Queue",
+                "subscriberArn": "arn:aws:securitylake:us-west-2:123456789012:subscriber/E1WG1ZNPRXT0D4",
+                "subscriberEndpoint": "arn:aws:sqs:us-west-2:123456789012:AmazonSecurityLake-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111-Main-Queue",
                 "subscriberId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "subscriberIdentity": {
                     "externalId": "ext123456789012",

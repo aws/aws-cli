@@ -3,16 +3,16 @@
 The following ``get-maintenance-window-execution-task`` example lists information about a task that is part of the specified maintenance window execution. ::
 
     aws ssm get-maintenance-window-execution-task \
-        --window-execution-id "518d5565-5969-4cca-8f0e-da3b2EXAMPLE" \
-        --task-id "ac0c6ae1-daa3-4a89-832e-d3845EXAMPLE"
+        --window-execution-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --task-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
 
 Output::
 
     {
-        "WindowExecutionId": "518d5565-5969-4cca-8f0e-da3b2EXAMPLE",
-        "TaskExecutionId": "ac0c6ae1-daa3-4a89-832e-d3845EXAMPLE",
+        "WindowExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "TaskExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "TaskArn": "AWS-RunPatchBaseline",
-        "ServiceRole": "arn:aws:iam::111222333444:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM",
+        "ServiceRole": "arn:aws:iam::123456789012:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM",
         "Type": "RUN_COMMAND",
         "TaskParameters": [
             {

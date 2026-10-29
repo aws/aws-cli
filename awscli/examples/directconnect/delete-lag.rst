@@ -17,7 +17,7 @@ Output::
         "lagId": "dxlag-ffrhowd9",
         "minimumLinks": 0,
         "connectionsBandwidth": "1Gbps",
-        "region": "us-east-1",
+        "region": "us-west-2",
         "location": "EqDC2"
     }
 

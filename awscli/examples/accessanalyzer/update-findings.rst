@@ -3,8 +3,8 @@
 The following ``update-findings`` example updates the status for the specified findings in your AWS account. ::
 
     aws accessanalyzer update-findings \
-        --analyzer-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/UnusedAccess-ConsoleAnalyzer-organization \
-        --ids 4f319ac3-2e0c-4dc4-bf51-7013a086b6ae 780d586a-2cce-4f72-aff6-359d450e7500 \
+        --analyzer-arn arn:aws:access-analyzer:us-west-2:123456789012:analyzer/UnusedAccess-ConsoleAnalyzer-organization \
+        --ids a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --status ARCHIVED
 
 This command produces no output.

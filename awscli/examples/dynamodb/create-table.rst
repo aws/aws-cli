@@ -113,7 +113,7 @@ The following ``create-table`` example creates a table named ``MusicCollection``
         --attribute-definitions AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S \
         --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
-        --sse-specification Enabled=true,SSEType=KMS,KMSMasterKeyId=abcd1234-abcd-1234-a123-ab1234a1b234
+        --sse-specification Enabled=true,SSEType=KMS,KMSMasterKeyId=a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
@@ -154,7 +154,7 @@ Output::
             "SSEDescription": {
                 "Status": "ENABLED",
                 "SSEType": "KMS",
-                "KMSMasterKeyArn": "arn:aws:kms:us-west-2:123456789012:key/abcd1234-abcd-1234-a123-ab1234a1b234"
+                "KMSMasterKeyArn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         }
     }

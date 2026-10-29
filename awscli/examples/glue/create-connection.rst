@@ -10,12 +10,12 @@ The following ``create-connection`` example creates a connection in the AWS Glue
             "ConnectionProperties":{  \
                 "KAFKA_BOOTSTRAP_SERVERS":"<Kafka-broker-server-url>:<SSL-Port>", \
                 "KAFKA_SSL_ENABLED":"true", \
-                "KAFKA_CUSTOM_CERT": "s3://bucket/prefix/cert-file.pem" \
+                "KAFKA_CUSTOM_CERT": "s3://amzn-s3-demo-bucket/prefix/cert-file.pem" \
             }, \
             "PhysicalConnectionRequirements":{ \
                 "SubnetId":"subnet-1234", \
                 "SecurityGroupIdList":["sg-1234"], \
-                "AvailabilityZone":"us-east-1a"} \
+                "AvailabilityZone":"us-west-2a"} \
         }'
 
 This command produces no output.

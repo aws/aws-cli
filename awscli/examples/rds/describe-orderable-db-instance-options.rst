@@ -15,16 +15,16 @@ Output::
                 "MaxStorageSize": 6144,
                 "AvailabilityZones": [
                     {
-                        "Name": "us-east-1a"
+                        "Name": "us-west-2a"
                     },
                     {
-                        "Name": "us-east-1b"
+                        "Name": "us-west-2b"
                     },
                     {
-                        "Name": "us-east-1c"
+                        "Name": "us-west-2c"
                     },
                     {
-                        "Name": "us-east-1d"
+                        "Name": "us-west-2d"
                     }
                 ],
                 "SupportsIops": false,

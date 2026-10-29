@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags for a specific accelerator. ::
 
     aws globalaccelerator list-tags-for-resource \
-        --resource-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh
+        --resource-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

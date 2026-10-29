@@ -18,14 +18,14 @@ Output::
                 {
                     "Name": "dev",
                     "EdgeLocations": [
-                        "us-east-1"
+                        "us-west-2"
                     ],
                     "SharedSegments": []
                 }
             ],
             "Edges": [
                 {
-                    "EdgeLocation": "us-east-1",
+                    "EdgeLocation": "us-west-2",
                     "Asn": 64512,
                     "InsideCidrBlocks": []
                 }

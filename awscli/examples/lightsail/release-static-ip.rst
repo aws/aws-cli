@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "e374c002-dc6d-4c7f-919f-2EXAMPLE13ce",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "StaticIp-1",
                 "resourceType": "StaticIp",
                 "createdAt": 1571694962.003,

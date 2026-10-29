@@ -9,7 +9,7 @@ Output::
 
     {
         "RepositoryAssociation": {
-            "AssociationId": "b822717e-0711-4e8a-bada-0e738289c75e",
+            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Name": "mySampleRepo",
             "LastUpdatedTimeStamp": 1588102637.649,
             "ProviderType": "GitHub",
@@ -42,7 +42,7 @@ Output::
             "ConnectionArn": "arn:aws:codestar-connections:us-west-2:123456789012:connection/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "State": "Failed",
             "StateReason": "Failed, Please retry.",
-            "AssociationArn": "arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+            "AssociationArn": "arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Owner": "sample-owner"
         }
     }
@@ -68,7 +68,7 @@ Output::
             "ConnectionArn": "arn:aws:codestar-connections:us-west-2:123456789012:connection/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "State": "Disassociating",
             "StateReason": "Source code access removal in progress",
-            "AssociationArn": "arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+            "AssociationArn": "arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Owner": "sample-owner"
         }
     }

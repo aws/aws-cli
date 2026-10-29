@@ -12,7 +12,7 @@ A host created through the AWS CLI is in Pending status by default. After you cr
 Output::
 
     {
-        "HostArn": "arn:aws:codestar-connections:us-east-1:123456789012:host/My-Host-28aef605"
+        "HostArn": "arn:aws:codestar-connections:us-west-2:123456789012:host/My-Host-28aef605"
     }
 
 For more information, see `Create a host (CLI) <https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-host-create.html>`__ in the *Developer Tools console User Guide*.

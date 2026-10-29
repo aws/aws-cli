@@ -11,7 +11,7 @@ Output::
     {
         "OrganizationalUnit": {
             "Id": "ou-examplerootid111-exampleouid111",
-            "Arn": "arn:aws:organizations::111111111111:ou/o-exampleorgid/ou-examplerootid111-exampleouid111",
+            "Arn": "arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-examplerootid111-exampleouid111",
             "Name": "AccountingOU"
         }
     }

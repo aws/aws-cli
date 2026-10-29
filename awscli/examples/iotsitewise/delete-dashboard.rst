@@ -3,7 +3,7 @@
 The following ``delete-dashboard`` example deletes a wind turbine dashboard. ::
 
     aws iotsitewise delete-dashboard \
-        --dashboard-id a1b2c3d4-5678-90ab-cdef-fffffEXAMPLE
+        --dashboard-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

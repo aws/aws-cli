@@ -14,7 +14,7 @@ Output::
                 "Type": "DOCUMENT_VERSION_DOWNLOADED",
                 "TimeStamp": 1534800122.17,
                 "Initiator": {
-                    "Id": "arn:aws:iam::123456789123:user/exampleUser"
+                    "Id": "arn:aws:iam::123456789012:user/exampleUser"
                 },
                 "ResourceMetadata": {
                     "Type": "document",

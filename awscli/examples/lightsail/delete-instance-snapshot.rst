@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "14dad182-976a-46c6-bfd4-9480482bf0ea",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "WordPress-1-Snapshot-1",
                 "resourceType": "InstanceSnapshot",
                 "createdAt": 1569874524.562,

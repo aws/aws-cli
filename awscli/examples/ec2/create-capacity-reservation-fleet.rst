@@ -17,7 +17,7 @@ Contents of ``instanceTypeSpecification.json``::
             "InstanceType": "m5.xlarge",
             "InstancePlatform": "Linux/UNIX",
             "Weight": 3.0,
-            "AvailabilityZone":"us-east-1a",
+            "AvailabilityZone":"us-west-2a",
             "EbsOptimized": true,
             "Priority" : 1
         }

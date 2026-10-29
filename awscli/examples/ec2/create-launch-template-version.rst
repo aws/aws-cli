@@ -3,7 +3,7 @@
 The following ``create-launch-template-version`` example creates a new launch template version based on version 1 of the launch template and specifies a different AMI ID. ::
 
     aws ec2 create-launch-template-version \
-        --launch-template-id lt-0abcd290751193123 \
+        --launch-template-id lt-0abcd1234567890ab \
         --version-description WebVersion2 \
         --source-version 1 \
         --launch-template-data '{"ImageId":"ami-c998b6b2"}'
@@ -13,7 +13,7 @@ Output::
     {
         "LaunchTemplateVersion": {
             "VersionDescription": "WebVersion2",
-            "LaunchTemplateId": "lt-0abcd290751193123",
+            "LaunchTemplateId": "lt-0abcd1234567890ab",
             "LaunchTemplateName": "WebServers",
             "VersionNumber": 2,
             "CreatedBy": "arn:aws:iam::123456789012:root",

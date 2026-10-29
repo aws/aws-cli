@@ -14,12 +14,12 @@ Output::
                     "Type": "SERVICE_CONTROL_POLICY"
                 }
             ],
-            "MasterAccountId": "111111111111",
-            "MasterAccountArn": "arn:aws:organizations::111111111111:account/o-exampleorgid/111111111111",
+            "MasterAccountId": "123456789012",
+            "MasterAccountArn": "arn:aws:organizations::123456789012:account/o-exampleorgid/123456789012",
             "MasterAccountEmail": "bill@example.com",
             "FeatureSet": "ALL",
             "Id": "o-exampleorgid",
-            "Arn": "arn:aws:organizations::111111111111:organization/o-exampleorgid"
+            "Arn": "arn:aws:organizations::123456789012:organization/o-exampleorgid"
         }
     }
 
@@ -36,12 +36,12 @@ Output::
 
     {
         "Organization": {
-            "Arn": "arn:aws:organizations::111111111111:organization/o-exampleorgid",
+            "Arn": "arn:aws:organizations::123456789012:organization/o-exampleorgid",
             "AvailablePolicyTypes": [],
             "Id": "o-exampleorgid",
-            "MasterAccountArn": "arn:aws:organizations::111111111111:account/o-exampleorgid/111111111111",
+            "MasterAccountArn": "arn:aws:organizations::123456789012:account/o-exampleorgid/123456789012",
             "MasterAccountEmail": "bill@example.com",
-            "MasterAccountId": "111111111111",
+            "MasterAccountId": "123456789012",
             "FeatureSet": "CONSOLIDATED_BILLING"
         }
     }

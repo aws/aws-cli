@@ -35,7 +35,7 @@ Output::
                         }
                     },
                     "codeSigning": {
-                        "awsSignerJobId": "48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"
+                        "awsSignerJobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                     }
                 }
             ],

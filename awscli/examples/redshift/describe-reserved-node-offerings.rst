@@ -20,7 +20,7 @@ Output::
                         "RecurringChargeFrequency": "Hourly"
                 } ],
                 "Duration": 31536000,
-                "ReservedNodeOfferingId": "ceb6a579-cf4c-4343-be8b-d832c45ab51c"
+                "ReservedNodeOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             },
             {
                 "OfferingType": "Heavy Utilization",
@@ -33,7 +33,7 @@ Output::
                         "RecurringChargeFrequency": "Hourly"
                 } ],
                 "Duration": 31536000,
-                "ReservedNodeOfferingId": "e5a2ff3b-352d-4a9c-ad7d-373c4cab5dd2"
+                "ReservedNodeOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ]
     }

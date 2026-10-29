@@ -26,7 +26,7 @@ Output::
                 "EmrManagedMasterSecurityGroup": "sg-xxxxxxxx",
                 "IamInstanceProfile": "EMR_EC2_DefaultRole",
                 "Ec2KeyName": "myKey",
-                "Ec2AvailabilityZone": "us-east-1c",
+                "Ec2AvailabilityZone": "us-west-2c",
                 "EmrManagedSlaveSecurityGroup": "sg-yyyyyyyyy"
             },
             "Name": "My Cluster",
@@ -125,7 +125,7 @@ Output::
                 "RequestedEc2AvailabilityZones": [],
                 "RequestedEc2SubnetIds": [],
                 "IamInstanceProfile": "EMR_EC2_DefaultRole",
-                "Ec2AvailabilityZone": "us-east-1a",
+                "Ec2AvailabilityZone": "us-west-2a",
                 "EmrManagedSlaveSecurityGroup": "sg-xxxxx"
             },
             "Name": "My Cluster",
@@ -204,7 +204,7 @@ Output::
             },
             "Ec2InstanceAttributes": {
                 "IamInstanceProfile": "EMR_EC2_DefaultRole",
-                "Ec2AvailabilityZone": "us-east-1c"
+                "Ec2AvailabilityZone": "us-west-2c"
             },
             "Name": "My Cluster",
             "Tags": [],
@@ -260,7 +260,7 @@ Output::
             "BootstrapActions": [],
             "VisibleToAllUsers": false,
             "RequestedAmiVersion": "2.4.2",
-            "LogUri": "s3://myLogUri/",
+            "LogUri": "s3://amzn-s3-demo-bucketLogUri/",
             "AutoTerminate": false,
             "Id": "j-XXXXXXXX"
         }

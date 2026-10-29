@@ -13,6 +13,6 @@ Output::
             "CreationTime": 1563557265,
             "Name": "ExampleContainer",
             "Status": "CREATING",
-            "ARN": "arn:aws:mediastore:us-west-2:111122223333:container/ExampleContainer"
+            "ARN": "arn:aws:mediastore:us-west-2:123456789012:container/ExampleContainer"
         }
     }

@@ -3,7 +3,7 @@
 The following ``get-host`` example shows details about a host. ::
 
     aws codestar-connections get-host \
-        --host-arn arn:aws:codestar-connections:us-east-1:123456789012:host/MyHost-28aef605
+        --host-arn arn:aws:codestar-connections:us-west-2:123456789012:host/MyHost-28aef605
 
 Output::
 

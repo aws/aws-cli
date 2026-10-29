@@ -38,10 +38,10 @@ Output::
         "route": {
             "meshName": "app1",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualRouter/vrServiceB/route/toVnServiceB-weighted",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualRouter/vrServiceB/route/toVnServiceB-weighted",
                 "createdAt": 1563811384.015,
                 "lastUpdatedAt": 1563819600.022,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 2
             },
             "routeName": "toVnServiceB-weighted",

@@ -12,7 +12,7 @@ Output::
     {
         "Group": {
             "GroupName": "AdminGroup",
-            "GroupARN": "arn:aws:xray:us-east-2:123456789012:group/AdminGroup/123456789",
+            "GroupARN": "arn:aws:xray:us-west-2:123456789012:group/AdminGroup/123456789",
             "FilterExpression": "service(\"mydomain.com\") {fault}"
         }
     }

@@ -1,6 +1,6 @@
-**To retrieve the reservation coverage for EC2 t2.nano instances in the us-east-1 region**
+**To retrieve the reservation coverage for EC2 t2.nano instances in the us-west-2 region**
 
-The following ``get-reservation-coverage`` example retrieves the reservation coverage for EC2 t2.nano instances in the us-east-1 region for July-September of 2017. ::
+The following ``get-reservation-coverage`` example retrieves the reservation coverage for EC2 t2.nano instances in the us-west-2 region for July-September of 2017. ::
 
     aws ce get-reservation-coverage \
         --time-period Start=2017-07-01,End=2017-10-01 \
@@ -23,7 +23,7 @@ Contents of ``filters.json``::
                 "Dimensions": {
                     "Key": "REGION",
                     "Values": [
-                        "us-east-1"
+                        "us-west-2"
                     ]
                 }
             }
@@ -42,7 +42,7 @@ Output::
                 "Groups": [
                     {
                         "Attributes": {
-                            "region": "us-east-1"
+                            "region": "us-west-2"
                         },
                         "Coverage": {
                             "CoverageHours": {

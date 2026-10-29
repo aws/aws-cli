@@ -9,15 +9,15 @@ Output::
     { 
         "PackagingGroups": [ 
             { 
-                "Arn": "arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-groups/Dash_widevine", 
+                "Arn": "arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-groups/Dash_widevine", 
                 "Id": "Dash_widevine" 
             }, 
             { 
-                "Arn": "arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-groups/Encrypted_HLS", 
+                "Arn": "arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-groups/Encrypted_HLS", 
                 "Id": "Encrypted_HLS"  
             }, 
             { 
-                "Arn": "arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-groups/Packaging_group_1", 
+                "Arn": "arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-groups/Packaging_group_1", 
                 "Id": "Packaging_group_1" 
             } 
         ] 

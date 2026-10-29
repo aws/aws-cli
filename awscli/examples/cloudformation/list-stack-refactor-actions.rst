@@ -3,7 +3,7 @@
 The following ``list-stack-refactor-actions`` example lists actions for the stack refactor operation with the specified stack refactor ID. ::
 
     aws cloudformation list-stack-refactor-actions \
-        --stack-refactor-id 9c384f70-4e07-4ed7-a65d-fee5eb430841
+        --stack-refactor-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -19,11 +19,11 @@ Output::
                 "UntagResources": [],
                 "ResourceMapping": {
                     "Source": {
-                        "StackName": "arn:aws:cloudformation:us-east-1:123456789012:stack/Stack1/3e6a1ff0-94b1-11f0-aa6f-0a88d2e03acf",
+                        "StackName": "arn:aws:cloudformation:us-west-2:123456789012:stack/Stack1/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                         "LogicalResourceId": "MyLambdaRole"
                     },
                     "Destination": {
-                        "StackName": "arn:aws:cloudformation:us-east-1:123456789012:stack/Stack2/5da91650-94b1-11f0-81cf-0a23500e151b",
+                        "StackName": "arn:aws:cloudformation:us-west-2:123456789012:stack/Stack2/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                         "LogicalResourceId": "MyLambdaRole"
                     }
                 }
@@ -45,7 +45,7 @@ Output::
                     },
                     {
                         "Key": "aws:cloudformation:stack-id",
-                        "Value": "arn:aws:cloudformation:us-east-1:123456789012:stack/Stack2/5da91650-94b1-11f0-81cf-0a23500e151b"
+                        "Value": "arn:aws:cloudformation:us-west-2:123456789012:stack/Stack2/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
                     }
                 ],
                 "UntagResources": [
@@ -55,11 +55,11 @@ Output::
                 ],
                 "ResourceMapping": {
                     "Source": {
-                        "StackName": "arn:aws:cloudformation:us-east-1:123456789012:stack/Stack1/3e6a1ff0-94b1-11f0-aa6f-0a88d2e03acf",
+                        "StackName": "arn:aws:cloudformation:us-west-2:123456789012:stack/Stack1/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                         "LogicalResourceId": "MyFunction"
                     },
                     "Destination": {
-                        "StackName": "arn:aws:cloudformation:us-east-1:123456789012:stack/Stack2/5da91650-94b1-11f0-81cf-0a23500e151b",
+                        "StackName": "arn:aws:cloudformation:us-west-2:123456789012:stack/Stack2/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                         "LogicalResourceId": "MyFunction"
                     }
                 }

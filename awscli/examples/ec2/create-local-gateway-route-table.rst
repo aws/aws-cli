@@ -11,10 +11,10 @@ Output::
     {
         "LocalGatewayRouteTable": {
             "LocalGatewayRouteTableId": "lgw-rtb-abcdefg1234567890",
-            "LocalGatewayRouteTableArn": "arn:aws:ec2:us-west-2:111122223333:local-gateway-route-table/lgw-rtb-abcdefg1234567890",
+            "LocalGatewayRouteTableArn": "arn:aws:ec2:us-west-2:123456789012:local-gateway-route-table/lgw-rtb-abcdefg1234567890",
             "LocalGatewayId": "lgw-1a2b3c4d5e6f7g8h9",
-            "OutpostArn": "arn:aws:outposts:us-west-2:111122223333:outpost/op-021345abcdef67890",
-            "OwnerId": "111122223333",
+            "OutpostArn": "arn:aws:outposts:us-west-2:123456789012:outpost/op-021345abcdef67890",
+            "OwnerId": "123456789012",
             "State": "pending",
             "Tags": [],
             "Mode": "direct-vpc-routing"

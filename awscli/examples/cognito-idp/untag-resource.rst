@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes ``administrator`` and ``department`` tags from the requested user pool. ::
 
     aws cognito-idp untag-resource \
-        --resource-arn arn:aws:cognito-idp:us-west-2:767671399759:userpool/us-west-2_l5cxwdm2K \
+        --resource-arn arn:aws:cognito-idp:us-west-2:123456789012:userpool/us-west-2_l5cxwdm2K \
         --tag-keys administrator tenant
 
 This command produces no output.

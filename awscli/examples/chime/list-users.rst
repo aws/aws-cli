@@ -3,15 +3,15 @@
 The following ``list-users`` example lists the users for the specified Amazon Chime account. ::
 
     aws chime list-users \
-        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "Users": [
             {
-                "UserId": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
-                "AccountId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "PrimaryEmail": "mariag@example.com",
                 "DisplayName": "Maria Garcia",
                 "LicenseType": "Pro",
@@ -23,8 +23,8 @@ Output::
                 }
             },
             {
-                "UserId": "a1b2c3d4-5678-90ab-cdef-33333EXAMPLE",
-                "AccountId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "PrimaryEmail": "richardr@example.com",
                 "DisplayName": "Richard Roe",
                 "LicenseType": "Pro",
@@ -36,8 +36,8 @@ Output::
                 }
             },
             {
-                "UserId": "a1b2c3d4-5678-90ab-cdef-44444EXAMPLE",
-                "AccountId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+                "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "PrimaryEmail": "saanvis@example.com",
                 "DisplayName": "Saanvi Sarkar",
                 "LicenseType": "Basic",
@@ -49,8 +49,8 @@ Output::
                 }
             },
             {
-                "UserId": "a1b2c3d4-5678-90ab-cdef-55555EXAMPLE",
-                "AccountId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
+                "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "PrimaryEmail": "wxiulan@example.com",
                 "DisplayName": "Wang Xiulan",
                 "LicenseType": "Basic",

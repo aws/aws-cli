@@ -3,7 +3,7 @@
 The following ``describe-association`` example describes the association for the specified association ID. ::
 
     aws ssm describe-association \
-        --association-id "8dfe3659-4309-493a-8755-0123456789ab"
+        --association-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
@@ -52,7 +52,7 @@ Output::
                     "Enabled"
                 ]
             },
-            "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Targets": [
                 {
                     "Key": "InstanceIds",
@@ -96,7 +96,7 @@ Output::
                     "Pending": 1
                 }
             },
-            "AssociationId": "d8617c07-2079-4c18-9847-1234567890ab",
+            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "DocumentVersion": "$DEFAULT",
             "LastUpdateAssociationDate": 1487876122.564,
             "Date": 1487876122.564,

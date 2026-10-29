@@ -99,13 +99,13 @@ Output::
 
 The following ``sync`` example syncs files between two buckets in different regions. ::
 
-    aws s3 sync s3://my-us-west-2-bucket s3://my-us-east-1-bucket \
+    aws s3 sync s3://amzn-s3-demo-bucket1 s3://amzn-s3-demo-bucket2 \
         --source-region us-west-2 \
         --region us-east-1
 
 Output::
 
-    download: s3://my-us-west-2-bucket/test1.txt to s3://my-us-east-1-bucket/test1.txt
+    download: s3://amzn-s3-demo-bucket1/test1.txt to s3://amzn-s3-demo-bucket2/test1.txt
 
 **Example 8: To sync to an S3 access point**
 

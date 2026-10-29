@@ -13,7 +13,7 @@ Output::
                 "LAKEFORMATION"
             ],
             "createdAt": "2024-04-19T15:19:44.421803+00:00",
-            "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "resourceShareName": "LakeFormation-V3-TKJGBHCKTZ-123456789012",
             "sources": [
                 {
@@ -49,9 +49,9 @@ Output::
                 {
                     "customLogSource": {
                         "attributes": {
-                            "crawlerArn": "arn:aws:glue:eu-west-2:123456789012:crawler/E1WG1ZNPRXT0D4",
-                            "databaseArn": "arn:aws:glue:eu-west-2:123456789012:database/E1WG1ZNPRXT0D4",
-                            "tableArn": "arn:aws:glue:eu-west-2:123456789012:table/E1WG1ZNPRXT0D4"
+                            "crawlerArn": "arn:aws:glue:us-west-2:123456789012:crawler/E1WG1ZNPRXT0D4",
+                            "databaseArn": "arn:aws:glue:us-west-2:123456789012:database/E1WG1ZNPRXT0D4",
+                            "tableArn": "arn:aws:glue:us-west-2:123456789012:table/E1WG1ZNPRXT0D4"
                         },
                         "provider": {
                             "location": "amzn-s3-demo-bucket--usw2-az1--x-s3",
@@ -61,7 +61,7 @@ Output::
                     }
                 }
             ],
-            "subscriberArn": "arn:aws:securitylake:eu-west-2:123456789012:subscriber/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "subscriberArn": "arn:aws:securitylake:us-west-2:123456789012:subscriber/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "subscriberId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "subscriberIdentity": {
                 "externalId": "123456789012",

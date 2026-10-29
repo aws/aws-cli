@@ -3,7 +3,7 @@
 The following ``tag-resource`` example assigns values for the Department and Area tags to the specified hub resource. ::
 
     aws securityhub tag-resource \
-        --resource-arn "arn:aws:securityhub:us-west-1:123456789012:hub/default" \
+        --resource-arn "arn:aws:securityhub:us-west-2:123456789012:hub/default" \
         --tags '{"Department":"Operations", "Area":"USMidwest"}'
 
 This command produces no output.

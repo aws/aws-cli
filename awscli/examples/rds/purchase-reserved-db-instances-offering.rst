@@ -12,7 +12,7 @@ Output::
     {
         "ReservedDBInstancesOfferings": [
             {
-                "ReservedDBInstancesOfferingId": "8ba30be1-b9ec-447f-8f23-6114e3f4c7b4",
+                "ReservedDBInstancesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "DBInstanceClass": "db.t2.micro",
                 "Duration": 31536000,
                 "FixedPrice": 51.0,
@@ -38,14 +38,14 @@ For more information, see `Reserved DB Instances for Amazon RDS <https://docs.aw
 The following ``purchase-reserved-db-instances-offering`` example shows how to buy the reserved DB instance offering from the previous example. ::
 
     aws rds purchase-reserved-db-instances-offering \
-        --reserved-db-instances-offering-id 8ba30be1-b9ec-447f-8f23-6114e3f4c7b4
+        --reserved-db-instances-offering-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "ReservedDBInstance": {
             "ReservedDBInstanceId": "ri-2020-06-29-16-54-57-670",
-            "ReservedDBInstancesOfferingId": "8ba30be1-b9ec-447f-8f23-6114e3f4c7b4",
+            "ReservedDBInstancesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DBInstanceClass": "db.t2.micro",
             "StartTime": "2020-06-29T16:54:57.670Z",
             "Duration": 31536000,

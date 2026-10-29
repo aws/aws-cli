@@ -3,13 +3,13 @@
 The following ``get-service-level-objective`` example returns information about one SLO created in the account. ::
 
     aws application-signals get-service-level-objective \
-        --id "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName" 
+        --id "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName" 
 
 Output::
 
     {
         "Slo": {
-            "Arn": "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName",
+            "Arn": "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName",
             "Name": "SLOName",
             "Description": "Description of your SLO",
             "CreatedTime": "2024-12-24T22:19:18.624000+05:30",

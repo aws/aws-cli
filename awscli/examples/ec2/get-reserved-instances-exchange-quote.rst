@@ -3,7 +3,7 @@
 The following ``get-reserved-instances-exchange-quote`` example gets the exchange information for the specified Convertible Reserved Instances. ::
 
     aws ec2 get-reserved-instances-exchange-quote \
-        --reserved-instance-ids 7b8750c3-397e-4da4-bbcb-a45ebexample \
+        --reserved-instance-ids a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --target-configurations OfferingId=6fea5434-b379-434c-b07b-a7abexample
 
 Output::
@@ -12,7 +12,7 @@ Output::
         "CurrencyCode": "USD",
         "ReservedInstanceValueSet": [
             {
-                "ReservedInstanceId": "7b8750c3-397e-4da4-bbcb-a45ebexample",
+                "ReservedInstanceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ReservationValue": {
                     "RemainingUpfrontValue": "0.000000",
                     "HourlyPrice": "0.027800",

@@ -4,17 +4,17 @@ The following ``update-maintenance-window-task`` example updates the service rol
 
     aws ssm update-maintenance-window-task \
         --window-id "mw-0c5ed765acEXAMPLE" \
-        --window-task-id "23d3809e-9fbe-4ddf-b41a-b49d7EXAMPLE" \
-        --service-role-arn "arn:aws:iam::111222333444:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM"
+        --window-task-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --service-role-arn "arn:aws:iam::123456789012:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM"
 
 Output::
 
     {
-        "ServiceRoleArn": "arn:aws:iam::111222333444:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM",
+        "ServiceRoleArn": "arn:aws:iam::123456789012:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM",
         "MaxErrors": "1",
         "TaskArn": "AWS-UpdateEC2Config",
         "MaxConcurrency": "1",
-        "WindowTaskId": "23d3809e-9fbe-4ddf-b41a-b49d7EXAMPLE",
+        "WindowTaskId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "TaskParameters": {},
         "Priority": 1,
         "TaskInvocationParameters": {
@@ -32,7 +32,7 @@ Output::
         "Targets": [
             {
                 "Values": [
-                    "57e8344e-fe64-4023-8191-6bf05EXAMPLE"
+                    "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                 ],
                 "Key": "WindowTargetIds"
             }

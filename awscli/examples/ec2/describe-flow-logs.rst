@@ -30,7 +30,7 @@ Output::
                 "ResourceId": "vpc-00112233445566778",
                 "TrafficType": "ACCEPT",
                 "LogDestinationType": "s3",
-                "LogDestination": "arn:aws:s3:::my-flow-log-bucket/custom",
+                "LogDestination": "arn:aws:s3:::amzn-s3-demo-bucket/custom",
                 "LogFormat": "${version} ${vpc-id} ${subnet-id} ${instance-id} ${interface-id} ${account-id} ${type} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${pkt-srcaddr} ${pkt-dstaddr} ${protocol} ${bytes} ${packets} ${start} ${end} ${action} ${tcp-flags} ${log-status}"
             }
         ]

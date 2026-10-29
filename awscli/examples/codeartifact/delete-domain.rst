@@ -10,11 +10,11 @@ Output::
     {
         "domain": {
             "name": "test-domain",
-            "owner": "417498243647",
-            "arn": "arn:aws:codeartifact:us-west-2:417498243647:domain/test-domain",
+            "owner": "123456789012",
+            "arn": "arn:aws:codeartifact:us-west-2:123456789012:domain/test-domain",
             "status": "Deleted",
             "createdTime": "2020-10-20T13:16:48.559000-04:00",
-            "encryptionKey": "arn:aws:kms:us-west-2:417498243647:key/c9fe2447-0795-4fda-afbe-8464574ae162",
+            "encryptionKey": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "repositoryCount": 0,
             "assetSizeBytes": 0
         }

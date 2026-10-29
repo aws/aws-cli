@@ -8,12 +8,12 @@ Output::
 
     {
         "Organization": {
-            "MasterAccountArn": "arn:aws:organizations::111111111111:account/o-exampleorgid/111111111111",
+            "MasterAccountArn": "arn:aws:organizations::123456789012:account/o-exampleorgid/123456789012",
             "MasterAccountEmail": "bill@example.com",
-            "MasterAccountId": "111111111111",
+            "MasterAccountId": "123456789012",
             "Id": "o-exampleorgid",
             "FeatureSet": "ALL",
-            "Arn": "arn:aws:organizations::111111111111:organization/o-exampleorgid",
+            "Arn": "arn:aws:organizations::123456789012:organization/o-exampleorgid",
             "AvailablePolicyTypes": [
                 {
                     "Status": "ENABLED",

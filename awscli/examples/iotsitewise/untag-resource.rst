@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes an owner tag from a wind turbine asset. ::
 
     aws iotsitewise untag-resource \
-        --resource-arn arn:aws:iotsitewise:us-west-2:123456789012:asset/a1b2c3d4-5678-90ab-cdef-33333EXAMPLE \
+        --resource-arn arn:aws:iotsitewise:us-west-2:123456789012:asset/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333 \
         --tag-keys Owner
 
 This command produces no output.

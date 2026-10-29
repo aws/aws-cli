@@ -18,7 +18,7 @@ Output::
                 },
                 "CreationTime": "2019-10-03T21:48:48.048Z",
                 "Status": "Complete",
-                "JobId": "93735294-df46-44d5-8638-6356f335324e",
+                "JobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Priority": 42
             },
             {
@@ -30,7 +30,7 @@ Output::
                 },
                 "CreationTime": "2019-10-03T21:46:07.084Z",
                 "Status": "Failed",
-                "JobId": "3f3c7619-02d3-4779-97f6-1d98dd313108",
+                "JobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Priority": 42
             }
         ]

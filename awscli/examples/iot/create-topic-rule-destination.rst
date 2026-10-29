@@ -9,7 +9,7 @@ Output::
 
     {
         "topicRuleDestination": {
-            "arn": "arn:aws:iot:us-west-2:123456789012:ruledestination/http/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "arn": "arn:aws:iot:us-west-2:123456789012:ruledestination/http/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "IN_PROGRESS",
             "statusReason": "Awaiting confirmation. Confirmation message sent on 2020-07-09T22:47:54.154Z; no response received from the endpoint.",
             "httpUrlProperties": {

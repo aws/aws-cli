@@ -3,12 +3,12 @@
 The following ``describe-identity-pool`` example describes the specified identity pool. ::
 
     aws cognito-identity describe-identity-pool \
-        --identity-pool-id "us-west-2:11111111-1111-1111-1111-111111111111"
+        --identity-pool-id "us-west-2:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
-        "IdentityPoolId": "us-west-2:11111111-1111-1111-1111-111111111111",
+        "IdentityPoolId": "us-west-2:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "IdentityPoolName": "MyIdentityPool",
         "AllowUnauthenticatedIdentities": false,
         "CognitoIdentityProviders": [

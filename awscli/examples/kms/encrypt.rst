@@ -3,7 +3,7 @@
 The following ``encrypt`` example demonstrates the recommended way to encrypt data with the AWS CLI. ::
 
     aws kms encrypt \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --plaintext fileb://ExamplePlaintextFile \
         --output text \
         --query CiphertextBlob | base64 --decode > ExampleEncryptedFile
@@ -37,7 +37,7 @@ This command produces no output.
 The following ``encrypt`` example is the same as the previous one, except that it uses the ``certutil`` tool instead of ``base64``. This procedure requires two commands, as shown in the following example. ::
 
     aws kms encrypt ^
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab ^
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 ^
         --plaintext fileb://ExamplePlaintextFile ^
         --output text ^
         --query CiphertextBlob > C:\Temp\ExampleEncryptedFile.base64
@@ -55,7 +55,7 @@ The ciphertext is saved to ``C:\Temp\ExampleEncryptedFile``.
 The following ``encrypt`` example shows how to encrypt plaintext with an asymmetric KMS key. The ``--encryption-algorithm`` parameter is required. As in all ``encrypt`` CLI commands, the ``plaintext`` parameter must be base64-encoded, or you must use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file. ::
 
     aws kms encrypt \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --encryption-algorithm RSAES_OAEP_SHA_256 \
         --plaintext fileb://ExamplePlaintextFile \
         --output text \

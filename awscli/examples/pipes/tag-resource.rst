@@ -3,7 +3,7 @@
 The following ``tag-resource`` example tags a Pipe named ``Demo_Pipe``. ::
 
     aws pipes tag-resource \
-        --resource-arn arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe \
+        --resource-arn arn:aws:pipes:us-west-2:123456789012:pipe/Demo_Pipe \
         --tags stack=Production
 
 This command produces no output.

@@ -8,7 +8,7 @@ The following ``delete-namespace`` example deletes a namespace. ::
 Output::
 
     {
-        "OperationId": "abcd1234-5678-90ab-cdef-xmpl12345678"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the operation succeeded, you can run ``get-operation``. For more information, see `get-operation <https://docs.aws.amazon.com/cli/latest/reference/servicediscovery/get-operation.html>`__ .
@@ -25,7 +25,7 @@ The following ``delete-namespace`` example deletes a namespace using its ARN. ::
 Output::
 
     {
-        "OperationId": "abcd1234-5678-90ab-cdef-xmpl12345678"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Deleting an AWS Cloud Map namespace <https://docs.aws.amazon.com/cloud-map/latest/dg/deleting-namespaces.html>`__ in the *AWS Cloud Map Developer Guide*.

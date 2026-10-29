@@ -8,7 +8,7 @@ The following ``detect-stack-drift`` example initiates drift detection for the s
 Output::
 
     {
-        "StackDriftDetectionId": "1a229160-e4d9-xmpl-ab67-0a4f93df83d4"
+        "StackDriftDetectionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 You can then use this ID with the ``describe-stack-resource-drifts`` command to describe drifted resources.

@@ -12,7 +12,7 @@ Output::
         "Quota": {
             "ServiceCode": "ec2",
             "ServiceName": "Amazon Elastic Compute Cloud (Amazon EC2)",
-            "QuotaArn": "arn:aws:servicequotas:us-east-2::ec2/L-1216C47A",
+            "QuotaArn": "arn:aws:servicequotas:us-west-2::ec2/L-1216C47A",
             "QuotaCode": "L-1216C47A",
             "QuotaName": "Running On-Demand Standard (A, C, D, H, I, M, R, T, Z) instances",
             "Value": 5.0,

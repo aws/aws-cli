@@ -18,7 +18,7 @@ The following ``create-user-pool-client`` example creates a new user pool client
         --allowed-o-auth-flows code implicit \
         --allowed-o-auth-scopes openid profile aws.cognito.signin.user.admin solar-system-data/asteroids.add \
         --allowed-o-auth-flows-user-pool-client \
-        --analytics-configuration ApplicationArn=arn:aws:mobiletargeting:us-west-2:767671399759:apps/thisisanexamplepinpointapplicationid,UserDataShared=TRUE \
+        --analytics-configuration ApplicationArn=arn:aws:mobiletargeting:us-west-2:123456789012:apps/thisisanexamplepinpointapplicationid,UserDataShared=TRUE \
         --prevent-user-existence-errors ENABLED \
         --enable-token-revocation \
         --enable-propagate-additional-user-context-data \

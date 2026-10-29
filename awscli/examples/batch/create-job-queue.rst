@@ -22,7 +22,7 @@ Contents of ``LowPriority.json``::
 Output::
 
     {
-        "jobQueueArn": "arn:aws:batch:us-east-1:012345678910:job-queue/LowPriority",
+        "jobQueueArn": "arn:aws:batch:us-west-2:123456789012:job-queue/LowPriority",
         "jobQueueName": "LowPriority"
     }
 
@@ -56,7 +56,7 @@ Contents of ``HighPriority.json``::
 Output::
 
     {
-        "jobQueueArn": "arn:aws:batch:us-east-1:012345678910:job-queue/HighPriority",
+        "jobQueueArn": "arn:aws:batch:us-west-2:123456789012:job-queue/HighPriority",
         "jobQueueName": "HighPriority"
     }
 

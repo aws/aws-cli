@@ -5,7 +5,7 @@ The following ``admin-update-auth-event-feedback`` example sets the feedback val
     aws cognito-idp admin-update-auth-event-feedback \
         --user-pool-id us-west-2_aaaaaaaaa \
         --username diego@example.com \
-        --event-id c2c2cf89-c0d3-482d-aba6-99d78a5b0bfe \
+        --event-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --feedback-value Valid
 
 This command produces no output.

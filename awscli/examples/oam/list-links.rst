@@ -8,13 +8,13 @@ Output::
 
     {
         "Items": [{
-            "Arn": "arn:aws:oam:us-east-2:123456789111:link/a1b2c3d4-5678-90ab-cdef-example11111",
-            "Id": "a1b2c3d4-5678-90ab-cdef-example11111",
+            "Arn": "arn:aws:oam:us-west-2:123456789111:link/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "Label": "sourceAccount",
             "ResourceTypes": [
                 "AWS::CloudWatch::Metric"
             ],
-            "SinkArn": "arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345"
+            "SinkArn": "arn:aws:oam:us-west-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }]
     }
 

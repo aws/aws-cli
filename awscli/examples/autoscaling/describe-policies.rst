@@ -12,7 +12,7 @@ Output::
             {
                 "AutoScalingGroupName": "my-asg",
                 "PolicyName": "alb1000-target-tracking-scaling-policy",
-                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:3065d9c8-9969-4bec-bb6a-3fbe5550fde6:autoScalingGroupName/my-asg:policyName/alb1000-target-tracking-scaling-policy",
+                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/my-asg:policyName/alb1000-target-tracking-scaling-policy",
                 "PolicyType": "TargetTrackingScaling",
                 "StepAdjustments": [],
                 "Alarms": [
@@ -38,7 +38,7 @@ Output::
             {
                 "AutoScalingGroupName": "my-asg",
                 "PolicyName": "cpu40-target-tracking-scaling-policy",
-                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:5fd26f71-39d4-4690-82a9-b8515c45cdde:autoScalingGroupName/my-asg:policyName/cpu40-target-tracking-scaling-policy",
+                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:a1b2c3d4-5678-90ab-cdef-EXAMPLE22222:autoScalingGroupName/my-asg:policyName/cpu40-target-tracking-scaling-policy",
                 "PolicyType": "TargetTrackingScaling",
                 "StepAdjustments": [],
                 "Alarms": [
@@ -80,7 +80,7 @@ Output::
             {
                 "AutoScalingGroupName": "my-asg",
                 "PolicyName": "cpu40-target-tracking-scaling-policy",
-                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:5fd26f71-39d4-4690-82a9-b8515c45cdde:autoScalingGroupName/my-asg:policyName/cpu40-target-tracking-scaling-policy",
+                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:a1b2c3d4-5678-90ab-cdef-EXAMPLE22222:autoScalingGroupName/my-asg:policyName/cpu40-target-tracking-scaling-policy",
                 "PolicyType": "TargetTrackingScaling",
                 "StepAdjustments": [],
                 "Alarms": [
@@ -122,7 +122,7 @@ Output::
             {
                 "AutoScalingGroupName": "my-asg",
                 "PolicyName": "alb1000-target-tracking-scaling-policy",
-                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:3065d9c8-9969-4bec-bb6a-3fbe5550fde6:autoScalingGroupName/my-asg:policyName/alb1000-target-tracking-scaling-policy",
+                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/my-asg:policyName/alb1000-target-tracking-scaling-policy",
                 "PolicyType": "TargetTrackingScaling",
                 "StepAdjustments": [],
                 "Alarms": [

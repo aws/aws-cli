@@ -66,7 +66,7 @@ Output::
             "ARN":"arn:aws:wafv2:us-west-2:123456789012:regional/rulegroup/TestRuleGroup/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Description":"",
             "Name":"TestRuleGroup",
-            "LockToken":"7b3bcec2-374e-4c5a-b2b9-563bf47249f0",
+            "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }

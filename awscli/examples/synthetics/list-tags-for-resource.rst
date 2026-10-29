@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example returns the tags associated with a canary named ``demo_canary``. ::
 
     aws synthetics list-tags-for-resource \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:canary:demo_canary
 
 Output::
 
@@ -18,7 +18,7 @@ Output::
 The following ``list-tags-for-resource`` example returns the tags associated with a group named ``demo_group``. ::
 
     aws  synthetics list-tags-for-resource \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:group:example123
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:group:example123
 
 Output::
 

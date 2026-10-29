@@ -11,7 +11,7 @@ Output::
     {
         "AutomationRulesMetadata": [
             {
-                "RuleArn": "arn:aws:securityhub:us-east-1:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "RuleArn": "arn:aws:securityhub:us-west-2:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "RuleStatus": "ENABLED",
                 "RuleOrder": 1,
                 "RuleName": "Suppress informational findings",
@@ -22,7 +22,7 @@ Output::
                 "CreatedBy": "arn:aws:iam::123456789012:role/Admin"
             },
             {
-                "RuleArn": "arn:aws:securityhub:us-east-1:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "RuleArn": "arn:aws:securityhub:us-west-2:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "RuleStatus": "ENABLED",
                 "RuleOrder": 1,
                 "RuleName": "sample rule",
@@ -33,7 +33,7 @@ Output::
                 "CreatedBy": "arn:aws:iam::123456789012:role/Admin"
             },
             {
-                "RuleArn": "arn:aws:securityhub:us-east-1:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                "RuleArn": "arn:aws:securityhub:us-west-2:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "RuleStatus": "ENABLED",
                 "RuleOrder": 1,
                 "RuleName": "sample rule",

@@ -50,8 +50,8 @@ Output::
             "Expiration": "2023-12-20T02:06:07+00:00"
         },
         "FederatedUser": {
-            "FederatedUserId": "111122223333:Bob",
-            "Arn": "arn:aws:sts::111122223333:federated-user/Bob"
+            "FederatedUserId": "123456789012:Bob",
+            "Arn": "arn:aws:sts::123456789012:federated-user/Bob"
         },
         "PackedPolicySize": 36
     }

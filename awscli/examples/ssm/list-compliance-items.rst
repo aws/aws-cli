@@ -14,7 +14,7 @@ Output::
                 "ComplianceType": "Association",
                 "ResourceType": "ManagedInstance",
                 "ResourceId": "i-1234567890abcdef0",
-                "Id": "8dfe3659-4309-493a-8755-0123456789ab",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Title": "",
                 "Status": "COMPLIANT",
                 "Severity": "UNSPECIFIED",
@@ -30,7 +30,7 @@ Output::
                 "ComplianceType": "Association",
                 "ResourceType": "ManagedInstance",
                 "ResourceId": "i-1234567890abcdef0",
-                "Id": "e4c2ed6d-516f-41aa-aa2a-0123456789ab",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Title": "",
                 "Status": "COMPLIANT",
                 "Severity": "UNSPECIFIED",
@@ -55,7 +55,7 @@ The following ``list-compliance-items`` example lists all compliance items for t
     aws ssm list-compliance-items \
         --resource-ids "i-1234567890abcdef0" \
         --resource-types "ManagedInstance" \
-        --filters "Key=ComplianceType,Values=Association,Type=EQUAL" "Key=Id,Values=e4c2ed6d-516f-41aa-aa2a-0123456789ab,Type=EQUAL"
+        --filters "Key=ComplianceType,Values=Association,Type=EQUAL" "Key=Id,Values=a1b2c3d4-5678-90ab-cdef-EXAMPLE22222,Type=EQUAL"
 
 Output::
 
@@ -65,7 +65,7 @@ Output::
                 "ComplianceType": "Association",
                 "ResourceType": "ManagedInstance",
                 "ResourceId": "i-1234567890abcdef0",
-                "Id": "e4c2ed6d-516f-41aa-aa2a-0123456789ab",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Title": "",
                 "Status": "COMPLIANT",
                 "Severity": "UNSPECIFIED",
@@ -99,7 +99,7 @@ Output::
                 "ComplianceType": "Association",
                 "ResourceType": "ManagedInstance",
                 "ResourceId": "i-1234567890abcdef0",
-                "Id": "e4c2ed6d-516f-41aa-aa2a-0123456789ab",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Title": "",
                 "Status": "COMPLIANT",
                 "Severity": "UNSPECIFIED",

@@ -12,7 +12,7 @@ Output::
             "NodeType": "dw.hs1.xlarge",
             "Endpoint": {
                 "Port": 5439,
-                "Address": "mycluster.coqoarplqhsn.us-east-1.redshift.amazonaws.com"
+                "Address": "mycluster.coqoarplqhsn.us-west-2.redshift.amazonaws.com"
             },
             "ClusterVersion": "1.0",
             "PubliclyAccessible": true,
@@ -31,7 +31,7 @@ Output::
             ],
             "AllowVersionUpgrade": true,
             "VpcSecurityGroups": [],
-            "AvailabilityZone": "us-east-1a",
+            "AvailabilityZone": "us-west-2a",
             "ClusterCreateTime": "2013-01-22T21:59:29.559Z",
             "PreferredMaintenanceWindow": "sun:23:15-mon:03:15",
             "AutomatedSnapshotRetentionPeriod": 1,

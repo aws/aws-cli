@@ -11,12 +11,12 @@ Output::
             {
                 "Name": "myLoRaWANDevice", 
                 "DestinationName": "IoTWirelessDestination", 
-                "Id": "1ffd32c8-8130-4194-96df-622f072a315f", 
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
                 "Type": "LoRaWAN", 
                 "LoRaWAN": {
                     "DevEui": "ac12efc654d23fc2"
                 }, 
-                "Arn": "arn:aws:iotwireless:us-east-1:123456789012:WirelessDevice/1ffd32c8-8130-4194-96df-622f072a315f"
+                "Arn": "arn:aws:iotwireless:us-west-2:123456789012:WirelessDevice/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ]
     }

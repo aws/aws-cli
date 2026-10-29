@@ -12,13 +12,13 @@ Output::
             "creationDate": 1429203623.625,
             "defaultBranch": "main",
             "repositoryName": "MyDemoRepo",
-            "cloneUrlSsh": "ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/v1/repos/MyDemoRepo",
+            "cloneUrlSsh": "ssh://git-codecommit.us-west-2.amazonaws.com/v1/repos/v1/repos/MyDemoRepo",
             "lastModifiedDate": 1430783812.0869999,
             "repositoryDescription": "My demonstration repository",
-            "cloneUrlHttp": "https://codecommit.us-east-1.amazonaws.com/v1/repos/MyDemoRepo",
-            "repositoryId": "f7579e13-b83e-4027-aaef-650c0EXAMPLE",
-            "Arn": "arn:aws:codecommit:us-east-1:111111111111:MyDemoRepo",
-            "accountId": "111111111111"
+            "cloneUrlHttp": "https://codecommit.us-west-2.amazonaws.com/v1/repos/MyDemoRepo",
+            "repositoryId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "Arn": "arn:aws:codecommit:us-west-2:123456789012:MyDemoRepo",
+            "accountId": "123456789012"
         }
     }
 

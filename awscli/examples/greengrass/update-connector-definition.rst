@@ -3,7 +3,7 @@
 The following ``update-connector-definition`` example updates the name for the specified connector definition. If you want to update the details for the connector, use the ``create-connector-definition-version`` command to create a new version. ::
 
     aws greengrass update-connector-definition \
-        --connector-definition-id "55d0052b-0d7d-44d6-b56f-21867215e118" \
+        --connector-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --name "GreengrassConnectors2019"
 
 This command produces no output.

@@ -14,7 +14,7 @@ Output::
         "FunctionVersion": "1",
         "Name": "LIVE",
         "AliasArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:LIVE",
-        "RevisionId": "873282ed-4cd3-4dc8-a069-d0c647e470c6",
+        "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Description": "alias for live version of function"
     }
 

@@ -19,7 +19,7 @@ Output::
                 }
             },
             {
-                "Endpoint": "database-5instance-1.ab0cd1efghij.us-east-1.rds.amazonaws.com",
+                "Endpoint": "database-5instance-1.ab0cd1efghij.us-west-2.rds.amazonaws.com",
                 "RdsResourceId": "database-5",
                 "Port": 3306,
                 "Type": "RDS_INSTANCE",

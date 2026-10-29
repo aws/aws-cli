@@ -8,10 +8,10 @@ The following ``get-repository-triggers`` example displays details about trigger
 Output::
 
     {
-        "configurationId": "f7579e13-b83e-4027-aaef-650c0EXAMPLE",
+        "configurationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "triggers": [
             {
-                "destinationArn": "arn:aws:sns:us-east-1:111111111111:MyCodeCommitTopic",
+                "destinationArn": "arn:aws:sns:us-west-2:123456789012:MyCodeCommitTopic",
                 "branches": [
                     "main",
                     "preprod"
@@ -23,7 +23,7 @@ Output::
                 ]
             },
             {
-                "destinationArn": "arn:aws:lambda:us-east-1:111111111111:function:MyCodeCommitPythonFunction",
+                "destinationArn": "arn:aws:lambda:us-west-2:123456789012:function:MyCodeCommitPythonFunction",
                 "branches": [],
                 "name": "MySecondTrigger",
                 "customData": "EXAMPLE",

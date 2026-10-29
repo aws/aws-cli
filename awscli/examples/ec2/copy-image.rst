@@ -6,7 +6,7 @@ The following ``copy-image`` example copies the specified AMI from the ``us-west
         --region us-east-1 \
         --name ami-name \
         --source-region us-west-2 \
-        --source-image-id ami-066877671789bd71b \
+        --source-image-id ami-0abcdef1234567890 \
         --description "This is my copied image."
 
 Output::
@@ -24,7 +24,7 @@ The following ``copy-image`` example copies the specified AMI from the ``us-west
     aws ec2 copy-image \
         --source-region us-west-2 \
         --name ami-name \
-        --source-image-id ami-066877671789bd71b \
+        --source-image-id ami-0abcdef1234567890 \
         --encrypted \
         --kms-key-id alias/my-kms-key
 
@@ -44,7 +44,7 @@ The following ``copy-image`` example uses the ``--copy-image-tags`` parameter to
         --region us-east-1 \
         --name ami-name \
         --source-region us-west-2 \
-        --source-image-id ami-066877671789bd71b \
+        --source-image-id ami-0abcdef1234567890 \
         --description "This is my copied image." \
         --copy-image-tags
 

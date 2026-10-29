@@ -8,23 +8,23 @@ The following ``pause-service`` example pauses an App Runner service. ::
 Contents of ``input.json``::
 
     {
-        "ServiceArn": "arn:aws:apprunner:us-east-1:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa"
+        "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa"
     }
 
 Output::
 
     {
-        "OperationId": "17fe9f55-7e91-4097-b243-fcabbb69a4cf",
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Service": {
             "CreatedAt": "2020-11-20T19:05:25Z",
             "UpdatedAt": "2020-11-23T12:41:37Z",
-            "ServiceArn": "arn:aws:apprunner:us-east-1:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
+            "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
             "ServiceId": "8fe1e10304f84fd2b0df550fe98a71fa",
             "ServiceName": "python-app",
-            "ServiceUrl": "psbqam834h.us-east-1.awsapprunner.com",
+            "ServiceUrl": "psbqam834h.us-west-2.awsapprunner.com",
             "SourceConfiguration": {
                 "AuthenticationConfiguration": {
-                    "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
+                    "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection/e7656250f67242d7819feade6800f59e"
                 },
                 "AutoDeploymentsEnabled": true,
                 "CodeRepository": {

@@ -3,7 +3,7 @@
 The following ``list-recommendations`` example lists the recommendations for a completed code review. This code review has one recommendations. ::
 
     aws codeguru-reviewer list-recommendations \
-        --code-review-arn arn:aws:codeguru-reviewer:us-west-2:544120495673:code-review:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
+        --code-review-arn arn:aws:codeguru-reviewer:us-west-2:123456789012:code-review:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

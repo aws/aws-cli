@@ -8,7 +8,7 @@ The following ``delete-resource-gateway`` example deletes the specified resource
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourcegateway/rgw-0bba03f3d56060135",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourcegateway/rgw-0bba03f3d56060135",
         "id": "rgw-0bba03f3d56060135",
         "name": "my-resource-gateway",
         "status": "DELETE_IN_PROGRESS"

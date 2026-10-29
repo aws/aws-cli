@@ -3,7 +3,7 @@
 The following ``set-endpoint-attributes`` example disables the specified platform application endpoint. ::
 
     aws sns set-endpoint-attributes \
-        --endpoint-arn arn:aws:sns:us-west-2:123456789012:endpoint/GCM/MyApplication/12345678-abcd-9012-efgh-345678901234 \
+        --endpoint-arn arn:aws:sns:us-west-2:123456789012:endpoint/GCM/MyApplication/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --attributes Enabled=false
 
 This command produces no output.

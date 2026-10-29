@@ -16,7 +16,7 @@ Output::
         "bandwidth": "1Gbps",
         "location": "EqDC2",
         "connectionName": "Con2ForLag",
-        "region": "us-east-1"
+        "region": "us-west-2"
     }
 
 For more information, see `Associate a connection with a LAG at a Direct Connect endpoint <https://docs.aws.amazon.com/directconnect/latest/UserGuide/associate-connection-with-lag.html>`__ in the *AWS Direct Connect User Guide*.

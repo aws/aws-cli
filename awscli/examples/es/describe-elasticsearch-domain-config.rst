@@ -54,7 +54,7 @@ Output::
                 }
             },
             "AccessPolicies": {
-                "Options": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:*\",\"Resource\":\"arn:aws:es:us-east-1:123456789012:domain/cli-example/*\"}]}",
+                "Options": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:*\",\"Resource\":\"arn:aws:es:us-west-2:123456789012:domain/cli-example/*\"}]}",
                 "Status": {
                     "CreationDate": 1589395034.946,
                     "UpdateDate": 1589395827.325,
@@ -100,7 +100,7 @@ Output::
             "EncryptionAtRestOptions": {
                 "Options": {
                     "Enabled": true,
-                    "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/1a2a3a4a-1a2a-1a2a-1a2a-1a2a3a4a5a6a"
+                    "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 },
                 "Status": {
                     "CreationDate": 1589395034.946,

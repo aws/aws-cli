@@ -9,7 +9,7 @@ Output::
     {
         "operations": [
             {
-                "id": "e5700e8a-daf2-4b49-bc01-3EXAMPLE910a",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Instance-1",
                 "resourceType": "Instance",
                 "createdAt": 1571679872.404,
@@ -23,7 +23,7 @@ Output::
                 "statusChangedAt": 1571679890.304
             },
             {
-                "id": "701a3339-930e-4914-a9f9-7EXAMPLE68d7",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "WordPress-1",
                 "resourceType": "Instance",
                 "createdAt": 1571678786.072,
@@ -38,7 +38,7 @@ Output::
                 "statusChangedAt": 1571679086.399
             },
             {
-                "id": "e2973046-43f8-4252-a4b4-9EXAMPLE69ce",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "LoadBalancer-1",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1571678786.071,

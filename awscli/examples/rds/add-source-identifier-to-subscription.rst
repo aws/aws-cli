@@ -12,7 +12,7 @@ Output::
         "EventSubscription": {
             "SubscriptionCreationTime": "Tue Jul 31 23:22:01 UTC 2018",
             "CustSubscriptionId": "my-instance-events",
-            "EventSubscriptionArn": "arn:aws:rds:us-east-1:123456789012:es:my-instance-events",
+            "EventSubscriptionArn": "arn:aws:rds:us-west-2:123456789012:es:my-instance-events",
             "Enabled": false,
             "Status": "modifying",
             "EventCategoriesList": [
@@ -20,7 +20,7 @@ Output::
                 "recovery"
             ],
             "CustomerAwsId": "123456789012",
-            "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:interesting-events",
+            "SnsTopicArn": "arn:aws:sns:us-west-2:123456789012:interesting-events",
             "SourceType": "db-instance",
             "SourceIdsList": [
                 "test-instance",

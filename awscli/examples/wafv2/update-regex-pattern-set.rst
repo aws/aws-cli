@@ -7,12 +7,12 @@ The following ``update-regex-pattern-set`` example updates the settings for the 
         --scope REGIONAL \
         --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --regular-expression-list RegexString="^.+$"  \
-        --lock-token ed207e9c-82e9-4a77-aadd-81e6173ab7eb
+        --lock-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
-        "NextLockToken": "12ebc73e-fa68-417d-a9b8-2bdd761a4fa5"
+        "NextLockToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
     }
 
 For more information, see `IP Sets and Regex Pattern Sets <https://docs.aws.amazon.com/waf/latest/developerguide/waf-referenced-set-managing.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

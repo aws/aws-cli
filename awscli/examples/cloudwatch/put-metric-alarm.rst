@@ -13,7 +13,7 @@ The following ``put-metric-alarm`` example sends an Amazon Simple Notification S
         --comparison-operator GreaterThanThreshold \
         --dimensions "Name=InstanceId,Value=i-12345678" \
         --evaluation-periods 2 \
-        --alarm-actions arn:aws:sns:us-east-1:111122223333:MyTopic \
+        --alarm-actions arn:aws:sns:us-west-2:123456789012:MyTopic \
         --unit Percent
 
 This command produces no output.

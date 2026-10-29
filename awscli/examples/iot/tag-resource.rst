@@ -4,7 +4,7 @@ The following ``tag-resource`` example applies the tag with a key ``Assembly`` a
 
     aws iot tag-resource \
         --tags Key=Assembly,Value="Fact1NW" \
-        --resource-arn "arn:aws:iot:us-west-2:094249569039:thinggroup/LightBulbs"
+        --resource-arn "arn:aws:iot:us-west-2:123456789012:thinggroup/LightBulbs"
 
 This command produces no output.
 

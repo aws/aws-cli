@@ -11,10 +11,10 @@ Output::
         "LocalGatewayRouteTableVpcAssociation": {
             "LocalGatewayRouteTableVpcAssociationId": "lgw-vpc-assoc-abcd1234wxyz56789",
             "LocalGatewayRouteTableId": "lgw-rtb-abcdefg1234567890",
-            "LocalGatewayRouteTableArn": "arn:aws:ec2:us-west-2:555555555555:local-gateway-route-table/lgw-rtb-abcdefg1234567890",
+            "LocalGatewayRouteTableArn": "arn:aws:ec2:us-west-2:123456789012:local-gateway-route-table/lgw-rtb-abcdefg1234567890",
             "LocalGatewayId": "lgw-exampleid01234567",
             "VpcId": "vpc-example0123456789",
-            "OwnerId": "555555555555",
+            "OwnerId": "123456789012",
             "State": "disassociating"
         }
     }

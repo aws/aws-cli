@@ -3,7 +3,7 @@
 The following ``describe-cluster`` example describes an Amazon MSK cluster. ::
 
     aws kafka describe-cluster \
-        --cluster-arn arn:aws:kafka:us-east-1:123456789012:cluster/demo-cluster-1/6357e0b2-0e6a-4b86-a0b4-70df934c2e31-5
+        --cluster-arn arn:aws:kafka:us-west-2:123456789012:cluster/demo-cluster-1/6357e0b2-0e6a-4b86-a0b4-70df934c2e31-5
 
 Output::
 
@@ -25,7 +25,7 @@ Output::
                     }
                 }
             },
-            "ClusterArn": "arn:aws:kafka:us-east-1:123456789012:cluster/demo-cluster-1/6357e0b2-0e6a-4b86-a0b4-70df934c2e31-5",
+            "ClusterArn": "arn:aws:kafka:us-west-2:123456789012:cluster/demo-cluster-1/6357e0b2-0e6a-4b86-a0b4-70df934c2e31-5",
             "ClusterName": "demo-cluster-1",
             "CreationTime": "2020-07-09T02:31:36.223000+00:00",
             "CurrentBrokerSoftwareInfo": {
@@ -34,7 +34,7 @@ Output::
             "CurrentVersion": "K3AEGXETSR30VB",
             "EncryptionInfo": {
                 "EncryptionAtRest": {
-                    "DataVolumeKMSKeyId": "arn:aws:kms:us-east-1:123456789012:key/a7ca56d5-0768-4b64-a670-339a9fbef81c"
+                    "DataVolumeKMSKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 },
                 "EncryptionInTransit": {
                     "ClientBroker": "TLS_PLAINTEXT",
@@ -55,7 +55,7 @@ Output::
             "NumberOfBrokerNodes": 2,
             "State": "ACTIVE",
             "Tags": {},
-            "ZookeeperConnectString": "z-2.demo-cluster-1.xuy0sb.c5.kafka.us-east-1.amazonaws.com:2181,z-1.demo-cluster-1.xuy0sb.c5.kafka.us-east-1.amazonaws.com:2181,z-3.demo-cluster-1.xuy0sb.c5.kafka.us-east-1.amazonaws.com:2181"
+            "ZookeeperConnectString": "z-2.demo-cluster-1.xuy0sb.c5.kafka.us-west-2.amazonaws.com:2181,z-1.demo-cluster-1.xuy0sb.c5.kafka.us-west-2.amazonaws.com:2181,z-3.demo-cluster-1.xuy0sb.c5.kafka.us-west-2.amazonaws.com:2181"
         }
     }
 

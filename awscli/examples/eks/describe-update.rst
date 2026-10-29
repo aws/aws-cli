@@ -4,13 +4,13 @@ The following ``describe-update`` example describes an update for a cluster name
 
     aws eks describe-update \
         --name my-eks-cluster \
-        --update-id 10bddb13-a71b-425a-b0a6-71cd03e59161
+        --update-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "update": {
-            "id": "10bddb13-a71b-425a-b0a6-71cd03e59161",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "Successful",
             "type": "EndpointAccessUpdate",
             "params": [
@@ -36,13 +36,13 @@ The following ``describe-update`` example describes an update for a cluster name
 
     aws eks describe-update \
         --name my-eks-cluster \
-        --update-id e4994991-4c0f-475a-a040-427e6da52966
+        --update-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "update": {
-            "id": "e4994991-4c0f-475a-a040-427e6da52966",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "status": "Successful",
             "type": "AssociateEncryptionConfig",
             "params": [
@@ -64,13 +64,13 @@ The following ``describe-update`` example describes an update for a cluster name
 
     aws eks describe-update \
         --name my-eks-cluster \
-        --update-id b5f0ba18-9a87-4450-b5a0-825e6e84496f
+        --update-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 Output::
 
     {
         "update": {
-            "id": "b5f0ba18-9a87-4450-b5a0-825e6e84496f",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
             "status": "Successful",
             "type": "VersionUpdate",
             "params": [

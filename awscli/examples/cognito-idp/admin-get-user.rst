@@ -9,14 +9,14 @@ The following ``admin-get-user`` example gets information about username jane@ex
 Output::
 
     {
-        "Username": "4320de44-2322-4620-999b-5e2e1c8df013",
+        "Username": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Enabled": true,
         "UserStatus": "FORCE_CHANGE_PASSWORD",
         "UserCreateDate": 1548108509.537,
         "UserAttributes": [
             {
                 "Name": "sub",
-                "Value": "4320de44-2322-4620-999b-5e2e1c8df013"
+                "Value": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             },
             {
                 "Name": "email_verified",

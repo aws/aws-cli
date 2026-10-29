@@ -9,7 +9,7 @@ The ``expiration-model`` parameter indicates that the key material automatically
 Before running this command, replace the example key ID with a valid key ID or key ARN from your AWS account. ::
 
     aws kms import-key-material \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --encrypted-key-material fileb://EncryptedKeyMaterial.bin \
         --import-token fileb://ImportToken.bin \
         --expiration-model KEY_MATERIAL_EXPIRES \
@@ -18,7 +18,7 @@ Before running this command, replace the example key ID with a valid key ID or k
 Output::
 
     {
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "KeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6"
     }
 

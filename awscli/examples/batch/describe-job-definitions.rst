@@ -11,7 +11,7 @@ Output::
         "jobDefinitions": [
             {
                 "status": "ACTIVE",
-                "jobDefinitionArn": "arn:aws:batch:us-east-1:012345678910:job-definition/sleep60:1",
+                "jobDefinitionArn": "arn:aws:batch:us-west-2:123456789012:job-definition/sleep60:1",
                 "containerProperties": {
                     "mountPoints": [],
                     "image": "busybox",

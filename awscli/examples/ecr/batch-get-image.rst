@@ -12,7 +12,7 @@ Output::
     {
         "images": [
             {
-                "registryId": "012345678910",
+                "registryId": "123456789111",
                 "repositoryName": "cluster-autoscaler",
                 "imageId": {
                     "imageDigest": "sha256:4a1c6567c38904384ebc64e35b7eeddd8451110c299e3368d2210066487d97e5",
@@ -46,7 +46,7 @@ Output::
                 "imageManifest": "manifestExample1"
             },
             {
-                "registryId": "567890121234",
+                "registryId": "123456789222",
                 "repositoryName": "MyRepository",
                 "imageId": {
                     "imageDigest": "sha256:123456789012",

@@ -5,13 +5,13 @@ The following ``start-suite-run`` example lists the available widgets in your AW
     aws iotdeviceadvisor start-suite-run \
         --suite-definition-id qqcsmtyyjabl \
         --suite-definition-version v1 \
-        --suite-run-configuration '{"primaryDevice":{"thingArn": "arn:aws:iot:us-east-1:123456789012:thing/MyIotThing","certificateArn":"arn:aws:iot:us-east-1:123456789012:cert/certFile"}}'
+        --suite-run-configuration '{"primaryDevice":{"thingArn": "arn:aws:iot:us-west-2:123456789012:thing/MyIotThing","certificateArn":"arn:aws:iot:us-west-2:123456789012:cert/certFile"}}'
 
 Output::
 
     {
         "suiteRunId": "pwmucgw7lt9s",
-        "suiteRunArn": "arn:aws:iotdeviceadvisor:us-east-1:123456789012:suiterun/qqcsmtyyjabl/pwmucgw7lk9s",
+        "suiteRunArn": "arn:aws:iotdeviceadvisor:us-west-2:123456789012:suiterun/qqcsmtyyjabl/pwmucgw7lk9s",
         "createdAt": "2022-12-02T15:43:05.581000-05:00"
     }
 

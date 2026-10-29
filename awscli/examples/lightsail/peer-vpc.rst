@@ -9,7 +9,7 @@ Output::
 
     {
         "operation": {
-            "id": "787e846a-54ac-497f-bce2-9EXAMPLE5d91",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "resourceName": "vpc-0EXAMPLEa5261efb3",
             "resourceType": "PeeredVpc",
             "createdAt": 1571694233.104,

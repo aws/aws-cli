@@ -3,7 +3,7 @@
 The following ``update-user-pool-domain`` example configures the branding version and certificate for the custom domain the requested user pool. ::
 
     aws cognito-idp update-user-pool-domain \
-        --user-pool-id ca-central-1_EXAMPLE \
+        --user-pool-id us-west-2_EXAMPLE \
         --domain auth.example.com \
         --managed-login-version 2 \
         --custom-domain-config CertificateArn=arn:aws:acm:us-east-1:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111

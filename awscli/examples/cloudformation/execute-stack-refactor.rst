@@ -3,7 +3,7 @@
 The following ``execute-stack-refactor`` example completes the stack refactor operation with the specified stack refactor ID. ::
 
     aws cloudformation execute-stack-refactor \
-        --stack-refactor-id 9c384f70-4e07-4ed7-a65d-fee5eb430841
+        --stack-refactor-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

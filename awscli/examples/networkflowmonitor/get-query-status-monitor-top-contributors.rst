@@ -4,7 +4,7 @@ The following ``get-query-status-monitor-top-contributors`` example displays the
 
     aws networkflowmonitor get-query-status-monitor-top-contributors \
         --monitor-name Demo \
-        --query-id 5398eabd-bc40-3f5f-aba3-bcb639d3c7ca
+        --query-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

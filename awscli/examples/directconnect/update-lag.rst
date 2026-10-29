@@ -23,7 +23,7 @@ Output::
                 "bandwidth": "1Gbps",
                 "location": "CSVA1",
                 "connectionName": "Requested Connection 2 for Lag dxlag-ffjhj9lx",
-                "region": "us-east-1"
+                "region": "us-west-2"
             },
             {
                 "ownerAccount": "123456789012",
@@ -33,13 +33,13 @@ Output::
                 "bandwidth": "1Gbps",
                 "location": "CSVA1",
                 "connectionName": "Requested Connection 1 for Lag dxlag-ffjhj9lx",
-                "region": "us-east-1"
+                "region": "us-west-2"
             }
         ],
         "lagId": "dxlag-ffjhj9lx",
         "minimumLinks": 0,
         "connectionsBandwidth": "1Gbps",
-        "region": "us-east-1",
+        "region": "us-west-2",
         "location": "CSVA1"
     }
 

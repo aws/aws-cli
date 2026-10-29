@@ -17,7 +17,7 @@ Output::
                 "DateCreated": "2015-07-23T01:32:26.079Z",
                 "DateUpdated": "2015-07-23T01:32:26.079Z",
                 "SourceBundle": {
-                    "S3Bucket": "elasticbeanstalk-us-west-2-015321684451",
+                    "S3Bucket": "elasticbeanstalk-us-west-2-123456789012",
                     "S3Key": "my-app/5026-stage-150723_224258.war"
                 }
             },
@@ -28,7 +28,7 @@ Output::
                 "DateCreated": "2015-07-23T22:26:10.816Z",
                 "DateUpdated": "2015-07-23T22:26:10.816Z",
                 "SourceBundle": {
-                    "S3Bucket": "elasticbeanstalk-us-west-2-015321684451",
+                    "S3Bucket": "elasticbeanstalk-us-west-2-123456789012",
                     "S3Key": "my-app/5026-stage-150723_222618.war"
                 }
             }

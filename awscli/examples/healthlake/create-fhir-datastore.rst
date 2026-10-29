@@ -9,8 +9,8 @@ The following ``create-fhir-datastore`` example demonstrates how to create a new
 Output::
 
     {
-        "DatastoreEndpoint": "https://healthlake.us-east-1.amazonaws.com/datastore/(Data store ID)/r4/",
-        "DatastoreArn": "arn:aws:healthlake:us-east-1:(AWS Account ID):datastore/(Data store ID)",
+        "DatastoreEndpoint": "https://healthlake.us-west-2.amazonaws.com/datastore/(Data store ID)/r4/",
+        "DatastoreArn": "arn:aws:healthlake:us-west-2:(AWS Account ID):datastore/(Data store ID)",
         "DatastoreStatus": "CREATING",
         "DatastoreId": "(Data store ID)"
     }
@@ -23,7 +23,7 @@ The following ``create-fhir-datastore`` example demonstrates how to create a new
         --datastore-name "your-data-store-name" \
         --datastore-type-version R4 \
         --preload-data-config PreloadDataType="SYNTHEA" \
-        --sse-configuration '{ "KmsEncryptionConfig": {  "CmkType": "CUSTOMER_MANAGED_KMS_KEY", "KmsKeyId": "arn:aws:kms:us-east-1:your-account-id:key/your-key-id" } }' \
+        --sse-configuration '{ "KmsEncryptionConfig": {  "CmkType": "CUSTOMER_MANAGED_KMS_KEY", "KmsKeyId": "arn:aws:kms:us-west-2:your-account-id:key/your-key-id" } }' \
         --identity-provider-configuration  file://identity_provider_configuration.json
 
 Contents of ``identity_provider_configuration.json``::
@@ -38,8 +38,8 @@ Contents of ``identity_provider_configuration.json``::
 Output::
 
     {
-        "DatastoreEndpoint": "https://healthlake.us-east-1.amazonaws.com/datastore/(Data store ID)/r4/",
-        "DatastoreArn": "arn:aws:healthlake:us-east-1:(AWS Account ID):datastore/(Data store ID)",
+        "DatastoreEndpoint": "https://healthlake.us-west-2.amazonaws.com/datastore/(Data store ID)/r4/",
+        "DatastoreArn": "arn:aws:healthlake:us-west-2:(AWS Account ID):datastore/(Data store ID)",
         "DatastoreStatus": "CREATING",
         "DatastoreId": "(Data store ID)"
     }

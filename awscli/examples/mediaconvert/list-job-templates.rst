@@ -152,7 +152,7 @@ Output::
 The following ``list-job-templates`` example lists all system job templates. ::
 
     aws mediaconvert list-job-templates \
-        --endpoint-url https://abcd1234.mediaconvert.us-east-1.amazonaws.com \
+        --endpoint-url https://abcd1234.mediaconvert.us-west-2.amazonaws.com \
         --list-by SYSTEM
 
 Output::
@@ -161,7 +161,7 @@ Output::
         "JobTemplates": [
             {
                 "CreatedAt": 1568321779,
-                "Arn": "arn:aws:mediaconvert:us-east-1:123456789012:jobTemplates/System-Generic_Mp4_Hev1_Avc_Aac_Sdr_Qvbr",
+                "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:jobTemplates/System-Generic_Mp4_Hev1_Avc_Aac_Sdr_Qvbr",
                 "Name": "System-Generic_Mp4_Hev1_Avc_Aac_Sdr_Qvbr",
                 "Description": "GENERIC, MP4, AVC + HEV1(HEVC,SDR), AAC, SDR, QVBR",
                 "Category": "GENERIC",

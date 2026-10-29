@@ -3,7 +3,7 @@
 The following ``get-members`` example retrieves information about the specified member accounts. ::
 
     aws securityhub get-members \
-        --account-ids "444455556666" "777788889999"
+        --account-ids "123456789111" "123456789222"
 
 Output::
 

@@ -12,7 +12,7 @@ Output::
         "things": [
             {
                 "thingName": "MyLightBulb",
-                "thingId": "40da2e73-c6af-406e-b415-15acae538797",
+                "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "thingTypeName": "LightBulb",
                 "thingGroupNames": [
                     "LightBulbs",
@@ -28,7 +28,7 @@ Output::
             },
             {
                 "thingName": "ThirdBulb",
-                "thingId": "615c8455-33d5-40e8-95fd-3ee8b24490af",
+                "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "thingTypeName": "LightBulb",
                 "attributes": {
                     "model": "123",
@@ -40,7 +40,7 @@ Output::
             },
             {
                 "thingName": "MyOtherLightBulb",
-                "thingId": "6dae0d3f-40c1-476a-80c4-1ed24ba6aa11",
+                "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "thingTypeName": "LightBulb",
                 "attributes": {
                     "model": "123",

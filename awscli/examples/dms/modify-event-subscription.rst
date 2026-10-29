@@ -12,7 +12,7 @@ Output::
         "EventSubscription": {
             "CustomerAwsId": "123456789012",
             "CustSubscriptionId": "my-dms-events",
-            "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:my-sns-topic",
+            "SnsTopicArn": "arn:aws:sns:us-west-2:123456789012:my-sns-topic",
             "Status": "modifying",
             "SubscriptionCreationTime": "2020-05-29 17:04:40.262",
             "SourceType": "replication-task",

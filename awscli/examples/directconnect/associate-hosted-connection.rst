@@ -18,7 +18,7 @@ Output::
         "bandwidth": "500Mbps",
         "location": "TIVIT",
         "connectionName": "mydcinterconnect",
-        "region": "sa-east-1"
+        "region": "us-west-2"
     }
 
 For more information, see `Direct Connect link aggregation groups (LAGs) <https://docs.aws.amazon.com/directconnect/latest/UserGuide/lags.html>`__ in the *AWS Direct Connect User Guide*.

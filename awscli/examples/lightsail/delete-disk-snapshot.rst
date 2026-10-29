@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "d1e5766d-b81e-4595-ad5d-02afbccfcd5d",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "DiskSnapshot-1",
                 "resourceType": "DiskSnapshot",
                 "createdAt": 1569873552.79,

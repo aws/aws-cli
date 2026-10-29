@@ -3,12 +3,12 @@
 The following ``delete-event-source-mapping`` example deletes the mapping between an SQS queue and the ``my-function`` Lambda function. ::
 
     aws lambda delete-event-source-mapping \
-        --uuid  a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+        --uuid  a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "UUID": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+        "UUID": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "StateTransitionReason": "USER_INITIATED",
         "LastModified": 1569285870.271,
         "BatchSize": 5,

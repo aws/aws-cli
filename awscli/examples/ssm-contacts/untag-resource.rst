@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the group1 tag from the specified contact. ::
 
     aws ssm-contacts untag-resource \
-        --resource-arn "arn:aws:ssm-contacts:us-east-1:111122223333:contact/akuam" \
+        --resource-arn "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam" \
         --tag-keys "group1"
 
 This command produces no output.

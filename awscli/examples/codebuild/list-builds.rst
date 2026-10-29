@@ -12,9 +12,9 @@ Output::
     {
         "nextToken": "4AEA6u7J...The full token has been omitted for brevity...MzY2OA==",
         "ids": [
-            "codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE",
-            "codebuild-demo-project:84a7f3d1-d40e-4956-b4cf-7a9d4EXAMPLE",
-            "codebuild-demo-project:931d0b72-bf6f-4040-a472-5c707EXAMPLE"
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
         ]
     }
 
@@ -28,9 +28,9 @@ Output::
 
     {
         "ids": [       
-            "codebuild-demo-project:49015049-21cf-4b50-9708-df115EXAMPLE",
-            "codebuild-demo-project:543e7206-68a3-46d6-a4da-759abEXAMPLE",
-            "codebuild-demo-project:c282f198-4582-4b38-bdc0-26f96EXAMPLE"
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE66666"
         ]
     }
 

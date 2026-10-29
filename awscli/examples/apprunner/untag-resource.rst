@@ -8,7 +8,7 @@ The following ``untag-resource`` example removes two tags from an App Runner ser
 Contents of ``input.json``::
 
     {
-        "ResourceArn": "arn:aws:apprunner:us-east-1:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
+        "ResourceArn": "arn:aws:apprunner:us-west-2:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
         "TagKeys": [
             "Department", 
             "CustomerId"

@@ -12,25 +12,25 @@ Output::
     {
         "Operations": [
             {
-                "OperationId": "aab9822f-1da0-4bf3-8a15-fd4e0example",
+                "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Status": "SUCCESSFUL",
                 "Type": "DOMAIN_LOCK",
                 "SubmittedDate": 1455321739.986
             },
             {
-                "OperationId": "c24379ed-76be-42f8-bdad-9379bexample",
+                "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Status": "SUCCESSFUL",
                 "Type": "UPDATE_NAMESERVER",
                 "SubmittedDate": 1468960475.109
             },
             {
-                "OperationId": "f47e1297-ef9e-4c2b-ae1e-a5fcbexample",
+                "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "Status": "SUCCESSFUL",
                 "Type": "RENEW_DOMAIN",
                 "SubmittedDate": 1473561835.943
             },
             {
-                "OperationId": "75584f23-b15f-459e-aed7-dc6f5example",
+                "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "Status": "SUCCESSFUL",
                 "Type": "UPDATE_DOMAIN_CONTACT",
                 "SubmittedDate": 1547501003.41

@@ -24,7 +24,7 @@ Output::
                 "NotifyConfiguration": {
                     "From": "diego@example.com",
                     "ReplyTo": "diego@example.com",
-                    "SourceArn": "arn:aws:ses:us-east-1:111111111111:identity/diego@example.com",
+                    "SourceArn": "arn:aws:ses:us-west-2:123456789012:identity/diego@example.com",
                     "BlockEmail": {
                         "Subject": "Blocked sign-in attempt",
                         "HtmlBody": "<!DOCTYPE html>\n<html>\n<head>\n\t<title>HTML email context</title>\n\t<meta charset=\"utf-8\">\n</head>\n<body>\n<pre>We blocked an unrecognized sign-in to your account with this information:\n<ul>\n<li>Time: {login-time}</li>\n<li>Device: {device-name}</li>\n<li>Location: {city}, {country}</li>\n</ul>\nIf this sign-in was not by you, you should change your password and notify us by clicking on <a href={one-click-link-invalid}>this link</a>\nIf this sign-in was by you, you can follow <a href={one-click-link-valid}>this link</a> to let us know</pre>\n</body>\n</html>",

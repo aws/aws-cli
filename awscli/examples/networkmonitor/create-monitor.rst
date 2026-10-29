@@ -9,7 +9,7 @@ The following ``create-monitor`` example creates a monitor named ``Example_Netwo
 Output::
 
     {
-        "monitorArn": "arn:aws:networkmonitor:region:111122223333:monitor/Example_NetworkMonitor",
+        "monitorArn": "arn:aws:networkmonitor:region:123456789012:monitor/Example_NetworkMonitor",
         "monitorName": "Example_NetworkMonitor",
         "state": "INACTIVE",
         "aggregationPeriod": 30,
@@ -24,13 +24,13 @@ The following ``create-monitor`` example creates a monitor named ``Example_Netwo
 
     aws networkmonitor create-monitor \
         --monitor-name Example_NetworkMonitor \
-        --probes sourceArn=arn:aws:ec2:region:111122223333:subnet/subnet-id,destination=10.0.0.100,destinationPort=80,protocol=TCP,packetSize=56,probeTags={Name=Probe1} \
+        --probes sourceArn=arn:aws:ec2:region:123456789012:subnet/subnet-id,destination=10.0.0.100,destinationPort=80,protocol=TCP,packetSize=56,probeTags={Name=Probe1} \
         --tags Monitor=Monitor1
 
 Output::
 
     {
-        "monitorArn": "arn:aws:networkmonitor:region111122223333:monitor/Example_NetworkMonitor",
+        "monitorArn": "arn:aws:networkmonitor:region123456789012:monitor/Example_NetworkMonitor",
         "monitorName": "Example_NetworkMonitor",
         "state": "PENDING",
         "aggregationPeriod": 60,
@@ -48,13 +48,13 @@ The following ``create-monitor`` example creates a monitor named ``Example_Netwo
     aws networkmonitor create-monitor \
         --monitor-name Example_NetworkMonitor \
         --aggregation-period 30 \
-        --probes sourceArn=arn:aws:ec2:region111122223333:subnet/subnet-id,destination=10.0.0.100,protocol=ICMP,packetSize=56,probeTags={Name=Probe1} \
+        --probes sourceArn=arn:aws:ec2:region123456789012:subnet/subnet-id,destination=10.0.0.100,protocol=ICMP,packetSize=56,probeTags={Name=Probe1} \
         --tags Monitor=Monitor1
 
 Output::
 
     {
-        "monitorArn": "arn:aws:networkmonitor:region:111122223333:monitor/Example_NetworkMonitor",
+        "monitorArn": "arn:aws:networkmonitor:region:123456789012:monitor/Example_NetworkMonitor",
         "monitorName": "Example_NetworkMonitor",
         "state": "PENDING",
         "aggregationPeriod": 30,

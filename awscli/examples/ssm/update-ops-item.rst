@@ -7,7 +7,7 @@ The following ``update-ops-item`` example updates the description, priority, and
         --description "Primary OpsItem for failover event 2020-01-01-fh398yf" \
         --priority 2 \
         --category "Security" \
-        --notifications "Arn=arn:aws:sns:us-east-2:111222333444:my-us-east-2-topic"
+        --notifications "Arn=arn:aws:sns:us-west-2:123456789012:my-us-east-2-topic"
 
 This command produces no output.
 

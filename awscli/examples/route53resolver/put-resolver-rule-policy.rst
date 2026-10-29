@@ -5,18 +5,18 @@ The following ``put-resolver-rule-policy`` example specifies a Resolver rule tha
 **Note** You must run this command using credentials from the same account that created the rule. ::
 
     aws route53resolver put-resolver-rule-policy \
-        --arn "arn:aws:route53resolver:us-east-1:111122223333:resolver-rule/rslvr-rr-42b60677c0example" \
+        --arn "arn:aws:route53resolver:us-west-2:123456789111:resolver-rule/rslvr-rr-42b60677c0example" \
         --resolver-rule-policy "{\"Version\": \"2012-10-17\", \
             \"Statement\": [ { \
             \"Effect\" : \"Allow\", \
-            \"Principal\" : {\"AWS\" : \"444455556666\" }, \
+            \"Principal\" : {\"AWS\" : \"123456789222\" }, \
             \"Action\" : [ \
                 \"route53resolver:GetResolverRule\", \
                 \"route53resolver:AssociateResolverRule\", \
                 \"route53resolver:DisassociateResolverRule\", \
                 \"route53resolver:ListResolverRules\", \
                 \"route53resolver:ListResolverRuleAssociations\" ], \
-            \"Resource\" : [ \"arn:aws:route53resolver:us-east-1:111122223333:resolver-rule/rslvr-rr-42b60677c0example\" ] } ] }"
+            \"Resource\" : [ \"arn:aws:route53resolver:us-west-2:123456789111:resolver-rule/rslvr-rr-42b60677c0example\" ] } ] }"
 
 Output::
 

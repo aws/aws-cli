@@ -9,7 +9,7 @@ Output::
 
     {
         "comment": { 
-            "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+            "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
             "clientRequestToken": "123Example",
             "commentId": "ff30b348EXAMPLEb9aa670f",
             "content": "Whoops - I meant to add this comment to the line, but I don't see how to delete it.",

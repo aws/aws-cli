@@ -16,7 +16,7 @@ Contents of ``update-managed-login-branding.json``::
                 "Extension": "SVG"
             }
         ],
-        "ManagedLoginBrandingId": "63f30090-6b1f-4278-b885-2bbb81f8e545",
+        "ManagedLoginBrandingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Settings": {
             "categories": {
                 "auth": {
@@ -470,7 +470,7 @@ Contents of ``update-managed-login-branding.json``::
             }
         },
         "UseCognitoProvidedValues": false,
-        "UserPoolId": "ca-central-1_EXAMPLE"
+        "UserPoolId": "us-west-2_EXAMPLE"
     }
 
 Output::
@@ -941,7 +941,7 @@ Output::
                 }
             },
             "UseCognitoProvidedValues": false,
-            "UserPoolId": "ca-central-1_EXAMPLE"
+            "UserPoolId": "us-west-2_EXAMPLE"
         }
     }
 

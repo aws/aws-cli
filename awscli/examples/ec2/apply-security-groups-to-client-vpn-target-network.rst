@@ -5,7 +5,7 @@ The following ``apply-security-groups-to-client-vpn-target-network`` example app
     aws ec2 apply-security-groups-to-client-vpn-target-network \
         --security-group-ids sg-01f6e627a89f4db32 \
         --vpc-id vpc-0e2110c2f324332e0 \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde
+        --client-vpn-endpoint-id cvpn-endpoint-123456789012abcde
 
 Output::
 

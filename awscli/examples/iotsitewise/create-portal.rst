@@ -11,9 +11,9 @@ The following ``create-portal`` example creates a web portal for a wind farm com
 Output::
 
     {
-        "portalId": "a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE",
-        "portalArn": "arn:aws:iotsitewise:us-west-2:123456789012:portal/a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE",
-        "portalStartUrl": "https://a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE.app.iotsitewise.aws",
+        "portalId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "portalArn": "arn:aws:iotsitewise:us-west-2:123456789012:portal/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "portalStartUrl": "https://a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.app.iotsitewise.aws",
         "portalStatus": {
             "state": "CREATING"
         },

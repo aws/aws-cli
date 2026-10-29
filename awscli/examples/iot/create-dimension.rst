@@ -11,7 +11,7 @@ Output::
 
     {
         "name": "TopicFilterForAuthMessages",
-        "arn": "arn:aws:iot:eu-west-2:123456789012:dimension/TopicFilterForAuthMessages"
+        "arn": "arn:aws:iot:us-west-2:123456789012:dimension/TopicFilterForAuthMessages"
     }
 
 For more information, see `Detect Commands <https://docs.aws.amazon.com/iot/latest/developerguide/DetectCommands.html>`__ in the *AWS IoT Developer Guide*.

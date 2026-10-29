@@ -37,14 +37,14 @@ Contents of ``C4OnDemand.json``::
                 "Name": "Batch Instance - C4OnDemand"
             }
         },
-        "serviceRole": "arn:aws:iam::012345678910:role/AWSBatchServiceRole"
+        "serviceRole": "arn:aws:iam::123456789012:role/AWSBatchServiceRole"
     }
 
 Output::
 
     {
         "computeEnvironmentName": "C4OnDemand",
-        "computeEnvironmentArn": "arn:aws:batch:us-east-1:012345678910:compute-environment/C4OnDemand"
+        "computeEnvironmentArn": "arn:aws:batch:us-west-2:123456789012:compute-environment/C4OnDemand"
     }
 
 For more information, see `Create a compute environment <https://docs.aws.amazon.com/batch/latest/userguide/create-compute-environment.html>`__ in the *AWS Batch User Guide*.
@@ -64,7 +64,7 @@ Contents of ``M4Spot.json``::
         "state": "ENABLED",
         "computeResources": {
             "type": "SPOT",
-            "spotIamFleetRole": "arn:aws:iam::012345678910:role/aws-ec2-spot-fleet-role",
+            "spotIamFleetRole": "arn:aws:iam::123456789012:role/aws-ec2-spot-fleet-role",
             "minvCpus": 0,
             "maxvCpus": 128,
             "desiredvCpus": 4,
@@ -86,14 +86,14 @@ Contents of ``M4Spot.json``::
                 "Name": "Batch Instance - M4Spot"
             }
         },
-        "serviceRole": "arn:aws:iam::012345678910:role/AWSBatchServiceRole"
+        "serviceRole": "arn:aws:iam::123456789012:role/AWSBatchServiceRole"
     }
 
 Output::
 
     {
         "computeEnvironmentName": "M4Spot",
-        "computeEnvironmentArn": "arn:aws:batch:us-east-1:012345678910:compute-environment/M4Spot"
+        "computeEnvironmentArn": "arn:aws:batch:us-west-2:123456789012:compute-environment/M4Spot"
     }
 
 For more information, see `Create a compute environment <https://docs.aws.amazon.com/batch/latest/userguide/create-compute-environment.html>`__ in the *AWS Batch User Guide*.

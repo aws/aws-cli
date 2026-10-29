@@ -9,26 +9,26 @@ Output::
     {
         "Engagements": [
             {
-                "EngagementArn": "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/akuam/91792571-0b53-4821-9f73-d25d13d9e529",
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+                "EngagementArn": "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
                 "Sender": "cli",
                 "StartTime": "2021-05-18T20:37:50.300000+00:00"
             },
             {
-                "EngagementArn": "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/akuam/78a29753-3674-4ac5-9f83-0468563567f0",
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+                "EngagementArn": "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
                 "Sender": "cli",
                 "StartTime": "2021-05-18T18:40:26.666000+00:00"
             },
             {
-                "EngagementArn": "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/example_escalation/69e40ce1-8dbb-4d57-8962-5fbe7fc53356",
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation",
+                "EngagementArn": "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/example_escalation/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/example_escalation",
                 "Sender": "cli",
                 "StartTime": "2021-05-18T18:25:41.151000+00:00"
             },
             {
-                "EngagementArn": "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/akuam/607ced0e-e8fa-4ea7-8958-a237b8803f8f",
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+                "EngagementArn": "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
                 "Sender": "cli",
                 "StartTime": "2021-05-18T18:20:58.093000+00:00"
             }

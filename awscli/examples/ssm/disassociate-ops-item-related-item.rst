@@ -4,7 +4,7 @@ The following ``disassociate-ops-item-related-item`` example deletes the associa
 
     aws ssm disassociate-ops-item-related-item \
         --ops-item-id "oi-f99f2EXAMPLE" \
-        --association-id "e2036148-cccb-490e-ac2a-390e5EXAMPLE"
+        --association-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
 

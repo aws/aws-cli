@@ -3,7 +3,7 @@
 The following ``apply-archive-rule`` example applies an archive rule to existing findings that meet the archive rule criteria. ::
 
     aws accessanalyzer apply-archive-rule \
-        --analyzer-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/UnusedAccess-ConsoleAnalyzer-organization \
+        --analyzer-arn arn:aws:access-analyzer:us-west-2:123456789012:analyzer/UnusedAccess-ConsoleAnalyzer-organization \
         --rule-name MyArchiveRule 
 
 This command produces no output.

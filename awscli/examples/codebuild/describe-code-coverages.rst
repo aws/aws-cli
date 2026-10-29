@@ -10,8 +10,8 @@ Output::
     {
         "codeCoverages": [
             {
-                "id": "20a0adcc-db13-4b66-804b-ecaf9f852855",
-                "reportARN": "arn:aws:codebuild:<region-ID>:972506530580:report/<report-group-name>:<report-ID>",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "reportARN": "arn:aws:codebuild:<region-ID>:123456789012:report/<report-group-name>:<report-ID>",
                 "filePath": "<source-file-1-path>",
                 "lineCoveragePercentage": 83.33,
                 "linesCovered": 5,
@@ -22,8 +22,8 @@ Output::
                 "expired": "2020-11-20T21:22:45+00:00"
             },
             {
-                "id": "0887162d-bf57-4cf1-a164-e432373d1a83",
-                "reportARN": "arn:aws:codebuild:<region-ID>:972506530580:report/<report-group-name>:<report-ID>",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "reportARN": "arn:aws:codebuild:<region-ID>:123456789012:report/<report-group-name>:<report-ID>",
                 "filePath": "<source-file-2-path>",
                 "lineCoveragePercentage": 90.9,
                 "linesCovered": 10,

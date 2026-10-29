@@ -15,7 +15,7 @@ Output::
         "ComputeRedundancy": 0,
         "Status": "available",
         "PubliclyAccessible": false,
-        "Endpoint": "my-sv2-cluster.limitless-cekycexample.us-east-2.rds.amazonaws.com"
+        "Endpoint": "my-sv2-cluster.limitless-cekycexample.us-west-2.rds.amazonaws.com"
     }
 
 For more information, see `Rebooting an Amazon Aurora DB cluster or Amazon Aurora DB instance <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_RebootCluster.html>`__ in the *Amazon Aurora User Guide*.
@@ -38,7 +38,7 @@ Output::
                 "ComputeRedundancy": 0,
                 "Status": "available",
                 "PubliclyAccessible": true,
-                "Endpoint": "limitless-test-cluster.limitless-cekycexample.us-east-2.rds.amazonaws.com"
+                "Endpoint": "limitless-test-cluster.limitless-cekycexample.us-west-2.rds.amazonaws.com"
             },
             {
                 "DBShardGroupResourceId": "shardgroup-a6e3a0226aa243e2ac6c7a1234567890",
@@ -48,7 +48,7 @@ Output::
                 "ComputeRedundancy": 0,
                 "Status": "rebooting",
                 "PubliclyAccessible": false,
-                "Endpoint": "my-sv2-cluster.limitless-cekycexample.us-east-2.rds.amazonaws.com"
+                "Endpoint": "my-sv2-cluster.limitless-cekycexample.us-west-2.rds.amazonaws.com"
             }
         ]
     }

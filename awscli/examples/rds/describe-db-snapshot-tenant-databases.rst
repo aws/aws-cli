@@ -19,7 +19,7 @@ Output::
                 "MasterUsername": "admin",
                 "TenantDatabaseResourceId": "tdb-QRST5678UVWX1234YZAB90CDEFGHIJ5678KLMN1234OPQEXAMPLE",
                 "CharacterSetName": "AL16UTF16",
-                "DBSnapshotTenantDatabaseARN": "arn:aws:rds:us-east-1:123456789012:snapshot-tenant-database:final-snap-test:tdb-qrst5678uvwx1234yzab90cdefghij5678klmn1234opqexample",
+                "DBSnapshotTenantDatabaseARN": "arn:aws:rds:us-west-2:123456789012:snapshot-tenant-database:final-snap-test:tdb-qrst5678uvwx1234yzab90cdefghij5678klmn1234opqexample",
                 "TagList": []
             },
             {
@@ -32,7 +32,7 @@ Output::
                 "MasterUsername": "tenantadmin",
                 "TenantDatabaseResourceId": "tdb-ABCD1234EFGH5678IJKL90MNOPQRST1234UVWX5678YZAEXAMPLE",
                 "CharacterSetName": "AL16UTF16",
-                "DBSnapshotTenantDatabaseARN": "arn:aws:rds:us-east-1:123456789012:snapshot-tenant-database:final-snap-test:tdb-abcd1234efgh5678ijkl90mnopqrst1234uvwx5678yzaexample",
+                "DBSnapshotTenantDatabaseARN": "arn:aws:rds:us-west-2:123456789012:snapshot-tenant-database:final-snap-test:tdb-abcd1234efgh5678ijkl90mnopqrst1234uvwx5678yzaexample",
                 "TagList": []
             }
         ]

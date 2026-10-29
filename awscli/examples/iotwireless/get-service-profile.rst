@@ -3,13 +3,13 @@
 The following ``get-service-profile`` example gets information about the service profile with the specified ID that you created. ::
 
     aws iotwireless get-service-profile \
-        --id "12345678-a1b2-3c45-67d8-e90fa1b2c34d" 
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" 
 
 Output::
 
     {
-        "Arn": "arn:aws:iotwireless:us-east-1:651419225604:ServiceProfile/538185bb-d7e7-4b95-96a0-c51aa4a5b9a0", 
-        "Id": "12345678-a1b2-3c45-67d8-e90fa1b2c34d", 
+        "Arn": "arn:aws:iotwireless:us-west-2:123456789012:ServiceProfile/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
         "LoRaWAN": {
             "HrAllowed": false, 
             "NwkGeoLoc": false, 

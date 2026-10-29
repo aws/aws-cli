@@ -11,10 +11,10 @@ Output::
         "mesh": {
             "meshName": "app1",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1",
                 "createdAt": 1563809909.282,
                 "lastUpdatedAt": 1563809909.282,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "spec": {},

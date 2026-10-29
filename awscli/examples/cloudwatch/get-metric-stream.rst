@@ -8,9 +8,9 @@ The following ``get-metric-stream`` example displays information about the metri
 Output::
 
     {
-        "Arn": "arn:aws:cloudwatch:us-east-1:123456789012:metric-stream/QuickFull-GuaFbs",
+        "Arn": "arn:aws:cloudwatch:us-west-2:123456789012:metric-stream/QuickFull-GuaFbs",
         "Name": "QuickFull-GuaFbs",
-        "FirehoseArn": "arn:aws:firehose:us-east-1:123456789012:deliverystream/MetricStreams-QuickFull-GuaFbs-WnySbECG",
+        "FirehoseArn": "arn:aws:firehose:us-west-2:123456789012:deliverystream/MetricStreams-QuickFull-GuaFbs-WnySbECG",
         "RoleArn": "arn:aws:iam::123456789012:role/service-role/MetricStreams-FirehosePutRecords-JN10W9B3",
         "State": "running",
         "CreationDate": "2024-10-11T18:48:59.187000+00:00",

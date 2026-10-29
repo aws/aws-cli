@@ -18,7 +18,7 @@ Output::
                 "location": "EqDC2",
                 "connectionName": "My_Connection",
                 "loaIssueTime": 1491568964.0,
-                "region": "us-east-1"
+                "region": "us-west-2"
             }
         ]
     }

@@ -3,7 +3,7 @@
 The following ``tag-resource`` example associates two tag key/value pairs with the specified Resolver rule. ::
 
     aws route53resolver tag-resource \
-        --resource-arn "arn:aws:route53resolver:us-west-2:111122223333:resolver-rule/rslvr-rr-42b60677c0example" \
+        --resource-arn "arn:aws:route53resolver:us-west-2:123456789012:resolver-rule/rslvr-rr-42b60677c0example" \
         --tags "Key=my-key-1,Value=my-value-1" "Key=my-key-2,Value=my-value-2"
 
 This command produces no output.

@@ -18,7 +18,7 @@ Output::
             },
             {
                 "RangeInBytes": "1048576-2097151",
-                "SHA256TreeHash": "43cf3061fb95796aed99a11a6aa3cd8f839eed15e655ab0a597126210636aee6"
+                "SHA256TreeHash": "43cf3061fb95796aed99a11a6aa3cd8f839eed15e655ab0a597126210c36aee6"
             }
         ],
         "VaultARN": "arn:aws:glacier:us-west-2:0123456789012:vaults/my-vault",

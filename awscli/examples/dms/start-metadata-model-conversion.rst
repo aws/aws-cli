@@ -3,8 +3,8 @@
 The following ``start-metadata-model-conversion`` example queues a conversion of all objects in the ``ExampleSchema`` schema to the target database format. ::
 
     aws dms start-metadata-model-conversion \
-        --migration-project-identifier arn:aws:dms:us-east-1:123456789012:migration-project:EXAMPLEABCDEFGHIJKLMNOPQRS \
-        --selection-rules '{"rules": [{"rule-type": "selection","rule-id": "1","rule-name": "1","object-locator": {"server-name": "example-source-server.us-east-1.rds.amazonaws.com", "schema-name": "ExampleSchema"},"rule-action": "explicit"}]}'
+        --migration-project-identifier arn:aws:dms:us-west-2:123456789012:migration-project:EXAMPLEABCDEFGHIJKLMNOPQRS \
+        --selection-rules '{"rules": [{"rule-type": "selection","rule-id": "1","rule-name": "1","object-locator": {"server-name": "example-source-server.us-west-2.rds.amazonaws.com", "schema-name": "ExampleSchema"},"rule-action": "explicit"}]}'
 
 Output::
 

@@ -4,7 +4,7 @@ The following ``list-audit-mitigation-actions-executions`` example lists the det
 
     aws iot list-audit-mitigation-actions-executions \
         --task-id myActionsTaskId \
-        --finding-id 0edbaaec-2fe1-4cf5-abc9-d4c3e51f7464
+        --finding-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -12,9 +12,9 @@ Output::
         "actionsExecutions": [
             {
                 "taskId": "myActionsTaskId",
-                "findingId": "0edbaaec-2fe1-4cf5-abc9-d4c3e51f7464",
+                "findingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "actionName": "ResetPolicyVersionAction",
-                "actionId": "1ea0b415-bef1-4a01-bd13-72fb63c59afb",
+                "actionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "status": "COMPLETED",
                 "startTime": "2019-12-10T15:19:13.279000-08:00",
                 "endTime": "2019-12-10T15:19:13.337000-08:00"

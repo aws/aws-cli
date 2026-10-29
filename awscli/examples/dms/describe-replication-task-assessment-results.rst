@@ -10,7 +10,7 @@ Output::
         "ReplicationTaskAssessmentResults": [
             {
                 "ReplicationTaskIdentifier": "moveit2",
-                "ReplicationTaskArn": "arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII",
+                "ReplicationTaskArn": "arn:aws:dms:us-west-2:123456789012:task:K55IUCGBASJS5VHZJIINA45FII",
                 "ReplicationTaskLastAssessmentDate": 1590790230.0,
                 "AssessmentStatus": "No issues found",
                 "AssessmentResultsFile": "moveit2/2020-05-29-22-10"

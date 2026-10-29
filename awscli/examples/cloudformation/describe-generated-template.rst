@@ -8,7 +8,7 @@ The following ``describe-generated-template`` example describes the specified te
 Output::
 
     {
-        "GeneratedTemplateId": "arn:aws:cloudformation:us-east-1:123456789012:generatedTemplate/7d881acf-f307-4ded-910e-f8fb49b96894",
+        "GeneratedTemplateId": "arn:aws:cloudformation:us-west-2:123456789012:generatedTemplate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "GeneratedTemplateName": "MyTemplate",
         "Resources": [
             {

@@ -10,7 +10,7 @@ Output::
     {
         "application": {
             "applicationName": "WordPress_App",
-            "applicationId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "applicationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "createTime": 1407878168.078,
             "linkedToGitHub": false
         }

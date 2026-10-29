@@ -4,7 +4,7 @@ The following ``create-restore-image-task`` example restores an AMI from an S3 b
 
     aws ec2 create-restore-image-task \
         --object-key ami-1234567890abcdef0.bin \
-        --bucket my-ami-bucket \
+        --bucket amzn-s3-demo-bucket \
         --name 'New AMI Name'
 
 Output::

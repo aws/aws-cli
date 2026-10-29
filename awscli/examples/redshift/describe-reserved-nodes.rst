@@ -12,7 +12,7 @@ Output::
                 "OfferingType": "Heavy Utilization",
                 "FixedPrice": 3000.0,
                 "NodeType": "dw.hs1.xlarge",
-                "ReservedNodeId": "1ba8e2e3-bc01-4d65-b35d-a4a3e931547e",
+                "ReservedNodeId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "UsagePrice": 0.0,
                 "RecurringCharges": [
                     {
@@ -23,7 +23,7 @@ Output::
                 "State": "payment-pending",
                 "StartTime": "2013-02-13T17:08:39.051Z",
                 "Duration": 31536000,
-                "ReservedNodeOfferingId": "ceb6a579-cf4c-4343-be8b-d832c45ab51c"
+                "ReservedNodeOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
             }
         ]
     }

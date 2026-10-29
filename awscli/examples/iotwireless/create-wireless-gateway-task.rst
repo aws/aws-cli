@@ -3,13 +3,13 @@
 The following ``create-wireless-gateway-task`` example creates a task for a wireless gateway. ::
 
     aws iotwireless create-wireless-gateway-task \
-        --id "12345678-a1b2-3c45-67d8-e90fa1b2c34d" \
-        --wireless-gateway-task-definition-id "aa000102-0304-b0cd-ef56-a1b23cde456a"
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --wireless-gateway-task-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
 
 Output::
 
     {
-        "WirelessGatewayTaskDefinitionId": "aa204003-0604-30fb-ac82-a4f95aaf450a",
+        "WirelessGatewayTaskDefinitionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "Status": "Success"
     }
 

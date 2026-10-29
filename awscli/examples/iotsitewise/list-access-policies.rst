@@ -11,7 +11,7 @@ Output::
     {
         "accessPolicySummaries": [
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-cccccEXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "identity": {
                     "user": {
                         "id": "a1b2c3d4e5-a1b2c3d4-5678-90ab-cdef-bbbbbEXAMPLE"
@@ -19,7 +19,7 @@ Output::
                 },
                 "resource": {
                     "portal": {
-                        "id": "a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE"
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                     }
                 },
                 "permission": "ADMINISTRATOR"

@@ -3,7 +3,7 @@
 The following ``list-bulk-deployment-detailed-reports`` example displays information about the individual deployments in a bulk deployment operation, including status. ::
 
     aws greengrass list-bulk-deployment-detailed-reports \
-        --bulk-deployment-id 42ce9c42-489b-4ed4-b905-8996aa50ef9d
+        --bulk-deployment-id a1b2c3d4-5678-90ab-cdef-EXAMPLE77777
 
 Output::
 

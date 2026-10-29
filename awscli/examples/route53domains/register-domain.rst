@@ -61,7 +61,7 @@ Contents of ``register-domain.json``::
 Output::
 
     {
-        "OperationId": "b114c44a-9330-47d1-a6e8-a0b11example"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the operation succeeded, you can run ``get-operation-detail``. For more information, see `get-operation-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-operation-detail.html>`__ . 

@@ -4,7 +4,7 @@ The following ``classify-document`` example classifies a document with an endpoi
 a dataset containing sms messages labeled as spam or non-spam, or, "ham". ::
 
     aws comprehend classify-document \
-        --endpoint-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier-endpoint/example-classifier-endpoint \
+        --endpoint-arn arn:aws:comprehend:us-west-2:123456789012:document-classifier-endpoint/example-classifier-endpoint \
         --text "CONGRATULATIONS! TXT 1235550100 to win $5000"
 
 Output::

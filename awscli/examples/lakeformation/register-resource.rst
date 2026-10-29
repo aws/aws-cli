@@ -8,7 +8,7 @@ The following ``register-resource`` example registers the resource as managed by
 Contents of ``input.json``::
 
     {
-        "ResourceArn": "arn:aws:s3:::lf-emr-athena-result-123",
+        "ResourceArn": "arn:aws:s3:::amzn-s3-demo-bucket",
         "UseServiceLinkedRole": true
     }
 
@@ -26,7 +26,7 @@ The following ``register-resource`` example registers the resource as managed by
 Contents of ``input.json``::
 
     {
-        "ResourceArn": "arn:aws:s3:::lf-emr-athena-result-123",
+        "ResourceArn": "arn:aws:s3:::amzn-s3-demo-bucket",
         "UseServiceLinkedRole": false,
         "RoleArn": "arn:aws:iam::123456789111:role/LF-GlueServiceRole"
     }

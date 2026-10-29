@@ -26,7 +26,7 @@ Output::
                 "SmsDelivered": 1.0
             },
             "OptOut": "ALL",
-            "RequestId": "a204b1f2-7e26-48a7-9c80-b49a2143489d",
+            "RequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "User": {
                 "UserAttributes": {
                     "Age": [

@@ -3,7 +3,7 @@
 The following ``update-asset`` example updates a wind turbine asset's name. ::
 
     aws iotsitewise update-asset \
-        --asset-id a1b2c3d4-5678-90ab-cdef-33333EXAMPLE \
+        --asset-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333 \
         --asset-name "Wind Turbine 2"
 
 Output::

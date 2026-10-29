@@ -48,7 +48,7 @@ Output::
             "Action": "INVITE",
             "RequestedTimestamp": 1470684478.687,
             "ExpirationTimestamp": 1471980478.687,
-            "Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111"
+            "Arn": "arn:aws:organizations::123456789012:handshake/o-exampleorgid/invite/h-examplehandshakeid111"
         }
     }
 

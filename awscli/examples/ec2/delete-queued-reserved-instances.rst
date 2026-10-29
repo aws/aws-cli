@@ -3,14 +3,14 @@
 The following ``delete-queued-reserved-instances`` example deletes the specified Reserved Instance, which was queued for purchase. ::
 
     aws ec2 delete-queued-reserved-instances \
-        --reserved-instances-ids af9f760e-6f91-4559-85f7-4980eexample
+        --reserved-instances-ids a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "SuccessfulQueuedPurchaseDeletions": [
             {
-                "ReservedInstancesId": "af9f760e-6f91-4559-85f7-4980eexample"
+                "ReservedInstancesId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ],
         "FailedQueuedPurchaseDeletions": []

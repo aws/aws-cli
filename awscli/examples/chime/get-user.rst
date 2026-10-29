@@ -3,15 +3,15 @@
 The following ``get-user`` example retrieves the details for the specified user. ::
 
     aws chime get-user \
-        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE \
-        --user-id a1b2c3d4-5678-90ab-cdef-22222EXAMPLE
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --user-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "User": {
-            "UserId": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
-            "AccountId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "PrimaryEmail": "marthar@example.com",
             "DisplayName": "Martha Rivera",
             "LicenseType": "Pro",

@@ -26,7 +26,7 @@ Contents of ``channel-in-hls-out-hls-akamai.json``::
 
     {
         "Name": "News_West",
-        "RoleArn": "arn:aws:iam::111122223333:role/MediaLiveAccessRole",
+        "RoleArn": "arn:aws:iam::123456789012:role/MediaLiveAccessRole",
         "InputAttachments": [
             {
                 "InputAttachmentName": "local_news",
@@ -163,7 +163,7 @@ Output::
 
     {
         "Channel": {
-            "Arn": "arn:aws:medialive:us-west-2:111122223333:channel/8765432",
+            "Arn": "arn:aws:medialive:us-west-2:123456789012:channel/8765432",
             "ChannelClass": "STANDARD",
             "Destinations": [
                 {
@@ -296,7 +296,7 @@ Output::
             "LogLevel": "DISABLED",
             "Name": "News_West",
             "PipelinesRunningCount": 0,
-            "RoleArn": "arn:aws:iam::111122223333:role/MediaLiveAccessRole",
+            "RoleArn": "arn:aws:iam::123456789012:role/MediaLiveAccessRole",
             "State": "CREATING",
             "Tags": {}
         }

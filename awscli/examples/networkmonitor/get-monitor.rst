@@ -8,7 +8,7 @@ The following ``get-monitor`` example gets information about a monitor named ``E
 Output::
 
     {
-        "monitorArn": "arn:aws:networkmonitor:region:012345678910:monitor/Example_NetworkMonitor",
+        "monitorArn": "arn:aws:networkmonitor:region:123456789012:monitor/Example_NetworkMonitor",
         "monitorName": "Example_NetworkMonitor",
         "state": "ACTIVE",
         "aggregationPeriod": 60,

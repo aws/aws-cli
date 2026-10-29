@@ -13,7 +13,7 @@ Output::
                 "pullRequestId": "8",
                 "pullRequestEventType": "PULL_REQUEST_CREATED",
                 "eventDate": 1510341779.53,
-                "actorArn": "arn:aws:iam::111111111111:user/Zhang_Wei"
+                "actorArn": "arn:aws:iam::123456789012:user/Zhang_Wei"
             },
             {
                 "pullRequestStatusChangedEventMetadata": {
@@ -22,7 +22,7 @@ Output::
                 "pullRequestId": "8",
                 "pullRequestEventType": "PULL_REQUEST_STATUS_CHANGED",
                 "eventDate": 1510341930.72,
-                "actorArn": "arn:aws:iam::111111111111:user/Jane_Doe"
+                "actorArn": "arn:aws:iam::123456789012:user/Jane_Doe"
             }
         ]
     }

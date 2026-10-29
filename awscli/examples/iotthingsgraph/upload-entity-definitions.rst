@@ -8,5 +8,5 @@ The following ``upload-entity-definitions`` example uploads entity definitions t
 Output::
 
     {
-        "uploadId": "f6294f1e-b109-4bbe-9073-f451a2dda2da"
+        "uploadId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }

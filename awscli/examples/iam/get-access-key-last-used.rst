@@ -10,7 +10,7 @@ Output::
     {
         "UserName":  "Bob",
         "AccessKeyLastUsed": {
-            "Region": "us-east-1",
+            "Region": "us-west-2",
             "ServiceName": "iam",
             "LastUsedDate": "2015-06-16T22:45:00Z"
         }

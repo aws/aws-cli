@@ -4,7 +4,7 @@ The following ``update-container-agent`` example updates the container agent on 
 
     aws ecs update-container-agent \
         --cluster default \
-        --container-instance a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+        --container-instance a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

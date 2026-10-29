@@ -12,7 +12,7 @@ Output::
         "Snapshot": {
             "Status": "available",
             "SnapshotCreateTime": "2013-01-22T19:27:58.931Z",
-            "AvailabilityZone": "us-east-1c",
+            "AvailabilityZone": "us-west-2c",
             "ClusterVersion": "1.0",
             "MasterUsername": "adminuser",
             "DBName": "dev",

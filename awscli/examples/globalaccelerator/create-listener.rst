@@ -3,7 +3,7 @@
 The following ``create-listener`` example creates a listener with two ports. ::
 
     aws globalaccelerator create-listener \
-        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
+        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --port-ranges FromPort=80,ToPort=80 FromPort=81,ToPort=81 \
         --protocol TCP
 
@@ -23,7 +23,7 @@ Output::
             ],
             "ClientAffinity": "NONE",
             "Protocol": "TCP",
-            "ListenerArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz"
+            "ListenerArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/0123vxyz"
         }
     }
 

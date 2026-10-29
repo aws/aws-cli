@@ -3,7 +3,7 @@
 The following ``tag-resource`` example assigns one or more tags (key-value pairs) to the specified CloudWatch resource, such as a service level objective. ::
 
     aws application-signals tag-resource \
-        --resource-arn "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName" \
+        --resource-arn "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName" \
         --tags '{"Key":"test","Value":"value"}'
 
 This command produces no output.

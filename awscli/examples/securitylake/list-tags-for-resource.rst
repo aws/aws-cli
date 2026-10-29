@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists tags for the specified Amazon Security Lake subscriber. In this example, the Owner tag key doesn't have an associated tag value. You can use this operation to list tags for other existing Security Lake resources as well. ::
 
     aws securitylake list-tags-for-resource \
-        --resource-arn "arn:aws:securitylake:us-east-1:123456789012:subscriber/1234abcd-12ab-34cd-56ef-1234567890ab"
+        --resource-arn "arn:aws:securitylake:us-west-2:123456789012:subscriber/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 

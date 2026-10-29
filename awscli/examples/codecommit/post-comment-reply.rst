@@ -11,7 +11,7 @@ Output::
 
     {
         "comment": {
-            "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+            "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
             "clientRequestToken": "123Example",
             "commentId": "442b498bEXAMPLE5756813",
             "content": "Good catch. I'll remove them.",

@@ -20,7 +20,7 @@ Output::
                 "192.0.2.0/16"
             ]
         },
-        "LockToken":"447e55ac-2396-4c6d-b9f9-86b67c17f8b5"
+        "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     } 
 
 For more information, see `IP Sets and Regex Pattern Sets <https://docs.aws.amazon.com/waf/latest/developerguide/waf-referenced-set-managing.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

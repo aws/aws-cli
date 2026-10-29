@@ -27,8 +27,8 @@ Before running this command, replace the example key IDs with valid key identifi
 
     aws kms re-encrypt \
         --ciphertext-blob fileb://ExampleEncryptedFile \
-        --source-key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
-        --destination-key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
+        --source-key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --destination-key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --query CiphertextBlob \
         --output text | base64 --decode > ExampleReEncryptedFile
 
@@ -44,8 +44,8 @@ Before running this command, replace the example key ID with a valid key ID from
 
     aws kms re-encrypt ^
         --ciphertext-blob fileb://ExampleEncryptedFile ^
-        --source-key-id 1234abcd-12ab-34cd-56ef-1234567890ab ^
-        --destination-key-id 0987dcba-09fe-87dc-65ba-ab0987654321 ^
+        --source-key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 ^
+        --destination-key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 ^
         --query CiphertextBlob ^
         --output text > ExampleReEncryptedFile.base64
         

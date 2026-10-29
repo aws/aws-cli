@@ -44,7 +44,7 @@ Output::
                     "awsDeviceV2": "loc1-26wz6vEXAMPLE"
                 }
             ],
-            "region": "sa-east-1",
+            "region": "us-west-2",
             "awsDeviceV2": "loc1-26wz6vEXAMPLE",
             "tags": [
                 {

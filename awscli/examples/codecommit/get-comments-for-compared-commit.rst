@@ -18,7 +18,7 @@ Output::
                 "beforeCommitId": "6e147360EXAMPLE",
                 "comments": [ 
                     { 
-                        "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+                        "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
                         "clientRequestToken": "123Example",
                         "commentId": "ff30b348EXAMPLEb9aa670f",
                         "content": "Whoops - I meant to add this comment to the line, not the file, but I don't see how to delete it.",
@@ -34,7 +34,7 @@ Output::
                         }
                     },
                     {
-                        "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+                        "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
                         "clientRequestToken": "123Example",
                         "commentId": "553b509bEXAMPLE56198325",
                         "content": "Can you add a test case for this?",

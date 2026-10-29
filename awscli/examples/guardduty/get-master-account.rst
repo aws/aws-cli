@@ -12,7 +12,7 @@ Output::
             "InvitationId": "04b94d9704854a73f94e061e8example",
             "InvitedAt": "2020-06-09T22:23:04.970Z",
             "RelationshipStatus": "Enabled",
-            "AccountId": "111122223333"
+            "AccountId": "123456789012"
         }
     }
 

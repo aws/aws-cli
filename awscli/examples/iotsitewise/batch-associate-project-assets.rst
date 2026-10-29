@@ -3,8 +3,8 @@
 The following ``batch-associate-project-assets`` example associates a wind farm asset to a project. ::
 
     aws iotsitewise batch-associate-project-assets \
-        --project-id a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE \
-        --asset-ids a1b2c3d4-5678-90ab-cdef-44444EXAMPLE
+        --project-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --asset-ids a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 This command produces no output.
 

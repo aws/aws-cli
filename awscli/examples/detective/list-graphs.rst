@@ -9,7 +9,7 @@ Output::
     {
         "GraphList": [ 
             { 
-                "Arn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
+                "Arn": "arn:aws:detective:us-west-2:123456789012:graph:027c7c4610ea4aacaf0b883093cab899",
                 "CreatedTime": "2020-01-22T23:35:11+00:00"
             }
         ]

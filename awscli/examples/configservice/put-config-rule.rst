@@ -51,7 +51,7 @@ Contents of ``InstanceTypesAreT2micro.json``::
         },
         "Source": {
             "Owner": "CUSTOM_LAMBDA",
-            "SourceIdentifier": "arn:aws:lambda:us-east-1:123456789012:function:InstanceTypeCheck",
+            "SourceIdentifier": "arn:aws:lambda:us-west-2:123456789012:function:InstanceTypeCheck",
             "SourceDetails": [
                 {
                     "EventSource": "aws.config",

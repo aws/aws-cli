@@ -13,7 +13,7 @@ Output::
     {
         "operations": [
             {
-                "id": "9a77158f-7be3-4d6d-8054-cf5ae2b720cc",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Instance-1",
                 "resourceType": "Instance",
                 "createdAt": 1569447986.061,
@@ -46,7 +46,7 @@ Output::
     {
         "operations": [
             {
-                "id": "5492f015-9d2e-48c6-8eea-b516840e6903",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "Instance1",
                 "resourceType": "Instance",
                 "createdAt": 1569448780.054,
@@ -60,7 +60,7 @@ Output::
                 "statusChangedAt": 1569448780.054
             },
             {
-                "id": "c58b5f46-2676-44c8-b95c-3ad375898515",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "Instance2",
                 "resourceType": "Instance",
                 "createdAt": 1569448780.054,
@@ -74,7 +74,7 @@ Output::
                 "statusChangedAt": 1569448780.054
             },
             {
-                "id": "a5ad8006-9bee-4499-9eb7-75e42e6f5882",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "resourceName": "Instance3",
                 "resourceType": "Instance",
                 "createdAt": 1569448780.054,

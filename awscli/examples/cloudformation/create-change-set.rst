@@ -29,8 +29,8 @@ Contents of ``template.yaml``::
 Output::
 
     {
-        "Id": "arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/bc9555ba-a949-xmpl-bfb8-f41d04ec5784",
-        "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-application/d0a825a0-e4cd-xmpl-b9fb-061c69e99204"
+        "Id": "arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-application/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `Create a change set for a CloudFormation stack <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-create.html>`__ in the *AWS CloudFormation User Guide*.

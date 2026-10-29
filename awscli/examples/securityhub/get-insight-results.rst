@@ -3,14 +3,14 @@
 The following ``get-insight-results`` example returns the list of insight results for the insight with the specified ARN. ::
 
     aws securityhub get-insight-results \
-        --insight-arn "arn:aws:securityhub:us-west-1:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+        --insight-arn "arn:aws:securityhub:us-west-2:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
         "InsightResults": { 
             "GroupByAttribute": "ResourceId",
-            "InsightArn": "arn:aws:securityhub:us-west-1:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "InsightArn": "arn:aws:securityhub:us-west-2:123456789012:insight/123456789012/custom/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "ResultValues": [ 
                 { 
                     "Count": 10,

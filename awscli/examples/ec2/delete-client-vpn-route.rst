@@ -3,7 +3,7 @@
 The following ``delete-client-vpn-route`` example deletes the ``0.0.0.0/0`` route for the specified subnet of a Client VPN endpoint. ::
 
     aws ec2 delete-client-vpn-route \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde \
+        --client-vpn-endpoint-id cvpn-endpoint-0123456789abcdef0 \
         --destination-cidr-block 0.0.0.0/0 \
         --target-vpc-subnet-id subnet-0123456789abcabca
 

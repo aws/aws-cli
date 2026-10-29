@@ -11,7 +11,7 @@ Output::
     {
         "Handshake": {
             "Action": "ENABLE_ALL_FEATURES",
-            "Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/enable_all_features/h-examplehandshakeid111",
+            "Arn": "arn:aws:organizations::123456789012:handshake/o-exampleorgid/enable_all_features/h-examplehandshakeid111",
             "ExpirationTimestamp": 1483127868.609,
             "Id": "h-examplehandshakeid111",
             "Parties": [

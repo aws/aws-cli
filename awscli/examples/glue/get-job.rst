@@ -18,7 +18,7 @@ Output::
             },
             "Command": {
                 "Name": "gluestreaming",
-                "ScriptLocation": "s3://janetst-bucket-01/Scripts/test_script.scala",
+                "ScriptLocation": "s3://amzn-s3-demo-bucket/Scripts/test_script.scala",
                 "PythonVersion": "2"
             },
             "DefaultArguments": {

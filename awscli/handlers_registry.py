@@ -667,6 +667,7 @@ PLUGIN_REGISTRY = {
     'building-command-table.logs': [
         ('awscli.customizations.removals', 'register_removals'),
         ('awscli.customizations.logs', 'register_logs_commands'),
+        ('awscli.customizations.logs.run_insights_query', 'register'),
     ],
     'building-command-table.main': [
         ('awscli.customizations.s3.s3', 'register_s3_main'),

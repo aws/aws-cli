@@ -1005,10 +1005,24 @@ class TestNpmLogin(unittest.TestCase):
         auth_token_config = f'//{repo_uri.netloc}{repo_uri.path}:_authToken'
         self.commands = []
         self.commands.append(
-            [self.NPM_CMD, 'config', 'set', 'registry', self.endpoint]
+            [
+                self.NPM_CMD,
+                'config',
+                'set',
+                'registry',
+                self.endpoint,
+                '--workspaces=false',
+            ]
         )
         self.commands.append(
-            [self.NPM_CMD, 'config', 'set', always_auth_config, 'true']
+            [
+                self.NPM_CMD,
+                'config',
+                'set',
+                always_auth_config,
+                'true',
+                '--workspaces=false',
+            ]
         )
         self.auth_token_key = auth_token_config
 
@@ -1101,6 +1115,15 @@ class TestNpmLogin(unittest.TestCase):
         expected = list(self.commands)
         expected[0][3] = f'{self.namespace}:registry'
         self.assertCountEqual(commands, expected)
+
+    def test_get_commands_disable_workspaces(self):
+        # `npm config` does not support workspaces and npm refuses to run it
+        # from a workspace directory unless workspaces are disabled.
+        commands = self.test_subject.get_commands(
+            self.endpoint, self.auth_token
+        )
+        for command in commands:
+            self.assertIn('--workspaces=false', command)
 
     def test_login_dry_run(self):
         self.test_subject.login(dry_run=True)

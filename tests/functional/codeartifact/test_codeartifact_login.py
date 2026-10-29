@@ -223,8 +223,26 @@ class TestCodeArtifactLogin(unittest.TestCase):
         registry = f'{scope}:registry' if scope else 'registry'
 
         commands = []
-        commands.append([npm_cmd, 'config', 'set', registry, self.endpoint])
-        commands.append([npm_cmd, 'config', 'set', always_auth_config, 'true'])
+        commands.append(
+            [
+                npm_cmd,
+                'config',
+                'set',
+                registry,
+                self.endpoint,
+                '--workspaces=false',
+            ]
+        )
+        commands.append(
+            [
+                npm_cmd,
+                'config',
+                'set',
+                always_auth_config,
+                'true',
+                '--workspaces=false',
+            ]
+        )
 
         return commands
 

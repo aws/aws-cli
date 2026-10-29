@@ -50,6 +50,15 @@ def _visit_problematic(self, node):
     raise nodes.SkipNode
 
 
+def _visit_attribution(self, node):
+    # docutils parses a block quote line starting with "--" as an attribution,
+    # which the translator does not handle and drops. In the CLI reference
+    # these are option examples, e.g. ``--document-version "3"`` in
+    # ``aws ssm send-command``, so restore the "--" that docutils consumed.
+    self.add(f'--{escape_markdown_chars(node.astext())}', prefix_eol=1)
+    raise nodes.SkipNode
+
+
 def _create_markdown_builder(app):
     # Builder.__init__ adds the builder's name and format to app.tags, which
     # would make ``.. only:: markdown`` content show up in the HTML output.
@@ -103,8 +112,10 @@ def _guess_code_language(code):
     code = code.lstrip()
     if code.startswith('aws '):
         return 'bash'
-    # "JSON Syntax" templates are not valid JSON, e.g. "true|false" or "..."
-    if code.startswith('{'):
+    # "JSON Syntax" templates and some example outputs are not valid JSON,
+    # e.g. "true|false", "..." or trailing commas. Lists must open with a
+    # value so INI sections such as "[default]" are not treated as JSON.
+    if code.startswith('{') or re.match(r'\[\s*[\[{"]', code):
         return 'json'
     try:
         json.loads(code)
@@ -158,6 +169,9 @@ def setup(app):
     app.add_node(nodes.literal, override=True, markdown=(_visit_literal, None))
     app.add_node(
         nodes.problematic, override=True, markdown=(_visit_problematic, None)
+    )
+    app.add_node(
+        nodes.attribution, override=True, markdown=(_visit_attribution, None)
     )
     app.connect('builder-inited', _install)
     app.connect('html-page-context', _add_markdown_url)

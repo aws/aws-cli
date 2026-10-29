@@ -230,7 +230,7 @@ The following ``create-cluster`` example uses the ``--enable-debugging`` paramet
 
 **Example 13: To add tags when creating a cluster**
 
-Tags are key-value pairs that help you identify and manage clusters. The following ``create-cluster`` example uses the ``--tags`` parameter to create three tags for a cluster, one with the key name ``name`` and the value ``Shirley Rodriguez``, a second with the key name ``age`` and the value ``29``, and a third tag with the key name ``department`` and the value ``Analytics``. ::
+The following ``create-cluster`` example uses the ``--tags`` parameter to create three tags for a cluster, one with the key name ``name`` and the value ``Shirley Rodriguez``, a second with the key name ``age`` and the value ``29``, and a third tag with the key name ``department`` and the value ``Analytics``. Tags are key-value pairs that help you identify and manage clusters. ::
 
     aws emr create-cluster \
         --tags name="Shirley Rodriguez" age=29 department="Analytics" \
@@ -274,7 +274,7 @@ The following example creates a cluster with multiple EBS volumes attached to EC
 
 **Example 16: To create a cluster with an automatic scaling policy**
 
-You can attach automatic scaling policies to core and task instance groups using Amazon EMR version 4.0 and later. The automatic scaling policy dynamically adds and removes EC2 instances in response to an Amazon CloudWatch metric. For more information, see `Using Automatic Scaling in Amazon EMR` <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-automatic-scaling.html>`_ in the *Amazon EMR Management Guide*.
+The following ``create-cluster`` example creates a cluster with an automatic scaling policy. You can attach automatic scaling policies to core and task instance groups using Amazon EMR version 4.0 and later. The automatic scaling policy dynamically adds and removes EC2 instances in response to an Amazon CloudWatch metric. For more information, see `Using Automatic Scaling in Amazon EMR` <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-automatic-scaling.html>`_ in the *Amazon EMR Management Guide*.
 
 When attaching an automatic scaling policy, you must also specify the default role for automatic scaling using ``--auto-scaling-role EMR_AutoScaling_DefaultRole``.
 

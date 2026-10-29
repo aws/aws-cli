@@ -1,6 +1,6 @@
 **To create an import job**
 
-The following command creates an import job from a manifest file. ::
+The following ``create-job`` example creates an import job from a manifest file. ::
 
     aws importexport create-job --job-type import --manifest file://manifest --no-validate-only
 

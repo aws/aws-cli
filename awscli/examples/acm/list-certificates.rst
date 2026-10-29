@@ -56,5 +56,5 @@ You can also filter your output by using the ``includes`` argument. The followin
 
 To display the certificates that have these properties, use the following command. ::
 
-  aws acm list-certificates --max-items 10 --includes extendedKeyUsage=CODE_SIGNING,keyUsage=DIGITAL_SIGNATURE,keyTypes=RSA_2048
+    aws acm list-certificates --max-items 10 --includes extendedKeyUsage=CODE_SIGNING,keyUsage=DIGITAL_SIGNATURE,keyTypes=RSA_2048
 

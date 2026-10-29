@@ -26,7 +26,7 @@ For more information, see `Rebooting an Amazon Aurora DB cluster or Amazon Auror
 
 **Example 2: To describe your DB shard groups**
 
-The following ``describe-db-shard-groups`` example retrieves the details of your DB shard groups after you run the ``reboot-db-shard-group`` command. The DB shard group ``my-db-shard-group`` is now rebooting. ::
+The following ``reboot-db-shard-group`` example continues by using the ``describe-db-shard-groups`` command to retrieve the details of your DB shard groups after you run the ``reboot-db-shard-group`` command. The DB shard group ``my-db-shard-group`` is now rebooting. ::
 
     aws rds describe-db-shard-groups
 

@@ -27,7 +27,7 @@ For more information, see `Amazon Aurora DB Clusters <https://docs.aws.amazon.co
 
 **Example 2: To describe your DB shard groups**
 
-The following ``describe-db-shard-groups`` example retrieves the details of your DB shard groups after you run the ``modify-db-shard-group`` command. The maximum capacity of the DB shard group ``my-db-shard-group`` is now 1000 Aurora capacity units (ACUs). ::
+The following ``modify-db-shard-group`` example continues by using the ``describe-db-shard-groups`` command to retrieve the details of your DB shard groups after you run the ``modify-db-shard-group`` command. The maximum capacity of the DB shard group ``my-db-shard-group`` is now 1000 Aurora capacity units (ACUs). ::
 
     aws rds describe-db-shard-groups
 

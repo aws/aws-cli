@@ -1,6 +1,6 @@
 **To upload a part of a multipart upload**
 
-The following command uploads the first part in a multipart upload initiated with the ``create-multipart-upload`` command. ::
+The following ``upload-part`` example uploads the first part in a multipart upload initiated with the ``create-multipart-upload`` command. ::
 
     aws s3api upload-part --bucket amzn-s3-demo-bucket --key 'multipart/01' --part-number 1 --body part01 --upload-id  "dfRtDYU0WWCCcH43C3WFbkRONycyCpTJJvxu2i5GYkZljF.Yxwh6XG7WfS2vC4to6HiV6Yjlx.cph0gtNBtJ8P3URCSbB7rjxI5iEwVDmgaXZOGgkk5nVTW16HOQ5l0R"
 

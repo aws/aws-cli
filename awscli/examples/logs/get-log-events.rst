@@ -1,6 +1,6 @@
 **To get log events from a log stream**
 
-The following command retrieves log events from a log stream named ``20150601`` in the log group ``my-logs``. ::
+The following ``get-log-events`` example retrieves log events from a log stream named ``20150601`` in the log group ``my-logs``. ::
 
     aws logs get-log-events --log-group-name my-logs --log-stream-name 20150601
 

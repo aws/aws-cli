@@ -625,7 +625,8 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.ecr_public', 'register_ecr_public_commands')
     ],
     'building-command-table.ecs': [
-        ('awscli.customizations.ecs', 'initialize')
+        ('awscli.customizations.ecs', 'initialize'),
+        ('awscli.customizations.ecs.diagnose_service', 'register'),
     ],
     'building-command-table.eks': [
         ('awscli.customizations.eks', 'initialize')

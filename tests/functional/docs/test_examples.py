@@ -66,9 +66,10 @@ HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
 # Used by the checks that the examples follow the AWS CLI code example
 # style guide: https://aws.github.io/aws-cli/docs_styleguide.html
 TITLE_RE = re.compile(r'^\*\*(?:Example (?P<num>\d+): )?(?P<text>.+)\*\*$')
+ERROR_LINE_RE = re.compile(r'^Line (\d+):')
 LIST_ITEM_RE = re.compile(r'^(\s*(?:[*+-]|\d+\.|#\.)\s+)\S')
-# Files that are known to break a style rule, keyed by the rule's name, with
-# the reason for each file.
+# Examples that are known to break a style rule, keyed by the rule's name,
+# then the file, then the example's title, with the reason for each example.
 EXCEPTIONS_PATH = os.path.join(
     _dname(os.path.abspath(__file__)), 'example_style_exceptions.json'
 )
@@ -267,6 +268,48 @@ def _load_exceptions():
 
 def _get_exceptions(rule):
     return EXCEPTIONS.get(rule, {})
+
+
+def _title(block):
+    return block.lines[0].strip()[2:-2]
+
+
+def _example_title(example, error):
+    """The title of the example that ``error`` is in, or None."""
+    match = ERROR_LINE_RE.match(error)
+    if not match:
+        return None
+    title = None
+    for block in example.blocks:
+        if block.lineno > int(match.group(1)):
+            break
+        if block.kind == 'title':
+            title = _title(block)
+    return title
+
+
+def _assert_follows_rule(rule, example, errors):
+    exceptions = _get_exceptions(rule).get(example.relpath, {})
+    excepted = set()
+    remaining = []
+    for error in errors:
+        title = _example_title(example, error)
+        if title in exceptions:
+            excepted.add(title)
+        else:
+            remaining.append(error)
+    fixed = sorted(set(exceptions) - excepted)
+    assert not fixed, (
+        f'These examples in {example.relpath} now follow the {rule} rule; '
+        f'remove them from "{rule}" in '
+        f'{os.path.basename(EXCEPTIONS_PATH)}: {fixed}'
+    )
+    if remaining:
+        details = '\n'.join(remaining)
+        raise AssertionError(
+            f'The example file "{example.relpath}" does not follow the '
+            f'{rule} rule:\n\n{details}\n'
+        )
 
 
 RST_DOC_EXAMPLES, OTHER_DOC_EXAMPLES = _get_all_doc_examples()
@@ -554,26 +597,23 @@ def _assert_name_contains_only_allowed_characters(filename):
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
 def test_example_whitespace(example_file):
-    errors = check_whitespace(Example(example_file))
-    if example_file in _get_exceptions('whitespace'):
-        assert errors, (
-            f'{example_file} now follows the whitespace rule; remove it '
-            f'from "whitespace" in {os.path.basename(EXCEPTIONS_PATH)}'
-        )
-        return
-    if errors:
-        details = '\n'.join(errors)
-        raise AssertionError(
-            f'The example file "{example_file}" does not follow the '
-            f'whitespace rule:\n\n{details}\n'
-        )
+    example = Example(example_file)
+    errors = check_whitespace(example)
+    _assert_follows_rule('whitespace', example, errors)
 
 
 def test_example_style_exceptions_exist():
-    missing = sorted(
-        f'{rule}: {path}'
-        for rule, paths in EXCEPTIONS.items()
-        for path in paths
-        if path not in STYLE_EXAMPLE_FILES
-    )
-    assert not missing, f"Exceptions for files that do not exist: {missing}"
+    missing = []
+    for rule, files in EXCEPTIONS.items():
+        for path, examples in files.items():
+            if path not in STYLE_EXAMPLE_FILES:
+                missing.append(f'{rule}: {path}')
+                continue
+            blocks = Example(path).blocks
+            titles = {_title(b) for b in blocks if b.kind == 'title'}
+            missing.extend(
+                f'{rule}: {path}: {title}'
+                for title in examples
+                if title not in titles
+            )
+    assert not missing, f"Exceptions for examples that do not exist: {missing}"

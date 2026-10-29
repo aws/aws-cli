@@ -24,4 +24,4 @@ Output::
         }
     }
 
-For more information, see `Authorizing Network Access to a DB Security Group from an IP Range <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithSecurityGroups.html#USER_WorkingWithSecurityGroups.Authorizing>`__ in the *Amazon RDS User Guide*.
+For more information, see `Authorizing Network Access to a DB Security Group from an IP Range <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.RDSSecurityGroups.html>`__ in the *Amazon RDS User Guide*.

@@ -28,4 +28,4 @@ Output::
         "ValidationErrors": []
     }
 
-For more information, see `Permissions reference for Secrets Manager <https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html>`__ in the *Secrets Manager User Guide*.
+For more information, see `Resource-based policies <https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access_resource-policies.html>`__ in the *Secrets Manager User Guide*.

@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Device and Link Associations <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#device-link-association>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Associate or disassociate a device link using AWS Network Manager <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-device-link-associate.html>`__ in the *Transit Gateway Network Manager Guide*.

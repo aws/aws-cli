@@ -8,7 +8,7 @@ The following ``update-topic-rule-destination`` example enables traffic to a top
 
 This command produces no output.
 
-For more information, see `Enabling a topic rule destination <https://docs.aws.amazon.com/iot/latest/developerguide/rule-destination.html#enable-destination>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Confirming HTTP action destinations <https://docs.aws.amazon.com/iot/latest/developerguide/http-action-destination.html#http-action-destination-confirming>`__ in the *AWS IoT Developer Guide*.
 
 **Example 2: To disable a topic rule destination**
 
@@ -20,7 +20,7 @@ The following ``update-topic-rule-destination`` example disables traffic to a to
 
 This command produces no output.
 
-For more information, see `Disabling a topic rule destination <https://docs.aws.amazon.com/iot/latest/developerguide/rule-destination.html#disable-destination>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Disabling and deleting an HTTP action destination <https://docs.aws.amazon.com/iot/latest/developerguide/http-action-destination.html#http-action-destination-deleting>`__ in the *AWS IoT Developer Guide*.
 
 **Example 3: To send a new confirmation message**
 
@@ -32,4 +32,4 @@ The following ``update-topic-rule-destination`` example sends a new confirmation
 
 This command produces no output.
 
-For more information, see `Sending a new confirmation message <https://docs.aws.amazon.com/iot/latest/developerguide/rule-destination.html#trigger-confirm>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Sending a new confirmation request <https://docs.aws.amazon.com/iot/latest/developerguide/http-action-destination.html#trigger-confirm>`__ in the *AWS IoT Developer Guide*.

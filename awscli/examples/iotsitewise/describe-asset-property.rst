@@ -43,4 +43,4 @@ Output::
         }
     }
 
-For more information, see `Describing a specific asset property <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/discover-asset-resources.html#describe-asset-property>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Model industrial assets <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/industrial-asset-models.html>`__ in the *AWS IoT SiteWise User Guide*.

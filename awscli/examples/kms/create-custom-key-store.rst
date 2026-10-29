@@ -54,7 +54,7 @@ Output::
         "CustomKeyStoreId": "cks-2234567890abcdef0"
     }
 
-For more information, see `Creating an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-keystorecreate-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Create an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 **Example 3: To create an external key store with VPC endpoint service connectivity**
 
@@ -81,4 +81,4 @@ Output::
         "CustomKeyStoreId": "cks-3234567890abcdef0"
     }
 
-For more information, see `Creating an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-keystorecreate-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Create an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.

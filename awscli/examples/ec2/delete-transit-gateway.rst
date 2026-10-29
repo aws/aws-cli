@@ -27,4 +27,4 @@ Output::
         }
     }
 
-For more information, see `Delete a transit gateway <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-transit-gateways.html#delete-tgw>`__ in the *Transit Gateways Guide*.
+For more information, see `Delete a transit gateway <https://docs.aws.amazon.com/vpc/latest/tgw/delete-tgw.html>`__ in the *Transit Gateways Guide*.

@@ -13,4 +13,4 @@ Output::
         }
     }
 
-For more information, see `Deleting a portal <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-delete-portal>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Deleting a portal <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/portal-delete-portal.html>`__ in the *AWS IoT SiteWise User Guide*.

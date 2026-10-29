@@ -29,7 +29,7 @@ Output::
         }
     }
 
-For more information, see `Creating a Cluster <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Creating an Amazon ECS cluster for Fargate workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-cluster-console-v2.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 2: To create a new cluster using capacity providers**
 
@@ -110,7 +110,7 @@ Output::
         }
     }
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS capacity providers for EC2 workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/asg-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 3: To create a new cluster with multiple tags**
 
@@ -145,4 +145,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Cluster <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Creating an Amazon ECS cluster for Fargate workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-cluster-console-v2.html>`__ in the *Amazon ECS Developer Guide*.

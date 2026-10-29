@@ -24,5 +24,3 @@ Output::
             }
         ]
     }
-
-For more information, see `Viewing a CORS Policy <https://docs.aws.amazon.com/mediastore/latest/ug/cors-policy-viewing.html>`__ in the *AWS Elemental MediaStore User Guide*.

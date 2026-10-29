@@ -13,4 +13,4 @@ Output::
         }
     }
 
-For more information, see `Deleting assets <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-assets-and-models.html#delete-assets>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Deleting assets <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-assets.html>`__ in the *AWS IoT SiteWise User Guide*.

@@ -45,4 +45,4 @@ Output::
         }
     }
 
-For more information, see `Aurora Clusters with a Single DB Instance <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DeleteInstance.html#USER_DeleteInstance.LastInstance>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Aurora Clusters with a Single DB Instance <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DeleteInstance.html>`__ in the *Amazon Aurora User Guide*.

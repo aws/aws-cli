@@ -164,5 +164,3 @@ Output::
             }
         ]
     }
-
-For more information, see `AWS Agents <https://docs.aws.amazon.com/inspector/latest/userguide/inspector_agents.html>`_ in the *Amazon Inspector User Guide*.

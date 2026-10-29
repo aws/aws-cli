@@ -18,4 +18,4 @@ Output::
         "PlatformSoftwareVersion": "1.9.3"
     }
 
-For more information, see `OTA Updates of AWS IoT Greengrass Core Software <https://docs.aws.amazon.com/greengrass/latest/developerguide/core-ota-update.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `OTA updates of AWS IoT Greengrass Core software <https://docs.aws.amazon.com/greengrass/v1/developerguide/core-ota-update.html>`__ in the *AWS IoT Greengrass Developer Guide*.

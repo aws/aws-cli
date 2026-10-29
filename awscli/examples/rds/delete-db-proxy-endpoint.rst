@@ -30,4 +30,4 @@ Output::
         }
     }
 
-For more information, see `Deleting a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-endpoints.html#rds-proxy-endpoints.DeletingEndpoint>`__ in the *Amazon RDS User Guide* and `Deleting a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-endpoints.html#rds-proxy-endpoints.DeletingEndpoint>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Deleting a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-endpoints.DeletingEndpoint.html>`__ in the *Amazon RDS User Guide* and `Deleting a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-endpoints.DeletingEndpoint.html>`__ in the *Amazon Aurora User Guide*.

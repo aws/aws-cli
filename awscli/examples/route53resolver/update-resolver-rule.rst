@@ -89,4 +89,4 @@ Output::
         }
     }
 
-For more information, see `Values That You Specify When You Create or Edit Rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-outbound-queries.html#resolver-forwarding-outbound-queries-rule-values>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Values That You Specify When You Create or Edit Rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-outbound-queries-rule-values.html>`__ in the *Amazon Route 53 Developer Guide*.

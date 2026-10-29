@@ -14,4 +14,4 @@ Output::
         "ProviderEndpoint": "https://test-instance-1.dev/"
     }
 
-For more information, see `View host details (CLI) <https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-host-view.html#connections-host-view-cli>`__ in the *Developer Tools console User Guide*.
+For more information, see `View host details (CLI) <https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-host-view.html>`__ in the *Developer Tools console User Guide*.

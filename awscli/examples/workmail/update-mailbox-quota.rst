@@ -9,4 +9,4 @@ The following ``update-mailbox-quota`` example changes the specified user's mail
 
 This command produces no output.
 
-For more information, see `Managing User Accounts <https://docs.aws.amazon.com/workmail/latest/adminguide/manage-users.html>`__ in the *Amazon WorkMail Administrator Guide*.
+For more information, see `Working with users <https://docs.aws.amazon.com/workmail/latest/adminguide/users_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

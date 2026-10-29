@@ -11,4 +11,4 @@ Output::
         "AssociatedAt": "2019-06-25T18:12:45Z"
     }
 
-For more information, see `Greengrass Service Role <https://docs.aws.amazon.com/greengrass/latest/developerguide/service-role.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Greengrass service role <https://docs.aws.amazon.com/greengrass/v1/developerguide/service-role.html>`__ in the *AWS IoT Greengrass Developer Guide*.

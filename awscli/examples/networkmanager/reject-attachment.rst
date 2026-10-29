@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `Attachment acceptance <https://docs.aws.amazon.com/vpc/latest/cloudwan/cloudwan-attachments-working-with.html#cloudwan-attachments-acceptance>`__ in the *Cloud WAN User Guide*.
+For more information, see `Accept or reject an AWS Cloud WAN core network attachment <https://docs.aws.amazon.com/network-manager/latest/cloudwan/cloudwan-attachments-acceptance.html>`__ in the *Cloud WAN User Guide*.

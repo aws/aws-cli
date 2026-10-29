@@ -24,4 +24,4 @@ Output::
 
 The output returns an ARN for this ``update-cluster-configuration`` operation. To determine if this operation is complete, use the ``describe-cluster-operation`` command with this ARN as input.
 
-For more information, see `Update the Configuration of an Amazon MSK Cluster <https://docs.aws.amazon.com/msk/latest/developerguide/msk-update-cluster-cofig.html>`__ in the *Amazon Managed Streaming for Apache Kafka Developer Guide*.
+For more information, see `Update the configuration of an Amazon MSK cluster <https://docs.aws.amazon.com/msk/latest/developerguide/msk-update-cluster-config.html>`__ in the *Amazon Managed Streaming for Apache Kafka Developer Guide*.

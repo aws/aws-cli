@@ -13,5 +13,3 @@ Output::
         "uploadId": "f6294f1e-b109-4bbe-9073-f451a2dda2da",
         "uploadStatus": "SUCCEEDED"
     }
-
-For more information, see `Modeling Entities <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-modelmanagement.html>`__ in the *AWS IoT Things Graph User Guide*.

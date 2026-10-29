@@ -20,4 +20,4 @@ Output::
         ]
     }
 
-For more information, see `Traffic mirror targets <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-target.html>`__ in the *Amazon VPC Traffic Mirroring Guide*.
+For more information, see `View traffic mirror targets and modify target tags <https://docs.aws.amazon.com/vpc/latest/mirroring/modify-traffic-mirroring-targets.html>`__ in the *Amazon VPC Traffic Mirroring Guide*.

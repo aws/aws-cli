@@ -8,4 +8,4 @@ The following ``update-thing-runtime-configuration`` example updates the runtime
 
 This command produces no output.
 
-For more information, see `Configuring telemetry settings <https://docs.aws.amazon.com/greengrass/latest/developerguide/telemetry.html#configure-telemetry-settings>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Configuring telemetry settings <https://docs.aws.amazon.com/greengrass/latest/developerguide/telemetry.html>`__ in the *AWS IoT Greengrass Developer Guide*.

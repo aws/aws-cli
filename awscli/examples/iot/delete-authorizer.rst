@@ -7,4 +7,4 @@ The following ``delete-authorizer`` example deletes the authorizer named ``Custo
 
 This command produces no output.
 
-For more information, see `DeleteAuthorizer <https://docs.aws.amazon.com/iot/latest/apireference/API_DeleteAuthorizer.html>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Creating and managing custom authorizers (CLI) <https://docs.aws.amazon.com/iot/latest/developerguide/config-custom-auth.html>`__ in the *AWS IoT Core Developer Guide*.

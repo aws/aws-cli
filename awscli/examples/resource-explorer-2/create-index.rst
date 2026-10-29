@@ -14,4 +14,4 @@ Output::
 
 After you create a local index, you can convert it into the aggregator index for the account by running the `update-index-type <https://docs.aws.amazon.com/cli/latest/reference/resource-explorer-2/update-index-type.html>`__ command.
 
-For more information, see `Turning on Resource Explorer in an AWS Region to index your resources <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-service-register.html>`__ in the *AWS Resource Explorer Users Guide*.
+For more information, see `Creating user-owned indexes for enhanced Resource Explorer functionality <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-service-turn-on-region.html>`__ in the *AWS Resource Explorer Users Guide*.

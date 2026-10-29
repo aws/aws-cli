@@ -92,4 +92,4 @@ Output::
         ]
     }
 
-For more information, see `Listener rules <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#listener-rules>`__ in the *Application Load Balancers User Guide*.
+For more information, see `Listener rules <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-rules.html>`__ in the *Application Load Balancers User Guide*.

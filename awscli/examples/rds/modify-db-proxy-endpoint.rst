@@ -30,4 +30,4 @@ Output::
         }
     }
 
-For more information, see `Modifying a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-endpoints.html#rds-proxy-endpoints.ModifyingEndpoint>`__ in the *Amazon RDS User Guide* and `Modifying a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-endpoints.html#rds-proxy-endpoints.ModifyingEndpoint>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Modifying a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-endpoints.ModifyingEndpoint.html>`__ in the *Amazon RDS User Guide* and `Modifying a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-endpoints.ModifyingEndpoint.html>`__ in the *Amazon Aurora User Guide*.

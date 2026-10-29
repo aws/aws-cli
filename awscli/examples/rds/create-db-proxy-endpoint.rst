@@ -31,4 +31,4 @@ Output::
         }
     }
 
-For more information, see `Creating a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-endpoints.html#rds-proxy-endpoints.CreatingEndpoint>`__ in the *Amazon RDS User Guide* and `Creating a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-endpoints.html#rds-proxy-endpoints.CreatingEndpoint>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Creating a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-endpoints.CreatingEndpoint.html>`__ in the *Amazon RDS User Guide* and `Creating a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-endpoints.CreatingEndpoint.html>`__ in the *Amazon Aurora User Guide*.

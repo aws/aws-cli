@@ -33,4 +33,4 @@ Output::
         }
     }
 
-For more information, see `Enabling cross-Region automated backups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html#AutomatedBackups.Replicating.Enable>`__ in the *Amazon RDS User Guide*.
+For more information, see `Enabling cross-Region automated backups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AutomatedBackups.Replicating.Enable.html>`__ in the *Amazon RDS User Guide*.

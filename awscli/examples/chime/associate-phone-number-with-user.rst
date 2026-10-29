@@ -9,4 +9,4 @@ The following ``associate-phone-number-with-user`` example associates the specif
 
 This command produces no output.
 
-For more information, see `Managing User Phone Numbers <https://docs.aws.amazon.com/chime/latest/ag/user-phone.html>`__ in the *Amazon Chime Administration Guide*.
+For more information, see `Assigning Amazon Chime Business Calling phone numbers <https://docs.aws.amazon.com/chime/latest/ag/assign-cbc-numbers.html>`__ in the *Amazon Chime Administration Guide*.

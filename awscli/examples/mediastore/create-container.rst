@@ -16,5 +16,3 @@ Output::
             "ARN": "arn:aws:mediastore:us-west-2:111122223333:container/ExampleContainer"
         }
     }
-
-For more information, see `Creating a Container <https://docs.aws.amazon.com/mediastore/latest/ug/containers-create.html>`__ in the *AWS Elemental MediaStore User Guide*.

@@ -19,4 +19,4 @@ Output::
         }
     }
 
-For more information, see `Deregister Sources from a Multicast Group <https://docs.aws.amazon.com/vpc/latest/tgw/working-with-multicast.html#remove-source-multicast-group>`__ in the *AWS Transit Gateways User Guide*.
+For more information, see `Deregister sources from a multicast group in AWS Transit Gateway <https://docs.aws.amazon.com/vpc/latest/tgw/remove-source-multicast-group.html>`__ in the *AWS Transit Gateways User Guide*.

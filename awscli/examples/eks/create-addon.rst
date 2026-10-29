@@ -26,7 +26,7 @@ Output::
         }
     }
 
-For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
+For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/creating-an-add-on.html>`__ in the *Amazon EKS User Guide*.
 
 **Example 2: To create an Amazon EKS add-on with specific add-on version**
 
@@ -57,7 +57,7 @@ Output::
         }
     }
 
-For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
+For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/creating-an-add-on.html>`__ in the *Amazon EKS User Guide*.
 
 **Example 3: To create an Amazon EKS add-on with custom configuration values and resolve conflicts details**
 
@@ -91,7 +91,7 @@ Output::
         }
     }
 
-For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
+For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/creating-an-add-on.html>`__ in the *Amazon EKS User Guide*.
 
 **Example 4: To create an Amazon EKS add-on with custom JSON configuration values file**
 
@@ -142,7 +142,7 @@ Output::
         }
     }
 
-For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
+For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/creating-an-add-on.html>`__ in the *Amazon EKS User Guide*.
 
 **Example 5: To create an Amazon EKS add-on with custom YAML configuration values file**
 
@@ -188,4 +188,4 @@ Output::
         }
     }
 
-For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
+For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/creating-an-add-on.html>`__ in the *Amazon EKS User Guide*.

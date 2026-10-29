@@ -23,4 +23,4 @@ Output::
         }
     }
 
-For more information, see `Delete a static route <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#tgw-delete-static-route>`__ in the *Transit Gateways Guide*.
+For more information, see `Delete a static route <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-delete-static-route.html>`__ in the *Transit Gateways Guide*.

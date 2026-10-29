@@ -14,4 +14,4 @@ Output::
         "LastModifiedTime": "2020-09-23T18:40:35.139000+00:00"
     }
 
-For more information, see `Filtering Unwanted Words <https://docs.aws.amazon.com/transcribe/latest/dg/filter-unwanted-words.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Using custom vocabulary filters to delete, mask, or flag words <https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html>`__ in the *Amazon Transcribe Developer Guide*.

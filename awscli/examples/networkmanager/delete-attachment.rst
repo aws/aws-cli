@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `Delete attachments <https://docs.aws.amazon.com/vpc/latest/cloudwan/cloudwan-attachments-working-with.html#cloudwan-attachments-deleting>`__ in the *Cloud WAN User Guide*.
+For more information, see `Delete an AWS Cloud WAN core network attachment <https://docs.aws.amazon.com/network-manager/latest/cloudwan/cloudwan-attachments-deleting.html>`__ in the *Cloud WAN User Guide*.

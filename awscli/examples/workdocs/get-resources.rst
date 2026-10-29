@@ -12,5 +12,3 @@ Output::
     "Folders": [],
     "Documents": []
     }
-
-For more information, see `Sharing Files and Folders <https://docs.aws.amazon.com/workdocs/latest/userguide/share-docs.html>`__ in the *Amazon WorkDocs User Guide*.

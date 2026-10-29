@@ -8,4 +8,4 @@ The following ``archive-findings`` example archives findings in the current regi
 
 This command produces no output.
 
-For more information, see `Creating suppression rules <https://docs.aws.amazon.com/guardduty/latest/ug/findings_suppression-rules-console.html>`__ in the *GuardDuty User Guide*.
+For more information, see `Creating suppression rules in GuardDuty <https://docs.aws.amazon.com/guardduty/latest/ug/create-suppression-rules-guardduty.html>`__ in the *GuardDuty User Guide*.

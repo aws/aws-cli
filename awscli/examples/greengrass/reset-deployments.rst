@@ -13,4 +13,4 @@ Output::
         "DeploymentId": "7dd4e356-9882-46a3-9e28-6d21900c011a"
     }
 
-For more information, see `Reset Deployments <https://docs.aws.amazon.com/greengrass/latest/developerguide/reset-deployments-scenario.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Reset deployments <https://docs.aws.amazon.com/greengrass/v1/developerguide/reset-deployments-scenario.html>`__ in the *AWS IoT Greengrass Developer Guide*.

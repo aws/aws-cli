@@ -55,4 +55,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Hosted Transit Virtual Interface <https://docs.aws.amazon.com/directconnect/latest/UserGuide/createhostedvirtualinterface.html#create-hosted-transit-vif>`__ in the *AWS Direct Connect User Guide*.
+For more information, see `Create a Direct Connect hosted transit virtual interface <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-hosted-transit-vif.html>`__ in the *AWS Direct Connect User Guide*.

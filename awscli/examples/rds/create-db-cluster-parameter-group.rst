@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Creating a DB Cluster Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_WorkingWithParamGroups.html#USER_WorkingWithParamGroups.CreatingCluster>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Creating a DB Cluster Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_WorkingWithParamGroups.CreatingCluster.html>`__ in the *Amazon Aurora User Guide*.

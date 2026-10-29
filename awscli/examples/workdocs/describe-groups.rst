@@ -20,5 +20,3 @@ Output::
             }
         ]
     }
-
-For more information, see `Getting Started with Amazon WorkDocs <https://docs.aws.amazon.com/workdocs/latest/adminguide/getting_started.html>`__ in the *Amazon WorkDocs Administration Guide*.

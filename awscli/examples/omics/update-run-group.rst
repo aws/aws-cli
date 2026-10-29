@@ -8,4 +8,4 @@ The following ``update-run-group`` example updates the settings of a run group w
 
 This command produces no output.
 
-For more information, see `Omics Workflows <https://docs.aws.amazon.com/omics/latest/dev/workflows.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `Using HealthOmics run groups <https://docs.aws.amazon.com/omics/latest/dev/creating-run-groups.html>`__ in the *Amazon Omics Developer Guide*.

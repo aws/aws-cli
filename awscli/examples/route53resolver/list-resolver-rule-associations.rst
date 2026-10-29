@@ -28,4 +28,4 @@ Output::
         ]
     }
 
-For more information, see `How Route 53 Resolver Forwards DNS Queries from Your VPCs to Your Network <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver.html#resolver-overview-forward-vpc-to-network>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `How Route 53 Resolver Forwards DNS Queries from Your VPCs to Your Network <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-overview-forward-vpc-to-network.html>`__ in the *Amazon Route 53 Developer Guide*.

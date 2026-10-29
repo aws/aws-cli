@@ -29,4 +29,4 @@ Output::
         }
     }
 
-For more information, see `Accepting or Rejecting a Transit Gateway Association Proposal <https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-associate-tgw.html#multi-account-tgw-accept-reject-proposal>`__ in the *AWS Direct Connect User Guide*.
+For more information, see `Accept or reject a Transit Gateway and Direct Connect association proposal <https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-tgw-accept-reject-proposal.html>`__ in the *AWS Direct Connect User Guide*.

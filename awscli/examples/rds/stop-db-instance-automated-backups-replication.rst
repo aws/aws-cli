@@ -35,4 +35,4 @@ Output::
         }
     }
 
-For more information, see `Stopping automated backup replication <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html#AutomatedBackups.StopReplicating>`__ in the *Amazon RDS User Guide*.
+For more information, see `Stopping automated backup replication <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AutomatedBackups.StopReplicating.html>`__ in the *Amazon RDS User Guide*.

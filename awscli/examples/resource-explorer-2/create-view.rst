@@ -55,4 +55,4 @@ Output::
         }
     }
 
-For more information, see `Creating views for search <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-views-create.html>`__ in the *AWS Resource Explorer Users Guide*.
+For more information, see `Creating Resource Explorer views to use for search <https://docs.aws.amazon.com/resource-explorer/latest/userguide/configure-views-create.html>`__ in the *AWS Resource Explorer Users Guide*.

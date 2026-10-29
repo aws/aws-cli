@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Working with Devices <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#working-with-devices>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Devices in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-devices.html>`__ in the *Transit Gateway Network Manager Guide*.

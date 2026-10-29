@@ -9,7 +9,7 @@ Output::
 
     Updated aws-serverless (v1) to Kiro.
 
-For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
+For more information, see `Getting started <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/quick-start.html>`__ in the *AWS Agent Toolkit User Guide*.
 
 **Example 2: To update a skill for a specific agent**
 
@@ -23,7 +23,7 @@ Output::
 
     Updated aws-serverless (v2) to Kiro.
 
-For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
+For more information, see `Getting started <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/quick-start.html>`__ in the *AWS Agent Toolkit User Guide*.
 
 **Example 3: To update a skill that is already up to date**
 
@@ -36,7 +36,7 @@ Output::
 
     aws-serverless is already up to date (v2).
 
-For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
+For more information, see `Getting started <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/quick-start.html>`__ in the *AWS Agent Toolkit User Guide*.
 
 **Example 4: To update every installed skill**
 
@@ -50,7 +50,7 @@ Output::
     Updated aws-cloudformation (v2) to Kiro.
     Updated aws-serverless (v2) to Kiro.
 
-For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
+For more information, see `Getting started <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/quick-start.html>`__ in the *AWS Agent Toolkit User Guide*.
 
 **Example 5: To update every installed skill for a specific agent**
 
@@ -64,7 +64,7 @@ Output::
 
     Updated aws-serverless (v2) to Kiro.
 
-For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
+For more information, see `Getting started <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/quick-start.html>`__ in the *AWS Agent Toolkit User Guide*.
 
 **Example 6: To update every installed skill when all skills are already up to date**
 
@@ -77,4 +77,4 @@ Output::
 
     All installed AWS skills are already up to date.
 
-For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
+For more information, see `Getting started <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/quick-start.html>`__ in the *AWS Agent Toolkit User Guide*.

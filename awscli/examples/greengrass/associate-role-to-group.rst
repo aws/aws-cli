@@ -12,4 +12,4 @@ Output::
         "AssociatedAt": "2019-09-10T20:03:30Z"
     }
 
-For more information, see `Configure the Group Role <https://docs.aws.amazon.com/greengrass/latest/developerguide/config-iam-roles.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Configure the group role <https://docs.aws.amazon.com/greengrass/v1/developerguide/config-iam-roles.html>`__ in the *AWS IoT Greengrass Developer Guide*.

@@ -59,4 +59,4 @@ Output::
         ]
     }
 
-For more information, see `Finding history <https://docs.aws.amazon.com/securityhub/latest/userguide/finding-view-details.html#finding-history>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Reviewing finding details and history in Security Hub CSPM <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-viewing.html>`__ in the *AWS Security Hub User Guide*.

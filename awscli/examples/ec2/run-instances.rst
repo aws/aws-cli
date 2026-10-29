@@ -621,7 +621,7 @@ Output::
         "ReservationId": "r-02a3f596d91211705"
     }
 
-For more information about instance user data, see `Working with instance user data <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html>`__ in the *Amazon EC2 User Guide*.
+For more information about instance user data, see `Run commands when you launch an EC2 instance with user data input <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 6: To launch a burstable performance instance**
 

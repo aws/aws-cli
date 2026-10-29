@@ -54,4 +54,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Transit Virtual Interface to the Direct Connect Gateway <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-vif.html#create-transit-vif>`__ in the *AWS Direct Connect User Guide*.
+For more information, see `Creating a Transit Virtual Interface to the Direct Connect Gateway <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-vif.html>`__ in the *AWS Direct Connect User Guide*.

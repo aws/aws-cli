@@ -38,4 +38,4 @@ Output::
         }
     }
 
-For more information, see `Describing a specific asset <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/discover-asset-resources.html#describe-asset>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Check the status of an asset <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/check-asset-status.html>`__ in the *AWS IoT SiteWise User Guide*.

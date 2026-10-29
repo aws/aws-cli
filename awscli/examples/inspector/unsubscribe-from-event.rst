@@ -9,7 +9,3 @@ The following ``unsubscribe-from-event`` example disables the process of sending
 
 This command produces no output.
 
-For more information, see `Amazon Inspector Assessment Templates and Assessment Runs`_ in the *Amazon Inspector* guide.
-
-.. _`Amazon Inspector Assessment Templates and Assessment Runs`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_assessments.html
-

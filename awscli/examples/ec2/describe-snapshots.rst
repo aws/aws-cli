@@ -105,7 +105,7 @@ Output::
         ]
     }
 
-For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.
+For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 4: To describe snapshots based on age**
 
@@ -155,4 +155,4 @@ Output::
         ]
     }
 
-For more information, see `View archived snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-snapshot-archiving.html#view-archived-snapshot>`__ in the *Amazon Elastic Compute Cloud User Guide*.
+For more information, see `View archived Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/view-archived-snapshot.html>`__ in the *Amazon EBS User Guide*.

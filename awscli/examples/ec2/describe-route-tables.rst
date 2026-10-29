@@ -96,4 +96,4 @@ Output::
         ]
     }
 
-For more information, see `Working with Route Tables <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html#WorkWithRouteTables>`__ in the *AWS VPC User Guide*.
+For more information, see `Working with Route Tables <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithRouteTables.html>`__ in the *AWS VPC User Guide*.

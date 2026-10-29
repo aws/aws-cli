@@ -22,4 +22,4 @@ Output::
         ]
     }
 
-For more information, see `Using the ListLexicons operation <https://docs.aws.amazon.com/polly/latest/dg/gs-list-lexicons.html>`__ in the *Amazon Polly Developer Guide*.
+For more information, see `Managing lexicons <https://docs.aws.amazon.com/polly/latest/dg/managing-lexicons.html>`__ in the *Amazon Polly Developer Guide*.

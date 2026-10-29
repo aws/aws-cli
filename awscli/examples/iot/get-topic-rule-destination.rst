@@ -17,4 +17,4 @@ Output::
         }
     }
 
-For more information, see `Working with topic rule destinations <https://docs.aws.amazon.com/iot/latest/developerguide/rule-destination.html>`__ in the *AWS IoT Developer Guide*.
+For more information, see `HTTP action destinations <https://docs.aws.amazon.com/iot/latest/developerguide/http-action-destination.html>`__ in the *AWS IoT Developer Guide*.

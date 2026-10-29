@@ -18,4 +18,4 @@ Output::
         ]
     }
 
-For more information, see `ListAuditMitigationActionsTasks (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html#dd-api-iot-ListAuditMitigationActionsTasks>`__ in the *AWS IoT Developer Guide*.
+For more information, see `ListAuditMitigationActionsTasks (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html>`__ in the *AWS IoT Developer Guide*.

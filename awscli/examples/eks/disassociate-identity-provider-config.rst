@@ -24,4 +24,4 @@ Output::
         }
     }
 
-For more information, see `Authenticate users for your cluster from an OpenID Connect identity provider - Disassociate an OIDC identity provider from your cluster <https://docs.aws.amazon.com/eks/latest/userguide/authenticate-oidc-identity-provider.html#disassociate-oidc-identity-provider>`__ in the *Amazon EKS User Guide*.
+For more information, see `Authenticate users for your cluster from an OpenID Connect identity provider - Disassociate an OIDC identity provider from your cluster <https://docs.aws.amazon.com/eks/latest/userguide/disassociate-oidc-identity-provider.html>`__ in the *Amazon EKS User Guide*.

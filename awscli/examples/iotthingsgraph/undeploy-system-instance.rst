@@ -20,5 +20,3 @@ Output::
             "greengrassGroupVersionId": "731b371d-d644-4b67-ac64-3934e99b75d7"
         }
     }
-
-For more information, see `Lifecycle Management for AWS IoT Things Graph Entities, Flows, Systems, and Deployments <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-lifecycle.html>`__ in the *AWS IoT Things Graph User Guide*.

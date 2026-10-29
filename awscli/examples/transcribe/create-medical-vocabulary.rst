@@ -15,4 +15,4 @@ Output::
         "VocabularyState": "PENDING"
     }
 
-For more information, see `Medical Custom Vocabularies <https://docs.aws.amazon.com/transcribe/latest/dg/how-vocabulary-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Improving transcription accuracy with medical custom vocabularies <https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-med.html>`__ in the *Amazon Transcribe Developer Guide*.

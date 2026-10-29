@@ -20,5 +20,3 @@ Output::
     {
         "QueryId": "772a273f-4a62-4cda-8d98-69615ee8be9b"
     }
-
-For more information, see `Reading from and writing to the data lake within transactions <https://docs.aws.amazon.com/lake-formation/latest/dg/transaction-ops.html>`__ in the *AWS Lake Formation Developer Guide*.

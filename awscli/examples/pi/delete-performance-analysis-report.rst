@@ -9,4 +9,4 @@ The following ``delete-performance-analysis-report`` example deletes the perform
 
 This command produces no output.
 
-For more information about deleting performance analysis reports, see `Deleting a performance analysis report in Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.UsingDashboard.DeletePerfAnalysisReport.html>`__ in the *Amazon RDS User Guide* and `Deleting a performance analysis report in Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.UsingDashboard.DeletePerfAnalysisReport.html>`__ in the *Amazon Aurora User Guide*.
+For more information about deleting performance analysis reports, see `AWS CLI examples for Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.API.Examples.html>`__ in the *Amazon RDS User Guide* and `AWS CLI examples for Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.API.Examples.html>`__ in the *Amazon Aurora User Guide*.

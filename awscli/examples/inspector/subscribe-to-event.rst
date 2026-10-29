@@ -8,5 +8,3 @@ The following ``subscribe-to-event`` example enables the process of sending Amaz
         --topic-arn arn:aws:sns:us-west-2:123456789012:exampletopic
 
 This command produces no output.
-
-For more information, see `Amazon Inspector Assessment Templates and Assessment Runs <https://docs.aws.amazon.com/inspector/latest/userguide/inspector_assessments.html>`__ in the *Amazon Inspector* guide.

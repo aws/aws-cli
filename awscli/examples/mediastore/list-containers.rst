@@ -26,5 +26,3 @@ Output::
             }
         ]
     }
-
-For more information, see `Viewing a List of Containers <https://docs.aws.amazon.com/mediastore/latest/ug/containers-view-list.html>`__ in the *AWS Elemental MediaStore User Guide*.

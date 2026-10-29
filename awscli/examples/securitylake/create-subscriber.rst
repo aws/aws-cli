@@ -38,7 +38,7 @@ Output::
         }
     }
 
-For more information, see `Creating a subscriber with data access <https://docs.aws.amazon.com/security-lake/latest/userguide/subscriber-data-access.html#create-subscriber-data-access>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Creating a subscriber with data access <https://docs.aws.amazon.com/security-lake/latest/userguide/create-subscriber-data-access.html>`__ in the *Amazon Security Lake User Guide*.
 
 **Example 2: To create a subscriber with query access**
 
@@ -80,4 +80,4 @@ Output::
         }
     }
 
-For more information, see `Creating a subscriber with query access <https://docs.aws.amazon.com/security-lake/latest/userguide/subscriber-query-access.html#create-query-subscriber-procedures>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Creating a subscriber with query access <https://docs.aws.amazon.com/security-lake/latest/userguide/create-query-subscriber-procedures.html>`__ in the *Amazon Security Lake User Guide*.

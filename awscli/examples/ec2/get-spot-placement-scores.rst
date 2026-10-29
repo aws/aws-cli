@@ -156,4 +156,4 @@ Output if ``SingleAvailabilityZone`` is set to ``true``. A scored list of Single
         },
        ...
 
-For more information about calculating a Spot placement score, and for example configurations, see `Calculate a Spot placement score <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html#work-with-spot-placement-score>`__ in the *Amazon EC2 User Guide*.
+For more information about calculating a Spot placement score, and for example configurations, see `Calculate a Spot placement score <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-spot-placement-score.html>`__ in the *Amazon EC2 User Guide*.

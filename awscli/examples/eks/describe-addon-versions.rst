@@ -50,7 +50,7 @@ Output::
     |  accuknox_kubearmor                         |  aws-marketplace |  AccuKnox             |  security               |
     +---------------------------------------------+------------------+-----------------------+-------------------------+
 
-For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
+For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/creating-an-add-on.html>`__ in the *Amazon EKS User Guide*.
 
 **Example 2: To list all the available addons for specified Kubernetes version supported for EKS**
 
@@ -100,7 +100,7 @@ Output::
     |  accuknox_kubearmor                         |  aws-marketplace |  AccuKnox             |  security               |
     +---------------------------------------------+------------------+-----------------------+-------------------------+
 
-For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
+For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/creating-an-add-on.html>`__ in the *Amazon EKS User Guide*.
 
 **Example 3: To list all the available vpc-cni addons version for specified Kubernetes version supported for EKS**
 
@@ -137,4 +137,4 @@ Output::
         "v1.12.0-eksbuild.2"
     ]
 
-For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#creating-an-add-on>`__ in the *Amazon EKS User Guide*.
+For more information, see `Managing Amazon EKS add-ons - Creating an add-on <https://docs.aws.amazon.com/eks/latest/userguide/creating-an-add-on.html>`__ in the *Amazon EKS User Guide*.

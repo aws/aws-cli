@@ -37,4 +37,4 @@ Output::
         ]
     }
 
-For more information, see `Monitoring Snapshot Exports <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.html#USER_ExportSnapshot.Monitoring>`__ in the *Amazon RDS User Guide*.
+For more information, see `Monitoring Snapshot Exports <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.Monitoring.html>`__ in the *Amazon RDS User Guide*.

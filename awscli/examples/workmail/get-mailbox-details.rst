@@ -13,4 +13,4 @@ Output::
         "MailboxSize": 0.03890800476074219
     }
 
-For more information, see `Managing User Accounts <https://docs.aws.amazon.com/workmail/latest/adminguide/manage-users.html>`__ in the *Amazon WorkMail Administrator Guide*.
+For more information, see `Working with users <https://docs.aws.amazon.com/workmail/latest/adminguide/users_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

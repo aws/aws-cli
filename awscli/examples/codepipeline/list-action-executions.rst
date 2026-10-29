@@ -113,4 +113,4 @@ Output::
         ]
     }
 
-For more information, see `View action executions (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html#pipelines-action-executions-cli>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `View action executions (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html>`__ in the *AWS CodePipeline User Guide*.

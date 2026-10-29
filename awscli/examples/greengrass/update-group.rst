@@ -8,4 +8,4 @@ The following ``update-group`` example updates the name of the specified Greengr
 
 This command produces no output.
 
-For more information, see `Configure AWS IoT Greengrass on AWS IoT <https://docs.aws.amazon.com/greengrass/latest/developerguide/gg-config.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Provision an AWS IoT thing to use as a Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/provision-core.html>`__ in the *AWS IoT Greengrass Developer Guide*.

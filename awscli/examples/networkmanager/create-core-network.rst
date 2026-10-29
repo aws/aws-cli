@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `Core networks <https://docs.aws.amazon.com/AWSEC2vpc/latest/cloudwan/cloudwan-networks-working-with.html#cloudwan-core-networks>`__ in the *AWS Cloud WAN User Guide*.
+For more information, see `Global and core networks in AWS Cloud WAN <https://docs.aws.amazon.com/network-manager/latest/cloudwan/cloudwan-networks-working-with.html>`__ in the *AWS Cloud WAN User Guide*.

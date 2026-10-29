@@ -30,4 +30,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Transit Gateway Association Proposal <https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-associate-tgw.html#multi-account-tgw-create-proposal>`__ in the *AWS Direct Connect User Guide*.
+For more information, see `Create a Transit Gateway and Direct Connect association proposal <https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-tgw-create-proposal.html>`__ in the *AWS Direct Connect User Guide*.

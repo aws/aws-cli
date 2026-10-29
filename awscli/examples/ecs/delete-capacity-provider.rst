@@ -27,7 +27,7 @@ Output::
         }
     }
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Deleting an Amazon ECS capacity provider <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/delete-capacity-provider-console-v2.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 2: To delete a capacity provider using the name**
 
@@ -58,4 +58,4 @@ Output::
         }
     }
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Deleting an Amazon ECS capacity provider <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/delete-capacity-provider-console-v2.html>`__ in the *Amazon ECS Developer Guide*.

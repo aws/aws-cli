@@ -33,4 +33,4 @@ Output::
         }
     }
 
-For more information, see `Deleting replicated backups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html#AutomatedBackups.Delete>`__ in the *Amazon RDS User Guide*.
+For more information, see `Deleting replicated backups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AutomatedBackups.Delete.html>`__ in the *Amazon RDS User Guide*.

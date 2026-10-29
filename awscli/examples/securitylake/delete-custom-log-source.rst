@@ -7,4 +7,4 @@ The following ``delete-custom-log-source`` example deletes a custom source in th
 
 This command produces no output.
 
-For more information, see `Deleting a custom source <https://docs.aws.amazon.com/security-lake/latest/userguide/custom-sources.html#delete-custom-source>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Deleting a custom source <https://docs.aws.amazon.com/security-lake/latest/userguide/delete-custom-source.html>`__ in the *Amazon Security Lake User Guide*.

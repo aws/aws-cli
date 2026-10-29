@@ -11,7 +11,7 @@ Output::
         "TaskHandle": "AQEB6nR4...HzlvZQ=="
     }
 
-For more information, see `This is the topic title <https://link.to.the/topic/page>`__ in the *Name of your guide*.
+For more information, see `Learn how to configure a dead-letter queue redrive in Amazon SQS <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-dead-letter-queue-redrive.html>`__ in the *Amazon SQS Developer Guide*.
 
 **Example 2: To start a message move task with a maximum rate**
 

@@ -19,5 +19,3 @@ Output::
             "updatedAt": 1559249315.208
         }
     }
-
-For more information, see `Working with Systems and Flow Configurations <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-sysdeploy.html>`__ in the *AWS IoT Things Graph User Guide*.

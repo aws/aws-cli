@@ -8,4 +8,4 @@ The following ``update-function-definition`` example updates the name for the sp
 
 This command produces no output.
 
-For more information, see `Run Local Lambda Functions <https://docs.aws.amazon.com/greengrass/latest/developerguide/lambda-functions.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Run Lambda functions on the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/lambda-functions.html>`__ in the *AWS IoT Greengrass Developer Guide*.

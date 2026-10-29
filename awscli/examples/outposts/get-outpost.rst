@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `Working with Outposts <https://docs.aws.amazon.com/outposts/latest/userguide/work-with-outposts.html>`__ in the *AWS Outposts User Guide*.
+For more information, see `What is AWS Outposts? <https://docs.aws.amazon.com/outposts/latest/userguide/what-is-outposts.html>`__ in the *AWS Outposts User Guide*.

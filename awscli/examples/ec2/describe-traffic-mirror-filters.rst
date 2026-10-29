@@ -31,4 +31,4 @@ Output::
         ]
     }
 
-For more information, see `View your traffic mirror filters <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-filter.html#view-traffic-mirroring-filter>`__ in the *Traffic Mirroring Guide*.
+For more information, see `Create, modify, or delete a traffic mirror filter <https://docs.aws.amazon.com/vpc/latest/mirroring/create-traffic-mirroring-filter.html>`__ in the *Traffic Mirroring Guide*.

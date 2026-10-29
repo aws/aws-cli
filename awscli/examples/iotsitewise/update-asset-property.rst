@@ -10,7 +10,7 @@ The following ``update-asset-property`` example updates a wind turbine asset's p
 
 This command produces no output.
 
-For more information, see `Mapping industrial data streams to asset properties <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Update an asset property alias <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-data-streams-method.html>`__ in the *AWS IoT SiteWise User Guide*.
 
 **Example 2: To enable asset property notifications**
 

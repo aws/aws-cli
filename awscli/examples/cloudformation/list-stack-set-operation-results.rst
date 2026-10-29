@@ -30,4 +30,4 @@ Output::
 
 **Note:** The ``SKIPPED`` status for ``AccountGateResult`` is expected for successful operations unless you create an account gate function.
 
-For more information, see `Prevent failed StackSets deployments using target account gates <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-account-gating.html>`__ in the *AWS CloudFormation User Guide*.
+For more information, see `StackSet operations <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stacksets-concepts-ops>`__ in the *AWS CloudFormation User Guide*.

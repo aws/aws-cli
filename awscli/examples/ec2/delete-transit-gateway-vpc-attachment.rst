@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Delete a VPC attachment <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#delete-vpc-attachment>`__ in the *Transit Gateways Guide*.
+For more information, see `Delete a VPC attachment <https://docs.aws.amazon.com/vpc/latest/tgw/delete-vpc-attachment.html>`__ in the *Transit Gateways Guide*.

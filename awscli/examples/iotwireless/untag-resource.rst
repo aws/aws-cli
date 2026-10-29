@@ -8,4 +8,4 @@ The following ``untag-resource`` example removes the tag ``MyTag`` and its value
 
 This command produces no output.
 
-For more information, see `Describe your AWS IoT Core for LoRaWAN resources <https://docs.aws.amazon.com/iot/latest/developerguide/connect-iot-lorawan-describe-resource.html>`__ in the *AWS IoT Developers Guide*.
+For more information, see `Tagging your AWS IoT Wireless resources <https://docs.aws.amazon.com/iot-wireless/latest/developerguide/tagging-iotwireless.html>`__ in the *AWS IoT Developers Guide*.

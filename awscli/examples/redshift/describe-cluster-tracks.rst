@@ -39,4 +39,4 @@ Output::
         ]
     }
 
-For more information, see `Choosing Cluster Maintenance Tracks <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-mgmt-maintenance-tracks>`__ in the *Amazon Redshift Cluster Management Guide*.
+For more information, see `Choosing Cluster Maintenance Tracks <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html>`__ in the *Amazon Redshift Cluster Management Guide*.

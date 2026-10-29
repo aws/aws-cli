@@ -78,7 +78,7 @@ Output::
         }
     }
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS capacity providers for EC2 workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/asg-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 2: To remove a capacity provider from a cluster**
 
@@ -154,7 +154,7 @@ Output::
         }
     }
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS capacity providers for EC2 workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/asg-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 3: To remove all capacity providers from a cluster**
 
@@ -222,4 +222,4 @@ Output::
         }
     }
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS capacity providers for EC2 workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/asg-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.

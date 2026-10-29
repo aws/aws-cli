@@ -29,6 +29,6 @@ Output::
         }
     }
 
-For more information, see `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-managing.html#rds-proxy-modifying-proxy>`__ in the *Amazon RDS User Guide* and `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-managing.html#rds-proxy-modifying-proxy>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-modifying-proxy.html>`__ in the *Amazon RDS User Guide* and `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-modifying-proxy.html>`__ in the *Amazon Aurora User Guide*.
 
 

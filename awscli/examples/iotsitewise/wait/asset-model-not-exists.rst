@@ -7,4 +7,4 @@ The following ``wait asset-model-not-exists`` example pauses and resumes only af
 
 This command produces no output.
 
-For more information, see `Deleting asset models <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-assets-and-models.html#delete-asset-models>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Deleting asset models <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-asset-models.html>`__ in the *AWS IoT SiteWise User Guide*.

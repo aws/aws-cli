@@ -20,4 +20,4 @@ Output::
         }
     }
 
-For more information, see `Scheduled events for Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html#schedevents_actions_reboot>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Reschedule a scheduled event for an EC2 instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reschedule-event.html>`__ in the *Amazon EC2 User Guide*.

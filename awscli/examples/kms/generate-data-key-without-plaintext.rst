@@ -20,4 +20,4 @@ Output::
 
 The ``CiphertextBlob`` (encrypted data key) is returned in base64-encoded format. 
 
-For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/data-keys.html>`__ in the *AWS Key Management Service Developer Guide*.

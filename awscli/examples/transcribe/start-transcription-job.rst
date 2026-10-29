@@ -154,7 +154,7 @@ Output::
         }
     }
 
-For more information, see `Filtering Transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/filter-transcriptions.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Using custom vocabulary filters to delete, mask, or flag words <https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 5: To transcribe an audio file and remove any unwanted words in the transcription output**
 
@@ -196,7 +196,7 @@ Output::
         }
     }
 
-For more information, see `Filtering Transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/filter-transcriptions.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Using custom vocabulary filters to delete, mask, or flag words <https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 6: To transcribe an audio file with increased accuracy using a custom vocabulary**
 
@@ -236,7 +236,7 @@ Output::
         }
     }
 
-For more information, see `Filtering Transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/filter-transcriptions.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Using custom vocabulary filters to delete, mask, or flag words <https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 7: To identify the language of an audio file and transcribe it**
 

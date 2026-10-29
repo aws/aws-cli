@@ -29,5 +29,3 @@ Contents of ``LiveEventsContainerPolicy.json``::
     }
 
 This command produces no output.
-
-For more information, see `Editing a Container Policy <https://docs.aws.amazon.com/mediastore/latest/ug/policies-edit.html>`__ in the *AWS Elemental MediaStore User Guide*.

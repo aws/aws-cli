@@ -46,4 +46,4 @@ Output::
         }
     }
 
-For more information, see `Restoring a Snapshot to a Point in Time <https://docs.aws.amazon.com/documentdb/latest/developerguide/backup-restore.point-in-time-recovery.html>`__ in the *Amazon DocumentDB Developer Guide*.
+For more information, see `Restoring to a point in time <https://docs.aws.amazon.com/documentdb/latest/devguide/backup_restore-point_in_time_recovery.html>`__ in the *Amazon DocumentDB Developer Guide*.

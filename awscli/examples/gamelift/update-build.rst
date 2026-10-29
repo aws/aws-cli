@@ -22,4 +22,4 @@ Output::
         }
     }
 
-For more information, see `Update Your Build Files <https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-build-cli-uploading.html#gamelift-build-cli-uploading-update-build-files>`__ in the *Amazon GameLift Developer Guide*.
+For more information, see `Update Your Build Files <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-build-cli-uploading-update-build-files.html>`__ in the *Amazon GameLift Developer Guide*.

@@ -6,5 +6,3 @@ The following ``delete-container-policy`` example deletes the policy that is ass
         --container-name LiveEvents
 
 This command produces no output.
-
-For more information, see `DeleteContainerPolicy <https://docs.aws.amazon.com/mediastore/latest/apireference/API_DeleteContainerPolicy.html>`__ in the *AWS Elemental MediaStore API reference*.

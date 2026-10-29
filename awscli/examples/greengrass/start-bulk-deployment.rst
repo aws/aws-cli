@@ -12,4 +12,4 @@ Output::
         "BulkDeploymentId": "870fb41b-6288-4e0c-bc76-a7ba4b4d3267"
     }
 
-For more information, see `Create Bulk Deployments for Groups <https://docs.aws.amazon.com/greengrass/latest/developerguide/bulk-deploy-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Create bulk deployments for groups <https://docs.aws.amazon.com/greengrass/v1/developerguide/bulk-deploy-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.

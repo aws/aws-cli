@@ -13,4 +13,4 @@ Output::
 
 When the ``cancel-key-deletion`` command succeeds, the scheduled deletion is canceled. However, the key state of the KMS key is ``Disabled``, so you can't use the KMS key in cryptographic operations. To restore its functionality, use the ``enable-key`` command .
 
-For more information, see `Scheduling and canceling key deletion <https://docs.aws.amazon.com/kms/latest/developerguide/deleting-keys.html#deleting-keys-scheduling-key-deletion>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Scheduling and canceling key deletion <https://docs.aws.amazon.com/kms/latest/developerguide/deleting-keys-scheduling-key-deletion.html>`__ in the *AWS Key Management Service Developer Guide*.

@@ -29,7 +29,7 @@ Output::
         ]
     }
 
-For more information, see `Listing assets <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/discover-asset-resources.html#list-assets>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Model industrial assets <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/industrial-asset-models.html>`__ in the *AWS IoT SiteWise User Guide*.
 
 **Example 2: To list all assets based on an asset model**
 
@@ -57,4 +57,4 @@ Output::
         ]
     }
 
-For more information, see `Listing assets <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/discover-asset-resources.html#list-assets>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Model industrial assets <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/industrial-asset-models.html>`__ in the *AWS IoT SiteWise User Guide*.

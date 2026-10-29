@@ -12,7 +12,3 @@ Output::
         "assessmentTargetArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX"
     }
 
-For more information, see `Amazon Inspector Assessment Targets`_ in the *Amazon Inspector* guide.
-
-.. _`Amazon Inspector Assessment Targets`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_applications.html
-

@@ -23,4 +23,4 @@ Output::
         }
     }
 
-For more information, see `Integrate a Chat Bot with Amazon Chime <https://docs.aws.amazon.com/chime/latest/dg/integrate-bots.html>`__ in the *Amazon Chime Developer Guide*.
+For more information, see `Step 1: Integrate a chatbot with Amazon Chime <https://docs.aws.amazon.com/chime/latest/ag/integrate-bots.html>`__ in the *Amazon Chime Administration Guide*.

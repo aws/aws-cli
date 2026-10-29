@@ -4,7 +4,7 @@ The following ``create-key`` example creates a symmetric encryption KMS key.
 
 To create the basic KMS key, a symmetric encryption key, you do not need to specify any parameters. The default values for those parameters create a symmetric encryption key.
 
-Because this command doesn't specify a key policy, the KMS key gets the `default key policy <https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default>`__ for programmatically created KMS keys. To view the key policy, use the ``get-key-policy`` command. To change the key policy, use the ``put-key-policy`` command. ::
+Because this command doesn't specify a key policy, the KMS key gets the `default key policy <https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html>`__ for programmatically created KMS keys. To view the key policy, use the ``get-key-policy`` command. To change the key policy, use the ``put-key-policy`` command. ::
 
     aws kms create-key
 

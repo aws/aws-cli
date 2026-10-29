@@ -20,4 +20,4 @@ Output::
         "TotalExtractedDataInGB": 0
     }
 
-For more information, see `Canceling a snapshot export task <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.html#USER_ExportSnapshot.Canceling>`__ in the *Amazon RDS User Guide* or `Canceling a snapshot export task <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_ExportSnapshot.html#USER_ExportSnapshot.Canceling>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Canceling a snapshot export task <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.Canceling.html>`__ in the *Amazon RDS User Guide* or `Canceling a snapshot export task <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_ExportSnapshot.html>`__ in the *Amazon Aurora User Guide*.

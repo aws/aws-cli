@@ -43,4 +43,4 @@ Output::
     }
 
 
-For more information, see `Creating an Amazon DocumentDB Subnet Group <https://docs.aws.amazon.com/documentdb/latest/developerguide/document-db-subnet-groups.html#document-db-subnet-group-create>`__ in the *Amazon DocumentDB Developer Guide*.
+For more information, see `Creating an Amazon DocumentDB Subnet Group <https://docs.aws.amazon.com/documentdb/latest/devguide/document-db-subnet-group-create.html>`__ in the *Amazon DocumentDB Developer Guide*.

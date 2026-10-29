@@ -21,5 +21,3 @@ Output::
         },
         "QuerySubmissionTime": "2022-08-11T02:14:38.641870+00:00"
     }
-
-For more information, see `Transactional data operations <https://docs.aws.amazon.com/lake-formation/latest/dg/transactions-data-operations.html>`__ in the *AWS Lake Formation Developer Guide*.

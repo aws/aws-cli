@@ -11,4 +11,4 @@ Output::
         "TrafficMirrorTargetId": "tmt-060f48ce9EXAMPLE"
     }
 
-For more information, see `Delete a Traffic Mirror Target <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-target.html#delete-traffic-mirroring-target>`__ in the *AWS Traffic Mirroring Guide*.
+For more information, see `Create or delete a traffic mirror target <https://docs.aws.amazon.com/vpc/latest/mirroring/create-traffic-mirroring-target.html>`__ in the *AWS Traffic Mirroring Guide*.

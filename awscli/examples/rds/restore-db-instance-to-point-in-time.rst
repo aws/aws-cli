@@ -56,4 +56,4 @@ Output::
         }
     }
 
-For more information, see `Restoring to a specified time from a replicated backup <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html#AutomatedBackups.PiTR>`__ in the *Amazon RDS User Guide*.
+For more information, see `Restoring to a specified time from a replicated backup <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AutomatedBackups.PiTR.html>`__ in the *Amazon RDS User Guide*.

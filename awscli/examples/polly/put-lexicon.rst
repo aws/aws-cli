@@ -24,4 +24,4 @@ Contents of ``example.pls``::
 
 This command produces no output.
 
-For more information, see `Using the PutLexicon operation <https://docs.aws.amazon.com/polly/latest/dg/gs-put-lexicon.html>`__ in the *Amazon Polly Developer Guide*.
+For more information, see `Managing lexicons <https://docs.aws.amazon.com/polly/latest/dg/managing-lexicons.html>`__ in the *Amazon Polly Developer Guide*.

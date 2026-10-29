@@ -40,4 +40,4 @@ Output::
         }
     }
 
-For more information, see `Deleting an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-managing.html#rds-proxy-deleting>`__ in the *Amazon RDS User Guide* and `Deleting an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-managing.html#rds-proxy-deleting>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Deleting an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-deleting.html>`__ in the *Amazon RDS User Guide* and `Deleting an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-deleting.html>`__ in the *Amazon Aurora User Guide*.

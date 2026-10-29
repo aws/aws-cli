@@ -25,4 +25,4 @@ Output::
         ]
     }
 
-For more information, see `Viewing an RDS proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-setup.html#rds-proxy-viewing>`__ in the *Amazon RDS User Guide* and `Viewing an RDS proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-setup.html#rds-proxy-viewing>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Viewing an RDS proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-viewing.html>`__ in the *Amazon RDS User Guide* and `Viewing an RDS proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-viewing.html>`__ in the *Amazon Aurora User Guide*.

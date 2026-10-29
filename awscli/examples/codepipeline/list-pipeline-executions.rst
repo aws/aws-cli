@@ -30,4 +30,4 @@ Output::
         ]
     }
 
-For more information, see `View execution history <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html#pipelines-executions-cli>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `View execution history <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html>`__ in the *AWS CodePipeline User Guide*.

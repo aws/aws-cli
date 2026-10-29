@@ -33,7 +33,7 @@ Output::
         ]
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 2: To list user-created backups in a specific time range**
 
@@ -63,7 +63,7 @@ Output::
         ]
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 3: To limit page size**
 
@@ -101,7 +101,7 @@ Output::
         ]
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 4: To limit the number of items returned**
 
@@ -129,7 +129,7 @@ Output::
         "NextToken": "abCDeFGhiJKlmnOPqrSTuvwxYZ1aBCdEFghijK7LM51nOpqRSTuv3WxY3ZabC5dEFGhI2Jk3LmnoPQ6RST9"
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 5: To retrieve the next page of results**
 
@@ -156,4 +156,4 @@ Output::
         ]
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.

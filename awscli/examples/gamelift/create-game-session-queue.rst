@@ -81,4 +81,4 @@ Output::
         }
     }
 
-For more information, see `Create a Queue <https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-creating.html#queues-creating-cli>`__ in the *Amazon GameLift Developer Guide*.
+For more information, see `Create a Queue <https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-creating.html>`__ in the *Amazon GameLift Developer Guide*.

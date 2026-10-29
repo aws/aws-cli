@@ -8,7 +8,7 @@ The following ``put-configuration-recorder`` example creates a configuration rec
 
 This command produces no output. To verify the settings of your configuration recorder, run the `describe-configuration-recorders`__ command.
 
-.. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-configuration-recorders.html
+.. __: https://docs.aws.amazon.com/cli/latest/reference/configservice/describe-configuration-recorders.html
 
 For more information, see `Recording AWS Resources with AWS Config <https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html>`__ in the *AWS Config Developer Guide*.
 
@@ -44,7 +44,7 @@ Before you can specify resource types for the `resourceTypes` key, you must set 
 
 This command produces no output. To verify the settings of your configuration recorder, run the `describe-configuration-recorders`__ command.
 
-.. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-configuration-recorders.html
+.. __: https://docs.aws.amazon.com/cli/latest/reference/configservice/describe-configuration-recorders.html
 
 For more information, see `Recording AWS Resources with AWS Config <https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html>`__ in the *AWS Config Developer Guide*.
 
@@ -79,6 +79,6 @@ Before you can specify resource types to excluding from recording: 1) You must s
 
 This command produces no output. To verify the settings of your configuration recorder, run the `describe-configuration-recorders`__ command.
 
-.. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-configuration-recorders.html
+.. __: https://docs.aws.amazon.com/cli/latest/reference/configservice/describe-configuration-recorders.html
 
 For more information, see `Recording AWS Resources with AWS Config <https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html>`__ in the *AWS Config Developer Guide*.

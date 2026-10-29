@@ -13,4 +13,4 @@ Output::
         "DBParameterGroupName": "test-sqlserver-se-2017"
     }
 
-For more information, see `Modifying Parameters in a DB Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html#USER_WorkingWithParamGroups.Modifying>`__ in the *Amazon RDS User Guide*.
+For more information, see `Modifying Parameters in a DB Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.Modifying.html>`__ in the *Amazon RDS User Guide*.

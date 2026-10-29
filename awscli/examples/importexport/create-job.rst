@@ -36,10 +36,6 @@ Output::
         "WarningMessage": "**** Device will be erased before being returned. ****"
     }
 
-For more information on the manifest file format, see `Creating Import Manifests`_ in the *AWS Import/Export Developer Guide*.
-
-.. _`Creating Import Manifests`: http://docs.aws.amazon.com/AWSImportExport/latest/DG/ImportManifestFile.html
-
 You can also pass the manifest as a string in quotes. ::
 
     aws importexport create-job \

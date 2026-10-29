@@ -11,4 +11,4 @@ Output::
         "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:027c7c4610ea4aacaf0b883093cab899"
     }
 
-For more information, see `Enabling Amazon Detective <https://docs.aws.amazon.com/detective/latest/adminguide/detective-enabling.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Enabling Detective <https://docs.aws.amazon.com/detective/latest/userguide/detective-enabling.html>`__ in the *Amazon Detective Administration Guide*.

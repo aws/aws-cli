@@ -17,4 +17,4 @@ Output::
         ]
     }
 
-For more information, see `Choose Computing Resources <https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html>`__ in the *Amazon GameLift Developer Guide*.
+For more information, see `Choose compute resources for a managed fleet <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-compute.html>`__ in the *Amazon GameLift Developer Guide*.

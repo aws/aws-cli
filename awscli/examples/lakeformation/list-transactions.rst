@@ -37,5 +37,3 @@ Output::
         ],
         "NextToken": "77X1ebypsI7os+X2lhHsZLGNCDK3nNGpwRdFpicSOHgcX1/QMoniUAKcpR3kj3ts3PVdMA=="
     }
-
-For more information, see `Reading from and writing to the data lake within transactions <https://docs.aws.amazon.com/lake-formation/latest/dg/transaction-ops.html>`__ in the *AWS Lake Formation Developer Guide*.

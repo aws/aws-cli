@@ -33,4 +33,4 @@ Output::
         }
     }
 
-For more information, see `Core networks <https://docs.aws.amazon.com/vpc/latest/cloudwan/cloudwan-networks-working-with.html#cloudwan-core-networks>`__ in the *Cloud WAN User Guide*.
+For more information, see `Core networks <https://docs.aws.amazon.com/vpc/latest/cloudwan/cloudwan-networks-working-with.html>`__ in the *Cloud WAN User Guide*.

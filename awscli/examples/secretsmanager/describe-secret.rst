@@ -55,4 +55,4 @@ Output::
         ]
     }
 
-For more information, see `Secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_secret>`__ in the *Secrets Manager User Guide*.
+For more information, see `What's in a Secrets Manager secret? <https://docs.aws.amazon.com/secretsmanager/latest/userguide/whats-in-a-secret.html>`__ in the *Secrets Manager User Guide*.

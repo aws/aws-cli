@@ -39,4 +39,4 @@ Output::
         ]
     }
 
-For more information, see `View Traffic Mirror Session Details <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-session.html#view-traffic-mirroring-session>`__ in the *AWS Traffic Mirroring Guide*.
+For more information, see `Create, modify, or delete a traffic mirror session <https://docs.aws.amazon.com/vpc/latest/mirroring/create-traffic-mirroring-session.html>`__ in the *AWS Traffic Mirroring Guide*.

@@ -14,4 +14,4 @@ Output::
         "GroupId": "8eaadd72-ce4b-4f15-892a-0cc4f3a343f1"
     }
 
-For more information, see `AWS IoT Greengrass Security <https://docs.aws.amazon.com/greengrass/latest/developerguide/gg-sec.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Overview of AWS IoT Greengrass security <https://docs.aws.amazon.com/greengrass/v1/developerguide/gg-sec.html>`__ in the *AWS IoT Greengrass Developer Guide*.

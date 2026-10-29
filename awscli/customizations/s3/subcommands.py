@@ -705,6 +705,20 @@ TAGS = {
     ),
 }
 
+OBJECT_TAGS = {
+    'name': 'tags',
+    'synopsis': '--tags <key> <value>',
+    'action': 'append',
+    'nargs': 2,
+    'help_text': (
+        'Tags to set on objects, in the format of ``--tags key value``. '
+        'You can specify this flag multiple times, once for each tag. '
+        'This parameter is only supported when transferring from a local '
+        'path to S3. For a ``sync``, tags are only set on objects that '
+        'are transferred.'
+    ),
+}
+
 
 CASE_CONFLICT = {
     'name': 'case-conflict',
@@ -750,6 +764,7 @@ TRANSFER_ARGS = [
     SSE_C_COPY_SOURCE,
     SSE_C_COPY_SOURCE_KEY,
     STORAGE_CLASS,
+    OBJECT_TAGS,
     GRANTS,
     WEBSITE_REDIRECT,
     CONTENT_TYPE,
@@ -1838,6 +1853,10 @@ class CommandParameters:
         if params.get('checksum_mode'):
             self._raise_if_paths_type_incorrect_for_param(
                 CHECKSUM_MODE['name'], params['paths_type'], ['s3local']
+            )
+        if params.get('tags'):
+            self._raise_if_paths_type_incorrect_for_param(
+                OBJECT_TAGS['name'], params['paths_type'], ['locals3']
             )
 
         # If the user provided local path does not exist, hard fail because

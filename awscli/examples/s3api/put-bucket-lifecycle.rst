@@ -34,7 +34,7 @@ Contents of ``lifecycle.json``::
         ]
     }
 
-The first rule moves files to Amazon Glacier after sixty days. The second rule deletes files from Amazon S3 on the specified date. For information on acceptable timestamp formats, see `Specifying Parameter Values`_ in the *AWS CLI User Guide*.
+The first rule moves files to Amazon Glacier after sixty days. The second rule deletes files from Amazon S3 on the specified date. For information on acceptable timestamp formats, see `Specifying parameter values in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html>`__ in the *AWS CLI User Guide*.
 
 Each rule in the above example specifies a policy (``Transition`` or ``Expiration``) and file prefix (folder name) to which it applies. You can also create a rule that applies to an entire bucket by specifying a blank prefix::
 
@@ -52,4 +52,4 @@ Each rule in the above example specifies a policy (``Transition`` or ``Expiratio
         ]
     }
 
-.. _`Specifying Parameter Values`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html
+For more information, see `Managing the lifecycle of objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html>`__ in the *Amazon S3 User Guide*.

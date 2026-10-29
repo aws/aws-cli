@@ -33,3 +33,5 @@ Output::
         ],
         "NextToken": "eyJOZXh0VG9XMPLiOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
     }
+
+For more information, see `Monitor stack progress <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/monitor-stack-progress.html>`__ in the *AWS CloudFormation User Guide*.

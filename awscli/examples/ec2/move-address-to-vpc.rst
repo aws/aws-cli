@@ -10,3 +10,5 @@ Output::
     {
         "Status": "MoveInProgress"
     }
+
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.

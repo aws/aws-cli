@@ -54,3 +54,5 @@ Output::
             }
         }
     }
+
+For more information, see `Pausing and resuming an App Runner service <https://docs.aws.amazon.com/apprunner/latest/dg/manage-pause.html>`__ in the *AWS App Runner Developer Guide*.

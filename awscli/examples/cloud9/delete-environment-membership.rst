@@ -7,3 +7,5 @@ The following ``delete-environment-membership`` example deletes the specified en
         --user-arn arn:aws:iam::123456789012:user/AnotherDemoUser
 
 This command produces no output.
+
+For more information, see `Remove another environment member <https://docs.aws.amazon.com/cloud9/latest/user-guide/share-environment-delete-member.html>`__ in the *AWS Cloud9 User Guide*.

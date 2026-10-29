@@ -19,3 +19,5 @@ The following ``change-tags-for-resource`` example removes a tag named ``owner``
         --remove-tag-keys owner
 
 This command produces no output.
+
+For more information, see `Tagging Amazon Route 53 resources <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/tagging-resources.html>`__ in the *Amazon Route 53 Developer Guide*.

@@ -30,3 +30,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Deleting multiple objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/delete-multiple-objects.html>`__ in the *Amazon S3 User Guide*.

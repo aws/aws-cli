@@ -37,3 +37,5 @@ Output::
         ],
         "UserLastModifiedDate": 1548108509.537
     }
+
+For more information, see `Managing and searching for user accounts <https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html>`__ in the *Amazon Cognito Developer Guide*.

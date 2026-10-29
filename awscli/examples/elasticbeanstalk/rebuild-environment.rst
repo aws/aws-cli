@@ -6,3 +6,5 @@ The following ``rebuild-environment`` example terminates and recreates the resou
         --environment-name my-env
 
 This command produces no output.
+
+For more information, see `Rebuilding Elastic Beanstalk environments <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-management-rebuild.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

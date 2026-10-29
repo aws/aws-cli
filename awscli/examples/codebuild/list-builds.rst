@@ -34,5 +34,5 @@ Output::
         ]
     }
 
-For more information, see `View a List of Build IDs (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-list.html>`_ in the *AWS CodeBuild User Guide*
+For more information, see `View a list of build IDs in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-list.html>`__ in the *AWS CodeBuild User Guide*.
 

@@ -8,3 +8,5 @@ The following ``put-object-retention`` example sets an object retention configur
         --retention '{ "Mode": "GOVERNANCE", "RetainUntilDate": "2025-01-01T00:00:00" }'
 
 This command produces no output.
+
+For more information, see `Locking objects with Object Lock <https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html>`__ in the *Amazon S3 User Guide*.

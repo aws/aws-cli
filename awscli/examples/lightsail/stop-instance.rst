@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Start, stop, or reboot your Lightsail instance <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-start-stop-or-restart-your-instance-virtual-private-server.html>`__ in the *Amazon Lightsail User Guide*.

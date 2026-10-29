@@ -42,3 +42,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create and attach a static IP to your Lightsail instance <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-create-static-ip.html>`__ in the *Amazon Lightsail User Guide*.

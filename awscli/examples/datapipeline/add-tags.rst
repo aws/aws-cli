@@ -24,3 +24,5 @@ To view the tags, use the describe-pipelines command. For example, the tags adde
             ]
         ...
     }
+
+For more information, see `Tagging Your Pipeline <https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-adding-tags.html>`__ in the *AWS Data Pipeline Developer Guide*.

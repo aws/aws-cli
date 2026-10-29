@@ -24,3 +24,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create an Amazon S3-backed AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-instance-store.html>`__ in the *Amazon EC2 User Guide*.

@@ -12,3 +12,5 @@ Output::
     {
         "OperationId": "e2b60321-6cab-xmpl-bde7-530c6f47950e"
     }
+
+For more information, see `Update CloudFormation StackSets <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-update.html>`__ in the *AWS CloudFormation User Guide*.

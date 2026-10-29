@@ -26,3 +26,5 @@ Output::
             "CreateTime": "2019-12-05T18:40:49.413Z"
         }
     }
+
+For more information, see `Invalidate files to remove content <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html>`__ in the *Amazon CloudFront Developer Guide*.

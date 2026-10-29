@@ -6,3 +6,5 @@ The following ``delete-core-definition`` example deletes the specified Greengras
         --core-definition-id "ff36cc5f-9f98-4994-b468-9d9b6dc52abd"
 
 This command produces no output.
+
+For more information, see `Overview of the AWS IoT Greengrass group object model <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.

@@ -9,3 +9,5 @@ The following ``delete-method-response`` example deletes a method response for t
         --status-code 200
 
 This command produces no output.
+
+For more information, see `Set up a method response in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-method-settings-method-response.html>`__ in the *Amazon API Gateway Developer Guide*.

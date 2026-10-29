@@ -17,3 +17,4 @@ Output::
         }
     }
 
+For more information, see `AWS Service Catalog TagOption Library <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/tagoptions.html>`__ in the *AWS Service Catalog Administrator Guide*.

@@ -85,3 +85,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Quotas and constraints for Amazon RDS <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html>`__ in the *Amazon RDS User Guide*.

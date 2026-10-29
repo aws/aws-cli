@@ -8,4 +8,4 @@ The following ``update-subscription-definition`` example updates the name for th
 
 This command produces no output.
 
-For more information, see `title <link>`__ in the *guide*.
+For more information, see `Overview of the AWS IoT Greengrass group object model <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

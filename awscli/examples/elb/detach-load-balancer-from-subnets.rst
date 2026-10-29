@@ -14,3 +14,4 @@ Output::
         ]
     }
 
+For more information, see `Configure subnets for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html>`__ in the *Classic Load Balancers User Guide*.

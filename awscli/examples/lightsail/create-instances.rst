@@ -29,6 +29,8 @@ Output::
         ]
     }
 
+For more information, see `Create a Lightsail instance <https://docs.aws.amazon.com/lightsail/latest/userguide/how-to-create-amazon-lightsail-instance-virtual-private-server-vps.html>`__ in the *Amazon Lightsail User Guide*.
+
 **Example 2: To create multiple instances at one time**
 
 The following ``create-instances`` example creates three instances in the specified AWS Region and Availability Zone, using the WordPress blueprint, and the $5.00 USD bundle. ::
@@ -87,3 +89,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create a Lightsail instance <https://docs.aws.amazon.com/lightsail/latest/userguide/how-to-create-amazon-lightsail-instance-virtual-private-server-vps.html>`__ in the *Amazon Lightsail User Guide*.

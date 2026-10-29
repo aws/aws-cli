@@ -20,6 +20,4 @@ Output::
         }
     }
 
-For more information, see `Working with Instances Scheduled for Reboot`_ in the *Amazon Elastic Compute Cloud User Guide*
-
-.. _`Working with Instances Scheduled for Reboot`: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html#schedevents_actions_reboot
+For more information, see `Scheduled events for Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html#schedevents_actions_reboot>`__ in the *Amazon EC2 User Guide*.

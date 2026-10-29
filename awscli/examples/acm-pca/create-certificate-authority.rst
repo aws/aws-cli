@@ -40,3 +40,5 @@ Output::
     {
         "CertificateAuthorityArn": "arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
+
+For more information, see `Create a private CA in AWS Private CA <https://docs.aws.amazon.com/privateca/latest/userguide/create-CA.html>`__ in the *AWS Private Certificate Authority User Guide*.

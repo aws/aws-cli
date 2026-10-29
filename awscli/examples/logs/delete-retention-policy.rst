@@ -6,3 +6,5 @@ The following ``delete-retention-policy`` example removes the retention policy t
         --log-group-name my-logs
 
 This command produces no output.
+
+For more information, see `Working with log groups and log streams <https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html>`__ in the *Amazon CloudWatch Logs User Guide*.

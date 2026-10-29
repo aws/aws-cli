@@ -15,3 +15,5 @@ Output::
             "BlockPublicAcls": true
         }
     }
+
+For more information, see `Configuring block public access settings for your account <https://docs.aws.amazon.com/AmazonS3/latest/userguide/configuring-block-public-access-account.html>`__ in the *Amazon S3 User Guide*.

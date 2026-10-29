@@ -22,3 +22,5 @@ Output::
             "AtRestEncryptionEnabled": false
         }
     }
+
+For more information, see `Deleting a replication group <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Replication.DeletingRepGroup.html>`__ in the *Amazon ElastiCache User Guide*.

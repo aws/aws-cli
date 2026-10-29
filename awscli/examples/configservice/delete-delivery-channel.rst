@@ -6,3 +6,5 @@ The following ``delete-delivery-channel`` example deletes the default delivery c
         --delivery-channel-name default
 
 This command produces no output.
+
+For more information, see `Working with the Delivery Channel <https://docs.aws.amazon.com/config/latest/developerguide/manage-delivery-channel.html>`__ in the *AWS Config Developer Guide*.

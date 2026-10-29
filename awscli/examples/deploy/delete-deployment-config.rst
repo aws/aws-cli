@@ -6,3 +6,5 @@ The following ``delete-deployment-config`` example deletes a custom deployment c
         --deployment-config-name ThreeQuartersHealthy
 
 This command produces no output.
+
+For more information, see `Delete a deployment configuration with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-delete.html>`__ in the *AWS CodeDeploy User Guide*.

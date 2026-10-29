@@ -17,3 +17,5 @@ Output::
             "DBInstanceIdentifier": "test-instance-repl"
         }
     }
+
+For more information, see `Creating a read replica <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.Create.html>`__ in the *Amazon RDS User Guide*.

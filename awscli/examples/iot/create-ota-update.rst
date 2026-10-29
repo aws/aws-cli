@@ -47,4 +47,4 @@ Output::
         "otaUpdateStatus": "CREATE_IN_PROGRESS"
     }
 
-For more information, see `CreateOTAUpdate <https://docs.aws.amazon.com/iot/latest/apireference/API_CreateOTAUpdate.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Creating an OTA update with the AWS CLI <https://docs.aws.amazon.com/freertos/latest/userguide/ota-cli-workflow.html>`__ in the *FreeRTOS User Guide*.

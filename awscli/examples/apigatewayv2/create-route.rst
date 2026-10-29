@@ -15,7 +15,7 @@ Output::
         "RouteId": "1122334"
     }
 
-For more information, see `Working with routes for WebSocket APIs <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-add-route.html>`__ in the *Amazon API Gateway Developer Guide*
+For more information, see `Create routes for WebSocket APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/websocket-api-develop-routes.html>`__ in the *Amazon API Gateway Developer Guide*.
 
 **Example 2: To create a route for an HTTP API**
 
@@ -34,4 +34,4 @@ Output::
         "RouteId": "1122334"
     }
 
-For more information, see `Working with routes for HTTP APIs <https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-routes.html>`__ in the *Amazon API Gateway Developer Guide*
+For more information, see `Create routes for HTTP APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-routes.html>`__ in the *Amazon API Gateway Developer Guide*.

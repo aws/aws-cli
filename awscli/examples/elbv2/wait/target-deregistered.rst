@@ -7,3 +7,5 @@ The following ``wait target-deregistered`` example pauses and resumes running on
         --targets Id=i-1234567890abcdef0,Port=80
 
 This command produces no output.
+
+For more information, see `Register targets with your Application Load Balancer target group <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-register-targets.html>`__ in the *Application Load Balancers User Guide*.

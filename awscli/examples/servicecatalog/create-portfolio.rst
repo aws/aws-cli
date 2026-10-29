@@ -17,3 +17,5 @@ Output::
             "Id": "port-2s6xmplq5wdh4"
         }
     }
+
+For more information, see `Creating and Deleting Portfolios <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/portfoliomgmt-create.html>`__ in the *AWS Service Catalog Administrator Guide*.

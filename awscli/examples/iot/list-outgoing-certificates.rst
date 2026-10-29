@@ -18,4 +18,4 @@ Output::
         ]
     }
 
-For more information, see `ListOutgoingCertificates <https://docs.aws.amazon.com/iot/latest/apireference/API_ListOutgoingCertificates.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Transfer a certificate to another account <https://docs.aws.amazon.com/iot/latest/developerguide/transfer-cert.html>`__ in the *AWS IoT Core Developer Guide*.

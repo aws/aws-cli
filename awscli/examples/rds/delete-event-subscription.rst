@@ -26,3 +26,5 @@ Output::
             "Status": "deleting"
         }
     }
+
+For more information, see `Deleting an Amazon RDS event notification subscription <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.Deleting.html>`__ in the *Amazon RDS User Guide*.

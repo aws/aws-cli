@@ -10,3 +10,5 @@ Output::
     {
         "Return": true
     }
+
+For more information, see `Elastic network interfaces <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html>`__ in the *Amazon EC2 User Guide*.

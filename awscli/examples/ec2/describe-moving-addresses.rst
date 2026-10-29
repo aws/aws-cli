@@ -19,3 +19,5 @@ The following ``describe-moving-addresses`` example describes all addresses that
 
     aws ec2 describe-moving-addresses \
         --filters Name=moving-status,Values=MovingToVpc
+
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.

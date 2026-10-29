@@ -11,3 +11,5 @@ Output::
     {
         "ReplicationTaskArn": "arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII"
     }
+
+For more information, see `Reloading tables during a task <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.ReloadTables.html>`__ in the *AWS Database Migration Service User Guide*.

@@ -16,3 +16,5 @@ Output::
         "BacktrackRequestCreationTime": "2018-03-19T11:30:00.123000+00:00",
         "Status": "PENDING"
     }
+
+For more information, see `Backtracking an Aurora DB cluster <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html>`__ in the *Amazon Aurora User Guide*.

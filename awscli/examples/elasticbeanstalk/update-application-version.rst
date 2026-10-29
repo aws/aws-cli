@@ -22,3 +22,5 @@ Output::
             }
         }
     }
+
+For more information, see `Managing application versions <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-versions.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

@@ -90,4 +90,4 @@ Output::
         }
     }
 
-For more information, see `Working with AWS Elemental MediaConvert Output Presets <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-presets.html>`_ in the *AWS Elemental MediaConvert User Guide*.
+For more information, see `Working with output presets <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-presets.html>`__ in the *AWS Elemental MediaConvert User Guide*.

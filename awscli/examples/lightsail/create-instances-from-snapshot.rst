@@ -30,3 +30,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create Lightsail instances from snapshots <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-create-instance-from-snapshot.html>`__ in the *Amazon Lightsail User Guide*.

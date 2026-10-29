@@ -27,3 +27,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create and attach Lightsail block storage disks to Linux instances <https://docs.aws.amazon.com/lightsail/latest/userguide/create-and-attach-additional-block-storage-disks-linux-unix.html>`__ in the *Amazon Lightsail User Guide*.

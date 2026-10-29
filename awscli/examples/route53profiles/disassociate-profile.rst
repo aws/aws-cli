@@ -21,3 +21,5 @@ Output::
             "StatusMessage": "Deleting Profile Association"
         }
     }
+
+For more information, see `Viewing VPCs associated to an Amazon Route 53 Profile <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles-vpcs-editing.html>`__ in the *Amazon Route 53 Developer Guide*.

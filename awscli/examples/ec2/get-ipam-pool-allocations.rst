@@ -26,3 +26,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View IPAM pool allocations <https://docs.aws.amazon.com/vpc/latest/ipam/view-alloc-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

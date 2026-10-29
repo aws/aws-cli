@@ -9,3 +9,5 @@ Output::
     {
         "returnValue": true
     }
+
+For more information, see `Sharing your AWS resources <https://docs.aws.amazon.com/ram/latest/userguide/getting-started-sharing.html>`__ in the *AWS RAM User Guide*.

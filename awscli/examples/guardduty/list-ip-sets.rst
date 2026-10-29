@@ -12,5 +12,6 @@ Output::
             "d4b94fc952d6912b8f3060768example"
         ]
     }
+
+For more information, see `Customizing threat detection with entity lists and IP address lists <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_upload-lists.html>`__ in the *Amazon GuardDuty User Guide*.
     
-For more information, see `Working with Trusted IP Lists and Threat Lists <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_upload_lists.html>`__ in the GuardDuty User Guide.

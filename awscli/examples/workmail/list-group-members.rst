@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with groups <https://docs.aws.amazon.com/workmail/latest/adminguide/groups_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

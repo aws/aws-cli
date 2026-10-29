@@ -61,6 +61,8 @@ Output::
         ]
     }
 
+For more information, see `Add a listener rule for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/add-rule.html>`__ in the *Application Load Balancers Guide*.
+
 **Example 2: To create a rule using a host condition and a fixed response**
 
 The following ``create-rule`` example creates a rule that provides a fixed response if the hostname in the host header matches the specified hostname. ::
@@ -129,6 +131,8 @@ Output::
             }
         ]
     }
+
+For more information, see `Add a listener rule for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/add-rule.html>`__ in the *Application Load Balancers Guide*.
 
 **Example 3: To create a rule using a source IP address condition, an authenticate action, and a forward action**
 
@@ -240,3 +244,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Add a listener rule for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/add-rule.html>`__ in the *Application Load Balancers Guide*.

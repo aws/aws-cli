@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View CodeCommit repository details <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-view-repository-details.html>`__ in the *AWS CodeCommit User Guide*.

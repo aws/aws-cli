@@ -28,3 +28,5 @@ Output::
     }
 
 In progress multipart uploads incur storage costs in Amazon S3. Complete or abort an active multipart upload to remove its parts from your account.
+
+For more information, see `Uploading and copying objects using multipart upload in Amazon S3 <https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html>`__ in the *Amazon S3 User Guide*.

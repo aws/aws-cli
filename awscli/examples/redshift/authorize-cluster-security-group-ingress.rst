@@ -26,6 +26,8 @@ Output::
         }
     }
 
+For more information, see `Infrastructure security in Amazon Redshift <https://docs.aws.amazon.com/redshift/latest/mgmt/security-network-isolation.html>`__ in the *Amazon Redshift Management Guide*.
+
 **Example 2: To authorize access to a CIDR range**
 
 The following ``authorize-cluster-security-group-ingress`` example authorizes access to a CIDR range. ::
@@ -52,4 +54,4 @@ Output::
         }
     }
 
-
+For more information, see `Infrastructure security in Amazon Redshift <https://docs.aws.amazon.com/redshift/latest/mgmt/security-network-isolation.html>`__ in the *Amazon Redshift Management Guide*.

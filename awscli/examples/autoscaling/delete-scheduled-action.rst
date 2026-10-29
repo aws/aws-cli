@@ -7,3 +7,5 @@ The following ``delete-scheduled-action`` example deletes the specified schedule
         --scheduled-action-name my-scheduled-action
 
 This command produces no output.
+
+For more information, see `Scheduled scaling for Amazon EC2 Auto Scaling <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scheduled-scaling.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

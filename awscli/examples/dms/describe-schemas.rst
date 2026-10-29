@@ -13,5 +13,5 @@ Output::
         ]
     }
 
+For more information, see `Working with AWS DMS endpoints <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Endpoints.html>`__ in the *AWS Database Migration Service User Guide*.
 
-For more information, see `This is the topic title <https://link.to.the/topic/page>`__ in the *AWS Database Migration Service User Guide*.

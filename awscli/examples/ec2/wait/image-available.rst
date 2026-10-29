@@ -6,3 +6,5 @@ The following ``wait image-available`` example pauses and resumes running only a
         --image-ids ami-0abcdef1234567890
 
 This command produces no output.
+
+For more information, see `Amazon Machine Images in Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html>`__ in the *Amazon EC2 User Guide*.

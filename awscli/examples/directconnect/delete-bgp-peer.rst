@@ -49,3 +49,5 @@ Output::
             "virtualInterfaceName": "Test"
         }
     }
+
+For more information, see `Delete a Direct Connect virtual interface BGP peer <https://docs.aws.amazon.com/directconnect/latest/UserGuide/delete-bgp-peer-vif.html>`__ in the *AWS Direct Connect User Guide*.

@@ -34,3 +34,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View application revision details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/application-revisions-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

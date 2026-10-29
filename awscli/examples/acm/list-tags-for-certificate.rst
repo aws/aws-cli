@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Tag AWS Certificate Manager resources <https://docs.aws.amazon.com/acm/latest/userguide/tags.html>`__ in the *AWS Certificate Manager User Guide*.

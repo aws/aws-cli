@@ -8,6 +8,8 @@ The following ``tag-resource`` example adds the specified tags to an Amazon EKS 
 
 This command produces no output.
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 2: To add the specified tags to an Amazon EKS Node group**
 
 The following ``tag-resource`` example adds the specified tags to an Amazon EKS Node group. ::
@@ -17,3 +19,5 @@ The following ``tag-resource`` example adds the specified tags to an Amazon EKS 
         --tag 'my-eks-nodegroup-test-1=test-value-1,my-eks-nodegroup-dev-1=dev-value-2'
 
 This command produces no output.
+
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.

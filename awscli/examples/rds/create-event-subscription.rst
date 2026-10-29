@@ -26,3 +26,5 @@ Output::
             "Enabled": true
         }
     }
+
+For more information, see `Subscribing to Amazon RDS event notification <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.Subscribing.html>`__ in the *Amazon RDS User Guide*.

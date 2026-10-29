@@ -14,3 +14,5 @@ Output::
         },
         "VolumeId": "vol-049df61146c4d7901"
     }
+
+For more information, see `Amazon EBS volume status checks <https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-checks.html>`__ in the *Amazon EBS User Guide*.

@@ -25,6 +25,8 @@ Output::
         }
     }
 
+For more information, see `Configuring queue parameters using the Amazon SQS console <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-queue-parameters.html>`__ in the *Amazon Simple Queue Service Developer Guide*.
+
 The following ``get-queue-attributes`` example gets only the specified queue's maximum message size and visibility timeout attributes. ::
 
     aws sqs get-queue-attributes \
@@ -39,3 +41,5 @@ Output::
             "MaximumMessageSize": "262144"
         }
     }
+
+For more information, see `Configuring queue parameters using the Amazon SQS console <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-queue-parameters.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

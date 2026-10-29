@@ -59,3 +59,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon EC2 Dedicated Host pricing and billing <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-billing.html#dedicated-host-reservations>`__ in the *Amazon EC2 User Guide*.

@@ -11,3 +11,5 @@ Output::
     {
         "UserErrors": []
     }
+
+For more information, see `Managing user permissions and access <https://docs.aws.amazon.com/chime/latest/ag/manage-access.html>`__ in the *Amazon Chime Administration Guide*.

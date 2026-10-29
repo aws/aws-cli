@@ -8,4 +8,4 @@ The following ``tag-resource`` example adds two tags (key names and values) to a
 
 This command produces no output.
 
-For more information, see 'Tagging Amazon Pinpoint Resources <https://docs.aws.amazon.com/pinpoint/latest/developerguide/tagging-resources.html>'__ in the *Amazon Pinpoint Developer Guide*.
+For more information, see `Manage Amazon Pinpoint resource tags <https://docs.aws.amazon.com/pinpoint/latest/developerguide/tagging-resources.html>`__ in the *Amazon Pinpoint Developer Guide*.

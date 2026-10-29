@@ -13,3 +13,5 @@ Output::
             "CpuCredits": "standard"
         }
     }
+
+For more information, see `Configure burstable performance instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances-how-to.html#burstable-performance-instance-set-default-credit-specification-for-account>`__ in the *Amazon EC2 User Guide*.

@@ -6,3 +6,5 @@ The following ``delete-bucket-encryption`` example deletes the server-side encry
         --bucket amzn-s3-demo-bucket
 
 This command produces no output.
+
+For more information, see `Setting default server-side encryption behavior for Amazon S3 buckets <https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html>`__ in the *Amazon S3 User Guide*.

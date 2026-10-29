@@ -15,3 +15,5 @@ Output::
         "repositoryName": "layer-test",
         "registryId": "130757420319"
     }
+
+For more information, see `Pushing an image to an Amazon ECR private repository <https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-push.html>`__ in the *Amazon ECR User Guide*.

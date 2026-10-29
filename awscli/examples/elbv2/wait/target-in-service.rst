@@ -7,3 +7,5 @@ The following ``wait target-in-service`` example pauses and resumes running only
         --targets Id=i-1234567890abcdef0,Port=80
 
 This command produces no output.
+
+For more information, see `Health checks for Application Load Balancer target groups <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html>`__ in the *Application Load Balancers User Guide*.

@@ -8,6 +8,8 @@ The following ``update-lifecycle-policy`` example enables the specified lifecycl
 
 This command produces no output.
 
+For more information, see `Modify Amazon Data Lifecycle Manager policies <https://docs.aws.amazon.com/ebs/latest/userguide/modify.html>`__ in the *Amazon EBS User Guide*.
+
 **Example 2: To disable a lifecycle policy**
 
 The following ``update-lifecycle-policy`` example disables the specified lifecycle policy. ::
@@ -17,6 +19,8 @@ The following ``update-lifecycle-policy`` example disables the specified lifecyc
         --state DISABLED
 
 This command produces no output.
+
+For more information, see `Modify Amazon Data Lifecycle Manager policies <https://docs.aws.amazon.com/ebs/latest/userguide/modify.html>`__ in the *Amazon EBS User Guide*.
 
 **Example 3: To update the details for lifecycle policy**
 
@@ -44,3 +48,5 @@ Contents of ``policyDetails.json``::
             }
         ]
     }
+
+For more information, see `Modify Amazon Data Lifecycle Manager policies <https://docs.aws.amazon.com/ebs/latest/userguide/modify.html>`__ in the *Amazon EBS User Guide*.

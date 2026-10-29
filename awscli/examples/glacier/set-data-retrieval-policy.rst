@@ -29,6 +29,4 @@ The following ``set-data-retrieval-policy`` example sets the data retrieval poli
         --account-id - \
         --policy '{"Rules":[{"Strategy":"FreeTier"}]}'
 
-See `Set Data Retrieval Policy`_ in the *Amazon Glacier API Reference* for details on the policy format.
-
-.. _`Set Data Retrieval Policy`: http://docs.aws.amazon.com/amazonglacier/latest/dev/api-SetDataRetrievalPolicy.html
+For more information, see `Amazon Glacier Data Retrieval Policies <https://docs.aws.amazon.com/amazonglacier/latest/dev/data-retrieval-policy.html>`__ in the *Amazon Glacier Developer Guide*.

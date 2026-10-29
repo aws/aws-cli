@@ -7,3 +7,5 @@ The following ``deregister-from-work-mail`` example disables an existing entity 
         --entity-id S-1-1-11-1111111111-2222222222-3333333333-3333
 
 This command produces no output.
+
+For more information, see `Disabling users <https://docs.aws.amazon.com/workmail/latest/adminguide/disable-users.html>`__ in the *Amazon WorkMail Administrator Guide*.

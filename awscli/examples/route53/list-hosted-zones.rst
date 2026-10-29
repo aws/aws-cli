@@ -32,3 +32,4 @@ To view information about the next hosted zone, take the value of ``NextToken`` 
         --max-items 1 \
         --starting-token Z3M3LMPEXAMPLE
 
+For more information, see `Listing public hosted zones <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/ListInfoOnHostedZone.html>`__ in the *Amazon Route 53 Developer Guide*.

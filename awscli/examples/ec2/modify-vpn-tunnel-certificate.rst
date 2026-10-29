@@ -40,3 +40,5 @@ Output::
             ]
         }
     }
+
+For more information, see `AWS Site-to-Site VPN tunnel authentication options <https://docs.aws.amazon.com/vpn/latest/s2svpn/vpn-tunnel-authentication-options.html>`__ in the *AWS Site-to-Site VPN User Guide*.

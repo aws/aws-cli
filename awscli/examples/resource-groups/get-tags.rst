@@ -14,3 +14,5 @@ Output::
             "QueryResources": "ec2-instances"
         }
     }
+
+For more information, see `What are resource groups? <https://docs.aws.amazon.com/ARG/latest/userguide/resource-groups.html>`__ in the *AWS Resource Groups User Guide*.

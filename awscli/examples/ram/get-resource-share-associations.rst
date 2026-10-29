@@ -32,6 +32,8 @@ Output::
         ]
     }
 
+For more information, see `Viewing resource shares you created in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-view-rs.html>`__ in the *AWS RAM User Guide*.
+
 **Example 2: To list principal associations for a resource share**
 
 The following ``get-resource-share-associations`` example lists only the principal associations for only the specified resource share. ::
@@ -56,3 +58,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing resource shares you created in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-view-rs.html>`__ in the *AWS RAM User Guide*.

@@ -10,3 +10,5 @@ Output::
     {
         "Unsuccessful": []
     }
+
+For more information, see `Work with flow logs <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-flow-logs.html>`__ in the *Amazon VPC User Guide*.

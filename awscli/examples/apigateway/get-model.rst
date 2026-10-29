@@ -16,3 +16,4 @@ Output::
         "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\" : \"Empty Schema\",\n  \"type\" : \"object\"\n}"
     }
 
+For more information, see `Data models for REST APIs <https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings-models.html>`__ in the *Amazon API Gateway Developer Guide*.

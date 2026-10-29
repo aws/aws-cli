@@ -46,4 +46,4 @@ Output::
     Aborts any statement that takes over the specified number of milliseconds.  integer True    engine-default  0       statement_timeout
     wlm json configuration      string  True    engine-default  \[{"query_concurrency":5}]      wlm_json_configuration
 
-
+For more information, see `Amazon Redshift parameter groups <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html>`__ in the *Amazon Redshift Management Guide*.

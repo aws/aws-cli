@@ -24,3 +24,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Tag an Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-tags.html>`__ in the *Application Load Balancers Guide*.

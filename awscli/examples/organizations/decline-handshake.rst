@@ -51,3 +51,5 @@ Output::
             "Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111"
         }
     }
+
+For more information, see `Accepting or declining account invitations with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_accept-decline-invite.html>`__ in the *AWS Organizations User Guide*.

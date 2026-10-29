@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Identify your referenced security groups <https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-security-groups.html#vpc-peering-referenced-groups>`__ in the *Amazon VPC Peering Guide*.

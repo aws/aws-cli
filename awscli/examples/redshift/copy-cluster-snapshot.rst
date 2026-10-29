@@ -26,4 +26,4 @@ Output::
         }
     }
 
-
+For more information, see `Copying an automated snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/snapshot-copy.html>`__ in the *Amazon Redshift Management Guide*.

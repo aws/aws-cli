@@ -15,3 +15,4 @@ Output::
         }
     }
 
+For more information, see `Working with records <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/rrsets-working-with.html>`__ in the *Amazon Route 53 Developer Guide*.

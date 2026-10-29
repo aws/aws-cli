@@ -14,3 +14,5 @@ Output::
             "CpuCredits": "unlimited"
         }
     }
+
+For more information, see `Configure burstable performance instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances-how-to.html>`__ in the *Amazon EC2 User Guide*.

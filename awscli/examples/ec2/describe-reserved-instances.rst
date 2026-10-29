@@ -33,6 +33,8 @@ Output::
         ]
     }
 
+For more information, see `Reserved Instances for Amazon EC2 overview <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-reserved-instances.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe your Reserved Instances using filters**
 
 The following ``describe-reserved-instances`` example filters the response to include only three-year, t2.micro Linux/UNIX Reserved Instances in us-east-1e. ::
@@ -64,7 +66,4 @@ Output::
         ]
     }
 
-For more information, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
-
-.. _`Using Amazon EC2 Instances`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html
-
+For more information, see `Reserved Instances for Amazon EC2 overview <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-reserved-instances.html>`__ in the *Amazon EC2 User Guide*.

@@ -51,6 +51,8 @@ Output::
         "Sources": []
     }
 
+For more information, see `Updating or deleting a custom patch baseline <https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-update-or-delete-a-patch-baseline.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 2: To rename a patch baseline**
 
 The following ``update-patch-baseline`` example renames the specified patch baseline. ::
@@ -119,4 +121,4 @@ Output::
         "Sources": []
     }
 
-For more information, see `Update or Delete a Patch Baseline` <https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-baseline-update-or-delete.html>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `Updating or deleting a custom patch baseline <https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-update-or-delete-a-patch-baseline.html>`__ in the *AWS Systems Manager User Guide*.

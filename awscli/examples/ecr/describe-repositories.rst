@@ -20,3 +20,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing the contents and details of a private repository in Amazon ECR <https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-info.html>`__ in the *Amazon ECR User Guide*.

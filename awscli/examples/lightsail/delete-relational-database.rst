@@ -55,3 +55,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Delete a Lightsail database and create a final snapshot <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-deleting-your-database.html>`__ in the *Amazon Lightsail User Guide*.

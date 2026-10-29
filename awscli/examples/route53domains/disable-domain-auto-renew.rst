@@ -10,5 +10,6 @@ This command runs only in the ``us-east-1`` Region. If your default region is se
 
 This command produces no output. 
 
-To confirm that the setting was changed, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ . If automatic renewal is disabled, the value of ``AutoRenew`` is ``False``. 
-For more information about automatic renewal, see `Renewing Registration for a Domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-renew.html`__ in the *Amazon Route 53 Developer Guide*.
+To confirm that the setting was changed, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ . If automatic renewal is disabled, the value of ``AutoRenew`` is ``False``.
+
+For more information, see `Renewing registration for a domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-renew.html>`__ in the *Amazon Route 53 Developer Guide*.

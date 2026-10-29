@@ -10,3 +10,5 @@ Output::
     {
         "NatGatewayId": "nat-04ae55e711cec5680"
     }
+
+For more information, see `Work with NAT gateways <https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html>`__ in the *Amazon VPC User Guide*.

@@ -28,4 +28,4 @@ Output::
         "AtTime": "2020-07-19T21:15:19Z"
     }
 
-For more information, see `Get the State of the Change Calendar <https://docs.aws.amazon.com/systems-manager/latest/userguide/change-calendar-getstate.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `Getting the state of a change calendar <https://docs.aws.amazon.com/systems-manager/latest/userguide/change-calendar-getstate.html>`__ in the *AWS Systems Manager User Guide*.

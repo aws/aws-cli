@@ -37,3 +37,5 @@ Output::
     {
         "RuleArn": "arn:aws:events:us-west-2:123456789012:rule/EC2InstanceStateChangeStopOrTerminate"
     }
+
+For more information, see `Rules in Amazon EventBridge <https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rules.html>`__ in the *Amazon EventBridge User Guide*.

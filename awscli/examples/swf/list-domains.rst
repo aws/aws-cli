@@ -20,7 +20,7 @@ Output::
         ]
     }
 
-For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
+For more information, see `Domains in Amazon SWF <https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-domains.html>`__ in the *Amazon Simple Workflow Service Developer Guide*.
 
 **Example 2: To list your deprecated domains**
 
@@ -40,7 +40,7 @@ Output::
         ]
     }
 
-For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
+For more information, see `Domains in Amazon SWF <https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-domains.html>`__ in the *Amazon Simple Workflow Service Developer Guide*.
 
 
 **Example 3: To list the first page of registered domains**
@@ -63,7 +63,7 @@ Output::
         "nextPageToken": "AAAAKgAAAAEAAAAAAAAAA2QJKNtidVgd49TTeNwYcpD+QKT2ynuEbibcQWe2QKrslMGe63gpS0MgZGpcpoKttL4OCXRFn98Xif557it+wSZUsvUDtImjDLvguyuyyFdIZtvIxIKEOPm3k2r4OjAGaFsGOuVbrKljvla7wdU7FYH3OlkNCP8b7PBj9SBkUyGoiAghET74P93AuVIIkdKGtQ=="
     }
 
-For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
+For more information, see `Domains in Amazon SWF <https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-domains.html>`__ in the *Amazon Simple Workflow Service Developer Guide*.
 
 **Example 4: To list the specified single page of registered domains**
 
@@ -89,5 +89,4 @@ Output::
 
 When there are no further pages of results to retrieve, ``nextPageToken`` will not be returned in the results.
 
-For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
-
+For more information, see `Domains in Amazon SWF <https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-domains.html>`__ in the *Amazon Simple Workflow Service Developer Guide*.

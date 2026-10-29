@@ -21,3 +21,5 @@ Output::
             "CreationDate": 1548097827.125
         }
     }
+
+For more information, see `Adding groups to a user pool <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-user-groups.html>`__ in the *Amazon Cognito Developer Guide*.

@@ -44,5 +44,5 @@ Output::
         ]
     }
 
+For more information, see `Listing FHIR import jobs <https://docs.aws.amazon.com/healthlake/latest/devguide/importing-fhir-data-list.html>`__ in the *AWS HealthLake Developer Guide*.
 
-For more information, see `Importing files to FHIR data store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-examples.html>`__ in the AWS HealthLake Developer Guide.

@@ -7,3 +7,4 @@ The following ``delete-cluster-parameter-group`` example deletes a cluster param
 
 This command produces no output.
 
+For more information, see `Amazon Redshift parameter groups <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html>`__ in the *Amazon Redshift Management Guide*.

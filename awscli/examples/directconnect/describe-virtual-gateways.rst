@@ -14,3 +14,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Direct Connect virtual private gateway associations <https://docs.aws.amazon.com/directconnect/latest/UserGuide/virtualgateways.html>`__ in the *AWS Direct Connect User Guide*.

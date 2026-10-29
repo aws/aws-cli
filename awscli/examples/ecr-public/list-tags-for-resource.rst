@@ -25,4 +25,4 @@ Output::
         ]
     }
 
-For more information, see `List tags for a public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/ecr-public-using-tags.html>`__ in the *Amazon ECR Public*.
+For more information, see `Tag an Amazon ECR Public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/ecr-public-using-tags.html>`__ in the *Amazon ECR Public User Guide*.

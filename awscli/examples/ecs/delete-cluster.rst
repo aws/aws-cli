@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `Deleting a Cluster <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/delete_cluster.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Deleting an Amazon ECS cluster <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/delete_cluster-new-console.html>`__ in the *Amazon ECS Developer Guide*.

@@ -8,4 +8,4 @@ The following ``tag-resource`` example adds tag keys and values to the specified
 
 This command produces no output.
 
-For more information, see `TagResource <https://docs.aws.amazon.com/mediastore/latest/apireference/API_TagResource.html>`__ in the *AWS Elemental MediaStore API Reference*.
+For more information, see `Best practices and strategies <https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html>`__ in the *Tagging AWS Resources and Tag Editor User Guide*.

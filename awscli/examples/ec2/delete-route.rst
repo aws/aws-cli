@@ -7,3 +7,5 @@ The following ``delete-route`` example deletes the specified route from the spec
         --destination-cidr-block 0.0.0.0/0
 
 This command produces no output.
+
+For more information, see `Add, modify, and remove routes <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithRouteTables.html#AddRemoveRoutes>`__ in the *Amazon VPC User Guide*.

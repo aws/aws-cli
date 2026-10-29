@@ -18,3 +18,5 @@ Output::
             "TopicArn": "arn:aws:sns:us-west-2:123456789012:my-topic"
         }
     }
+
+For more information, see `Creating a subscription to an Amazon SNS topic <https://docs.aws.amazon.com/sns/latest/dg/sns-create-subscribe-endpoint-to-topic.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

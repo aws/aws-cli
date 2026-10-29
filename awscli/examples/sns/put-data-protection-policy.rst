@@ -8,6 +8,8 @@ The following ``put-data-protection-policy`` example denies publishers from publ
 
 This command produces no output.
 
+For more information, see `Understanding Amazon SNS data protection policies <https://docs.aws.amazon.com/sns/latest/dg/sns-message-data-protection-policies.html>`__ in the *Amazon Simple Notification Service Developer Guide*.
+
 **Example 2: To load parameters from a file**
 
 The following ``put-data-protection-policy`` example loads parameters from a file. ::
@@ -39,3 +41,5 @@ Contents of ``policy.json``::
     }
 
 This command produces no output.
+
+For more information, see `Understanding Amazon SNS data protection policies <https://docs.aws.amazon.com/sns/latest/dg/sns-message-data-protection-policies.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

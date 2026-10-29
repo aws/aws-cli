@@ -20,3 +20,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Add tags for your private CA <https://docs.aws.amazon.com/privateca/latest/userguide/PcaCaTagging.html>`__ in the *AWS Private Certificate Authority User Guide*.

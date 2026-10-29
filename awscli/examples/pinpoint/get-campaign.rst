@@ -48,3 +48,5 @@ Output::
             "Version": 1
         }
     }
+
+For more information, see `Amazon Pinpoint campaigns <https://docs.aws.amazon.com/pinpoint/latest/userguide/campaigns.html>`__ in the *Amazon Pinpoint User Guide*.

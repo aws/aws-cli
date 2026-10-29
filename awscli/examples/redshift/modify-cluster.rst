@@ -55,6 +55,8 @@ Output::
         }
     }
 
+For more information, see `Modifying a cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/modify-cluster.html>`__ in the *Amazon Redshift Management Guide*.
+
 **Example 2: To modify the maintenance window for a cluster**
 
 The following ``modify-cluster`` example changes the weekly preferred maintenance window for a cluster to be the minimum four hour window
@@ -108,6 +110,8 @@ Output::
             "MaintenanceTrackName": "current"
         }
     }
+
+For more information, see `Maintenance windows <https://docs.aws.amazon.com/redshift/latest/mgmt/managing-cluster-considerations.html#rs-maintenance-windows>`__ in the *Amazon Redshift Management Guide*.
 
 **Example 3: To change the master password for the cluster**
 
@@ -163,3 +167,5 @@ Output::
             "MaintenanceTrackName": "current"
         }
     }
+
+For more information, see `Modifying a cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/modify-cluster.html>`__ in the *Amazon Redshift Management Guide*.

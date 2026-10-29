@@ -57,4 +57,4 @@ Output::
     us-east-1b
     us-east-1c
 
-
+For more information, see `Amazon Redshift provisioned clusters <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html>`__ in the *Amazon Redshift Management Guide*.

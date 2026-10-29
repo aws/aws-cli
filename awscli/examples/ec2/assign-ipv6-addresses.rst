@@ -16,6 +16,8 @@ Output::
         "NetworkInterfaceId": "eni-38664473"
     }
 
+For more information, see `Manage the IPv6 addresses for your EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-ipv6-addresses.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To assign IPv6 addresses that Amazon selects to a network interface**
 
 The following ``assign-ipv6-addresses`` example assigns two IPv6 addresses to the specified network interface. Amazon automatically assigns these IPv6 addresses from the available IPv6 addresses in the IPv6 CIDR block range of the subnet. ::
@@ -33,3 +35,5 @@ Output::
         ],
         "NetworkInterfaceId": "eni-38664473"
     }
+
+For more information, see `Manage the IPv6 addresses for your EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-ipv6-addresses.html>`__ in the *Amazon EC2 User Guide*.

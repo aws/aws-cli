@@ -28,3 +28,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Compare commits in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-compare-commits.html>`__ in the *AWS CodeCommit User Guide*.

@@ -15,4 +15,4 @@ Output::
         "certificateUploadDate": 1462565487
     }
 
-For more information, see `Set up Custom Domain Name for an API in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html>`_ in the *Amazon API Gateway Developer Guide*.
+For more information, see `Custom domain name for public REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html>`__ in the *Amazon API Gateway Developer Guide*.

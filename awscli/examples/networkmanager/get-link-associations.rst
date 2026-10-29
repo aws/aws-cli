@@ -17,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Associate or disassociate a device link using AWS Network Manager <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-device-link-associate.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

@@ -20,3 +20,5 @@ Output::
     {
         "Url": "http://calculator.s3.amazonaws.com/calc5.html?key=cloudformation/7870825a-xmpl-4def-92e7-c4f8dd360cca"
     }
+
+For more information, see `What is AWS Pricing Calculator? <https://docs.aws.amazon.com/pricing-calculator/latest/userguide/what-is-pricing-calculator.html>`__ in the *AWS Pricing Calculator User Guide*.

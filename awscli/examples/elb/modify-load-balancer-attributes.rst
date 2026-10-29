@@ -17,6 +17,8 @@ Output::
         "LoadBalancerName": "my-load-balancer"
     }
 
+For more information, see `Configure cross-zone load balancing for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-disable-crosszone-lb.html>`__ in the *Classic Load Balancers Guide*.
+
 The following ``modify-load-balancer-attributes`` example modifies the ``ConnectionDraining`` attribute of the specified load balancer. ::
 
     aws elb modify-load-balancer-attributes \
@@ -34,3 +36,5 @@ Output::
         },
         "LoadBalancerName": "my-load-balancer"
     }
+
+For more information, see `Configure connection draining for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html>`__ in the *Classic Load Balancers Guide*.

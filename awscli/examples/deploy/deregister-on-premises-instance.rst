@@ -6,3 +6,5 @@ The following ``deregister-on-premises-instance`` example deregisters an on-prem
         --instance-name AssetTag12010298EX
 
 This command produces no output.
+
+For more information, see `Manually deregister an on-premises instance <https://docs.aws.amazon.com/codedeploy/latest/userguide/on-premises-instances-operations-deregister-manually.html>`__ in the *AWS CodeDeploy User Guide*.

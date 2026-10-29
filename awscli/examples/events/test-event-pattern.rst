@@ -11,3 +11,5 @@ Output::
     {
         "Result": true
     }
+
+For more information, see `Amazon EventBridge event patterns <https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html>`__ in the *Amazon EventBridge User Guide*.

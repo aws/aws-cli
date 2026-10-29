@@ -40,6 +40,7 @@ Output::
         "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE"
     }
 
+For more information, see `Create a Spot Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To request a Spot fleet in the Availability Zone with the lowest price**
 
@@ -82,6 +83,8 @@ Output::
     {
         "SpotFleetRequestId": "sfr-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
+
+For more information, see `Create a Spot Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To launch Spot instances in a subnet and assign them public IP addresses**
 
@@ -126,6 +129,8 @@ Output::
         "SpotFleetRequestId": "sfr-a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
     }
 
+For more information, see `Create a Spot Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 4: To request a Spot fleet using the diversified allocation strategy**
 
 The following ``request-spot-fleet`` example creates a Spot fleet request that launches 30 instances using the diversified allocation strategy.
@@ -167,7 +172,4 @@ Output::
         "SpotFleetRequestId": "sfr-a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
     }
 
-For more information, see `Spot Fleet Requests`_ in the *Amazon Elastic Compute Cloud User Guide*.
-
-.. _`Spot Fleet Requests`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-requests.html
-
+For more information, see `Create a Spot Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.

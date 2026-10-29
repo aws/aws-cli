@@ -11,3 +11,5 @@ Output::
         "Available": true,
         "FullyQualifiedCNAME": "my-cname.elasticbeanstalk.com"
     }
+
+For more information, see `Your Elastic Beanstalk environment's Domain name <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customdomains.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

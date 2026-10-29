@@ -7,4 +7,4 @@ The following ``reject-invitation`` example rejects an invitation to become a me
 
 This command produces no output.
 
-For more information, see `Responding to a behavior graph invitation<https://docs.aws.amazon.com/detective/latest/adminguide/member-invitation-response.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Responding to a behavior graph invitation <https://docs.aws.amazon.com/detective/latest/userguide/member-invitation-response.html>`__ in the *Amazon Detective User Guide*.

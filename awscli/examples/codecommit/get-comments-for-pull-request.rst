@@ -59,3 +59,5 @@ Output::
         ],
         "nextToken": "exampleToken"
     }
+
+For more information, see `Review a pull request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-review-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

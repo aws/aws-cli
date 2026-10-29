@@ -67,6 +67,8 @@ Output::
         ]
     }
 
+For more information, see `Create a Spot Instance request <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html>`__ in the *Amazon EC2 User Guide*.
+
 The following ``request-spot-instances`` example creates a one-time Spot Instance request for five instances in the specified subnet.
 Amazon EC2 launches the instances in the specified subnet. If the VPC is a nondefault VPC, the instances
 do not receive a public IP address by default. ::
@@ -131,6 +133,8 @@ Output::
         ]
     }
 
+For more information, see `Create a Spot Instance request <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html>`__ in the *Amazon EC2 User Guide*.
+
 The following ``request-spot-instances`` example assigns a public IP address to the Spot Instances that you launch in a nondefault VPC.
 Note that when you specify a network interface, you must include the subnet ID and security group ID
 using the network interface. ::
@@ -161,3 +165,5 @@ Contents of ``specification.json``::
             "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
         }
     }
+
+For more information, see `Create a Spot Instance request <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html>`__ in the *Amazon EC2 User Guide*.

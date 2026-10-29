@@ -31,4 +31,4 @@ Output::
         "certificateId": "f4efed62c0142f16af278166f61962501165c4f0536295207426460058cd1467"
     }
 
-For more information, see `RegisterCACertificate <https://docs.aws.amazon.com/iot/latest/apireference/API_RegisterCACertificate.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Register your CA certificate <https://docs.aws.amazon.com/iot/latest/developerguide/manage-your-CA-certs.html#register-CA-cert>`__ in the *AWS IoT Core Developer Guide*.

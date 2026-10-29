@@ -18,3 +18,5 @@ Output::
             }
         }
     }
+
+For more information, see `IAM roles for Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html>`__ in the *Amazon EC2 User Guide*.

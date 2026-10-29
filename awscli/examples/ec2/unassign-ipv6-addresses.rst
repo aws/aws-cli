@@ -14,3 +14,5 @@ Output::
             "2001:db8:1234:1a00:3304:8879:34cf:4071"
         ]
     }
+
+For more information, see `Manage the IPv6 addresses for your EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-ipv6-addresses.html>`__ in the *Amazon EC2 User Guide*.

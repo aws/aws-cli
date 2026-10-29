@@ -11,3 +11,5 @@ Output::
     {
         "CacheParameterGroupName": "mygroup"
     }
+
+For more information, see `Configuring engine parameters using ElastiCache parameter groups <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/ParameterGroups.html>`__ in the *Amazon ElastiCache User Guide*.

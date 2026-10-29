@@ -56,3 +56,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View and delete with stale security group rules <https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-security-groups.html#vpc-peering-stale-groups>`__ in the *Amazon VPC Peering Guide*.

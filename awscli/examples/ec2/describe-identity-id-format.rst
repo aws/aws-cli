@@ -20,6 +20,8 @@ Output::
         ]
     }
 
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe the ID format for an IAM user**
 
 The following ``describe-identity-id-format`` example describes the ID format received by snapshots created by the IAM user ``AdminUser`` in your AWS account. ::
@@ -41,3 +43,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.

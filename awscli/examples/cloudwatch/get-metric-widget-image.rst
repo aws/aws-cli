@@ -8,3 +8,5 @@ The following ``get-metric-widget-image`` example retrieves snapshot graph for t
         --output text | base64 --decode > image.png
 
 This command produces no output.
+
+For more information, see `Graphing metrics <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph_metrics.html>`__ in the *Amazon CloudWatch User Guide*.

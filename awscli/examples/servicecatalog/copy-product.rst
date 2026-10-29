@@ -21,3 +21,4 @@ Output::
         "CopyProductToken": "copyproduct-abc5defgjkdji"
     }
 
+For more information, see `Managing Products <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_products.html>`__ in the *AWS Service Catalog Administrator Guide*.

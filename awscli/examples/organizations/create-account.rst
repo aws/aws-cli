@@ -17,6 +17,4 @@ Output::
 
 You can later query the current status of the request by providing the Id response value to the describe-create-account-status command as the value for the create-account-request-id parameter.
 
-For more information, see `Creating an AWS Account in Your Organization`_ in the *AWS Organizations Users Guide*.
-
-.. _`Creating an AWS Account in Your Organization`: http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_create.html
+For more information, see `Creating a member account in an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_create.html>`__ in the *AWS Organizations User Guide*.

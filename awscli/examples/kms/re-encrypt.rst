@@ -34,7 +34,7 @@ Before running this command, replace the example key IDs with valid key identifi
 
 This command produces no output. The output from the ``re-encrypt`` command is base64-decoded and saved in a file.
 
-For more information, see `ReEncrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_ReEncrypt.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `AWS KMS cryptography essentials <https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#symmetric-key-0ps>`__ in the *AWS Key Management Service Developer Guide*.
 
 **Example 2: To re-encrypt an encrypted message under a different symmetric KMS key (Windows command prompt)**
 
@@ -59,4 +59,4 @@ Output::
     Output Length = 12
     CertUtil: -decode command completed successfully.
 
-For more information, see `ReEncrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_ReEncrypt.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `AWS KMS cryptography essentials <https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#symmetric-key-0ps>`__ in the *AWS Key Management Service Developer Guide*.

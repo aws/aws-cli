@@ -13,3 +13,5 @@ Output::
         "Id": "e626e8c9-3b8f-4bf3-9cdc-d26ecdeb9fa3",
         "Version": "74abd1cc-637e-4abe-8684-9a67890f4043"
     }
+
+For more information, see `Run Lambda functions on the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/lambda-functions.html>`__ in the *AWS IoT Greengrass Developer Guide*.

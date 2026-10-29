@@ -6,3 +6,5 @@ The following ``enable-rule`` example enables the rule named ``DailyLambdaFuncti
         --name "DailyLambdaFunction"
 
 This command produces no output.
+
+For more information, see `Rules in Amazon EventBridge <https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rules.html>`__ in the *Amazon EventBridge User Guide*.

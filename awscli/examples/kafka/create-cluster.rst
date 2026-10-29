@@ -28,4 +28,4 @@ Output::
         "State": "CREATING"
     }
 
-For more information, see `Create an Amazon MSK Cluster <https://docs.aws.amazon.com/msk/latest/developerguide/msk-create-cluster.html>`__ in the *Amazon Managed Streaming for Apache Kafka*.
+For more information, see `Create an MSK Provisioned cluster <https://docs.aws.amazon.com/msk/latest/developerguide/msk-create-cluster.html>`__ in the *Amazon Managed Streaming for Apache Kafka Developer Guide*.

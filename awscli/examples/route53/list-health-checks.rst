@@ -40,4 +40,4 @@ To view the next health check, take the value of ``NextToken`` from the response
         --max-items 1 \
         --starting-token Z3M3LMPEXAMPLE
 
-
+For more information, see `Creating, updating, and deleting health checks <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/health-checks-creating-deleting.html>`__ in the *Amazon Route 53 Developer Guide*.

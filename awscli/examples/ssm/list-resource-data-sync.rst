@@ -24,3 +24,4 @@ Output::
         ]
     }
 
+For more information, see `Creating a resource data sync for Inventory <https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-create-resource-data-sync.html>`__ in the *AWS Systems Manager User Guide*.

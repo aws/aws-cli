@@ -15,3 +15,4 @@ Output::
         }
     }
 
+For more information, see `Track your Spot Instance costs using the Spot Instance data feed <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-data-feeds.html>`__ in the *Amazon EC2 User Guide*.

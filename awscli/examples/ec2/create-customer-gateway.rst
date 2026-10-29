@@ -18,3 +18,5 @@ Output::
             "BgpAsn": "65534"
         }
     }
+
+For more information, see `AWS Site-to-Site VPN customer gateway devices <https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html>`__ in the *AWS Site-to-Site VPN User Guide*.

@@ -27,4 +27,4 @@ Output::
         }
     }
 
-For more information, see `Associating and Disassociating Transit Gateways <https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-transit-gateways.html#associate-tgw-with-direct-connect-gateway>`_ in the *AWS Direct Connect User Guide*.
+For more information, see `Associate or disassociate Direct Connect with a Transit Gateway <https://docs.aws.amazon.com/directconnect/latest/UserGuide/associate-tgw-with-direct-connect-gateway.html>`__ in the *AWS Direct Connect User Guide*.

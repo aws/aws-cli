@@ -29,6 +29,8 @@ Output::
         }
     }
 
+For more information, see `Create a VPC peering connection <https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html>`__ in the *Amazon VPC Peering Guide*.
+
 **Example 2: To create a VPC peering connection with a VPC in another account**
 
 The following ``create-vpc-peering-connection`` example requests a peering connection between your VPC (vpc-1a2b3c4d), and a VPC (vpc-11122233) that belongs to AWS account 123456789012. ::
@@ -60,6 +62,8 @@ Output::
             }
         }
     }
+
+For more information, see `Create a VPC peering connection <https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html>`__ in the *Amazon VPC Peering Guide*.
 
 **Example 3: To create a VPC peering connection with a VPC in a different region**
 
@@ -125,3 +129,5 @@ Output::
             }
         }
     }
+
+For more information, see `Create a VPC peering connection <https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html>`__ in the *Amazon VPC Peering Guide*.

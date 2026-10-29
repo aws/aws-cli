@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Delete a launch template or a launch template version <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-launch-template.html>`__ in the *Amazon EC2 User Guide*.

@@ -31,3 +31,5 @@ Output::
             "CreationDate": 1548105901.736
         }
     }
+
+For more information, see `User pool sign-in with third party identity providers <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-identity-federation.html>`__ in the *Amazon Cognito Developer Guide*.

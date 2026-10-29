@@ -8,3 +8,5 @@ The following ``update-primary-email-address`` example updates the primary email
         --email exampleUser2@site.awsapps.com
 
 This command produces no output.
+
+For more information, see `Editing user details <https://docs.aws.amazon.com/workmail/latest/adminguide/edit_user.html>`__ in the *Amazon WorkMail Administrator Guide*.

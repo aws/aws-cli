@@ -16,3 +16,5 @@ Output::
         "State": "attaching",
         "Device": "/dev/sdf"
     }
+
+For more information, see `Attach an Amazon EBS volume to an Amazon EC2 instance <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-attaching-volume.html>`__ in the *Amazon EBS User Guide*.

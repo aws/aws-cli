@@ -4,11 +4,7 @@ The following ``create-field-level-encryption-profile`` example creates a field-
 parameters in a JSON file named ``fle-profile-config.json``. Before you can
 create a field-level encryption profile, you must have a CloudFront public key.
 To create a CloudFront public key, see the `create-public-key
-<create-public-key.html>`_ command.
-
-For more information about CloudFront field-level encryption, see
-`Using Field-Level Encryption to Help Protect Sensitive Data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`_
-in the *Amazon CloudFront Developer Guide*. ::
+<create-public-key.html>`_ command. ::
 
     aws cloudfront create-field-level-encryption-profile \
         --field-level-encryption-profile-config file://fle-profile-config.json
@@ -66,3 +62,5 @@ Output::
             }
         }
     }
+
+For more information, see `Use field-level encryption to help protect sensitive data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`__ in the *Amazon CloudFront Developer Guide*.

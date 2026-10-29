@@ -29,3 +29,5 @@ Output::
             "sizeInGb": 80
         }
     }
+
+For more information, see `Snapshots in Amazon Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-snapshots-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

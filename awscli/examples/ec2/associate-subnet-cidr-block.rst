@@ -18,3 +18,5 @@ Output::
             }
         }
     }
+
+For more information, see `Add or remove an IPv6 CIDR block from your subnet <https://docs.aws.amazon.com/vpc/latest/userguide/subnet-associate-ipv6-cidr.html>`__ in the *Amazon VPC User Guide*.

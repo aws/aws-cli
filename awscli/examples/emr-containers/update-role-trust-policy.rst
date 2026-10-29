@@ -19,3 +19,5 @@ If the trust policy has not been updated yet, the command displays the following
 Output::
 
     Successfully updated trust policy of role example_iam_role.
+
+For more information, see `Update the trust policy of the job execution role <https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-trust-policy.html>`__ in the *Amazon EMR on EKS Development Guide*.

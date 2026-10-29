@@ -37,9 +37,4 @@ Output::
         }
     }
 
-See Also
---------
-
--  `DescribeDomain <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_DescribeDomain.html>`__
-   in the *Amazon Simple Workflow Service API Reference*
-
+For more information, see `Domains in Amazon SWF <https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-domains.html>`__ in the *Amazon Simple Workflow Service Developer Guide*.

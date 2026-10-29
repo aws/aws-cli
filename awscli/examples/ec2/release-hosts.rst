@@ -13,3 +13,5 @@ Output::
         ],
         "Unsuccessful": []
     }
+
+For more information, see `Release an Amazon EC2 Dedicated Host <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-releasing.html>`__ in the *Amazon EC2 User Guide*.

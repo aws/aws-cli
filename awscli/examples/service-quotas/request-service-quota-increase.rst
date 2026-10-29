@@ -25,3 +25,5 @@ Output::
             "Unit": "None"
         }
     }
+
+For more information, see `Requesting a quota increase <https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html>`__ in the *Service Quotas User Guide*.

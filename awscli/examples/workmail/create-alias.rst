@@ -8,3 +8,5 @@ The following ``create-alias`` example creates an alias for the specified entity
         --alias exampleAlias@site.awsapps.com
 
 This command produces no output.
+
+For more information, see `Managing group aliases <https://docs.aws.amazon.com/workmail/latest/adminguide/managing_groups.html>`__ in the *Amazon WorkMail Administrator Guide*.

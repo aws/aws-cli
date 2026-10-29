@@ -40,3 +40,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon Redshift provisioned cluster event notifications <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-event-notifications.html>`__ in the *Amazon Redshift Management Guide*.

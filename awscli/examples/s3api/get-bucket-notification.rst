@@ -17,3 +17,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Amazon S3 Event Notifications <https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html>`__ in the *Amazon S3 User Guide*.

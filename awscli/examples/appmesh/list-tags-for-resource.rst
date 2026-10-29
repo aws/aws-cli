@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Service Meshes <https://docs.aws.amazon.com/app-mesh/latest/userguide/meshes.html>`__ in the *AWS App Mesh User Guide*.

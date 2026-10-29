@@ -20,3 +20,5 @@ Output::
             "method.request.header.custom-header": false
         }
     }
+
+For more information, see `Set up a method request in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-method-settings-method-request.html>`__ in the *Amazon API Gateway Developer Guide*.

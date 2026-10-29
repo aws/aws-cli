@@ -11,4 +11,4 @@ Output::
         "UnprocessedAccounts": []
     }
 
-For more information, see `Managing GuardDuty accounts by invitation <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_invitations.html>`__ in the GuardDuty User Guide.
+For more information, see `Managing GuardDuty accounts by invitation <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_invitations.html>`__ in the *Amazon GuardDuty User Guide*.

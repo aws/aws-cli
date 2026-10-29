@@ -41,6 +41,8 @@ You can then call the command again with the ``--next-token`` parameter as follo
 
 Repeat until the response doesn't include a ``NextToken`` value.
 
+For more information, see `Create a game server build for Amazon GameLift Servers <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-build-cli-uploading.html>`__ in the *Amazon GameLift Servers Developer Guide*.
+
 **Example 2: To get a list of custom game builds in failure status**
 
 The following ``list-builds`` example retrieves properties for all game server builds in the current region that currently have status FAILED. ::
@@ -65,3 +67,4 @@ Output::
         ]
     }
 
+For more information, see `Create a game server build for Amazon GameLift Servers <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-build-cli-uploading.html>`__ in the *Amazon GameLift Servers Developer Guide*.

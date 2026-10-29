@@ -24,6 +24,8 @@ Output::
         }
     }
 
+For more information, see `Working with custom inventory <https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 2: To disable a custom inventory type**
 
 The following ``delete-inventory`` example disables a custom inventory schema. ::
@@ -43,3 +45,5 @@ Output::
             "SummaryItems": []
         }
     }
+
+For more information, see `Working with custom inventory <https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom.html>`__ in the *AWS Systems Manager User Guide*.

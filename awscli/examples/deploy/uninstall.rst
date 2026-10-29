@@ -5,3 +5,5 @@ The following ``uninstall`` example uninstalls the AWS CodeDeploy Agent from the
     aws deploy uninstall
 
 This command produces no output.
+
+For more information, see `Automatically uninstall the CodeDeploy agent and remove the configuration file from an on-premises instance <https://docs.aws.amazon.com/codedeploy/latest/userguide/on-premises-instances-operations-uninstall-agent.html>`__ in the *AWS CodeDeploy User Guide*.

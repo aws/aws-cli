@@ -25,6 +25,8 @@ Output::
         ]
     }
 
+For more information, see `Managing App Runner connections <https://docs.aws.amazon.com/apprunner/latest/dg/manage-connections.html>`__ in the *AWS App Runner Developer Guide*.
+
 **Example 2: To list a connection by name**
 
 The following ``list-connections`` example lists a connection by its name. ::
@@ -51,3 +53,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing App Runner connections <https://docs.aws.amazon.com/apprunner/latest/dg/manage-connections.html>`__ in the *AWS App Runner Developer Guide*.

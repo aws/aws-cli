@@ -33,3 +33,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon SQS visibility timeout <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

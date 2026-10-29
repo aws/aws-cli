@@ -22,3 +22,5 @@ Output::
     }
 
 To add stack instances to the stack set, use the ``create-stack-instances`` command.
+
+For more information, see `Create CloudFormation StackSets with self-managed permissions <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-getting-started-create-self-managed.html>`__ in the *AWS CloudFormation User Guide*.

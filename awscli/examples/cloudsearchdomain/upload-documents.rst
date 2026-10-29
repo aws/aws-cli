@@ -14,3 +14,5 @@ Output::
         "adds": 5000,
         "deletes": 0
     }
+
+For more information, see `Uploading Data to an Amazon CloudSearch Domain <https://docs.aws.amazon.com/cloudsearch/latest/developerguide/uploading-data.html>`__ in the *Amazon CloudSearch Developer Guide*.

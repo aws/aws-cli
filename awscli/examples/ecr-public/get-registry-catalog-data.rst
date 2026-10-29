@@ -12,3 +12,5 @@ Output::
             "displayName": "YourCustomPublicRepositoryalias"
         }
     }
+
+For more information, see `Updating registry settings in Amazon ECR public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-registry-settings.html>`__ in the *Amazon ECR Public User Guide*.

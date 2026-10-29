@@ -30,3 +30,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing Elastic Beanstalk environments <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.managing.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

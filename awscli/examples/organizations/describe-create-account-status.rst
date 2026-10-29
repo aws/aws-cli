@@ -17,3 +17,5 @@ Output::
             "Id": "car-examplecreateaccountrequestid111"
         }
     }
+
+For more information, see `Creating a member account in an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_create.html>`__ in the *AWS Organizations User Guide*.

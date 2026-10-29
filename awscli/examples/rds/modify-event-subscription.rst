@@ -24,3 +24,5 @@ Output::
             "Enabled": false
         }
     }
+
+For more information, see `Modifying an Amazon RDS event notification subscription <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.Modifying.html>`__ in the *Amazon RDS User Guide*.

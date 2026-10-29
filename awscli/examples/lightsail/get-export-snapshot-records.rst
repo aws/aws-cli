@@ -78,3 +78,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Track snapshot export status in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-task-monitor.html>`__ in the *Amazon Lightsail User Guide*.

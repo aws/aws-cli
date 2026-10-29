@@ -39,3 +39,5 @@ Output::
     }
 
 The presence of the ``NextToken`` response value indicates that there is more output available. Call the command again and supply that value as the ``NextToken`` input parameter.
+
+For more information, see `Managing Amazon Pinpoint projects <https://docs.aws.amazon.com/pinpoint/latest/userguide/projects-manage.html>`__ in the *Amazon Pinpoint User Guide*.

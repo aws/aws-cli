@@ -58,3 +58,5 @@ Output::
             }
         }
     }
+
+For more information, see `Advanced security with threat protection <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-threat-protection.html>`__ in the *Amazon Cognito Developer Guide*.

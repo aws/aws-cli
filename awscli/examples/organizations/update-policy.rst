@@ -23,6 +23,8 @@ Output::
         }
     }
 
+For more information, see `Updating organization policies with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_policies_update.html>`__ in the *AWS Organizations User Guide*.
+
 **Example 2: To replace a policy's JSON text content**
 
 The following ``update-policy`` example replaces the JSON text of the SCP in the previous example with a new JSON policy text string that allows S3 instead of EC2. The output shows the new content. ::
@@ -46,3 +48,5 @@ Output::
             }
         }
     }
+
+For more information, see `Updating organization policies with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_policies_update.html>`__ in the *AWS Organizations User Guide*.

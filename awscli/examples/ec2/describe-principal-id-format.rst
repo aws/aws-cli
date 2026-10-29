@@ -31,3 +31,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.

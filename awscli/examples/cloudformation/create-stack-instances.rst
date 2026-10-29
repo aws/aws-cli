@@ -15,3 +15,5 @@ Output::
     }
 
 To create a stack set, use the ``create-stack-set`` command.
+
+For more information, see `Add stacks to CloudFormation StackSets <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stackinstances-create.html>`__ in the *AWS CloudFormation User Guide*.

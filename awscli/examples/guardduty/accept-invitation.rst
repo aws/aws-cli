@@ -9,4 +9,4 @@ The following ``accept-invitation`` example shows how to accept an invitation to
 
 This command produces no output.
 
-For more information, see `Managing GuardDuty accounts by invitation <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_invitations.html>`__ in the GuardDuty User Guide.
+For more information, see `Managing GuardDuty accounts by invitation <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_invitations.html>`__ in the *Amazon GuardDuty User Guide*.

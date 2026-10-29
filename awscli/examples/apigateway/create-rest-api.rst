@@ -48,3 +48,5 @@ Output::
         "disableExecuteApiEndpoint": false,
         "rootResourceId": "f6g7h8i9j0"
     }
+
+For more information, see `Develop REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-develop.html>`__ in the *Amazon API Gateway Developer Guide*.

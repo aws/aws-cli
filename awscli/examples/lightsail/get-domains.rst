@@ -202,3 +202,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Understanding DNS in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-dns-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

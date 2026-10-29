@@ -23,3 +23,5 @@ Output::
             "Version": 1
         }
     }
+
+For more information, see `Amazon Pinpoint email channel <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-email.html>`__ in the *Amazon Pinpoint User Guide*.

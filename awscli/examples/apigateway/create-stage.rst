@@ -50,3 +50,5 @@ Output::
         "createdDate": "2022-07-18T10:11:18-07:00",
         "lastUpdatedDate": "2022-07-18T10:11:18-07:00"
     }
+
+For more information, see `Set up a stage for a REST API in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-stages.html>`__ in the *Amazon API Gateway Developer Guide*.

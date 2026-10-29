@@ -24,3 +24,5 @@ Output::
             "DateUpdated": "2015-08-20T22:34:56.195Z"
         }
     }
+
+For more information, see `Managing Elastic Beanstalk applications <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

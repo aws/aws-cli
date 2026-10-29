@@ -6,3 +6,5 @@ The following ``wait db-instance-available`` example pauses and continues only a
         --db-instance-identifier "sample-instance"
 
 This command produces no output.
+
+For more information, see `Describing Amazon DocumentDB instances <https://docs.aws.amazon.com/documentdb/latest/devguide/db-instance-view-details.html>`__ in the *Amazon DocumentDB Developer Guide*.

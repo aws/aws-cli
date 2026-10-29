@@ -38,3 +38,5 @@ Output::
         "DNSTarget": "psbqam834h.us-east-1.awsapprunner.com",
         "ServiceArn": "arn:aws:apprunner:us-east-1:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa"
     }
+
+For more information, see `Managing custom domain names for an App Runner service <https://docs.aws.amazon.com/apprunner/latest/dg/manage-custom-domains.html>`__ in the *AWS App Runner Developer Guide*.

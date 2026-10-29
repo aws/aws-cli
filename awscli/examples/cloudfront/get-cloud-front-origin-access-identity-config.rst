@@ -20,3 +20,5 @@ Output::
             "Comment": "Example OAI"
         }
     }
+
+For more information, see `Restrict access to an Amazon S3 origin <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html>`__ in the *Amazon CloudFront Developer Guide*.

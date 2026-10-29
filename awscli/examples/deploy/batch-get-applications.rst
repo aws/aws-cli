@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View application details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/applications-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

@@ -73,4 +73,4 @@ Output::
         "ECDHE-RSA-AES256-SHA384"
     ]
 
-For more information, see `Security policies <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies>`__ in the *User Guide for Application Load Balancers*.
+For more information, see `Security policies for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/describe-ssl-policies.html>`__ in the *Application Load Balancers Guide*.

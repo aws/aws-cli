@@ -8,5 +8,4 @@ The following ``remove-thing-from-thing-group`` example removes the specified th
 
 This command produces no output.
 
-For more information, see `Thing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/thing-groups.html
->`__ in the *AWS IoT Developer Guide*.
+For more information, see `Static thing groups <https://docs.aws.amazon.com/iot/latest/developerguide/thing-groups.html>`__ in the *AWS IoT Core Developer Guide*.

@@ -26,3 +26,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Shareable AWS resources <https://docs.aws.amazon.com/ram/latest/userguide/shareable.html>`__ in the *AWS RAM User Guide*.

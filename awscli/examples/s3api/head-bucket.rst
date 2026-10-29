@@ -15,3 +15,5 @@ Output::
 If the bucket exists and you have access to it, the output contains the Region of the bucket. Otherwise, an error message will be shown. For example::
 
     A client error (404) occurred when calling the HeadBucket operation: Not Found
+
+For more information, see `General purpose buckets overview <https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html>`__ in the *Amazon S3 User Guide*.

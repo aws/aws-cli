@@ -32,7 +32,5 @@ contains statistics for a 15-minute interval.
 In this example, there are only two data points because the only emails that the user sent in the last two weeks fell
 within two 15-minute intervals.
 
+For more information, see `Monitoring your Amazon SES sending activity <https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html>`__ in the *Amazon Simple Email Service Developer Guide*.
 
-For more information, see `Monitoring Your Amazon SES Usage Statistics`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Monitoring Your Amazon SES Usage Statistics`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/monitor-usage-statistics.html

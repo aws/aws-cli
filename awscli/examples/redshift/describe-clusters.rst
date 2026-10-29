@@ -54,3 +54,4 @@ Output::
     active      default
     PENDINGMODIFIEDVALUES
 
+For more information, see `Amazon Redshift provisioned clusters <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html>`__ in the *Amazon Redshift Management Guide*.

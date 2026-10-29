@@ -27,3 +27,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Associate security groups with multiple VPCs <https://docs.aws.amazon.com/vpc/latest/userguide/security-group-assoc.html>`__ in the *Amazon VPC User Guide*.

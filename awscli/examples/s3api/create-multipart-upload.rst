@@ -15,3 +15,5 @@ Output::
     }
 
 The completed file will be named ``01`` in a folder called ``multipart`` in the bucket ``amzn-s3-demo-bucket``. Save the upload ID, key and bucket name for use with the ``upload-part`` command.
+
+For more information, see `Uploading and copying objects using multipart upload in Amazon S3 <https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html>`__ in the *Amazon S3 User Guide*.

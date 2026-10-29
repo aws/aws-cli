@@ -14,3 +14,5 @@ Output::
         "UserConfirmed": false,
         "UserSub": "e04d60a6-45dc-441c-a40b-e25a787d4862"
     }
+
+For more information, see `Signing up and confirming user accounts <https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html>`__ in the *Amazon Cognito Developer Guide*.

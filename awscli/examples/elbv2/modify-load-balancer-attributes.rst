@@ -33,6 +33,8 @@ Output::
         ]
     }
 
+For more information, see `Edit attributes for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-load-balancer-attributes.html#deletion-protection>`__ in the *Application Load Balancers Guide*.
+
 **Example 2: To change the idle timeout**
 
 The following ``modify-load-balancer-attributes`` example changes the idle timeout value for the specified load balancer. ::
@@ -68,6 +70,8 @@ Output::
         ]
     }
 
+For more information, see `Edit attributes for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-load-balancer-attributes.html#connection-idle-timeout>`__ in the *Application Load Balancers Guide*.
+
 **Example 3: To enable access logs**
 
 The following ``modify-load-balancer-attributes`` example enables access logs for the specified load balancer. Note that the S3 bucket must exist in the same region as the load balancer and must have a policy attached that grants access to the Elastic Load Balancing service. ::
@@ -102,3 +106,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Access logs for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html>`__ in the *Application Load Balancers Guide*.

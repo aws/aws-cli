@@ -34,4 +34,4 @@ Output::
         "UnprocessedAccounts": []
     }
 
-For more information, see `Viewing the list of accounts in a behavior graph<https://docs.aws.amazon.com/detective/latest/adminguide/graph-admin-view-accounts.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Viewing the list of accounts <https://docs.aws.amazon.com/detective/latest/userguide/accounts-view-list.html>`__ in the *Amazon Detective User Guide*.

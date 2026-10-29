@@ -43,3 +43,5 @@ This example sets the following attributes:
 This command produces no output. To verify the settings of your delivery channel, run the `describe-delivery-channels`__ command.
 
 .. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-delivery-channels.html
+
+For more information, see `Working with the Delivery Channel <https://docs.aws.amazon.com/config/latest/developerguide/manage-delivery-channel.html>`__ in the *AWS Config Developer Guide*.

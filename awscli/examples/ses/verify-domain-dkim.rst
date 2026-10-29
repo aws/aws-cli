@@ -15,6 +15,4 @@ Output::
         ]
     }
 
-To set up DKIM, you must use the returned DKIM tokens to update your domain's DNS settings with CNAME records that point to DKIM public keys hosted by Amazon SES. For more information, see `Easy DKIM in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Easy DKIM in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html
+To set up DKIM, you must use the returned DKIM tokens to update your domain's DNS settings with CNAME records that point to DKIM public keys hosted by Amazon SES. For more information, see `Easy DKIM in Amazon SES <https://docs.aws.amazon.com/ses/latest/dg/send-email-authentication-dkim-easy.html>`__ in the *Amazon Simple Email Service Developer Guide*.

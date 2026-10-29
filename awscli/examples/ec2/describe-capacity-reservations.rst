@@ -53,6 +53,8 @@ Output::
         ]
     }
 
+For more information, see `View the state of a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-view.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe one or more of your capacity reservations**
 
 The following ``describe-capacity-reservations`` example displays details about the specified capacity reservation. ::
@@ -88,4 +90,4 @@ Output::
         ]
     }
 
-For more information, see `Viewing a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-using.html#capacity-reservations-view>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `View the state of a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-view.html>`__ in the *Amazon EC2 User Guide*.

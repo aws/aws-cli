@@ -20,4 +20,4 @@ Output::
         }
     }
 
-For more information, see `Updating the Amazon ECS Container Agent <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Updating the Amazon ECS container agent <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html>`__ in the *Amazon ECS Developer Guide*.

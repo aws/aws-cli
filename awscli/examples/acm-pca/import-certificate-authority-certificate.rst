@@ -8,3 +8,5 @@ The following ``import-certificate-authority-certificate`` example imports the s
         --certificate-chain fileb://C:\ca_cert_chain.pem
 
 This command produces no output.
+
+For more information, see `Installing the CA certificate <https://docs.aws.amazon.com/privateca/latest/userguide/PCACertInstall.html>`__ in the *AWS Private Certificate Authority User Guide*.

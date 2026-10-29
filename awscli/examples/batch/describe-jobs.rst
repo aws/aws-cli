@@ -34,3 +34,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Jobs <https://docs.aws.amazon.com/batch/latest/userguide/jobs.html>`__ in the *AWS Batch User Guide*.

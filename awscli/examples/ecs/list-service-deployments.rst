@@ -22,4 +22,4 @@ Output::
         ]
     }
 
-For more information, see `View service history using Amazon ECS service deployments <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployment.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `View service history using Amazon ECS service deployments <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployment.html>`__ in the *Amazon ECS Developer Guide*.

@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `Repository catalog data <https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-catalog-data.html>`__ in the *Amazon ECR Public*.
+For more information, see `Specifying the repository catalog data in Amazon ECR public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-catalog-data.html>`__ in the *Amazon ECR Public User Guide*.

@@ -40,3 +40,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Manage SSH key pairs and connect to your Lightsail instances <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-ssh-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

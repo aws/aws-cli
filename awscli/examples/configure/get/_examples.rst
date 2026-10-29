@@ -56,3 +56,4 @@ The following commands would have the corresponding output::
     $ aws configure get --services my-services ec2.endpoint_url
     http://localhost:4567
 
+For more information, see `Configuration and credential file settings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html>`__ in the *AWS CLI User Guide*.

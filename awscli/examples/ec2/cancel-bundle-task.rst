@@ -22,3 +22,5 @@ Output::
             "BundleId": "bun-2a4e041c"
         }
     }
+
+For more information, see `AMI types and characteristics in Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html>`__ in the *Amazon EC2 User Guide*.

@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Detach or attach instances from your Auto Scaling group <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-detach-attach-instances.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

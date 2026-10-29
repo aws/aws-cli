@@ -9,3 +9,5 @@ The following ``delete-scaling-policy`` example deletes a scaling policy for the
         --service-namespace ecs
 
 This command produces no output.
+
+For more information, see `Delete a step scaling policy for Application Auto Scaling using the AWS CLI <https://docs.aws.amazon.com/autoscaling/application/userguide/delete-step-scaling-policy.html>`__ in the *Application Auto Scaling User Guide*.

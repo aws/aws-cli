@@ -13,3 +13,5 @@ Output::
         "restApiId": "1234w4321e",
         "stage": "api"
     }
+
+For more information, see `Use API mappings to connect API stages to a custom domain name for REST APIs <https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-mappings.html>`__ in the *Amazon API Gateway Developer Guide*.

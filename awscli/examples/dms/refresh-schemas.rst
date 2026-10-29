@@ -16,3 +16,5 @@ Output::
             "LastRefreshDate": 1590019949.103
         }
     }
+
+For more information, see `Working with AWS DMS endpoints <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Endpoints.html>`__ in the *AWS Database Migration Service User Guide*.

@@ -42,3 +42,5 @@ Output::
         "region": "us-east-1",
         "location": "CSVA1"
     }
+
+For more information, see `Update a LAG at a Direct Connect endpoint <https://docs.aws.amazon.com/directconnect/latest/UserGuide/update-lag.html>`__ in the *AWS Direct Connect User Guide*.

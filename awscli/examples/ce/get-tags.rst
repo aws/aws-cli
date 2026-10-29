@@ -17,3 +17,5 @@ Output::
         ],
         "TotalSize": 2
     }
+
+For more information, see `Organizing and tracking costs using AWS cost allocation tags <https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html>`__ in the *AWS Billing User Guide*.

@@ -32,3 +32,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View CloudFormation stacks for Lightsail instances <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-cloudformation-stacks.html>`__ in the *Amazon Lightsail User Guide*.

@@ -15,6 +15,8 @@ Output::
         ]
     }
 
+For more information, see `Amazon ECS task definition parameters for Fargate <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#family>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 2: To filter the registered task definition families**
 
 The following ``list-task-definition-families`` example lists the task definition revisions that start with "hpcc". ::
@@ -31,4 +33,4 @@ Output::
         ]
     }
 
-For more information, see `Task Definition Parameters <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#family>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS task definition parameters for Fargate <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#family>`__ in the *Amazon ECS Developer Guide*.

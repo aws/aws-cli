@@ -25,3 +25,5 @@ Output::
         "virtualInterfaceType": "private",
         "virtualInterfaceName": "PrivateVirtualInterface"
     }
+
+For more information, see `Create a Direct Connect private virtual interface <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-private-vif.html>`__ in the *AWS Direct Connect User Guide*.

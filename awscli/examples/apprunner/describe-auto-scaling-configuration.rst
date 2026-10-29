@@ -29,6 +29,8 @@ Output::
         }
     }
 
+For more information, see `Managing App Runner automatic scaling <https://docs.aws.amazon.com/apprunner/latest/dg/manage-autoscaling.html>`__ in the *AWS App Runner Developer Guide*.
+
 **Example 2: To describe a specific revision of an auto scaling configuration**
 
 The following ``describe-auto-scaling-configuration`` example get a description of a specific revision of an App Runner auto scaling configuration. To describe a specific revision, specify an ARN that includes the revision number.
@@ -59,3 +61,5 @@ Output::
             "MinSize": 5
         }
     }
+
+For more information, see `Managing App Runner automatic scaling <https://docs.aws.amazon.com/apprunner/latest/dg/manage-autoscaling.html>`__ in the *AWS App Runner Developer Guide*.

@@ -7,3 +7,5 @@ The following ``modify-volume-attribute`` example sets the ``autoEnableIo`` attr
         --auto-enable-io
 
 This command produces no output.
+
+For more information, see `Amazon EBS volume status checks <https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-checks.html>`__ in the *Amazon EBS User Guide*.

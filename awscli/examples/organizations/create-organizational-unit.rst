@@ -15,3 +15,5 @@ Output::
             "Name": "AccountingOU"
         }
     }
+
+For more information, see `Creating an organizational unit (OU) with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/create_ou.html>`__ in the *AWS Organizations User Guide*.

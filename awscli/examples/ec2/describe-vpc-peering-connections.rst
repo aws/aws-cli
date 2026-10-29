@@ -60,6 +60,7 @@ Output::
         ]
     }
 
+For more information, see `VPC peering connections <https://docs.aws.amazon.com/vpc/latest/peering/working-with-vpc-peering.html>`__ in the *Amazon VPC Peering Guide*.
 
 **Example 2: To describe specific VPC peering connections**
 
@@ -172,3 +173,4 @@ Output::
         ]
     }
 
+For more information, see `VPC peering connections <https://docs.aws.amazon.com/vpc/latest/peering/working-with-vpc-peering.html>`__ in the *Amazon VPC Peering Guide*.

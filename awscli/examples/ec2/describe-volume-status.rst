@@ -31,6 +31,8 @@ Output::
         ]
     }
 
+For more information, see `Amazon EBS volume status checks <https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-checks.html>`__ in the *Amazon EBS User Guide*.
+
 **Example 2: To describe the status of impaired volumes**
 
 The following ``describe-volume-status`` example describes the status for all volumes that are impaired. In this example output, there are no impaired volumes. ::
@@ -44,6 +46,4 @@ Output::
         "VolumeStatuses": []
     }
 
-If you have a volume with a failed status check (status is impaired), see `Working with an Impaired Volume`_ in the *Amazon EC2 User Guide*.
-
-.. _`Working with an Impaired Volume`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-volume-status.html#work_volumes_impaired
+For more information, see `Work with an impaired Amazon EBS volume <https://docs.aws.amazon.com/ebs/latest/userguide/work_volumes_impaired.html>`__ in the *Amazon EBS User Guide*.

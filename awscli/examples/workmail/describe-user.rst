@@ -17,3 +17,5 @@ Output::
         "UserRole": "USER",
         "EnabledDate": 1532459261.827
     }
+
+For more information, see `Working with users <https://docs.aws.amazon.com/workmail/latest/adminguide/users_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

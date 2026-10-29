@@ -120,3 +120,5 @@ Output::
             }
         }
     }
+
+For more information, see `Configure distributions <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-working-with.html>`__ in the *Amazon CloudFront Developer Guide*.

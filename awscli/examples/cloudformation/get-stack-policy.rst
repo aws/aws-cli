@@ -10,3 +10,5 @@ Output::
     {
         "StackPolicyBody": "{\n  \"Statement\" : [\n    {\n      \"Effect\" : \"Allow\",\n      \"Action\" : \"Update:*\",\n      \"Principal\": \"*\",\n      \"Resource\" : \"*\"\n    },\n    {\n      \"Effect\" : \"Deny\",\n      \"Action\" : \"Update:*\",\n      \"Principal\": \"*\",\n      \"Resource\" : \"LogicalResourceId/bucket\"\n    }\n  ]\n}\n"
     }
+
+For more information, see `Prevent updates to stack resources <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html>`__ in the *AWS CloudFormation User Guide*.

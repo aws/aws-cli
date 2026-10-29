@@ -8,4 +8,4 @@ The following ``add-tags-to-certificate`` example adds two tags to the specified
 
 This command produces no output.
 
-
+For more information, see `Tag AWS Certificate Manager resources <https://docs.aws.amazon.com/acm/latest/userguide/tags.html>`__ in the *AWS Certificate Manager User Guide*.

@@ -16,6 +16,7 @@ Output::
         ]
     }
 
+For more information, see `Job states <https://docs.aws.amazon.com/batch/latest/userguide/job_states.html>`__ in the *AWS Batch User Guide*.
 
 **Example 2: To list submitted jobs**
 
@@ -35,3 +36,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Job states <https://docs.aws.amazon.com/batch/latest/userguide/job_states.html>`__ in the *AWS Batch User Guide*.

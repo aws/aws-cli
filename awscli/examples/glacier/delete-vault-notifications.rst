@@ -7,3 +7,5 @@ The following ``delete-vault-notifications`` example removes notifications sent 
         --vault-name example_vault
 
 This command produces no output.
+
+For more information, see `Configuring Vault Notifications in Amazon Glacier <https://docs.aws.amazon.com/amazonglacier/latest/dev/configuring-notifications.html>`__ in the *Amazon Glacier Developer Guide*.

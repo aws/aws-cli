@@ -65,3 +65,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon RDS event categories and event messages <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.Messages.html>`__ in the *Amazon RDS User Guide*.

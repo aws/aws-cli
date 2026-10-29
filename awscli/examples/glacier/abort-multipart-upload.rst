@@ -9,6 +9,6 @@ The following ``abort-multipart-upload`` example deletes an in-progress multipar
 
 This command produces no output. Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account. The upload ID is returned by the ``aws glacier initiate-multipart-upload`` command and can also be obtained by using ``aws glacier list-multipart-uploads``.
 
-For more information on multipart uploads to Amazon Glacier using the AWS CLI, see `Using Amazon Glacier`_ in the *AWS CLI User Guide*.
+For more information on multipart uploads to Amazon Glacier using the AWS CLI, see `Using Amazon Glacier in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-glacier.html>`__ in the *AWS CLI User Guide*.
 
-.. _`Using Amazon Glacier`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-glacier.html
+For more information, see `Uploading Large Archives in Parts (Multipart Upload) <https://docs.aws.amazon.com/amazonglacier/latest/dev/uploading-archive-mpu.html>`__ in the *Amazon Glacier Developer Guide*.

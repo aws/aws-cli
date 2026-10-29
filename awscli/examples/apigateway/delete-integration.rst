@@ -8,3 +8,5 @@ The following ``delete-integration`` example deletes an integration for a given 
         --http-method GET
 
 This command produces no output.
+
+For more information, see `Integrations for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-integration-settings.html>`__ in the *Amazon API Gateway Developer Guide*.

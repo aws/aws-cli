@@ -36,3 +36,5 @@ Output::
             "Timestamp": "2019-10-02T05:58:47.433Z"
         }
     }
+
+For more information, see `Detect drift on individual stack resources <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-resource.html>`__ in the *AWS CloudFormation User Guide*.

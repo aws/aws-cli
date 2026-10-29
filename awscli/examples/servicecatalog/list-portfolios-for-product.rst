@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing Portfolios <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_portfolios.html>`__ in the *AWS Service Catalog Administrator Guide*.

@@ -8,3 +8,5 @@ The following ``register-to-work-mail`` example enables the specified existing e
         --email exampleGroup1@site.awsapps.com
 
 This command produces no output.
+
+For more information, see `Enabling groups <https://docs.aws.amazon.com/workmail/latest/adminguide/enable_existing_group.html>`__ in the *Amazon WorkMail Administrator Guide*.

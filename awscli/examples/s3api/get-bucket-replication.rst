@@ -23,3 +23,5 @@ Output::
             "Role": "arn:aws:iam::123456789012:role/s3-replication-role"
         }
     }
+
+For more information, see `Replicating objects within and across Regions <https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html>`__ in the *Amazon S3 User Guide*.

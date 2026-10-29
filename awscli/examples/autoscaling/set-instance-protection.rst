@@ -9,6 +9,8 @@ The following ``set-instance-protection`` example enables instance protection fo
 
 This command produces no output.
 
+For more information, see `Use instance scale-in protection to control instance termination <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-instance-protection.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+
 **Example 2: To disable the instance protection setting for an instance**
 
 The following ``set-instance-protection`` example disables instance protection for the specified instance. ::
@@ -19,3 +21,5 @@ The following ``set-instance-protection`` example disables instance protection f
         --no-protected-from-scale-in
 
 This command produces no output.
+
+For more information, see `Use instance scale-in protection to control instance termination <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-instance-protection.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

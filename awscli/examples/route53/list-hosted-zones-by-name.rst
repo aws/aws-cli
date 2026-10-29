@@ -59,3 +59,5 @@ Output::
         "IsTruncated": false,
         "MaxItems": "100"
     }
+
+For more information, see `Listing public hosted zones <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/ListInfoOnHostedZone.html>`__ in the *Amazon Route 53 Developer Guide*.

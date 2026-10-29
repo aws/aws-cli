@@ -14,3 +14,5 @@ Output::
         "Id": "c8bb9ebc-c3fd-40a4-9c6a-568d75569d38",
         "Version": "b3bcada0-5fb6-42df-bf0b-1ee4f15e769e"
     }
+
+For more information, see `Deploy secrets to the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/secrets.html>`__ in the *AWS IoT Greengrass Developer Guide*.

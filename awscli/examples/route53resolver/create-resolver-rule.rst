@@ -39,3 +39,5 @@ Output::
             "StatusMessage": "[Trace id: 1-22222222-3e56afcc71a3724664f22e24] Successfully created Resolver Rule."
         }
     }
+
+For more information, see `Managing forwarding rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-rules-managing.html#resolver-rules-managing-creating-rules>`__ in the *Amazon Route 53 Developer Guide*.

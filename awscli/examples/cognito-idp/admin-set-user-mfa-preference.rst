@@ -9,3 +9,4 @@ The following ``admin-set-user-mfa-preference`` example sets the SMS MFA prefere
 
 This command produces no output.
 
+For more information, see `Adding MFA to a user pool <https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html>`__ in the *Amazon Cognito Developer Guide*.

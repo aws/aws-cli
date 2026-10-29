@@ -40,3 +40,5 @@ Output::
         ],
         "StorageClass": "STANDARD"
     }
+
+For more information, see `Uploading and copying objects using multipart upload in Amazon S3 <https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html>`__ in the *Amazon S3 User Guide*.

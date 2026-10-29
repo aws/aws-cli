@@ -64,3 +64,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Planning and configuring instance fleets for your Amazon EMR cluster <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html>`__ in the *Amazon EMR Management Guide*.

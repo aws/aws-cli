@@ -7,3 +7,5 @@ The following ``delete-model`` example deletes a model in the given API. ::
         --model-name 'customModel'
 
 This command produces no output.
+
+For more information, see `Data models for REST APIs <https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings-models.html>`__ in the *Amazon API Gateway Developer Guide*.

@@ -14,3 +14,5 @@ Output::
         "State": "detaching",
         "Device": "/dev/sdb"
     }
+
+For more information, see `Detach an Amazon EBS volume from an Amazon EC2 instance <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-detaching-volume.html>`__ in the *Amazon EBS User Guide*.

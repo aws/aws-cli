@@ -24,3 +24,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon ECR public registries <https://docs.aws.amazon.com/AmazonECR/latest/public/public-registries.html>`__ in the *Amazon ECR Public User Guide*.

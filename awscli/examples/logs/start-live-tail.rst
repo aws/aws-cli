@@ -22,3 +22,5 @@ In interactive mode you can highlight as many as five terms in the tailed logs. 
 Press ``h`` to enter the highlight mode and then type in the terms to be highlighted, one at a time, and press enter. Press ``c`` to clear the highlighted term(s).
 Press ``t`` to toggle formatting between JSON/Plain text. Press ``Esc`` to exit the Live Tail session.
 Press ``up`` / ``down`` keys to scroll up or down between log events, use ``Ctrl + u`` / ``Ctrl + d`` to scroll faster. Press ``q`` to scroll to latest log events.
+
+For more information, see `Troubleshoot with CloudWatch Logs Live Tail <https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs_LiveTail.html>`__ in the *Amazon CloudWatch Logs User Guide*.

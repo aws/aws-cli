@@ -10,3 +10,5 @@ Output::
     {
         "returnValue": true
     }
+
+For more information, see `What about cross-account access with resource-based policies? <https://docs.aws.amazon.com/ram/latest/userguide/what-is.html#what-is-about-res-pol-sharing>`__ in the *AWS RAM User Guide*.

@@ -23,7 +23,4 @@ Output::
         ]
     }
 
-For more information, see `Stop and Start Your Instance`_ in the *Amazon Elastic Compute Cloud User Guide*.
-
-.. _`Stop and Start Your Instance`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html
-
+For more information, see `Stop and start Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html>`__ in the *Amazon EC2 User Guide*.

@@ -46,3 +46,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create Lightsail block storage disk snapshots for backup or baseline <https://docs.aws.amazon.com/lightsail/latest/userguide/create-block-storage-disk-snapshot.html>`__ in the *Amazon Lightsail User Guide*.

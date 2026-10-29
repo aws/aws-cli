@@ -28,3 +28,4 @@ Output::
         ]
     }
 
+For more information, see `Reserved nodes <https://docs.aws.amazon.com/redshift/latest/mgmt/purchase-reserved-node-instance.html>`__ in the *Amazon Redshift Management Guide*.

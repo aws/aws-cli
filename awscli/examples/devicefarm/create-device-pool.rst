@@ -35,3 +35,5 @@ Output::
             "arn": "arn:aws:devicefarm:us-west-2:123456789012:devicepool:070fc3ca-7ec1-4741-9c1f-d3e044efc506/2aa8d2a9-5e73-47ca-b929-659cb34b7dcd"
         }
     }
+
+For more information, see `Creating a device pool in AWS Device Farm <https://docs.aws.amazon.com/devicefarm/latest/developerguide/how-to-create-device-pool.html>`__ in the *AWS Device Farm Developer Guide*.

@@ -6,3 +6,5 @@ The following ``remove-account-from-organization`` example removes an account fr
         --account-id 333333333333
 
 This command produces no output.
+
+For more information, see `Removing a member account from an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_remove.html>`__ in the *AWS Organizations User Guide*.

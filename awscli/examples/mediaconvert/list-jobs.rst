@@ -155,4 +155,4 @@ Output::
         ]
     }
 
-For more information, see `Working with AWS Elemental MediaConvert Jobs <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-jobs.html>`_ in the *AWS Elemental MediaConvert User Guide*.
+For more information, see `Working with jobs <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-jobs.html>`__ in the *AWS Elemental MediaConvert User Guide*.

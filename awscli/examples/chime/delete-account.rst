@@ -7,4 +7,4 @@ The following ``delete-account`` example deletes the specified account. ::
 
 This command produces no output.
 
-For more information, see `Deleting Your Account <https://docs.aws.amazon.com/chime/latest/ag/enterprise-account.html>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Deleting your account <https://docs.aws.amazon.com/chime/latest/ag/enterprise-account.html>`__ in the *Amazon Chime Administration Guide*.

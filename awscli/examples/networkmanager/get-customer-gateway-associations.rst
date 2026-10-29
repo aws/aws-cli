@@ -17,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Associate a customer gateway using AWS Network Manager <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-cgw-associate.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

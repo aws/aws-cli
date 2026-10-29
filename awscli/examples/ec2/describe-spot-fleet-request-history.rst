@@ -47,3 +47,5 @@ Output::
         "NextToken": "CpHNsscimcV5oH7bSbub03CI2Qms5+ypNpNm+53MNlR0YcXAkp0xFlfKf91yVxSExmbtma3awYxMFzNA663ZskT0AHtJ6TCb2Z8bQC2EnZgyELbymtWPfpZ1ZbauVg+P+TfGlWxWWB/Vr5dk5d4LfdgA/DRAHUrYgxzrEXAMPLE=",
         "StartTime": "2015-05-26T00:00:00Z"
     }
+
+For more information, see `Describe a Spot Fleet request, its instances, and event history <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.

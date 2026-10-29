@@ -20,6 +20,8 @@ Output::
         "storeFormat": "VCF"
     }
 
+For more information, see `Creating HealthOmics annotation stores <https://docs.aws.amazon.com/omics/latest/dev/creating-and-managing-annotation-store.html>`__ in the *AWS HealthOmics User Guide*.
+
 **Example 2: To create a TSV annotation store**
 
 The following ``create-annotation-store`` example creates a TSV format annotation store. ::
@@ -96,4 +98,4 @@ Output::
         }
     }
 
-For more information, see `Omics Analytics <https://docs.aws.amazon.com/omics/latest/dev/omics-analytics.html>`__ in the Amazon Omics Developer Guide.
+For more information, see `Creating HealthOmics annotation stores <https://docs.aws.amazon.com/omics/latest/dev/creating-and-managing-annotation-store.html>`__ in the *AWS HealthOmics User Guide*.

@@ -9,3 +9,4 @@ The following ``admin-delete-user-attributes`` example deletes a custom attribut
 
 This command produces no output.
 
+For more information, see `Working with user attributes <https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html>`__ in the *Amazon Cognito Developer Guide*.

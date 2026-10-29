@@ -42,6 +42,8 @@ Output::
         ]
     }
 
+For more information, see `Configure your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-configure-load-balancer.html>`__ in the *Classic Load Balancers User Guide*.
+
 **Example 2: To describe a specific policy associated with a load balancer**
 
 The following ``describe-load-balancer-policies`` example describes the specified policy associated with the specified load balancer. ::
@@ -66,3 +68,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create a Classic Load Balancer with an HTTPS listener <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-create-https-ssl-load-balancer.html>`__ in the *Classic Load Balancers User Guide*.

@@ -48,3 +48,5 @@ Output::
             "virtualInterfaceName": "Test"
         }
     }
+
+For more information, see `Add a BGP peer to a Direct Connect virtual interface <https://docs.aws.amazon.com/directconnect/latest/UserGuide/add-peer-to-vif.html>`__ in the *AWS Direct Connect User Guide*.

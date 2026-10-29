@@ -32,6 +32,8 @@ Output::
         }
     }
 
+For more information, see `Managing App Runner automatic scaling <https://docs.aws.amazon.com/apprunner/latest/dg/manage-autoscaling.html>`__ in the *AWS App Runner Developer Guide*.
+
 **Example 2: To delete a specific revision of an auto scaling configuration**
 
 The following ``delete-auto-scaling-configuration`` example deletes a specific revision of an App Runner auto scaling configuration.
@@ -64,3 +66,5 @@ Output::
             "MinSize": 5
         }
     }
+
+For more information, see `Managing App Runner automatic scaling <https://docs.aws.amazon.com/apprunner/latest/dg/manage-autoscaling.html>`__ in the *AWS App Runner Developer Guide*.

@@ -9,3 +9,4 @@ The following ``set-load-balancer-listener-ssl-certificate`` example replaces th
 
 This command produces no output.
 
+For more information, see `Replace the SSL certificate for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-update-ssl-cert.html>`__ in the *Classic Load Balancers Guide*.

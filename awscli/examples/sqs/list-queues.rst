@@ -16,6 +16,8 @@ Output::
         ]
     }
 
+For more information, see `Amazon SQS list queue pagination <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/list-all-queues-pagination.html>`__ in the *Amazon Simple Queue Service Developer Guide*.
+
 The following ``list-queues`` example lists only queues that start with "My". ::
 
     aws sqs list-queues \
@@ -30,3 +32,5 @@ Output::
             "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue"
         ]
     }
+
+For more information, see `Amazon SQS list queue pagination <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/list-all-queues-pagination.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

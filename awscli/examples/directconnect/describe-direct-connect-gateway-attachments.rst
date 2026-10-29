@@ -19,3 +19,5 @@ Output::
         ],
         "nextToken": "eyJ2IjoxLCJzIjoxLCJpIjoibEhXdlNpUXF5RzhoL1JyUW52SlV2QT09IiwiYyI6Im5wQjFHQ0RyQUdRS3puNnNXcUlINCtkTTA4dTk3KzBiU0xtb05JQmlaczZ6NXRIYmk3c3VESUxFTTd6a2FzVHM0VTFwaGJkZGNxTytqWmQ3QzMzOGRQaTVrTThrOG1zelRsV3gyMWV3VTNFPSJ9"
     }
+
+For more information, see `Direct Connect gateways <https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-gateways.html>`__ in the *AWS Direct Connect User Guide*.

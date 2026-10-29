@@ -20,6 +20,4 @@ Output::
         "JobId": "57849a3dc627d4df74123dca269d69f7b89329c870c65bb16c9fd63409d200b9"
     }
 
-For more information, see `Detecting and Analyzing Text in Multi-Page Documents`_ in the *Amazon Textract Developers Guide*
-
-.. _`Detecting and Analyzing Text in Multi-Page Documents`: https://docs.aws.amazon.com/textract/latest/dg/async.html
+For more information, see `Processing Documents Asynchronously <https://docs.aws.amazon.com/textract/latest/dg/async.html>`__ in the *Amazon Textract Developer Guide*.

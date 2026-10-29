@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing and updating Amazon Route 53 Profiles <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles-editing.html>`__ in the *Amazon Route 53 Developer Guide*.

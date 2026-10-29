@@ -25,6 +25,4 @@ This command returns the status of email feedback forwarding and, if applicable,
 
 If you call this command with an identity that you have never submitted for verification, that identity won't appear in the output.
 
-For more information about notifications, see `Using Notifications With Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Using Notifications With Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/notifications.html
+For more information, see `Setting up event notifications for Amazon SES <https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity-using-notifications.html>`__ in the *Amazon Simple Email Service Developer Guide*.

@@ -70,3 +70,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Use action types, custom actions, and approval actions <https://docs.aws.amazon.com/codepipeline/latest/userguide/actions.html>`__ in the *AWS CodePipeline User Guide*.

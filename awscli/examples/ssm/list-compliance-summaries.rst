@@ -62,6 +62,8 @@ Output::
         "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
     }
 
+For more information, see `Learn details about Compliance <https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-about.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 2: To list compliance summaries for a specific compliance type**
 
 The following ``list-compliance-summaries`` example lists the compliance summary for the Patch compliance type. ::
@@ -100,3 +102,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Learn details about Compliance <https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-about.html>`__ in the *AWS Systems Manager User Guide*.

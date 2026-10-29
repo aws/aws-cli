@@ -23,6 +23,8 @@ Output::
         }
     }
 
+For more information, see `Creating an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_create.html>`__ in the *AWS Organizations User Guide*.
+
 **Example 2: To create a new organization with only consolidated billing features enabled**
 
 The following ``create-organization`` example creates an organization that supports only the consolidated billing features. ::
@@ -44,6 +46,4 @@ Output::
         }
     }
 
-For more information, see `Creating an Organization`_ in the *AWS Organizations Users Guide*.
-
-.. _`Creating an Organization`: http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_create.html
+For more information, see `Creating an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_create.html>`__ in the *AWS Organizations User Guide*.

@@ -8,3 +8,5 @@ The following ``put-bucket-analytics-configuration`` example configures analytic
         --analytics-configuration '{"Id": "1","StorageClassAnalysis": {}}'
 
 This command produces no output.
+
+For more information, see `Amazon S3 analytics - Storage Class Analysis <https://docs.aws.amazon.com/AmazonS3/latest/userguide/analytics-storage-class.html>`__ in the *Amazon S3 User Guide*.

@@ -17,3 +17,5 @@ Output::
             "virtualGatewayRegion": "us-east-2"
         }
     }
+
+For more information, see `Associate or disassociate Direct Connect virtual private gateways <https://docs.aws.amazon.com/directconnect/latest/UserGuide/associate-vgw-with-direct-connect-gateway.html>`__ in the *AWS Direct Connect User Guide*.

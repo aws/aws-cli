@@ -13,6 +13,8 @@ Output::
         "PasswordData": "gSlJFq+VpcZXqy+iktxMF6NyxQ4qCrT4+gaOuNOenX1MmgXPTj7XEXAMPLEUQ+YeFfb+L1U4C4AKv652Ux1iRB3CPTYP7WmU3TUnhsuBd+p6LVk7T2lKUml6OXbk6WPW1VYYm/TRPB1e1DQ7PY4an/DgZT4mwcpRFigzhniQgDDeO1InvSDcwoUTwNs0Y1S8ouri2W4n5GNlriM3Q0AnNVelVz/53TkDtxbNoU606M1gK9zUWSxqEgwvbV2j8c5rP0WCuaMWSFl4ziDu4bd7q+4RSyi8NUsVWnKZ4aEZffuDPGzKrF5yLlf3etP2L4ZR6CvG7K1hx7VKOQVN32Dajw=="
     }
 
+For more information, see `Connect to your Windows instance using RDP <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connecting_to_windows_instance.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To get the decrypted password**
 
 The following ``get-password-data`` example gets the decrypted password. ::
@@ -29,3 +31,4 @@ Output::
         "PasswordData": "&ViJ652e*u"
     }
 
+For more information, see `Connect to your Windows instance using RDP <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connecting_to_windows_instance.html>`__ in the *Amazon EC2 User Guide*.

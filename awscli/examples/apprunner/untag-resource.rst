@@ -16,3 +16,5 @@ Contents of ``input.json``::
     }
 
 This command produces no output.
+
+For more information, see `Authorization based on App Runner tags <https://docs.aws.amazon.com/apprunner/latest/dg/security_iam_service-with-iam.html#security_iam_service-with-iam-tags>`__ in the *AWS App Runner Developer Guide*.

@@ -16,6 +16,7 @@ Output::
         "WindowId": "mw-0c50858d01EXAMPLE"
     }
 
+For more information, see `Tutorial: Create and configure a maintenance window using the AWS CLI <https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-cli-tutorials-create.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 2: To create a maintenance window that runs only once**
 
@@ -35,4 +36,4 @@ Output::
         "WindowId": "mw-01234567890abcdef"
     }
 
-For more information, see `Maintenance Windows <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-maintenance.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `AWS Systems Manager Maintenance Windows <https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows.html>`__ in the *AWS Systems Manager User Guide*.

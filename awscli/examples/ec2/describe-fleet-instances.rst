@@ -25,4 +25,4 @@ Output::
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
 
-For more information, see `Managing an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-ec2-fleet.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Work with EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-ec2-fleet.html>`__ in the *Amazon EC2 User Guide*.

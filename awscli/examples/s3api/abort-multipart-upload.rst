@@ -10,3 +10,5 @@ The following ``abort-multipart-upload`` example aborts a multipart upload for t
 This command produces no output.
 
 The upload ID required by this command is output by ``create-multipart-upload`` and can also be retrieved with ``list-multipart-uploads``.
+
+For more information, see `Aborting a multipart upload <https://docs.aws.amazon.com/AmazonS3/latest/userguide/abort-mpu.html>`__ in the *Amazon S3 User Guide*.

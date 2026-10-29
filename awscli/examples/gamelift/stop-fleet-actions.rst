@@ -8,3 +8,4 @@ The following ``stop-fleet-actions`` example stops the use of all scaling polici
 
 This command produces no output.
 
+For more information, see `Auto-scale fleet capacity with Amazon GameLift Servers <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/fleets-autoscaling.html>`__ in the *Amazon GameLift Servers Developer Guide*.

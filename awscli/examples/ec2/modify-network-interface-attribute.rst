@@ -8,7 +8,6 @@ The following ``modify-network-interface-attribute`` example modifies the ``atta
 
 This command produces no output.
 
-
 **Example 2: To modify the description attribute of a network interface**
 
 The following ``modify-network-interface-attribute`` example modifies the ``description`` attribute of the specified network interface. ::
@@ -18,7 +17,6 @@ The following ``modify-network-interface-attribute`` example modifies the ``desc
         --description "My description"
 
 This command produces no output.
-
 
 **Example 3: To modify the groupSet attribute of a network interface**
 
@@ -30,7 +28,6 @@ The following ``modify-network-interface-attribute`` example modifies the ``grou
 
 This command produces no output.
 
-
 **Example 4: To modify the sourceDestCheck attribute of a network interface**
 
 The following ``modify-network-interface-attribute`` example modifies the ``sourceDestCheck`` attribute of the specified network interface. ::
@@ -40,3 +37,5 @@ The following ``modify-network-interface-attribute`` example modifies the ``sour
         --no-source-dest-check
 
 This command produces no output.
+
+For more information, see `Modify network interface attributes <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-network-interface-attributes.html>`__ in the *Amazon EC2 User Guide*.

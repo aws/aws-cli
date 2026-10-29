@@ -33,3 +33,5 @@ user makes the bucket ``amzn-s3-demo-bucket`` with two tags with keys ``Key1`` a
 Output::
 
     make_bucket: s3://amzn-s3-demo-bucket
+
+For more information, see `Using high-level (s3) commands in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html#using-s3-commands-managing-buckets-creating>`__ in the *AWS CLI User Guide*.

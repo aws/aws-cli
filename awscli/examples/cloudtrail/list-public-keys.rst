@@ -17,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Validating CloudTrail log file integrity with the AWS CLI <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-cli.html>`__ in the *AWS CloudTrail User Guide*.

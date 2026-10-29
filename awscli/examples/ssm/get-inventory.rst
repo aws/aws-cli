@@ -33,3 +33,5 @@ Output::
             }
         ]
     }
+
+For more information, see `AWS Systems Manager Inventory <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-inventory.html>`__ in the *AWS Systems Manager User Guide*.

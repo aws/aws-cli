@@ -56,3 +56,5 @@ Output::
     {
         "nextSequenceToken": "49542672486831074009579604567900991230369019956308219826"
     }
+
+For more information, see `Working with log groups and log streams <https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html>`__ in the *Amazon CloudWatch Logs User Guide*.

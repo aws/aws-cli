@@ -56,6 +56,7 @@ Output::
         }
     }
 
+For more information, see `Shutting down and deleting a cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/rs-mgmt-shutdown-delete-cluster.html>`__ in the *Amazon Redshift Management Guide*.
 
 **Example 2: To delete a cluster, allowing a final cluster snapshot**
 
@@ -114,4 +115,4 @@ Output::
         }
     }
 
-
+For more information, see `Shutting down and deleting a cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/rs-mgmt-shutdown-delete-cluster.html>`__ in the *Amazon Redshift Management Guide*.

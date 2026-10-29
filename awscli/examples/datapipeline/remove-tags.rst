@@ -7,3 +7,5 @@ The following ``remove-tags`` example removes the specified tag from the specifi
         --tag-keys environment
 
 This command produces no output.
+
+For more information, see `Tagging Your Pipeline <https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-adding-tags.html>`__ in the *AWS Data Pipeline Developer Guide*.

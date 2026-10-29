@@ -66,3 +66,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Edit attributes for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-load-balancer-attributes.html>`__ in the *Application Load Balancers Guide*.

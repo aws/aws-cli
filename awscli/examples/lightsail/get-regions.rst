@@ -34,3 +34,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Regions and Availability Zones for Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-regions-and-availability-zones-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

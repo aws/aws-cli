@@ -42,6 +42,4 @@ Output::
         "Metadata": {}
     }
 
-For more information about retrieving objects, see `Getting Objects`_ in the *Amazon S3 Developer Guide*.
-
-.. _`Getting Objects`: http://docs.aws.amazon.com/AmazonS3/latest/dev/GettingObjectsUsingAPIs.html
+For more information, see `Downloading objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/download-objects.html>`__ in the *Amazon S3 User Guide*.

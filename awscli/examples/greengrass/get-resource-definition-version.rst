@@ -30,3 +30,5 @@ Output::
         "Id": "ad8c101d-8109-4b0e-b97d-9cc5802ab658",
         "Version": "26e8829a-491a-464d-9c87-664bf6f6f2be"
     }
+
+For more information, see `Access local resources with Lambda functions and connectors <https://docs.aws.amazon.com/greengrass/v1/developerguide/access-local-resources.html>`__ in the *AWS IoT Greengrass Developer Guide*.

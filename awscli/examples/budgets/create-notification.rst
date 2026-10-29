@@ -10,3 +10,4 @@ The following ``create-notification`` example creates a notification for the spe
 
 This command produces no output.
 
+For more information, see `Editing a budget <https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-edit.html>`__ in the *AWS Cost Management User Guide*.

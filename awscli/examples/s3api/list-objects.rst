@@ -22,6 +22,4 @@ Output::
 The example uses the ``--query`` argument to filter the output of
 ``list-objects`` down to the key value and size for each object
 
-For more information about objects, see `Working with Amazon S3 Objects`_ in the *Amazon S3 Developer Guide*.
-
-.. _`Working with Amazon S3 Objects`: http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingObjects.html
+For more information, see `Listing object keys programmatically <https://docs.aws.amazon.com/AmazonS3/latest/userguide/ListingKeysUsingAPIs.html>`__ in the *Amazon S3 User Guide*.

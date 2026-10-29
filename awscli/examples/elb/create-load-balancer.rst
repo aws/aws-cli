@@ -28,6 +28,8 @@ Output::
         "DNSName": "my-load-balancer-123456789.us-west-2.elb.amazonaws.com"
     }
 
+For more information, see `Create an internet-facing Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-getting-started.html>`__ in the *Classic Load Balancers User Guide*.
+
 **Example 2: To create an HTTPS load balancer**
 
 The following ``create-load-balancer`` example creates a load balancer with an HTTPS listener in a VPC. ::
@@ -57,6 +59,8 @@ Output::
         "DNSName": "my-load-balancer-123456789.us-west-2.elb.amazonaws.com"
     }
 
+For more information, see `Create a Classic Load Balancer with an HTTPS listener <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-create-https-ssl-load-balancer.html>`__ in the *Classic Load Balancers User Guide*.
+
 **Example 3: To create an internal load balancer**
 
 The following ``create-load-balancer`` example creates an internal load balancer with an HTTP listener in a VPC. ::
@@ -74,3 +78,4 @@ Output::
         "DNSName": "internal-my-load-balancer-123456789.us-west-2.elb.amazonaws.com"
     }
 
+For more information, see `Create an internal Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-create-internal-load-balancer.html>`__ in the *Classic Load Balancers User Guide*.

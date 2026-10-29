@@ -40,3 +40,5 @@ To narrow the results, you can add filters that specify the operating system, ne
 Command:
 
     --filters Name=platform,Values=Linux/UNIX Name=network-platform,Values=EC2-VPC Name=instance-type,Values=c4.large
+
+For more information, see `Amazon EC2 billing and purchasing options <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html>`__ in the *Amazon EC2 User Guide*.

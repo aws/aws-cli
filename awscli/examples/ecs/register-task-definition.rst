@@ -58,7 +58,7 @@ Output::
         }
     }
 
-For more information, see `Example task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/example_task_definitions.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Example Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/example_task_definitions.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 2: To register a task definition with a JSON string parameter**
 
@@ -102,4 +102,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Task Definition <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Creating an Amazon ECS task definition using the console <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html>`__ in the *Amazon ECS Developer Guide*.

@@ -24,6 +24,8 @@ Output::
         ]
     }
 
+For more information, see `Working with shared environment in AWS Cloud9 <https://docs.aws.amazon.com/cloud9/latest/user-guide/share-environment.html>`__ in the *AWS Cloud9 User Guide*.
+
 **Example 2: To get information about the owner of an AWS Cloud9 development environment**
 
 The following ``describe-environment-memberships`` example gets information about the owner of the specified AWS Cloud9 development environment. ::
@@ -44,6 +46,8 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with shared environment in AWS Cloud9 <https://docs.aws.amazon.com/cloud9/latest/user-guide/share-environment.html>`__ in the *AWS Cloud9 User Guide*.
 
 **Example 3: To get information about an environment member for multiple AWS Cloud9 development environments**
 
@@ -72,3 +76,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with shared environment in AWS Cloud9 <https://docs.aws.amazon.com/cloud9/latest/user-guide/share-environment.html>`__ in the *AWS Cloud9 User Guide*.

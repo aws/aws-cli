@@ -11,5 +11,4 @@ permission to everyone. ::
 
 This command produces no output.
 
-See http://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTacl.html for details on custom ACLs (the s3api ACL
-commands, such as ``put-object-acl``, use the same shorthand argument notation).
+For more information, see `Access control list (ACL) overview <https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html>`__ in the *Amazon S3 User Guide*.

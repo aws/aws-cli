@@ -22,6 +22,8 @@ Output::
         ]
     }
 
+For more information, see `Creating a member account in an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_create.html>`__ in the *AWS Organizations User Guide*.
+
 **Example 2: To retrieve a list of the in progress account creation requests made in the current organization**
 
 The following ``list-create-account-status`` example gets a list of in-progress account creation requests for an organization. ::
@@ -43,3 +45,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Creating a member account in an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_create.html>`__ in the *AWS Organizations User Guide*.

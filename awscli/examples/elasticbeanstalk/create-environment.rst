@@ -29,9 +29,9 @@ Output::
         "DateCreated": "2015-02-03T23:04:54.479Z"
     }
 
-``v1`` is the label of an application version previously uploaded with `create-application-version`_.
+``v1`` is the label of an application version previously uploaded with `create-application-version <https://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/create-application-version.html>`__.
 
-.. _`create-application-version`: http://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/create-application-version.html
+For more information, see `Creating an Elastic Beanstalk environment <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.environments.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.
 
 **Example 2: To specify a JSON file to define environment configuration options**
 
@@ -87,6 +87,4 @@ Output::
         "DateCreated": "2015-02-03T23:04:54.479Z"
     }
 
-For more information, see `Option Values`_ in the *AWS Elastic Beanstalk Developer Guide*.
-
-.. _`Option Values`: http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html
+For more information, see `Configuration options <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

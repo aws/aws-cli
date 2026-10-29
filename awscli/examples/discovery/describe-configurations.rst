@@ -88,6 +88,7 @@ Output::
         ]
     }
 
+For more information, see `Using the Application Discovery Service API to query discovered configuration items <https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-api-queries.html>`__ in the *AWS Application Discovery Service User Guide*.
 
 **Example 2: To describe selected application configurations**
 
@@ -118,3 +119,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Using the Application Discovery Service API to query discovered configuration items <https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-api-queries.html>`__ in the *AWS Application Discovery Service User Guide*.

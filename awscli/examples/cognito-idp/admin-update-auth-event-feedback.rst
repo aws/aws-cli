@@ -10,3 +10,4 @@ The following ``admin-update-auth-event-feedback`` example sets the feedback val
 
 This command produces no output.
 
+For more information, see `Working with adaptive authentication <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html>`__ in the *Amazon Cognito Developer Guide*.

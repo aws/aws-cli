@@ -39,3 +39,5 @@ Output::
             "s-2B3C4D5E6F7G8"
         ]
     }
+
+For more information, see `HBase application specifics for earlier AMI versions of Amazon EMR <https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-3x-hbase.html>`__ in the *Amazon EMR Release Guide*.

@@ -7,4 +7,4 @@ The following ``invalidate-project-cache`` example resets the cache for the spec
 
 This command produces no output.
 
-For more information, see `Build Caching in CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/build-caching.html>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Cache builds to improve performance <https://docs.aws.amazon.com/codebuild/latest/userguide/build-caching.html>`__ in the *AWS CodeBuild User Guide*.

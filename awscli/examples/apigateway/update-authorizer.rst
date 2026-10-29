@@ -19,6 +19,8 @@ Output::
         "id": "gfi4n3"
     }
 
+For more information, see `Use API Gateway Lambda authorizers <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html>`__ in the *Amazon API Gateway Developer Guide*.
+
 **Example 2: To change the Lambda Function that is invoked by the Custom Authorizer**
 
 The following ``update-authorizer`` example changes the Lambda Function that is invoked by the Custom Authorizer. ::
@@ -39,3 +41,5 @@ Output::
         "type": "TOKEN",
         "id": "gfi4n3"
     }
+
+For more information, see `Use API Gateway Lambda authorizers <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html>`__ in the *Amazon API Gateway Developer Guide*.

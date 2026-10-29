@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Update a resource share in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-update.html>`__ in the *AWS RAM User Guide*.

@@ -24,3 +24,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Provision CIDRs to a pool <https://docs.aws.amazon.com/vpc/latest/ipam/prov-cidr-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

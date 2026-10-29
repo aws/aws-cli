@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with the configuration recorder <https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html>`__ in the *AWS Config Developer Guide*.

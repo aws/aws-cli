@@ -46,3 +46,5 @@ Output::
             }
         }
     }
+
+For more information, see `Amazon Pinpoint channels <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels.html>`__ in the *Amazon Pinpoint User Guide*.

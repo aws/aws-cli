@@ -17,3 +17,4 @@ Output::
         }
     }
 
+For more information, see `Set up an integration response in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-integration-settings-integration-response.html>`__ in the *Amazon API Gateway Developer Guide*.

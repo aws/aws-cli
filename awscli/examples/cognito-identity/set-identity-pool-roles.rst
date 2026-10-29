@@ -7,3 +7,5 @@ The following ``set-identity-pool-roles`` example sets an identity pool role. ::
         --roles authenticated="arn:aws:iam::111111111111:role/Cognito_MyIdentityPoolAuth_Role"
 
 This command produces no output.
+
+For more information, see `IAM roles <https://docs.aws.amazon.com/cognito/latest/developerguide/iam-roles.html>`__ in the *Amazon Cognito Developer Guide*.

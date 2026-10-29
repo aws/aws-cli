@@ -18,3 +18,5 @@ Output::
             }
         }
     }
+
+For more information, see `Configuring S3 Object Lock <https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-configure.html>`__ in the *Amazon S3 User Guide*.

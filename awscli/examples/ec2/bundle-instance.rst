@@ -1,6 +1,6 @@
 **To bundle an instance**
 
-The following ``bundle-instance`` example bundles instance ``i-1234567890abcdef0`` to a bucket called ``bundletasks``. Before you specify values for your access key IDs, review and follow the guidance in `Best Practices for Managing AWS Access Keys`_. ::
+The following ``bundle-instance`` example bundles instance ``i-1234567890abcdef0`` to a bucket called ``bundletasks``. Before you specify values for your access key IDs, review and follow the guidance in `Manage access keys for IAM users <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html>`__ in the *IAM User Guide*. ::
 
     aws ec2 bundle-instance \
         --instance-id i-1234567890abcdef0 \
@@ -27,4 +27,4 @@ Output::
         }
     }
 
-.. _`Best Practices for Managing AWS Access Keys`: http://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html
+For more information, see `AMI types and characteristics in Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html>`__ in the *Amazon EC2 User Guide*.

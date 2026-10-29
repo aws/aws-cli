@@ -23,3 +23,5 @@ To export the certificate, chain, and private key to a local file, use the follo
     aws acm export-certificate \
         --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 \
         --passphrase file://path-to-passphrase-file > c:\temp\export.txt
+
+For more information, see `Export an AWS Certificate Manager private certificate <https://docs.aws.amazon.com/acm/latest/userguide/export-private.html>`__ in the *AWS Certificate Manager User Guide*.

@@ -47,6 +47,8 @@ Output::
         ]
     }
 
+For more information, see `Listener rules for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-rules.html>`__ in the *Application Load Balancers Guide*.
+
 **Example 2: To describe the rules for a listener**
 
 The following ``describe-rules`` example displays details for the rules for the specified listener. The output includes the default rule and any other rules that you've added. ::
@@ -118,3 +120,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Listener rules for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-rules.html>`__ in the *Application Load Balancers Guide*.

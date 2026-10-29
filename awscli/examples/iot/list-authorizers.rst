@@ -23,4 +23,4 @@ Output::
         ]
     }
 
-For more information, see `ListAuthorizers <https://docs.aws.amazon.com/iot/latest/apireference/API_ListAuthorizers.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Custom authentication and authorization <https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html>`__ in the *AWS IoT Core Developer Guide*.

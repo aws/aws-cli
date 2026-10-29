@@ -14,6 +14,4 @@ that you send emails to except for email addresses provided by the Amazon SES ma
 After verify-email-identity is called, the email address will receive a verification email. The user must click on the link in
 the email to complete the verification process.
 
-For more information, see `Verifying Email Addresses in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Verifying Email Addresses in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html
+For more information, see `Creating and verifying identities in Amazon SES <https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html>`__ in the *Amazon Simple Email Service Developer Guide*.

@@ -11,3 +11,5 @@ Output::
     {
         "IpAddressType": "dualstack"
     }
+
+For more information, see `Update the IP address types for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-ip-address-type.html>`__ in the *Application Load Balancers Guide*.

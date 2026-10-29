@@ -12,4 +12,4 @@ Output::
         "NotificationId": "4954d4b1-abcd-ef01-1234-97950a7d3483"
     }
 
-For more information, see `ListFileShares <https://docs.aws.amazon.com/storagegateway/latest/APIReference/API_RefreshCache.html>`__ in the *AWS Storage Gateway Service API Reference*.
+For more information, see `Refreshing Amazon S3 bucket object cache <https://docs.aws.amazon.com/filegateway/latest/files3/refresh-cache.html>`__ in the *Amazon S3 File Gateway User Guide*.

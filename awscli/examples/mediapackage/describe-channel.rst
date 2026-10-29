@@ -29,4 +29,4 @@ Output::
         "Tags": {}
     }
 
-For more information, see `Viewing Channel Details<https://docs.aws.amazon.com/mediapackage/latest/ug/channels-view.html>`__ in the *AWS Elemental MediaPackage User Guide*
+For more information, see `Viewing channel details <https://docs.aws.amazon.com/mediapackage/latest/ug/channels-view.html>`__ in the *AWS Elemental MediaPackage User Guide*.

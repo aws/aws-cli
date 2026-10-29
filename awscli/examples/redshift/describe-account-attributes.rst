@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Considerations for using Amazon Redshift provisioned clusters <https://docs.aws.amazon.com/redshift/latest/mgmt/managing-cluster-considerations.html>`__ in the *Amazon Redshift Management Guide*.

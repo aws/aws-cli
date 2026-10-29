@@ -11,3 +11,5 @@ Output::
     {
         "OwnerId": "123456789012"
     }
+
+For more information, see `Paid AMIs in the AWS Marketplace for Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/paid-amis.html>`__ in the *Amazon EC2 User Guide*.

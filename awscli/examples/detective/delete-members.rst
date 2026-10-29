@@ -13,4 +13,4 @@ Output::
         "UnprocessedAccounts": [ ]
     }
 
-For more information, see `Removing member accounts from a behavior graph<https://docs.aws.amazon.com/detective/latest/adminguide/graph-admin-remove-member-accounts.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Removing member accounts from a behavior graph <https://docs.aws.amazon.com/detective/latest/userguide/accounts-invited-remove.html>`__ in the *Amazon Detective User Guide*.

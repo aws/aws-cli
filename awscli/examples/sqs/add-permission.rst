@@ -9,3 +9,5 @@ The following ``add-permission`` example enables the specified AWS account to se
         --actions SendMessage
 
 This command produces no output.
+
+For more information, see `Overview of managing access in Amazon SQS <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-overview-of-managing-access.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

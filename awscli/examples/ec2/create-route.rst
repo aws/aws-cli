@@ -13,6 +13,8 @@ Output::
         "Return": true
     }
 
+For more information, see `Configure route tables <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html>`__ in the *Amazon VPC User Guide*.
+
 The following ``create-route`` example creates a route in route table rtb-g8ff4ea2. The route matches traffic for the IPv4 CIDR block
 10.0.0.0/16 and routes it to VPC peering connection, pcx-1a2b3c4d. This route enables traffic to be directed to the peer
 VPC in the VPC peering connection. ::
@@ -28,6 +30,8 @@ Output::
         "Return": true
     }
 
+For more information, see `Update your route tables for a VPC peering connection <https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-routing.html>`__ in the *Amazon VPC Peering Guide*.
+
 The following ``create-route`` example creates a route in the specified route table that matches all IPv6 traffic (``::/0``) and routes it to the specified egress-only Internet gateway. ::
 
     aws ec2 create-route \
@@ -40,3 +44,5 @@ Output::
     {
         "Return": true
     }
+
+For more information, see `Enable outbound IPv6 traffic using an egress-only internet gateway <https://docs.aws.amazon.com/vpc/latest/userguide/egress-only-internet-gateway.html>`__ in the *Amazon VPC User Guide*.

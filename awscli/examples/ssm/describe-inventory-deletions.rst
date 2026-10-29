@@ -43,6 +43,8 @@ Output::
         ]
     }
 
+For more information, see `Working with custom inventory <https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 2: To get details of a specific inventory deletion**
 
 The following ``describe-inventory-deletions`` example retrieves details for a specific inventory deletion operation. ::
@@ -75,3 +77,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with custom inventory <https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom.html>`__ in the *AWS Systems Manager User Guide*.

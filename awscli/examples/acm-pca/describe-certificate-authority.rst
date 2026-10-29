@@ -46,3 +46,5 @@ Output::
             "UsageMode": "GENERAL_PURPOSE"
         }
     }
+
+For more information, see `View a private CA <https://docs.aws.amazon.com/privateca/latest/userguide/describe-CA.html>`__ in the *AWS Private Certificate Authority User Guide*.

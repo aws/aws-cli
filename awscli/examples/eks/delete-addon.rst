@@ -25,7 +25,7 @@ Output::
         }
     }
 
-For more information, see `Managing Amazon EKS add-ons - Deleting an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#removing-an-add-on>`__ in the *Amazon EKS*.
+For more information, see `Remove an Amazon EKS add-on from a cluster <https://docs.aws.amazon.com/eks/latest/userguide/removing-an-add-on.html>`__ in the *Amazon EKS User Guide*.
 
 **Example 2: To delete an Amazon EKS add-on and also delete the add-on software from the EKS cluster**
 
@@ -54,4 +54,4 @@ Output::
         }
     }
 
-For more information, see `Managing Amazon EKS add-ons - Deleting an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#removing-an-add-on>`__ in the *Amazon EKS*.
+For more information, see `Remove an Amazon EKS add-on from a cluster <https://docs.aws.amazon.com/eks/latest/userguide/removing-an-add-on.html>`__ in the *Amazon EKS User Guide*.

@@ -16,4 +16,4 @@ Output::
         }
     }
 
-For more information, see `Amazon Resource Names (ARNs) and IDs <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-resource-ids.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Access Amazon ECS features with account settings <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html>`__ in the *Amazon ECS Developer Guide*.

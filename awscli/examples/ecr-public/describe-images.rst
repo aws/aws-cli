@@ -50,7 +50,7 @@ Output::
         ]
     }
 
-For more information, see `Describe an image in a public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/docker-push-multi-architecture-image.html>`__ in the *Amazon ECR Public*.
+For more information, see `Amazon ECR Public images <https://docs.aws.amazon.com/AmazonECR/latest/public/public-images.html>`__ in the *Amazon ECR Public User Guide*.
 
 **Example 2: To describe images from the repository by sort imageTags & imagePushedAt**
 
@@ -67,6 +67,8 @@ Output::
     temp1.0
     temp2.0
 
+For more information, see `Amazon ECR Public images <https://docs.aws.amazon.com/AmazonECR/latest/public/public-images.html>`__ in the *Amazon ECR Public User Guide*.
+
 **Example 3: To describe images from the repository to generate the last 2 image tags pushed in the repository**
 
 The following ``describe-images`` example gets imagetags details from the repository named ``project-a/nginx-web-app`` in a public registry and queries the result to display only the first two records. ::
@@ -80,3 +82,5 @@ Output::
 
     temp3.0 latest
     temp1.0
+
+For more information, see `Amazon ECR Public images <https://docs.aws.amazon.com/AmazonECR/latest/public/public-images.html>`__ in the *Amazon ECR Public User Guide*.

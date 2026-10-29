@@ -54,3 +54,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Back up your Lightsail database with snapshots <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-a-database-snapshot.html>`__ in the *Amazon Lightsail User Guide*.

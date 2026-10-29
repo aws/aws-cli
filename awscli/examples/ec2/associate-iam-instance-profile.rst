@@ -19,3 +19,5 @@ Output::
             }
         }
     }
+
+For more information, see `Attach an IAM role to an instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/attach-iam-role.html>`__ in the *Amazon EC2 User Guide*.

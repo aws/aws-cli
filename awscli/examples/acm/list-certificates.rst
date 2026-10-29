@@ -66,3 +66,4 @@ To display the certificates that have these properties, use the following comman
         --max-items 10 \
         --includes extendedKeyUsage=CODE_SIGNING,keyUsage=DIGITAL_SIGNATURE,keyTypes=RSA_2048
 
+For more information, see `Search certificates managed by AWS Certificate Manager <https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-list.html>`__ in the *AWS Certificate Manager User Guide*.

@@ -14,3 +14,5 @@ Output::
     {
         "CertificateArn": "arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/12345678-1234-1234-1234-123456789012/certificate/6707447683a9b7f4055627ffd55cebcc"
     }
+
+For more information, see `Issue private end-entity certificates <https://docs.aws.amazon.com/privateca/latest/userguide/PcaIssueCert.html>`__ in the *AWS Private Certificate Authority User Guide*.

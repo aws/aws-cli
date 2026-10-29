@@ -22,3 +22,5 @@ Use the ``--if-match`` option to provide the configuration's ``ETag``. ::
 This command produces no output.
 
 When successful, this command has no output.
+
+For more information, see `Use field-level encryption to help protect sensitive data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`__ in the *Amazon CloudFront Developer Guide*.

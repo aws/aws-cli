@@ -23,3 +23,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Scopes, M2M, and resource servers <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html>`__ in the *Amazon Cognito Developer Guide*.

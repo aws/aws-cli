@@ -13,4 +13,4 @@ Output::
         ]
     }
 
-For more information, see `Associating and disassociating attribute groups <https://https://docs.aws.amazon.com/servicecatalog/latest/arguide/associate-attr-groups.html>`__ in the *AWS Service Catalog AppRegistry Administrator Guide*.
+For more information, see `Associating and disassociating attribute groups <https://docs.aws.amazon.com/servicecatalog/latest/arguide/associate-attr-groups.html>`__ in the *AWS Service Catalog AppRegistry Administrator Guide*.

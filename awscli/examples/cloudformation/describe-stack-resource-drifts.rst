@@ -37,3 +37,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Detect drift on an entire CloudFormation stack <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-stack.html>`__ in the *AWS CloudFormation User Guide*.

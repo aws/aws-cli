@@ -35,3 +35,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing S3 Batch Operations jobs <https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-managing-jobs.html>`__ in the *Amazon S3 User Guide*.

@@ -7,3 +7,5 @@ The following ``wait object-not-exists`` example pauses and continues only after
         --key doc1.rtf
 
 This command produces no output.
+
+For more information, see `Deleting Amazon S3 objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/DeletingObjects.html>`__ in the *Amazon S3 User Guide*.

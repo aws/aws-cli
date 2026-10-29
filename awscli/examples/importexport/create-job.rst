@@ -59,6 +59,4 @@ You can also pass the manifest as a string in quotes. ::
         notificationEmail: john.doe@example.com;jane.roe@example.com
         bucket: amzn-s3-demo-bucket'
 
-For information on quoting string arguments and using files, see `Specifying Parameter Values`_ in the *AWS CLI User Guide*.
-
-.. _`Specifying Parameter Values`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html
+For information on quoting string arguments and using files, see `Specifying parameter values in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html>`__ in the *AWS CLI User Guide*.

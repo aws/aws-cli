@@ -10,6 +10,7 @@ The following ``create-load-balancer-policy`` example creates a policy that enab
 
 This command produces no output.
 
+For more information, see `Configure proxy protocol for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-proxy-protocol.html>`__ in the *Classic Load Balancers User Guide*.
 
 **Example 2: To create an SSL negotiation policy using the recommended security policy**
 
@@ -23,6 +24,7 @@ The following ``create-load-balancer-policy`` example creates an SSL negotiation
 
 This command produces no output.
 
+For more information, see `SSL negotiation configurations for Classic Load Balancers <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html>`__ in the *Classic Load Balancers User Guide*.
 
 **Example 3: To create an SSL negotiation policy using a custom security policy**
 
@@ -36,6 +38,7 @@ The following ``create-load-balancer-policy`` example creates an SSL negotiation
 
 This command produces no output.
 
+For more information, see `Update the SSL negotiation configuration of your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/ssl-config-update.html>`__ in the *Classic Load Balancers User Guide*.
 
 **Example 4: To create a public key policy**
 
@@ -49,6 +52,7 @@ The following ``create-load-balancer-policy`` example creates a public key polic
 
 This command produces no output.
 
+For more information, see `Create a Classic Load Balancer with an HTTPS listener <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-create-https-ssl-load-balancer.html>`__ in the *Classic Load Balancers User Guide*.
 
 **Example 5: To create a backend server authentication policy**
 
@@ -62,3 +66,4 @@ The following ``create-load-balancer-policy`` example creates a backend server a
 
 This command produces no output.
 
+For more information, see `Create a Classic Load Balancer with an HTTPS listener <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-create-https-ssl-load-balancer.html>`__ in the *Classic Load Balancers User Guide*.

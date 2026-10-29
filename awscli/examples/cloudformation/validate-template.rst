@@ -34,6 +34,4 @@ Output::
         "Capabilities": []
     }
 
-For more information, see `Working with AWS CloudFormation Templates`_ in the *AWS CloudFormation User Guide*.
-
-.. _`Working with AWS CloudFormation Templates`: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html
+For more information, see `Working with CloudFormation templates <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html>`__ in the *AWS CloudFormation User Guide*.

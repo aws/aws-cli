@@ -6,3 +6,5 @@ The following ``delete-public-access-block`` example deletes block public access
         --account-id 123456789012
 
 This command produces no output.
+
+For more information, see `Configuring block public access settings for your account <https://docs.aws.amazon.com/AmazonS3/latest/userguide/configuring-block-public-access-account.html>`__ in the *Amazon S3 User Guide*.

@@ -12,3 +12,5 @@ Output::
     {
         "SubscriptionArn": "pending confirmation"
     }
+
+For more information, see `Amazon SNS email subscription setup and management <https://docs.aws.amazon.com/sns/latest/dg/sns-email-notifications.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

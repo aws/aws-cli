@@ -47,3 +47,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Sell Reserved Instances for Amazon EC2 in the Reserved Instance Marketplace <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-general.html>`__ in the *Amazon EC2 User Guide*.

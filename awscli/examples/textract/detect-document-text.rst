@@ -143,6 +143,4 @@ Output::
         }
     }
 
-For more information, see `Detecting Document Text with Amazon Textract`_ in the *Amazon Textract Developers Guide*
-
-.. _`Detecting Document Text with Amazon Textract`: https://docs.aws.amazon.com/textract/latest/dg/detecting-document-text.html
+For more information, see `Detecting Document Text with Amazon Textract <https://docs.aws.amazon.com/textract/latest/dg/detecting-document-text.html>`__ in the *Amazon Textract Developer Guide*.

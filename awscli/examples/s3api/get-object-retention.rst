@@ -14,3 +14,5 @@ Output::
             "RetainUntilDate": "2025-01-01T00:00:00.000Z"
         }
     }
+
+For more information, see `Locking objects with Object Lock <https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html>`__ in the *Amazon S3 User Guide*.

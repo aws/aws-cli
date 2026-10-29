@@ -34,3 +34,5 @@ Output::
             "Key": "age"
         }
     ]
+
+For more information, see `Tag and categorize Amazon EMR cluster resources <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html>`__ in the *Amazon EMR Management Guide*.

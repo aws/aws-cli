@@ -72,4 +72,4 @@ Output::
         ]
     }
 
-For more information, see `Findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the GuardDuty User Guide.
+For more information, see `Understanding and generating Amazon GuardDuty findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the *Amazon GuardDuty User Guide*.

@@ -32,3 +32,5 @@ Output::
             "IsDefault": false
         }
     }
+
+For more information, see `Create a network ACL for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/create-network-acl.html>`__ in the *Amazon VPC User Guide*.

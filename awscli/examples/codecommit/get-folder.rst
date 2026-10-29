@@ -60,6 +60,4 @@ Output::
         "treeId":"7b3c4dadEXAMPLE"
     }
 
-For more information, see `GetFolder`_ in the *AWS CodeCommit API Reference* guide.
-
-.. _`GetFolder`: https://docs.aws.amazon.com/codecommit/latest/APIReference/API_GetFolder.html
+For more information, see `Browse files in an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-browse.html>`__ in the *AWS CodeCommit User Guide*.

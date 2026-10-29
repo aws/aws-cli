@@ -29,3 +29,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Control instance traffic with firewalls in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-firewall-and-port-mappings-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

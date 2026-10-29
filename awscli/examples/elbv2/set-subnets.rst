@@ -20,3 +20,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Update the Availability Zones for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-subnets.html>`__ in the *Application Load Balancers Guide*.

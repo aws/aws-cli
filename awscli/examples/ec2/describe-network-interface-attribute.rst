@@ -21,6 +21,8 @@ Output::
         }
     }
 
+For more information, see `Modify network interface attributes <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-network-interface-attributes.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe the description attribute of a network interface**
 
 The following ``describe-network-interface-attribute`` example describes the ``description`` attribute of the specified network interface. ::
@@ -37,6 +39,8 @@ Output::
             "Value": "My description"
         }
     }
+
+For more information, see `Modify network interface attributes <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-network-interface-attributes.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To describe the groupSet attribute of a network interface**
 
@@ -58,6 +62,8 @@ Output::
         ]
     }
 
+For more information, see `Modify network interface attributes <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-network-interface-attributes.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 4: To describe the sourceDestCheck attribute of a network interface**
 
 The following ``describe-network-interface-attribute`` example describes the ``sourceDestCheck`` attribute of the specified network interface. ::
@@ -74,3 +80,5 @@ Output::
             "Value": true
         }
     }
+
+For more information, see `Modify network interface attributes <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-network-interface-attributes.html>`__ in the *Amazon EC2 User Guide*.

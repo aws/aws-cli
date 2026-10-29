@@ -4,10 +4,7 @@ The following ``sign-cookies`` example generates signed cookies that grant acces
 object in a CloudFront distribution. To generate signed cookies, you need the
 key pair ID (called the **Access Key ID** in the AWS Management Console) and
 the private key of the trusted signer's CloudFront key pair. Because the
-resource contains a wildcard, a custom policy is used. For more information
-about signed cookies, see `Using signed cookies
-<https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-cookies.html>`_
-in the *Amazon CloudFront Developer Guide*. ::
+resource contains a wildcard, a custom policy is used. ::
 
     aws cloudfront sign-cookies \
         --resource "https://d111111abcdef8.cloudfront.net/*" \
@@ -36,6 +33,8 @@ Set each cookie in the response to the viewer, adding the cookie attributes
 (such as ``Domain``, ``Path``, ``Secure`` and ``HttpOnly``) that your
 application needs.
 
+For more information, see `Use signed cookies <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-cookies.html>`__ in the *Amazon CloudFront Developer Guide*.
+
 **Example 2: To extract a single cookie value**
 
 The following ``sign-cookies`` example generates signed cookies and returns
@@ -56,3 +55,5 @@ select a cookie by name. ::
 Output::
 
     Uu8FSzfyZ1pUJfnPTfpZpXoR3cHtu6Vk41gOodDpfCGmY4j~TBvOMBUsXzrcBjAqRuVV9b0Aa1HBpHeY-TR3G3Jbb2Yn2cxNSlAfC4tIYwWOkwypCZl4csuHdFC8XaN0yA0G8GRHDsxNPHKY6lq3ypbnJcXDSzzCixTAgJpOO7M_
+
+For more information, see `Use signed cookies <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-cookies.html>`__ in the *Amazon CloudFront Developer Guide*.

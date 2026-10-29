@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Monitor the progress of Amazon EBS volume modifications <https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-modifications.html>`__ in the *Amazon EBS User Guide*.

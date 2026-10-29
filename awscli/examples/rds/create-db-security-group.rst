@@ -21,3 +21,5 @@ Output::
             "DBSecurityGroupArn": "arn:aws:rds:us-west-2:123456789012:secgrp:mysecgroup"
         }
     }
+
+For more information, see `Controlling access with security groups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.RDSSecurityGroups.html>`__ in the *Amazon RDS User Guide*.

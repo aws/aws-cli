@@ -11,3 +11,5 @@ Output::
         "Target": "i-1234567890abcdef0",
         "Status": "connected"
     }
+
+For more information, see `AWS Systems Manager Session Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html>`__ in the *AWS Systems Manager User Guide*.

@@ -19,3 +19,5 @@ Output::
             }
         }
     }
+
+For more information, see `Configuring error handling settings for Lambda asynchronous invocations <https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-configuring.html>`__ in the *AWS Lambda Developer Guide*.

@@ -20,4 +20,4 @@ Output::
         ]
     }
 
-For more information, see `ListTagsForResource <https://docs.aws.amazon.com/mediastore/latest/apireference/API_ListTagsForResource.html>`__ in the *AWS Elemental MediaStore API Reference*.
+For more information, see `Best practices and strategies <https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html>`__ in the *Tagging AWS Resources and Tag Editor User Guide*.

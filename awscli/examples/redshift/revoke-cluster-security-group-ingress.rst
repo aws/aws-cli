@@ -19,6 +19,8 @@ Output::
         }
     }
 
+For more information, see `Configuring security group communication settings for an Amazon Redshift cluster or an Amazon Redshift Serverless workgroup <https://docs.aws.amazon.com/redshift/latest/mgmt/rs-security-group-public-private.html>`__ in the *Amazon Redshift Cluster Management Guide*.
+
 **Example 2: To revoke access to a CIDR range**
 
 The following ``revoke-cluster-security-group-ingress`` example revokes access to a CIDR range. ::
@@ -38,3 +40,5 @@ Output::
             "Tags": []
         }
     }
+
+For more information, see `Configuring security group communication settings for an Amazon Redshift cluster or an Amazon Redshift Serverless workgroup <https://docs.aws.amazon.com/redshift/latest/mgmt/rs-security-group-public-private.html>`__ in the *Amazon Redshift Cluster Management Guide*.

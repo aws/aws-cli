@@ -6,3 +6,5 @@ The following ``delete-function-definition`` example deletes the specified Green
         --function-definition-id "fd4b906a-dff3-4c1b-96eb-52ebfcfac06a"
 
 This command produces no output.
+
+For more information, see `Run Lambda functions on the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/lambda-functions.html>`__ in the *AWS IoT Greengrass Developer Guide*.

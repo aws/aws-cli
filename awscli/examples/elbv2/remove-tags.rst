@@ -7,3 +7,5 @@ The following ``remove-tags`` example removes the ``project`` and ``department``
         --tag-keys project department
 
 This command produces no output.
+
+For more information, see `Tag an Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-tags.html>`__ in the *Application Load Balancers Guide*.

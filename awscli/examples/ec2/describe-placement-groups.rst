@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Placement groups for your Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html>`__ in the *Amazon EC2 User Guide*.

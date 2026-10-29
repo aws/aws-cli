@@ -26,3 +26,5 @@ Contents of ``tag-keys.json``::
     }
 
 When successful, this command has no output.
+
+For more information, see `Tag a CloudFront resource <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html>`__ in the *Amazon CloudFront Developer Guide*.

@@ -7,3 +7,5 @@ The following ``delete-vault-access-policy`` example removes the access policy f
         --vault-name example_vault
 
 This command produces no output.
+
+For more information, see `Vault Access Policies <https://docs.aws.amazon.com/amazonglacier/latest/dev/vault-access-policy.html>`__ in the *Amazon Glacier Developer Guide*.

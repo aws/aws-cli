@@ -19,6 +19,8 @@ Output::
         }
     }
 
+For more information, see `Adding groups to a user pool <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-user-groups.html>`__ in the *Amazon Cognito Developer Guide*.
+
 **Example 2: To create a group with a role and precedence**
 
 The following ``create-group`` example creates a group with a description. It also includes a role and precedence. ::
@@ -43,3 +45,5 @@ Output::
             "CreationDate": 1548270211.761
         }
     }
+
+For more information, see `Adding groups to a user pool <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-user-groups.html>`__ in the *Amazon Cognito Developer Guide*.

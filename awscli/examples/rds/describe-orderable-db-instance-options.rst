@@ -43,3 +43,5 @@ Output::
             }
         ]
     }
+
+For more information, see `DB instance classes <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html>`__ in the *Amazon RDS User Guide*.

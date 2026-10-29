@@ -7,3 +7,5 @@ The following ``add-tags-to-on-premises-instances`` example associates in AWS Co
         --tags Key=Name,Value=CodeDeployDemo-OnPrem
 
 This command produces no output.
+
+For more information, see `Tagging instances for deployment groups in CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-tagging.html>`__ in the *AWS CodeDeploy User Guide*.

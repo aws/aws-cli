@@ -34,3 +34,5 @@ Output::
         },
         "UtilizationsByTime": []
     }
+
+For more information, see `Understanding reservations in Cost Explorer <https://docs.aws.amazon.com/cost-management/latest/userguide/ce-ris.html>`__ in the *AWS Cost Management User Guide*.

@@ -8,3 +8,5 @@ The following ``disassociate-delegate-from-resource`` example removes the specif
         --entity-id S-1-1-11-1111111111-2222222222-3333333333-3333
 
 This command produces no output.
+
+For more information, see `Editing resource details <https://docs.aws.amazon.com/workmail/latest/adminguide/edit_resource.html>`__ in the *Amazon WorkMail Administrator Guide*.

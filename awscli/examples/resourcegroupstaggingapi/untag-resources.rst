@@ -12,4 +12,4 @@ Output::
         "FailedResourcesMap": {}
     }
 
-For more information, see `UntagResources <https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_UntagResources.html>`__ in the *Resource Groups Tagging API Reference*.
+For more information, see `Managing tags with Tag Editor <https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging-resources.html>`__ in the *Tagging AWS Resources and Tag Editor User Guide*.

@@ -14,3 +14,5 @@ Output::
         "FpgaImageId": "afi-0d123e123bfc85abc",
         "FpgaImageGlobalId": "agfi-123cb27b5e84a0abc"
     }
+
+For more information, see `Specifications for Amazon EC2 accelerated computing instances <https://docs.aws.amazon.com/ec2/latest/instancetypes/ac.html>`__ in the *Amazon EC2 Instance Types Guide*.

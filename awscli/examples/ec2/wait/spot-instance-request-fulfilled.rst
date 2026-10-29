@@ -6,3 +6,5 @@ The following ``wait spot-instance-request-fulfilled`` example pauses and resume
         --filters Name=launched-availability-zone,Values=us-east-1
 
 This command produces no output.
+
+For more information, see `Get the status of a Spot Instance request <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-request-status.html>`__ in the *Amazon EC2 User Guide*.

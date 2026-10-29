@@ -39,3 +39,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing accounts in an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts.html>`__ in the *AWS Organizations User Guide*.

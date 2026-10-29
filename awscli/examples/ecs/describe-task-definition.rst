@@ -62,4 +62,4 @@ Output::
         "tags": []
     }
 
-For more information, see `Amazon ECS Task Definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.

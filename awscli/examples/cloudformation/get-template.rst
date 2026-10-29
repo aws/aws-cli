@@ -29,3 +29,5 @@ Output::
             }
         }
     }
+
+For more information, see `Working with CloudFormation templates <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html>`__ in the *AWS CloudFormation User Guide*.

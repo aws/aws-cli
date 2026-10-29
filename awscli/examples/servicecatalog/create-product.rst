@@ -69,3 +69,5 @@ Output::
             "Type": "CLOUD_FORMATION_TEMPLATE"
         }
     }
+
+For more information, see `Creating Products <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/productmgmt-cloudresource.html>`__ in the *AWS Service Catalog Administrator Guide*.

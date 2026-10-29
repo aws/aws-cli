@@ -42,3 +42,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Back up Linux/Unix Lightsail instances with snapshots <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-create-a-snapshot-of-your-instance.html>`__ in the *Amazon Lightsail User Guide*.

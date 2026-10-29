@@ -75,3 +75,5 @@ Adding a model replaces existing commands for the service defined in the model. 
     aws configure add-model \
         --service-model file://service.json \
         --service-name service2
+
+For more information, see `Configuring settings for the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html>`__ in the *AWS CLI User Guide*.

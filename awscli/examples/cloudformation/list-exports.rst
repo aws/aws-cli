@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Get exported outputs from a deployed CloudFormation stack <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-exports.html>`__ in the *AWS CloudFormation User Guide*.

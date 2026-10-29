@@ -21,3 +21,5 @@ Output::
             "StatusMessage": "[Trace id: 1-5dc5ffa2-a26c38004c1f94006example] Deleting Association"
         }
     }
+
+For more information, see `Managing forwarding rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-rules-managing.html#resolver-rules-managing-disassociating-rules>`__ in the *Amazon Route 53 Developer Guide*.

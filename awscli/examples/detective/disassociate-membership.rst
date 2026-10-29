@@ -7,4 +7,4 @@ The following ``disassociate-membership`` example removes the AWS account that r
 
 This command produces no output.
 
-For more information, see `Removing your account from a behavior graph<https://docs.aws.amazon.com/detective/latest/adminguide/member-remove-self-from-graph.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Removing your account from a behavior graph <https://docs.aws.amazon.com/detective/latest/userguide/member-remove-self-from-graph.html>`__ in the *Amazon Detective User Guide*.

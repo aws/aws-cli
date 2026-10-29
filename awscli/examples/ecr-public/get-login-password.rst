@@ -10,7 +10,7 @@ The following ``get-login-password`` example retrieves and displays an authentic
 
 This command produces no output. The authentication token is piped to Docker.
 
-For more information, see `Authenticate to the public registry <https://docs.aws.amazon.com/AmazonECR/latest/public/public-registries.html#public-registry-auth>`__ in the *Amazon ECR Public*.
+For more information, see `Registry authentication in Amazon ECR public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-registry-auth.html>`__ in the *Amazon ECR Public User Guide*.
 
 **Example 2: To authenticate docker to your own custom AmazonECR public registry**
 
@@ -24,4 +24,4 @@ The following ``get-login-password`` example retrieves and displays an authentic
 
 This command produces no output. The authentication token is piped to Docker.
 
-For more information, see `Authenticate to your own Amazon ECR Public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-registries.html#public-registry-auth>`__ in the *Amazon ECR Public*.
+For more information, see `Registry authentication in Amazon ECR public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-registry-auth.html>`__ in the *Amazon ECR Public User Guide*.

@@ -11,3 +11,5 @@ Output::
     {
         "Version": "312de337-59af-4cf9-a278-2a23bd39c300"
     }
+
+For more information, see `Configure the MQTT port for local messaging <https://docs.aws.amazon.com/greengrass/v1/developerguide/gg-core.html#config-local-mqtt-port>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

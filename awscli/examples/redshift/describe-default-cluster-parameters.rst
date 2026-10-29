@@ -35,3 +35,4 @@ Output::
 
 .. tip:: To see a list of valid parameter group families, use the ``describe-cluster-parameter-groups`` command.
 
+For more information, see `Amazon Redshift parameter groups <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html>`__ in the *Amazon Redshift Management Guide*.

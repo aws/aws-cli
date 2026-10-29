@@ -17,3 +17,5 @@ Output::
         ],
         "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE"
     }
+
+For more information, see `Describe a Spot Fleet request, its instances, and event history <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.

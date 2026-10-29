@@ -24,3 +24,5 @@ Output::
         "Id": "c906ed39-a1e3-4822-a981-7b9bd57b4b46",
         "Version": "42aeeac3-fd9d-4312-a8fd-ffa9404a20e0"
     }
+
+For more information, see `Configure the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/gg-core.html>`__ in the *AWS IoT Greengrass Developer Guide*.

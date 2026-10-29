@@ -25,6 +25,8 @@ Output::
         "rootResourceId": "a1b2c3d4f5"
     }
 
+For more information, see `Import an OpenAPI file to update an existing API definition <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api-update.html>`__ in the *Amazon API Gateway Developer Guide*.
+
 **Example 2: To merge a Swagger template into an existing API**
 
 The following ``put-rest-api`` example merges a Swagger template into an existing API. ::
@@ -51,3 +53,5 @@ Output::
         "disableExecuteApiEndpoint": false,
         "rootResourceId": "a1b2c3d4f5"
     }
+
+For more information, see `Import an OpenAPI file to update an existing API definition <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api-update.html>`__ in the *Amazon API Gateway Developer Guide*.

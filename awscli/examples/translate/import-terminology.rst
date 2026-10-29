@@ -34,3 +34,5 @@ Output::
             "Description": "Creating a test terminology in AWS Translate"
         }
     }
+
+For more information, see `Customizing your translations with custom terminology <https://docs.aws.amazon.com/translate/latest/dg/how-custom-terminology.html>`__ in the *Amazon Translate Developer Guide*.

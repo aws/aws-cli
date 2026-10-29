@@ -20,8 +20,7 @@ Output::
         }
     }
 
-For more information, see `Launching an Instance from a Launch Template`_ in the *Amazon Elastic Compute Cloud User Guide*.
-For information about quoting JSON-formatted parameters, see `Quoting Strings`_ in the *AWS Command Line Interface User Guide*.
+For more information, see `Store instance launch parameters in Amazon EC2 launch templates <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html>`__ in the *Amazon EC2 User Guide*. For information about quoting JSON-formatted parameters, see `Using quotation marks and literals with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*.
 
 **Example 2: To create a launch template for Amazon EC2 Auto Scaling**
 
@@ -45,8 +44,7 @@ Output::
         }
     }
 
-For more information, see `Creating a Launch Template for an Auto Scaling Group`_ in the *Amazon EC2 Auto Scaling User Guide*.
-For information about quoting JSON-formatted parameters, see `Quoting Strings`_ in the *AWS Command Line Interface User Guide*.
+For more information, see `Create a launch template for an Auto Scaling group <https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-template.html>`__ in the *Amazon EC2 Auto Scaling User Guide*. For information about quoting JSON-formatted parameters, see `Using quotation marks and literals with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*.
 
 **Example 3: To create a launch template that specifies encryption of EBS volumes**
 
@@ -99,10 +97,4 @@ Output::
         }
     }
 
-For more information, see `Restoring an Amazon EBS Volume from a Snapshot`_ and `Encryption by Default`_ in the *Amazon Elastic Compute Cloud User Guide*.
-
-.. _`Launching an Instance from a Launch Template`: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html
-.. _`Creating a Launch Template for an Auto Scaling Group`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-template.html
-.. _`Quoting Strings`: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html#quoting-strings
-.. _`Restoring an Amazon EBS Volume from a Snapshot`: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html
-.. _`Encryption by Default`: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-by-default
+For more information, see `Create an Amazon EBS volume <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-volume.html>`__ and `Enable Amazon EBS encryption by default <https://docs.aws.amazon.com/ebs/latest/userguide/encryption-by-default.html>`__ in the *Amazon EBS User Guide*.

@@ -20,6 +20,4 @@ Output::
 
 If you call this command with an identity that you have never submitted for verification, that identity won't appear in the output.
 
-For more information about verified identities, see `Verifying Email Addresses and Domains in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Verifying Email Addresses and Domains in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html
+For more information, see `Verified identities in Amazon SES <https://docs.aws.amazon.com/ses/latest/dg/verify-addresses-and-domains.html>`__ in the *Amazon Simple Email Service Developer Guide*.

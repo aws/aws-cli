@@ -17,3 +17,4 @@ Output::
         ]
     }
 
+For more information, see `Create a deployment for a REST API in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-deployments.html>`__ in the *Amazon API Gateway Developer Guide*.

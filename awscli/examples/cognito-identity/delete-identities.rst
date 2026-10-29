@@ -10,3 +10,5 @@ Output::
     {
         "UnprocessedIdentityIds": []
     }
+
+For more information, see `Amazon Cognito identity pools <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html>`__ in the *Amazon Cognito Developer Guide*.

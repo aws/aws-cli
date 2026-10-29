@@ -21,3 +21,5 @@ Output::
             "Version": 1
         }
     }
+
+For more information, see `Managing the Amazon Pinpoint SMS channel <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-manage.html>`__ in the *Amazon Pinpoint User Guide*.

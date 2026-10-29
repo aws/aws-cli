@@ -23,3 +23,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Create a route table for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc-route-table.html>`__ in the *Amazon VPC User Guide*.

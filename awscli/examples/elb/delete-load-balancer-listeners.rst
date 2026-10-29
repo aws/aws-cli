@@ -7,3 +7,5 @@ The following ``delete-load-balancer-listeners`` example deletes the listener fo
         --load-balancer-ports 80
 
 This command produces no output.
+
+For more information, see `Listeners for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-listener-config.html>`__ in the *Classic Load Balancers User Guide*.

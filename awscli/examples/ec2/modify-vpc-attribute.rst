@@ -8,6 +8,8 @@ The following ``modify-vpc-attribute`` example modifies the ``enableDnsSupport``
 
 This command produces no output.
 
+For more information, see `View and update DNS attributes for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns-updating.html>`__ in the *Amazon VPC User Guide*.
+
 **Example 2: To modify the enableDnsHostnames attribute**
 
 The following ``modify-vpc-attribute`` example modifies the ``enableDnsHostnames`` attribute. This attribute indicates whether instances launched in the VPC get DNS hostnames. If this attribute is ``true``, instances in the VPC get DNS hostnames; otherwise, they do not. ::
@@ -17,3 +19,5 @@ The following ``modify-vpc-attribute`` example modifies the ``enableDnsHostnames
         --enable-dns-hostnames "{\"Value\":false}"
 
 This command produces no output.
+
+For more information, see `View and update DNS attributes for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns-updating.html>`__ in the *Amazon VPC User Guide*.

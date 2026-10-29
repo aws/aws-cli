@@ -28,3 +28,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Understanding Storage Gateway Resources and Resource IDs <https://docs.aws.amazon.com/storagegateway/latest/vgw/storage-gateway-resource-id.html>`__ in the *AWS Storage Gateway Volume Gateway User Guide*.

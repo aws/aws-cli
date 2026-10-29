@@ -21,3 +21,5 @@ Use the ``--if-match`` option to provide the OAI's ``ETag``. ::
 This command produces no output.
 
 When successful, this command has no output.
+
+For more information, see `Restrict access to an Amazon S3 origin <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html>`__ in the *Amazon CloudFront Developer Guide*.

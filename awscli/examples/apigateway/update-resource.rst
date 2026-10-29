@@ -33,3 +33,5 @@ Output::
         "id": "1a2b3c",
         "parentId": "3c2b1a"
     }
+
+For more information, see `Develop REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-develop.html>`__ in the *Amazon API Gateway Developer Guide*.

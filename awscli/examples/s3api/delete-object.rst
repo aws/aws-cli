@@ -15,6 +15,4 @@ Output::
         "DeleteMarker": true
     }
 
-For more information about deleting objects, see `Deleting Objects`_ in the *Amazon S3 Developer Guide*.
-
-.. _`Deleting Objects`: http://docs.aws.amazon.com/AmazonS3/latest/dev/DeletingObjects.html
+For more information, see `Deleting a single object <https://docs.aws.amazon.com/AmazonS3/latest/userguide/delete-objects.html>`__ in the *Amazon S3 User Guide*.

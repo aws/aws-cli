@@ -38,3 +38,5 @@ Output::
         "FailedEntryCount": 0,
         "FailedEntries": []
     }
+
+For more information, see `Event bus targets in Amazon EventBridge <https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html>`__ in the *Amazon EventBridge User Guide*.

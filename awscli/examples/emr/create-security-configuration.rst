@@ -131,3 +131,5 @@ Output::
         "CreationDateTime": "2017-03-22T19:32:38.982000-0400",
         "Name": "MySecurityConfig"
     }
+
+For more information, see `Create a security configuration with the Amazon EMR console or with the AWS CLI <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-create-security-configuration.html>`__ in the *Amazon EMR Management Guide*.

@@ -65,3 +65,5 @@ The following command opts out of certificate transparency logging when you requ
         --validation-method DNS \
         --options CertificateTransparencyLoggingPreference=DISABLED \
         --idempotency-token 184627
+
+For more information, see `AWS Certificate Manager public certificates <https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html>`__ in the *AWS Certificate Manager User Guide*.

@@ -47,3 +47,4 @@ Output::
         ]
     }
 
+For more information, see `X.509 client certificates <https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html>`__ in the *AWS IoT Core Developer Guide*.

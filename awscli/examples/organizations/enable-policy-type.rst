@@ -23,3 +23,5 @@ Output::
             "Arn": "arn:aws:organizations::111111111111:root/o-exampleorgid/r-examplerootid111"
         }
     }
+
+For more information, see `Enabling a policy type <https://docs.aws.amazon.com/organizations/latest/userguide/enable-policy-type.html>`__ in the *AWS Organizations User Guide*.

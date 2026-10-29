@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Evaluating Your Resources with AWS Config Rules <https://docs.aws.amazon.com/config/latest/developerguide/evaluating-your-resources.html>`__ in the *AWS Config Developer Guide*.

@@ -11,3 +11,5 @@ Output::
     {
         "ExchangeId": "riex-e68ed3c1-8bc8-4c17-af77-811afexample"
     }
+
+For more information, see `Exchange Convertible Reserved Instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-convertible-exchange.html>`__ in the *Amazon EC2 User Guide*.

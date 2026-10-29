@@ -8,3 +8,4 @@ The following ``delete-load-balancer-policy`` example deletes the specified poli
 
 This command produces no output.
 
+For more information, see `Configure sticky sessions for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-sticky-sessions.html>`__ in the *Classic Load Balancers User Guide*.

@@ -89,3 +89,5 @@ Output::
             "myShellCmd": "grep -rc \"GET\" ${INPUT1_STAGING_DIR}/* > ${OUTPUT1_STAGING_DIR}/output.txt"
         }
     }
+
+For more information, see `Pipeline definition file syntax <https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-writing-pipeline-definition.html>`__ in the *AWS Data Pipeline Developer Guide*.

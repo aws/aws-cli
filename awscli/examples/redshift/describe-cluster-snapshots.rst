@@ -61,4 +61,4 @@ Output::
         } ]
     }
 
-
+For more information, see `Amazon Redshift snapshots and backups <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html>`__ in the *Amazon Redshift Management Guide*.

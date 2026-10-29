@@ -61,3 +61,5 @@ Contents of ``notifications-with-subscribers.json``::
             ]
         }
     ]
+
+For more information, see `Creating a budget <https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-create.html>`__ in the *AWS Cost Management User Guide*.

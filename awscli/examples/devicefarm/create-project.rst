@@ -14,3 +14,5 @@ Output::
             "created": 1503612890.057
         }
     }
+
+For more information, see `Creating a project in AWS Device Farm <https://docs.aws.amazon.com/devicefarm/latest/developerguide/how-to-create-project.html>`__ in the *AWS Device Farm Developer Guide*.

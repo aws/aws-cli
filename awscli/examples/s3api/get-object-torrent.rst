@@ -9,3 +9,5 @@ The following ``get-object-torrent`` example creates a torrent for an object in 
 This command produces no output.
 
 The torrent file is saved locally in the current folder. Note that the output filename (``large-video-file.torrent``) is specified without an option name.
+
+For more information, see `Working with objects in Amazon S3 <https://docs.aws.amazon.com/AmazonS3/latest/userguide/uploading-downloading-objects.html>`__ in the *Amazon S3 User Guide*.

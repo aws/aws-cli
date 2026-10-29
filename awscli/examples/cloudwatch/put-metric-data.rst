@@ -19,9 +19,7 @@ Contents of ``metric.json``::
 
 This command produces no output.
 
-For more information, see `Publishing Custom Metrics`_ in the *Amazon CloudWatch Developer Guide*.
-
-.. _`Publishing Custom Metrics`: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html
+For more information, see `Publish custom metrics (PutMetricData / EMF) <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html>`__ in the *Amazon CloudWatch User Guide*.
 
 **Example 2: To specify multiple dimensions**
 
@@ -35,3 +33,5 @@ The following ``put-metric-data`` example illustrates how to specify multiple di
         --dimensions InstanceID=1-23456789,InstanceType=m1.small
 
 This command produces no output.
+
+For more information, see `Metrics concepts <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html>`__ in the *Amazon CloudWatch User Guide*.

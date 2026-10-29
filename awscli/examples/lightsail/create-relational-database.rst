@@ -31,3 +31,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create a Lightsail database <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-a-database.html>`__ in the *Amazon Lightsail User Guide*.

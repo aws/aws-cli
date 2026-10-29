@@ -48,3 +48,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing AWS Managed Microsoft AD directory information <https://docs.aws.amazon.com/directoryservice/latest/admin-guide/ms_ad_view_directory_info.html>`__ in the *AWS Directory Service Administration Guide*.

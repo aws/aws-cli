@@ -24,3 +24,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Direct Connect gateways <https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-gateways.html>`__ in the *AWS Direct Connect User Guide*.

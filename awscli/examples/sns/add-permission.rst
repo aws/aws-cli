@@ -9,3 +9,5 @@ The following ``add-permission`` example adds the permission for AWS account ``9
         --action-name Publish
 
 This command produces no output.
+
+For more information, see `Example cases for Amazon SNS access control <https://docs.aws.amazon.com/sns/latest/dg/sns-access-policy-use-cases.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

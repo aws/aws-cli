@@ -103,4 +103,4 @@ Output::
         ]
     }
 
-For more information, see `Quotas <https://docs.aws.amazon.com/general/latest/gr/elb.html#limits_elastic_load_balancer>`__ in the *AWS General Reference*.
+For more information, see `Quotas for your Application Load Balancers <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-limits.html>`__ in the *Application Load Balancers Guide* and `Quotas for your Network Load Balancers <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-limits.html>`__ in the *Network Load Balancers Guide*.

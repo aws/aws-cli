@@ -22,3 +22,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Quotas for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-limits.html>`__ in the *Classic Load Balancers User Guide*.

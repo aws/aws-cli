@@ -17,3 +17,5 @@ Output::
             "StatusMessage": ""
         }
     }
+
+For more information, see `Managing forwarding rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-rules-managing.html>`__ in the *Amazon Route 53 Developer Guide*.

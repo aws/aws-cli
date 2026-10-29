@@ -20,3 +20,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Update CloudFormation stacks using change sets <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html>`__ in the *AWS CloudFormation User Guide*.

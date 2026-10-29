@@ -22,3 +22,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Set up API keys for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-setup-api-keys.html>`__ in the *Amazon API Gateway Developer Guide*.

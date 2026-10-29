@@ -71,3 +71,5 @@ Output::
     }
 
 For more information, see `Restoring a backup into an Amazon RDS for MySQL DB instance <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html>`__ in the *Amazon RDS User Guide*.
+
+For more information, see `Restoring a backup into an Amazon RDS for MySQL DB instance <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html>`__ in the *Amazon RDS User Guide*.

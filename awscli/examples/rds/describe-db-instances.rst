@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon RDS DB instances <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.html>`__ in the *Amazon RDS User Guide*.

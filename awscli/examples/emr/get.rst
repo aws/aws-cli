@@ -11,3 +11,5 @@ The following ``get`` example downloads the ``hadoop-examples.jar`` archive from
 Output::
 
     scp -r -o StrictHostKeyChecking=accept-new -i /home/local/user/.ssh/mykey.pem hadoop@ec2-52-52-41-150.us-west-2.compute.amazonaws.com:/home/hadoop-examples.jar /home/local/user
+
+For more information, see `Connect to the Amazon EMR cluster primary node using SSH <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-connect-master-node-ssh.html>`__ in the *Amazon EMR Management Guide*.

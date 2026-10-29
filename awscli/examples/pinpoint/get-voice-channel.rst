@@ -20,3 +20,4 @@ Output::
         }
     }
 
+For more information, see `Managing the Amazon Pinpoint voice channel <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-manage.html>`__ in the *Amazon Pinpoint User Guide*.

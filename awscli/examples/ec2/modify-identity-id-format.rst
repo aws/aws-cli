@@ -9,6 +9,8 @@ The following ``modify-identity-id-format`` example enables the IAM role ``EC2Ro
 
 This command produces no output.
 
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To enable an IAM user to use longer IDs for a resource**
 
 The following ``modify-identity-id-format`` example enables the IAM user ``AdminUser`` in your AWS account to use the longer ID format for the ``volume`` resource type. ::
@@ -28,3 +30,5 @@ The following ``modify-identity-id-format`` example enables the IAM user ``Admin
         --use-long-ids
 
 This command produces no output.
+
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.

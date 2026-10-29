@@ -14,3 +14,5 @@ Output::
             "branchName": "MyNewBranch"
         }
     }
+
+For more information, see `Delete a branch in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-delete-branch.html#how-to-delete-branch-cli>`__ in the *AWS CodeCommit User Guide*.

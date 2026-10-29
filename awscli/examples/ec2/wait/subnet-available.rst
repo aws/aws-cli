@@ -6,3 +6,5 @@ The following ``wait subnet-available`` example pauses and resumes running only 
         --subnet-ids subnet-1234567890abcdef0
 
 This command produces no output.
+
+For more information, see `Subnets for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html>`__ in the *Amazon VPC User Guide*.

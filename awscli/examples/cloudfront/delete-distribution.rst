@@ -18,3 +18,5 @@ To get the ``ETag``, use the `get-distribution <get-distribution.html>`_ or
 This command produces no output.
 
 When successful, this command has no output.
+
+For more information, see `Delete a distribution <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToDeleteDistribution.html>`__ in the *Amazon CloudFront Developer Guide*.

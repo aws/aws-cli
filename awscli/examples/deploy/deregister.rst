@@ -15,3 +15,5 @@ Output::
     Deregistering the on-premises instance... DONE
     Run the following command on the on-premises instance to uninstall the codedeploy-agent:
     aws deploy uninstall
+
+For more information, see `Automatically deregister an on-premises instance <https://docs.aws.amazon.com/codedeploy/latest/userguide/on-premises-instances-operations-deregister-automatically.html>`__ in the *AWS CodeDeploy User Guide*.

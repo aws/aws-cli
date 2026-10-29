@@ -11,3 +11,5 @@ Output::
     {
         "deploymentConfigId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"
     }
+
+For more information, see `Create a deployment configuration with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html>`__ in the *AWS CodeDeploy User Guide*.

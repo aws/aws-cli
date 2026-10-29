@@ -10,3 +10,5 @@ Output::
     {
         "virtualInterfaceState": "deleting"
     }
+
+For more information, see `Delete a Direct Connect virtual interface <https://docs.aws.amazon.com/directconnect/latest/UserGuide/deletevif.html>`__ in the *AWS Direct Connect User Guide*.

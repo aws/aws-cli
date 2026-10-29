@@ -55,3 +55,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Lightsail instance bundles <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-bundles.html>`__ in the *Amazon Lightsail User Guide*.

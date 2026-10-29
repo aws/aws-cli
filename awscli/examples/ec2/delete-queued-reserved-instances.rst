@@ -15,3 +15,5 @@ Output::
         ],
         "FailedQueuedPurchaseDeletions": []
     }
+
+For more information, see `Cancel a queued purchase <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-concepts-buying.html#cancel-queued-purchase>`__ in the *Amazon EC2 User Guide*.

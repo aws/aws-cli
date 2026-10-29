@@ -40,7 +40,7 @@ Output::
         ]
     }
 
-For more information, see `Tutorial: Create an Application Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-application-load-balancer-cli.html>`__ in the *User Guide for Application Load Balancers*.
+For more information, see `Create an Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-application-load-balancer.html>`__ in the *Application Load Balancers Guide*.
 
 **Example 2: To create an internal load balancer**
 
@@ -85,7 +85,7 @@ Output::
         ]
     }
 
-For more information, see `Tutorial: Create an Application Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-application-load-balancer-cli.html>`__ in the *User Guide for Application Load Balancers*.
+For more information, see `Create an Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-application-load-balancer.html>`__ in the *Application Load Balancers Guide*.
 
 **Example 3: To create a Network Load Balancer**
 
@@ -129,7 +129,7 @@ Output::
         ]
     }
 
-For more information, see `Tutorial: Create a Network Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/network-load-balancer-cli.html>`__ in the *User Guide for Network Load Balancers*.
+For more information, see `Create a Network Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-network-load-balancer.html>`__ in the *Network Load Balancers Guide*.
 
 **Example 4: To create a Gateway Load Balancer**
 
@@ -167,4 +167,4 @@ Output::
         ]
     }
 
-For more information, see `Getting started with Gateway Load Balancers using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/getting-started-cli.html>`__ in the *User Guide for Gateway Load Balancers*.
+For more information, see `Getting started with Gateway Load Balancers using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/getting-started-cli.html>`__ in the *Gateway Load Balancers Guide*.

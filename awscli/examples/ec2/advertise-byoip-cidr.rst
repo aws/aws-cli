@@ -14,3 +14,5 @@ Output::
             "State": "provisioned"
         }
     }
+
+For more information, see `Bring your own IP addresses (BYOIP) to Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html>`__ in the *Amazon EC2 User Guide*.

@@ -8,6 +8,8 @@ The following ``wait tasks-stopped`` example waits until the provided tasks in t
 
 This command produces no output.
 
+For more information, see `Amazon ECS task lifecycle <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-lifecycle-explanation.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 2: To wait until multiple ECS tasks are in stopped state**
 
 The following ``wait tasks-stopped`` example waits until the multiple tasks provided in the command are in a stopped state. You can pass IDs or full ARN of the tasks. This example uses IDs of the tasks. ::
@@ -18,5 +20,4 @@ The following ``wait tasks-stopped`` example waits until the multiple tasks prov
 
 This command produces no output.
 
-
-
+For more information, see `Amazon ECS task lifecycle <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-lifecycle-explanation.html>`__ in the *Amazon ECS Developer Guide*.

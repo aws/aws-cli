@@ -7,3 +7,5 @@ The following ``update-repository-name`` example changes the name of an AWS Code
         --new-name MyRenamedDemoRepo
 
 This command produces no output.
+
+For more information, see `Change AWS CodeCommit repository settings <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-change-repository.html>`__ in the *AWS CodeCommit User Guide*.

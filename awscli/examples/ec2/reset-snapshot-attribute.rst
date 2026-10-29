@@ -8,3 +8,4 @@ The following ``reset-snapshot-attribute`` example resets the create volume perm
 
 This command produces no output.
 
+For more information, see `Share an Amazon EBS snapshot with other AWS accounts <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modifying-snapshot-permissions.html>`__ in the *Amazon EBS User Guide*.

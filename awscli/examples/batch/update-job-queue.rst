@@ -12,3 +12,5 @@ Output::
         "jobQueueArn": "arn:aws:batch:us-east-1:012345678910:job-queue/GPGPU",
         "jobQueueName": "GPGPU"
     }
+
+For more information, see `Delete a job queue in AWS Batch <https://docs.aws.amazon.com/batch/latest/userguide/delete-job-queue.html>`__ in the *AWS Batch User Guide*.

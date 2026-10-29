@@ -36,3 +36,5 @@ Output::
             "Name": "Setup hive"
         }
     }
+
+For more information, see `Submit work to an Amazon EMR cluster <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-work-with-steps.html>`__ in the *Amazon EMR Management Guide*.

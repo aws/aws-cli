@@ -35,4 +35,4 @@ Output::
         }
     }
 
-
+For more information, see `Sharing a snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshot-share-snapshot.html>`__ in the *Amazon Redshift Management Guide*.

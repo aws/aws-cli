@@ -18,3 +18,5 @@ Output::
     {
         "QueueUrl": "https://queue.amazonaws.com/80398EXAMPLE/MyQueue"
     }
+
+For more information, see `Using dead-letter queues in Amazon SQS <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

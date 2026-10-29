@@ -25,6 +25,4 @@ MaxSendRate is the maximum number of emails that you can send per second.
 Note that sending limits are based on recipients rather than on messages. For example, an email that has 10 recipients
 counts as 10 against your sending quota.
 
-For more information, see `Managing Your Amazon SES Sending Limits`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Managing Your Amazon SES Sending Limits`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/manage-sending-limits.html
+For more information, see `Managing your Amazon SES sending limits <https://docs.aws.amazon.com/ses/latest/dg/manage-sending-quotas.html>`__ in the *Amazon Simple Email Service Developer Guide*.

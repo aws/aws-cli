@@ -8,6 +8,8 @@ The following ``modify-subnet-attribute`` example modifies subnet-1a2b3c4d to sp
 
 This command produces no output.
 
+For more information, see `Modify the IP addressing attributes of your subnet <https://docs.aws.amazon.com/vpc/latest/userguide/subnet-public-ip.html>`__ in the *Amazon VPC User Guide*.
+
 **Example 2: To change a subnet's IPv6 addressing behavior**
 
 The following ``modify-subnet-attribute`` example modifies subnet-1a2b3c4d to specify that all instances launched into this subnet are assigned an IPv6 address from the range of the subnet. ::
@@ -18,6 +20,4 @@ The following ``modify-subnet-attribute`` example modifies subnet-1a2b3c4d to sp
 
 This command produces no output.
 
-For more information, see `IP Addressing in Your VPC`_ in the *AWS Virtual Private Cloud User Guide*.
-
-.. _`IP Addressing in Your VPC`: http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpc-ip-addressing.html
+For more information, see `IP addressing for your VPCs and subnets <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html>`__ in the *Amazon VPC User Guide*.

@@ -10,3 +10,5 @@ Output::
     {
         "Return": true
     }
+
+For more information, see `Delete a VPC peering connection <https://docs.aws.amazon.com/vpc/latest/peering/delete-vpc-peering-connection.html>`__ in the *Amazon VPC Peering Guide*.

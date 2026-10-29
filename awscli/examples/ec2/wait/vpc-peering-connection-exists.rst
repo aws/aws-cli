@@ -6,3 +6,5 @@ The following ``wait vpc-peering-connection-exists`` example pauses and continue
         --vpc-peering-connection-ids pcx-1234567890abcdef0
 
 This command produces no output.
+
+For more information, see `Create a VPC peering connection <https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html>`__ in the *Amazon VPC Peering Guide*.

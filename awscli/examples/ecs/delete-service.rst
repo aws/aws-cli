@@ -61,4 +61,4 @@ Output::
         }
     }
 
-For more information, see `Deleting a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/delete-service.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Deleting an Amazon ECS service using the console <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/delete-service-v2.html>`__ in the *Amazon ECS Developer Guide*.

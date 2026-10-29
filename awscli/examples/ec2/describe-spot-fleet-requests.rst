@@ -75,6 +75,8 @@ Output::
         ]
     }
 
+For more information, see `Describe a Spot Fleet request, its instances, and event history <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe a Spot fleet request**
 
 The following ``describe-spot-fleet-requests`` example describes the specified Spot fleet request. ::
@@ -127,3 +129,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Describe a Spot Fleet request, its instances, and event history <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.

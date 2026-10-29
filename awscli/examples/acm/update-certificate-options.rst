@@ -8,3 +8,4 @@ The following ``update-certificate-options`` example opts out of certificate tra
 
 This command produces no output.
 
+For more information, see `Best practices <https://docs.aws.amazon.com/acm/latest/userguide/acm-bestpractices.html>`__ in the *AWS Certificate Manager User Guide*.

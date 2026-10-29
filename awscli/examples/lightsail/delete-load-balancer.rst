@@ -54,4 +54,4 @@ Output::
         ]
     }
 
-For more information, see `title <link>`__ in the *guide*.
+For more information, see `Delete Lightsail load balancers <https://docs.aws.amazon.com/lightsail/latest/userguide/delete-lightsail-load-balancer.html>`__ in the *Amazon Lightsail User Guide*.

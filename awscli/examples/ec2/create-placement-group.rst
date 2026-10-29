@@ -18,6 +18,8 @@ Output::
         }
     }
 
+For more information, see `Placement groups for your Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To create a partition placement group**
 
 The following ``create-placement-group`` example creates a partition placement group named ``HDFS-Group-A`` with five partitions. ::
@@ -39,3 +41,5 @@ Output::
             "GroupArn": "arn:aws:ec2:us-west-2:123456789012:placement-group/HDFS-Group-A"
         }
     }
+
+For more information, see `Placement strategies for your placement groups <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-strategies.html>`__ in the *Amazon EC2 User Guide*.

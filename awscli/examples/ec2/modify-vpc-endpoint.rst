@@ -13,6 +13,8 @@ Output::
         "Return": true
     }
 
+For more information, see `Gateway endpoints <https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html>`__ in the *AWS PrivateLink User Guide*.
+
 **Example 2: To modify an interface endpoint**
 
 The following ``modify-vpc-endpoint`` example modifies interface endpoint ``vpce-0fe5b17a0707d6fa5`` by adding subnet ``subnet-d6fcaa8d`` to the endpoint. ::
@@ -26,3 +28,5 @@ Output::
     {
         "Return": true
     }
+
+For more information, see `Access an AWS service using an interface VPC endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html>`__ in the *AWS PrivateLink User Guide*.

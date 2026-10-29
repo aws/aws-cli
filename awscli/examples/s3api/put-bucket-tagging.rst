@@ -28,3 +28,5 @@ Alternatively, apply a tagging configuration to ``amzn-s3-demo-bucket`` directly
         --tagging 'TagSet=[{Key=organization,Value=marketing}]'
 
 This command produces no output.
+
+For more information, see `Using cost allocation S3 bucket tags <https://docs.aws.amazon.com/AmazonS3/latest/userguide/CostAllocTagging.html>`__ in the *Amazon S3 User Guide*.

@@ -22,3 +22,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View pipeline details and history (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html>`__ in the *AWS CodePipeline User Guide*.

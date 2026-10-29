@@ -24,3 +24,5 @@ Output::
                 }
         }
     }
+
+For more information, see `Comment on a commit in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-commit-comment.html>`__ in the *AWS CodeCommit User Guide*.

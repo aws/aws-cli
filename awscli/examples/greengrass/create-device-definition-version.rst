@@ -77,3 +77,5 @@ Output::
         "CreationTimestamp": "2019-09-11T00:15:09.838Z",
         "Id": "f9ba083d-5ad4-4534-9f86-026a45df1ccd"
     }
+
+For more information, see `Overview of the AWS IoT Greengrass group object model <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.

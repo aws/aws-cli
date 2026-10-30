@@ -513,7 +513,7 @@
           "documentation":"<p>Indicates if the compactor instance is a standalone instance or not.</p>"
         }
       },
-      "documentation":"<p>Configuration for node modes in the DbCluster.</p>"
+      "documentation":"<p>Configuration for node modes in the DbCluster.</p> <p>Deprecated. Use deploymentConfiguration to define the cluster topology instead.</p>"
     },
     "ClusterDeploymentType":{
       "type":"string",
@@ -636,7 +636,13 @@
         },
         "clusterConfiguration":{
           "shape":"ClusterConfiguration",
-          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p>"
+          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p> <p>Deprecated. Use deploymentConfiguration to view the cluster topology instead.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use deploymentConfiguration instead."
+        },
+        "deploymentConfiguration":{
+          "shape":"DeploymentConfiguration",
+          "documentation":"<p>The deployment configuration of the resource at the time of backup.</p>"
         },
         "dbParameterGroupId":{
           "shape":"DbParameterGroupId",
@@ -696,7 +702,6 @@
       "type":"structure",
       "required":[
         "name",
-        "dbInstanceType",
         "vpcSubnetIds",
         "vpcSecurityGroupIds"
       ],
@@ -731,7 +736,7 @@
         },
         "dbInstanceType":{
           "shape":"DbInstanceType",
-          "documentation":"<p>The Timestream for InfluxDB DB instance type to run InfluxDB on.</p>"
+          "documentation":"<p>The Timestream for InfluxDB DB instance type to run InfluxDB on.</p> <p>Optional when you define the cluster topology with deploymentConfiguration, because the instance type is then specified per node group.</p>"
         },
         "dbStorageType":{
           "shape":"DbStorageType",
@@ -760,6 +765,10 @@
         "deploymentType":{
           "shape":"ClusterDeploymentType",
           "documentation":"<p>Specifies the type of cluster to create.</p>"
+        },
+        "deploymentConfiguration":{
+          "shape":"DeploymentConfiguration",
+          "documentation":"<p>The compute topology for the cluster, defined as a set of node groups. Use deploymentConfiguration to allocate compute per function: ingest, query, compaction, and processing. A deployment configuration becomes the source of truth for the cluster's topology. Timestream for InfluxDB then ignores any node-count parameters in the associated DB parameter group.</p>"
         },
         "failoverMode":{
           "shape":"FailoverMode",
@@ -1610,7 +1619,13 @@
         },
         "clusterConfiguration":{
           "shape":"ClusterConfiguration",
-          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p>"
+          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p> <p>Deprecated. Use deploymentConfiguration to view the cluster topology instead.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use deploymentConfiguration instead."
+        },
+        "deploymentConfiguration":{
+          "shape":"DeploymentConfiguration",
+          "documentation":"<p>The deployment configuration of the resource at the time of backup.</p>"
         },
         "dbParameterGroupId":{
           "shape":"DbParameterGroupId",
@@ -1822,6 +1837,17 @@
         }
       }
     },
+    "DeploymentConfiguration":{
+      "type":"structure",
+      "members":{
+        "InfluxDBv3Enterprise":{
+          "shape":"InfluxDBv3EnterpriseDeploymentConfiguration",
+          "documentation":"<p>The deployment configuration for an InfluxDB 3 Enterprise cluster.</p>"
+        }
+      },
+      "documentation":"<p>Defines the compute topology of a Timestream for InfluxDB cluster as a set of node groups for a specific database engine. For InfluxDB 3 Enterprise, use the InfluxDBv3Enterprise member to allocate compute per function: ingest, query, compaction, and processing.</p>",
+      "union":true
+    },
     "DeploymentType":{
       "type":"string",
       "enum":[
@@ -1940,7 +1966,13 @@
         },
         "clusterConfiguration":{
           "shape":"ClusterConfiguration",
-          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p>"
+          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p> <p>Deprecated. Use deploymentConfiguration to view the cluster topology instead.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use deploymentConfiguration instead."
+        },
+        "deploymentConfiguration":{
+          "shape":"DeploymentConfiguration",
+          "documentation":"<p>The deployment configuration of the resource at the time of backup.</p>"
         },
         "dbParameterGroupId":{
           "shape":"DbParameterGroupId",
@@ -2112,7 +2144,13 @@
         },
         "clusterConfiguration":{
           "shape":"ClusterConfiguration",
-          "documentation":"<p>Configuration for node modes in the DbCluster.</p>"
+          "documentation":"<p>Configuration for node modes in the DbCluster.</p> <p>Deprecated. Use deploymentConfiguration to view the cluster topology instead.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use deploymentConfiguration instead."
+        },
+        "deploymentConfiguration":{
+          "shape":"DeploymentConfiguration",
+          "documentation":"<p>The current compute topology of the cluster, as a set of node groups. The returned topology reflects the cluster's actual provisioned nodes.</p>"
         },
         "dbBackupConfigurations":{
           "shape":"DbBackupConfigurationOutputList",
@@ -2825,13 +2863,19 @@
       "max":10000,
       "min":1
     },
+    "InfluxDBv3EnterpriseDeploymentConfiguration":{
+      "type":"structure",
+      "required":["nodeGroups"],
+      "members":{
+        "nodeGroups":{
+          "shape":"NodeGroupList",
+          "documentation":"<p>The node groups that make up the cluster. Across all node groups, the cluster must include 1 to 4 nodes with the INGEST mode, 0 to 14 nodes with the QUERY mode, and exactly one node with the COMPACT mode.</p>"
+        }
+      },
+      "documentation":"<p>The compute topology for an InfluxDB 3 Enterprise cluster, expressed as a list of node groups.</p>"
+    },
     "InfluxDBv3EnterpriseParameters":{
       "type":"structure",
-      "required":[
-        "ingestQueryInstances",
-        "queryOnlyInstances",
-        "dedicatedCompactor"
-      ],
       "members":{
         "queryFileLimit":{
           "shape":"InfluxDBv3EnterpriseParametersQueryFileLimitInteger",
@@ -2999,15 +3043,24 @@
         },
         "ingestQueryInstances":{
           "shape":"InfluxDBv3EnterpriseParametersIngestQueryInstancesInteger",
-          "documentation":"<p>Specifies number of instances in the DbCluster which can both ingest and query.</p>"
+          "documentation":"<p>Specifies number of instances in the DbCluster which can both ingest and query.</p> <p>Deprecated. Use deploymentConfiguration on CreateDbCluster or UpdateDbCluster to define the cluster topology instead. When you supply a deployment configuration, Timestream for InfluxDB ignores this parameter.</p>",
+          "box":true,
+          "deprecated":true,
+          "deprecatedMessage":"Use deploymentConfiguration instead."
         },
         "queryOnlyInstances":{
           "shape":"InfluxDBv3EnterpriseParametersQueryOnlyInstancesInteger",
-          "documentation":"<p>Specifies number of instances in the DbCluster which can only query.</p>"
+          "documentation":"<p>Specifies number of instances in the DbCluster which can only query.</p> <p>Deprecated. Use deploymentConfiguration on CreateDbCluster or UpdateDbCluster to define the cluster topology instead. When you supply a deployment configuration, Timestream for InfluxDB ignores this parameter.</p>",
+          "box":true,
+          "deprecated":true,
+          "deprecatedMessage":"Use deploymentConfiguration instead."
         },
         "dedicatedCompactor":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies if the compactor instance should be a standalone instance or not.</p>"
+          "documentation":"<p>Specifies if the compactor instance should be a standalone instance or not.</p> <p>Deprecated. Use deploymentConfiguration on CreateDbCluster or UpdateDbCluster to define the cluster topology instead. When you supply a deployment configuration, Timestream for InfluxDB ignores this parameter.</p>",
+          "box":true,
+          "deprecated":true,
+          "deprecatedMessage":"Use deploymentConfiguration instead."
         },
         "compactionRowLimit":{
           "shape":"InfluxDBv3EnterpriseParametersCompactionRowLimitInteger",
@@ -3229,7 +3282,9 @@
     },
     "InstanceModeList":{
       "type":"list",
-      "member":{"shape":"InstanceMode"}
+      "member":{"shape":"InstanceMode"},
+      "max":4,
+      "min":1
     },
     "Integer":{
       "type":"integer",
@@ -3478,6 +3533,41 @@
     },
     "NextToken":{
       "type":"string",
+      "min":1
+    },
+    "NodeGroup":{
+      "type":"structure",
+      "required":[
+        "instanceModes",
+        "instanceType",
+        "count"
+      ],
+      "members":{
+        "instanceModes":{
+          "shape":"InstanceModeList",
+          "documentation":"<p>The functions that the nodes in this group perform. Provide from 1 to 4 unique modes. Valid modes:</p> <ul> <li> <p>INGEST – Nodes in this mode ingest data. Across all node groups, INGEST nodes must total between 1 and 4.</p> </li> <li> <p>QUERY – Nodes in this mode query data. Across all node groups, QUERY nodes must total between 0 and 14.</p> </li> <li> <p>COMPACT – Nodes in this mode compact data. Exactly one node across all node groups must have this mode. If the cluster has more than three non-compaction nodes, place the COMPACT node in its own dedicated node group.</p> </li> <li> <p>PROCESS – Nodes in this mode process data with the processing engine.</p> </li> </ul>"
+        },
+        "instanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The Timestream for InfluxDB DB instance type to run InfluxDB on for the nodes in this group.</p>"
+        },
+        "count":{
+          "shape":"NodeGroupCountInteger",
+          "documentation":"<p>The number of nodes in this group. Valid values are 1 to 13.</p>"
+        }
+      },
+      "documentation":"<p>A group of one or more nodes in a Timestream for InfluxDB cluster that share the same instance modes and instance type. A cluster's compute topology is defined as a list of node groups.</p>"
+    },
+    "NodeGroupCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":13,
+      "min":1
+    },
+    "NodeGroupList":{
+      "type":"list",
+      "member":{"shape":"NodeGroup"},
+      "max":10,
       "min":1
     },
     "Organization":{
@@ -4020,7 +4110,11 @@
         },
         "dbInstanceType":{
           "shape":"DbInstanceType",
-          "documentation":"<p>Update the DB cluster to use the specified DB instance Type.</p>"
+          "documentation":"<p>Update the DB cluster to use the specified DB instance Type.</p> <p>You can't specify both dbInstanceType and deploymentConfiguration in the same request. When you use deploymentConfiguration, the instance type is specified per node group.</p>"
+        },
+        "deploymentConfiguration":{
+          "shape":"DeploymentConfiguration",
+          "documentation":"<p>The updated compute topology for the cluster, defined as a set of node groups. Use deploymentConfiguration to change the cluster's topology or scale its compute in a single call. You can't specify both deploymentConfiguration and dbInstanceType in the same request. When you provide a deployment configuration, Timestream for InfluxDB ignores any node-count parameters in the associated DB parameter group.</p>"
         },
         "failoverMode":{
           "shape":"FailoverMode",

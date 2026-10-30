@@ -3164,7 +3164,7 @@
       "members":{
         "registryMappings":{
           "shape":"RegistryMappingsList",
-          "documentation":"<p>Mapping that provides the ECR repository path where upstream container images are pulled and synchronized.</p>"
+          "documentation":"<p>The mappings between upstream container registries and repository prefixes in your Amazon Elastic Container Registry (Amazon ECR) private registry. The list can include both pull through cache mappings and mappings for registries that Amazon Web Services HealthOmics copies images from.</p>"
         },
         "imageMappings":{
           "shape":"ImageMappingsList",
@@ -6232,6 +6232,10 @@
         "sessionPolicy":{
           "shape":"SessionPolicy",
           "documentation":"<p>Inline policy json for scoping down permissions via a session policy on the IAM role.</p>"
+        },
+        "outputUriPrefixMode":{
+          "shape":"RunOutputUriPrefixMode",
+          "documentation":"<p>The service returns the value that the <code>StartRun</code> request specified for <code>outputUriPrefixMode</code>. The service returns <code>SERVICE_DEFINED</code> if the request did not specify a value.</p>"
         }
       }
     },
@@ -9494,7 +9498,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that holds the credentials for the upstream registry. You must specify this value when Amazon Elastic Container Registry (Amazon ECR) doesn't support pull through cache for the upstream registry. HealthOmics supports only some of these registries. The workflow role must have permission to call the <code>secretsmanager:GetSecretValue</code> operation on the secret. For more information about the supported registries, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflows-ecr.html\">Container images</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>If you are using the ECR pull through cache feature, the registry mapping maps between the ECR repository and the upstream registry where container images are pulled and synchronized.</p>"
+      "documentation":"<p>Maps an upstream container registry to a repository prefix in your Amazon Elastic Container Registry (Amazon ECR) private registry. For registries that Amazon ECR pull through cache supports, you create a pull through cache rule that synchronizes the upstream repositories with your private repositories. You can also use some registries that pull through cache doesn't support. For these registries, specify <code>credentialArn</code>, and Amazon Web Services HealthOmics copies each image into a private Amazon ECR repository the first time a task needs it.</p>"
     },
     "RegistryMappingsList":{
       "type":"list",
@@ -9931,6 +9935,14 @@
       "max":750,
       "min":1,
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "RunOutputUriPrefixMode":{
+      "type":"string",
+      "documentation":"<p>The mode controls the path prefixes that the service adds beneath <code>outputUri</code>. Valid values:</p> <ul> <li> <p> <code>SERVICE_DEFINED</code> – Adds a run-specific prefix</p> </li> <li> <p> <code>NONE_WITH_OVERWRITE</code> – Adds no prefix and overwrites existing objects at the run's output keys</p> </li> </ul>",
+      "enum":[
+        "SERVICE_DEFINED",
+        "NONE_WITH_OVERWRITE"
+      ]
     },
     "RunParameters":{
       "type":"structure",
@@ -11033,6 +11045,10 @@
         "engineSettings":{
           "shape":"EngineSettings",
           "documentation":"<p>Engine-specific settings for the workflow run. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles).</p>"
+        },
+        "outputUriPrefixMode":{
+          "shape":"RunOutputUriPrefixMode",
+          "documentation":"<p>You can control the path prefixes that the service adds beneath <code>outputUri</code>. If you don't specify a value, the service uses <code>SERVICE_DEFINED</code>, which adds a run-specific prefix.</p>"
         }
       }
     },

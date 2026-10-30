@@ -46,6 +46,18 @@ class TestConfigFileWriter(unittest.TestCase):
                 "%s\n" % (updated_config_contents, new_contents)
             )
 
+    def assert_update_config_with_bom(
+        self, original_config_contents, updated_data, updated_config_contents
+    ):
+        # Same as assert_update_config, for a file that starts with a UTF-8
+        # byte order mark: the mark has to stay, once, at the very start.
+        with open(self.config_filename, 'w', encoding='utf-8-sig') as f:
+            f.write(original_config_contents)
+        self.writer.update_config(updated_data, self.config_filename)
+        with open(self.config_filename, encoding='utf-8') as f:
+            new_contents = f.read()
+        self.assertEqual(new_contents, '﻿' + updated_config_contents)
+
     def test_update_single_existing_value(self):
         original = '[default]\nfoo = 1\nbar = 1'
         updated = '[default]\nfoo = newvalue\nbar = 1'
@@ -163,6 +175,22 @@ class TestConfigFileWriter(unittest.TestCase):
         with open(self.config_filename) as f:
             new_contents = f.read()
         self.assertEqual(new_contents, '[default]\nfoo = value\n')
+
+    def test_update_existing_value_with_utf8_bom(self):
+        # The byte order mark must not hide the section header on the
+        # first line, or a second [default] section would be appended.
+        self.assert_update_config_with_bom(
+            '[default]\nfoo = 1\nbar = 1',
+            {'foo': 'newvalue'},
+            '[default]\nfoo = newvalue\nbar = 1',
+        )
+
+    def test_section_does_not_exist_with_utf8_bom(self):
+        self.assert_update_config_with_bom(
+            '[default]\nfoo = 1\n',
+            {'__section__': 'profile dev', 'region': 'us-west-2'},
+            '[default]\nfoo = 1\n[profile dev]\nregion = us-west-2\n',
+        )
 
     @skip_if_windows("Test not valid on windows.")
     def test_permissions_on_new_file(self):

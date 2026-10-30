@@ -7,23 +7,22 @@ The following ``send-email`` example sends a formatted email. ::
         --destination file://destination.json \
         --message file://message.json
 
-Output::
+The destination and the message are JSON data structures saved in .json files in the current directory.
+
+Contents of ``destination.json``::
 
     {
-        "MessageId": "EXAMPLEf3a5efcd1-51adec81-d2a4-4e3f-9fe2-5d85c1b23783-000000"
-    }
-
-The destination and the message are JSON data structures saved in .json files in the current directory. These files are as follows:
-
-``destination.json``::
-
-    {
-        "ToAddresses":  ["recipient1@example.com", "recipient2@example.com"],
-        "CcAddresses":  ["recipient3@example.com"],
+        "ToAddresses": [
+            "recipient1@example.com",
+            "recipient2@example.com"
+        ],
+        "CcAddresses": [
+            "recipient3@example.com"
+        ],
         "BccAddresses": []
     }
 
-``message.json``::
+Contents of ``message.json``::
 
     {
         "Subject": {
@@ -40,6 +39,12 @@ The destination and the message are JSON data structures saved in .json files in
                 "Charset": "UTF-8"
             }
         }
+    }
+
+Output::
+
+    {
+        "MessageId": "EXAMPLEf3a5efcd1-51adec81-d2a4-4e3f-9fe2-5d85c1b23783-000000"
     }
 
 Replace the sender and recipient email addresses with the ones you want to use. Note that the sender's email address must be verified with Amazon SES. Until you are granted production access to Amazon SES, you must also verify the email address of each recipient

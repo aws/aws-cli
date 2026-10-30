@@ -10,10 +10,48 @@ The following ``create-data-source`` example creates and configures an Amazon Ke
         --index-id exampleindex1 \
         --language-code "es" \
         --schedule "0 0 18 ? * TUE,MON,WED,THU,FRI,SAT *" \
-        --configuration '{"TemplateConfiguration": {"Template": file://s3schemaconfig.json}}' \
+        --configuration file://s3schemaconfig.json \
         --type "TEMPLATE" \
         --custom-document-enrichment-configuration '{"PostExtractionHookConfiguration": {"LambdaArn": "arn:aws:iam::my-account-id:function/my-function-ocr-docs", "S3Bucket": "s3://amzn-s3-demo-bucket/scanned-image-text-example-docs"}, "RoleArn": "arn:aws:iam:my-account-id:role/KendraRoleForCDE"}' \
         --vpc-configuration '{"SecurityGroupIds": ["sg-1234567890abcdef0"], "SubnetIds": ["subnet-1c234","subnet-2b134"]}'
+
+Contents of ``s3schemaconfig.json``::
+
+    {
+        "TemplateConfiguration": {
+            "Template": {
+                "connectionConfiguration": {
+                    "repositoryEndpointMetadata": {
+                        "BucketName": "amzn-s3-demo-bucket"
+                    }
+                },
+                "repositoryConfigurations": {
+                    "document": {
+                        "fieldMappings": [
+                            {
+                                "indexFieldName": "_document_title",
+                                "indexFieldType": "STRING",
+                                "dataSourceFieldName": "title"
+                            }
+                        ]
+                    }
+                },
+                "additionalProperties": {
+                    "inclusionPatterns": [
+                        "*.txt",
+                        "*.doc",
+                        "*.docx"
+                    ],
+                    "inclusionPrefixes": [
+                        "PublicExampleDocsFolder"
+                    ]
+                },
+                "syncMode": "FULL_CRAWL",
+                "type": "S3",
+                "version": "1.0.0"
+            }
+        }
+    }
 
 Output::
 

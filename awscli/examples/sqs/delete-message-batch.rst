@@ -6,7 +6,7 @@ The following ``delete-message-batch`` example deletes the specified messages. :
         --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue \
         --entries file://delete-message-batch.json
 
-Input file (delete-message-batch.json)::
+Contents of ``delete-message-batch.json``::
 
     [
         {

@@ -14,8 +14,7 @@ file, as shown in the following example. ::
         --resource arn:aws:cloudfront::123456789012:distribution/EDFDVBD6EXAMPLE \
         --tag-keys file://tag-keys.json
 
-The file ``tag-keys.json`` is a JSON document in the current folder that
-contains the following::
+Contents of ``tag-keys.json``::
 
     {
         "Items": [

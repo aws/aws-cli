@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes a tag from a resource using a JSON file. ::
 
     aws imagebuilder untag-resource \
-        --cli-input-json file://tag-resource.json
+        --cli-input-json file://untag-resource.json
 
 Contents of ``untag-resource.json``::
 

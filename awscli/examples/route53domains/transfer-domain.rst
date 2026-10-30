@@ -8,7 +8,7 @@ This command runs only in the ``us-east-1`` Region. If your default region is se
         --region us-east-1 \
         --cli-input-json file://C:\temp\transfer-domain.json
 
-Contents of ``transfer-domain.json``::
+Contents of ``C:\temp\transfer-domain.json``::
 
     {
         "DomainName": "example.com",

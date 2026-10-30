@@ -6,7 +6,7 @@ The following ``create-queue`` example creates a queue with the specified name, 
         --queue-name MyQueue \
         --attributes file://create-queue.json
 
-Input file (create-queue.json)::
+Contents of ``create-queue.json``::
 
     {
         "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}",
@@ -18,4 +18,3 @@ Output::
     {
         "QueueUrl": "https://queue.amazonaws.com/80398EXAMPLE/MyQueue"
     }
-

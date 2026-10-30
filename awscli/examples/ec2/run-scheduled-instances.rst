@@ -7,7 +7,7 @@ The following ``run-scheduled-instances`` example launches the specified Schedul
         --instance-count 1 \
         --launch-specification file://launch-specification.json
 
-Launch-specification.json::
+Contents of ``launch-specification.json``::
 
     {
         "ImageId": "ami-12345678",
@@ -18,7 +18,9 @@ Launch-specification.json::
                 "DeviceIndex": 0,
                 "SubnetId": "subnet-12345678",
                 "AssociatePublicIpAddress": true,
-                "Groups": ["sg-12345678"]
+                "Groups": [
+                    "sg-12345678"
+                ]
             }
         ],
         "IamInstanceProfile": {
@@ -41,16 +43,18 @@ The following ``run-scheduled-instances`` example launches the specified Schedul
         --instance-count 1 \
         --launch-specification file://launch-specification.json
 
-Launch-specification.json::
+Contents of ``launch-specification.json``::
 
     {
         "ImageId": "ami-12345678",
         "KeyName": "my-key-pair",
-        "SecurityGroupIds": ["sg-12345678"],
+        "SecurityGroupIds": [
+            "sg-12345678"
+        ],
         "InstanceType": "c4.large",
         "Placement": {
             "AvailabilityZone": "us-west-2b"
-        }
+        },
         "IamInstanceProfile": {
             "Name": "my-iam-role"
         }

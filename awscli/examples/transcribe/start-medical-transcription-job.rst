@@ -266,10 +266,10 @@ For more information, see `Alternative Transcriptions <https://docs.aws.amazon.c
 
 The following ``start-medical-transcription-job`` example transcribes an audio file and uses a medical custom vocabulary you've previously created to increase the transcription accuracy. You specify the location of the transcription output in the ``OutputBucketName`` parameter. ::
 
-    aws transcribe start-transcription-job \
+    aws transcribe start-medical-transcription-job \
         --cli-input-json file://myseventhfile.json
 
-Contents of ``mysixthfile.json``::
+Contents of ``myseventhfile.json``::
 
     {
         "MedicalTranscriptionJobName": "vocabulary-dictation-medical-transcription-job",

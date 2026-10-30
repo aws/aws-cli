@@ -22,8 +22,7 @@ Use the ``--if-match`` option to provide the configuration's ``ETag``. ::
         --if-match E2P4Z4VU7TY5SG \
         --field-level-encryption-config file://fle-config.json
 
-The file ``fle-config.json`` is a JSON document in the current directory that
-contains the following::
+Contents of ``fle-config.json``::
 
     {
         "CallerReference": "cli-example",

@@ -16,6 +16,28 @@ Linux/Mac version. ::
         --content "file://RunShellScript.json" \
         --document-version '$LATEST'
 
+Contents of ``RunShellScript.json``::
+
+    {
+        "schemaVersion": "2.0",
+        "description": "Run an updated script",
+        "parameters": {
+            "commands": {
+                "type": "StringList",
+                "description": "(Required) Specify a shell script or a command to run."
+            }
+        },
+        "mainSteps": [
+            {
+                "action": "aws:runShellScript",
+                "name": "runShellScript",
+                "inputs": {
+                    "runCommand": "{{ commands }}"
+                }
+            }
+        ]
+    }
+
 Output::
 
     {

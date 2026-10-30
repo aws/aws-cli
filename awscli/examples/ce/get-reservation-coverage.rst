@@ -7,7 +7,7 @@ The following ``get-reservation-coverage`` example retrieves the reservation cov
         --group-by Type=Dimension,Key=REGION \
         --filter file://filters.json
 
-filters.json::
+Contents of ``filters.json``::
 
     {
         "And": [
@@ -17,7 +17,9 @@ filters.json::
                     "Values": [
                         "t2.nano"
                     ]
-                },
+                }
+            },
+            {
                 "Dimensions": {
                     "Key": "REGION",
                     "Values": [
@@ -27,7 +29,7 @@ filters.json::
             }
         ]
     }
-
+  
 Output::
 
     {

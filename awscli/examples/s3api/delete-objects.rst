@@ -6,7 +6,9 @@ The following ``delete-objects`` example deletes an object from a bucket named `
         --bucket amzn-s3-demo-bucket \
         --delete file://delete.json
 
-``delete.json`` is a JSON document in the current directory that specifies the object to delete::
+The file ``delete.json`` is a JSON document in the current directory that specifies the object to delete.
+
+Contents of ``delete.json``::
 
     {
         "Objects": [

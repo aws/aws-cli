@@ -6,6 +6,12 @@ The following ``upload-signing-certificate`` example uploads a signing certifica
         --user-name Bob \
         --certificate-body file://certificate.pem
 
+Contents of ``certificate.pem``::
+
+    -----BEGIN CERTIFICATE-----
+    MIICdzCCAeCgAwIBAgIGANc+EXAMPLE...
+    -----END CERTIFICATE-----
+
 Output::
 
     {

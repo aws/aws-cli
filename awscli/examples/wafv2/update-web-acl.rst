@@ -11,6 +11,54 @@ The following ``update-web-acl`` example changes settings for an existing web AC
         --visibility-config SampledRequestsEnabled=false,CloudWatchMetricsEnabled=false,MetricName=NewMetricTestWebAcl \
         --rules file://waf-rule.json
 
+Contents of ``waf-rule.json``::
+
+    [
+        {
+            "Name": "basic-rule",
+            "Priority": 0,
+            "Statement": {
+                "AndStatement": {
+                    "Statements": [
+                        {
+                            "ByteMatchStatement": {
+                                "SearchString": "example.com",
+                                "FieldToMatch": {
+                                    "SingleHeader": {
+                                        "Name": "host"
+                                    }
+                                },
+                                "TextTransformations": [
+                                    {
+                                        "Priority": 0,
+                                        "Type": "LOWERCASE"
+                                    }
+                                ],
+                                "PositionalConstraint": "EXACTLY"
+                            }
+                        },
+                        {
+                            "GeoMatchStatement": {
+                                "CountryCodes": [
+                                    "US",
+                                    "IN"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "Action": {
+                "Allow": {}
+            },
+            "VisibilityConfig": {
+                "SampledRequestsEnabled": true,
+                "CloudWatchMetricsEnabled": true,
+                "MetricName": "basic-rule"
+            }
+        }
+    ]
+
 Output::
 
     {

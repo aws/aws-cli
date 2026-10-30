@@ -264,7 +264,7 @@ The following ``start-transcription-job`` example transcribes your audio file an
     aws transcribe start-transcription-job \
         --cli-input-json file://myeighthfile.json
 
-Contents of ``myeigthfile.json``::
+Contents of ``myeighthfile.json``::
 
     {
         "TranscriptionJobName": "cli-redaction-job",

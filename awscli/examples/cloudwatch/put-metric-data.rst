@@ -6,9 +6,7 @@ The following ``put-metric-data`` example publishes a custom metric to Amazon Cl
         --namespace "Usage Metrics" \
         --metric-data file://metric.json
 
-The values for the metric itself are stored in the JSON file, ``metric.json``.
-
-Here are the contents of that file::
+Contents of ``metric.json``::
 
     [
         {

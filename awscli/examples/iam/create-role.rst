@@ -6,6 +6,22 @@ The following ``create-role`` example creates a role named ``Test-Role`` and att
         --role-name Test-Role \
         --assume-role-policy-document file://Test-Role-Trust-Policy.json
 
+Contents of ``Test-Role-Trust-Policy.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "Statement1",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::123456789012:root"
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    }
+
 Output::
 
     {
@@ -34,6 +50,22 @@ The following ``create-role`` example creates a role named ``Test-Role`` and set
         --assume-role-policy-document file://Test-Role-Trust-Policy.json \
         --max-session-duration 7200
 
+Contents of ``Test-Role-Trust-Policy.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "Statement1",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::123456789012:root"
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    }
+
 Output::
 
     {
@@ -41,7 +73,7 @@ Output::
             "Path": "/",
             "RoleName": "Test-Role",
             "RoleId": "AKIAIOSFODNN7EXAMPLE",
-            "Arn": "arn:aws:iam::12345678012:role/Test-Role",
+            "Arn": "arn:aws:iam::123456789012:role/Test-Role",
             "CreateDate": "2023-05-24T23:50:25+00:00",
             "AssumeRolePolicyDocument": {
                 "Version": "2012-10-17",
@@ -50,7 +82,7 @@ Output::
                         "Sid": "Statement1",
                         "Effect": "Allow",
                         "Principal": {
-                            "AWS": "arn:aws:iam::12345678012:root"
+                            "AWS": "arn:aws:iam::123456789012:root"
                         },
                         "Action": "sts:AssumeRole"
                     }
@@ -69,6 +101,22 @@ The following ``create-role`` example creates an IAM role ``Test-Role`` with tag
         --role-name Test-Role \
         --assume-role-policy-document file://Test-Role-Trust-Policy.json \
         --tags '{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'
+
+Contents of ``Test-Role-Trust-Policy.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "Statement1",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::123456789012:root"
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    }
 
 Output:: 
 

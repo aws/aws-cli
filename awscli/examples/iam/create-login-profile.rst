@@ -7,18 +7,20 @@ To use the ``--cli-input-json`` parameter, start by using the ``create-login-pro
     aws iam create-login-profile \
         --generate-cli-skeleton > create-login-profile.json
 
-The previous command creates a JSON file called create-login-profile.json that you can use to fill in the information for a subsequent ``create-login-profile`` command. For example, the file might look like the following. ::
+The previous command creates a JSON file called create-login-profile.json that you can use to fill in the information for a subsequent ``create-login-profile`` command.
+
+Next, to create a password for an IAM user, use the ``create-login-profile`` command again, this time passing the ``--cli-input-json`` parameter to specify your JSON file. The following ``create-login-profile`` command uses the ``--cli-input-json`` parameter with a JSON file called create-login-profile.json. ::
+
+    aws iam create-login-profile \
+        --cli-input-json file://create-login-profile.json
+
+Contents of ``create-login-profile.json``::
 
     {
         "UserName": "Bob",
         "Password": "&1-3a6u:RA0djs",
         "PasswordResetRequired": true
     }
-
-Next, to create a password for an IAM user, use the ``create-login-profile`` command again, this time passing the ``--cli-input-json`` parameter to specify your JSON file. The following ``create-login-profile`` command uses the ``--cli-input-json`` parameter with a JSON file called create-login-profile.json. ::
-
-    aws iam create-login-profile \
-        --cli-input-json file://create-login-profile.json
 
 Output::
 

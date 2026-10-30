@@ -44,7 +44,7 @@ The following ``update-resolver-rule`` example updates the same settings as Exam
         --resolver-rule-id rslvr-rr-1247fa64f3example \
         --config file://c:\temp\update-resolver-rule.json
 
-Contents of ``update-resolver-rule.json``. ::
+Contents of ``c:\temp\update-resolver-rule.json``::
 
     {
         "Name": "my-2nd-rule",

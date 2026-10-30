@@ -7,7 +7,14 @@ To use the ``--cli-input-json`` parameter, start by using the ``create-open-id-c
     aws iam create-open-id-connect-provider \
         --generate-cli-skeleton > create-open-id-connect-provider.json
 
-The previous command creates a JSON file called create-open-id-connect-provider.json that you can use to fill in the information for a subsequent ``create-open-id-connect-provider`` command. For example, the file might look like the following. ::
+The previous command creates a JSON file called create-open-id-connect-provider.json that you can use to fill in the information for a subsequent ``create-open-id-connect-provider`` command.
+
+Next, to create the OpenID Connect (OIDC) provider, use the ``create-open-id-connect-provider`` command again, this time passing the ``--cli-input-json`` parameter to specify your JSON file. The following ``create-open-id-connect-provider`` command uses the ``--cli-input-json`` parameter with a JSON file called create-open-id-connect-provider.json. ::
+
+    aws iam create-open-id-connect-provider \
+        --cli-input-json file://create-open-id-connect-provider.json
+
+Contents of ``create-open-id-connect-provider.json``::
 
     {
         "Url": "https://server.example.com",
@@ -20,11 +27,6 @@ The previous command creates a JSON file called create-open-id-connect-provider.
     }
 
 If your OIDC provider's discovery and JWKS endpoints use different certificates, include thumbprints for both endpoints in the ``ThumbprintList``.
-
-Next, to create the OpenID Connect (OIDC) provider, use the ``create-open-id-connect-provider`` command again, this time passing the ``--cli-input-json`` parameter to specify your JSON file. The following ``create-open-id-connect-provider`` command uses the ``--cli-input-json`` parameter with a JSON file called create-open-id-connect-provider.json. ::
-
-    aws iam create-open-id-connect-provider \
-        --cli-input-json file://create-open-id-connect-provider.json
 
 Output::
 

@@ -8,11 +8,49 @@ The following ``update-data-source`` example updates the configuration of an Ama
         --name "new name for example data source 1" \
         --description "new description for example data source 1" \
         --role-arn arn:aws:iam::my-account-id:role/KendraNewRoleForExampleDataSource \
-        --configuration '{"TemplateConfiguration": {"Template": file://s3schemanewconfig.json}}' \
+        --configuration file://s3schemanewconfig.json \
         --custom-document-enrichment-configuration '{"PostExtractionHookConfiguration": {"LambdaArn": "arn:aws:iam::my-account-id:function/my-function-ocr-docs", "S3Bucket": "s3://amzn-s3-demo-bucket/scanned-image-text-example-docs"}, "RoleArn": "arn:aws:iam:my-account-id:role/KendraNewRoleForCDE"}' \
         --language-code "es" \
         --schedule "0 0 18 ? * MON,WED,FRI *" \
         --vpc-configuration '{"SecurityGroupIds": ["sg-1234567890abcdef0"], "SubnetIds": ["subnet-1c234","subnet-2b134"]}'
+
+Contents of ``s3schemanewconfig.json``::
+
+    {
+        "TemplateConfiguration": {
+            "Template": {
+                "connectionConfiguration": {
+                    "repositoryEndpointMetadata": {
+                        "BucketName": "amzn-s3-demo-bucket"
+                    }
+                },
+                "repositoryConfigurations": {
+                    "document": {
+                        "fieldMappings": [
+                            {
+                                "indexFieldName": "_document_title",
+                                "indexFieldType": "STRING",
+                                "dataSourceFieldName": "title"
+                            }
+                        ]
+                    }
+                },
+                "additionalProperties": {
+                    "inclusionPatterns": [
+                        "*.txt",
+                        "*.doc",
+                        "*.docx"
+                    ],
+                    "inclusionPrefixes": [
+                        "NewPublicExampleDocsFolder"
+                    ]
+                },
+                "syncMode": "FULL_CRAWL",
+                "type": "S3",
+                "version": "1.0.0"
+            }
+        }
+    }
 
 This command produces no output.
 

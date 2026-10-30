@@ -10,7 +10,7 @@ Note that you can't specify different subnets from the same Availability Zone in
     aws ec2 request-spot-fleet \
         --spot-fleet-request-config file://config.json
 
-Config.json::
+Contents of ``config.json``::
 
     {
         "SpotPrice": "0.04",
@@ -51,7 +51,7 @@ If your account supports EC2-Classic, Amazon EC2 launches the instances in EC2-C
     aws ec2 request-spot-fleet \
         --spot-fleet-request-config file://config.json
 
-Config.json::
+Contents of ``config.json``::
 
     {
         "SpotPrice": "0.04",
@@ -86,7 +86,7 @@ using the network interface. ::
     aws ec2 request-spot-fleet \
         --spot-fleet-request-config file://config.json
 
-Config.json::
+Contents of ``config.json``::
 
     {
         "SpotPrice": "0.04",
@@ -101,7 +101,9 @@ Config.json::
                     {
                         "DeviceIndex": 0,
                         "SubnetId": "subnet-1a2b3c4d",
-                        "Groups": [ "sg-1a2b3c4d" ],
+                        "Groups": [
+                            "sg-1a2b3c4d"
+                        ],
                         "AssociatePublicIpAddress": true
                     }
                 ],
@@ -121,7 +123,7 @@ across the launch specifications such that there are 10 instances of each type. 
     aws ec2 request-spot-fleet \
         --spot-fleet-request-config file://config.json
 
-Config.json::
+Contents of ``config.json``::
 
     {
         "SpotPrice": "0.70",

@@ -21,8 +21,10 @@ The following ``update-lifecycle-policy`` example updates the target tags for th
     aws dlm update-lifecycle-policy \
         --policy-id policy-0123456789abcdef0 \
         --policy-details file://policyDetails.json
-  
-Contents of ``policyDetails.json``. Other details not referenced in this file are not changed by the command. ::
+
+Other details not referenced in the file are not changed by the command.
+
+Contents of ``policyDetails.json``::
 
     {
         "TargetTags": [
@@ -34,5 +36,5 @@ Contents of ``policyDetails.json``. Other details not referenced in this file ar
                 "Key": "project",
                 "Value": "lima"
             }
-        ]  
+        ]
     }

@@ -11,13 +11,15 @@ The following ``get-resource-metrics`` example requests data points for the *db.
         --metric db.load.avg \
         --metric-queries file://metric-queries.json
 
-The arguments for ``--metric-queries`` are stored in a JSON file, ``metric-queries.json``.  Here are the contents of that file::
+The arguments for ``--metric-queries`` are stored in a JSON file, ``metric-queries.json``.
+
+Contents of ``metric-queries.json``::
 
     [
         {
             "Metric": "db.load.avg",
             "GroupBy": {
-                "Group":"db.wait_event"
+                "Group": "db.wait_event"
             }
         }
     ]

@@ -6,7 +6,7 @@ The following ``check-capacity`` example retrieves the capacity requirements for
         --scope REGIONAL \
         --rules file://waf-rule-list.json
 
-Contents of `file://waf-rule-list.json`::
+Contents of ``waf-rule-list.json``::
 
     [
         {

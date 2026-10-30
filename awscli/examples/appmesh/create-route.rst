@@ -236,7 +236,7 @@ The following ``create-route`` example uses a JSON input file to create a TCP ro
     aws appmesh create-route \
         --cli-input-json file://create-route-tcp.json
 
-Contents of create-route-tcp.json::
+Contents of ``create-route-tcp.json``::
 
     {
         "meshName": "apps",

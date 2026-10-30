@@ -7,7 +7,7 @@ The following ``validate-configuration-settings`` example validates a CloudWatch
         --environment-name my-env \
         --option-settings file://options.json
 
-``options.json`` is a JSON document that includes one or more configuration settings to validate::
+Contents of ``options.json``::
 
     [
         {

@@ -6,7 +6,7 @@ The following ``change-message-visibility-batch`` example changes the 2 specifie
         --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue \
         --entries file://change-message-visibility-batch.json
 
-Input file (change-message-visibility-batch.json)::
+Contents of ``change-message-visibility-batch.json``::
 
     [
         {
@@ -33,4 +33,3 @@ Output::
             }
         ]
     }
-

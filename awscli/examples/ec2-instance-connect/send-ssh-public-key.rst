@@ -8,4 +8,8 @@ The following ``send-ssh-public-key`` example sends the specified SSH public key
         --availability-zone us-east-2b \
         --ssh-public-key file://path/my-rsa-key.pub
 
+Contents of ``my-rsa-key.pub``::
+
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCEXAMPLEKEY ec2-user@example
+
 This command produces no output.

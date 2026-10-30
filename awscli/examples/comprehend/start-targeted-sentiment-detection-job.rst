@@ -31,7 +31,7 @@ Output::
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``SampleMovieReview1.txt.out`` with line indents for readability::
+Contents of ``SampleMovieReview1.txt.out``::
 
     {
         "Entities": [
@@ -88,7 +88,7 @@ Contents of ``SampleMovieReview1.txt.out`` with line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleMovieReview2.txt.out`` line indents for readability::
+Contents of ``SampleMovieReview2.txt.out``::
 
     {
         "Entities": [
@@ -239,7 +239,7 @@ Contents of ``SampleMovieReview2.txt.out`` line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleMovieReview3.txt.out`` with line indents for readability::
+Contents of ``SampleMovieReview3.txt.out``::
 
     {
         "Entities": [

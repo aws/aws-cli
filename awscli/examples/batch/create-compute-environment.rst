@@ -5,7 +5,7 @@ The following ``create-compute-environment`` example creates a managed compute e
     aws batch create-compute-environment \
         --cli-input-json file://<path_to_json_file>/C4OnDemand.json
 
-JSON file format::
+Contents of ``C4OnDemand.json``::
 
     {
         "computeEnvironmentName": "C4OnDemand",
@@ -54,7 +54,7 @@ The following ``create-compute-environment`` example creates a managed compute e
     aws batch create-compute-environment \
         --cli-input-json file://<path_to_json_file>/M4Spot.json
 
-JSON file format::
+Contents of ``M4Spot.json``::
 
     {
         "computeEnvironmentName": "M4Spot",

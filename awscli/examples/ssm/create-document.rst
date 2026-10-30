@@ -8,6 +8,29 @@ The following ``create-document`` example creates a Systems Manager document. ::
         --document-type "Automation" \
         --document-format YAML
 
+Contents of ``exampleDocument.yml``::
+
+    description: Document Example
+    schemaVersion: '0.3'
+    assumeRole: '{{ AutomationAssumeRole }}'
+    parameters:
+        AutomationAssumeRole:
+            type: String
+            description: (Required) The ARN of the role that allows Automation to perform the actions on your behalf. If no role is specified, Systems Manager Automation uses your IAM permissions to execute this document.
+            default: ''
+        InstanceId:
+            type: String
+            description: (Required) The ID of the Amazon EC2 instance.
+            default: ''
+    mainSteps:
+        - name: rebootInstance
+          action: 'aws:executeAwsApi'
+          inputs:
+              Service: ec2
+              Api: RebootInstances
+              InstanceIds:
+                  - '{{ InstanceId }}'
+
 Output::
 
     {

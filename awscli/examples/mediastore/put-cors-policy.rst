@@ -6,6 +6,24 @@ The following ``put-cors-policy`` example adds a cross-origin resource sharing (
         --container-name ExampleContainer \
         --cors-policy file://corsPolicy.json
 
+Contents of ``corsPolicy.json``::
+
+    [
+        {
+            "AllowedOrigins": [
+                "https://www.example.com"
+            ],
+            "AllowedMethods": [
+                "GET",
+                "HEAD"
+            ],
+            "AllowedHeaders": [
+                "*"
+            ],
+            "MaxAgeSeconds": 3000
+        }
+    ]
+
 This command produces no output.
 
 For more information, see `Adding a CORS Policy to a Container <https://docs.aws.amazon.com/mediastore/latest/ug/cors-policy-adding.html>`__ in the *AWS Elemental MediaStore User Guide*.

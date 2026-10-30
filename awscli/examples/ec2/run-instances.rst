@@ -138,7 +138,9 @@ The following ``run-instances`` example uses a block device mapping, specified i
         --key-name MyKeyPair \
         --block-device-mappings file://mapping.json
 
-Contents of ``mapping.json``. This example adds ``/dev/sdh`` an empty EBS volume with a size of 100 GiB. ::
+The following mapping adds ``/dev/sdh`` as an empty EBS volume with a size of 100 GiB.
+
+Contents of ``mapping.json``::
 
     [
         {
@@ -149,7 +151,9 @@ Contents of ``mapping.json``. This example adds ``/dev/sdh`` an empty EBS volume
         }
     ]
 
-Contents of ``mapping.json``. This example adds ``ephemeral1`` as an instance store volume. ::
+Alternatively, the following mapping adds ``ephemeral1`` as an instance store volume.
+
+Contents of ``mapping.json``::
 
     [
         {
@@ -188,7 +192,15 @@ The following ``run-instances`` example passes user data in a file called ``my_s
         --subnet-id subnet-08fc749671b2d077c \
         --key-name MyKeyPair \
         --security-group-ids sg-0b0384b66d7d692f9 \
-        --user-data file://my_script.txt 
+        --user-data file://my_script.txt
+
+Contents of ``my_script.txt``::
+
+    #!/bin/bash
+    yum update -y
+    yum install -y httpd
+    systemctl start httpd
+    systemctl enable httpd
 
 For an example of the output for ``run-instances``, see Example 1. 
 

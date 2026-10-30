@@ -9,7 +9,7 @@ The following ``update-image-set-metadata`` example inserts or updates an attrib
         --cli-binary-format raw-in-base64-out \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -40,7 +40,7 @@ The following ``update-image-set-metadata`` example removes an attribute from im
         --cli-binary-format raw-in-base64-out \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -72,7 +72,7 @@ The following ``update-image-set-metadata`` example removes an instance from ima
         --update-image-set-metadata-updates file://metadata-updates.json \
         --force
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -129,7 +129,7 @@ UpdateImageSetMetadata action. ::
         --force \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -161,7 +161,7 @@ The following ``update-image-set-metadata`` example shows how to update the valu
         --force \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -193,7 +193,7 @@ The following ``update-image-set-metadata`` example shows how to update a SOPIns
         --force \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {

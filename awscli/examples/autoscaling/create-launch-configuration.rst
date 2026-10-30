@@ -23,6 +23,14 @@ The following ``create-launch-configuration`` example creates a launch configura
         --key-name my-key-pair \
         --user-data file://myuserdata.txt
 
+Contents of ``myuserdata.txt``::
+
+    #!/bin/bash
+    yum update -y
+    yum install -y httpd
+    systemctl start httpd
+    systemctl enable httpd
+
 This command produces no output.
 
 For more information, see `Creating a launch configuration <https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-config.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

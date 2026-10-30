@@ -22,8 +22,7 @@ Use the ``--if-match`` option to provide the profile's ``ETag``. ::
         --if-match E1QQG65FS2L2GC \
         --field-level-encryption-profile-config file://fle-profile-config.json
 
-The file ``fle-profile-config.json`` is a JSON document in the current
-directory that contains the following::
+Contents of ``fle-profile-config.json``::
 
     {
         "Name": "ExampleFLEProfileUpdated",

@@ -5,7 +5,7 @@ The following ``poll-for-jobs`` example returns information about any jobs for a
     aws codepipeline poll-for-jobs \
         --cli-input-json file://MyActionTypeInfo.json
 
-JSON file sample contents::
+Contents of ``MyActionTypeInfo.json``::
 
     {
         "actionTypeId": {

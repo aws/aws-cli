@@ -30,7 +30,9 @@ The following ``create-annotation-store`` example creates a TSV format annotatio
         --reference referenceArn=arn:aws:omics:us-west-2:123456789012:referenceStore/1234567890/reference/1234567890 \
         --store-options file://tsv-store-options.json
 
-``tsv-store-options.json`` configures format options for annotations. ::
+The ``tsv-store-options.json`` file configures format options for annotations.
+
+Contents of ``tsv-store-options.json``::
 
     {
         "tsvStoreOptions": {

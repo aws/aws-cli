@@ -16,21 +16,16 @@ Output::
 
 **Example 2: To list the context keys referenced by one or more custom JSON policies provided as a file input**
 
-The following ``get-context-keys-for-custom-policy`` example lists the context keys in the same way as the previous example, except that the policies are provided in a file instead of as a parameter. Because the command expects a JSON list of strings, and not a list of JSON structures, the file must be structured as follows, although you can collapse it into one one. ::
-
-    [
-        "Policy1",
-        "Policy2"
-    ]
-
-So for example, a file that contains the policy from the previous example must look like the following. You must escape each embedded double-quote inside the policy string by preceding it with a backslash '\'. ::
-
-    [ "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": \"dynamodb:*\", \"Resource\": \"arn:aws:dynamodb:us-west-2:128716708097:table/${aws:username}\", \"Condition\": {\"DateGreaterThan\": {\"aws:CurrentTime\": \"2015-08-16T12:00:00Z\"}}}}" ]
-
-This file can then be submitted to the following command. ::
+The following ``get-context-keys-for-custom-policy`` example lists the context keys in the same way as the previous example, except that the policies are provided in a file instead of as a parameter. Because the command expects a JSON list of strings, and not a list of JSON structures, the file must contain a JSON array in which each policy is a string. You must escape each embedded double-quote inside the policy string by preceding it with a backslash. ::
 
     aws iam get-context-keys-for-custom-policy \
         --policy-input-list file://policyfile.json
+
+Contents of ``policyfile.json``::
+
+    [
+        "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": \"dynamodb:*\", \"Resource\": \"arn:aws:dynamodb:us-west-2:123456789012:table/${aws:username}\", \"Condition\": {\"DateGreaterThan\": {\"aws:CurrentTime\": \"2015-08-16T12:00:00Z\"}}}}"
+    ]
 
 Output::
 

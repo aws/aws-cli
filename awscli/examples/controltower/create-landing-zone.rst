@@ -6,6 +6,41 @@ The following ``create-landing-zone`` example creates AWS Control Tower landing 
         --landing-zone-version 3.3 \
         --manifest "file://LandingZoneManifest.json"
 
+Contents of ``LandingZoneManifest.json``::
+
+    {
+        "governedRegions": [
+            "us-east-1",
+            "us-west-2"
+        ],
+        "organizationStructure": {
+            "security": {
+                "name": "Security"
+            },
+            "sandbox": {
+                "name": "Sandbox"
+            }
+        },
+        "centralizedLogging": {
+            "accountId": "111122223333",
+            "configurations": {
+                "loggingBucket": {
+                    "retentionDays": 365
+                },
+                "accessLoggingBucket": {
+                    "retentionDays": 3650
+                }
+            },
+            "enabled": true
+        },
+        "securityRoles": {
+            "accountId": "444455556666"
+        },
+        "accessManagement": {
+            "enabled": true
+        }
+    }
+
 Output::
 
     {

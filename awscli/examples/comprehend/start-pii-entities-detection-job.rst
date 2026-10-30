@@ -34,7 +34,7 @@ Output::
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``SampleText1.txt.out`` with line indents for readability::
+Contents of ``SampleText1.txt.out``::
 
     {
         "Entities": [
@@ -67,7 +67,7 @@ Contents of ``SampleText1.txt.out`` with line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleText2.txt.out`` with line indents for readability::
+Contents of ``SampleText2.txt.out``::
 
     {
         "Entities": [
@@ -100,7 +100,7 @@ Contents of ``SampleText2.txt.out`` with line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleText3.txt.out`` with line indents for readability::
+Contents of ``SampleText3.txt.out``::
 
     {
         "Entities": [

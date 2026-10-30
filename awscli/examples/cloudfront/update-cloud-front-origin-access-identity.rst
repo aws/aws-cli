@@ -29,8 +29,7 @@ file, as shown in the following example. ::
         --if-match E2QWRUHEXAMPLE \
         --cloud-front-origin-access-identity-config file://OAI-config.json
 
-The file ``OAI-config.json`` is a JSON document in the current directory that
-contains the following::
+Contents of ``OAI-config.json``::
 
     {
         "CallerReference": "cli-example",

@@ -6,7 +6,7 @@ The following ``create-policy`` example creates a customer managed policy named 
         --policy-name my-policy \
         --policy-document file://policy.json
 
-Contents of policy.json::
+Contents of ``policy.json``::
 
     {
         "Version": "2012-10-17",
@@ -53,7 +53,7 @@ The file ``policy.json`` is a JSON document in the current folder that grants ac
         --policy-document file://policy.json \
         --description "This policy grants access to all Put, Get, and List actions for amzn-s3-demo-bucket"
 
-Contents of policy.json::
+Contents of ``policy.json``::
 
     {
         "Version": "2012-10-17",
@@ -102,7 +102,7 @@ The file ``policy.json`` is a JSON document in the current folder that grants ac
         --policy-document file://policy.json \
         --tags '{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'
 
-Contents of policy.json::
+Contents of ``policy.json``::
 
     {
         "Version": "2012-10-17",

@@ -6,7 +6,7 @@ The following ``send-message-batch`` example sends 2 messages with the specified
         --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue \
         --entries file://send-message-batch.json
 
-Input file (send-message-batch.json)::
+Contents of ``send-message-batch.json``::
 
     [
         {
@@ -83,5 +83,3 @@ Output::
             }
         ]
     }
-
-

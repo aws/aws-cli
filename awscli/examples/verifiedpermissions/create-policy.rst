@@ -6,7 +6,7 @@ The following ``create-policy`` example creates a static policy with a policy sc
         --definition file://definition1.txt \
         --policy-store-id PSEXAMPLEabcdefg111111
 
-Contents of file ``definition1.txt``::
+Contents of ``definition1.txt``::
 
     {
         "static": {
@@ -41,7 +41,7 @@ The following ``create-policy`` example creates a static policy with a policy sc
         --definition file://definition2.txt \
         --policy-store-id PSEXAMPLEabcdefg111111
 
-Contents of file ``definition2.txt``::
+Contents of ``definition2.txt``::
 
     {
         "static": {

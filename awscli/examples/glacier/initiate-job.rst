@@ -23,7 +23,9 @@ The following ``initiate-job`` example initiates a job to retrieve an archive fr
         --vault-name my-vault \
         --job-parameters file://job-archive-retrieval.json
 
-``job-archive-retrieval.json`` is a JSON file in the local folder that specifies the type of job, archive ID, and some optional parameters::
+``job-archive-retrieval.json`` is a JSON file in the local folder that specifies the type of job, archive ID, and some optional parameters.
+
+Contents of ``job-archive-retrieval.json``::
 
     {
         "Type": "archive-retrieval",

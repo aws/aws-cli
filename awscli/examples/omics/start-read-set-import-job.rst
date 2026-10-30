@@ -7,7 +7,7 @@ The following ``start-read-set-import-job`` example imports a read set. ::
         --role-arn arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ \
         --sources file://readset-sources.json
 
-`readset-sources.json` is a JSON document with the following content. ::
+Contents of ``readset-sources.json``::
 
     [
         {

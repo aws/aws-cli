@@ -8,6 +8,25 @@ The following ``create-policy-version`` example creates a new ``v2`` version of 
         --policy-document file://NewPolicyVersion.json \
         --set-as-default
 
+Contents of ``NewPolicyVersion.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:GetObject",
+                    "s3:ListBucket"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::amzn-s3-demo-bucket",
+                    "arn:aws:s3:::amzn-s3-demo-bucket/*"
+                ]
+            }
+        ]
+    }
+
 Output::
 
     {

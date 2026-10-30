@@ -6,7 +6,7 @@ The following ``create-scaling-plan`` example creates a scaling plan named ``my-
         --scaling-plan-name my-scaling-plan \
         --cli-input-json file://~/config.json
 
-Contents of ``config.json`` file::
+Contents of ``config.json``::
 
     {
         "ApplicationSource": {

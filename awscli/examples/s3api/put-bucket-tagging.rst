@@ -6,7 +6,9 @@ The following ``put-bucket-tagging`` example applies a tagging configuration to 
         --bucket amzn-s3-demo-bucket \
         --tagging file://tagging.json
 
-The file ``tagging.json`` is a JSON document in the current folder that specifies tags::
+The file ``tagging.json`` is a JSON document in the current folder that specifies tags.
+
+Contents of ``tagging.json``::
 
     {
         "TagSet": [

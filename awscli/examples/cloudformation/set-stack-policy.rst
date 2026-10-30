@@ -6,21 +6,23 @@ The following ``set-stack-policy`` example disables updates for the specified re
         --stack-name my-stack \
         --stack-policy-body file://stack-policy.json
 
-Output::
+Contents of ``stack-policy.json``::
 
     {
-        "Statement" : [
+        "Statement": [
             {
-                "Effect" : "Allow",
-                "Action" : "Update:*",
+                "Effect": "Allow",
+                "Action": "Update:*",
                 "Principal": "*",
-                "Resource" : "*"
+                "Resource": "*"
             },
             {
-                "Effect" : "Deny",
-                "Action" : "Update:*",
+                "Effect": "Deny",
+                "Action": "Update:*",
                 "Principal": "*",
-                "Resource" : "LogicalResourceId/bucket"
+                "Resource": "LogicalResourceId/bucket"
             }
         ]
     }
+
+This command produces no output.

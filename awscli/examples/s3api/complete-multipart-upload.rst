@@ -12,7 +12,7 @@ The upload ID required by this command is output by ``create-multipart-upload`` 
 
 The multipart upload option in the above command takes a JSON structure that describes the parts of the multipart upload that should be reassembled into the complete file. In this example, the ``file://`` prefix is used to load the JSON structure from a file in the local folder named ``mpustruct``.
 
-mpustruct::
+Contents of ``mpustruct``::
 
     {
         "Parts": [

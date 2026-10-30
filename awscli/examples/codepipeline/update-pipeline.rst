@@ -12,7 +12,7 @@ Run the following command to update the pipeline. ::
     aws codepipeline update-pipeline \
         --cli-input-json file://MyFirstPipeline.json
   
-Sample JSON file contents::
+Contents of ``MyFirstPipeline.json``::
 
     {
         "pipeline": {

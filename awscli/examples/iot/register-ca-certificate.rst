@@ -6,6 +6,24 @@ The following ``register-ca-certificate`` example registers a CA certificate. Th
         --ca-certificate file://rootCA.pem \
         --verification-cert file://verificationCert.pem
 
+Contents of ``rootCA.pem``::
+
+    -----BEGIN CERTIFICATE-----
+    MIIDWTCCAkGgAwIBAgIUEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEwDQYJKoZI
+    hvcNAQELBQAwTDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24xEDAO
+    ...
+    EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLE==
+    -----END CERTIFICATE-----
+
+Contents of ``verificationCert.pem``::
+
+    -----BEGIN CERTIFICATE-----
+    MIIDWTCCAkGgAwIBAgIUEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEwDQYJKoZI
+    hvcNAQELBQAwTDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24xEDAO
+    ...
+    EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLE==
+    -----END CERTIFICATE-----
+
 Output::
 
     {

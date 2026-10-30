@@ -17,9 +17,12 @@ Output::
 
 **Example 2: To create a CodeDeploy deployment using the Amazon ECS compute platform**
 
-The following ``create-deployment`` example uses the following two files to deploy an Amazon ECS service.
+The following ``create-deployment`` example deploys an Amazon ECS service by using the settings in the file ``create-deployment.json``. ::
 
-Contents of ``create-deployment.json`` file::
+    aws deploy create-deployment \
+        --cli-input-json file://create-deployment.json
+
+Contents of ``create-deployment.json``::
 
     {
         "applicationName": "ecs-deployment",
@@ -46,11 +49,6 @@ That file, in turn, retrieves the following file ``appspec.yaml`` from an S3 buc
               ContainerName: "sample-app"
               ContainerPort: 80
             PlatformVersion: "LATEST"
-
-To create the deployment, run the following command. ::
-
-    aws deploy create-deployment \
-        --cli-input-json file://create-deployment.json
 
 Output::
 

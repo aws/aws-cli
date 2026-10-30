@@ -14,21 +14,19 @@ Alternatively, you can use a JSON file to specify the input, as shown in the fol
         --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1 \
         --updates file://change.json
 
-Where content of the JSON file is::
+Contents of ``change.json``::
 
     [
         {
             "Action": "INSERT",
-            "IPSetDescriptor":
-            {
+            "IPSetDescriptor": {
                 "Type": "IPV4",
                 "Value": "12.34.56.78/16"
             }
         },
         {
             "Action": "DELETE",
-            "IPSetDescriptor":
-            {
+            "IPSetDescriptor": {
                 "Type": "IPV6",
                 "Value": "1111:0000:0000:0000:0000:0000:0000:0111/128"
             }

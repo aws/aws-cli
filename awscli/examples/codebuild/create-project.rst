@@ -58,7 +58,7 @@ The following ``create-project`` example creates a CodeBuild build project by pa
     aws codebuild create-project \
         --cli-input-json file://create-project.json
 
-The input JSON file ``create-project.json`` contains the following content::
+Contents of ``create-project.json``::
 
     {
         "name": "codebuild-demo-project",

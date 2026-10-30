@@ -5,6 +5,12 @@ The following ``create-certificate-from-csr`` example creates a device certifica
     aws iot create-certificate-from-csr \
         --certificate-signing-request=file://certificate.csr
 
+Contents of ``certificate.csr``::
+
+    -----BEGIN CERTIFICATE REQUEST-----
+    MIICvDCCAaQCAQAwdzELMAkGA1UEBhMCVVMxEXAMPLE...
+    -----END CERTIFICATE REQUEST-----
+
 Output::
 
     {

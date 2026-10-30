@@ -12,7 +12,25 @@ The following ``create-origin-endpoint`` example creates an origin endpoint name
         --startover-window-seconds 300 \
         --tags region=west,media=sports \
         --time-delay-seconds 10
-        
+
+Contents of ``cmafpkg.json``::
+
+    {
+        "HlsManifests": [
+            {
+                "AdMarkers": "PASSTHROUGH",
+                "Id": "cmaf_sports_endpoint",
+                "IncludeIframeOnlyStream": true,
+                "ManifestName": "index",
+                "PlaylistType": "EVENT",
+                "PlaylistWindowSeconds": 300,
+                "ProgramDateTimeIntervalSeconds": 300
+            }
+        ],
+        "SegmentDurationSeconds": 2,
+        "SegmentPrefix": "sportschannel"
+    }
+
 Output::
 
     {

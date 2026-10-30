@@ -486,6 +486,40 @@ def check_description(example):
     return errors
 
 
+def _command_name(command):
+    """The command an aws command runs, such as ['ec2', 'wait', 'x']."""
+    words = []
+    for word in command[0][1][0].split()[1:]:
+        if word.startswith('-') or word in ('\\', '^', '`'):
+            break
+        words.append(word)
+    return words
+
+
+def check_command_name(example):
+    # Each example must run the command that its description names, which
+    # is the command of the file.  It can also run other commands, such as
+    # one that creates a resource first.
+    path = example.command_path
+    errors = []
+    for section in example.sections:
+        if section.title is None or not section.commands:
+            continue
+        names = [
+            _command_name(command)[: len(path)]
+            for block in section.commands
+            for command in _split_commands(block)
+        ]
+        if path not in names:
+            block = section.commands[0]
+            errors.append(
+                f'Line {block.lineno}: the example must run '
+                f'"aws {" ".join(path)}", but it runs '
+                f'"aws {" ".join(names[0])}"'
+            )
+    return errors
+
+
 def _scan_command_lines(lines):
     """Split a command block's lines into shell-aware pieces.
 
@@ -1381,6 +1415,13 @@ def test_example_command(example_file):
     example = Example(example_file)
     errors = check_command(example)
     _assert_follows_rule('command', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_command_name(example_file):
+    example = Example(example_file)
+    errors = check_command_name(example)
+    _assert_follows_rule('command-name', example, errors)
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)

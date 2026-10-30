@@ -183,3 +183,84 @@ Output::
     }
 
 For more information, see `Creating an Amazon Aurora DB cluster <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.CreateInstance.html>`__ in the *Amazon Aurora User Guide*.
+
+**Example 4: To create an Aurora PostgreSQL DB cluster for Aurora Limitless Database**
+
+The following ``create-db-cluster`` example creates an Aurora PostgreSQL primary DB cluster that's compatible with Aurora Serverless v2 and Aurora Limitless Database. After you create the DB cluster, create its writer DB instance with the ``create-db-instance`` command and then a DB shard group with the ``create-db-shard-group`` command. ::
+
+    aws rds create-db-cluster \
+        --db-cluster-identifier my-sv2-cluster \
+        --engine aurora-postgresql \
+        --engine-version 15.2-limitless \
+        --storage-type aurora-iopt1 \
+        --serverless-v2-scaling-configuration MinCapacity=2,MaxCapacity=16 \
+        --enable-limitless-database \
+        --master-username myuser \
+        --master-user-password mypassword \
+        --enable-cloudwatch-logs-exports postgresql
+
+Output::
+
+    {
+        "DBCluster": {
+            "AllocatedStorage": 1,
+            "AvailabilityZones": [
+                "us-west-2b",
+                "us-west-2c",
+                "us-west-2a"
+            ],
+            "BackupRetentionPeriod": 1,
+            "DBClusterIdentifier": "my-sv2-cluster",
+            "DBClusterParameterGroup": "default.aurora-postgresql15",
+            "DBSubnetGroup": "default",
+            "Status": "creating",
+            "Endpoint": "my-sv2-cluster.cluster-cekycexample.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "my-sv2-cluster.cluster-ro-cekycexample.us-west-2.rds.amazonaws.com",
+            "MultiAZ": false,
+            "Engine": "aurora-postgresql",
+            "EngineVersion": "15.2-limitless",
+            "Port": 5432,
+            "MasterUsername": "myuser",
+            "PreferredBackupWindow": "06:05-06:35",
+            "PreferredMaintenanceWindow": "mon:08:25-mon:08:55",
+            "ReadReplicaIdentifiers": [],
+            "DBClusterMembers": [],
+            "VpcSecurityGroups": [
+                {
+                    "VpcSecurityGroupId": "sg-########",
+                    "Status": "active"
+                }
+            ],
+            "HostedZoneId": "Z2XHWR1EXAMPLE",
+            "StorageEncrypted": false,
+            "DbClusterResourceId": "cluster-XYEDT6ML6FHIXH4Q2J1EXAMPLE",
+            "DBClusterArn": "arn:aws:rds:us-west-2:123456789012:cluster:my-sv2-cluster",
+            "AssociatedRoles": [],
+            "IAMDatabaseAuthenticationEnabled": false,
+            "ClusterCreateTime": "2024-02-19T16:24:07.771000+00:00",
+            "EnabledCloudwatchLogsExports": [
+                "postgresql"
+            ],
+            "EngineMode": "provisioned",
+            "DeletionProtection": false,
+            "HttpEndpointEnabled": false,
+            "CopyTagsToSnapshot": false,
+            "CrossAccountClone": false,
+            "DomainMemberships": [],
+            "TagList": [],
+            "StorageType": "aurora-iopt1",
+            "AutoMinorVersionUpgrade": true,
+            "ServerlessV2ScalingConfiguration": {
+                "MinCapacity": 2.0,
+                "MaxCapacity": 16.0
+            },
+            "NetworkType": "IPV4",
+            "IOOptimizedNextAllowedModificationTime": "2024-03-21T16:24:07.781000+00:00",
+            "LimitlessDatabase": {
+                "Status": "not-in-use",
+                "MinRequiredACU": 96.0
+            }
+        }
+    }
+
+For more information, see `Using Aurora Serverless v2 <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html>`__ in the *Amazon Aurora User Guide*.

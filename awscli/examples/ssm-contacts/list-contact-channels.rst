@@ -8,8 +8,9 @@ The following ``list-contact-channels`` example lists the available contact chan
 Output::
 
     {
-        [
+        "ContactChannels": [
             {
+                "ContactChannelArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact-channel/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
                 "Name": "akuas email",
                 "Type": "EMAIL",

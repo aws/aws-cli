@@ -16,7 +16,7 @@ Output::
             "ProviderDetails": {
                 "attributes_url": "https://graph.facebook.com/me?fields=",
                 "attributes_url_add_attributes": "true",
-                "authorize_scopes": myscope",
+            "authorize_scopes": "myscope",
                 "authorize_url": "https://www.facebook.com/v2.9/dialog/oauth",
                 "client_id": "11111",
                 "client_secret": "11111",

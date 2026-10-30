@@ -37,7 +37,7 @@ First, generate a base64-encoded random byte string and saves it in a temporary 
         --output text \
         --query Plaintext > ExampleRandom.base64
 
-Because the output of the ``generate-random`` command is saved in a file, this example produces no output.
+This command produces no output. The output of the ``generate-random`` command is saved in a file.
 
 Now use the ``certutil -decode`` command to decode the base64-encoded byte string in the ``ExampleRandom.base64`` file. Then, it saves the decoded byte string in the ``ExampleRandom`` file. ::
 

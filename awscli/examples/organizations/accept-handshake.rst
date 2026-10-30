@@ -5,7 +5,7 @@ The following ``accept-handshake`` example accepts a handshake on behalf of Juan
     aws organizations accept-handshake \
         --handshake-id h-examplehandshakeid111
 
-The output shows the following: ::
+Output::
 
     {
         "Handshake": {

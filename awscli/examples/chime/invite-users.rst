@@ -15,7 +15,7 @@ Output::
                 "Status": "Pending",
                 "EmailAddress": "alejandror@example.com",
                 "EmailStatus": "Sent"
-            }
+            },
             {
                 "InviteId": "a1b2c3d4-5678-90ab-cdef-33333EXAMPLE",
                 "Status": "Pending",

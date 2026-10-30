@@ -19,17 +19,15 @@ Contents of ``destinations.json``::
 Output::
 
     {
-        "GameSessionQueues": [
-            {
-                "Name": "MegaFrogRaceServer-NA",
-                "GameSessionQueueArn": "arn:aws:gamelift:us-west-2:123456789012:gamesessionqueue/MegaFrogRaceServer-NA",
-                "TimeoutInSeconds": 600,
-                "Destinations": [
-                    {"DestinationArn": "arn:aws:gamelift:us-west-2::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"},
-                    {"DestinationArn": "arn:aws:gamelift:us-west-1::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"}
-                ]
-            }
-        ]
+        "GameSessionQueue": {
+            "Name": "MegaFrogRaceServer-NA",
+            "GameSessionQueueArn": "arn:aws:gamelift:us-west-2:123456789012:gamesessionqueue/MegaFrogRaceServer-NA",
+            "TimeoutInSeconds": 600,
+            "Destinations": [
+                {"DestinationArn": "arn:aws:gamelift:us-west-2::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"},
+                {"DestinationArn": "arn:aws:gamelift:us-west-1::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"}
+            ]
+        }
     }
 
 **Example 2: To set up a game session queue with player latency policies**
@@ -66,7 +64,7 @@ Output::
         "GameSessionQueue": {
             "Name": "MegaFrogRaceServer-NA",
             "GameSessionQueueArn": "arn:aws:gamelift:us-west-2:111122223333:gamesessionqueue/MegaFrogRaceServer-NA",
-            "TimeoutInSeconds": 600,
+            "TimeoutInSeconds": 180,
             "PlayerLatencyPolicies": [
                 {
                     "MaximumIndividualPlayerLatencyMilliseconds": 100,
@@ -75,11 +73,11 @@ Output::
                 {
                     "MaximumIndividualPlayerLatencyMilliseconds": 200
                 }
-            ]
+            ],
             "Destinations": [
                 {"DestinationArn": "arn:aws:gamelift:us-west-2::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"},
                 {"DestinationArn": "arn:aws:gamelift:us-east-1::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"}
-            ],
+            ]
         }
     }
 

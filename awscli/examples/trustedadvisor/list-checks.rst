@@ -47,7 +47,7 @@ Output::
                     "6": "Deployment Option",
                     "7": "Recommended number of Reserved Instances to purchase",
                     "8": "Expected Average Reserved Instance Utilization",
-                    "9": "Estimated Savings with Recommendation (monthly)"
+                    "9": "Estimated Savings with Recommendation (monthly)",
                     "10": "Upfront Cost of Reserved Instances",
                     "11": "Estimated cost of Reserved Instances (monthly)",
                     "12": "Estimated On-Demand Cost Post Recommended Reserved Instance Purchase (monthly)",
@@ -80,14 +80,14 @@ Output::
                     "8": "Estimated On-Demand Cost Post Recommended Reserved Nodes Purchase (monthly)",
                     "9": "Estimated Break Even (months)",
                     "10": "Lookback Period (days)",
-                    "11": "Term (years)",
+                    "11": "Term (years)"
                 },
                 "name": "Amazon Redshift Reserved Node Optimization",
                 "pillars": [
                     "cost_optimizing"
                 ],
                 "source": "ta_check"
-            },
+            }
         ],
         "nextToken": "REDACTED"
     }

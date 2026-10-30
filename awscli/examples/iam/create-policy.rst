@@ -140,9 +140,10 @@ Output::
                     "Key": "Department",
                     "Value": "Accounting"
                 },
+                {
                     "Key": "Location",
                     "Value": "Seattle"
-                {
+                }
             ]
         }
     }

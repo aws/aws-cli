@@ -61,7 +61,7 @@ Output::
             "HttpTokens": "required",
             "HttpPutResponseHopLimit": 1,
             "HttpEndpoint": "enabled",
-            HttpProtocolIpv6": "enabled"
+            "HttpProtocolIpv6": "enabled"
         }
     }
 

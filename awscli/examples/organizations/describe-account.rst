@@ -5,7 +5,7 @@ The following ``describe-account`` example requests details about an account. ::
     aws organizations describe-account \
         --account-id 555555555555
 
-The output shows an account object with the details about the account: ::
+Output::
 
     {
         "Account": {
@@ -14,7 +14,7 @@ The output shows an account object with the details about the account: ::
             "Name": "Beta account",
             "Email": "anika@example.com",
             "JoinedMethod": "INVITED",
-            "JoinedTimeStamp": 1481756563.134,
+            "JoinedTimestamp": 1481756563.134,
             "Paths": [
                 "o-exampleorgid/r-examplerootid111/555555555555/"
             ],

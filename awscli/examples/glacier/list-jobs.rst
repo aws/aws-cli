@@ -34,7 +34,7 @@ Output::
                 "JobId": "zbxcm3Z_3z5UkoroF7SuZKrxgGoDc3RloGduS7Eg-RO47Yc6FxsdGBgf_Q2DK5Ejh18CnTS5XW4_XqlNHS61dsO4CnMW",
                 "Action": "InventoryRetrieval",
                 "CreationDate": "2015-07-17T20:23:41.616Z",
-                "StatusCode": ""InProgress""
+                "StatusCode": "InProgress"
             }
         ]
     }

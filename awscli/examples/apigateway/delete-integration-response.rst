@@ -7,3 +7,5 @@ The following ``delete-integration-response`` example deletes an integration res
         --resource-id a1b2c3 \
         --http-method GET \
         --status-code 200
+
+This command produces no output.

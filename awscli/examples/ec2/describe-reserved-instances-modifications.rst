@@ -31,7 +31,7 @@ Output::
                 "EffectiveDate": "2015-08-12T17:00:00.000Z",
                 "CreateDate": "2015-08-12T17:52:52.630Z",
                 "UpdateDate": "2015-08-12T18:08:06.698Z",
-                "ClientToken": "c9adb218-3222-4889-8216-0cf0e52dc37e:
+                "ClientToken": "c9adb218-3222-4889-8216-0cf0e52dc37e",
                 "ReservedInstancesModificationId": "rimod-d3ed4335-b1d3-4de6-ab31-0f13aaf46687",
                 "ReservedInstancesIds": [
                     {

@@ -10,7 +10,7 @@ To update the friendly name of an AWS CloudHSM key store, you must first disconn
         --custom-key-store-id cks-1234567890abcdef0 \
         --new-custom-key-store-name ExampleKeyStore
 
-This command does not return any data. To verify that the command worked, use a ``describe-custom-key-stores`` command.
+This command produces no output. To verify that the command worked, use a ``describe-custom-key-stores`` command.
 
 For more information about updating an AWS CloudHSM key store, see `Editing AWS CloudHSM key store settings <https://docs.aws.amazon.com/kms/latest/developerguide/update-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
 
@@ -26,7 +26,7 @@ The following ``update-custom-key-store`` example updates the value of the ``kms
         --custom-key-store-id cks-1234567890abcdef0 \
         --key-store-password ExamplePassword
 
-This command does not return any output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
+This command produces no output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
 
 For more information about updating an AWS CloudHSM key store, see `Editing AWS CloudHSM key store settings <https://docs.aws.amazon.com/kms/latest/developerguide/update-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
 
@@ -40,7 +40,7 @@ The following ``update-custom-key-store`` example changes the AWS CloudHSM clust
         --custom-key-store-id cks-1234567890abcdef0 \
         --cloud-hsm-cluster-id cluster-1a23b4cdefg
 
-This command does not return any output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
+This command produces no output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
 
 For more information about updating an AWS CloudHSM key store, see `Editing AWS CloudHSM key store settings <https://docs.aws.amazon.com/kms/latest/developerguide/update-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
 
@@ -56,7 +56,7 @@ You can update the proxy authentication credential while the external key store 
         --custom-key-store-id cks-1234567890abcdef0 \
         --xks-proxy-authentication-credential "AccessKeyId=ABCDE12345670EXAMPLE, RawSecretAccessKey=DXjSUawnel2fr6SKC7G25CNxTyWKE5PF9XX6H/u9pSo="
 
-This command does not return any output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
+This command produces no output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
 
 For more information about updating an external key store, see `Editing external key store properties <https://docs.aws.amazon.com/kms/latest/developerguide/update-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
 
@@ -72,6 +72,6 @@ The following ``update-custom-key-store`` example changes the external key store
         --xks-proxy-uri-endpoint "https://myproxy-private.xks.example.com" \
         --xks-proxy-vpc-endpoint-service-name "com.amazonaws.vpce.us-east-1.vpce-svc-example"
 
-This command does not return any output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
+This command produces no output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
 
 For more information about updating an external key store, see `Editing external key store properties <https://docs.aws.amazon.com/kms/latest/developerguide/update-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.

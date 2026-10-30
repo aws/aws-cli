@@ -7,8 +7,11 @@ The following ``update-size-constraint-set`` example deletes a SizeConstraint ob
         --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1 \
         --updates Action="DELETE",SizeConstraint={FieldToMatch={Type="QUERY_STRING"},TextTransformation="NONE",ComparisonOperator="GT",Size=0}
 
+Output::
 
-
+    {
+        "ChangeToken": "12cs345-67cd-890b-1cd2-c3a4567d89f1"
+    }
 
 For more information, see `Working with Size Constraint Conditions`_ in the *AWS WAF* developer guide.
 

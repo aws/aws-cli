@@ -6,3 +6,5 @@ The following ``admin-delete-user`` example deletes a user. ::
         --user-pool-id us-west-2_aaaaaaaaa \
         --username diego@example.com
 
+This command produces no output.
+

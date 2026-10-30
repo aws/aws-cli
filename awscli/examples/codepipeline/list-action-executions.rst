@@ -109,7 +109,8 @@ Output::
                         "RepositoryName": "my-repo"
                     }
                 }
-            },
-    . . . .
+            }
+        ]
+    }
 
 For more information, see `View action executions (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html#pipelines-action-executions-cli>`__ in the *AWS CodePipeline User Guide*.

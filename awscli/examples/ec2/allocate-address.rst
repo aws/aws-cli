@@ -50,7 +50,6 @@ Output::
         "CustomerOwnedIp": "18.218.95.81",
         "CustomerOwnedIpv4Pool": "ipv4pool-ec2-1234567890abcdef0",
         "Domain": "vpc"
-        "NetworkBorderGroup": "us-west-2",
     }
 
 For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.

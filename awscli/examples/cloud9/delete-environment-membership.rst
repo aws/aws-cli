@@ -6,6 +6,4 @@ The following ``delete-environment-membership`` example deletes the specified en
         --environment-id 8a34f51ce1e04a08882f1e811bd706EX \
         --user-arn arn:aws:iam::123456789012:user/AnotherDemoUser
 
-Output::
-
-    None.
+This command produces no output.

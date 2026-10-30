@@ -4,3 +4,5 @@ The following ``delete-retention-policy`` example removes the retention policy t
 
     aws logs delete-retention-policy \
         --log-group-name my-logs
+
+This command produces no output.

@@ -5,3 +5,9 @@ The following ``delete-report-definition`` example deletes an AWS Cost and Usage
     aws cur delete-report-definition \
         --region us-east-1 \
         --report-name "ExampleReport"
+
+Output::
+
+    {
+        "ResponseMessage": "Report ExampleReport deleted successfully."
+    }

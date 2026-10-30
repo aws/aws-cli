@@ -9,5 +9,5 @@ The following ``modify-vpc-tenancy`` example modifies the tenancy of VPC ``vpc-1
 Output::
 
     {
-        "Return": true
+        "ReturnValue": true
     }

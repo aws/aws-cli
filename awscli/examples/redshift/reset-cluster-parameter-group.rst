@@ -6,3 +6,9 @@ The following ``reset-cluster-parameter-group`` example resets all of the parame
         --parameter-group-name myclusterparametergroup \
         --reset-all-parameters
 
+Output::
+
+    {
+        "ParameterGroupName": "myclusterparametergroup",
+        "ParameterGroupStatus": "Your parameter group has been updated but changes won't get applied until you reboot the associated Clusters."
+    }

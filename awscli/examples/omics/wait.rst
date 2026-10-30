@@ -5,4 +5,6 @@ The following ``wait`` example waits for an annotation store's status to be ``AC
     aws omics wait annotation-store-created \
         --name my_ann_store
 
+This command produces no output.
+
 For more information, see `Omics Analytics <https://docs.aws.amazon.com/omics/latest/dev/omics-analytics.html>`__ in the *Amazon Omics Developer Guide*.

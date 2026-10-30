@@ -4,3 +4,5 @@ The following ``wait vpc-exists`` example command pauses and resumes running onl
 
     aws ec2 wait vpc-exists \
         --vpc-ids vpc-1234567890abcdef0
+
+This command produces no output.

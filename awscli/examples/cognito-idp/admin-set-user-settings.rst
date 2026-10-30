@@ -7,3 +7,5 @@ The following ``admin-set-user-settings`` example sets the MFA delivery preferen
         --username diego@example.com \
         --mfa-options DeliveryMedium=EMAIL
 
+This command produces no output.
+

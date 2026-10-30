@@ -6,7 +6,7 @@ The following ``copy-cluster-snapshot`` example creates a copy of the automated 
         --source-snapshot-identifier cm:examplecluster-2013-01-22-19-27-58 \
         --target-snapshot-identifier my-saved-snapshot-copy
 
-Result::
+Output::
 
     {
         "Snapshot": {
@@ -21,11 +21,8 @@ Result::
             "NodeType": "dw.hs1.xlarge",
             "ClusterIdentifier": "examplecluster",
             "Port": 5439,
-            "NumberOfNodes": "2",
+            "NumberOfNodes": 2,
             "SnapshotIdentifier": "my-saved-snapshot-copy"
-        },
-        "ResponseMetadata": {
-            "RequestId": "3b279691-64e3-11e2-bec0-17624ad140dd"
         }
     }
 

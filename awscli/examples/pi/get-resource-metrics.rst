@@ -44,8 +44,7 @@ Output::
                     {
                         "Timestamp": 1527027000.0,
                         "Value": 0.88
-                    },
-                    <...remaining output omitted...>
+                    }
                 ]
             },
             {
@@ -63,10 +62,8 @@ Output::
                     {
                         "Timestamp": 1527027000.0,
                         "Value": 0.8633333333333333
-                    },
-                    <...remaining output omitted...>
-                ],
-            },
-            <...remaining output omitted...>
+                    }
+                ]
+            }
         ]
     }

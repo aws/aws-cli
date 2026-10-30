@@ -6,7 +6,7 @@ The following ``describe-configuration-options`` example retrieves descriptions 
         --environment-name my-env \
         --application-name my-app
 
-Output (abbreviated)::
+Output::
 
     {
         "Options": [
@@ -28,7 +28,6 @@ Output (abbreviated)::
                 "MinValue": 5,
                 "ValueType": "Scalar"
             },
-            ...
             {
                 "Name": "LowerThreshold",
                 "UserDefined": false,

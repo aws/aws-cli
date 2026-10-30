@@ -7,7 +7,12 @@ The following ``create-cluster`` example creates a simple EMR cluster. ::
         --instance-type m4.large \
         --instance-count 2
 
-This command produces no output.
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 This example and most of the following examples assume that you specified your Amazon EMR service role and Amazon EC2 instance profile. If you have not done this, you must specify each required IAM role or use the ``--use-default-roles`` parameter when creating your cluster. For more information about specifying IAM roles, see `Configure IAM Roles for Amazon EMR Permissions to AWS Services <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html>`_ in the *Amazon EMR Management Guide*.
 
@@ -21,6 +26,13 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 3: To create an Amazon EMR cluster that uses an instance fleet**
 
 The following ``create-cluster`` example creates an Amazon EMR cluster that uses the ``--instance-fleets`` configuration, specifying two instance types for each fleet and two EC2 Subnets. ::
@@ -30,6 +42,13 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole,SubnetIds=['subnet-ab12345c','subnet-de67890f'] \
         --instance-fleets InstanceFleetType=MASTER,TargetOnDemandCapacity=1,InstanceTypeConfigs=['{InstanceType=m4.large}'] InstanceFleetType=CORE,TargetSpotCapacity=11,InstanceTypeConfigs=['{InstanceType=m4.large,BidPrice=0.5,WeightedCapacity=3}','{InstanceType=m4.2xlarge,BidPrice=0.9,WeightedCapacity=5}'],LaunchSpecifications={SpotSpecification='{TimeoutDurationMinutes=120,TimeoutAction=SWITCH_TO_ON_DEMAND}'}
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 4: To create a cluster with default roles**
 
@@ -41,6 +60,13 @@ The following ``create-cluster`` example uses the ``--use-default-roles`` parame
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 5: To create a cluster and specify the applications to install**
 
 The following ``create-cluster`` example uses the ``--applications`` parameter to specify the applications that Amazon EMR installs. This example installs Hadoop, Hive and Pig. ::
@@ -50,6 +76,13 @@ The following ``create-cluster`` example uses the ``--applications`` parameter t
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 6: To create a cluster that includes Spark**
 
@@ -61,6 +94,13 @@ The following ``create-cluster`` example installs Spark. ::
         --ec2-attributes KeyName=myKey \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 7: To specify a custom AMI to use for cluster instances**
 
@@ -74,6 +114,13 @@ The following ``create-cluster`` example creates a cluster instance based on the
         --use-default-roles \
         --instance-count 2 \
         --instance-type m4.large
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 8: To customize application configurations**
 
@@ -111,6 +158,13 @@ The following example references ``configurations.json`` as a local file. ::
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following example references ``configurations.json`` as a file in Amazon S3. ::
 
     aws emr create-cluster \
@@ -118,6 +172,13 @@ The following example references ``configurations.json`` as a file in Amazon S3.
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 9: To create a cluster with master, core, and task instance groups**
 
@@ -127,6 +188,13 @@ The following ``create-cluster`` example uses ``--instance-groups`` to specify t
         --release-label emr-5.9.0 \
         --instance-groups Name=Master,InstanceGroupType=MASTER,InstanceType=m4.large,InstanceCount=1 Name=Core,InstanceGroupType=CORE,InstanceType=m4.large,InstanceCount=2 Name=Task,InstanceGroupType=TASK,InstanceType=m4.large,InstanceCount=2
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 10: To specify that a cluster should terminate after completing all steps**
 
 The following ``create-cluster`` example uses ``--auto-terminate`` to specify that the cluster should shut down automatically after completing all steps. ::
@@ -135,6 +203,13 @@ The following ``create-cluster`` example uses ``--auto-terminate`` to specify th
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large  InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 11: To specify cluster configuration details such as the Amazon EC2 key pair, network configuration, and security groups**
 
@@ -146,6 +221,13 @@ The following ``create-cluster`` example creates a cluster with the Amazon EC2 k
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following example creates a cluster in an Amazon VPC subnet. ::
 
     aws emr create-cluster \
@@ -154,12 +236,26 @@ The following example creates a cluster in an Amazon VPC subnet. ::
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following example creates a cluster in the ``us-east-1b`` availability zone. ::
 
     aws emr create-cluster \
         --ec2-attributes AvailabilityZone=us-east-1b \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 The following example creates a cluster and specifies only the Amazon EMR-managed security groups. ::
 
@@ -169,6 +265,13 @@ The following example creates a cluster and specifies only the Amazon EMR-manage
         --ec2-attributes InstanceProfile=myRole,EmrManagedMasterSecurityGroup=sg-master1,EmrManagedSlaveSecurityGroup=sg-slave1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following example creates a cluster and specifies only additional Amazon EC2 security groups. ::
 
     aws emr create-cluster \
@@ -176,6 +279,13 @@ The following example creates a cluster and specifies only additional Amazon EC2
         --service-role myServiceRole \
         --ec2-attributes InstanceProfile=myRole,AdditionalMasterSecurityGroups=[sg-addMaster1,sg-addMaster2,sg-addMaster3,sg-addMaster4],AdditionalSlaveSecurityGroups=[sg-addSlave1,sg-addSlave2,sg-addSlave3,sg-addSlave4] \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 The following example creates a cluster and specifies the EMR-Managed security groups, as well as additional security groups. ::
 
@@ -185,6 +295,13 @@ The following example creates a cluster and specifies the EMR-Managed security g
         --ec2-attributes InstanceProfile=myRole,EmrManagedMasterSecurityGroup=sg-master1,EmrManagedSlaveSecurityGroup=sg-slave1,AdditionalMasterSecurityGroups=[sg-addMaster1,sg-addMaster2,sg-addMaster3,sg-addMaster4],AdditionalSlaveSecurityGroups=[sg-addSlave1,sg-addSlave2,sg-addSlave3,sg-addSlave4] \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following example creates a cluster in a VPC private subnet and use a specific Amazon EC2 security group to enable Amazon EMR service access, which is required for clusters in private subnets. ::
 
     aws emr create-cluster \
@@ -192,6 +309,13 @@ The following example creates a cluster in a VPC private subnet and use a specif
         --service-role myServiceRole \
         --ec2-attributes InstanceProfile=myRole,ServiceAccessSecurityGroup=sg-service-access,EmrManagedMasterSecurityGroup=sg-master,EmrManagedSlaveSecurityGroup=sg-slave \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 The following example specifies security group configuration parameters using a JSON file named ``ec2_attributes.json`` that is stored locally.
 NOTE: JSON arguments must include options and values as their own items in the list. ::
@@ -217,6 +341,13 @@ Contents of ``ec2_attributes.json``::
         }
     ]
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 12: To enable debugging and specify a log URI**
 
 The following ``create-cluster`` example uses the ``--enable-debugging`` parameter, which allows you to view log files more easily using the debugging tool in the Amazon EMR console. The ``--log-uri`` parameter is required with ``--enable-debugging``. ::
@@ -227,6 +358,13 @@ The following ``create-cluster`` example uses the ``--enable-debugging`` paramet
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 13: To add tags when creating a cluster**
 
@@ -239,11 +377,35 @@ The following ``create-cluster`` example uses the ``--tags`` parameter to create
         --instance-count 3 \
         --use-default-roles
 
+Output::
+
+    {
+        "ClusterId": "j-XXXXXXYY",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-XXXXXXYY"
+    }
+
 The following example lists the tags applied to a cluster. ::
 
     aws emr describe-cluster \
         --cluster-id j-XXXXXXYY \
         --query Cluster.Tags
+
+Output::
+
+    [
+        {
+            "Key": "name",
+            "Value": "Shirley Rodriguez"
+        },
+        {
+            "Key": "age",
+            "Value": "29"
+        },
+        {
+            "Key": "department",
+            "Value": "Analytics"
+        }
+    ]
 
 **Example 14: To use a security configuration that enables encryption and other security features**
 
@@ -253,6 +415,13 @@ The following ``create-cluster`` example uses the ``--security-configuration`` p
         --instance-type m4.large \
         --release-label emr-5.9.0 \
         --security-configuration mySecurityConfiguration
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 15: To create a cluster with additional EBS storage volumes configured for the instance groups**
 
@@ -264,6 +433,13 @@ The following ``create-cluster`` example creates a cluster with multiple EBS vol
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=d2.xlarge 'InstanceGroupType=CORE,InstanceCount=2,InstanceType=d2.xlarge,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100}},{VolumeSpecification={VolumeType=io1,SizeInGB=100,Iops=100},VolumesPerInstance=4}]}' \
         --auto-terminate
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following example creates a cluster with multiple EBS volumes attached to EC2 instances in the master instance group. ::
 
     aws emr create-cluster \
@@ -271,6 +447,13 @@ The following example creates a cluster with multiple EBS volumes attached to EC
         --use-default-roles \
         --instance-groups 'InstanceGroupType=MASTER, InstanceCount=1, InstanceType=d2.xlarge, EbsConfiguration={EbsOptimized=true, EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=io1, SizeInGB=100, Iops=100}},{VolumeSpecification={VolumeType=standard,SizeInGB=50},VolumesPerInstance=3}]}' InstanceGroupType=CORE,InstanceCount=2,InstanceType=d2.xlarge \
         --auto-terminate
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 16: To create a cluster with an automatic scaling policy**
 
@@ -285,6 +468,13 @@ The following ``create-cluster`` example specifies the automatic scaling policy 
         --use-default-roles \
         --auto-scaling-role EMR_AutoScaling_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceType=d2.xlarge,InstanceCount=1 'InstanceGroupType=CORE,InstanceType=d2.xlarge,InstanceCount=2,AutoScalingPolicy={Constraints={MinCapacity=1,MaxCapacity=5},Rules=[{Name=TestRule,Description=TestDescription,Action={Market=ON_DEMAND,SimpleScalingPolicyConfiguration={AdjustmentType=EXACT_CAPACITY,ScalingAdjustment=2}},Trigger={CloudWatchAlarmDefinition={ComparisonOperator=GREATER_THAN,EvaluationPeriods=5,MetricName=TestMetric,Namespace=EMR,Period=3,Statistic=MAXIMUM,Threshold=4.5,Unit=NONE,Dimensions=[{Key=TestKey,Value=TestValue}]}}}]}'
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 The following example uses a JSON file, ``instancegroupconfig.json``, to specify the configuration of all instance groups in a cluster. The JSON file specifies the automatic scaling policy configuration for the core instance group. ::
 
@@ -349,6 +539,13 @@ Contents of ``instancegroupconfig.json``::
         }
     ]
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 17: To add custom JAR steps when creating a cluster**
 
 The following ``create-cluster`` example adds steps by specifying a JAR file stored in Amazon S3. Steps submit work to a cluster. The main function defined in the JAR file executes after EC2 instances are provisioned, any bootstrap actions have executed, and applications are installed. The steps are specified using ``Type=CUSTOM_JAR``.
@@ -361,6 +558,13 @@ Custom JAR steps require the ``Jar=`` parameter, which specifies the path and fi
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 18: To add streaming steps when creating a cluster**
 
 The following ``create-cluster`` examples add a streaming step to a cluster that terminates after all steps run. Streaming steps require parameters ``Type`` and ``Args``. Streaming steps optional parameters are ``Name`` and ``ActionOnFailure``.
@@ -372,6 +576,13 @@ The following example specifies the step inline. ::
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 The following example uses a locally stored JSON configuration file named ``multiplefiles.json``. The JSON configuration specifies multiple files. To specify multiple files within a step, you must use a JSON configuration file to specify the step. JSON arguments must include options and values as their own items in the list. ::
 
@@ -403,6 +614,13 @@ Contents of ``multiplefiles.json``::
         }
     ]
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 19: To add Hive steps when creating a cluster**
 
 The following ``create-cluster`` example adds Hive steps when creating a cluster. Hive steps require parameters ``Type`` and ``Args``. Hive steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
@@ -412,6 +630,13 @@ The following ``create-cluster`` example adds Hive steps when creating a cluster
         --applications Name=Hive \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 20: To add Pig steps when creating a cluster**
 
@@ -423,6 +648,13 @@ The following ``create-cluster`` example adds Pig steps when creating a cluster.
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 21: To add bootstrap actions**
 
 The following ``create-cluster`` example runs two bootstrap actions defined as scripts that are stored in Amazon S3. ::
@@ -433,6 +665,13 @@ The following ``create-cluster`` example runs two bootstrap actions defined as s
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 22: To enable EMRFS consistent view and customize the RetryCount and RetryPeriod settings**
 
 The following ``create-cluster`` example specifies the retry count and retry period for EMRFS consistent view. The ``Consistent=true`` argument is required. ::
@@ -441,6 +680,13 @@ The following ``create-cluster`` example specifies the retry count and retry per
         --instance-type m4.large \
         --release-label emr-5.9.0 \
         --emrfs Consistent=true,RetryCount=6,RetryPeriod=30
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 The following example specifies the same EMRFS configuration as the previous example, using a locally stored JSON configuration file named ``emrfsconfig.json``. ::
 
@@ -457,6 +703,13 @@ Contents of ``emrfsconfig.json``::
         "RetryPeriod": 30
     }
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 **Example 23: To create a cluster with Kerberos configured**
 
 The following ``create-cluster`` examples create a cluster using a security configuration with Kerberos enabled, and establishes Kerberos parameters for the cluster using ``--kerberos-attributes``.
@@ -470,6 +723,13 @@ The following command specifies Kerberos attributes for the cluster inline. ::
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --security-configuration mySecurityConfiguration \
         --kerberos-attributes Realm=EC2.INTERNAL,KdcAdminPassword=123,CrossRealmTrustPrincipalPassword=123
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 The following command specifies the same attributes, but references a locally stored JSON file named ``kerberos_attributes.json``. In this example, the file is saved in the same directory where you run the command. You can also reference a configuration file saved in Amazon S3. ::
 
@@ -489,6 +749,13 @@ Contents of ``kerberos_attributes.json``::
         "CrossRealmTrustPrincipalPassword": "123",
     }
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following ``create-cluster`` example creates an Amazon EMR cluster that uses the ``--instance-groups`` configuration and has a managed scaling policy. ::
 
     aws emr create-cluster \
@@ -498,6 +765,13 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --managed-scaling-policy ComputeLimits='{MinimumCapacityUnits=2,MaximumCapacityUnits=4,UnitType=Instances}'
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--log-encryption-kms-key-id" to define KMS key ID utilized for Log encryption. ::
 
     aws emr create-cluster \
@@ -506,14 +780,28 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --log-encryption-kms-key-id arn:aws:kms:us-east-1:110302272565:key/dd559181-283e-45d7-99d1-66da348c4d33 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--placement-group-configs" configuration to place master nodes in a high-availability (HA) cluster within an EC2 placement group using ``SPREAD`` placement strategy. ::
 
     aws emr create-cluster \
         --release-label emr-5.30.0 \
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
-        --instance-groups InstanceGroupType=MASTER,InstanceCount=3,InstanceType=m4.largeInstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=3,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
         --placement-group-configs InstanceRole=MASTER
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--auto-termination-policy" configuration to place an automatic idle termination threshold for the cluster. ::
 
@@ -524,6 +812,13 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
         --auto-termination-policy IdleTimeout=100
 
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
+
 The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--os-release-label" to define an Amazon Linux release for cluster launch. ::
 
     aws emr create-cluster \
@@ -532,6 +827,13 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }
 
 **Example 24: To specify an EBS root volume attributes: size, iops and throughput for cluster instances created with EMR releases 6.15.0 and later**
 
@@ -547,3 +849,10 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --use-default-roles \
         --instance-count 2 \
         --instance-type m4.large
+
+Output::
+
+    {
+        "ClusterId": "j-1K48XXXXXXHCB",
+        "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
+    }

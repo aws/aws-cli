@@ -7,6 +7,8 @@ The following ``change-tags-for-resource`` example adds a tag named ``owner`` to
         --resource-id 6233434j-18c1-34433-ba8e-3443434 \
         --add-tags Key=owner,Value=myboss
 
+This command produces no output.
+
 **Example 2: To remove a tag from a hosted zone**
 
 The following ``change-tags-for-resource`` example removes a tag named ``owner`` from a hosted zone resource specified by ID. ::
@@ -15,3 +17,5 @@ The following ``change-tags-for-resource`` example removes a tag named ``owner``
         --resource-type hostedzone \
         --resource-id Z1523434445 \
         --remove-tag-keys owner
+
+This command produces no output.

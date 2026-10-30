@@ -5,5 +5,7 @@ The following ``enable-alarm-actions`` example enables all actions for the alarm
     aws cloudwatch enable-alarm-actions \
         --alarm-names myalarm
 
+This command produces no output.
+
 This command returns to the prompt if successful.
 

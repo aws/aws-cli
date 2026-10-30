@@ -10,7 +10,7 @@ Output::
 
     {
         "VpnConnection": {
-            "CustomerGatewayConfiguration": ...configuration information...,
+            "CustomerGatewayConfiguration": "...configuration information...",
             "CustomerGatewayId": "cgw-aabbccddee1122334",
             "Category": "VPN",
             "State": "modifying",

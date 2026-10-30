@@ -78,10 +78,12 @@ Output::
         "GroupDetailList": [
             {
                 "GroupId": "AIDA1234567890EXAMPLE",
-                "AttachedManagedPolicies": {
-                    "PolicyName": "AdministratorAccess",
-                    "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
-                },
+                "AttachedManagedPolicies": [
+                    {
+                        "PolicyName": "AdministratorAccess",
+                        "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+                    }
+                ],
                 "GroupName": "Admins",
                 "Path": "/",
                 "Arn": "arn:aws:iam::123456789012:group/Admins",
@@ -90,10 +92,12 @@ Output::
             },
             {
                 "GroupId": "AIDA1234567890EXAMPLE",
-                "AttachedManagedPolicies": {
-                    "PolicyName": "PowerUserAccess",
-                    "PolicyArn": "arn:aws:iam::aws:policy/PowerUserAccess"
-                },
+                "AttachedManagedPolicies": [
+                    {
+                        "PolicyName": "PowerUserAccess",
+                        "PolicyArn": "arn:aws:iam::aws:policy/PowerUserAccess"
+                    }
+                ],
                 "GroupName": "Dev",
                 "Path": "/",
                 "Arn": "arn:aws:iam::123456789012:group/Dev",

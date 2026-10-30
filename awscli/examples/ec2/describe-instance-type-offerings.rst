@@ -22,8 +22,7 @@ Output::
                 "InstanceType": "t3.micro",
                 "LocationType": "region",
                 "Location": "us-east-2"
-            },
-            ...
+            }
         ]
     }
 
@@ -35,6 +34,23 @@ The following ``describe-instance-type-offerings`` example lists the instance ty
         --location-type availability-zone \
         --filters Name=location,Values=us-east-2a \
         --region us-east-2
+
+Output::
+
+    {
+        "InstanceTypeOfferings": [
+            {
+                "InstanceType": "m5.2xlarge",
+                "LocationType": "availability-zone",
+                "Location": "us-east-2a"
+            },
+            {
+                "InstanceType": "t3.micro",
+                "LocationType": "availability-zone",
+                "Location": "us-east-2a"
+            }
+        ]
+    }
 
 **Example 3: To check whether an instance type is supported**
 

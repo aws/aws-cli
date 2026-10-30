@@ -4,3 +4,5 @@ The following ``delete-delivery-channel`` example deletes the default delivery c
 
     aws configservice delete-delivery-channel \
         --delivery-channel-name default
+
+This command produces no output.

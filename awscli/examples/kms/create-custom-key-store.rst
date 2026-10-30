@@ -22,7 +22,7 @@ Contents of ``customerCA.crt``::
 Output::
 
     {
-        "CustomKeyStoreId": cks-1234567890abcdef0
+        "CustomKeyStoreId": "cks-1234567890abcdef0"
     }
 
 For more information, see `Creating an AWS CloudHSM key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
@@ -51,7 +51,7 @@ Otherwise, AWS CLI version 1.0 replaces the parameter value with the content fou
 Output::
 
     {
-        "CustomKeyStoreId": cks-2234567890abcdef0
+        "CustomKeyStoreId": "cks-2234567890abcdef0"
     }
 
 For more information, see `Creating an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-keystorecreate-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
@@ -78,7 +78,7 @@ Otherwise, AWS CLI version 1.0 replaces the parameter value with the content fou
 Output::
 
     {
-        "CustomKeyStoreId": cks-3234567890abcdef0
+        "CustomKeyStoreId": "cks-3234567890abcdef0"
     }
 
 For more information, see `Creating an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-keystorecreate-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.

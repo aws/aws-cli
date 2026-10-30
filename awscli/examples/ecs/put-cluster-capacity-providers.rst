@@ -112,9 +112,11 @@ Output::
                 "MyCapacityProvider1"
             ],
             "defaultCapacityProviderStrategy": [
-                "capacityProvider": "MyCapacityProvider1",
-                "weight": 1,
-                "base": 0
+                {
+                    "capacityProvider": "MyCapacityProvider1",
+                    "weight": 1,
+                    "base": 0
+                }
             ],
             "attachments": [
                 {

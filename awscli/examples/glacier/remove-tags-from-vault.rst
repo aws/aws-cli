@@ -7,4 +7,6 @@ The following ``remove-tags-from-vault`` example removes a tag with the key ``da
         --vault-name my-vault \
         --tag-keys date
 
+This command produces no output.
+
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.

@@ -7,4 +7,6 @@ The following ``verify-user-attribute`` example verifies a change to the current
         --attribute-name email \
         --code 123456
 
+This command produces no output.
+
 For more information, see `Configuring email or phone verification <https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html>`__ in the *Amazon Cognito Developer Guide*.

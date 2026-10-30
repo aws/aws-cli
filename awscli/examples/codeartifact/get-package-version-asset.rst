@@ -10,9 +10,9 @@ The following ``get-package-version-asset`` example retrieves the ``package.tgz`
         --package-version 4.0.0 \
         --asset 'package.tgz'
 
-Output::
+The command also stores the raw asset in the file provided in place of ``outfileName``.
 
-    The output for this command will also store the raw asset in the file provided in place of outfileName.
+Output::
 
     {
         "assetName": "package.tgz",

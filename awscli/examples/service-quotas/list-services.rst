@@ -19,10 +19,7 @@ Output::
             {
                 "ServiceCode": "acm",
                 "ServiceName": "AWS Certificate Manager (ACM)"
-            },     
-
-            ...truncated...
-
+            },
             {
                 "ServiceCode": "xray",
                 "ServiceName": "AWS X-Ray"
@@ -45,6 +42,5 @@ Output::
         "amplify",
         "apigateway",
         "application-autoscaling",
-            ...truncated...
         "xray"
     ] 

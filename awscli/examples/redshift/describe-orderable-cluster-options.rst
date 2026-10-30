@@ -4,7 +4,7 @@ The following ``describe-orderable-cluster-options`` example returns description
 
     aws redshift describe-orderable-cluster-options
 
-Result::
+Output::
 
     {
         "OrderableClusterOptions": [
@@ -34,10 +34,7 @@ Result::
                     { "Name": "us-east-1c" } ],
                 "ClusterVersion": "1.0",
                 "ClusterType": "single-node"
-            } ],
-        "ResponseMetadata": {
-            "RequestId": "f6000035-64cb-11e2-9135-ff82df53a51a"
-        }
+            } ]
     }
 
 You can also obtain the same information in text format using the ``--output text`` option. ::
@@ -45,7 +42,7 @@ You can also obtain the same information in text format using the ``--output tex
     aws redshift describe-orderable-cluster-options \
         --output text
 
-Result::
+Output::
 
     dw.hs1.8xlarge      1.0     multi-node
     us-east-1a
@@ -59,6 +56,5 @@ Result::
     us-east-1a
     us-east-1b
     us-east-1c
-    RESPONSEMETADATA    e648696b-64cb-11e2-bec0-17624ad140dd
 
 

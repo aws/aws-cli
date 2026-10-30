@@ -4,3 +4,5 @@ The following ``delete-load-balancer`` example deletes the specified load balanc
 
     aws elb delete-load-balancer \
         --load-balancer-name my-load-balancer
+
+This command produces no output.

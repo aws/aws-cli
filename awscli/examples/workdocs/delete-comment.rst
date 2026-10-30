@@ -7,6 +7,4 @@ The following ``delete-comment`` example deletes the specified comment from the 
         --version-id 1521672507741-9f7df0ea5dd0b121c4f3564a0c7c0b4da95cd12c635d3c442af337a88e297920 \
         --comment-id 1534799058197-c7f5c84de9115875bbca93e0367bbebac609541d461636b760849b88b1609dd5
 
-Output::
-
-    None
+This command produces no output.

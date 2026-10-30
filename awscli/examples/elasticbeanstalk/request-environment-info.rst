@@ -6,6 +6,8 @@ The following ``request-environment-info`` example requests logs from an environ
         --environment-name my-env \
         --info-type tail
 
+This command produces no output.
+
 After requesting logs, retrieve their location with `retrieve-environment-info`_.
 
 .. _`retrieve-environment-info`: http://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/retrieve-environment-info.html

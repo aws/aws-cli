@@ -11,9 +11,7 @@ Output::
 
     {
         "accessControlAllowOrigin": "*",
-        "accessControlExposeHeaders": "Access-Control-Allow-Origin,Access-Control-Expose-Headers,Cache-Control,Content-Length, \
-        Content-Security-Policy,Content-Type,date,Strict-Transport-Security,x-amz-apigw-id,x-amzn-errormessage,x-amzn-errortype, \
-        x-amzn-requestid,x-amzn-trace-id,X-Content-Type-Options,X-Frame-Options",
+        "accessControlExposeHeaders": "Access-Control-Allow-Origin,Access-Control-Expose-Headers,Cache-Control,Content-Length,Content-Security-Policy,Content-Type,date,Strict-Transport-Security,x-amz-apigw-id,x-amzn-errormessage,x-amzn-errortype,x-amzn-requestid,x-amzn-trace-id,X-Content-Type-Options,X-Frame-Options",
         "cacheControl": "no-store, no-cache",
         "contentSecurityPolicy": "default-src 'self'; upgrade-insecure-requests;",
         "strictTransportSecurity": "max-age:47304000; includeSubDomains",

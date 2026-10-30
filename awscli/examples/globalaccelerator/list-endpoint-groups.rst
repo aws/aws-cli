@@ -18,7 +18,7 @@ Output::
                 "HealthCheckProtocol": "TCP",
                 "HealthCheckIntervalSeconds": 30,
                 "ThresholdCount": 3
-            }
+            },
             {
                 "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234/endpoint-group/ab99999example",
                 "EndpointGroupRegion": "us-east-1",

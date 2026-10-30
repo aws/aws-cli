@@ -8,7 +8,7 @@ The following ``test-wireless-device`` example sends uplink data of ``Hello`` to
 Output::
 
     {
-        Result: "Test succeeded. one message is sent with payload: hello"
+        "Result": "Test succeeded. one message is sent with payload: hello"
     }
 
 For more information, see `Connecting devices and gateways to AWS IoT Core for LoRaWAN <https://docs.aws.amazon.com/iot/latest/developerguide/connect-iot-lorawan.html>`__ in the *AWS IoT Developers Guide*.

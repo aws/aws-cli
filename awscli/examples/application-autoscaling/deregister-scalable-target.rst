@@ -7,6 +7,8 @@ The following ``deregister-scalable-target`` example deregisters a scalable targ
         --scalable-dimension ecs:service:DesiredCount \
         --resource-id service/default/web-app
 
+This command produces no output.
+
 The following ``deregister-scalable-target`` example deregisters a scalable target for a custom resource. The custom-resource-id.txt file contains a string that identifies the Resource ID, which, for a custom resource, is the path to the custom resource through your Amazon API Gateway endpoint. ::
 
     aws application-autoscaling deregister-scalable-target \

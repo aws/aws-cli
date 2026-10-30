@@ -7,7 +7,9 @@ will not be retained after the specified number of days have passed. ::
         --name MyNeatNewDomain \
         --workflow-execution-retention-period-in-days 0
 
-When you register a domain, nothing is returned (""), but you can use ``swf list-domains`` or ``swf describe-domain`` to see the new domain. ::
+This command produces no output.
+
+When you register a domain, nothing is returned, but you can use ``swf list-domains`` or ``swf describe-domain`` to see the new domain. ::
 
     aws swf list-domains \
         --registration-status REGISTERED

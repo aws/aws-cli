@@ -65,7 +65,6 @@ Output::
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
             },
-            "type": "STANDARD",
             "playbackRestrictionPolicyArn": "",
             "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
             "srt": {
@@ -112,7 +111,6 @@ Output::
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
             },
-            "type": "STANDARD",
             "playbackRestrictionPolicyArn": "arn:aws:ivs:us-west-2:123456789012:playback-restriction-policy/ABcdef34ghIJ",
             "recordingConfigurationArn": "",
             "srt": {

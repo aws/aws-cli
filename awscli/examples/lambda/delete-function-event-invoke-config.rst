@@ -4,3 +4,5 @@ The following ``delete-function-event-invoke-config`` example deletes the asynch
 
     aws lambda delete-function-event-invoke-config \
         --function-name my-function:GREEN
+
+This command produces no output.

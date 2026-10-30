@@ -4,3 +4,5 @@ The following ``abort-environment-update`` example aborts a running application 
 
     aws elasticbeanstalk abort-environment-update \
         --environment-name my-env
+
+This command produces no output.

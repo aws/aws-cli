@@ -24,7 +24,7 @@ Output::
                         "content": "Whoops - I meant to add this comment to the line, not the file, but I don't see how to delete it.",
                         "creationDate": 1508369768.142,
                         "deleted": false,
-                        "CommentId": "123abc-EXAMPLE",
+                        "inReplyTo": "123abc-EXAMPLE",
                         "lastModifiedDate": 1508369842.278,
                         "callerReactions": [],
                         "reactionCounts": 
@@ -40,7 +40,7 @@ Output::
                         "content": "Can you add a test case for this?",
                         "creationDate": 1508369612.240,
                         "deleted": false,
-                        "commentId": "456def-EXAMPLE",
+                        "inReplyTo": "456def-EXAMPLE",
                         "lastModifiedDate": 1508369612.240,
                         "callerReactions": [],
                         "reactionCounts": 

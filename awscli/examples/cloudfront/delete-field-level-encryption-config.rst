@@ -19,4 +19,6 @@ Use the ``--if-match`` option to provide the configuration's ``ETag``. ::
         --id C3KM2WVD605UAY \
         --if-match E26M4BIAV81ZF6
 
+This command produces no output.
+
 When successful, this command has no output.

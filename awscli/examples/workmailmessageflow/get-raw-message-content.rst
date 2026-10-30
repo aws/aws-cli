@@ -48,4 +48,6 @@ Contents of ``test``::
     </html>
     --=_EXAMPLE+--
 
+This command produces no output.
+
 For more information, see `Retrieving Message Content with AWS Lambda <https://docs.aws.amazon.com/workmail/latest/adminguide/lambda-content.html>`__ in the *Amazon WorkMail Administrator Guide*.

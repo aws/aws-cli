@@ -5,3 +5,5 @@ The following ``deregister-job-definition`` example deregisters a job definition
     aws batch deregister-job-definition \
         --job-definition sleep10
 
+This command produces no output.
+

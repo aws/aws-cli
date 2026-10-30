@@ -8,3 +8,5 @@ The following ``admin-update-auth-event-feedback`` example sets the feedback val
         --event-id c2c2cf89-c0d3-482d-aba6-99d78a5b0bfe \
         --feedback-value Valid
 
+This command produces no output.
+

@@ -18,4 +18,6 @@ Use the ``--if-match`` option to provide the profile's ``ETag``. ::
         --id PPK0UOSIF5WSV \
         --if-match EJETYFJ9CL66D
 
+This command produces no output.
+
 When successful, this command has no output.

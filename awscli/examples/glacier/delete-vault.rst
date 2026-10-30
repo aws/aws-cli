@@ -6,4 +6,4 @@ The following ``delete-vault`` example deletes a vault named ``my-vault``. ::
         --vault-name my-vault \
         --account-id -
 
-This command does not produce any output. Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
+This command produces no output. Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.

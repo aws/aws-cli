@@ -24,8 +24,7 @@ Output::
                 "Severity": "",
                 "State": "InstalledOther",
                 "InstalledTime": "2019-02-08T00:00:00+00:00"
-            },
-            ...
+            }
         ],
         "NextToken": "--token string truncated--"
     }
@@ -49,8 +48,7 @@ Output::
                 "Severity": "Unspecified",
                 "State": "Missing",
                 "InstalledTime": "1970-01-01T00:00:00+00:00"
-            },
-            ...
+            }
         ],
         "NextToken": "--token string truncated--"
     }
@@ -68,17 +66,13 @@ The following ``describe-instance-patches`` example retrieves information about 
 
 Output::
 
-    {
-        "Patches": [
-            {
-                "Title": "2023-03 Cumulative Update for Windows Server 2019 (1809) for x64-based Systems (KB5023702)",
-                "KBId": "KB5023702",
-                "Classification": "SecurityUpdates",
-                "Severity": "Critical",
-                "State": "Installed",
-                "InstalledTime": "2023-03-16T11:00:00+00:00"
-            },
-            ...
-        ],
-        "NextToken": "--token string truncated--"
-    }
+    [
+        {
+            "Title": "2023-03 Cumulative Update for Windows Server 2019 (1809) for x64-based Systems (KB5023702)",
+            "KBId": "KB5023702",
+            "Classification": "SecurityUpdates",
+            "Severity": "Critical",
+            "State": "Installed",
+            "InstalledTime": "2023-03-16T11:00:00+00:00"
+        }
+    ]

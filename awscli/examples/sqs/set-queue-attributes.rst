@@ -17,6 +17,4 @@ Contents of ``set-queue-attributes.json``::
         "VisibilityTimeout": "60"
     }
 
-Output::
-
-    None.
+This command produces no output.

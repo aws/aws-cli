@@ -9,6 +9,19 @@ The following ``put-integration`` example creates a MOCK integration request. ::
         --type MOCK \
         --request-templates '{ "application/json": "{\"statusCode\": 200}" }'
 
+Output::
+
+    {
+        "type": "MOCK",
+        "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+        },
+        "passthroughBehavior": "WHEN_NO_MATCH",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "a1b2c3",
+        "cacheKeyParameters": []
+    }
+
 **Example 2: To create a HTTP integration request**
 
 The following ``put-integration`` example creates an HTTP integration request. ::
@@ -21,6 +34,19 @@ The following ``put-integration`` example creates an HTTP integration request. :
         --integration-http-method GET \
         --uri 'https://domain.tld/path'
 
+Output::
+
+    {
+        "type": "HTTP",
+        "httpMethod": "GET",
+        "uri": "https://domain.tld/path",
+        "connectionType": "INTERNET",
+        "passthroughBehavior": "WHEN_NO_MATCH",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "a1b2c3",
+        "cacheKeyParameters": []
+    }
+
 **Example 3: To create an AWS integration request with a Lambda Function endpoint**
 
 The following ``put-integration`` example creates an AWS integration request with a Lambda function endpoint. ::
@@ -32,3 +58,15 @@ The following ``put-integration`` example creates an AWS integration request wit
         --type AWS \
         --integration-http-method POST \
         --uri 'arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:function_name/invocations'
+
+Output::
+
+    {
+        "type": "AWS",
+        "httpMethod": "POST",
+        "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:function_name/invocations",
+        "passthroughBehavior": "WHEN_NO_MATCH",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "a1b2c3",
+        "cacheKeyParameters": []
+    }

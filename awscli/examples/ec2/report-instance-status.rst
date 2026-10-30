@@ -6,3 +6,5 @@ The following ``report-instance-status`` example reports status feedback for the
         --instances i-1234567890abcdef0 \
         --status impaired \
         --reason-codes unresponsive
+
+This command produces no output.

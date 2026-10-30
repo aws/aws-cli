@@ -4,3 +4,5 @@ The following ``disable-rule`` example disables the rule named ``DailyLambdaFunc
 
     aws events disable-rule \
         --name "DailyLambdaFunction"
+
+This command produces no output.

@@ -12,8 +12,7 @@ Output::
         "FindingIds": [
             "04b8ab50fd29c64fc771b232dexample",
             "5ab8ab50fd21373735c826d3aexample",
-            "90b93de7aba69107f05bbe60bexample",
-            ...
+            "90b93de7aba69107f05bbe60bexample"
         ]
     }
 

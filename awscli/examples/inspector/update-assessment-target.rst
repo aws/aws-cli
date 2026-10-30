@@ -7,6 +7,8 @@ The following ``update-assessment-target`` example updates the assessment target
         --assessment-target-name Example \
         --resource-group-arn arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-yNbgL5Pt
 
+This command produces no output.
+
 For more information, see `Amazon Inspector Assessment Targets`_ in the *Amazon Inspector* guide.
 
 .. _`Amazon Inspector Assessment Targets`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_applications.html

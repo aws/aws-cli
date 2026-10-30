@@ -16,6 +16,8 @@ The following command downloads the recipe. ::
         --query recipe \
         --output text | base64 --decode > com.example.HelloWorld-1.0.0.json
 
+This command produces no output.
+
 For more information, see `Manage components <https://docs.aws.amazon.com/greengrass/v2/developerguide/manage-components.html>`__ in the *AWS IoT Greengrass V2 Developer Guide*.
 
 **Example 2: To download a component's recipe in YAML format (Windows CMD)**
@@ -27,6 +29,8 @@ The following ``get-component`` example downloads a Hello World component's reci
         --recipe-output-format YAML ^
         --query recipe ^
         --output text > com.example.HelloWorld-1.0.0.yaml.b64
+
+This command produces no output.
 
 Then, use the ``certutil`` utility to decode the file. ::
 
@@ -43,6 +47,8 @@ The following ``get-component`` example downloads a Hello World component's reci
         --recipe-output-format YAML `
         --query recipe `
         --output text > com.example.HelloWorld-1.0.0.yaml.b64
+
+This command produces no output.
 
 Then, use the ``certutil`` utility to decode the file. ::
 

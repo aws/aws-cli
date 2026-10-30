@@ -24,10 +24,6 @@ Contents of ``update.json``::
         "DetailType": "FULL"
     }
 
-Output::
-
-    {
-        "Arn": "arn:aws:codestar-notifications:us-east-1:123456789012:notificationrule/dc82df7a-EXAMPLE"
-    }
+This command produces no output.
 
 For more information, see `Edit a notification rule <https://docs.aws.amazon.com/dtconsole/latest/userguide/notification-rule-edit.html>`__ in the *AWS Developer Tools Console User Guide*.

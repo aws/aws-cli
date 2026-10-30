@@ -6,3 +6,5 @@ The following ``resend-validation-email`` example tells the Amazon certificate a
         --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 \
         --domain www.example.com \
         --validation-domain example.com
+
+This command produces no output.

@@ -6,7 +6,9 @@ The following ``describe-identity-id-format`` example describes the ID format re
         --principal-arn arn:aws:iam::123456789012:role/my-iam-role \
         --resource instance
 
-The following output indicates that instances created by this role receive IDs in long ID format. ::
+The following output indicates that instances created by this role receive IDs in long ID format.
+
+Output::
 
     {
         "Statuses": [
@@ -26,7 +28,9 @@ The following ``describe-identity-id-format`` example describes the ID format re
         --principal-arn arn:aws:iam::123456789012:user/AdminUser \
         --resource snapshot
 
-The output indicates that snapshots created by this user receive IDs in long ID format. ::
+The output indicates that snapshots created by this user receive IDs in long ID format.
+
+Output::
 
     {
         "Statuses": [

@@ -37,7 +37,7 @@ Output::
                 "Scope": "arn:aws:iam::123456789012:root",
                 "ViewArn": "arn:aws:resource-explorer-2:us-east-1:123456789012:view/My-Main-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111"
             }
-        ]
+        ],
         "Errors": []
     }
 

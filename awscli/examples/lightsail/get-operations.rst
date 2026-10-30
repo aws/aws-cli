@@ -51,8 +51,6 @@ Output::
                 "operationType": "DetachInstancesFromLoadBalancer",
                 "status": "Succeeded",
                 "statusChangedAt": 1571679087.57
-            },
-            ...
             }
         ]
     }

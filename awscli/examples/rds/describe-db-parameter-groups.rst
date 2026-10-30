@@ -31,8 +31,7 @@ Output::
                 "DBParameterGroupFamily": "mariadb10.1",
                 "Description": "Default parameter group for mariadb10.1",
                 "DBParameterGroupArn": "arn:aws:rds:us-east-1:123456789012:pg:default.mariadb10.1"
-            },
-            ...some output truncated...
+            }
         ]
     }
 

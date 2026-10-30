@@ -6,6 +6,8 @@ The following ``update-lifecycle-policy`` example enables the specified lifecycl
         --policy-id policy-0123456789abcdef0 \
         --state ENABLED
 
+This command produces no output.
+
 **Example 2: To disable a lifecycle policy**
 
 The following ``update-lifecycle-policy`` example disables the specified lifecycle policy. ::
@@ -14,6 +16,8 @@ The following ``update-lifecycle-policy`` example disables the specified lifecyc
         --policy-id policy-0123456789abcdef0 \
         --state DISABLED
 
+This command produces no output.
+
 **Example 3: To update the details for lifecycle policy**
 
 The following ``update-lifecycle-policy`` example updates the target tags for the specified lifecycle policy. ::
@@ -21,6 +25,8 @@ The following ``update-lifecycle-policy`` example updates the target tags for th
     aws dlm update-lifecycle-policy \
         --policy-id policy-0123456789abcdef0 \
         --policy-details file://policyDetails.json
+
+This command produces no output.
 
 Other details not referenced in the file are not changed by the command.
 

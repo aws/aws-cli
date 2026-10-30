@@ -7,3 +7,11 @@ The following ``create-base-path-mapping`` example creates the base path mapping
         --rest-api-id 1234123412 \
         --stage prod \
         --base-path v1
+
+Output::
+
+    {
+        "basePath": "v1",
+        "restApiId": "1234123412",
+        "stage": "prod"
+    }

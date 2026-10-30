@@ -8,4 +8,6 @@ All files in the bucket that appear on the static site must be configured to all
         --index-document index.html \
         --error-document error.html
 
+This command produces no output.
+
 For information on hosting a static website in Amazon S3, see `Hosting a Static Website <https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html>`__ in the *Amazon Simple Storage Service Developer Guide*.

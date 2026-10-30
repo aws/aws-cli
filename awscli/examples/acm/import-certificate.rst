@@ -27,3 +27,9 @@ Contents of ``PrivateKey.pem``::
     -----BEGIN PRIVATE KEY-----
     EXAMPLEPRIVATEKEYDATA...
     -----END PRIVATE KEY-----
+
+Output::
+
+    {
+        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+    }

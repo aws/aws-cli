@@ -71,10 +71,7 @@ Output::
                             }
                         ],
                         "Aliases": []
-                    },
-
-                    ... TRUNCATED FOR BREVITY ...
-
+                    }
                 ]
             }
         ],

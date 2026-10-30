@@ -1,14 +1,10 @@
 **To create the default IAM role for EC2**
 
-The following ``create-default-roles`` example creates the default IAM role for EC2. ::
+The following ``create-default-roles`` example creates the default IAM role for EC2. If the role already exists, the command returns nothing. ::
 
     aws emr create-default-roles
 
-- Output::
-
-    If the role already exists then the command returns nothing.
-
-    If the role does not exist then the output will be:
+Output::
 
     [
         {
@@ -63,7 +59,7 @@ The following ``create-default-roles`` example creates the default IAM role for 
                 "CreateDate": "2015-06-09T17:09:04.602Z",
                 "RoleName": "EMR_EC2_DefaultRole",
                 "Path": "/",
-                "Arn": "arn:aws:iam::176430881729:role/EMR_EC2_DefaultRole"
+                "Arn": "arn:aws:iam::123456789012:role/EMR_EC2_DefaultRole"
             }
         },
         {
@@ -135,7 +131,7 @@ The following ``create-default-roles`` example creates the default IAM role for 
                 "CreateDate": "2015-06-09T17:09:10.401Z",
                 "RoleName": "EMR_DefaultRole",
                 "Path": "/",
-                "Arn": "arn:aws:iam::176430881729:role/EMR_DefaultRole"
+                "Arn": "arn:aws:iam::123456789012:role/EMR_DefaultRole"
             }
         }
     ]

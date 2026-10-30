@@ -4,3 +4,5 @@ The following ``restart-app-server`` example restarts application servers on all
 
     aws elasticbeanstalk restart-app-server \
         --environment-name my-env
+
+This command produces no output.

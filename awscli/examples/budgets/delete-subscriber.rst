@@ -8,3 +8,5 @@ The following ``delete-subscriber`` example deletes the specified subscriber fro
         --notification NotificationType=ACTUAL,ComparisonOperator=GREATER_THAN,Threshold=80,ThresholdType=PERCENTAGE \
         --subscriber SubscriptionType=EMAIL,Address=example@example.com
 
+This command produces no output.
+

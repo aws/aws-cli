@@ -6,14 +6,16 @@ The following ``list-policies-for-target`` example gets a list of all service co
         --filter SERVICE_CONTROL_POLICY \
         --target-id 444444444444
   
-The output includes a list of policy structures with summary information about the policies. The list does not include policies that apply to the account because of inheritance from its location in an OU hierarchy: ::
+The output includes a list of policy structures with summary information about the policies. The list does not include policies that apply to the account because of inheritance from its location in an OU hierarchy.
+
+Output::
 
     {
         "Policies": [
             {
                 "Type": "SERVICE_CONTROL_POLICY",
                 "Name": "AllowAllEC2Actions",
-                "AwsManaged", false,
+                "AwsManaged": false,
                 "Id": "p-examplepolicyid222",
                 "Arn": "arn:aws:organizations::o-exampleorgid:policy/service_control_policy/p-examplepolicyid222",
                 "Description": "Enables account admins to delegate permissions for any EC2 actions to users and roles in their accounts."

@@ -5,7 +5,7 @@ The following ``monitor-express-gateway-service`` example monitors an Express Ga
     aws ecs monitor-express-gateway-service \
         --service-arn arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-express-gateway-service
 
-This command displays an interactive monitoring interface rather than producing standard output.
+This command produces no output. It displays an interactive monitoring interface.
 
 For more information, see `Express Gateway Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-overview.html>`__ in the *Amazon Elastic Container Service Developer Guide*.
 
@@ -17,6 +17,8 @@ The following ``monitor-express-gateway-service`` example monitors an Express Ga
         --service-arn arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-express-gateway-service \
         --resource-view DEPLOYMENT
 
+This command produces no output. It displays an interactive monitoring interface.
+
 For more information, see `Express Gateway Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-overview.html>`__ in the *Amazon Elastic Container Service Developer Guide*.
 
 **Example 3: To monitor with a custom timeout**
@@ -27,7 +29,7 @@ The following ``monitor-express-gateway-service`` example monitors an Express Ga
         --service-arn my-express-gateway-service \
         --timeout 60
 
-The command provides an interactive display with the following controls:
+This command produces no output. It displays an interactive monitoring interface. The interface provides the following controls:
 
 - Press ``up`` / ``down`` keys to scroll up or down through the resource list
 - Press ``q`` to quit the monitoring session

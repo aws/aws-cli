@@ -4,6 +4,23 @@ The following ``list-hosted-zones`` example lists summary information about the 
 
     aws route53 list-hosted-zones
 
+Output::
+
+    {
+        "HostedZones": [
+            {
+                "Id": "/hostedzone/Z1R8UBAEXAMPLE",
+                "Name": "example.com.",
+                "CallerReference": "2014-04-01-18:47",
+                "Config": {
+                    "Comment": "command-line version",
+                    "PrivateZone": false
+                },
+                "ResourceRecordSetCount": 2
+            }
+        ]
+    }
+
 If you have more than 100 hosted zones, or if you want to list them in groups smaller than 100, include the ``--max-items`` parameter. For example, to list hosted zones one at a time, use the following command. ::
 
     aws route53 list-hosted-zones \

@@ -5,3 +5,5 @@ The following ``swap-environment-cnames`` example swaps the assigned subdomains 
     aws elasticbeanstalk swap-environment-cnames \
         --source-environment-name my-env-blue \
         --destination-environment-name my-env-green
+
+This command produces no output.

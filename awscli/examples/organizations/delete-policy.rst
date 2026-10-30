@@ -4,3 +4,5 @@ The following ``delete-policy`` example deletes a policy from an organization. T
 
     aws organizations delete-policy \
         --policy-id p-examplepolicyid111
+
+This command produces no output.

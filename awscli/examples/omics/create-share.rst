@@ -11,7 +11,7 @@ Output::
 
     {
         "shareId": "495c21bedc889d07d0ab69d710a6841e-dd75ab7a1a9c384fa848b5bd8e5a7e0a",
-        "name": "my_Share-123",
+        "shareName": "my_Share-123",
         "status": "PENDING"
     }
 

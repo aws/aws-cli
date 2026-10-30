@@ -33,6 +33,28 @@ The following ``describe-auto-scaling-instances`` example uses the ``--max-items
     aws autoscaling describe-auto-scaling-instances \
         --max-items 1
 
+Output::
+
+    {
+        "AutoScalingInstances": [
+            {
+                "InstanceId": "i-06905f55584de02da",
+                "InstanceType": "t2.micro",
+                "AutoScalingGroupName": "my-asg",
+                "AvailabilityZone": "us-west-2b",
+                "LifecycleState": "InService",
+                "HealthStatus": "HEALTHY",
+                "ProtectedFromScaleIn": false,
+                "LaunchTemplate": {
+                    "LaunchTemplateId": "lt-1234567890abcde12",
+                    "LaunchTemplateName": "my-launch-template",
+                    "Version": "1"
+                }
+            }
+        ],
+        "NextToken": "Z3M3LMPEXAMPLE"
+    }
+
 If the output includes a ``NextToken`` field, there are more instances. To get the additional instances, use the value of this field with the ``--starting-token`` option in a subsequent call as follows. ::
 
     aws autoscaling describe-auto-scaling-instances \

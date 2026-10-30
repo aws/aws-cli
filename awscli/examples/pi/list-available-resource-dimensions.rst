@@ -38,8 +38,7 @@ Output::
                                 "Identifier": "db.sql_tokenized.statement"
                             }
                         ]
-                    },
-                    ...
+                    }
                 ]
             }
         ]

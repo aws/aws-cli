@@ -6,6 +6,8 @@ The following ``put-bucket-tagging`` example applies a tagging configuration to 
         --bucket amzn-s3-demo-bucket \
         --tagging file://tagging.json
 
+This command produces no output.
+
 The file ``tagging.json`` is a JSON document in the current folder that specifies tags.
 
 Contents of ``tagging.json``::
@@ -24,3 +26,5 @@ Alternatively, apply a tagging configuration to ``amzn-s3-demo-bucket`` directly
     aws s3api put-bucket-tagging \
         --bucket amzn-s3-demo-bucket \
         --tagging 'TagSet=[{Key=organization,Value=marketing}]'
+
+This command produces no output.

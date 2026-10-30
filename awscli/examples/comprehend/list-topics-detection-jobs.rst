@@ -11,7 +11,7 @@ Output::
             {
                 "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
                 "JobArn": "arn:aws:comprehend:us-west-2:111122223333:topics-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
-                "JobName" "topic-analysis-1"
+                "JobName": "topic-analysis-1",
                 "JobStatus": "IN_PROGRESS",
                 "SubmitTime": "2023-06-09T18:40:35.384000+00:00",
                 "EndTime": "2023-06-09T18:46:41.936000+00:00",

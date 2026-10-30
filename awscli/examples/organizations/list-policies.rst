@@ -5,7 +5,9 @@ The following ``list-policies`` example gets a list of SCPs, as specified by the
     aws organizations list-policies \
         --filter SERVICE_CONTROL_POLICY
   
-The output includes a list of policies with summary information: ::
+The output includes a list of policies with summary information.
+
+Output::
 
     {
         "Policies": [

@@ -14,7 +14,7 @@ The following ``add-steps`` example adds two Custom JAR steps to the specified c
 
     Type, Name, ActionOnFailure, Args
 
-- Output::
+Output::
 
     {
         "StepIds":[
@@ -58,7 +58,7 @@ Contents of ``step.json``::
 
 NOTE: JSON arguments must include options and values as their own items in the list.
 
-- Output::
+Output::
 
     {
         "StepIds":[
@@ -107,11 +107,11 @@ Contents of ``multiplefiles.json``::
 
     Name, ActionOnFailure
 
-- Output::
+Output::
 
     {
         "StepIds":[
-            "s-XXXXXXXX",
+            "s-XXXXXXXX"
         ]
     }
 
@@ -133,7 +133,7 @@ The following ``add-steps`` example adds two Hive steps to the specified cluster
 
     Name, ActionOnFailure
 
-- Output::
+Output::
 
     {
         "StepIds":[
@@ -160,7 +160,7 @@ The following ``add-steps`` example adds two Pig steps to the specified cluster.
 
     Name, ActionOnFailure
 
-- Output::
+Output::
 
     {
         "StepIds":[
@@ -186,7 +186,7 @@ The following ``add-steps`` example adds an Impala step to the specified cluster
 
     Name, ActionOnFailure
 
-- Output::
+Output::
 
     {
         "StepIds":[

@@ -20,7 +20,7 @@ Output::
                     "value": "arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
                 }
             ],
-            "updatedAt": "2024-04-12T16:04:55.614000-04:00",
+            "createdAt": "2024-04-12T16:04:55.614000-04:00",
             "errors": []
         }
     }

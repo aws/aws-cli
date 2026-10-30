@@ -85,6 +85,24 @@ The following ``describe-addresses`` example displays details about the Elastic 
     aws ec2 describe-addresses \
         --filters "Name=private-ip-address,Values=10.251.50.12"
 
+Output::
+
+    {
+        "Addresses": [
+            {
+                "Domain": "vpc",
+                "PublicIpv4Pool": "amazon",
+                "InstanceId": "i-1234567890abcdef0",
+                "NetworkInterfaceId": "eni-1a2b3c4d",
+                "AssociationId": "eipassoc-123abc12",
+                "NetworkInterfaceOwnerId": "1234567891012",
+                "PublicIp": "203.0.113.25",
+                "AllocationId": "eipalloc-282d9641",
+                "PrivateIpAddress": "10.251.50.12"
+            }
+        ]
+    }
+
 **Example 5: To retrieve details about Elastic IP addresses in EC2-Classic**
 
 The following ``describe-addresses`` example displays details about your Elastic IP addresses for use in EC2-Classic. ::

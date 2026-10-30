@@ -17,7 +17,7 @@ Output::
             "repositoryDescription": "My demonstration repository",
             "cloneUrlHttp": "https://codecommit.us-east-1.amazonaws.com/v1/repos/MyDemoRepo",
             "repositoryId": "f7579e13-b83e-4027-aaef-650c0EXAMPLE",
-            "Arn": "arn:aws:codecommit:us-east-1:80398EXAMPLE:MyDemoRepo
+            "Arn": "arn:aws:codecommit:us-east-1:111111111111:MyDemoRepo",
             "accountId": "111111111111"
         }
     }

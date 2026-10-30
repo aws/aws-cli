@@ -10,6 +10,8 @@ The following ``put-scheduled-action`` example adds a scheduled action to a Dyna
         --scalable-dimension dynamodb:table:WriteCapacityUnits \
         --scalable-target-action MinCapacity=6
 
+This command produces no output.
+
 For more information, see `Scheduled Scaling`_ in the *Application Auto Scaling User Guide*.
 
 .. _`Scheduled Scaling`: https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scheduled-scaling.html

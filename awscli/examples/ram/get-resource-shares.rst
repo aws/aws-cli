@@ -20,7 +20,7 @@ Output::
                         "key": "project",
                         "value": "lima"
                     }
-                ]
+                ],
                 "creationTime": 1565295733.282,
                 "lastUpdatedTime": 1565295733.282
             },

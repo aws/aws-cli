@@ -5,7 +5,7 @@ The following ``describe-policy`` example requests information about a policy. :
     aws organizations describe-policy \
         --policy-id p-examplepolicyid111
 	
-The output includes a policy object that contains details about the policy: ::
+Output::
 
     {
         "Policy": {

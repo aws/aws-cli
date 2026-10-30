@@ -6,3 +6,5 @@ The following ``change-password`` example changes a password. ::
         --previous-password OldPassword \
         --proposed-password NewPassword \
         --access-token ACCESS_TOKEN
+
+This command produces no output.

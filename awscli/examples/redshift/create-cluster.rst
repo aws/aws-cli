@@ -9,26 +9,26 @@ The following ``create-cluster`` example creates a cluster with the minimal set 
         --master-user-password TopSecret1 \
         --cluster-identifier mycluster
 
-Result::
+Output::
 
     {
         "Cluster": {
             "NodeType": "dw.hs1.xlarge",
             "ClusterVersion": "1.0",
-            "PubliclyAccessible": "true",
+            "PubliclyAccessible": true,
             "MasterUsername": "adminuser",
             "ClusterParameterGroups": [
                 {
                     "ParameterApplyStatus": "in-sync",
                     "ParameterGroupName": "default.redshift-1.0"
-                } ],
+            } ],
             "ClusterSecurityGroups": [
                 {
                     "Status": "active",
                     "ClusterSecurityGroupName": "default"
-                } ],
+            } ],
             "AllowVersionUpgrade": true,
-            "VpcSecurityGroups": \[],
+            "VpcSecurityGroups": [],
             "PreferredMaintenanceWindow": "sat:03:30-sat:04:00",
             "AutomatedSnapshotRetentionPeriod": 1,
             "ClusterStatus": "creating",
@@ -36,11 +36,8 @@ Result::
             "DBName": "dev",
             "NumberOfNodes": 2,
             "PendingModifiedValues": {
-                "MasterUserPassword": "\****"
+                "MasterUserPassword": "****"
             }
-        },
-        "ResponseMetadata": {
-            "RequestId": "7cf4bcfc-64dd-11e2-bea9-49e0ce183f07"
         }
     }
 

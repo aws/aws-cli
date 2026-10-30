@@ -5,7 +5,7 @@ The following ``purchase-reserved-cache-nodes-offering`` example allows you to p
     aws elasticache purchase-reserved-cache-nodes-offering \
         --reserved-cache-nodes-offering-id xxxxxxx-4da5-4b90-b92d-929fbd7abed2
 
-Output ::
+Output::
 
     {
         "ReservedCacheNode": {

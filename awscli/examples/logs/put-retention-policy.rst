@@ -5,3 +5,5 @@ The following ``put-retention-policy`` example adds a 5 day retention policy to 
     aws logs put-retention-policy \
         --log-group-name my-logs \
         --retention-in-days 5
+
+This command produces no output.

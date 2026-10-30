@@ -14,8 +14,7 @@ Output::
             "AllocatedStorage": 20,
             "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:restored-test-instance",
             "DBInstanceStatus": "creating",
-            "DBInstanceIdentifier": "restored-test-instance",
-            ...some output omitted...
+            "DBInstanceIdentifier": "restored-test-instance"
         }
     }
 
@@ -43,7 +42,6 @@ Output::
             "AllocatedStorage": 20,
             "PreferredBackupWindow": "07:45-08:15",
             "BackupRetentionPeriod": 14,
-            ... some output omitted ...
             "DbiResourceId": "db-KGLXG75BGVIWKQT7NQ4EXAMPLE",
             "CACertificateIdentifier": "rds-ca-2019",
             "DomainMemberships": [],

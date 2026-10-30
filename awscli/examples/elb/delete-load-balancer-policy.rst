@@ -6,3 +6,5 @@ The following ``delete-load-balancer-policy`` example deletes the specified poli
         --load-balancer-name my-load-balancer \
         --policy-name my-duration-cookie-policy
 
+This command produces no output.
+

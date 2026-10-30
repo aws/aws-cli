@@ -5,3 +5,5 @@ The following ``delete-provisioned-concurrency-config`` example deletes the prov
     aws lambda delete-provisioned-concurrency-config \
         --function-name my-function \
         --qualifier GREEN
+
+This command produces no output.

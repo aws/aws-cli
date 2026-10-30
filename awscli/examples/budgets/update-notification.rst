@@ -8,3 +8,5 @@ The following ``update-notification`` example replaces an 80% notification for a
         --old-notification NotificationType=ACTUAL,ComparisonOperator=GREATER_THAN,Threshold=80,ThresholdType=PERCENTAGE \
         --new-notification NotificationType=ACTUAL,ComparisonOperator=GREATER_THAN,Threshold=90,ThresholdType=PERCENTAGE
 
+This command produces no output.
+

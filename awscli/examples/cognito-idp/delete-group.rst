@@ -6,3 +6,5 @@ The following ``delete-group`` example deletes a group. ::
         --user-pool-id us-west-2_aaaaaaaaa \
         --group-name MyGroupName
 
+This command produces no output.
+

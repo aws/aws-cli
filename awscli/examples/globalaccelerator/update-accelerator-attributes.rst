@@ -12,9 +12,9 @@ Output::
 
     {
         "AcceleratorAttributes": {
-            "FlowLogsEnabled": true
-            "FlowLogsS3Bucket": flowlogs-abc
-            "FlowLogsS3Prefix": bucketprefix-abc
+            "FlowLogsEnabled": true,
+            "FlowLogsS3Bucket": "flowlogs-abc",
+            "FlowLogsS3Prefix": "bucketprefix-abc"
         }
     }
 

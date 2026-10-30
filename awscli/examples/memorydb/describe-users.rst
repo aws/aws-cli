@@ -4,7 +4,7 @@ The following ``describe-users`` example returns a list of users. ::
 
     aws memorydb describe-users
 
-Output ::
+Output::
 
     {
         "Users": [

@@ -7,6 +7,8 @@ The following ``update-signing-certificate`` example deactivates the specified s
         --status Inactive \
         --user-name Bob
 
+This command produces no output.
+
 To get the ID for a signing certificate, use the ``list-signing-certificates`` command.
 
 For more information, see `Manage signing certificates <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-up-ami-tools.html#ami-tools-managing-certs>`__ in the *Amazon EC2 User Guide*.

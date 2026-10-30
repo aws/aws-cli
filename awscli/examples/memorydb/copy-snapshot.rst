@@ -6,7 +6,7 @@ The following ``copy-snapshot`` example creates a copy of a snapshot. ::
         --source-snapshot-name my-cluster-snapshot \
         --target-snapshot-name my-cluster-snapshot-copy
 
-Output ::
+Output::
 
     {
         "Snapshot": {

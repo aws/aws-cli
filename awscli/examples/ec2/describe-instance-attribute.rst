@@ -9,7 +9,7 @@ The following ``describe-instance-attribute`` example describes the instance typ
 Output::
 
     {
-        "InstanceId": "i-1234567890abcdef0"
+        "InstanceId": "i-1234567890abcdef0",
         "InstanceType": {
             "Value": "t1.micro"
         }
@@ -26,9 +26,9 @@ The following ``describe-instance-attribute`` example describes the ``disableApi
 Output::
 
     {
-        "InstanceId": "i-1234567890abcdef0"
+        "InstanceId": "i-1234567890abcdef0",
         "DisableApiTermination": {
-            "Value": "false"
+            "Value": false
         }
     }
 
@@ -43,7 +43,7 @@ The following ``describe-instance-attribute`` example describes the ``blockDevic
 Output::
 
     {
-        "InstanceId": "i-1234567890abcdef0"
+        "InstanceId": "i-1234567890abcdef0",
         "BlockDeviceMappings": [
             {
                 "DeviceName": "/dev/sda1",
@@ -63,5 +63,5 @@ Output::
                     "AttachTime": "2013-09-10T23:07:00.000Z"
                 }
             }
-        ],
+        ]
     }

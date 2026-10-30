@@ -16,7 +16,9 @@ The following ``put-metric-alarm`` example sends an Amazon Simple Notification S
         --alarm-actions arn:aws:sns:us-east-1:111122223333:MyTopic \
         --unit Percent
 
-This command returns to the prompt if successful. If an alarm with the same name already exists, it will be overwritten by the new alarm.
+This command produces no output.
+
+If an alarm with the same name already exists, it will be overwritten by the new alarm.
 
 **Example 2: To specify multiple dimensions**
 
@@ -33,3 +35,5 @@ The following ``put-metric-alarm`` example illustrates how to specify multiple d
         --threshold 50 \
         --comparison-operator GreaterThanOrEqualToThreshold \
         --dimensions Name=key1,Value=value1 Name=key2,Value=value2
+
+This command produces no output.

@@ -5,7 +5,4 @@ The following ``delete-pipeline`` example deletes a pipeline named MySecondPipel
     aws codepipeline delete-pipeline \
         --name MySecondPipeline
 
-
-Output::
-
-    None.
+This command produces no output.

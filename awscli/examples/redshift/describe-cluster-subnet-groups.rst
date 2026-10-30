@@ -4,7 +4,7 @@ The following ``describe-cluster-subnet-groups`` example returns a description o
 
     aws redshift describe-cluster-subnet-groups
 
-Result::
+Output::
 
     {
         "ClusterSubnetGroups": [
@@ -23,9 +23,6 @@ Result::
                 "Description": "My subnet group",
                 "ClusterSubnetGroupName": "mysubnetgroup"
             }
-        ],
-        "ResponseMetadata": {
-            "RequestId": "37fa8c89-6990-11e2-8f75-ab4018764c77"
-        }
+        ]
     }
 

@@ -24,7 +24,7 @@ Output::
                 "VpcLinkStatus": "AVAILABLE",
                 "VpcLinkStatusMessage": "VPC link is ready to route traffic",
                 "VpcLinkVersion": "V2"
-            }
+            },
             {
                 "CreatedDate": "2020-04-07T00:27:47Z",
                 "Name": "MyOtherVpcLink",

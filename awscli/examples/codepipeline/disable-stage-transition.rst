@@ -8,7 +8,4 @@ The following ``disable-stage-transition`` example disables transitions into the
         --transition-type Inbound \
         --reason "An example reason"
 
-
-Output::
-
-    None.
+This command produces no output.

@@ -6,3 +6,5 @@ The following ``add-tags`` example adds tags to the specified load balancer. ::
         --load-balancer-name my-load-balancer \
         --tags "Key=project,Value=lima" "Key=department,Value=digital-media"
 
+This command produces no output.
+

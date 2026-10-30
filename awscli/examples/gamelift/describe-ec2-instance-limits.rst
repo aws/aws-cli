@@ -10,7 +10,7 @@ Output::
     {
         "EC2InstanceLimits": [
             {
-                "EC2InstanceType": ""m5.large",
+                "EC2InstanceType": "m5.large",
                 "CurrentInstances": 5,
                 "InstanceLimit": 20
             }

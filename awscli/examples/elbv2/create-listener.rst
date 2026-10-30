@@ -8,6 +8,36 @@ The following ``create-listener`` example creates an HTTP listener for the speci
         --port 80 \
         --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
+Output::
+
+    {
+        "Listeners": [
+            {
+                "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2",
+                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188",
+                "Port": 80,
+                "Protocol": "HTTP",
+                "DefaultActions": [
+                    {
+                        "Type": "forward",
+                        "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                        "ForwardConfig": {
+                            "TargetGroups": [
+                                {
+                                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                                    "Weight": 1
+                                }
+                            ],
+                            "TargetGroupStickinessConfig": {
+                                "Enabled": false
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+
 For more information, see `Tutorial: Create an Application Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-application-load-balancer-cli.html#create-load-balancer-aws-cli>`__ in the *User Guide for Application Load Balancers*.
 
 **Example 2: To create an HTTPS listener**
@@ -22,6 +52,42 @@ The following ``create-listener`` example creates an HTTPS listener for the spec
         --ssl-policy ELBSecurityPolicy-2016-08 \
         --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
+Output::
+
+    {
+        "Listeners": [
+            {
+                "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/0467ef3c8400ae65",
+                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188",
+                "Port": 443,
+                "Protocol": "HTTPS",
+                "Certificates": [
+                    {
+                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557"
+                    }
+                ],
+                "SslPolicy": "ELBSecurityPolicy-2016-08",
+                "DefaultActions": [
+                    {
+                        "Type": "forward",
+                        "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                        "ForwardConfig": {
+                            "TargetGroups": [
+                                {
+                                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                                    "Weight": 1
+                                }
+                            ],
+                            "TargetGroupStickinessConfig": {
+                                "Enabled": false
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+
 For more information, see `Add an HTTPS listener <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-application-load-balancer-cli.html#https-listener-aws-cli>`__ in the *User Guide for Application Load Balancers*.
 
 **Example 3: To create a TCP listener**
@@ -33,6 +99,36 @@ The following ``create-listener`` example creates a TCP listener for the specifi
         --protocol TCP \
         --port 80 \
         --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78
+
+Output::
+
+    {
+        "Listeners": [
+            {
+                "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/net/my-network-load-balancer/5d1b75f4f1cee11e/1a2b3c4d5e6f7a8b",
+                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-network-load-balancer/5d1b75f4f1cee11e",
+                "Port": 80,
+                "Protocol": "TCP",
+                "DefaultActions": [
+                    {
+                        "Type": "forward",
+                        "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78",
+                        "ForwardConfig": {
+                            "TargetGroups": [
+                                {
+                                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78",
+                                    "Weight": 1
+                                }
+                            ],
+                            "TargetGroupStickinessConfig": {
+                                "Enabled": false
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
 
 For more information, see `Tutorial: Create a Network Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/network-load-balancer-cli.html#create-load-balancer-aws-cli>`__ in the *User Guide for Network Load Balancers*.
 
@@ -48,6 +144,42 @@ The following ``create-listener`` example creates a TLS listener for the specifi
         --ssl-policy ELBSecurityPolicy-2016-08 \
         --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
+Output::
+
+    {
+        "Listeners": [
+            {
+                "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/2b3c4d5e6f7a8b9c",
+                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188",
+                "Port": 443,
+                "Protocol": "TLS",
+                "Certificates": [
+                    {
+                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557"
+                    }
+                ],
+                "SslPolicy": "ELBSecurityPolicy-2016-08",
+                "DefaultActions": [
+                    {
+                        "Type": "forward",
+                        "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                        "ForwardConfig": {
+                            "TargetGroups": [
+                                {
+                                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                                    "Weight": 1
+                                }
+                            ],
+                            "TargetGroupStickinessConfig": {
+                                "Enabled": false
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+
 For more information, see `TLS listeners for your Network Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html>`__ in the *User Guide for Network Load Balancers*.
 
 **Example 5: To create a UDP listener**
@@ -59,6 +191,36 @@ The following ``create-listener`` example creates a UDP listener for the specifi
         --protocol UDP \
         --port 53 \
         --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78
+
+Output::
+
+    {
+        "Listeners": [
+            {
+                "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/net/my-network-load-balancer/5d1b75f4f1cee11e/3c4d5e6f7a8b9c0d",
+                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-network-load-balancer/5d1b75f4f1cee11e",
+                "Port": 53,
+                "Protocol": "UDP",
+                "DefaultActions": [
+                    {
+                        "Type": "forward",
+                        "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78",
+                        "ForwardConfig": {
+                            "TargetGroups": [
+                                {
+                                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78",
+                                    "Weight": 1
+                                }
+                            ],
+                            "TargetGroupStickinessConfig": {
+                                "Enabled": false
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
 
 For more information, see `Tutorial: Create a Network Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/network-load-balancer-cli.html#create-load-balancer-aws-cli>`__ in the *User Guide for Network Load Balancers*.
 

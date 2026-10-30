@@ -4,7 +4,9 @@ The following ``list-handshakes-for-organization`` example gets a list of handsh
 
     aws organizations list-handshakes-for-organization
 
-The output shows two handshakes. The first one is an invitation to Juan's account and shows a state of OPEN. The second is an invitation to Anika's account and shows a state of ACCEPTED: ::
+The output shows two handshakes. The first one is an invitation to Juan's account and shows a state of OPEN. The second is an invitation to Anika's account and shows a state of ACCEPTED.
+
+Output::
 
     {
         "Handshakes": [
@@ -48,17 +50,17 @@ The output shows two handshakes. The first one is an invitation to Juan's accoun
                         "Value": "juan@example.com"
                     },
                     {
-                        "Type":"NOTES",
-                        "Value":"This is an invitation to Juan's account to join Bill's organization."
+                        "Type": "NOTES",
+                        "Value": "This is an invitation to Juan's account to join Bill's organization."
                     }
                 ],
                 "State": "OPEN"
             },
             {
                 "Action": "INVITE",
-                "State":"ACCEPTED",
+                "State": "ACCEPTED",
                 "Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111",
-                "ExpirationTimestamp": 1.471797437427E9,
+                "ExpirationTimestamp": 1471797437.427,
                 "Id": "h-examplehandshakeid222",
                 "Parties": [
                     {
@@ -70,29 +72,29 @@ The output shows two handshakes. The first one is an invitation to Juan's accoun
                         "Type": "EMAIL"
                     }
                 ],
-                "RequestedTimestamp": 1.469205437427E9,
+                "RequestedTimestamp": 1469205437.427,
                 "Resources": [
                     {
                         "Resources": [
                             {
-                                "Type":"MASTER_EMAIL",
-                                "Value":"bill@example.com"
+                                "Type": "MASTER_EMAIL",
+                                "Value": "bill@example.com"
                             },
                             {
-                                "Type":"MASTER_NAME",
-                                "Value":"Master Account"
+                                "Type": "MASTER_NAME",
+                                "Value": "Master Account"
                             }
                         ],
-                        "Type":"ORGANIZATION",
-                        "Value":"o-exampleorgid"
+                        "Type": "ORGANIZATION",
+                        "Value": "o-exampleorgid"
                     },
                     {
-                        "Type":"EMAIL",
-                        "Value":"anika@example.com"
+                        "Type": "EMAIL",
+                        "Value": "anika@example.com"
                     },
                     {
-                        "Type":"NOTES",
-                        "Value":"This is an invitation to Anika's account to join Bill's organization."
+                        "Type": "NOTES",
+                        "Value": "This is an invitation to Anika's account to join Bill's organization."
                     }
                 ]
             }

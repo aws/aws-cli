@@ -12,7 +12,6 @@ Output::
             "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:test-instance-repl",
             "StorageType": "standard",
             "ReadReplicaSourceDBInstanceIdentifier": "test-instance",
-            "DBInstanceStatus": "modifying",
-            ...some output truncated...
+            "DBInstanceStatus": "modifying"
         }
     }

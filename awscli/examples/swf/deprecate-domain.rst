@@ -5,6 +5,8 @@ The following ``deprecate-domain`` example deprecates a domain. You can still se
     aws swf deprecate-domain \
         --name MyNeatNewDomain
 
+This command produces no output.
+
 As with ``register-domain``, no output is returned. If you use
 ``list-domains`` to view the registered domains, however, you will see
 that the domain has been deprecated and no longer appears in the

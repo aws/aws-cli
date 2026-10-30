@@ -4,3 +4,5 @@ The following ``delete-lifecycle-policy`` example deletes the specified lifecycl
 
     aws dlm delete-lifecycle-policy \
         --policy-id policy-0123456789abcdef0
+
+This command produces no output.

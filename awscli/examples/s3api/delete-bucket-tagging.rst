@@ -4,3 +4,5 @@ The following ``delete-bucket-tagging`` example deletes a tagging configuration 
 
     aws s3api delete-bucket-tagging \
         --bucket amzn-s3-demo-bucket
+
+This command produces no output.

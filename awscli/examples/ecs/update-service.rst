@@ -117,7 +117,7 @@ Output::
             "networkConfiguration": {
                 "awsvpcConfiguration": {
                     "subnets": [
-                        "subnet-12344321",
+                        "subnet-12344321"
                     ],
                     "securityGroups": [
                         "sg-12344321"
@@ -189,7 +189,7 @@ Output::
                 {
                     "id": "ecs-svc/1976744184940610707",
                     "status": "PRIMARY",
-                    "taskkDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/MyTaskDefinition",
+                    "taskDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/MyTaskDefinition",
                     "desiredCount": 1,
                     "pendingCount": 0,
                     "runningCount": 1,
@@ -345,7 +345,7 @@ Output::
                     "networkConfiguration": {
                         "awsvpcConfiguration": {
                             "subnets": [
-                                "subnet-12344321",
+                                "subnet-12344321"
                             ],
                             "securityGroups": [
                                 "sg-12344321"
@@ -413,7 +413,7 @@ Output::
                     "id": "a10cd55d-4ba6-4cea-a655-5a5d32ada8a0",
                     "createdAt": "2025-02-21T14:55:32.833000-06:00",
                     "message": "(service my-http-service) has started 1 tasks: (task fb9c8df512684aec92f3c57dc3f22361)."
-                },
+                }
             ],
             "createdAt": "2025-02-21T14:54:48.862000-06:00",
             "placementConstraints": [],
@@ -686,7 +686,7 @@ Output::
                 {
                     "id": "ecs-svc/1976744184940610707",
                     "status": "PRIMARY",
-                    "taskkDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/MyTaskDefinition",
+                    "taskDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/MyTaskDefinition",
                     "desiredCount": 1,
                     "pendingCount": 0,
                     "runningCount": 1,

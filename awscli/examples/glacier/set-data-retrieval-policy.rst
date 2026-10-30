@@ -6,6 +6,8 @@ The following ``set-data-retrieval-policy`` example configures a data retrieval 
         --account-id - \
         --policy file://data-retrieval-policy.json
 
+This command produces no output.
+
 ``data-retrieval-policy.json`` is a JSON file in the current folder that specifies a data retrieval policy.
 
 Contents of ``data-retrieval-policy.json``::

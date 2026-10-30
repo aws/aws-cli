@@ -7,6 +7,8 @@ command line arguments. ::
         --resource arn:aws:cloudfront::123456789012:distribution/EDFDVBD6EXAMPLE \
         --tag-keys Items=Name,Project
 
+This command produces no output.
+
 Instead of using command line arguments, you can provide the tag keys in a JSON
 file, as shown in the following example. ::
 

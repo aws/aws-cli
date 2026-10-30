@@ -13,7 +13,7 @@ Output::
         "Cutoff": 1,
         "Duration": 6,
         "Enabled": true,
-        "ModifiedDate": 2020-01-01T10:04:04.099Z,
+        "ModifiedDate": "2020-01-01T10:04:04.099Z",
         "Name": "My-Maintenance-Window",
         "Schedule": "rate(3 days)",
         "WindowId": "mw-03eb9db428EXAMPLE",

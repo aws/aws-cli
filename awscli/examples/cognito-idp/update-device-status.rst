@@ -6,3 +6,5 @@ The following ``update-device-status`` example updates the status for a device t
         --access-token ACCESS_TOKEN \
         --device-key DEVICE_KEY \
         --device-remembered-status "not_remembered"
+
+This command produces no output.

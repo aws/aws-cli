@@ -13,21 +13,18 @@ The following ``copy-package-versions`` example copies versions 4.0.0 and 5.0.0 
 
 Output::
 
-    {  
-        "format": "npm",
-        "package": "test-package",
-        "versions": [
-            {
-            "version": "5.0.0",
-            "revision": "REVISION-1-SAMPLE-6C81EFF7DA55CC",
-            "status": "Published"
+    {
+        "successfulVersions": {
+            "5.0.0": {
+                "revision": "REVISION-1-SAMPLE-6C81EFF7DA55CC",
+                "status": "Published"
             },
-            {
-            "version": "4.0.0",
-            "revision": "REVISION-2-SAMPLE-55C752BEE772FC",
-            "status": "Published"
+            "4.0.0": {
+                "revision": "REVISION-2-SAMPLE-55C752BEE772FC",
+                "status": "Published"
             }
-        ]
+        },
+        "failedVersions": {}
     }
 
 For more information, see `Copy packages between repositories <https://docs.aws.amazon.com/codeartifact/latest/ug/copy-package.html>`__ in the *AWS CodeArtifact User Guide*.

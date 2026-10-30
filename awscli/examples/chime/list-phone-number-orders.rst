@@ -28,7 +28,7 @@ Output::
                 ],
                 "CreatedTimestamp": "2019-08-09T21:35:21.427Z",
                 "UpdatedTimestamp": "2019-08-09T21:35:31.926Z"
-            }
+            },
             {
                 "PhoneNumberOrderId": "cba54321-ed76-09f5-321g-h54i876j2109",
                 "ProductType": "BusinessCalling",

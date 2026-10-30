@@ -5,3 +5,5 @@ The following ``delete-log-stream`` example deletes a log stream named ``2015053
     aws logs delete-log-stream \
         --log-group-name my-logs \
         --log-stream-name 20150531
+
+This command produces no output.

@@ -40,6 +40,8 @@ Contents of ``logging.json``::
         }
     }
 
+This command produces no output.
+
 .. Note:: The ``put-bucket-policy`` command is required to grant ``s3:PutObject`` permissions to the logging service principal.
 
 For more information, see `Amazon S3 Server Access Logging <https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerLogs.html>`__ in the *Amazon S3 User Guide*.
@@ -77,6 +79,8 @@ Contents of ``logging.json``::
             ]
         }
     }
+
+This command produces no output.
 
 .. Note:: the ``put-bucket-acl`` command is required to grant S3's log delivery system the necessary permissions (write and read-acp permissions).
 

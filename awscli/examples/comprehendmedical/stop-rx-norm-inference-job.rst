@@ -8,7 +8,7 @@ The following ``stop-rx-norm-inference-job`` example stops an ICD-10-CM inferenc
 Output::
 
     {
-        "JobId": "eg8199877365fc70299089371c043b96",
+        "JobId": "eg8199877365fc70299089371c043b96"
     }
 
 For more information, see `Ontology linking batch analysis <https://docs.aws.amazon.com/comprehend-medical/latest/dev/ontologies-batchapi.html>`__ in the *Amazon Comprehend Medical Developer Guide*.

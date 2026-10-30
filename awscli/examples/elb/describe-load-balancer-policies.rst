@@ -38,10 +38,7 @@ Output::
                 ],
                 "PolicyName": "my-duration-cookie-policy",
                 "PolicyTypeName": "LBCookieStickinessPolicyType"
-            },
-            .
-            .
-            .
+            }
         ]
     }
 

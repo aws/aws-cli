@@ -37,3 +37,5 @@ Contents of ``policy.json``::
         ]
     }
 
+This command produces no output.
+

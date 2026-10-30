@@ -18,22 +18,22 @@ Output::
                     "sg-1234"
                 ],
                 "VpcSubnetIds": [
-                    "subnetgroup1", 
-                    "subnetgroup2" 
+                    "subnetgroup1",
+                    "subnetgroup2"
                 ],
-                "Auth": "[
+                "Auth": [
                     {
-                        "Description": "proxydescription1"
+                        "Description": "proxydescription1",
                         "AuthScheme": "SECRETS",
                         "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789123:secret:secretName-1234f",
                         "IAMAuth": "DISABLED"
                     }
-                ]",
-                "RoleArn": "arn:aws:iam::12345678912??:role/ProxyPostgreSQLRole",
+                ],
+                "RoleArn": "arn:aws:iam::12345678912:role/ProxyPostgreSQLRole",
                 "Endpoint": "proxyExample1.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
                 "RequireTLS": false,
                 "IdleClientTimeout": 1800,
-                "DebuggingLogging": false,
+                "DebugLogging": false,
                 "CreatedDate": "2023-04-05T16:09:33.452000+00:00",
                 "UpdatedDate": "2023-04-13T01:49:38.568000+00:00"
             },
@@ -47,22 +47,22 @@ Output::
                     "sg-1234"
                 ],
                 "VpcSubnetIds": [
-                    "subnetgroup1", 
-                    "subnetgroup2" 
+                    "subnetgroup1",
+                    "subnetgroup2"
                 ],
-                "Auth": "[
+                "Auth": [
                     {
-                        "Description": "proxydescription2"
+                        "Description": "proxydescription2",
                         "AuthScheme": "SECRETS",
-                        "SecretArn": "aarn:aws:secretsmanager:us-west-2:123456789123:secret:secretName-1234f",
+                        "SecretArn": "arn:aws:secretsmanager:us-west-2:123456789123:secret:secretName-1234f",
                         "IAMAuth": "DISABLED"
                     }
-                ]",
+                ],
                 "RoleArn": "arn:aws:iam::12345678912:role/ProxyPostgreSQLRole",
                 "Endpoint": "proxyExample2.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
                 "RequireTLS": false,
                 "IdleClientTimeout": 1800,
-                "DebuggingLogging": false,
+                "DebugLogging": false,
                 "CreatedDate": "2022-01-05T16:19:33.452000+00:00",
                 "UpdatedDate": "2023-04-13T01:49:38.568000+00:00"
             }

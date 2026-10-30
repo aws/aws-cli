@@ -6,7 +6,7 @@ The following ``modify-cluster-subnet-group`` example modifies the list of subne
         --cluster-subnet-group-name mysubnetgroup \
         --subnet-ids subnet-763fdd1 subnet-ac830e9
 
-Result::
+Output::
 
     {
         "ClusterSubnetGroup":
@@ -28,9 +28,6 @@ Result::
             "SubnetGroupStatus": "Complete",
             "Description": "My subnet group",
             "ClusterSubnetGroupName": "mysubnetgroup"
-        },
-        "ResponseMetadata": {
-            "RequestId": "8da93e89-8372-f936-93a8-873918938197a"
         }
     }
 

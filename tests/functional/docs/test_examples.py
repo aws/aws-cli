@@ -32,8 +32,10 @@ import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
 import pytest
+from botocore.validate import ParamValidator
 
 from awscli.argparser import ArgTableArgParser, MainArgParser, ServiceArgParser
+from awscli.clidriver import ServiceOperation
 from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
 
 # Mapping of command names to subcommands that have examples in their help
@@ -73,6 +75,9 @@ LIST_ITEM_RE = re.compile(r'^(\s*(?:[*+-]|\d+\.|#\.)\s+)\S')
 CONTENTS_HEADER_RE = re.compile(r'^Contents of ``(?P<name>[^`]+)``::$')
 LOOSE_CONTENTS_HEADER_RE = re.compile(r'^Contents of\b', re.IGNORECASE)
 FILE_REF_RE = re.compile(r'(?<!\w)file://(?P<path>[^\s\'"]+)')
+OUTPUT_HEADER = 'Output::'
+NO_OUTPUT = 'This command produces no output.'
+LOOSE_OUTPUT_HEADER_RE = re.compile(r'^Output\s*:', re.IGNORECASE)
 OPTION_RE = re.compile(r'(?:^|\s)--(?P<name>[A-Za-z0-9][\w-]*)')
 # A pipe, redirect or command separator ends the arguments of an aws
 # command, e.g. "--output text | base64 --decode".  "<value>" is a
@@ -149,6 +154,39 @@ class Block:
             'aws '
         )
 
+    @property
+    def runs_aws(self):
+        """A command block, or a shell pipeline that runs an aws command."""
+        if self.is_command:
+            return True
+        if self.kind != 'literal' or self.intro is None:
+            return False
+        # Not the output or file contents shown after a command, where a
+        # table row like "|  aws  |" is not a pipeline.
+        intro = self.intro.lines[-1].strip()
+        if LOOSE_OUTPUT_HEADER_RE.match(intro) or intro.startswith(
+            'Contents of'
+        ):
+            return False
+        return any(
+            re.search(r'\|\s*aws ', line) and not _is_table_row(line)
+            for line in self.lines
+        )
+
+    @property
+    def is_output(self):
+        return (
+            self.kind == 'literal'
+            and not self.is_command
+            and self.intro is not None
+            and LOOSE_OUTPUT_HEADER_RE.match(self.intro.lines[-1].strip())
+        )
+
+
+def _is_table_row(line):
+    line = line.strip()
+    return line.startswith('|') and line.endswith('|')
+
 
 class Section:
     def __init__(self, title):
@@ -159,6 +197,10 @@ class Section:
     @property
     def commands(self):
         return [b for b in self.blocks if b.is_command]
+
+    @property
+    def outputs(self):
+        return [b for b in self.blocks if b.is_output]
 
 
 class Example:
@@ -550,6 +592,204 @@ def check_file_contents(example):
                 errors.append(
                     f'Line {block.lineno + offset}: file://{ref} has no '
                     f'"Contents of ``{name}``::" block'
+                )
+    return errors
+
+
+def _output_format(block):
+    """Return the --output value of a command block, if it has one."""
+    try:
+        parts = shlex.split(' '.join(block.lines).replace('\\', ' '))
+    except ValueError:
+        return None
+    for i, part in enumerate(parts):
+        if part == '--output' and i + 1 < len(parts):
+            return parts[i + 1]
+        if part.startswith('--output='):
+            return part.split('=', 1)[1]
+    return None
+
+
+def _is_api_operation(command_table, path):
+    """Whether ``path`` is a modeled API operation, not a custom command."""
+    command = None
+    for name in path:
+        if name not in command_table:
+            return False
+        command = command_table[name]
+        command_table = command.subcommand_table
+    return isinstance(command, ServiceOperation)
+
+
+def _operation_for(command_table, block):
+    """The modeled API operation that a command block runs, if any."""
+    parts = block.lines[0].split()
+    if len(parts) < 3:
+        return None
+    service = command_table.get(parts[1])
+    if service is None:
+        return None
+    operation = service.subcommand_table.get(parts[2])
+    return operation if isinstance(operation, ServiceOperation) else None
+
+
+def _as_modeled(value, shape):
+    """Undo what the CLI does to output before it is printed.
+
+    Null values are printed as null, and IAM policy documents and
+    CloudFormation templates are decoded into JSON.
+    """
+    if shape.type_name == 'structure' and isinstance(value, dict):
+        return {
+            key: _as_modeled(item, shape.members[key])
+            if key in shape.members
+            else item
+            for key, item in value.items()
+            if item is not None
+        }
+    if shape.type_name == 'list' and isinstance(value, list):
+        return [
+            _as_modeled(item, shape.member)
+            for item in value
+            if item is not None
+        ]
+    if shape.type_name == 'map' and isinstance(value, dict):
+        return {
+            key: _as_modeled(item, shape.value)
+            for key, item in value.items()
+            if item is not None
+        }
+    # botocore's json_decode_policies (IAM) and json_decode_template_body
+    # (CloudFormation GetTemplate) handlers.
+    decoded = ('policyDocumentType', 'TemplateBody')
+    if shape.name in decoded and isinstance(value, (dict, list)):
+        return json.dumps(value)
+    return value
+
+
+def _output_shape_errors(command_table, commands, block):
+    """Check JSON output against the output shape of its command.
+
+    The output is checked against the closest command before it.  Members
+    that are left out are fine, since examples often show only part of the
+    output, but members that don't exist and values of the wrong type are
+    reported.  Output filtered by --query or shown in another --output
+    format is not checked.
+    """
+    before = [c for c in commands if c.start < block.start]
+    if not before:
+        return []
+    command = before[-1]
+    operation = _operation_for(command_table, command)
+    if operation is None or _output_format(command) not in (None, 'json'):
+        return []
+    options = {
+        word.split('=')[0] for line in command.lines for word in line.split()
+    }
+    if options & {'--query', '--generate-cli-skeleton'}:
+        # The output is filtered, or is a skeleton instead of a response.
+        return []
+    shape = operation._operation_model.output_shape
+    duplicates = []
+
+    def no_duplicates(pairs):
+        keys = [key for key, _ in pairs]
+        duplicates.extend(k for k in set(keys) if keys.count(k) > 1)
+        return dict(pairs)
+
+    try:
+        data = json.loads(
+            textwrap.dedent('\n'.join(block.lines)),
+            object_pairs_hook=no_duplicates,
+        )
+    except ValueError:
+        # Reported as invalid JSON below.
+        return []
+    if duplicates:
+        return [
+            f'Line {block.lineno}: output has duplicate keys: '
+            + ', '.join(sorted(set(duplicates)))
+        ]
+    if shape is None or not shape.members:
+        return [
+            f'Line {block.lineno}: the command returns no output, so use '
+            f'"{NO_OUTPUT}" instead of an "{OUTPUT_HEADER}" block'
+        ]
+    if not isinstance(data, dict):
+        return [f'Line {block.lineno}: output must be a JSON object']
+    data = _as_modeled(data, shape)
+    if 'NextToken' not in shape.members:
+        # Added by the CLI's own pagination, e.g. with --max-items.
+        data.pop('NextToken', None)
+    report = ParamValidator().validate(data, shape)
+    # Service-side limits on values are not about the shape of the output.
+    skipped = (
+        'Missing required',
+        'Invalid length',
+        'Invalid range',
+        'Invalid value',
+    )
+    return [
+        f'Line {block.lineno}: output does not match the service model: '
+        + line.strip()
+        for line in report.generate_report().splitlines()
+        if line.strip() and not line.strip().startswith(skipped)
+    ]
+
+
+def check_output(example, command_table):
+    errors = []
+    for block in example.blocks:
+        if block.kind != 'para':
+            continue
+        # The header must not be indented.
+        header = block.lines[-1].rstrip()
+        if (
+            LOOSE_OUTPUT_HEADER_RE.match(header.lstrip())
+            and header != OUTPUT_HEADER
+        ):
+            lineno = block.lineno + len(block.lines) - 1
+            errors.append(
+                f'Line {lineno}: use "{OUTPUT_HEADER}" as the output header, '
+                f'found "{header}"'
+            )
+    for section in example.sections:
+        commands = [b for b in section.blocks if b.runs_aws]
+        outputs = section.outputs
+        paras = [b for b in section.blocks if b.kind == 'para']
+        for block in paras:
+            if 'produces no output' in block.text and (
+                not block.text.startswith(NO_OUTPUT)
+                or not commands
+                or block.start < commands[0].start
+            ):
+                errors.append(
+                    f'Line {block.lineno}: say "{NO_OUTPUT}" in its own '
+                    'paragraph after the command'
+                )
+        if commands and not outputs:
+            if not any(
+                b.text.startswith(NO_OUTPUT) and b.start > commands[0].start
+                for b in paras
+            ):
+                lineno = (section.title or commands[0]).lineno
+                errors.append(
+                    f'Line {lineno}: add an "{OUTPUT_HEADER}" block, or say '
+                    f'"{NO_OUTPUT}" after the command'
+                )
+        for block in outputs:
+            errors.extend(_output_shape_errors(command_table, commands, block))
+        if commands and _output_format(commands[-1]) not in (None, 'json'):
+            # Output in another format is not checked as JSON.
+            continue
+        if not _is_api_operation(command_table, example.command_path):
+            # Custom commands such as "s3 cp" print plain text.
+            continue
+        for block in outputs:
+            error = _parse_json(block)
+            if error:
+                errors.append(
+                    f'Line {block.lineno}: output is not valid JSON: {error}'
                 )
     return errors
 
@@ -957,6 +1197,13 @@ def test_example_file_contents(example_file):
     example = Example(example_file)
     errors = check_file_contents(example)
     _assert_follows_rule('file-contents', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_output(command_table, example_file):
+    example = Example(example_file)
+    errors = check_output(example, command_table)
+    _assert_follows_rule('output', example, errors)
 
 
 def test_example_style_exceptions_exist():

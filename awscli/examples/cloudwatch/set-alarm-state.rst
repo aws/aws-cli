@@ -8,4 +8,6 @@ Amazon CloudWatch alarm named "myalarm" and sets it to the ALARM state for testi
         --state-value ALARM \
         --state-reason "testing purposes"
 
+This command produces no output.
+
 This command returns to the prompt if successful.

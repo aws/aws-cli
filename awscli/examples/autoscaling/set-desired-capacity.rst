@@ -7,4 +7,6 @@ The following ``set-desired-capacity`` example sets the desired capacity for the
         --desired-capacity 2 \
         --honor-cooldown
 
+This command produces no output.
+
 This command returns to the prompt if successful.

@@ -4,3 +4,5 @@ The following ``delete-application`` example deletes an application named ``my-a
 
     aws elasticbeanstalk delete-application \
         --application-name my-app
+
+This command produces no output.

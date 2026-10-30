@@ -6,7 +6,9 @@ The following ``detect-stack-resource-drift`` example checks a resource named ``
         --stack-name MyStack \
         --logical-resource-id MyFunction
 
-The output shows an AWS Lambda function that was modified out-of-band::
+The output shows an AWS Lambda function that was modified out-of-band.
+
+Output::
 
     {
         "StackResourceDrift": {

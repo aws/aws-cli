@@ -8,3 +8,5 @@ The following ``confirm-forgot-password`` example confirms a forgotten password 
         --password PASSWORD \
         --confirmation-code CONF_CODE
 
+This command produces no output.
+

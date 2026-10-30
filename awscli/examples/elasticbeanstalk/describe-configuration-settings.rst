@@ -6,7 +6,7 @@ The following ``describe-configuration-settings`` example retrieves configuratio
         --environment-name my-env \
         --application-name my-app
 
-Output (abbreviated)::
+Output::
 
     {
         "ConfigurationSettings": [
@@ -29,7 +29,6 @@ Output (abbreviated)::
                         "Namespace": "aws:autoscaling:asg",
                         "Value": "360"
                     },
-                    ...
                     {
                         "OptionName": "ConnectionDrainingTimeout",
                         "ResourceName": "AWSEBLoadBalancer",

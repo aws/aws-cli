@@ -11,8 +11,8 @@ The following ``verify-mac`` example verifies a Hash-Based Message Authenticatio
 Output::
 
     {
-        "KeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/qnobl5lghrzunce6,
-        "KeyCheckValue": "2976E7",
+        "KeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/qnobl5lghrzunce6",
+        "KeyCheckValue": "2976E7"
     }
 
 For more information, see `Verify MAC <https://docs.aws.amazon.com/payment-cryptography/latest/userguide/verify-mac.html>`__ in the *AWS Payment Cryptography User Guide*.

@@ -6,9 +6,7 @@ The following ``add-tags`` example adds tags to the specified cluster. ::
         --resource-id j-xxxxxxx \
         --tags name="John Doe" age=29 sex=male address="123 East NW Seattle"
 
-- Output::
-
-    None
+This command produces no output.
 
 To list the tags of the cluster, run the following ``describe-cluster`` command. ::
 
@@ -16,7 +14,7 @@ To list the tags of the cluster, run the following ``describe-cluster`` command.
         --cluster-id j-xxxxxxx \
         --query Cluster.Tags
 
-- Output::
+Output::
 
     [
         {

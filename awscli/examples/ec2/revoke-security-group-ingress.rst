@@ -8,7 +8,22 @@ The following ``revoke-security-group-ingress`` example removes TCP port 22 acce
         --port 22 \
         --cidr 203.0.113.0/24
 
-This command produces no output if it succeeds.
+Output::
+
+    {
+        "Return": true,
+        "RevokedSecurityGroupRules": [
+            {
+                "SecurityGroupRuleId": "sgr-0abcdef1234567890",
+                "GroupId": "sg-1234567890abcdef0",
+                "IsEgress": false,
+                "IpProtocol": "tcp",
+                "FromPort": 22,
+                "ToPort": 22,
+                "CidrIpv4": "203.0.113.0/24"
+            }
+        ]
+    }
 
 For more information, see `Security groups <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html>`__ in the *Amazon EC2 User Guide*.
 
@@ -20,6 +35,21 @@ The following ``revoke-security-group-ingress`` example uses the ``ip-permission
         --group-id sg-026c12253ce15eff7 \
         --ip-permissions IpProtocol=icmp,FromPort=3,ToPort=4,IpRanges=[{CidrIp=0.0.0.0/0}]
 
-This command produces no output if it succeeds.
+Output::
+
+    {
+        "Return": true,
+        "RevokedSecurityGroupRules": [
+            {
+                "SecurityGroupRuleId": "sgr-0fedcba9876543210",
+                "GroupId": "sg-026c12253ce15eff7",
+                "IsEgress": false,
+                "IpProtocol": "icmp",
+                "FromPort": 3,
+                "ToPort": 4,
+                "CidrIpv4": "0.0.0.0/0"
+            }
+        ]
+    }
 
 For more information, see `Security groups <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html>`__ in the *Amazon EC2 User Guide*.

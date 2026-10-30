@@ -61,4 +61,32 @@ Contents of ``c:\temp\update-resolver-rule.json``::
         "ResolverEndpointId": "rslvr-out-7b89ed0d25example"
     }
 
+Output::
+
+    {
+        "ResolverRule": {
+            "Id": "rslvr-rr-1247fa64f3example",
+            "CreatorRequestId": "2020-01-02-18:47",
+            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-rule/rslvr-rr-1247fa64f3example",
+            "DomainName": "www.example.com.",
+            "Status": "COMPLETE",
+            "StatusMessage": "[Trace id: 1-5dcc90b9-8a8ee860aba1ebd89example] Successfully updated Resolver Rule.",
+            "RuleType": "FORWARD",
+            "Name": "my-2nd-rule",
+            "TargetIps": [
+                {
+                    "Ip": "192.0.2.45",
+                    "Port": 53
+                },
+                {
+                    "Ip": "192.0.2.46",
+                    "Port": 53
+                }
+            ],
+            "ResolverEndpointId": "rslvr-out-7b89ed0d25example",
+            "OwnerId": "111122223333",
+            "ShareStatus": "NOT_SHARED"
+        }
+    }
+
 For more information, see `Values That You Specify When You Create or Edit Rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-outbound-queries.html#resolver-forwarding-outbound-queries-rule-values>`__ in the *Amazon Route 53 Developer Guide*.

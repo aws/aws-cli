@@ -5,3 +5,5 @@ The following ``delete-configuration-template`` example deletes a configuration 
     aws elasticbeanstalk delete-configuration-template \
         --template-name my-template \
         --application-name my-app
+
+This command produces no output.

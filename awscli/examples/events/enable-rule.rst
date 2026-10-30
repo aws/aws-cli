@@ -4,3 +4,5 @@ The following ``enable-rule`` example enables the rule named ``DailyLambdaFuncti
 
     aws events enable-rule \
         --name "DailyLambdaFunction"
+
+This command produces no output.

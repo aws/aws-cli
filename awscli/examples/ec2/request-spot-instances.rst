@@ -63,8 +63,7 @@ Output::
                 "Type": "one-time",
                 "CreateTime": "2014-03-25T20:54:20.000Z",
                 "SpotPrice": "0.050000"
-            },
-            ...
+            }
         ]
     }
 
@@ -108,14 +107,14 @@ Output::
                 "LaunchSpecification": {
                     "Placement": {
                         "AvailabilityZone": "us-west-2a"
-                    }
-                    "ImageId": "ami-1a2b3c4d"
+                    },
+                    "ImageId": "ami-1a2b3c4d",
                     "SecurityGroups": [
                         {
                             "GroupName": "my-security-group",
-                            "GroupID": "sg-1a2b3c4d"
+                            "GroupId": "sg-1a2b3c4d"
                         }
-                    ]
+                    ],
                     "SubnetId": "subnet-1a2b3c4d",
                     "Monitoring": {
                         "Enabled": false
@@ -123,13 +122,12 @@ Output::
                     "IamInstanceProfile": {
                         "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
                     },
-                    "InstanceType": "m3.medium",
+                    "InstanceType": "m3.medium"
                 },
                 "Type": "one-time",
                 "CreateTime": "2014-03-25T22:21:58.000Z",
                 "SpotPrice": "0.050000"
-            },
-            ...
+            }
         ]
     }
 

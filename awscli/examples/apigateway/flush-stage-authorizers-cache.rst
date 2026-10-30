@@ -5,3 +5,5 @@ The following ``flush-stage-authorizers-cache`` example flushes all authorizer c
     aws apigateway flush-stage-authorizers-cache \
         --rest-api-id 1234123412 \
         --stage-name dev
+
+This command produces no output.

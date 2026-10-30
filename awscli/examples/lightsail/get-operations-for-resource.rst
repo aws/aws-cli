@@ -53,8 +53,6 @@ Output::
                 "operationType": "AttachInstancesToLoadBalancer",
                 "status": "Succeeded",
                 "statusChangedAt": 1571678842.806
-            },
-            ...
             }
         ]
     }

@@ -46,8 +46,6 @@ Output::
             {
                 "createdAt": 1570860986.0,
                 "message": "2019-10-12 06:16:26 20969 [Warning] IP address '192.0.2.0' could not be resolved: Temporary failure in name resolution"
-            },
-            ...
             }
         ],
         "nextBackwardToken": "eEXAMPLEZXJUZXh0IjoiZnRWb3F3cUpRSlQ5NndMYThxelRUZlFhR3J6c2dKWEEvM2kvajZMZzVVVWpqRDN0YjFXTjNrak5pRk9iVFRZdjkwVGlpZGw5NFJGSFRQTEdJSjdpQnFCRk5CZFJlYTZaSXpScStuZjJEYXhqM2grUFVJOEpIYlU5YWJ2QitvQWN5cEFyVUo3VDk1QWY3bVF6MEwvcVovVldZdGc9Iiwibm9uY2UiOiJBNHpzdWMvUkZZKzRvUzhEIiwiY2lwaGVyIjoiQUVTL0dDTS9Ob1BhZGEXAMPLEQ==",

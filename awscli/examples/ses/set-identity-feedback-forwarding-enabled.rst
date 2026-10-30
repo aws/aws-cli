@@ -6,6 +6,8 @@ The following ``set-identity-feedback-forwarding-enabled`` example enables a ver
         --identity user@example.com \
         --forwarding-enabled
 
+This command produces no output.
+
 You are required to receive bounce and complaint notifications via either Amazon SNS or email feedback forwarding, so you can only disable email feedback forwarding if you select an Amazon SNS topic for both bounce and complaint notifications.
 
 For more information about notifications, see `Using Notifications With Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.

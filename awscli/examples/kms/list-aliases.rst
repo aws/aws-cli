@@ -27,8 +27,7 @@ Output::
                 "AliasArn": "arn:aws:kms:us-west-2:111122223333:alias/aws/ebs",
                 "AliasName": "alias/aws/ebs",
                 "TargetKeyId": "0987ab65-43cd-21ef-09ab-87654321cdef"
-            },
-            ...
+            }
         ]
     }
 

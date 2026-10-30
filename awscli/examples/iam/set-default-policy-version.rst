@@ -6,4 +6,6 @@ The following ``set-default-policy-version`` example sets the ``v2`` version of 
         --policy-arn arn:aws:iam::123456789012:policy/MyPolicy \
         --version-id v2
 
+This command produces no output.
+
 For more information, see `Policies and permissions in IAM <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html>`__ in the *AWS IAM User Guide*.

@@ -7,3 +7,5 @@ The following ``delete-scaling-policy`` example deletes a scaling policy for the
         --scalable-dimension ecs:service:DesiredCount \
         --resource-id service/default/web-app \
         --service-namespace ecs
+
+This command produces no output.

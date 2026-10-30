@@ -19,7 +19,7 @@ Output::
             "UserRegistrationStatus": "Registered",
             "RegisteredOn": "2018-12-20T18:45:25.231Z",
             "AlexaForBusinessMetadata": {
-                "IsAlexaForBusinessEnabled": False,
+                "IsAlexaForBusinessEnabled": false,
                 "AlexaForBusinessRoomArn": "null"
             },
             "PersonalPIN": "XXXXXXXXXX"

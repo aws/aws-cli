@@ -8,25 +8,24 @@ The following ``list-members`` example lists all member accounts associated with
 Output::
 
     {
+        "members": [
             {
-                 "members": [
-            {
-                 "accountId": "123456789012",
-                 "delegatedAdminAccountId": "123456789012",
-                 "relationshipStatus": "ENABLED",
-                 "updatedAt": "2023-09-11T09:57:20.520000-07:00"
+                "accountId": "123456789012",
+                "delegatedAdminAccountId": "123456789012",
+                "relationshipStatus": "ENABLED",
+                "updatedAt": "2023-09-11T09:57:20.520000-07:00"
             },
             {
-                 "accountId": "123456789012",
-                 "delegatedAdminAccountId": "123456789012",
-                 "relationshipStatus": "ENABLED",
-                 "updatedAt": "2024-08-12T10:13:01.472000-07:00"
+                "accountId": "123456789012",
+                "delegatedAdminAccountId": "123456789012",
+                "relationshipStatus": "ENABLED",
+                "updatedAt": "2024-08-12T10:13:01.472000-07:00"
             },
             {
-                 "accountId": "625032911453",
-                 "delegatedAdminAccountId": "123456789012",
-                 "relationshipStatus": "ENABLED",
-                 "updatedAt": "2023-09-11T09:57:20.438000-07:00"
+                "accountId": "625032911453",
+                "delegatedAdminAccountId": "123456789012",
+                "relationshipStatus": "ENABLED",
+                "updatedAt": "2023-09-11T09:57:20.438000-07:00"
             },
             {
                 "accountId": "715411239211",
@@ -49,8 +48,7 @@ The following ``list-members`` example lists all member accounts associated with
 Output::
 
     {
-            {
-                "members": [
+        "members": [
             {
                 "accountId": "123456789012",
                 "delegatedAdminAccountId": "123456789012",

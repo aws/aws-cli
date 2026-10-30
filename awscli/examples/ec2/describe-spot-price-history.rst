@@ -31,9 +31,9 @@ Output::
                 "InstanceType": "m1.xlarge",
                 "SpotPrice": "0.087000",
                 "AvailabilityZone": "us-west-1a"
-            },
-            ...
-        }
+            }
+        ]
+    }
 
 
 **Example 2: To describe Spot price history for Linux/UNIX Amazon VPC**

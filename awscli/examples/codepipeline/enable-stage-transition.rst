@@ -7,7 +7,4 @@ The following ``enable-stage-transition`` example enables transitions into the B
         --stage-name Beta \
         --transition-type Inbound
 
-
-Output::
-
-    None.
+This command produces no output.

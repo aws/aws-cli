@@ -7,6 +7,6 @@ The following ``accept-page`` example uses an accept code sent to the contact ch
         --accept-type READ \
         --accept-code 425440 
 
-This command produces no output
+This command produces no output.
 
 For more information, see `Contacts <https://docs.aws.amazon.com/incident-manager/latest/userguide/contacts.html>`__ in the *Incident Manager User Guide*.

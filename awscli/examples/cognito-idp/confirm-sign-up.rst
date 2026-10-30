@@ -6,3 +6,9 @@ The following ``confirm-sign-up`` example confirms sign-up for username diego@ex
         --client-id 3n4b5urk1ft4fl3mg5e62d9ado \
         --username diego@example.com \
         --confirmation-code CONF_CODE
+
+Output::
+
+    {
+        "Session": "AYABeEXAMPLEhLPy6WfPnN0bJ3VYeUg7Ryh2mB1xOCy2CFvpZx5jSEXAMPLE"
+    }

@@ -55,8 +55,7 @@ Output::
                 "StartDate": 1550161369.149,
                 "EndDate": 1550162580.329,
                 "Owner": "arn:aws:sts::123456789012:assumed-role/Administrator/Jane-Roe"
-            },
-            ...
+            }
         ],
         "NextToken": "--token string truncated--"
     }

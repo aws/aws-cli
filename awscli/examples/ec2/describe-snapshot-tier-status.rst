@@ -15,7 +15,7 @@ Output::
                 "LastTieringProgress": 100,
                 "Tags": [],
                 "VolumeId": "vol-01234567890abcedf",
-                "LastTieringOperationState": "archival-completed",
+                "LastTieringOperationStatus": "archival-completed",
                 "StorageTier": "archive",
                 "OwnerId": "123456789012",
                 "SnapshotId": "snap-01234567890abcedf",

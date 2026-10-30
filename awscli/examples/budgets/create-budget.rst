@@ -41,6 +41,8 @@ Contents of ``budget.json``::
         "TimeUnit": "MONTHLY"
     }
 
+This command produces no output.
+
 Contents of ``notifications-with-subscribers.json``::
 
     [

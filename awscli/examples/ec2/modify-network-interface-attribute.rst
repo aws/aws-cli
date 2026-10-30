@@ -6,6 +6,8 @@ The following ``modify-network-interface-attribute`` example modifies the ``atta
         --network-interface-id eni-686ea200 \
         --attachment AttachmentId=eni-attach-43348162,DeleteOnTermination=false
 
+This command produces no output.
+
 
 **Example 2: To modify the description attribute of a network interface**
 
@@ -14,6 +16,8 @@ The following ``modify-network-interface-attribute`` example modifies the ``desc
     aws ec2 modify-network-interface-attribute \
         --network-interface-id eni-686ea200 \
         --description "My description"
+
+This command produces no output.
 
 
 **Example 3: To modify the groupSet attribute of a network interface**
@@ -24,6 +28,8 @@ The following ``modify-network-interface-attribute`` example modifies the ``grou
         --network-interface-id eni-686ea200 \
         --groups sg-903004f8 sg-1a2b3c4d
 
+This command produces no output.
+
 
 **Example 4: To modify the sourceDestCheck attribute of a network interface**
 
@@ -32,3 +38,5 @@ The following ``modify-network-interface-attribute`` example modifies the ``sour
     aws ec2 modify-network-interface-attribute \
         --network-interface-id eni-686ea200 \
         --no-source-dest-check
+
+This command produces no output.

@@ -45,4 +45,49 @@ If you create your preset JSON file by using ``get-preset`` and then modifying t
 
 To get your account-specific endpoint, use ``describe-endpoints``, or send the command without the endpoint. The service returns an error and your endpoint.
 
+Output::
+
+    {
+        "Preset": {
+            "Arn": "arn:aws:mediaconvert:region-name-1:123456789012:presets/SimpleMP4",
+            "CreatedAt": "2024-04-01T17:22:05+00:00",
+            "Description": "Creates basic MP4 file. No filtering or preprocessing.",
+            "LastUpdated": "2024-04-01T17:22:05+00:00",
+            "Name": "SimpleMP4",
+            "Settings": {
+                "ContainerSettings": {
+                    "Container": "MP4",
+                    "Mp4Settings": {
+                        "CslgAtom": "INCLUDE",
+                        "FreeSpaceBox": "EXCLUDE",
+                        "MoovPlacement": "PROGRESSIVE_DOWNLOAD"
+                    }
+                },
+                "VideoDescription": {
+                    "CodecSettings": {
+                        "Codec": "H_264",
+                        "H264Settings": {
+                            "Bitrate": 400000,
+                            "CodecProfile": "MAIN",
+                            "RateControlMode": "CBR"
+                        }
+                    }
+                },
+                "AudioDescriptions": [
+                    {
+                        "CodecSettings": {
+                            "Codec": "AAC",
+                            "AacSettings": {
+                                "Bitrate": 96000,
+                                "CodingMode": "CODING_MODE_2_0",
+                                "SampleRate": 48000
+                            }
+                        }
+                    }
+                ]
+            },
+            "Type": "CUSTOM"
+        }
+    }
+
 For more information, see `Working with AWS Elemental MediaConvert Output Presets <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-presets.html>`_ in the *AWS Elemental MediaConvert User Guide*.

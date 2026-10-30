@@ -7,3 +7,5 @@ The following ``create-lb-cookie-stickiness-policy`` example generates a stickin
         --policy-name my-duration-cookie-policy \
         --cookie-expiration-period 60
 
+This command produces no output.
+

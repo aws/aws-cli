@@ -8,10 +8,16 @@ The following ``list-tags-for-resource`` example retrieves a list of all tags at
 Output::
 
     {
-        "tags": {
-            "Project": "ProjectA",
-            "IscontainerBased": "true"
-        }
+        "tags": [
+            {
+                "key": "Project",
+                "value": "ProjectA"
+            },
+            {
+                "key": "IscontainerBased",
+                "value": "true"
+            }
+        ]
     }
 
 For more information, see `View tags for a pipeline (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-tag.html#pipelines-tag-list-cli>`__ in the *AWS CodePipeline User Guide*.

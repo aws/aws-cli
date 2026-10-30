@@ -7,7 +7,9 @@ This command uses the ``key-id`` parameter with a key ID to identify the KMS key
     aws kms list-grants \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
 
-The output shows that the grant gives Amazon DynamoDB permission to use the KMS key for cryptographic operations, and gives it permission to view details about the KMS key (``DescribeKey``) and to retire grants (``RetireGrant``). The ``EncryptionContextSubset`` constraint limits these permission to requests that include the specified encryption context pairs. As a result, the permissions in the grant are effective only on specified account and DynamoDB table. ::
+The output shows that the grant gives Amazon DynamoDB permission to use the KMS key for cryptographic operations, and gives it permission to view details about the KMS key (``DescribeKey``) and to retire grants (``RetireGrant``). The ``EncryptionContextSubset`` constraint limits these permission to requests that include the specified encryption context pairs. As a result, the permissions in the grant are effective only on specified account and DynamoDB table.
+
+Output::
 
     {
         "Grants": [

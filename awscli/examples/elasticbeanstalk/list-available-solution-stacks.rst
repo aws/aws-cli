@@ -4,7 +4,7 @@ The following ``list-available-solution-stacks`` example lists solution stacks f
 
     aws elasticbeanstalk list-available-solution-stacks
 
-Output (abbreviated)::
+Output::
 
     {
         "SolutionStacks": [
@@ -35,7 +35,7 @@ Output (abbreviated)::
             "64bit Debian jessie v2.0.0 running GlassFish 4.0 Java 7 (Preconfigured - Docker)",
             "64bit Debian jessie v2.0.0 running Go 1.4 (Preconfigured - Docker)",
             "64bit Debian jessie v2.0.0 running Go 1.3 (Preconfigured - Docker)",
-            "64bit Debian jessie v2.0.0 running Python 3.4 (Preconfigured - Docker)",
+            "64bit Debian jessie v2.0.0 running Python 3.4 (Preconfigured - Docker)"
         ],
         "SolutionStackDetails": [
             {
@@ -43,8 +43,7 @@ Output (abbreviated)::
                     "zip"
                 ],
                 "SolutionStackName": "64bit Amazon Linux 2015.03 v2.0.0 running Node.js"
-            },
-            ...
+            }
         ]
     }
 

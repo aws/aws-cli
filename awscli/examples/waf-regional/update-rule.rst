@@ -7,4 +7,10 @@ The following ``update-rule`` example deletes a ``Predicate`` object in a rule. 
         --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1 \
         --updates 'Action="DELETE",Predicate={Negated=false,Type="ByteMatch",DataId="MyByteMatchSetID"}'
 
+Output::
+
+    {
+        "ChangeToken": "12cs345-67cd-890b-1cd2-c3a4567d89f1"
+    }
+
 For more information, see `Working with Rules <https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-rules.html>`__ in the *AWS WAF Developer Guide* .

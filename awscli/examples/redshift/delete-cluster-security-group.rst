@@ -5,3 +5,5 @@ The following ``delete-cluster-security-group`` example deletes a cluster securi
     aws redshift delete-cluster-security-group \
         --cluster-security-group-name mysecuritygroup
 
+This command produces no output.
+

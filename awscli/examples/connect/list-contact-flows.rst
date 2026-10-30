@@ -26,7 +26,7 @@ Output::
                 "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/contact-flow/abcdefgh-3333-4444-8af3-201123456789",
                 "Name": "Default customer hold",
                 "ContactFlowType": "CUSTOMER_HOLD"
-            },
+            }
         ]
     }
 

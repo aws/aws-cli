@@ -4,7 +4,7 @@ The following ``describe-subnet-groups`` example returns a list of subnet groups
 
     aws memorydb describe-subnet-groups
 
-Output ::
+Output::
 
     {
         "SubnetGroups": [

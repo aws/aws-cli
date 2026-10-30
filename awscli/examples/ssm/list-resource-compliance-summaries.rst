@@ -85,3 +85,43 @@ The following ``list-resource-compliance-summaries`` example lists resource-leve
     aws ssm list-resource-compliance-summaries \
         --filters "Key=ComplianceType,Values=Patch,Type=EQUAL"
 
+Output::
+
+    {
+        "ResourceComplianceSummaryItems": [
+            {
+                "ComplianceType": "Patch",
+                "ResourceType": "ManagedInstance",
+                "ResourceId": "i-9876543210abcdef0",
+                "Status": "COMPLIANT",
+                "OverallSeverity": "UNSPECIFIED",
+                "ExecutionSummary": {
+                    "ExecutionTime": 1550248550.0,
+                    "ExecutionId": "7abb6378-a4a5-4f10-8312-0123456789ab",
+                    "ExecutionType": "Command"
+                },
+                "CompliantSummary": {
+                    "CompliantCount": 397,
+                    "SeveritySummary": {
+                        "CriticalCount": 0,
+                        "HighCount": 0,
+                        "MediumCount": 0,
+                        "LowCount": 0,
+                        "InformationalCount": 0,
+                        "UnspecifiedCount": 397
+                    }
+                },
+                "NonCompliantSummary": {
+                    "NonCompliantCount": 0,
+                    "SeveritySummary": {
+                        "CriticalCount": 0,
+                        "HighCount": 0,
+                        "MediumCount": 0,
+                        "LowCount": 0,
+                        "InformationalCount": 0,
+                        "UnspecifiedCount": 0
+                    }
+                }
+            }
+        ]
+    }

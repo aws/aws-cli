@@ -24,3 +24,5 @@ Contents of ``report-definition.json``::
         ]
     }
 
+This command produces no output.
+

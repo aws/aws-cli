@@ -22,7 +22,7 @@ Output::
         "decision":"Allow",
         "determiningPolicies":[
             {
-            "determiningPolicyId":"SPEXAMPLEabcdefg111111"
+                "policyId":"SPEXAMPLEabcdefg111111"
             }
         ],
         "errors":[]

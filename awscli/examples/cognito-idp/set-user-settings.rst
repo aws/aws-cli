@@ -6,3 +6,5 @@ The following ``set-user-settings`` example sets the MFA delivery preference to 
         --access-token ACCESS_TOKEN \
         --mfa-options DeliveryMedium=EMAIL
 
+This command produces no output.
+

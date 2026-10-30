@@ -6,3 +6,5 @@ The following ``delete-user-pool-client`` example deletes a user pool client. ::
         --user-pool-id us-west-2_aaaaaaaaa \
         --client-id 38fjsnc484p94kpqsnet7mpld0
 
+This command produces no output.
+

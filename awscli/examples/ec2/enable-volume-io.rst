@@ -5,8 +5,4 @@ The following ``enable-volume-io`` example enables I/O on volume ``vol-123456789
     aws ec2 enable-volume-io \
         --volume-id vol-1234567890abcdef0
 
-Output::
-
-    {
-        "Return": true
-    }
+This command produces no output.

@@ -17,3 +17,5 @@ Contents of ``C:\revoke_config.txt``::
             "S3BucketName": "amzn-s3-demo-bucket"
         }
     }
+
+This command produces no output.

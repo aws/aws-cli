@@ -7,6 +7,12 @@ The following ``update-ip-set`` example updates an IPSet with an IPv4 address an
         --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1 \
         --updates 'Action="INSERT",IPSetDescriptor={Type="IPV4",Value="12.34.56.78/16"},Action="DELETE",IPSetDescriptor={Type="IPV6",Value="1111:0000:0000:0000:0000:0000:0000:0111/128"}' 
 
+Output::
+
+    {
+        "ChangeToken": "12cs345-67cd-890b-1cd2-c3a4567d89f1"
+    }
+
 Alternatively, you can use a JSON file to specify the input, as shown in the following example. ::
 
     aws waf-regional update-ip-set \
@@ -34,5 +40,11 @@ Contents of ``change.json``::
             } 
         }
     ]
- 
+
+Output::
+
+    {
+        "ChangeToken": "12cs345-67cd-890b-1cd2-c3a4567d89f1"
+    }
+
 For more information, see `Working with IP Match Conditions <https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-ip-conditions.html>`__ in the *AWS WAF Developer Guide*.

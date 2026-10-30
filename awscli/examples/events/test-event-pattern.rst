@@ -5,3 +5,9 @@ The following ``test-event-pattern`` example tests whether the pattern ``source:
     aws events test-event-pattern \
         --event-pattern "{\"source\":[\"com.mycompany.myapp\"]}" \
         --event "{\"id\":\"1\",\"source\":\"com.mycompany.myapp\",\"detail-type\":\"myDetailType\",\"account\":\"123456789012\",\"region\":\"us-east-1\",\"time\":\"2017-04-11T20:11:04Z\"}"
+
+Output::
+
+    {
+        "Result": true
+    }

@@ -58,7 +58,7 @@ Output::
                 "GroupName": "MySecurityGroup",
                 "VpcId": "vpc-1a2b3c4d",
                 "OwnerId": "123456789012",
-                "GroupId": "sg-903004f8",
+                "GroupId": "sg-903004f8"
             }
         ]
     }

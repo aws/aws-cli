@@ -8,6 +8,20 @@ The following ``create-stage`` example creates a stage named ``dev`` in an API, 
         --description 'Development stage' \
         --deployment-id a1b2c3
 
+Output::
+
+    {
+        "deploymentId": "a1b2c3",
+        "stageName": "dev",
+        "description": "Development stage",
+        "cacheClusterEnabled": false,
+        "cacheClusterStatus": "NOT_AVAILABLE",
+        "methodSettings": {},
+        "tracingEnabled": false,
+        "createdDate": "2022-07-18T10:11:18-07:00",
+        "lastUpdatedDate": "2022-07-18T10:11:18-07:00"
+    }
+
 **Example 2: To create a stage in an API which will contain an existing deployment and custom Stage Variables**
 
 The following ``create-stage`` example creates a stage named ``dev`` in an API, which contains an existing deployment and custom stage variables. ::
@@ -18,3 +32,21 @@ The following ``create-stage`` example creates a stage named ``dev`` in an API, 
         --description 'Development stage' \
         --deployment-id a1b2c3 \
         --variables key='value',otherKey='otherValue'
+
+Output::
+
+    {
+        "deploymentId": "a1b2c3",
+        "stageName": "dev",
+        "description": "Development stage",
+        "cacheClusterEnabled": false,
+        "cacheClusterStatus": "NOT_AVAILABLE",
+        "methodSettings": {},
+        "variables": {
+            "key": "value",
+            "otherKey": "otherValue"
+        },
+        "tracingEnabled": false,
+        "createdDate": "2022-07-18T10:11:18-07:00",
+        "lastUpdatedDate": "2022-07-18T10:11:18-07:00"
+    }

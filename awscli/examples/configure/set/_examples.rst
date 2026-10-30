@@ -1,15 +1,18 @@
 **To set configuration values**
 
-The following ``set`` example sets configuration values. Given an empty config file, the following commands::
+The following ``set`` example sets configuration values. Given an empty config file, run the following commands. ::
 
-    $ aws configure set aws_access_key_id default_access_key
-    $ aws configure set aws_secret_access_key default_secret_key
-    $ aws configure set default.region us-west-2
-    $ aws configure set default.ca_bundle /path/to/ca-bundle.pem
-    $ aws configure set region us-west-1 --profile testing
-    $ aws configure set profile.testing2.region eu-west-1
+    aws configure set aws_access_key_id default_access_key
+    aws configure set aws_secret_access_key default_secret_key
+    aws configure set default.region us-west-2
+    aws configure set default.ca_bundle /path/to/ca-bundle.pem
+    aws configure set region us-west-1 \
+        --profile testing
+    aws configure set profile.testing2.region eu-west-1
 
-will produce the following config file::
+This command produces no output.
+
+These commands produce the following config file::
 
     [default]
     region = us-west-2

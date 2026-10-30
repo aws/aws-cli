@@ -6,4 +6,10 @@ The following ``create-vault`` example creates a new vault named ``my-vault``. :
         --vault-name my-vault \
         --account-id -
 
+Output::
+
+    {
+        "location": "/123456789012/vaults/my-vault"
+    }
+
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.

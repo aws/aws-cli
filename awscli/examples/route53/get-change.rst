@@ -5,3 +5,13 @@ The following ``get-change`` example gets the status and other information about
     aws route53 get-change \
         --id /change/CWPIK4URU2I5S
 
+Output::
+
+    {
+        "ChangeInfo": {
+            "Id": "/change/CWPIK4URU2I5S",
+            "Status": "INSYNC",
+            "SubmittedAt": "2014-04-01T18:47:10.123Z"
+        }
+    }
+

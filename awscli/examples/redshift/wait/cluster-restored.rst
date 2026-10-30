@@ -5,4 +5,4 @@ The following ``wait cluster-restored`` example pauses and resumes only after th
     aws redshift wait cluster-restored \
         --cluster-identifier mycluster
 
-This command does not produce any output.
+This command produces no output.

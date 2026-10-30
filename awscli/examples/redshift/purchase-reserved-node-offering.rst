@@ -6,18 +6,18 @@ calling ``describe-reserved-node-offerings``. ::
     aws redshift purchase-reserved-node-offering \
         --reserved-node-offering-id ceb6a579-cf4c-4343-be8b-d832c45ab51c
 
-Result::
+Output::
 
     {
         "ReservedNode": {
             "OfferingType": "Heavy Utilization",
-            "FixedPrice": "",
+            "FixedPrice": 3000.0,
             "NodeType": "dw.hs1.xlarge",
             "ReservedNodeId": "1ba8e2e3-bc01-4d65-b35d-a4a3e931547e",
-            "UsagePrice": "",
+            "UsagePrice": 0.0,
             "RecurringCharges": [
                 {
-                    "RecurringChargeAmount": "",
+                    "RecurringChargeAmount": 0.114,
                     "RecurringChargeFrequency": "Hourly"
                 }
             ],
@@ -26,9 +26,6 @@ Result::
             "StartTime": "2013-02-13T17:08:39.051Z",
             "Duration": 31536000,
             "ReservedNodeOfferingId": "ceb6a579-cf4c-4343-be8b-d832c45ab51c"
-        },
-        "ResponseMetadata": {
-            "RequestId": "01bda7bf-7600-11e2-b605-2568d7396e7f"
         }
     }
 

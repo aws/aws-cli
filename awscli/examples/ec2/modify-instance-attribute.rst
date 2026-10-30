@@ -55,13 +55,11 @@ Linux/macOS version of the command::
 
     base64 UserData.txt > UserData.base64.txt
 
-This command produces no output.
-
 Windows version of the command::
 
     certutil -encode UserData.txt tmp.b64 && findstr /v /c:- tmp.b64 > UserData.base64.txt
 
-Output::
+The ``certutil`` command displays output similar to the following::
 
     Input Length = 67
     Output Length = 152

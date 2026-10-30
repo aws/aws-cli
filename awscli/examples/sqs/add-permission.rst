@@ -8,6 +8,4 @@ The following ``add-permission`` example enables the specified AWS account to se
         --aws-account-ids 12345EXAMPLE \
         --actions SendMessage
 
-Output::
-
-    None.
+This command produces no output.

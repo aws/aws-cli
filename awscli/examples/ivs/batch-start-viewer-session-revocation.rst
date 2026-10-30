@@ -14,13 +14,13 @@ Output::
                 "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh1",
                 "viewerId": "abcdefg1",
                 "code": "403",
-                "message": "not authorized",
+                "message": "not authorized"
             },
             {
                 "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh2",
                 "viewerId": "abcdefg2",
                 "code": "403",
-                "message": "not authorized",
+                "message": "not authorized"
             }
         ]
     }

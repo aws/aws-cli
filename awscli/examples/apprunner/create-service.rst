@@ -27,11 +27,9 @@ Contents of ``input.json``::
                         "BuildCommand": "pip install -r requirements.txt",
                         "StartCommand": "python server.py",
                         "Port": "8080",
-                        "RuntimeEnvironmentVariables": [
-                            {
-                                "NAME": "Jane"
-                            }
-                        ]
+                        "RuntimeEnvironmentVariables": {
+                            "NAME": "Jane"
+                        }
                     }
                 }
             }
@@ -64,11 +62,9 @@ Output::
                             "BuildCommand": "pip install -r requirements.txt",
                             "Port": "8080",
                             "Runtime": "PYTHON_3",
-                            "RuntimeEnvironmentVariables": [
-                                {
-                                    "NAME": "Jane"
-                                }
-                            ],
+                            "RuntimeEnvironmentVariables": {
+                                "NAME": "Jane"
+                            },
                             "StartCommand": "python server.py"
                         },
                         "ConfigurationSource": "Api"
@@ -117,11 +113,9 @@ Contents of ``input.json``::
                         "BuildCommand": "pip install -r requirements.txt",
                         "StartCommand": "python server.py",
                         "Port": "8080",
-                        "RuntimeEnvironmentVariables": [
-                            {
-                                "NAME": "Jane"
-                            }
-                        ]
+                        "RuntimeEnvironmentVariables": {
+                            "NAME": "Jane"
+                        }
                     }
                 }
             }
@@ -154,11 +148,9 @@ Output::
                             "BuildCommand": "pip install -r requirements.txt",
                             "Port": "8080",
                             "Runtime": "PYTHON_3",
-                            "RuntimeEnvironmentVariables": [
-                                {
-                                    "NAME": "Jane"
-                                }
-                            ],
+                            "RuntimeEnvironmentVariables": {
+                                "NAME": "Jane"
+                            },
                             "StartCommand": "python server.py"
                         },
                         "ConfigurationSource": "Api"
@@ -198,11 +190,9 @@ Contents of ``input.json``::
                 "ImageIdentifier": "123456789012.dkr.ecr.us-east-1.amazonaws.com/golang-app:latest",
                 "ImageConfiguration": {
                     "Port": "8080",
-                    "RuntimeEnvironmentVariables": [
-                        {
-                            "NAME": "Jane"
-                        }
-                    ]
+                    "RuntimeEnvironmentVariables": {
+                        "NAME": "Jane"
+                    }
                 },
                 "ImageRepositoryType": "ECR"
             }
@@ -233,11 +223,9 @@ Output::
                     "ImageIdentifier": "123456789012.dkr.ecr.us-east-1.amazonaws.com/golang-app:latest",
                     "ImageConfiguration": {
                         "Port": "8080",
-                        "RuntimeEnvironmentVariables": [
-                            {
-                                "NAME": "Jane"
-                            }
-                        ]
+                        "RuntimeEnvironmentVariables": {
+                            "NAME": "Jane"
+                        }
                     },
                     "ImageRepositoryType": "ECR"
                 }

@@ -5,3 +5,5 @@ The following ``delete-cluster-parameter-group`` example deletes a cluster param
     aws redshift delete-cluster-parameter-group \
         --parameter-group-name myclusterparametergroup
 
+This command produces no output.
+

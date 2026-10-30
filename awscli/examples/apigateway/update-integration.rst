@@ -8,6 +8,19 @@ The following ``update-integration`` example adds the 'Content-Type: application
         --http-method POST \
         --patch-operations "op='add',path='/requestTemplates/application~1json'"
 
+Output::
+
+    {
+        "type": "MOCK",
+        "requestTemplates": {
+            "application/json": null
+        },
+        "passthroughBehavior": "WHEN_NO_MATCH",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "a1b2c3",
+        "cacheKeyParameters": []
+    }
+
 **Example 2: To update (replace) the 'Content-Type: application/json' Mapping Template configured with a custom template**
 
 The following ``update-integration`` example updates (replaces) the 'Content-Type: application/json' Mapping Template configured with a custom template. ::
@@ -17,6 +30,19 @@ The following ``update-integration`` example updates (replaces) the 'Content-Typ
         --resource-id a1b2c3 \
         --http-method POST \
         --patch-operations "op='replace',path='/requestTemplates/application~1json',value='{"example": "json"}'"
+
+Output::
+
+    {
+        "type": "MOCK",
+        "requestTemplates": {
+            "application/json": "{\"example\": \"json\"}"
+        },
+        "passthroughBehavior": "WHEN_NO_MATCH",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "a1b2c3",
+        "cacheKeyParameters": []
+    }
 
 **Example 3: To update (replace) a custom template associated with 'Content-Type: application/json' with Input Passthrough**
 
@@ -28,6 +54,19 @@ The following ``update-integration`` example updates (replaces) a custom templat
         --http-method POST \
         --patch-operations "op='replace',path='requestTemplates/application~1json'"
 
+Output::
+
+    {
+        "type": "MOCK",
+        "requestTemplates": {
+            "application/json": null
+        },
+        "passthroughBehavior": "WHEN_NO_MATCH",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "a1b2c3",
+        "cacheKeyParameters": []
+    }
+
 **Example 4: To remove the 'Content-Type: application/json' Mapping Template**
 
 The following ``update-integration`` example removes the 'Content-Type: application/json' Mapping Template. ::
@@ -37,3 +76,13 @@ The following ``update-integration`` example removes the 'Content-Type: applicat
         --resource-id a1b2c3 \
         --http-method POST \
         --patch-operations "op='remove',path='/requestTemplates/application~1json'"
+
+Output::
+
+    {
+        "type": "MOCK",
+        "passthroughBehavior": "WHEN_NO_MATCH",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "a1b2c3",
+        "cacheKeyParameters": []
+    }

@@ -77,6 +77,12 @@ Contents of ``config.json``::
         ]
     }
 
+Output::
+
+    {
+        "SpotFleetRequestId": "sfr-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
+    }
+
 **Example 3: To launch Spot instances in a subnet and assign them public IP addresses**
 
 The following ``request-spot-fleet`` example assigns public addresses to instances launched in a nondefault VPC.
@@ -114,6 +120,12 @@ Contents of ``config.json``::
         ]
     }
 
+Output::
+
+    {
+        "SpotFleetRequestId": "sfr-a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
+    }
+
 **Example 4: To request a Spot fleet using the diversified allocation strategy**
 
 The following ``request-spot-fleet`` example creates a Spot fleet request that launches 30 instances using the diversified allocation strategy.
@@ -147,6 +159,12 @@ Contents of ``config.json``::
                 "SubnetId": "subnet-1a2b3c4d"
             }
         ]
+    }
+
+Output::
+
+    {
+        "SpotFleetRequestId": "sfr-a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
     }
 
 For more information, see `Spot Fleet Requests`_ in the *Amazon Elastic Compute Cloud User Guide*.

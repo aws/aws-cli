@@ -31,6 +31,30 @@ JSON syntax::
         "FailureThreshold": integer between 1 and 10
     }
 
+Output::
+
+    {
+        "Location": "https://route53.amazonaws.com/2013-04-01/healthcheck/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "HealthCheck": {
+            "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "CallerReference": "2014-04-01-18:47",
+            "HealthCheckConfig": {
+                "IPAddress": "192.0.2.44",
+                "Port": 80,
+                "Type": "HTTP",
+                "ResourcePath": "/docs/route53-health-check.html",
+                "FullyQualifiedDomainName": "example.com",
+                "RequestInterval": 30,
+                "FailureThreshold": 3,
+                "MeasureLatency": false,
+                "Inverted": false,
+                "Disabled": false,
+                "EnableSNI": false
+            },
+            "HealthCheckVersion": 1
+        }
+    }
+
 
 To add the health check to a Route 53 resource record set, use the ``change-resource-record-sets`` command.
 

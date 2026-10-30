@@ -6,3 +6,5 @@ The following ``delete-resource-server`` example deletes a resource server named
         --user-pool-id us-west-2_aaaaaaaaa \
         --identifier weather.example.com
 
+This command produces no output.
+

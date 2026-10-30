@@ -5,4 +5,4 @@ The following ``wait snapshot-available`` example pauses and continues only afte
     aws redshift wait snapshot-available \
         --snapshot-identifier mycluster-2019-11-06-16-31
 
-This command does not produce any output.
+This command produces no output.

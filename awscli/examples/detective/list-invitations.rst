@@ -13,10 +13,10 @@ Output::
             "AdministratorId": "111122223333",
             "EmailAddress": "mmajor@example.com",
             "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-            "InvitedTime": 1579826107000,
+            "InvitedTime": "2020-01-24T00:35:07+00:00",
             "MasterId": "111122223333",
             "Status": "INVITED",
-            "UpdatedTime": 1579826107000
+            "UpdatedTime": "2020-01-24T00:35:07+00:00"
         }
     ]
     }

@@ -94,7 +94,6 @@ Output::
                     "actions": [
                         {
                             "actionTypeId": {
-                                "__type": "ActionTypeId",
                                 "category": "Source",
                                 "owner": "AWS",
                                 "provider": "S3",
@@ -120,7 +119,6 @@ Output::
                     "actions": [
                         {
                             "actionTypeId": {
-                                "__type": "ActionTypeId",
                                 "category": "Deploy",
                                 "owner": "AWS",
                                 "provider": "CodeDeploy",

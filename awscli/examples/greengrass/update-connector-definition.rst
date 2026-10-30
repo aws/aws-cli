@@ -6,4 +6,6 @@ The following ``update-connector-definition`` example updates the name for the s
         --connector-definition-id "55d0052b-0d7d-44d6-b56f-21867215e118" \
         --name "GreengrassConnectors2019"
 
+This command produces no output.
+
 For more information, see `Integrate with Services and Protocols Using Connectors <https://docs.aws.amazon.com/greengrass/latest/developerguide/connectors.html>`__ in the *AWS IoT Greengrass Developer Guide*.

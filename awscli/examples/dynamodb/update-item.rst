@@ -104,7 +104,7 @@ Contents of ``expression-attribute-values.json``::
         ":t":{"S": "Louder Than Ever"}
     }
 
-If the item already has a ``Year`` attribute, DynamoDB returns the following output. ::
+This command produces no output. DynamoDB updates the item only if it does not already have a ``Year`` attribute. If the item already has a ``Year`` attribute, the command fails with the following error. ::
 
     An error occurred (ConditionalCheckFailedException) when calling the UpdateItem operation: The conditional request failed
 

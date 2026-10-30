@@ -13,89 +13,79 @@ Output::
                 "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/CMAF",
                 "Id":"CMAF",
                 "PackagingGroupId":"Packaging_group_1",
-                "CmafPackage":[
-                    {
-                        "SegmentDurationSeconds":"2"
-                    },
-                    {
-                        "HlsManifests":{
+                "CmafPackage":{
+                    "SegmentDurationSeconds":2,
+                    "HlsManifests":[
+                        {
                             "AdMarkers":"NONE",
-                            "RepeatExtXKey":"False",
+                            "RepeatExtXKey":false,
                             "ManifestName":"index",
-                            "ProgramDateTimeIntervalSeconds":"0",
-                            "IncludeIframeOnlyStream":"False"
+                            "ProgramDateTimeIntervalSeconds":0,
+                            "IncludeIframeOnlyStream":false
                         }
-                    }
-                ]
+                    ]
+                }
             },
             {
                 "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/DASH",
                 "Id":"DASH",
                 "PackagingGroupId":"Packaging_group_1",
-                "DashPackage":[
-                    {
-                        "SegmentDurationSeconds":"2"
-                    },
-                    {
-                        "DashManifests":{
+                "DashPackage":{
+                    "SegmentDurationSeconds":2,
+                    "DashManifests":[
+                        {
                             "ManifestName":"index",
-                            "MinBufferTimeSeconds":"30",
+                            "MinBufferTimeSeconds":30,
                             "Profile":"NONE"
                         }
-                    }
-                ]
+                    ]
+                }
             },
             {
                 "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/HLS",
                 "Id":"HLS",
                 "PackagingGroupId":"Packaging_group_1",
-                "HlsPackage":[
-                    {
-                        "SegmentDurationSeconds":"6",
-                        "UseAudioRenditionGroup":"False"
-                    },
-                    {
-                        "HlsManifests":{
+                "HlsPackage":{
+                    "SegmentDurationSeconds":6,
+                    "UseAudioRenditionGroup":false,
+                    "HlsManifests":[
+                        {
                             "AdMarkers":"NONE",
-                            "RepeatExtXKey":"False",
+                            "RepeatExtXKey":false,
                             "ManifestName":"index",
-                            "ProgramDateTimeIntervalSeconds":"0",
-                            "IncludeIframeOnlyStream":"False"
+                            "ProgramDateTimeIntervalSeconds":0,
+                            "IncludeIframeOnlyStream":false
                         }
-                    }
-                ]
+                    ]
+                }
             },
             {
                 "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/New_config_0_copy",
                 "Id":"New_config_0_copy",
                 "PackagingGroupId":"Packaging_group_1",
-                "HlsPackage":[
-                    {
-                        "SegmentDurationSeconds":"6",
-                        "UseAudioRenditionGroup":"False"
-                    },
-                    {
-                        "Encryption":{
-                            "EncryptionMethod":"AWS_128",
-                            "SpekeKeyProvider":{
-                                "RoleArn":"arn:aws:iam:111122223333::role/SPEKERole",
-                                "Url":"https://lfgubdvs97.execute-api.us-west-2.amazonaws.com/EkeStage/copyProtection/",
-                                "SystemIds":[
-                                    "81376844-f976-481e-a84e-cc25d39b0b33"
-                                ]
-                            }
+                "HlsPackage":{
+                    "SegmentDurationSeconds":6,
+                    "UseAudioRenditionGroup":false,
+                    "Encryption":{
+                        "EncryptionMethod":"AWS_128",
+                        "SpekeKeyProvider":{
+                            "RoleArn":"arn:aws:iam:111122223333::role/SPEKERole",
+                            "Url":"https://lfgubdvs97.execute-api.us-west-2.amazonaws.com/EkeStage/copyProtection/",
+                            "SystemIds":[
+                                "81376844-f976-481e-a84e-cc25d39b0b33"
+                            ]
                         }
                     },
-                    {
-                        "HlsManifests":{
+                    "HlsManifests":[
+                        {
                             "AdMarkers":"NONE",
-                            "RepeatExtXKey":"False",
+                            "RepeatExtXKey":false,
                             "ManifestName":"index",
-                            "ProgramDateTimeIntervalSeconds":"0",
-                            "IncludeIframeOnlyStream":"False"
+                            "ProgramDateTimeIntervalSeconds":0,
+                            "IncludeIframeOnlyStream":false
                         }
-                    }
-                ]
+                    ]
+                }
             }
         ]
     }

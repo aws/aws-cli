@@ -8,6 +8,8 @@ permission to everyone. ::
         --grant-full-control emailaddress=user1@example.com,emailaddress=user2@example.com \
         --grant-read uri=http://acs.amazonaws.com/groups/global/AllUsers
 
+This command produces no output.
+
 See http://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTacl.html for details on custom ACLs (the s3api ACL
 commands, such as ``put-bucket-acl``, use the same shorthand argument notation).
 

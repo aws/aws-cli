@@ -66,7 +66,7 @@ Output::
             "activeSessionId": "st-a1b2c3d4e5f6g",
             "arn": "arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh",
             "autoParticipantRecordingConfiguration": {
-                "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh"
+                "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh",
                 "mediaTypes": [
                     "AUDIO_VIDEO"
                 ],

@@ -7,3 +7,5 @@ The following ``admin-add-user-to-group`` example adds user Jane to group MyGrou
         --username Jane \
         --group-name MyGroup
 
+This command produces no output.
+

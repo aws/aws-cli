@@ -6,6 +6,8 @@ The following ``put-bucket-website`` example applies a static website configurat
         --bucket amzn-s3-demo-bucket \
         --website-configuration file://website.json
 
+This command produces no output.
+
 The file ``website.json`` is a JSON document in the current folder that specifies index and error pages for the website.
 
 Contents of ``website.json``::

@@ -18,4 +18,6 @@ Use the ``--if-match`` option to provide the OAI's ``ETag``. ::
         --id E74FTE3AEXAMPLE \
         --if-match E2QWRUHEXAMPLE
 
+This command produces no output.
+
 When successful, this command has no output.

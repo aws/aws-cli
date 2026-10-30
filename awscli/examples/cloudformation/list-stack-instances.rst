@@ -5,7 +5,9 @@ The following ``list-stack-instances`` example lists the instances created from 
     aws cloudformation list-stack-instances \
         --stack-set-name enable-config
 
-The example output includes details about a stack that failed to update due to an error::
+The example output includes details about a stack that failed to update due to an error.
+
+Output::
 
     {
         "Summaries": [

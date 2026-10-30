@@ -12,7 +12,7 @@ Output::
     {
         "DeregisteredMulticastGroupMembers": {
             "TransitGatewayMulticastDomainId": "tgw-mcast-domain-0c4905cef7EXAMPLE",
-            "RegisteredNetworkInterfaceIds": [
+            "DeregisteredNetworkInterfaceIds": [
                 "eni-0e246d3269EXAMPLE"
             ],
             "GroupIpAddress": "224.0.1.0"

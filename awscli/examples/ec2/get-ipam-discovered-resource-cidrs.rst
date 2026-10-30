@@ -11,8 +11,7 @@ To complete this request, the resource discovery you choose must be associated w
 Output::
 
     {
-        {
-            "IpamDiscoveredResourceCidrs": [
+        "IpamDiscoveredResourceCidrs": [
             {
                 "IpamResourceDiscoveryId": "ipam-res-disco-0365d2977fc1672fe",
                 "ResourceRegion": "us-east-1",
@@ -49,7 +48,7 @@ Output::
                 "VpcId": "vpc-0c974c95ca7ceef4a",
                 "SampleTime": "2024-02-09T19:15:16.529000+00:00"
             }
-        }
+        ]
     }
 
 For more information, see `Monitor CIDR usage by resource <https://docs.aws.amazon.com/vpc/latest/ipam/monitor-cidr-compliance-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

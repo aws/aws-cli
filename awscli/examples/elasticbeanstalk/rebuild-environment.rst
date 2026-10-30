@@ -4,3 +4,5 @@ The following ``rebuild-environment`` example terminates and recreates the resou
 
     aws elasticbeanstalk rebuild-environment \
         --environment-name my-env
+
+This command produces no output.

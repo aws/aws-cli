@@ -4,3 +4,5 @@ The following ``delete-rule`` example deletes the rule named ``EC2InstanceStateC
 
     aws events delete-rule \
         --name "EC2InstanceStateChanges"
+
+This command produces no output.

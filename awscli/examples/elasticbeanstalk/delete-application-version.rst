@@ -5,3 +5,5 @@ The following ``delete-application-version`` example deletes an application vers
     aws elasticbeanstalk delete-application-version \
         --version-label 22a0-stage-150819_182129 \
         --application-name my-app
+
+This command produces no output.

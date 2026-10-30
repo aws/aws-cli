@@ -11,7 +11,7 @@ Output::
     {
         "Successful": [
             {
-                "SnapshotId": "snap-1234567890abcdef0"
+                "SnapshotId": "snap-1234567890abcdef0",
                 "AvailabilityZone": "us-east-2a",
                 "State": "disabling",
                 "StateTransitionReason": "Client.UserInitiated",

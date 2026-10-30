@@ -4,3 +4,5 @@ The following ``delete-bucket-cors`` example deletes a Cross-Origin Resource Sha
 
     aws s3api delete-bucket-cors \
         --bucket amzn-s3-demo-bucket
+
+This command produces no output.

@@ -57,17 +57,17 @@ Output::
                 }
             }
         },
-        "CreatedAt": 2024-02-25T13:30:10+00:00,
+        "CreatedAt": "2024-02-25T13:30:10+00:00",
         "CustomDocumentEnrichmentConfiguration": {
             "PostExtractionHookConfiguration": {
                 "LambdaArn": "arn:aws:iam::my-account-id:function/my-function-ocr-docs",
                 "S3Bucket": "s3://amzn-s3-demo-bucket/scanned-image-text-example-docs/function"
             },
             "RoleArn": "arn:aws:iam:my-account-id:role/KendraRoleForCDE"
-        }
+        },
         "Description": "Example data source 1 for example index 1 contains the first set of example documents",
-        "Id": exampledatasource1,
-        "IndexId": exampleindex1,
+        "Id": "exampledatasource1",
+        "IndexId": "exampleindex1",
         "LanguageCode": "en",
         "Name": "example data source 1",
         "RoleArn": "arn:aws:iam::my-account-id:role/KendraRoleForS3TemplateConfigDataSource",

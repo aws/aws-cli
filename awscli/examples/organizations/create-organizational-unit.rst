@@ -6,7 +6,7 @@ The following ``create-organizational-unit`` example creates an OU that is named
         --parent-id r-examplerootid111 \
         --name AccountingOU
 
-The output includes an organizationalUnit object with details about the new OU: ::
+Output::
 
     {
         "OrganizationalUnit": {

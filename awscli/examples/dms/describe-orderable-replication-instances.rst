@@ -41,10 +41,8 @@ Output::
                     "us-east-1e",
                     "us-east-1f"
                 ]
-            },
-
-            ...remaining output omitted...
-
-        }
+            }
+        ]
+    }
 
 For more information, see `Working with an AWS DMS Replication Instance <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html>`__ in the *AWS Database Migration Service User Guide*.

@@ -11,7 +11,7 @@ The following ``create-security-configuration`` example creates a security confi
                 "InTransitEncryptionConfiguration" : {
                     "TLSCertificateConfiguration" : {
                         "CertificateProviderType" : "PEM",
-                        "S3Object" : "s3://mycertstore/artifacts/MyCerts.zip"
+                        "S3Object" : "s3://amzn-s3-demo-bucket/artifacts/MyCerts.zip"
                     }
                 },
                 "AtRestEncryptionConfiguration" : {
@@ -20,13 +20,13 @@ The following ``create-security-configuration`` example creates a security confi
                     },
                     "LocalDiskEncryptionConfiguration" : {
                         "EncryptionKeyProviderType" : "AwsKms",
-                        "AwsKmsKey" : "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+                        "AwsKmsKey" : "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                     }
                 }
             }
         }'
 
-- Output::
+Output::
 
     {
         "CreationDateTime": "2016-09-16T20:08:09.129000-0400",
@@ -48,7 +48,7 @@ Contents of ``security_configuration.json``::
             "InTransitEncryptionConfiguration": {
                 "TLSCertificateConfiguration": {
                     "CertificateProviderType": "PEM",
-                    "S3Object": "s3://mycertstore/artifacts/MyCerts.zip"
+                    "S3Object": "s3://amzn-s3-demo-bucket/artifacts/MyCerts.zip"
                 }
             },
             "AtRestEncryptionConfiguration": {
@@ -57,13 +57,13 @@ Contents of ``security_configuration.json``::
                 },
                 "LocalDiskEncryptionConfiguration": {
                     "EncryptionKeyProviderType": "AwsKms",
-                    "AwsKmsKey": "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+                    "AwsKmsKey": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 }
             }
         }
     }
 
-- Output::
+Output::
 
     {
         "CreationDateTime": "2016-09-16T20:08:09.129000-0400",
@@ -93,7 +93,7 @@ The following ``create-security-configuration`` example creates a security confi
             }
         }'
 
-- Output::
+Output::
 
     {
         "CreationDateTime": "2017-03-22T19:32:38.982000-0400",
@@ -125,7 +125,7 @@ Contents of ``security_configuration.json``::
         }
     }
 
-- Output::
+Output::
 
     {
         "CreationDateTime": "2017-03-22T19:32:38.982000-0400",

@@ -22,7 +22,9 @@ Output::
             {
                 "SongTitle": {
                     "S": "Call Me Today"
-                },
+                }
+            },
+            {
                 "SongTitle": {
                     "S": "Scared of My Shadow"
                 }

@@ -9,13 +9,15 @@ The following ``modify-instance-event-start-time`` example modifies the event st
 
 Output::
 
-    "Event": {
-        "InstanceEventId": "instance-event-0abcdef1234567890",
-        "Code": "system-reboot",
-        "Description": "scheduled reboot",
-        "NotAfter": "2019-03-25T12:00:00.000Z",
-        "NotBefore": "2019-03-25T10:00:00.000Z",
-        "NotBeforeDeadline": "2019-04-22T21:00:00.000Z"
+    {
+        "Event": {
+            "InstanceEventId": "instance-event-0abcdef1234567890",
+            "Code": "system-reboot",
+            "Description": "scheduled reboot",
+            "NotAfter": "2019-03-25T12:00:00.000Z",
+            "NotBefore": "2019-03-25T10:00:00.000Z",
+            "NotBeforeDeadline": "2019-04-22T21:00:00.000Z"
+        }
     }
 
 For more information, see `Working with Instances Scheduled for Reboot`_ in the *Amazon Elastic Compute Cloud User Guide*

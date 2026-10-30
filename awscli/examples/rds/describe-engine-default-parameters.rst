@@ -18,8 +18,7 @@ Output::
                     "DataType": "boolean",
                     "AllowedValues": "0,1",
                     "IsModifiable": false
-                },
-                ...some output truncated...
+                }
             ]
         }
     }

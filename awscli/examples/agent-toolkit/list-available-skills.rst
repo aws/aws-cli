@@ -11,7 +11,7 @@ Output::
             {
                 "name": "aws-serverless",
                 "description": "Build, deploy, and manage serverless applications on AWS.",
-                "version": "v1",
+                "skillVersion": "v1",
                 "categories": [
                     "aws-core"
                 ]
@@ -19,7 +19,7 @@ Output::
             {
                 "name": "aws-cdk",
                 "description": "Author, deploy, and troubleshoot AWS infrastructure using CDK.",
-                "version": "v1",
+                "skillVersion": "v1",
                 "categories": [
                     "aws-core"
                 ]
@@ -27,7 +27,7 @@ Output::
             {
                 "name": "aws-cleanrooms",
                 "description": "Troubleshoot AWS Clean Rooms collaboration issues.",
-                "version": "v1",
+                "skillVersion": "v1",
                 "categories": []
             }
         ]
@@ -49,7 +49,7 @@ Output::
             {
                 "name": "aws-serverless",
                 "description": "Build, deploy, and manage serverless applications on AWS.",
-                "version": "v1",
+                "skillVersion": "v1",
                 "categories": [
                     "aws-core"
                 ]
@@ -57,7 +57,7 @@ Output::
             {
                 "name": "aws-cdk",
                 "description": "Author, deploy, and troubleshoot AWS infrastructure using CDK.",
-                "version": "v1",
+                "skillVersion": "v1",
                 "categories": [
                     "aws-core"
                 ]

@@ -5,3 +5,5 @@ The following ``delete-usage-plan-key`` example removes an API key from a usage 
     aws apigateway delete-usage-plan-key \
         --usage-plan-id a1b2c3 \
         --key-id 1NbjQzMReAkeEQPNAW8r3dXsU2rDD7fc7f2Sipnu
+
+This command produces no output.

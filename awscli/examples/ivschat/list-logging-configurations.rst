@@ -25,7 +25,6 @@ Output::
                 "tags": { "key1" : "value1", "key2" : "value2" },
                 "updateTime": "2022-09-14T17:48:01.104000+00:00"
             }
-            ...
         ]
     }
 

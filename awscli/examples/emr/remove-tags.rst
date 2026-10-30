@@ -5,3 +5,5 @@ The following ``remove-tags`` example removes a tag with the key ``prod`` from a
     aws emr remove-tags \
         --resource-id j-3SD91U2E1L2QX \
         --tag-keys prod
+
+This command produces no output.

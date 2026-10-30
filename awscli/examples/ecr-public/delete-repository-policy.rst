@@ -11,7 +11,7 @@ Output::
     {
         "registryId": "123456789012",
         "repositoryName": "project-a/nginx-web-app",
-        "policyText": "{\n  \"Version\" : \"2008-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"AllowPush\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : {\n      \"AWS\" : [ \"arn:aws:iam:"123456789012":user/eksuser1\", \"arn:aws:iam:"123456789012":user/admin\" ]\n    },\n    \"Action\" : [ \"ecr-public:BatchCheckLayerAvailability\", \"ecr-public:PutImage\", \"ecr-public:InitiateLayerUpload\", \"ecr-public:UploadLayerPart\", \"ecr-public:CompleteLayerUpload\" ]\n  } ]\n}"
+        "policyText": "{\n  \"Version\" : \"2008-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"AllowPush\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : {\n      \"AWS\" : [ \"arn:aws:iam::123456789012:user/eksuser1\", \"arn:aws:iam::123456789012:user/admin\" ]\n    },\n    \"Action\" : [ \"ecr-public:BatchCheckLayerAvailability\", \"ecr-public:PutImage\", \"ecr-public:InitiateLayerUpload\", \"ecr-public:UploadLayerPart\", \"ecr-public:CompleteLayerUpload\" ]\n  } ]\n}"
     }
 
 For more information, see `Deleting a public repository policy statement <https://docs.aws.amazon.com/AmazonECR/latest/public/delete-public-repository-policy.html>`__ in the *Amazon ECR Public User Guide*.

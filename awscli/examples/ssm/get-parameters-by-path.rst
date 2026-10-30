@@ -24,8 +24,7 @@ Output::
                 "Version": 1,
                 "LastModifiedDate": 1530018823.429,
                 "ARN": "arn:aws:ssm:us-east-1:111222333444:parameter/site/newyork/department/infotech"
-            },
-            ...
+            }
         ]
     }
 

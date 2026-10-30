@@ -6,6 +6,12 @@ The following ``request-certificate`` example requests a new certificate for the
         --domain-name www.example.com \
         --validation-method DNS
 
+Output::
+
+    {
+        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+    }
+
 You can enter an idempotency token to distinguish between calls to ``request-certificate``. ::
 
     aws acm request-certificate \

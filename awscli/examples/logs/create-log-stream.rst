@@ -5,3 +5,5 @@ The following ``create-log-stream`` example creates a log stream named ``2015060
     aws logs create-log-stream \
         --log-group-name my-logs \
         --log-stream-name 20150601
+
+This command produces no output.

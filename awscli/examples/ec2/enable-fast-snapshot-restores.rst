@@ -11,7 +11,7 @@ Output::
     {
         "Successful": [
             {
-                "SnapshotId": "snap-1234567890abcdef0"
+                "SnapshotId": "snap-1234567890abcdef0",
                 "AvailabilityZone": "us-east-2a",
                 "State": "enabling",
                 "StateTransitionReason": "Client.UserInitiated",
@@ -19,7 +19,7 @@ Output::
                 "EnablingTime": "2020-01-25T23:57:49.602Z"
             },
             {
-                "SnapshotId": "snap-1234567890abcdef0"
+                "SnapshotId": "snap-1234567890abcdef0",
                 "AvailabilityZone": "us-east-2b",
                 "State": "enabling",
                 "StateTransitionReason": "Client.UserInitiated",

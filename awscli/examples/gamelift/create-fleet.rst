@@ -65,7 +65,7 @@ Output::
             "Name": "MegaFrogRace.NA.v2",
             "NewGameSessionProtectionPolicy": "NoProtection",
             "OperatingSystem": "WINDOWS_2012",
-            "ServerLaunchPath": "C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe",
+            "ServerLaunchPath": "C:\\game\\Bin64.Release.Dedicated\\MegaFrogRace_Server.exe",
             "Status": "NEW"
         }
     }

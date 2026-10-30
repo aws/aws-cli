@@ -4,3 +4,5 @@ The following ``wait`` example waits until a cluster with the cluster ID ``j-3SD
 
     aws emr wait cluster-running \
         --cluster-id j-3SD91U2E1L2QX
+
+This command produces no output.

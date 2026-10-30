@@ -7,3 +7,18 @@ The following ``create-api-key`` example creates an API key that is enabled for 
         --description 'Used for development' \
         --enabled \
         --stage-keys restApiId='a1b2c3d4e5',stageName='dev'
+
+Output::
+
+    {
+        "id": "c2b7jkd5ge",
+        "value": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6EXAMPLE",
+        "name": "Dev API Key",
+        "description": "Used for development",
+        "enabled": true,
+        "createdDate": "2022-07-18T10:11:18-07:00",
+        "lastUpdatedDate": "2022-07-18T10:11:18-07:00",
+        "stageKeys": [
+            "a1b2c3d4e5/dev"
+        ]
+    }

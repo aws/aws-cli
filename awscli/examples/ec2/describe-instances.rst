@@ -169,7 +169,162 @@ The following ``describe-instances`` example uses filters to scope the results t
     aws ec2 describe-instances \
         --filters Name=instance-type,Values=m5.large
 
-For example output, see Example 1.
+Output::
+
+    {
+        "Reservations": [
+            {
+                "Groups": [],
+                "Instances": [
+                    {
+                        "AmiLaunchIndex": 0,
+                        "ImageId": "ami-0abcdef1234567890",
+                        "InstanceId": "i-0abcdef1234567890",
+                        "InstanceType": "m5.large",
+                        "KeyName": "my-key-pair",
+                        "LaunchTime": "2022-11-15T10:48:59+00:00",
+                        "Monitoring": {
+                            "State": "disabled"
+                        },
+                        "Placement": {
+                            "AvailabilityZone": "us-east-2a",
+                            "GroupName": "",
+                            "Tenancy": "default"
+                        },
+                        "PrivateDnsName": "ip-10-0-0-158.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.0.158",
+                        "ProductCodes": [],
+                        "PublicDnsName": "ec2-203-0-113-18.us-east-2.compute.amazonaws.com",
+                        "PublicIpAddress": "203.0.113.18",
+                        "State": {
+                            "Code": 16,
+                            "Name": "running"
+                        },
+                        "StateTransitionReason": "",
+                        "SubnetId": "subnet-04a636d18e83cfacb",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "Architecture": "x86_64",
+                        "BlockDeviceMappings": [
+                            {
+                                "DeviceName": "/dev/xvda",
+                                "Ebs": {
+                                    "AttachTime": "2022-11-15T10:49:00+00:00",
+                                    "DeleteOnTermination": true,
+                                    "Status": "attached",
+                                    "VolumeId": "vol-0a1b2c3d4e5f6a7b8"
+                                }
+                            }
+                        ],
+                        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                        "EbsOptimized": true,
+                        "EnaSupport": true,
+                        "Hypervisor": "xen",
+                        "IamInstanceProfile": {
+                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Id": "111111111111111111111"
+                        },
+                        "NetworkInterfaces": [
+                            {
+                                "Association": {
+                                    "IpOwnerId": "amazon",
+                                    "PublicDnsName": "ec2-203-0-113-18.us-east-2.compute.amazonaws.com",
+                                    "PublicIp": "203.0.113.18"
+                                },
+                                "Attachment": {
+                                    "AttachTime": "2022-11-15T10:48:59+00:00",
+                                    "AttachmentId": "eni-attach-0a1b2c3d4e5f6a7b8",
+                                    "DeleteOnTermination": true,
+                                    "DeviceIndex": 0,
+                                    "Status": "attached",
+                                    "NetworkCardIndex": 0
+                                },
+                                "Description": "",
+                                "Groups": [
+                                    {
+                                        "GroupName": "launch-wizard-146",
+                                        "GroupId": "sg-1234567890abcdefg"
+                                    }
+                                ],
+                                "Ipv6Addresses": [],
+                                "MacAddress": "00:11:22:33:44:66",
+                                "NetworkInterfaceId": "eni-0a1b2c3d4e5f6a7b8",
+                                "OwnerId": "111111111111",
+                                "PrivateDnsName": "ip-10-0-0-158.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.0.158",
+                                "PrivateIpAddresses": [
+                                    {
+                                        "Association": {
+                                            "IpOwnerId": "amazon",
+                                            "PublicDnsName": "ec2-203-0-113-18.us-east-2.compute.amazonaws.com",
+                                            "PublicIp": "203.0.113.18"
+                                        },
+                                        "Primary": true,
+                                        "PrivateDnsName": "ip-10-0-0-158.us-east-2.compute.internal",
+                                        "PrivateIpAddress": "10.0.0.158"
+                                    }
+                                ],
+                                "SourceDestCheck": true,
+                                "Status": "in-use",
+                                "SubnetId": "subnet-04a636d18e83cfacb",
+                                "VpcId": "vpc-1234567890abcdef0",
+                                "InterfaceType": "interface"
+                            }
+                        ],
+                        "RootDeviceName": "/dev/xvda",
+                        "RootDeviceType": "ebs",
+                        "SecurityGroups": [
+                            {
+                                "GroupName": "launch-wizard-146",
+                                "GroupId": "sg-1234567890abcdefg"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Tags": [
+                            {
+                                "Key": "Name",
+                                "Value": "my-instance"
+                            }
+                        ],
+                        "VirtualizationType": "hvm",
+                        "CpuOptions": {
+                            "CoreCount": 1,
+                            "ThreadsPerCore": 2
+                        },
+                        "CapacityReservationSpecification": {
+                            "CapacityReservationPreference": "open"
+                        },
+                        "HibernationOptions": {
+                            "Configured": false
+                        },
+                        "MetadataOptions": {
+                            "State": "applied",
+                            "HttpTokens": "optional",
+                            "HttpPutResponseHopLimit": 1,
+                            "HttpEndpoint": "enabled",
+                            "HttpProtocolIpv6": "disabled",
+                            "InstanceMetadataTags": "enabled"
+                        },
+                        "EnclaveOptions": {
+                            "Enabled": false
+                        },
+                        "PlatformDetails": "Linux/UNIX",
+                        "UsageOperation": "RunInstances",
+                        "UsageOperationUpdateTime": "2022-11-15T10:48:59+00:00",
+                        "PrivateDnsNameOptions": {
+                            "HostnameType": "ip-name",
+                            "EnableResourceNameDnsARecord": true,
+                            "EnableResourceNameDnsAAAARecord": false
+                        },
+                        "MaintenanceOptions": {
+                            "AutoRecovery": "default"
+                        }
+                    }
+                ],
+                "OwnerId": "111111111111",
+                "ReservationId": "r-0abcdef1234567890"
+            }
+        ]
+    }
 
 For more information, see `List and filter using the CLI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
 
@@ -180,7 +335,162 @@ The following ``describe-instances`` example uses multiple filters to scope the 
     aws ec2 describe-instances \
         --filters Name=instance-type,Values=t2.micro,t3.micro Name=availability-zone,Values=us-east-2c
 
-For example output, see Example 1.
+Output::
+
+    {
+        "Reservations": [
+            {
+                "Groups": [],
+                "Instances": [
+                    {
+                        "AmiLaunchIndex": 0,
+                        "ImageId": "ami-0abcdef1234567890",
+                        "InstanceId": "i-0598c7d356eba48d7",
+                        "InstanceType": "t3.micro",
+                        "KeyName": "my-key-pair",
+                        "LaunchTime": "2022-11-15T10:48:59+00:00",
+                        "Monitoring": {
+                            "State": "disabled"
+                        },
+                        "Placement": {
+                            "AvailabilityZone": "us-east-2c",
+                            "GroupName": "",
+                            "Tenancy": "default"
+                        },
+                        "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.2.45",
+                        "ProductCodes": [],
+                        "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                        "PublicIpAddress": "203.0.113.27",
+                        "State": {
+                            "Code": 16,
+                            "Name": "running"
+                        },
+                        "StateTransitionReason": "",
+                        "SubnetId": "subnet-0c1d2e3f4a5b6c7d8",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "Architecture": "x86_64",
+                        "BlockDeviceMappings": [
+                            {
+                                "DeviceName": "/dev/xvda",
+                                "Ebs": {
+                                    "AttachTime": "2022-11-15T10:49:00+00:00",
+                                    "DeleteOnTermination": true,
+                                    "Status": "attached",
+                                    "VolumeId": "vol-0b2c3d4e5f6a7b8c9"
+                                }
+                            }
+                        ],
+                        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                        "EbsOptimized": true,
+                        "EnaSupport": true,
+                        "Hypervisor": "xen",
+                        "IamInstanceProfile": {
+                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Id": "111111111111111111111"
+                        },
+                        "NetworkInterfaces": [
+                            {
+                                "Association": {
+                                    "IpOwnerId": "amazon",
+                                    "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                                    "PublicIp": "203.0.113.27"
+                                },
+                                "Attachment": {
+                                    "AttachTime": "2022-11-15T10:48:59+00:00",
+                                    "AttachmentId": "eni-attach-0b2c3d4e5f6a7b8c9",
+                                    "DeleteOnTermination": true,
+                                    "DeviceIndex": 0,
+                                    "Status": "attached",
+                                    "NetworkCardIndex": 0
+                                },
+                                "Description": "",
+                                "Groups": [
+                                    {
+                                        "GroupName": "launch-wizard-146",
+                                        "GroupId": "sg-1234567890abcdefg"
+                                    }
+                                ],
+                                "Ipv6Addresses": [],
+                                "MacAddress": "00:11:22:33:44:77",
+                                "NetworkInterfaceId": "eni-0b2c3d4e5f6a7b8c9",
+                                "OwnerId": "111111111111",
+                                "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.2.45",
+                                "PrivateIpAddresses": [
+                                    {
+                                        "Association": {
+                                            "IpOwnerId": "amazon",
+                                            "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                                            "PublicIp": "203.0.113.27"
+                                        },
+                                        "Primary": true,
+                                        "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                                        "PrivateIpAddress": "10.0.2.45"
+                                    }
+                                ],
+                                "SourceDestCheck": true,
+                                "Status": "in-use",
+                                "SubnetId": "subnet-0c1d2e3f4a5b6c7d8",
+                                "VpcId": "vpc-1234567890abcdef0",
+                                "InterfaceType": "interface"
+                            }
+                        ],
+                        "RootDeviceName": "/dev/xvda",
+                        "RootDeviceType": "ebs",
+                        "SecurityGroups": [
+                            {
+                                "GroupName": "launch-wizard-146",
+                                "GroupId": "sg-1234567890abcdefg"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Tags": [
+                            {
+                                "Key": "Name",
+                                "Value": "my-instance"
+                            }
+                        ],
+                        "VirtualizationType": "hvm",
+                        "CpuOptions": {
+                            "CoreCount": 1,
+                            "ThreadsPerCore": 2
+                        },
+                        "CapacityReservationSpecification": {
+                            "CapacityReservationPreference": "open"
+                        },
+                        "HibernationOptions": {
+                            "Configured": false
+                        },
+                        "MetadataOptions": {
+                            "State": "applied",
+                            "HttpTokens": "optional",
+                            "HttpPutResponseHopLimit": 1,
+                            "HttpEndpoint": "enabled",
+                            "HttpProtocolIpv6": "disabled",
+                            "InstanceMetadataTags": "enabled"
+                        },
+                        "EnclaveOptions": {
+                            "Enabled": false
+                        },
+                        "PlatformDetails": "Linux/UNIX",
+                        "UsageOperation": "RunInstances",
+                        "UsageOperationUpdateTime": "2022-11-15T10:48:59+00:00",
+                        "PrivateDnsNameOptions": {
+                            "HostnameType": "ip-name",
+                            "EnableResourceNameDnsARecord": true,
+                            "EnableResourceNameDnsAAAARecord": false
+                        },
+                        "MaintenanceOptions": {
+                            "AutoRecovery": "default"
+                        }
+                    }
+                ],
+                "OwnerId": "111111111111",
+                "ReservationId": "r-0598c7d356eba48d7"
+            }
+        ]
+    }
 
 **Example 4: To filter for instances with the specified type and Availability Zone using a JSON file**
 
@@ -202,7 +512,162 @@ Contents of ``filters.json``::
         }
     ]
 
-For example output, see Example 1.
+Output::
+
+    {
+        "Reservations": [
+            {
+                "Groups": [],
+                "Instances": [
+                    {
+                        "AmiLaunchIndex": 0,
+                        "ImageId": "ami-0abcdef1234567890",
+                        "InstanceId": "i-0598c7d356eba48d7",
+                        "InstanceType": "t3.micro",
+                        "KeyName": "my-key-pair",
+                        "LaunchTime": "2022-11-15T10:48:59+00:00",
+                        "Monitoring": {
+                            "State": "disabled"
+                        },
+                        "Placement": {
+                            "AvailabilityZone": "us-east-2c",
+                            "GroupName": "",
+                            "Tenancy": "default"
+                        },
+                        "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.2.45",
+                        "ProductCodes": [],
+                        "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                        "PublicIpAddress": "203.0.113.27",
+                        "State": {
+                            "Code": 16,
+                            "Name": "running"
+                        },
+                        "StateTransitionReason": "",
+                        "SubnetId": "subnet-0c1d2e3f4a5b6c7d8",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "Architecture": "x86_64",
+                        "BlockDeviceMappings": [
+                            {
+                                "DeviceName": "/dev/xvda",
+                                "Ebs": {
+                                    "AttachTime": "2022-11-15T10:49:00+00:00",
+                                    "DeleteOnTermination": true,
+                                    "Status": "attached",
+                                    "VolumeId": "vol-0b2c3d4e5f6a7b8c9"
+                                }
+                            }
+                        ],
+                        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                        "EbsOptimized": true,
+                        "EnaSupport": true,
+                        "Hypervisor": "xen",
+                        "IamInstanceProfile": {
+                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Id": "111111111111111111111"
+                        },
+                        "NetworkInterfaces": [
+                            {
+                                "Association": {
+                                    "IpOwnerId": "amazon",
+                                    "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                                    "PublicIp": "203.0.113.27"
+                                },
+                                "Attachment": {
+                                    "AttachTime": "2022-11-15T10:48:59+00:00",
+                                    "AttachmentId": "eni-attach-0b2c3d4e5f6a7b8c9",
+                                    "DeleteOnTermination": true,
+                                    "DeviceIndex": 0,
+                                    "Status": "attached",
+                                    "NetworkCardIndex": 0
+                                },
+                                "Description": "",
+                                "Groups": [
+                                    {
+                                        "GroupName": "launch-wizard-146",
+                                        "GroupId": "sg-1234567890abcdefg"
+                                    }
+                                ],
+                                "Ipv6Addresses": [],
+                                "MacAddress": "00:11:22:33:44:77",
+                                "NetworkInterfaceId": "eni-0b2c3d4e5f6a7b8c9",
+                                "OwnerId": "111111111111",
+                                "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.2.45",
+                                "PrivateIpAddresses": [
+                                    {
+                                        "Association": {
+                                            "IpOwnerId": "amazon",
+                                            "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                                            "PublicIp": "203.0.113.27"
+                                        },
+                                        "Primary": true,
+                                        "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                                        "PrivateIpAddress": "10.0.2.45"
+                                    }
+                                ],
+                                "SourceDestCheck": true,
+                                "Status": "in-use",
+                                "SubnetId": "subnet-0c1d2e3f4a5b6c7d8",
+                                "VpcId": "vpc-1234567890abcdef0",
+                                "InterfaceType": "interface"
+                            }
+                        ],
+                        "RootDeviceName": "/dev/xvda",
+                        "RootDeviceType": "ebs",
+                        "SecurityGroups": [
+                            {
+                                "GroupName": "launch-wizard-146",
+                                "GroupId": "sg-1234567890abcdefg"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Tags": [
+                            {
+                                "Key": "Name",
+                                "Value": "my-instance"
+                            }
+                        ],
+                        "VirtualizationType": "hvm",
+                        "CpuOptions": {
+                            "CoreCount": 1,
+                            "ThreadsPerCore": 2
+                        },
+                        "CapacityReservationSpecification": {
+                            "CapacityReservationPreference": "open"
+                        },
+                        "HibernationOptions": {
+                            "Configured": false
+                        },
+                        "MetadataOptions": {
+                            "State": "applied",
+                            "HttpTokens": "optional",
+                            "HttpPutResponseHopLimit": 1,
+                            "HttpEndpoint": "enabled",
+                            "HttpProtocolIpv6": "disabled",
+                            "InstanceMetadataTags": "enabled"
+                        },
+                        "EnclaveOptions": {
+                            "Enabled": false
+                        },
+                        "PlatformDetails": "Linux/UNIX",
+                        "UsageOperation": "RunInstances",
+                        "UsageOperationUpdateTime": "2022-11-15T10:48:59+00:00",
+                        "PrivateDnsNameOptions": {
+                            "HostnameType": "ip-name",
+                            "EnableResourceNameDnsARecord": true,
+                            "EnableResourceNameDnsAAAARecord": false
+                        },
+                        "MaintenanceOptions": {
+                            "AutoRecovery": "default"
+                        }
+                    }
+                ],
+                "OwnerId": "111111111111",
+                "ReservationId": "r-0598c7d356eba48d7"
+            }
+        ]
+    }
 
 **Example 5: To filter for instances with the specified Owner tag**
 
@@ -211,7 +676,166 @@ The following ``describe-instances`` example uses tag filters to scope the resul
     aws ec2 describe-instances \
         --filters "Name=tag-key,Values=Owner"
 
-For example output, see Example 1.
+Output::
+
+    {
+        "Reservations": [
+            {
+                "Groups": [],
+                "Instances": [
+                    {
+                        "AmiLaunchIndex": 0,
+                        "ImageId": "ami-0abcdef1234567890",
+                        "InstanceId": "i-1234567890abcdef0",
+                        "InstanceType": "t3.nano",
+                        "KeyName": "my-key-pair",
+                        "LaunchTime": "2022-11-15T10:48:59+00:00",
+                        "Monitoring": {
+                            "State": "disabled"
+                        },
+                        "Placement": {
+                            "AvailabilityZone": "us-east-2a",
+                            "GroupName": "",
+                            "Tenancy": "default"
+                        },
+                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10-0-0-157",
+                        "ProductCodes": [],
+                        "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                        "PublicIpAddress": "34.253.223.13",
+                        "State": {
+                            "Code": 16,
+                            "Name": "running"
+                        },
+                        "StateTransitionReason": "",
+                        "SubnetId": "subnet-04a636d18e83cfacb",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "Architecture": "x86_64",
+                        "BlockDeviceMappings": [
+                            {
+                                "DeviceName": "/dev/xvda",
+                                "Ebs": {
+                                    "AttachTime": "2022-11-15T10:49:00+00:00",
+                                    "DeleteOnTermination": true,
+                                    "Status": "attached",
+                                    "VolumeId": "vol-02e6ccdca7de29cf2"
+                                }
+                            }
+                        ],
+                        "ClientToken": "1234abcd-1234-abcd-1234-d46a8903e9bc",
+                        "EbsOptimized": true,
+                        "EnaSupport": true,
+                        "Hypervisor": "xen",
+                        "IamInstanceProfile": {
+                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Id": "111111111111111111111"
+                        },
+                        "NetworkInterfaces": [
+                            {
+                                "Association": {
+                                    "IpOwnerId": "amazon",
+                                    "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                    "PublicIp": "34.253.223.13"
+                                },
+                                "Attachment": {
+                                    "AttachTime": "2022-11-15T10:48:59+00:00",
+                                    "AttachmentId": "eni-attach-1234567890abcdefg",
+                                    "DeleteOnTermination": true,
+                                    "DeviceIndex": 0,
+                                    "Status": "attached",
+                                    "NetworkCardIndex": 0
+                                },
+                                "Description": "",
+                                "Groups": [
+                                    {
+                                        "GroupName": "launch-wizard-146",
+                                        "GroupId": "sg-1234567890abcdefg"
+                                    }
+                                ],
+                                "Ipv6Addresses": [],
+                                "MacAddress": "00:11:22:33:44:55",
+                                "NetworkInterfaceId": "eni-1234567890abcdefg",
+                                "OwnerId": "104024344472",
+                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10-0-0-157",
+                                "PrivateIpAddresses": [
+                                    {
+                                        "Association": {
+                                            "IpOwnerId": "amazon",
+                                            "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                            "PublicIp": "34.253.223.13"
+                                        },
+                                        "Primary": true,
+                                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                        "PrivateIpAddress": "10-0-0-157"
+                                    }
+                                ],
+                                "SourceDestCheck": true,
+                                "Status": "in-use",
+                                "SubnetId": "subnet-1234567890abcdefg",
+                                "VpcId": "vpc-1234567890abcdefg",
+                                "InterfaceType": "interface"
+                            }
+                        ],
+                        "RootDeviceName": "/dev/xvda",
+                        "RootDeviceType": "ebs",
+                        "SecurityGroups": [
+                            {
+                                "GroupName": "launch-wizard-146",
+                                "GroupId": "sg-1234567890abcdefg"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Tags": [
+                            {
+                                "Key": "Name",
+                                "Value": "my-instance"
+                            },
+                            {
+                                "Key": "Owner",
+                                "Value": "my-team"
+                            }
+                        ],
+                        "VirtualizationType": "hvm",
+                        "CpuOptions": {
+                            "CoreCount": 1,
+                            "ThreadsPerCore": 2
+                        },
+                        "CapacityReservationSpecification": {
+                            "CapacityReservationPreference": "open"
+                        },
+                        "HibernationOptions": {
+                            "Configured": false
+                        },
+                        "MetadataOptions": {
+                            "State": "applied",
+                            "HttpTokens": "optional",
+                            "HttpPutResponseHopLimit": 1,
+                            "HttpEndpoint": "enabled",
+                            "HttpProtocolIpv6": "disabled",
+                            "InstanceMetadataTags": "enabled"
+                        },
+                        "EnclaveOptions": {
+                            "Enabled": false
+                        },
+                        "PlatformDetails": "Linux/UNIX",
+                        "UsageOperation": "RunInstances",
+                        "UsageOperationUpdateTime": "2022-11-15T10:48:59+00:00",
+                        "PrivateDnsNameOptions": {
+                            "HostnameType": "ip-name",
+                            "EnableResourceNameDnsARecord": true,
+                            "EnableResourceNameDnsAAAARecord": false
+                        },
+                        "MaintenanceOptions": {
+                            "AutoRecovery": "default"
+                        }
+                    }
+                ],
+                "OwnerId": "111111111111",
+                "ReservationId": "r-1234567890abcdefg"
+            }
+        ]
+    }
 
 **Example 6: To filter for instances with the specified my-team tag value**
 
@@ -220,7 +844,166 @@ The following ``describe-instances`` example uses tag filters to scope the resul
     aws ec2 describe-instances \
         --filters "Name=tag-value,Values=my-team"
 
-For example output, see Example 1.
+Output::
+
+    {
+        "Reservations": [
+            {
+                "Groups": [],
+                "Instances": [
+                    {
+                        "AmiLaunchIndex": 0,
+                        "ImageId": "ami-0abcdef1234567890",
+                        "InstanceId": "i-1234567890abcdef0",
+                        "InstanceType": "t3.nano",
+                        "KeyName": "my-key-pair",
+                        "LaunchTime": "2022-11-15T10:48:59+00:00",
+                        "Monitoring": {
+                            "State": "disabled"
+                        },
+                        "Placement": {
+                            "AvailabilityZone": "us-east-2a",
+                            "GroupName": "",
+                            "Tenancy": "default"
+                        },
+                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10-0-0-157",
+                        "ProductCodes": [],
+                        "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                        "PublicIpAddress": "34.253.223.13",
+                        "State": {
+                            "Code": 16,
+                            "Name": "running"
+                        },
+                        "StateTransitionReason": "",
+                        "SubnetId": "subnet-04a636d18e83cfacb",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "Architecture": "x86_64",
+                        "BlockDeviceMappings": [
+                            {
+                                "DeviceName": "/dev/xvda",
+                                "Ebs": {
+                                    "AttachTime": "2022-11-15T10:49:00+00:00",
+                                    "DeleteOnTermination": true,
+                                    "Status": "attached",
+                                    "VolumeId": "vol-02e6ccdca7de29cf2"
+                                }
+                            }
+                        ],
+                        "ClientToken": "1234abcd-1234-abcd-1234-d46a8903e9bc",
+                        "EbsOptimized": true,
+                        "EnaSupport": true,
+                        "Hypervisor": "xen",
+                        "IamInstanceProfile": {
+                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Id": "111111111111111111111"
+                        },
+                        "NetworkInterfaces": [
+                            {
+                                "Association": {
+                                    "IpOwnerId": "amazon",
+                                    "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                    "PublicIp": "34.253.223.13"
+                                },
+                                "Attachment": {
+                                    "AttachTime": "2022-11-15T10:48:59+00:00",
+                                    "AttachmentId": "eni-attach-1234567890abcdefg",
+                                    "DeleteOnTermination": true,
+                                    "DeviceIndex": 0,
+                                    "Status": "attached",
+                                    "NetworkCardIndex": 0
+                                },
+                                "Description": "",
+                                "Groups": [
+                                    {
+                                        "GroupName": "launch-wizard-146",
+                                        "GroupId": "sg-1234567890abcdefg"
+                                    }
+                                ],
+                                "Ipv6Addresses": [],
+                                "MacAddress": "00:11:22:33:44:55",
+                                "NetworkInterfaceId": "eni-1234567890abcdefg",
+                                "OwnerId": "104024344472",
+                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10-0-0-157",
+                                "PrivateIpAddresses": [
+                                    {
+                                        "Association": {
+                                            "IpOwnerId": "amazon",
+                                            "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                            "PublicIp": "34.253.223.13"
+                                        },
+                                        "Primary": true,
+                                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                        "PrivateIpAddress": "10-0-0-157"
+                                    }
+                                ],
+                                "SourceDestCheck": true,
+                                "Status": "in-use",
+                                "SubnetId": "subnet-1234567890abcdefg",
+                                "VpcId": "vpc-1234567890abcdefg",
+                                "InterfaceType": "interface"
+                            }
+                        ],
+                        "RootDeviceName": "/dev/xvda",
+                        "RootDeviceType": "ebs",
+                        "SecurityGroups": [
+                            {
+                                "GroupName": "launch-wizard-146",
+                                "GroupId": "sg-1234567890abcdefg"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Tags": [
+                            {
+                                "Key": "Name",
+                                "Value": "my-instance"
+                            },
+                            {
+                                "Key": "Owner",
+                                "Value": "my-team"
+                            }
+                        ],
+                        "VirtualizationType": "hvm",
+                        "CpuOptions": {
+                            "CoreCount": 1,
+                            "ThreadsPerCore": 2
+                        },
+                        "CapacityReservationSpecification": {
+                            "CapacityReservationPreference": "open"
+                        },
+                        "HibernationOptions": {
+                            "Configured": false
+                        },
+                        "MetadataOptions": {
+                            "State": "applied",
+                            "HttpTokens": "optional",
+                            "HttpPutResponseHopLimit": 1,
+                            "HttpEndpoint": "enabled",
+                            "HttpProtocolIpv6": "disabled",
+                            "InstanceMetadataTags": "enabled"
+                        },
+                        "EnclaveOptions": {
+                            "Enabled": false
+                        },
+                        "PlatformDetails": "Linux/UNIX",
+                        "UsageOperation": "RunInstances",
+                        "UsageOperationUpdateTime": "2022-11-15T10:48:59+00:00",
+                        "PrivateDnsNameOptions": {
+                            "HostnameType": "ip-name",
+                            "EnableResourceNameDnsARecord": true,
+                            "EnableResourceNameDnsAAAARecord": false
+                        },
+                        "MaintenanceOptions": {
+                            "AutoRecovery": "default"
+                        }
+                    }
+                ],
+                "OwnerId": "111111111111",
+                "ReservationId": "r-1234567890abcdefg"
+            }
+        ]
+    }
 
 **Example 7: To filter for instances with the specified Owner tag and my-team value**
 
@@ -229,7 +1012,166 @@ The following ``describe-instances`` example uses tag filters to scope the resul
     aws ec2 describe-instances \
         --filters "Name=tag:Owner,Values=my-team"
 
-For example output, see Example 1.
+Output::
+
+    {
+        "Reservations": [
+            {
+                "Groups": [],
+                "Instances": [
+                    {
+                        "AmiLaunchIndex": 0,
+                        "ImageId": "ami-0abcdef1234567890",
+                        "InstanceId": "i-1234567890abcdef0",
+                        "InstanceType": "t3.nano",
+                        "KeyName": "my-key-pair",
+                        "LaunchTime": "2022-11-15T10:48:59+00:00",
+                        "Monitoring": {
+                            "State": "disabled"
+                        },
+                        "Placement": {
+                            "AvailabilityZone": "us-east-2a",
+                            "GroupName": "",
+                            "Tenancy": "default"
+                        },
+                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10-0-0-157",
+                        "ProductCodes": [],
+                        "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                        "PublicIpAddress": "34.253.223.13",
+                        "State": {
+                            "Code": 16,
+                            "Name": "running"
+                        },
+                        "StateTransitionReason": "",
+                        "SubnetId": "subnet-04a636d18e83cfacb",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "Architecture": "x86_64",
+                        "BlockDeviceMappings": [
+                            {
+                                "DeviceName": "/dev/xvda",
+                                "Ebs": {
+                                    "AttachTime": "2022-11-15T10:49:00+00:00",
+                                    "DeleteOnTermination": true,
+                                    "Status": "attached",
+                                    "VolumeId": "vol-02e6ccdca7de29cf2"
+                                }
+                            }
+                        ],
+                        "ClientToken": "1234abcd-1234-abcd-1234-d46a8903e9bc",
+                        "EbsOptimized": true,
+                        "EnaSupport": true,
+                        "Hypervisor": "xen",
+                        "IamInstanceProfile": {
+                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Id": "111111111111111111111"
+                        },
+                        "NetworkInterfaces": [
+                            {
+                                "Association": {
+                                    "IpOwnerId": "amazon",
+                                    "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                    "PublicIp": "34.253.223.13"
+                                },
+                                "Attachment": {
+                                    "AttachTime": "2022-11-15T10:48:59+00:00",
+                                    "AttachmentId": "eni-attach-1234567890abcdefg",
+                                    "DeleteOnTermination": true,
+                                    "DeviceIndex": 0,
+                                    "Status": "attached",
+                                    "NetworkCardIndex": 0
+                                },
+                                "Description": "",
+                                "Groups": [
+                                    {
+                                        "GroupName": "launch-wizard-146",
+                                        "GroupId": "sg-1234567890abcdefg"
+                                    }
+                                ],
+                                "Ipv6Addresses": [],
+                                "MacAddress": "00:11:22:33:44:55",
+                                "NetworkInterfaceId": "eni-1234567890abcdefg",
+                                "OwnerId": "104024344472",
+                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10-0-0-157",
+                                "PrivateIpAddresses": [
+                                    {
+                                        "Association": {
+                                            "IpOwnerId": "amazon",
+                                            "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                            "PublicIp": "34.253.223.13"
+                                        },
+                                        "Primary": true,
+                                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                        "PrivateIpAddress": "10-0-0-157"
+                                    }
+                                ],
+                                "SourceDestCheck": true,
+                                "Status": "in-use",
+                                "SubnetId": "subnet-1234567890abcdefg",
+                                "VpcId": "vpc-1234567890abcdefg",
+                                "InterfaceType": "interface"
+                            }
+                        ],
+                        "RootDeviceName": "/dev/xvda",
+                        "RootDeviceType": "ebs",
+                        "SecurityGroups": [
+                            {
+                                "GroupName": "launch-wizard-146",
+                                "GroupId": "sg-1234567890abcdefg"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Tags": [
+                            {
+                                "Key": "Name",
+                                "Value": "my-instance"
+                            },
+                            {
+                                "Key": "Owner",
+                                "Value": "my-team"
+                            }
+                        ],
+                        "VirtualizationType": "hvm",
+                        "CpuOptions": {
+                            "CoreCount": 1,
+                            "ThreadsPerCore": 2
+                        },
+                        "CapacityReservationSpecification": {
+                            "CapacityReservationPreference": "open"
+                        },
+                        "HibernationOptions": {
+                            "Configured": false
+                        },
+                        "MetadataOptions": {
+                            "State": "applied",
+                            "HttpTokens": "optional",
+                            "HttpPutResponseHopLimit": 1,
+                            "HttpEndpoint": "enabled",
+                            "HttpProtocolIpv6": "disabled",
+                            "InstanceMetadataTags": "enabled"
+                        },
+                        "EnclaveOptions": {
+                            "Enabled": false
+                        },
+                        "PlatformDetails": "Linux/UNIX",
+                        "UsageOperation": "RunInstances",
+                        "UsageOperationUpdateTime": "2022-11-15T10:48:59+00:00",
+                        "PrivateDnsNameOptions": {
+                            "HostnameType": "ip-name",
+                            "EnableResourceNameDnsARecord": true,
+                            "EnableResourceNameDnsAAAARecord": false
+                        },
+                        "MaintenanceOptions": {
+                            "AutoRecovery": "default"
+                        }
+                    }
+                ],
+                "OwnerId": "111111111111",
+                "ReservationId": "r-1234567890abcdefg"
+            }
+        ]
+    }
 
 **Example 8: To display only instance and subnet IDs for all instances**
 
@@ -260,7 +1202,6 @@ Output::
             "Instance": "i-027552a73f021f3bd",
             "Subnet": "subnet-0250c25a1f4e15235"
         }
-        ...
     ]
 
 **Example 9: To filter instances of the specified type and only display their instance IDs**
@@ -342,29 +1283,38 @@ The following ``describe-instances`` example filters the results to only those i
     aws ec2 describe-instances \
         --filters "Name=placement-group-name,Values=HDFS-Group-A" "Name=placement-partition-number,Values=7"
 
-The following shows only the relevant information from the output. ::
+The following example output shows only the relevant information.
 
-    "Instances": [
-        {   
-            "InstanceId": "i-0123a456700123456",
-            "InstanceType": "r4.large",
-            "Placement": {
-                "AvailabilityZone": "us-east-1c",
-                "GroupName": "HDFS-Group-A",
-                "PartitionNumber": 7,
-                "Tenancy": "default"
+Output::
+
+    {
+        "Reservations": [
+            {
+                "Instances": [
+                    {
+                        "InstanceId": "i-0123a456700123456",
+                        "InstanceType": "r4.large",
+                        "Placement": {
+                            "AvailabilityZone": "us-east-1c",
+                            "GroupName": "HDFS-Group-A",
+                            "PartitionNumber": 7,
+                            "Tenancy": "default"
+                        }
+                    },
+                    {
+                        "InstanceId": "i-9876a543210987654",
+                        "InstanceType": "r4.large",
+                        "Placement": {
+                            "AvailabilityZone": "us-east-1c",
+                            "GroupName": "HDFS-Group-A",
+                            "PartitionNumber": 7,
+                            "Tenancy": "default"
+                        }
+                    }
+                ]
             }
-        },
-        {   
-            "InstanceId": "i-9876a543210987654",
-            "InstanceType": "r4.large",
-            "Placement": {
-                "AvailabilityZone": "us-east-1c",
-                "GroupName": "HDFS-Group-A",
-                "PartitionNumber": 7,
-                "Tenancy": "default"
-            }
-        ],
+        ]
+    }
 
 For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
@@ -377,7 +1327,7 @@ The following ``describe-instances`` example filters the results to only those i
         --query "Reservations[*].Instances[*].InstanceId" \
         --output text
 
-The following shows the expected output. ::
+Output::
 
     i-1234567890abcdefg
     i-abcdefg1234567890

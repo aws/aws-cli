@@ -16,9 +16,6 @@ Output::
             "DBInstanceClass": "db.r4.large",
             "Engine": "sqlserver-se",
             "DBInstanceStatus": "available",
-
-            ...output omitted...
-
             "DBParameterGroups": [
                 {
                     "DBParameterGroupName": "test-sqlserver-se-2017",
@@ -26,9 +23,6 @@ Output::
                 }
             ],
             "AvailabilityZone": "us-west-2d",
-
-            ...output omitted...
-
             "MultiAZ": true,
             "EngineVersion": "14.00.3281.6.v1",
             "AutoMinorVersionUpgrade": false,
@@ -44,9 +38,6 @@ Output::
             "SecondaryAvailabilityZone": "us-west-2c",
             "PubliclyAccessible": true,
             "StorageType": "gp2",
-
-            ...output omitted...
-
             "DeletionProtection": false,
             "AssociatedRoles": [],
             "MaxAllocatedStorage": 1000
@@ -88,14 +79,11 @@ Output::
                     "Status": "active"
                 }
             ],
-            ... output omitted ...
             "MultiAZ": false,
             "EngineVersion": "8.0.35",
             "AutoMinorVersionUpgrade": true,
             "ReadReplicaDBInstanceIdentifiers": [],
-            "LicenseModel": "general-public-license",
-
-            ... output omitted ...
+            "LicenseModel": "general-public-license"
         }
     }
 

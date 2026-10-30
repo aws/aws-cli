@@ -5,6 +5,8 @@ The following ``register-cross-account-access-role`` example registers the IAM r
     aws inspector register-cross-account-access-role \
         --role-arn arn:aws:iam::123456789012:role/inspector
 
+This command produces no output.
+
 For more information, see `Setting up Amazon Inspector`_ in the *Amazon Inspector* guide.
 
 .. _`Setting up Amazon Inspector`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_settingup.html

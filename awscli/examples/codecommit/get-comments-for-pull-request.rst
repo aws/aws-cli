@@ -41,7 +41,7 @@ Output::
                         "creationDate": 1508369829.104,
                         "deleted": false,
                         "lastModifiedDate": 150836912.273,
-                        "callerReactions": ["THUMBSUP"]
+                        "callerReactions": ["THUMBSUP"],
                         "reactionCounts": 
                         {
                             "THUMBSUP" : 14

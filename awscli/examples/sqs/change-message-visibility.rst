@@ -7,6 +7,4 @@ The following ``change-message-visibility`` example changes the specified messag
         --receipt-handle AQEBTpyI...t6HyQg== \
         --visibility-timeout 36000
 
-Output::
-
-    None.
+This command produces no output.

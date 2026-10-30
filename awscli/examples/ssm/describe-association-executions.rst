@@ -26,8 +26,7 @@ Output::
                 "DetailedStatus": "Success",
                 "CreatedTime": 1550505536.843,
                 "ResourceCountByStatus": "{Success=1}"
-            },
-            ...
+            }
         ]
     }
 
@@ -62,8 +61,7 @@ Output::
                 "DetailedStatus": "Success",
                 "CreatedTime": 1550505536.843,
                 "ResourceCountByStatus": "{Success=1}"
-            },
-            ...
+            }
         ]
     }
 

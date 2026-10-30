@@ -4,7 +4,7 @@ The following ``create-organization`` example creates an organization using cred
 
     aws organizations create-organization
 
-The output includes an organization object with details about the new organization: ::
+Output::
 
     {
         "Organization": {
@@ -30,7 +30,7 @@ The following ``create-organization`` example creates an organization that suppo
     aws organizations create-organization \
         --feature-set CONSOLIDATED_BILLING
 
-The output includes an organization object with details about the new organization: ::
+Output::
 
     {
         "Organization": {

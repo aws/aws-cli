@@ -13,6 +13,4 @@ Contents of ``DeleteMyCustomAction.json``::
         "provider": "MyJenkinsProviderName"
     }
 
-Output::
-
-    None.
+This command produces no output.

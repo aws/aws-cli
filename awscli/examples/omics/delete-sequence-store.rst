@@ -5,4 +5,6 @@ The following ``delete-sequence-store`` example deletes a sequence store with ID
     aws omics delete-sequence-store \
         --id 1234567890
 
+This command produces no output.
+
 For more information, see `Omics Storage <https://docs.aws.amazon.com/omics/latest/dev/sequence-stores.html>`__ in the *Amazon Omics Developer Guide*.

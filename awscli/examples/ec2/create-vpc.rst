@@ -30,7 +30,7 @@ Output::
             "Tags": [
                 {
                     "Key": "Name",
-                    "Value": MyVpc"
+                    "Value": "MyVpc"
                 }
             ]
         }

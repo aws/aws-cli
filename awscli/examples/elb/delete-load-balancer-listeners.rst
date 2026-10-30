@@ -5,3 +5,5 @@ The following ``delete-load-balancer-listeners`` example deletes the listener fo
     aws elb delete-load-balancer-listeners \
         --load-balancer-name my-load-balancer \
         --load-balancer-ports 80
+
+This command produces no output.

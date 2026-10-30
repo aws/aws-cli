@@ -6,6 +6,8 @@ The following ``set-identity-dkim-enabled`` example disables DKIM for a verified
         --identity user@example.com \
         --no-dkim-enabled
 
+This command produces no output.
+
 For more information about Easy DKIM, see `Easy DKIM in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
 .. _`Easy DKIM in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html

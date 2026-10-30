@@ -7,6 +7,4 @@ The following ``update-document-version`` example changes the status of the docu
         --version-id 1521672507741-9f7df0ea5dd0b121c4f3564a0c7c0b4da95cd12c635d3c442af337a88e297920 \
         --version-status ACTIVE
 
-Output::
-
-    None
+This command produces no output.

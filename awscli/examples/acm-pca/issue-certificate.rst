@@ -8,3 +8,9 @@ The following ``issue-certificate`` example uses the private CA specified by the
         --signing-algorithm "SHA256WITHRSA" \
         --validity Value=365,Type="DAYS" \
         --idempotency-token 1234
+
+Output::
+
+    {
+        "CertificateArn": "arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/12345678-1234-1234-1234-123456789012/certificate/6707447683a9b7f4055627ffd55cebcc"
+    }

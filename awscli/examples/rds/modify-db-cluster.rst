@@ -117,8 +117,7 @@ Output::
                     "VpcSecurityGroupId": "sg-ID",
                     "Status": "active"
                 }
-            ],
-            ...output omitted...
+            ]
         }
     }
 

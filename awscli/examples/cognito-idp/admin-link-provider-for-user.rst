@@ -7,4 +7,6 @@ The following ``admin-link-provider-for-user`` example links the local user dieg
         --destination-user ProviderName=Cognito,ProviderAttributeValue=diego \
         --source-user ProviderAttributeName=Cognito_Subject,ProviderAttributeValue=0000000000000000,ProviderName=Google
 
+This command produces no output.
+
 For more information, see `Linking federated users to an existing user profile <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-identity-federation-consolidate-users.html>`__ in the *Amazon Cognito Developer Guide*.

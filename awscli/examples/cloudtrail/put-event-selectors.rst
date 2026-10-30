@@ -140,7 +140,7 @@ Output::
                             "arn:aws:lambda:us-west-2:123456789012:function:hello-world-python-function"
                         ],
                         "Type": "AWS::Lambda::Function"
-                    },
+                    }
                 ],
                 "ReadWriteType": "All"
             }
@@ -176,7 +176,7 @@ Output::
                             "arn:aws:lambda"
                         ],
                         "Type": "AWS::Lambda::Function"
-                    },
+                    }
                 ],
                 "ReadWriteType": "All"
             }

@@ -5,7 +5,7 @@ The following ``describe-cluster-parameters`` example retrieves the parameters f
     aws redshift describe-cluster-parameters \
         --parameter-group-name myclusterparametergroup
 
-Result::
+Output::
 
     {
         "Parameters": [
@@ -25,8 +25,7 @@ Result::
                 "Source": "engine-default",
                 "ParameterValue": "0",
                 "ParameterName": "extra_float_digits"
-            },
-            (...remaining output omitted...)
+            }
         ]
     }
 
@@ -36,7 +35,7 @@ You can also obtain the same information in text format using the ``--output tex
         --parameter-group-name myclusterparametergroup \
         --output text
 
-Result::
+Output::
 
     RESPONSEMETADATA    cdac40aa-64cc-11e2-9e70-918437dd236d
     Sets the display format for date and time values.   string  True    engine-default  ISO, MDY        datestyle

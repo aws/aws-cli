@@ -9,13 +9,12 @@ The following ``update-group-query`` example updates the query attached to the s
 Output::
 
     {
-        "Group": {
-            "GroupArn": "arn:aws:resource-groups:us-east-2:123456789012:group/tbq-WebServer",
-            "Name": "tbq-WebServer"
-        },
-        "ResourceQuery": {
-            "Type": "TAG_FILTERS_1_0",
-            "Query": "{\"ResourceTypeFilters\":[\"AWS::EC2::Instance\"],\"TagFilters\":[{\"Key\":\"Name\", \"Values\":[\"WebServers\"]}]}"
+        "GroupQuery": {
+            "GroupName": "tbq-WebServer",
+            "ResourceQuery": {
+                "Type": "TAG_FILTERS_1_0",
+                "Query": "{\"ResourceTypeFilters\":[\"AWS::EC2::Instance\"],\"TagFilters\":[{\"Key\":\"Name\", \"Values\":[\"WebServers\"]}]}"
+            }
         }
     }
 
@@ -32,13 +31,12 @@ The following ``update-group-query`` example updates the query attached to the s
 Output::
 
     {
-        "Group": {
-            "GroupArn": "arn:aws:resource-groups:us-west-2:123456789012:group/cbq-CFNstackgroup",
-            "Name": "cbq-CFNstackgroup"
-        },
-        "ResourceQuery": {
-            "Type": "CLOUDFORMATION_STACK_1_0",
-            "Query": "{\"ResourceTypeFilters\":[\"AWS::AllSupported\"],\"StackIdentifier\":\"arn:aws:cloudformation:us-west-2:123456789012:stack/MyCFNStack/1415z9z0-z39z-11z8-97z5-500z212zz6fz\"}"
+        "GroupQuery": {
+            "GroupName": "cbq-CFNstackgroup",
+            "ResourceQuery": {
+                "Type": "CLOUDFORMATION_STACK_1_0",
+                "Query": "{\"ResourceTypeFilters\":[\"AWS::AllSupported\"],\"StackIdentifier\":\"arn:aws:cloudformation:us-west-2:123456789012:stack/MyCFNStack/1415z9z0-z39z-11z8-97z5-500z212zz6fz\"}"
+            }
         }
     }
 

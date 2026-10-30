@@ -38,8 +38,7 @@ Output::
                 "KbNumber": "KB4487038",
                 "MsrcNumber": "",
                 "Language": "All"
-            },
-            ...
+            }
         ]
     }
 

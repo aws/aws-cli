@@ -30,8 +30,7 @@ Output::
                     }
                 ]
             }
-        ],
-        "RuleAttributes": []
+        ]
     }
 
 For more information, see `Use Contributor Insights to analyze high-cardinality data <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html>`__ in the *Amazon CloudWatch User Guide*.

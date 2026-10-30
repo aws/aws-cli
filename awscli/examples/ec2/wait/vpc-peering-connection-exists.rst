@@ -4,3 +4,5 @@ The following ``wait vpc-peering-connection-exists`` example pauses and continue
 
     aws ec2 wait vpc-peering-connection-exists \
         --vpc-peering-connection-ids pcx-1234567890abcdef0
+
+This command produces no output.

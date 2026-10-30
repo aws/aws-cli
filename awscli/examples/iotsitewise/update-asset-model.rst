@@ -58,7 +58,6 @@ Output::
 
     {
         "assetModelId": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
-        "assetModelArn": "arn:aws:iotsitewise:us-west-2:123456789012:asset-model/a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
         "assetModelStatus": {
             "state": "CREATING"
         }

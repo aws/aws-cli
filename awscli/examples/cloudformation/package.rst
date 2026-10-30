@@ -10,3 +10,8 @@ artifacts to the S3 bucket ``bucket-name`` and writes the exported template to
         --output-template-file packaged-template.json \
         --use-json
 
+Output::
+
+    Successfully packaged artifacts and wrote output template to file packaged-template.json.
+    Execute the following command to deploy the packaged template
+    aws cloudformation deploy --template-file /path_to_current_directory/packaged-template.json --stack-name <YOUR STACK NAME>

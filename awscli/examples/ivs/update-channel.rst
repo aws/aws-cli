@@ -33,6 +33,7 @@ Output::
             "preset": "",
             "authorized": false,
             "tags": {}
+        }
     }
 
 For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/getting-started-create-channel.html>`__ in the *IVS Low-Latency User Guide*.
@@ -248,7 +249,7 @@ Output::
 
     {
         "channel": {
-            ""arn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",
+            "arn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",
             "containerFormat": "TS",
             "name": "test-channel-with-multitrack",
             "latencyMode": "LOW",

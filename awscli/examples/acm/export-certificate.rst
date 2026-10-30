@@ -10,8 +10,16 @@ Contents of ``path-to-passphrase-file``::
 
     examplePassphrase123
 
+Output::
+
+    {
+        "Certificate": "-----BEGIN CERTIFICATE-----\nMIICiTCCAfICCQD6m7oRw0uXOjANBgkqhkiG9w0BAQUFADCBiDELMAkGA1UEBhMC\nVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdTZWF0dGxlMQ8wDQYDVQQKEwZBbWF6\nNYiytVbZPQUQ5Yaxu2jXnimvw3rrszlaEXAMPLE=\n-----END CERTIFICATE-----\n",
+        "CertificateChain": "-----BEGIN CERTIFICATE-----\nMIICiTCCAfICCQD6m7oRw0uXOjANBgkqhkiG9w0BAQUFADCBiDELMAkGA1UEBhMC\nb24xFDASBgNVBAsTC0lBTSBDb25zb2xlMRIwEAYDVQQDEwlUZXN0Q2lsYWMxHzAd\nNYiytVbZPQUQ5Yaxu2jXnimvw3rrszlaEXAMPLE=\n-----END CERTIFICATE-----\n",
+        "PrivateKey": "-----BEGIN ENCRYPTED PRIVATE KEY-----\nMIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIEXAMPLEKEYAgIIADAd\nBglghkgBZQMEASoEEEXAMPLEPRIVATEKEYEXAMPLEEXAMPLE=\n-----END ENCRYPTED PRIVATE KEY-----\n"
+    }
+
 To export the certificate, chain, and private key to a local file, use the following command. ::
 
     aws acm export-certificate \
-        --certificate-arn arn:aws:acm:region:sccount:certificate/12345678-1234-1234-1234-123456789012 \
+        --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 \
         --passphrase file://path-to-passphrase-file > c:\temp\export.txt

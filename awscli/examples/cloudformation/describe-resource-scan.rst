@@ -29,8 +29,7 @@ Output::
             "AWS::EC2::Subnet",
             "AWS::EC2::SubnetCidrBlock",
             "AWS::EC2::SubnetNetworkAclAssociation",
-            "AWS::EC2::SubnetRouteTableAssociation",
-            ...
+            "AWS::EC2::SubnetRouteTableAssociation"
         ],
         "ResourcesRead": 676
     }

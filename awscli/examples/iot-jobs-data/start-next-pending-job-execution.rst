@@ -13,9 +13,9 @@ Output::
             "approximateSecondsBeforeTimedOut": 88,
             "executionNumber": 2939653338,
             "jobId": "SampleJob",
-            "lastUpdatedAt": 1567714853.743,
-            "queuedAt": 1567701902.444,
-            "startedAt": 1567714871.690,
+            "lastUpdatedAt": 1567714853,
+            "queuedAt": 1567701902,
+            "startedAt": 1567714871,
             "status": "IN_PROGRESS",
             "thingName": "MotionSensor1 ",
             "versionNumber": 3

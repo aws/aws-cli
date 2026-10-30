@@ -32,6 +32,6 @@ Output::
                 "Status": "Failed",
                 "JobId": "3f3c7619-02d3-4779-97f6-1d98dd313108",
                 "Priority": 42
-            },
+            }
         ]
     }

@@ -4,3 +4,5 @@ The following ``delete-bucket-lifecycle`` example deletes a lifecycle configurat
 
     aws s3api delete-bucket-lifecycle \
         --bucket amzn-s3-demo-bucket
+
+This command produces no output.

@@ -59,4 +59,64 @@ The following ``update-patch-baseline`` example renames the specified patch base
         --baseline-id "pb-0713accee01234567" \
         --name "Windows-Server-2012-R2-Important-and-Critical-Security-Updates"
 
+Output::
+
+    {
+        "BaselineId": "pb-0713accee01234567",
+        "Name": "Windows-Server-2012-R2-Important-and-Critical-Security-Updates",
+        "OperatingSystem": "WINDOWS",
+        "GlobalFilters": {
+            "PatchFilters": [
+                {
+                    "Key": "PRODUCT",
+                    "Values": [
+                        "WindowsServer2012R2"
+                    ]
+                },
+                {
+                    "Key": "MSRC_SEVERITY",
+                    "Values": [
+                        "Critical",
+                        "Important"
+                    ]
+                },
+                {
+                    "Key": "CLASSIFICATION",
+                    "Values": [
+                        "SecurityUpdates"
+                    ]
+                }
+            ]
+        },
+        "ApprovalRules": {
+            "PatchRules": [
+                {
+                    "PatchFilterGroup": {
+                        "PatchFilters": [
+                            {
+                                "Key": "MSRC_SEVERITY",
+                                "Values": [
+                                    "Critical",
+                                    "Important"
+                                ]
+                            }
+                        ]
+                    },
+                    "ComplianceLevel": "CRITICAL",
+                    "ApproveAfterDays": 3,
+                    "EnableNonSecurity": false
+                }
+            ]
+        },
+        "ApprovedPatches": [],
+        "ApprovedPatchesComplianceLevel": "UNSPECIFIED",
+        "ApprovedPatchesEnableNonSecurity": false,
+        "RejectedPatches": [],
+        "RejectedPatchesAction": "ALLOW_AS_DEPENDENCY",
+        "CreatedDate": 1551822528.783,
+        "ModifiedDate": 1551822546.296,
+        "Description": "Windows Server 2012 R2, Important and Critical security updates",
+        "Sources": []
+    }
+
 For more information, see `Update or Delete a Patch Baseline` <https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-baseline-update-or-delete.html>`__ in the *AWS Systems Manager User Guide*.

@@ -12,7 +12,7 @@ Output::
             "QueryCapacityUnits": 0,
             "StorageCapacityUnits": 0
         },
-        "CreatedAt": 2024-02-25T12:30:10+00:00,
+        "CreatedAt": "2024-02-25T12:30:10+00:00",
         "Description": "Example index 1 contains the first set of example documents",
         "DocumentMetadataConfigurations": [
             {

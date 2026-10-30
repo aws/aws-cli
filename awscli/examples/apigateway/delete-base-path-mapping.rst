@@ -5,3 +5,5 @@ The following ``delete-base-path-mapping`` example deletes a base path mapping f
     aws apigateway delete-base-path-mapping \
         --domain-name 'api.domain.tld' \
         --base-path 'dev'
+
+This command produces no output.

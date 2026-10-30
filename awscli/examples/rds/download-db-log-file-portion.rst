@@ -7,6 +7,8 @@ The following ``download-db-log-file-portion`` example downloads only the latest
         --log-file-name log.txt \
         --output text > tail.txt
 
+This command produces no output.
+
 The saved file might contain blank lines.  They appear at the end of each part of the log file while being downloaded.
 
 **Example 2: To download an entire DB log file**
@@ -18,5 +20,7 @@ The following ``download-db-log-file-portion`` example downloads the entire log 
         --log-file-name log.txt \
         --starting-token 0 \
         --output text > full.txt
+
+This command produces no output.
 
 The saved file might contain blank lines.  They appear at the end of each part of the log file while being downloaded.

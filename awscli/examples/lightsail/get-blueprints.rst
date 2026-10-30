@@ -49,8 +49,6 @@ Output::
                 "productUrl": "https://aws.amazon.com/marketplace/pp/B00NNZUAKO",
                 "licenseUrl": "https://aws.amazon.com/marketplace/pp/B00NNZUAKO#pdp-usage",
                 "platform": "LINUX_UNIX"
-            },
-            ...
             }
         ]
     }

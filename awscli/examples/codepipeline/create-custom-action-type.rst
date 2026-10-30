@@ -37,3 +37,39 @@ Contents of ``MyCustomAction.json``::
     }
 
 This command returns the structure of the custom action.
+
+Output::
+
+    {
+        "actionType": {
+            "id": {
+                "category": "Build",
+                "owner": "Custom",
+                "provider": "MyJenkinsProviderName",
+                "version": "1"
+            },
+            "settings": {
+                "entityUrlTemplate": "https://192.0.2.4/job/{Config:ProjectName}/",
+                "executionUrlTemplate": "https://192.0.2.4/job/{Config:ProjectName}/lastSuccessfulBuild/{ExternalExecutionId}/"
+            },
+            "actionConfigurationProperties": [
+                {
+                    "name": "MyJenkinsExampleBuildProject",
+                    "required": true,
+                    "key": true,
+                    "secret": false,
+                    "queryable": false,
+                    "description": "The name of the build project must be provided when this action is added to the pipeline.",
+                    "type": "String"
+                }
+            ],
+            "inputArtifactDetails": {
+                "minimumCount": 0,
+                "maximumCount": 1
+            },
+            "outputArtifactDetails": {
+                "minimumCount": 0,
+                "maximumCount": 1
+            }
+        }
+    }

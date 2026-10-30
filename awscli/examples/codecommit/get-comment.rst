@@ -15,7 +15,7 @@ Output::
             "content": "Whoops - I meant to add this comment to the line, but I don't see how to delete it.",
             "creationDate": 1508369768.142,
             "deleted": false,
-            "commentId": "",
+            "inReplyTo": "",
             "lastModifiedDate": 1508369842.278,
             "callerReactions": [],
             "reactionCounts": 

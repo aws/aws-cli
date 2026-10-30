@@ -49,16 +49,16 @@ Output::
         },
         {
             "ID": "snap-066877671789bd71b",
-            "Time": "2019-08-04T02:45:16.000Z
-        },
-        ...
+            "Time": "2019-08-04T02:45:16.000Z"
+        }
     ]
 
 The following ``describe-snapshots`` example uses filters to scope the results to snapshots created from the specified volume. The example uses the ``--query`` parameter to display only the snapshot IDs. ::
 
     aws ec2 describe-snapshots \
         --filters Name=volume-id,Values=049df61146c4d7901 \
-        --query "Snapshots[*].[SnapshotId]"
+        --query "Snapshots[*].[SnapshotId]" \
+        --output text
 
 Output::
 
@@ -81,7 +81,29 @@ The following ``describe-snapshots`` example uses tag filters to scope the resul
     aws ec2 describe-snapshots \
         --filters Name=tag:Stack,Values=prod
 
-For an example of the output for ``describe-snapshots``, see Example 1.
+Output::
+
+    {
+        "Snapshots": [
+            {
+                "Description": "This is my prod snapshot",
+                "Encrypted": false,
+                "VolumeId": "vol-049df61146c4d7901",
+                "State": "completed",
+                "VolumeSize": 8,
+                "StartTime": "2019-02-28T21:28:32.000Z",
+                "Progress": "100%",
+                "OwnerId": "123456789012",
+                "SnapshotId": "snap-0abcdef1234567890",
+                "Tags": [
+                    {
+                        "Key": "Stack",
+                        "Value": "prod"
+                    }
+                ]
+            }
+        ]
+    }
 
 For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.
 
@@ -92,6 +114,17 @@ The following ``describe-snapshots`` example uses JMESPath expressions to descri
     aws ec2 describe-snapshots \
         --owner-ids 012345678910 \
         --query "Snapshots[?(StartTime<='2020-03-31')].[SnapshotId]"
+
+Output::
+
+    [
+        [
+            "snap-1234567890abcdef0"
+        ],
+        [
+            "snap-08637175a712c3fb9"
+        ]
+    ]
 
 For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
 
@@ -118,7 +151,7 @@ Output::
                 "SnapshotId": "snap-01234567890aaaaaa",
                 "StorageTier": "archive",
                 "Tags": []
-            },
+            }
         ]
     }
 

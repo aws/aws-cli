@@ -12,7 +12,9 @@ Output::
         "deploymentGroupInfo": {
             "applicationName": "WordPress_App",
             "autoScalingGroups": [
-                "CodeDeployDemo-ASG"
+                {
+                    "name": "CodeDeployDemo-ASG"
+                }
             ],
             "deploymentConfigName": "CodeDeployDefault.OneAtATime",
             "ec2TagFilters": [

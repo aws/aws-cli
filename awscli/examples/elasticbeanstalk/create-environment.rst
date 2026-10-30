@@ -69,6 +69,24 @@ Contents of ``myoptions.json``::
         }
     ]
 
+Output::
+
+    {
+        "ApplicationName": "sampleapp",
+        "EnvironmentName": "sample-env",
+        "Status": "Launching",
+        "EnvironmentId": "e-a1b2c3d4e5",
+        "SolutionStackName": "64bit Amazon Linux 2015.03 v2.0.0 running Tomcat 8 Java 8",
+        "Health": "Grey",
+        "Tier": {
+            "Type": "Standard",
+            "Name": "WebServer",
+            "Version": " "
+        },
+        "DateUpdated": "2015-02-03T23:04:54.479Z",
+        "DateCreated": "2015-02-03T23:04:54.479Z"
+    }
+
 For more information, see `Option Values`_ in the *AWS Elastic Beanstalk Developer Guide*.
 
 .. _`Option Values`: http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html

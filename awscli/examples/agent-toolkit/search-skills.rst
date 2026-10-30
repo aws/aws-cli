@@ -12,7 +12,7 @@ Output::
             {
                 "name": "aws-serverless",
                 "description": "Build, deploy, and manage serverless applications on AWS using Lambda, API Gateway, Step Functions, and SAM/CDK.",
-                "version": "v1",
+                "skillVersion": "v1",
                 "categories": [
                     "aws-core"
                 ]

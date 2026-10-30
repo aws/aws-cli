@@ -33,11 +33,9 @@ Output::
                             "BuildCommand": "pip install -r requirements.txt",
                             "Port": "8080",
                             "Runtime": "PYTHON_3",
-                            "RuntimeEnvironmentVariables": [
-                                {
-                                    "NAME": "Jane"
-                                }
-                            ],
+                            "RuntimeEnvironmentVariables": {
+                                "NAME": "Jane"
+                            },
                             "StartCommand": "python server.py"
                         },
                         "ConfigurationSource": "Api"

@@ -4,3 +4,5 @@ The following ``start-config-rules-evaluation`` example starts an evaluation for
 
     aws configservice start-config-rules-evaluation \
         --config-rule-names s3-bucket-versioning-enabled cloudtrail-enabled
+
+This command produces no output.

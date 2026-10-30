@@ -42,3 +42,5 @@ Contents of ``cors.json``::
             }
         ]
     }
+
+This command produces no output.

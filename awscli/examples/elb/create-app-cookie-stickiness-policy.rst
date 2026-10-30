@@ -6,3 +6,5 @@ The following ``create-app-cookie-stickiness-policy`` example generates a sticki
         --load-balancer-name my-load-balancer \
         --policy-name my-app-cookie-policy \
         --cookie-name my-app-cookie
+
+This command produces no output.

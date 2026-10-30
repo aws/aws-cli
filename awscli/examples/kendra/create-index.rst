@@ -15,7 +15,7 @@ The following ``create-index`` example creates and configures an Amazon Kendra i
 Output::
 
     {
-       "Id": index1
+        "Id": "index1"
     }
 
 For more information, see `Getting started with an Amazon Kendra index and data source connector <https://docs.aws.amazon.com/kendra/latest/dg/getting-started.html>`__ in the *Amazon Kendra Developer Guide*.

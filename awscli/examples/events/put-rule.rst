@@ -6,6 +6,12 @@ The following ``put-rule`` example creates a rule that triggers every day at 9:0
         --name "DailyLambdaFunction" \
         --schedule-expression "cron(0 9 * * ? *)"
 
+Output::
+
+    {
+        "RuleArn": "arn:aws:events:us-west-2:123456789012:rule/DailyLambdaFunction"
+    }
+
 The following ``put-rule`` example creates a rule that triggers when any EC2 instance in the region changes state. ::
 
     aws events put-rule \
@@ -13,9 +19,21 @@ The following ``put-rule`` example creates a rule that triggers when any EC2 ins
         --event-pattern "{\"source\":[\"aws.ec2\"],\"detail-type\":[\"EC2 Instance State-change Notification\"]}" \
         --role-arn "arn:aws:iam::123456789012:role/MyRoleForThisRule"
 
+Output::
+
+    {
+        "RuleArn": "arn:aws:events:us-west-2:123456789012:rule/EC2InstanceStateChanges"
+    }
+
 The following ``put-rule`` example creates a rule that triggers when any EC2 instance in the region is stopped or terminated. ::
 
     aws events put-rule \
         --name "EC2InstanceStateChangeStopOrTerminate" \
         --event-pattern "{\"source\":[\"aws.ec2\"],\"detail-type\":[\"EC2 Instance State-change Notification\"],\"detail\":{\"state\":[\"stopped\",\"terminated\"]}}" \
         --role-arn "arn:aws:iam::123456789012:role/MyRoleForThisRule"
+
+Output::
+
+    {
+        "RuleArn": "arn:aws:events:us-west-2:123456789012:rule/EC2InstanceStateChangeStopOrTerminate"
+    }

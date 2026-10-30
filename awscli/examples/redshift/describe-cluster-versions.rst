@@ -4,7 +4,7 @@ The following ``describe-cluster-versions`` example returns a description of all
 
     aws redshift describe-cluster-versions
 
-Result::
+Output::
 
     {
         "ClusterVersions": [
@@ -12,9 +12,6 @@ Result::
                 "ClusterVersion": "1.0",
                 "Description": "Initial release",
                 "ClusterParameterGroupFamily": "redshift-1.0"
-            } ],
-        "ResponseMetadata": {
-            "RequestId": "16a53de3-64cc-11e2-bec0-17624ad140dd"
-        }
+            } ]
     }
 

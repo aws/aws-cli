@@ -68,6 +68,8 @@ Contents of ``service.json``::
         }
     }
 
+This command produces no output.
+
 Adding a model replaces existing commands for the service defined in the model. To leave existing commands as-is, specify a different service name to use for the new commands. ::
 
     aws configure add-model \

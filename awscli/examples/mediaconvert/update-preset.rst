@@ -7,14 +7,42 @@ The following ``update-preset`` example replaces the description for the specifi
         --description "New description text." \
         --endpoint-url https://abcd1234.mediaconvert.us-west-2.amazonaws.com
 
-This command produces no output.
 Output::
 
     {
         "Preset": {
             "Arn": "arn:aws:mediaconvert:us-east-1:003235472598:presets/SimpleMP4",
             "Settings": {
-            ...<output settings removed for brevity>...
+                "ContainerSettings": {
+                    "Container": "MP4",
+                    "Mp4Settings": {
+                        "CslgAtom": "INCLUDE",
+                        "FreeSpaceBox": "EXCLUDE",
+                        "MoovPlacement": "PROGRESSIVE_DOWNLOAD"
+                    }
+                },
+                "VideoDescription": {
+                    "CodecSettings": {
+                        "Codec": "H_264",
+                        "H264Settings": {
+                            "Bitrate": 400000,
+                            "CodecProfile": "MAIN",
+                            "RateControlMode": "CBR"
+                        }
+                    }
+                },
+                "AudioDescriptions": [
+                    {
+                        "CodecSettings": {
+                            "Codec": "AAC",
+                            "AacSettings": {
+                                "Bitrate": 96000,
+                                "CodingMode": "CODING_MODE_2_0",
+                                "SampleRate": 48000
+                            }
+                        }
+                    }
+                ]
             },
             "Type": "CUSTOM",
             "LastUpdated": 1568938411,

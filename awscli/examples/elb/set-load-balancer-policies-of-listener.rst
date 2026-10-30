@@ -7,6 +7,8 @@ The following ``set-load-balancer-policies-of-listener`` example replaces the po
         --load-balancer-port 443 \
         --policy-names my-SSLNegotiation-policy
 
+This command produces no output.
+
 
 **Example 2: To remove all policies associated with your listener**
 
@@ -16,6 +18,8 @@ The following ``set-load-balancer-policies-of-listener`` example removes all pol
         --load-balancer-name my-load-balancer \
         --load-balancer-port 443 \
         --policy-names []
+
+This command produces no output.
 
 To confirm that the policies are removed from the load balancer, use the ``describe-load-balancer-policies`` command.
 

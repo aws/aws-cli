@@ -41,8 +41,7 @@ Output::
                         "DataType": "STRING"
                     }
                 ]
-            },
-            ...
+        }
         ],
         "NextToken": "--token string truncated--"
     }
@@ -53,3 +52,44 @@ The following ``get-inventory-schema`` example returns the inventory schema for 
 
     aws ssm get-inventory-schema \
         --type-name "AWS:AWSComponent"
+
+Output::
+
+    {
+        "Schemas": [
+            {
+                "TypeName": "AWS:AWSComponent",
+                "Version": "1.0",
+                "Attributes": [
+                    {
+                        "Name": "Name",
+                        "DataType": "STRING"
+                    },
+                    {
+                        "Name": "ApplicationType",
+                        "DataType": "STRING"
+                    },
+                    {
+                        "Name": "Publisher",
+                        "DataType": "STRING"
+                    },
+                    {
+                        "Name": "Version",
+                        "DataType": "STRING"
+                    },
+                    {
+                        "Name": "InstalledTime",
+                        "DataType": "STRING"
+                    },
+                    {
+                        "Name": "Architecture",
+                        "DataType": "STRING"
+                    },
+                    {
+                        "Name": "URL",
+                        "DataType": "STRING"
+                    }
+                ]
+            }
+        ]
+    }

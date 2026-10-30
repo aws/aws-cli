@@ -23,7 +23,7 @@ Output::
         },
         "Audience": "https://signin.aws.amazon.com/saml",
         "SubjectType": "transient",
-        "PackedPolicySize": "6",
+        "PackedPolicySize": 6,
         "NameQualifier": "SbdGOnUkh1i4+EXAMPLExL/jEvs=",
         "Subject": "SamlExample"
     }

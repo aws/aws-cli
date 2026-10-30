@@ -52,7 +52,7 @@ Output::
                 "LaunchedAvailabilityZone": "us-east-2b",
                 "ProductDescription": "Linux/UNIX",
                 "SpotInstanceRequestId": "sir-08b93456",
-                "SpotPrice": "0.010000"
+                "SpotPrice": "0.010000",
                 "State": "active",
                 "Status": {
                     "Code": "fulfilled",
@@ -72,7 +72,8 @@ The following ``describe-spot-instance-requests`` example uses filters to scope 
 
     aws ec2 describe-spot-instance-requests \
         --filters Name=launch.instance-type,Values=m3.medium Name=launched-availability-zone,Values=us-east-2a \
-        --query "SpotInstanceRequests[*].[InstanceId]"
+        --query "SpotInstanceRequests[*].[InstanceId]" \
+        --output text
 
 Output::
 
@@ -98,6 +99,51 @@ The following ``describe-spot-instance-requests`` example uses tag filters to sc
     aws ec2 describe-spot-instance-requests \
         --filters Name=tag:cost-center,Values=cc123
 
-For an example of the output for ``describe-spot-instance-requests``, see Example 1.
+Output::
+
+    {
+        "SpotInstanceRequests": [
+            {
+                "CreateTime": "2018-04-30T18:14:55.000Z",
+                "InstanceId": "i-1234567890abcdef2",
+                "LaunchSpecification": {
+                    "InstanceType": "t2.micro",
+                    "ImageId": "ami-003634241a8fcdec0",
+                    "KeyName": "my-key-pair",
+                    "SecurityGroups": [
+                        {
+                            "GroupName": "default",
+                            "GroupId": "sg-e38f24a7"
+                        }
+                    ],
+                    "Placement": {
+                        "AvailabilityZone": "us-east-2b",
+                        "Tenancy": "default"
+                    },
+                    "Monitoring": {
+                        "Enabled": false
+                    }
+                },
+                "LaunchedAvailabilityZone": "us-east-2b",
+                "ProductDescription": "Linux/UNIX",
+                "SpotInstanceRequestId": "sir-0a1b2c3d",
+                "SpotPrice": "0.010000",
+                "State": "active",
+                "Status": {
+                    "Code": "fulfilled",
+                    "Message": "Your Spot request is fulfilled.",
+                    "UpdateTime": "2018-04-30T18:16:21.000Z"
+                },
+                "Tags": [
+                    {
+                        "Key": "cost-center",
+                        "Value": "cc123"
+                    }
+                ],
+                "Type": "one-time",
+                "InstanceInterruptionBehavior": "terminate"
+            }
+        ]
+    }
 
 For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.

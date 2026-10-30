@@ -5,6 +5,4 @@ The following ``purge-queue`` example deletes all messages in the specified queu
     aws sqs purge-queue \
         --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyNewQueue
 
-Output::
-
-    None.
+This command produces no output.

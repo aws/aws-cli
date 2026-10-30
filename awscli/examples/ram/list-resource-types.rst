@@ -16,7 +16,6 @@ Output::
                 "resourceType": "ec2:LocalGatewayRouteTable",
                 "serviceName": "ec2"
             },
-            ...OUTPUT TRUNCATED FOR BREVITY...
             {
                 "resourceType": "ec2:Subnet",
                 "serviceName": "ec2"

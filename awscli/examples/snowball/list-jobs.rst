@@ -9,9 +9,9 @@ Output::
     {
         "JobListEntries": [
             {
-                "CreationDate": 2016-09-27T14:50Z,
+                "CreationDate": "2016-09-27T14:50:00+00:00",
                 "Description": "Important Photos 2016-08-11",
-                "IsMaster": TRUE,
+                "IsMaster": true,
                 "JobId": "ABCd1e324fe-022f-488e-a98b-3b0566063db1",
                 "JobState": "Complete",
                 "JobType": "IMPORT",

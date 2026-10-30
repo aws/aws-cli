@@ -76,5 +76,65 @@ To get your account-specific endpoint, use ``describe-endpoints``, or send the c
 
 If your request is successful, the service returns the JSON specification for the job template that you created.
 
+Output::
+
+    {
+        "JobTemplate": {
+            "Arn": "arn:aws:mediaconvert:region-name-1:123456789012:jobTemplates/JobTemplate1",
+            "CreatedAt": "2024-04-01T17:20:31+00:00",
+            "LastUpdated": "2024-04-01T17:20:31+00:00",
+            "Name": "JobTemplate1",
+            "Priority": 0,
+            "Settings": {
+                "OutputGroups": [
+                    {
+                        "Name": "File Group",
+                        "OutputGroupSettings": {
+                            "Type": "FILE_GROUP_SETTINGS",
+                            "FileGroupSettings": {}
+                        },
+                        "Outputs": [
+                            {
+                                "ContainerSettings": {
+                                    "Container": "MP4",
+                                    "Mp4Settings": {
+                                        "CslgAtom": "INCLUDE",
+                                        "FreeSpaceBox": "EXCLUDE",
+                                        "MoovPlacement": "PROGRESSIVE_DOWNLOAD"
+                                    }
+                                },
+                                "VideoDescription": {
+                                    "Width": 1920,
+                                    "Height": 1080,
+                                    "CodecSettings": {
+                                        "Codec": "H_264",
+                                        "H264Settings": {
+                                            "MaxBitrate": 10000000,
+                                            "RateControlMode": "QVBR"
+                                        }
+                                    }
+                                },
+                                "AudioDescriptions": [
+                                    {
+                                        "CodecSettings": {
+                                            "Codec": "AAC",
+                                            "AacSettings": {
+                                                "Bitrate": 96000,
+                                                "CodingMode": "CODING_MODE_2_0",
+                                                "SampleRate": 48000
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "StatusUpdateInterval": "SECONDS_60",
+            "Type": "CUSTOM"
+        }
+    }
+
 For more information, see `Working with AWS Elemental MediaConvert Job Templates <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-job-templates.html>`_ in the *AWS Elemental MediaConvert User Guide*.
 

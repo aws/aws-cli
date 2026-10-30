@@ -79,7 +79,6 @@ Output::
                 }
             },
             {
-                }
                 "Name": "GenericLFI_URIPATH",
                 "Action": {
                     "Block": {}

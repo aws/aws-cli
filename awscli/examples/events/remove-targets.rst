@@ -5,3 +5,10 @@ The following ``remove-targets`` example removes the Amazon Kinesis stream named
     aws events remove-targets \
         --rule "DailyLambdaFunction" \
         --ids "Target1"
+
+Output::
+
+    {
+        "FailedEntryCount": 0,
+        "FailedEntries": []
+    }

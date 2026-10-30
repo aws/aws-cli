@@ -7,6 +7,8 @@ The following ``modify-identity-id-format`` example enables the IAM role ``EC2Ro
         --resource instance \
         --use-long-ids
 
+This command produces no output.
+
 **Example 2: To enable an IAM user to use longer IDs for a resource**
 
 The following ``modify-identity-id-format`` example enables the IAM user ``AdminUser`` in your AWS account to use the longer ID format for the ``volume`` resource type. ::
@@ -16,9 +18,13 @@ The following ``modify-identity-id-format`` example enables the IAM user ``Admin
         --resource volume \
         --use-long-ids
 
+This command produces no output.
+
 The following ``modify-identity-id-format`` example enables the IAM user ``AdminUser`` in your AWS account to use the longer ID format for all supported resource types that are within their opt-in period. ::
 
     aws ec2 modify-identity-id-format \
         --principal-arn arn:aws:iam::123456789012:user/AdminUser \
         --resource all-current \
         --use-long-ids
+
+This command produces no output.

@@ -8,3 +8,12 @@ The following ``put-method-response`` example creates a method response under th
         --http-method GET \
         --status-code 400 \
         --response-parameters "method.response.header.custom-header=false"
+
+Output::
+
+    {
+        "statusCode": "400",
+        "responseParameters": {
+            "method.response.header.custom-header": false
+        }
+    }

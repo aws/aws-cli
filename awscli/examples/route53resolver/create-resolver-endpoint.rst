@@ -64,4 +64,25 @@ Contents of ``c:\temp\create-outbound-resolver-endpoint.json``::
         ]
     }
 
+Output::
+
+    {
+        "ResolverEndpoint": {
+            "Id": "rslvr-out-f9ab8a03f1example",
+            "CreatorRequestId": "2020-01-01-18:47",
+            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-endpoint/rslvr-out-f9ab8a03f1example",
+            "Name": "my-outbound-endpoint",
+            "SecurityGroupIds": [
+                "sg-05cd7b25d6example"
+            ],
+            "Direction": "OUTBOUND",
+            "IpAddressCount": 2,
+            "HostVPCId": "vpc-304examp",
+            "Status": "CREATING",
+            "StatusMessage": "[Trace id: 1-5dc1ff84-f3477826e4a190025example] Creating the Resolver Endpoint",
+            "CreationTime": "2020-01-01T23:50:50.979Z",
+            "ModificationTime": "2020-01-01T23:50:50.979Z"
+        }
+    }
+
 For more information, see `Resolving DNS Queries Between VPCs and Your Network <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver.html>`__ in the *Amazon Route 53 Developer Guide*.

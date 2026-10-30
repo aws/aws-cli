@@ -7,6 +7,8 @@ The following ``set-vault-notifications`` example configures SNS notifications f
         --vault-name my-vault \
         --vault-notification-config file://notificationconfig.json
 
+This command produces no output.
+
 ``notificationconfig.json`` is a JSON file in the current folder that specifies an SNS topic and the events to publish.
 
 Contents of ``notificationconfig.json``::

@@ -37,7 +37,7 @@ Output::
                     "destinationCommit": "9f31c968EXAMPLE",
                     "destinationReference": "refs/heads/main",
                     "mergeMetadata": {
-                        "isMerged": false,
+                        "isMerged": false
                     },
                     "repositoryName": "MyDemoRepo",
                     "sourceCommit": "99132ab0EXAMPLE",

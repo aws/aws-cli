@@ -4,3 +4,5 @@ The following ``delete-evaluation-results`` example deletes the current evaluati
 
     aws configservice delete-evaluation-results \
         --config-rule-name s3-bucket-versioning-enabled
+
+This command produces no output.

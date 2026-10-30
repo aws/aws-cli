@@ -7,4 +7,6 @@ profile named ``ExampleInstanceProfile``. ::
         --instance-profile-name ExampleInstanceProfile \
         --role-name Test-Role
 
+This command produces no output.
+
 For more information, see `Using instance profiles <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html>`__ in the *AWS IAM User Guide*.

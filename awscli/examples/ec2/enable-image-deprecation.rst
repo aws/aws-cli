@@ -9,8 +9,7 @@ The following ``enable-image-deprecation`` example deprecates an AMI on a specif
 Output::
 
     {
-        "RequestID": "59dbff89-35bd-4eac-99ed-be587EXAMPLE",
-        "Return": "true"
+        "Return": true
     }
 
 For more information, see `Deprecate an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-deprecate.html#deprecate-ami>`__ in the *Amazon EC2 User Guide*.

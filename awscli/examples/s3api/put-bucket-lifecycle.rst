@@ -6,6 +6,8 @@ The following ``put-bucket-lifecycle`` example applies a lifecycle configuration
         --bucket amzn-s3-demo-bucket \
         --lifecycle-configuration file://lifecycle.json
 
+This command produces no output.
+
 The file ``lifecycle.json`` is a JSON document in the current folder that specifies two rules.
 
 Contents of ``lifecycle.json``::

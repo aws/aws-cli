@@ -8,3 +8,5 @@ The following ``admin-update-device-status`` example sets the device remembered 
         --device-key xxxx \
         --device-remembered-status not_remembered
 
+This command produces no output.
+

@@ -5,6 +5,8 @@ The following ``activate-pipeline`` example activates the specified pipeline. ::
     aws datapipeline activate-pipeline \
         --pipeline-id df-00627471SOVYZEXAMPLE
 
+This command produces no output.
+
 To activate the pipeline at a specific date and time, use the following command. ::
 
     aws datapipeline activate-pipeline \

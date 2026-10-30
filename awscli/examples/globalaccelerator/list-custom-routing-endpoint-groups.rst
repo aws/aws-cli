@@ -20,8 +20,8 @@ Output::
                             "TCP",
                             "UDP"
                         ]
-                    } 
-                ]
+                    }
+                ],
                 "EndpointDescriptions": [
                     {
                         "EndpointId": "subnet-abcd123example"

@@ -49,7 +49,7 @@ Output::
                 "source": "ta_check",
                 "status": "warning",
                 "type": "priority"
-            },
+            }
         ],
         "nextToken": "REDACTED"
     }

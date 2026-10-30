@@ -6,13 +6,13 @@ The following ``restore-from-cluster-snapshot`` example restores a cluster from 
         --cluster-identifier mycluster-clone \
         --snapshot-identifier my-snapshot-id
 
-Result::
+Output::
 
     {
         "Cluster": {
             "NodeType": "dw.hs1.xlarge",
             "ClusterVersion": "1.0",
-            "PubliclyAccessible": "true",
+            "PubliclyAccessible": true,
             "MasterUsername": "adminuser",
             "ClusterParameterGroups": [
                 {
@@ -27,7 +27,7 @@ Result::
                 }
             ],
             "AllowVersionUpgrade": true,
-            "VpcSecurityGroups": \[],
+            "VpcSecurityGroups": [],
             "PreferredMaintenanceWindow": "sun:23:15-mon:03:15",
             "AutomatedSnapshotRetentionPeriod": 1,
             "ClusterStatus": "creating",
@@ -35,9 +35,6 @@ Result::
             "DBName": "dev",
             "NumberOfNodes": 2,
             "PendingModifiedValues": {}
-        },
-        "ResponseMetadata": {
-            "RequestId": "77fd512b-64e3-11e2-8f5b-e90bd6c77476"
         }
     }
 

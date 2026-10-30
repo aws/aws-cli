@@ -5,3 +5,5 @@ The following ``delete-user-pool`` example deletes a user pool using the user po
     aws cognito-idp delete-user-pool \
         --user-pool-id us-west-2_aaaaaaaaa
 
+This command produces no output.
+

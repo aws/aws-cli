@@ -7,6 +7,4 @@ The following ``update-document`` example updates a document's name and parent f
         --name updatedDoc \
         --parent-folder-id 50893c0af679524d1a0e0651130ed6d073e1a05f95bd12c42dcde5d35634ed08
 
-Output::
-
-    None
+This command produces no output.

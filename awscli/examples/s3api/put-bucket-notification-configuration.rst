@@ -19,6 +19,8 @@ Contents of ``notification.json``::
         ]
     }
 
+This command produces no output.
+
 The SNS topic must have an IAM policy attached to it that allows Amazon S3 to publish to it. ::
 
     {

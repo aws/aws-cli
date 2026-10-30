@@ -9,8 +9,8 @@ The following ``update-group-certificate-configuration`` example sets a 10-day e
 Output::
 
     {
-        "CertificateExpiryInMilliseconds": 864000000,
-        "CertificateAuthorityExpiryInMilliseconds": 2524607999000,
+        "CertificateExpiryInMilliseconds": "864000000",
+        "CertificateAuthorityExpiryInMilliseconds": "2524607999000",
         "GroupId": "8eaadd72-ce4b-4f15-892a-0cc4f3a343f1"
     }
 

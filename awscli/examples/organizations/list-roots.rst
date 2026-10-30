@@ -4,7 +4,9 @@ The following ``list-roots`` example gets the list of roots for an organization.
 
     aws organizations list-roots
 
-The output includes a list of root structures with summary information: ::
+The output includes a list of root structures with summary information.
+
+Output::
 
     {
         "Roots": [
@@ -14,8 +16,8 @@ The output includes a list of root structures with summary information: ::
                 "Id": "r-examplerootid111",
                 "PolicyTypes": [
                     {
-                        "Status":"ENABLED",
-                        "Type":"SERVICE_CONTROL_POLICY"
+                        "Status": "ENABLED",
+                        "Type": "SERVICE_CONTROL_POLICY"
                     }
                 ]
             }

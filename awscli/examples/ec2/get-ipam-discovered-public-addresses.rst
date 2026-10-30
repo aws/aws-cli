@@ -11,7 +11,7 @@ Output::
     {
         "IpamDiscoveredPublicAddresses": [
             {
-               "IpamResourceDiscoveryId": "ipam-res-disco-0f4ef577a9f37a162",
+                "IpamResourceDiscoveryId": "ipam-res-disco-0f4ef577a9f37a162",
                 "AddressRegion": "us-east-1",
                 "Address": "54.208.155.7",
                 "AddressOwnerId": "320805250157",
@@ -54,6 +54,7 @@ Output::
                 ],
                 "SampleTime": "2024-04-05T15:13:59.145000+00:00"
             }
+        ]
     }
 
 For more information, see `View public IP insights <https://docs.aws.amazon.com/vpc/latest/ipam/view-public-ip-insights.html>`__ in the *Amazon VPC IPAM User Guide*.

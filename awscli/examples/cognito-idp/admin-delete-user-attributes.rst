@@ -7,3 +7,5 @@ The following ``admin-delete-user-attributes`` example deletes a custom attribut
         --username diego@example.com \
         --user-attribute-names "custom:CustomAttr1"
 
+This command produces no output.
+

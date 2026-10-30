@@ -5,7 +5,9 @@ The following ``describe-stack-resource-drifts`` example displays information ab
     aws cloudformation describe-stack-resource-drifts \
         --stack-name my-stack
 
-The output shows an AWS Lambda function that was modified out-of-band::
+The output shows an AWS Lambda function that was modified out-of-band.
+
+Output::
 
     {
         "StackResourceDrifts": [

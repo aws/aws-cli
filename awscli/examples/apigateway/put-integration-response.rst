@@ -10,6 +10,16 @@ The following ``put-integration-response`` example creates an integration respon
         --selection-pattern "" \
         --response-templates '{"application/json": "{\"json\": \"template\"}"}'
 
+Output::
+
+    {
+        "statusCode": "200",
+        "selectionPattern": "",
+        "responseTemplates": {
+            "application/json": "{\"json\": \"template\"}"
+        }
+    }
+
 **Example 2: To create an integration response with a regex of 400 and a statically defined header value**
 
 The following ``put-integration-response`` example creates an integration response with a regex of 400 and a statically defined header value. ::
@@ -21,3 +31,13 @@ The following ``put-integration-response`` example creates an integration respon
         --status-code 400 \
         --selection-pattern 400 \
         --response-parameters '{"method.response.header.custom-header": "'"'"'custom-value'"'"'"}'
+
+Output::
+
+    {
+        "statusCode": "400",
+        "selectionPattern": "400",
+        "responseParameters": {
+            "method.response.header.custom-header": "'custom-value'"
+        }
+    }

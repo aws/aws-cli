@@ -4,3 +4,14 @@ The following ``list-targets-by-rule`` example displays all the targets of the r
 
     aws events list-targets-by-rule \
         --rule "DailyLambdaFunction"
+
+Output::
+
+    {
+        "Targets": [
+            {
+                "Id": "1",
+                "Arn": "arn:aws:lambda:us-west-2:123456789012:function:MyFunctionName"
+            }
+        ]
+    }

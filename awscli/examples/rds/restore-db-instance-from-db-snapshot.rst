@@ -16,9 +16,6 @@ Output::
             "DBInstanceClass": "db.t3.small",
             "Engine": "mysql",
             "DBInstanceStatus": "creating",
-
-            ...output omitted...
-
             "PreferredMaintenanceWindow": "mon:07:37-mon:08:07",
             "PendingModifiedValues": {},
             "MultiAZ": false,
@@ -26,9 +23,6 @@ Output::
             "AutoMinorVersionUpgrade": true,
             "ReadReplicaDBInstanceIdentifiers": [],
             "LicenseModel": "general-public-license",
-
-            ...output omitted...
-
             "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:db7-new-instance",
             "IAMDatabaseAuthenticationEnabled": false,
             "PerformanceInsightsEnabled": false,

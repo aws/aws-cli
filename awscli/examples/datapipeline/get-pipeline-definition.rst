@@ -5,7 +5,7 @@ The following ``get-pipeline-definition`` example gets the pipeline definition f
     aws datapipeline get-pipeline-definition \
         --pipeline-id df-00627471SOVYZEXAMPLE
    
-The following is example output::
+Output::
 
     {
         "parameters": [

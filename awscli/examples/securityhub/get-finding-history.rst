@@ -49,7 +49,7 @@ Output::
                     "ProductArn": "arn:aws:securityhub:us-east-1::product/aws/securityhub"
                 },
                 "UpdateTime": "2023-05-23T02:06:51.518000+00:00",
-                "FindingCreated": "true",
+                "FindingCreated": true,
                 "UpdateSource": {
                     "Type": "BATCH_IMPORT_FINDINGS",
                     "Identity": "arn:aws:securityhub:us-east-1::product/aws/securityhub"

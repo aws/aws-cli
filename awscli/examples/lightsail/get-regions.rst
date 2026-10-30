@@ -31,8 +31,6 @@ Output::
                 "name": "us-west-2",
                 "availabilityZones": [],
                 "relationalDatabaseAvailabilityZones": []
-            },
-            ...
             }
         ]
     }

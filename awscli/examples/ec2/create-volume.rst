@@ -19,7 +19,7 @@ Output::
         "State": "creating",
         "Iops": 240,
         "SnapshotId": "",
-        "CreateTime": "YYYY-MM-DDTHH:MM:SS.000Z",
+        "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 80
     }
 
@@ -51,7 +51,7 @@ Output::
         "State": "creating",
         "Iops": 1000,
         "SnapshotId": "snap-066877671789bd71b",
-        "CreateTime": "YYYY-MM-DDTHH:MM:SS.000Z",
+        "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 500
     }
 
@@ -76,7 +76,7 @@ Output::
         "State": "creating",
         "Iops": 240,
         "SnapshotId": "",
-        "CreateTime": "YYYY-MM-DDTHH:MM:SS.000Z",
+        "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 80
     }
 
@@ -104,3 +104,28 @@ The following ``create-volume`` example creates a volume and adds two tags. ::
         --volume-type gp2 \
         --size 80 \
         --tag-specifications 'ResourceType=volume,Tags=[{Key=purpose,Value=production},{Key=cost-center,Value=cc123}]'
+
+Output::
+
+    {
+        "AvailabilityZoneId": "use1-az1",
+        "AvailabilityZone": "us-east-1a",
+        "Tags": [
+            {
+                "Key": "purpose",
+                "Value": "production"
+            },
+            {
+                "Key": "cost-center",
+                "Value": "cc123"
+            }
+        ],
+        "Encrypted": false,
+        "VolumeType": "gp2",
+        "VolumeId": "vol-1234567890abcdef0",
+        "State": "creating",
+        "Iops": 240,
+        "SnapshotId": "",
+        "CreateTime": "2025-03-12T19:21:34.000Z",
+        "Size": 80
+    }

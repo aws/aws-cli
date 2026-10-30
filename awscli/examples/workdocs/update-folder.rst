@@ -7,6 +7,4 @@ The following ``update-folder`` example updates a folder's name and parent folde
         --name exampleFolder1 \
         --parent-folder-id 1ece93e5fe75315c7407c4967918b4fd9da87ddb2a588e67b7fdaf4a98fde678
 
-Output::
-
-    None
+This command produces no output.

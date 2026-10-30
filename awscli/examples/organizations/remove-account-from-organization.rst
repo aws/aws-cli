@@ -4,3 +4,5 @@ The following ``remove-account-from-organization`` example removes an account fr
 
     aws organizations remove-account-from-organization \
         --account-id 333333333333
+
+This command produces no output.

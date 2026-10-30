@@ -29,8 +29,7 @@ Output::
                 "InstanceTenancy": "default",
                 "InstanceType": "m3.medium",
                 "InstanceCount": 2
-            },
-            ...
+            }
         ]
     }
 

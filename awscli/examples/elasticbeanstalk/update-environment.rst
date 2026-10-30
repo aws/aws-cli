@@ -37,6 +37,28 @@ The following ``update-environment`` example sets the value of the "PARAM1" vari
         --environment-name my-env \
         --option-settings Namespace=aws:elasticbeanstalk:application:environment,OptionName=PARAM1,Value=ParamValue
 
+Output::
+
+    {
+        "ApplicationName": "my-app",
+        "EnvironmentName": "my-env",
+        "VersionLabel": "v2",
+        "Status": "Updating",
+        "EnvironmentId": "e-szqipays4h",
+        "EndpointURL": "awseb-e-i-AWSEBLoa-1RDLX6TC9VUAO-0123456789.us-west-2.elb.amazonaws.com",
+        "SolutionStackName": "64bit Amazon Linux running Tomcat 7",
+        "CNAME": "my-env.elasticbeanstalk.com",
+        "Health": "Grey",
+        "AbortableOperationInProgress": true,
+        "Tier": {
+            "Version": " ",
+            "Type": "Standard",
+            "Name": "WebServer"
+        },
+        "DateUpdated": "2015-02-03T23:20:15.351Z",
+        "DateCreated": "2015-02-03T23:04:54.453Z"
+    }
+
 The ``option-settings`` parameter takes a namespace in addition to the name and value of the variable. Elastic Beanstalk supports several namespaces for options in addition to environment variables.
 
 **Example 3: To configure option settings from a file**

@@ -1,11 +1,11 @@
 **To cancel a handshake sent from another account**
 
-The following ``cancel-handshake`` example cancels a handshake that Bill previously sent to invite Susan's account to join his organization. He changes his mind and decides to cancel the invitation before Susan accepts it. ::
+The following ``cancel-handshake`` example cancels a handshake that Bill previously sent to invite Susan's account to join his organization. He changes his mind and decides to cancel the invitation before Susan accepts it. The output shows that the handshake state is now ``CANCELED``. ::
 
     aws organizations cancel-handshake \
         --handshake-id h-examplehandshakeid111
 
-The output includes a handshake object that shows that the state is now ``CANCELED``: ::
+Output::
 
     {
         "Handshake": {

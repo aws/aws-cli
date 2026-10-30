@@ -4,7 +4,7 @@ The following ``describe-organization`` example requests details about an organi
 
     aws organizations describe-organization
 
-The output includes an organization object that has the details about the organization: ::
+Output::
 
     {
         "Organization": {

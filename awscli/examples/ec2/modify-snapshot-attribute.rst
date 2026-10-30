@@ -8,6 +8,8 @@ The following ``modify-snapshot-attribute`` example updates the ``createVolumePe
         --operation-type remove \
         --user-ids 123456789012
 
+This command produces no output.
+
 **Example 2: To make a snapshot public**
 
 The following ``modify-snapshot-attribute`` example makes the specified snapshot public. ::
@@ -17,3 +19,5 @@ The following ``modify-snapshot-attribute`` example makes the specified snapshot
         --attribute createVolumePermission \
         --operation-type add \
         --group-names all
+
+This command produces no output.

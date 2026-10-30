@@ -31,8 +31,7 @@ Output::
                 "NetworkPlatform": "EC2-VPC",
                 "InstanceType": "c4.large",
                 "HourlyPrice": "0.095"
-            },
-            ...
+            }
         ]
     }
 

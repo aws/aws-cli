@@ -7,6 +7,4 @@ The following ``update-environment`` example changes the specified settings of t
         --name my-changed-demo-env \
         --description "My changed demonstration development environment."
 
-Output::
-
-    None.
+This command produces no output.

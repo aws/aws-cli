@@ -7,3 +7,5 @@ The following ``admin-update-user-attributes`` example updates a custom user att
         --username diego@example.com \
         --user-attributes Name="custom:CustomAttr1",Value="Purple"
 
+This command produces no output.
+

@@ -5,6 +5,42 @@ The following ``list-resource-record-sets`` example lists summary information ab
     aws route53 list-resource-record-sets \
         --hosted-zone-id Z2LD58HEXAMPLE
 
+Output::
+
+    {
+        "ResourceRecordSets": [
+            {
+                "Name": "example.domain.",
+                "Type": "NS",
+                "TTL": 172800,
+                "ResourceRecords": [
+                    {
+                        "Value": "ns-2048.awsdns-64.com."
+                    },
+                    {
+                        "Value": "ns-2049.awsdns-65.net."
+                    },
+                    {
+                        "Value": "ns-2050.awsdns-66.org."
+                    },
+                    {
+                        "Value": "ns-2051.awsdns-67.co.uk."
+                    }
+                ]
+            },
+            {
+                "Name": "example.domain.",
+                "Type": "SOA",
+                "TTL": 900,
+                "ResourceRecords": [
+                    {
+                        "Value": "ns-2048.awsdns-64.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"
+                    }
+                ]
+            }
+        ]
+    }
+
 If the hosted zone contains more than 100 resource record sets, or if you want to list them in groups smaller than 100, include the ``--maxitems`` parameter. For example, to list resource record sets one at a time, use the following command. ::
 
     aws route53 list-resource-record-sets \

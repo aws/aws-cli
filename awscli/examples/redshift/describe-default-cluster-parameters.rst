@@ -6,7 +6,7 @@ The following ``describe-default-cluster-parameters`` example returns a descript
     aws redshift describe-default-cluster-parameters \
         --parameter-group-family redshift-1.0
 
-Result::
+Output::
 
     {
         "DefaultClusterParameters": {
@@ -28,8 +28,7 @@ Result::
                     "Source": "engine-default",
                     "ParameterValue": "0",
                     "ParameterName": "extra_float_digits"
-                },
-                (...remaining output omitted...)
+                }
             ]
         }
     }

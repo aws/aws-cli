@@ -120,7 +120,7 @@ Output::
                 "FailedCount": 0,
                 "UnreportedNotApplicableCount": 846,
                 "NotApplicableCount": 212,
-                "OperationStartTime": "2021-08-046T11:03:50.590000-07:00",
+                "OperationStartTime": "2021-08-06T11:03:50.590000-07:00",
                 "OperationEndTime": "2021-08-06T11:04:21.555000-07:00",
                 "Operation": "Scan",
                 "RebootOption": "NoReboot",

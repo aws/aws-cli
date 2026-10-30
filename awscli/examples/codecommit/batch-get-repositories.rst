@@ -8,9 +8,8 @@ The following ``batch-get-repositories`` example shows details about multiple AW
 Output::
 
     {
-        "repositoriesNotFound": [],
         "repositories": [
-             {
+            {
                 "creationDate": 1429203623.625,
                 "defaultBranch": "main",
                 "repositoryName": "MyDemoRepo",
@@ -19,7 +18,7 @@ Output::
                 "repositoryDescription": "My demonstration repository",
                 "cloneUrlHttp": "https://codecommit.us-east-2.amazonaws.com/v1/repos/MyDemoRepo",
                 "repositoryId": "f7579e13-b83e-4027-aaef-650c0EXAMPLE",
-                "Arn": "arn:aws:codecommit:us-east-2:111111111111:MyDemoRepo"
+                "Arn": "arn:aws:codecommit:us-east-2:111111111111:MyDemoRepo",
                 "accountId": "111111111111"
             },
             {
@@ -31,7 +30,7 @@ Output::
                 "repositoryDescription": "My other demonstration repository",
                 "cloneUrlHttp": "https://codecommit.us-east-2.amazonaws.com/v1/repos/MyOtherDemoRepo",
                 "repositoryId": "cfc29ac4-b0cb-44dc-9990-f6f51EXAMPLE",
-                "Arn": "arn:aws:codecommit:us-east-2:111111111111:MyOtherDemoRepo"
+                "Arn": "arn:aws:codecommit:us-east-2:111111111111:MyOtherDemoRepo",
                 "accountId": "111111111111"
             }
         ],

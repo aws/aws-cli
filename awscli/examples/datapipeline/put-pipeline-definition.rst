@@ -91,7 +91,7 @@ Contents of ``my-pipeline-definition.json``::
         }
     }
    
-The following is example output::
+Output::
 
     {
         "validationErrors": [],

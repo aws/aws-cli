@@ -7,3 +7,5 @@ The following ``delete-notification`` example deletes the specified notification
         --budget-name "Example Budget" \
         --notification NotificationType=ACTUAL,ComparisonOperator=GREATER_THAN,Threshold=80,ThresholdType=PERCENTAGE
 
+This command produces no output.
+

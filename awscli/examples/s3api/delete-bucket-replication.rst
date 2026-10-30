@@ -4,3 +4,5 @@ The following ``delete-bucket-replication`` example deletes a replication config
 
     aws s3api delete-bucket-replication \
         --bucket amzn-s3-demo-bucket
+
+This command produces no output.

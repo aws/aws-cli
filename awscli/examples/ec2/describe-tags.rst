@@ -56,6 +56,31 @@ The following ``describe-tags`` example describes the tags for all your resource
 
     aws ec2 describe-tags
 
+Output::
+
+    {
+        "Tags": [
+            {
+                "ResourceType": "instance",
+                "ResourceId": "i-1234567890abcdef8",
+                "Value": "Test",
+                "Key": "Stack"
+            },
+            {
+                "ResourceType": "instance",
+                "ResourceId": "i-1234567890abcdef8",
+                "Value": "Beta Server",
+                "Key": "Name"
+            },
+            {
+                "ResourceType": "volume",
+                "ResourceId": "vol-049df61146c4d7901",
+                "Value": "Logs",
+                "Key": "Purpose"
+            }
+        ]
+    }
+
 **Example 4: To describe the tags for your resources based on a tag key**
 
 The following ``describe-tags`` example describes the tags for your resources that have a tag with the key ``Stack``. ::
@@ -125,7 +150,7 @@ Output::
             {
                 "ResourceType": "instance",
                 "ResourceId": "i-1234567890abcdef5",
-                "Value": null,
+                "Value": "",
                 "Key": "Purpose"
             }
         ]

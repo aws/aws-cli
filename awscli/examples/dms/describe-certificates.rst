@@ -12,9 +12,6 @@ Output::
                 "CertificateIdentifier": "my-cert",
                 "CertificateCreationDate": 1543259542.506,
                 "CertificatePem": "-----BEGIN CERTIFICATE-----\nMIID9DCCAtygAwIBAgIBQjANBgkqhkiG9w0BAQ ...U"
-
-                ... remaining output omittted ...
-
             }
         ]
     }

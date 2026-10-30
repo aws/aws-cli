@@ -6,3 +6,5 @@ The following ``delete-budget`` example deletes the specified Cost and Usage bud
         --account-id 111122223333 \
         --budget-name "Example Budget"
 
+This command produces no output.
+

@@ -4,6 +4,31 @@ The following ``list-health-checks`` example lists detailed information about th
 
     aws route53 list-health-checks
 
+Output::
+
+    {
+        "HealthChecks": [
+            {
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "CallerReference": "2014-04-01-18:47",
+                "HealthCheckConfig": {
+                    "IPAddress": "192.0.2.44",
+                    "Port": 80,
+                    "Type": "HTTP",
+                    "ResourcePath": "/docs/route53-health-check.html",
+                    "FullyQualifiedDomainName": "example.com",
+                    "RequestInterval": 30,
+                    "FailureThreshold": 3,
+                    "MeasureLatency": false,
+                    "Inverted": false,
+                    "Disabled": false,
+                    "EnableSNI": false
+                },
+                "HealthCheckVersion": 1
+            }
+        ]
+    }
+
 If you have more than 100 health checks, or if you want to list them in groups smaller than 100, include the ``--maxitems`` parameter. For example, to list health checks one at a time, use the following command. ::
 
     aws route53 list-health-checks \

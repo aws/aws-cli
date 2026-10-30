@@ -42,6 +42,12 @@ Modify the placement. ::
         --instance-id i-0123a456700123456 \
         --group-name MySpreadGroup
 
+Output::
+
+    {
+        "Return": true
+    }
+
 Restart the instance. ::
 
     aws ec2 start-instances \
@@ -68,15 +74,15 @@ Modify the placement (Windows PowerShell, Linux, and macOS). ::
         --instance-id i-0123a456700123456 `
         --group-name ''
 
-Restart the instance. ::
-
-    aws ec2 start-instances \
-        --instance-ids i-0123a456700123456
-
 Output::
 
     {
         "Return": true
     }
+
+Restart the instance. ::
+
+    aws ec2 start-instances \
+        --instance-ids i-0123a456700123456
 
 For more information, see `Modify Dedicated Host tenancy and affinity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/moving-instances-dedicated-hosts.html>`__ in the *Amazon EC2 User Guide*.

@@ -45,7 +45,6 @@ Output::
                     {
                         "Name": "us-east-1d"
                     }
-                    }
                 ],
                 "EngineVersion": "3.6.0",
                 "DBInstanceClass": "db.r4.2xlarge",

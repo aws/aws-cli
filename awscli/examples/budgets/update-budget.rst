@@ -40,3 +40,5 @@ Contents of ``new-budget.json``::
         "TimeUnit": "MONTHLY"
     }
 
+This command produces no output.
+

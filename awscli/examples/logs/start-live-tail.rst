@@ -5,11 +5,18 @@ The following ``start-live-tail`` example starts a Live Tail session on a log gr
     aws logs start-live-tail \
         --log-group-identifiers arn:aws:logs:us-east-1:111111222222:log-group:my-logs
 
+Output::
+
+    INFO Processing request a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
+    INFO Request a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 completed in 120 ms
+
 The following command starts a Live Tail session on a log group named ``my-logs`` in interactive mode. ::
 
     aws logs start-live-tail \
         --log-group-identifiers arn:aws:logs:us-east-1:111111222222:log-group:my-logs \
         --mode interactive
+
+This command produces no output. It displays an interactive Live Tail session in the terminal.
 
 In interactive mode you can highlight as many as five terms in the tailed logs. The severity codes are highlighted by default.
 Press ``h`` to enter the highlight mode and then type in the terms to be highlighted, one at a time, and press enter. Press ``c`` to clear the highlighted term(s).

@@ -9,7 +9,7 @@ Output::
 
     {
         "DBInstance": {
-            "DBInstanceStatus": "stopping",
-            ...some output truncated...
+            "DBInstanceIdentifier": "test-instance",
+            "DBInstanceStatus": "stopping"
         }
     }

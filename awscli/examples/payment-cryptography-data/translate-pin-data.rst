@@ -14,7 +14,7 @@ Output::
 
     {
         "PinBlock": "1F4209C670E49F83E75CC72E81B787D9",
-        "KeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/ivi5ksfsuplneuyt
+        "KeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/ivi5ksfsuplneuyt",
         "KeyCheckValue": "7CC9E2"
     }
 

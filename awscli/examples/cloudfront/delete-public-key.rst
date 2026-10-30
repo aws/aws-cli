@@ -18,4 +18,6 @@ Use the ``--if-match`` option to provide the public key's ``ETag``. ::
         --id KDFB19YGCR002 \
         --if-match E2QWRUHEXAMPLE
 
+This command produces no output.
+
 When successful, this command has no output.

@@ -8,11 +8,14 @@ The following ``update-role-trust-policy`` example updates the trust policy of a
         --namespace example_namespace \
         --role-name example_iam_role
 
+If the trust policy has already been updated, the command displays the following output.
+
 Output::
 
-    If the trust policy has already been updated, then the output will be:
-    Trust policy statement already exists for role example_iam_role. No
-    changes were made!
+    Trust policy statement already exists for role example_iam_role. No changes were made!
 
-    If the trust policy has not been updated yet, then the output will be:
+If the trust policy has not been updated yet, the command displays the following output.
+
+Output::
+
     Successfully updated trust policy of role example_iam_role.

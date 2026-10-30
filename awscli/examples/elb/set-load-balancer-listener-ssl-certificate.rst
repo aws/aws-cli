@@ -7,3 +7,5 @@ The following ``set-load-balancer-listener-ssl-certificate`` example replaces th
         --load-balancer-port 443 \
         --ssl-certificate-id arn:aws:iam::123456789012:server-certificate/new-server-cert
 
+This command produces no output.
+

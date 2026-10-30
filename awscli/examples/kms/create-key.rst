@@ -27,7 +27,7 @@ Output::
             "KeyState": "Enabled",
             "KeyUsage": "ENCRYPT_DECRYPT",
             "MultiRegion": false,
-            "Origin": "AWS_KMS"
+            "Origin": "AWS_KMS",
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
             ]

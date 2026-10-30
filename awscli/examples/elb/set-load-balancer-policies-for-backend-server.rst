@@ -7,6 +7,8 @@ The following ``set-load-balancer-policies-for-backend-server`` example replaces
         --instance-port 80 \
         --policy-names my-ProxyProtocol-policy
 
+This command produces no output.
+
 
 **Example 2: To remove all policies that are currently associated with a port on your backend instance**
 
@@ -16,6 +18,8 @@ The following ``set-load-balancer-policies-for-backend-server`` example removes 
         --load-balancer-name my-load-balancer \
         --instance-port 80 \
         --policy-names []
+
+This command produces no output.
 
 
 To confirm that the policies are removed, use the ``describe-load-balancer-policies`` command.

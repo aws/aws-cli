@@ -8,3 +8,5 @@ The following ``update-auth-event-feedback`` example updates authorization event
         --event-id EVENT_ID \
         --feedback-token FEEDBACK_TOKEN \
         --feedback-value "Valid"
+
+This command produces no output.

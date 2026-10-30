@@ -47,9 +47,9 @@ Output::
                 "Duration": 94608000,
                 "ReservedInstancesOfferingId": "bfbefc6c-0d10-418d-b144-7258578d329d",
                 "InstanceType": "c1.medium"
-            },
-            ...
-        }
+            }
+        ]
+    }
 
 **Example 2: To describe your Reserved Instances offerings using options**
 
@@ -85,8 +85,6 @@ Output::
                 "ReservedInstancesOfferingId": "c48ab04c-fe69-4f94-8e39-a23842292823",
                 "InstanceType": "t1.micro"
             },
-
-            ...
             {
                 "OfferingType": "No Upfront",
                 "AvailabilityZone": "us-east-1d",

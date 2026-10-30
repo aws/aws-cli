@@ -16,7 +16,7 @@ Output::
     {
         "ApplicationId": "339ohji",
         "ConfigurationProfileId": "ur8hx2f",
-        "VersionNumber": "1",
+        "VersionNumber": 1,
         "ContentType": "application/json"
     }
 

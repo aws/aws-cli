@@ -7,3 +7,5 @@ The following ``admin-set-user-mfa-preference`` example sets the SMS MFA prefere
         --username diego@example.com \
         --sms-mfa-settings Enabled=false,PreferredMfa=false
 
+This command produces no output.
+

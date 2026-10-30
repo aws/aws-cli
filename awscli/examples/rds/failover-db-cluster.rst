@@ -27,8 +27,7 @@ Output::
             "Engine": "aurora-postgresql",
             "EngineVersion": "17.7",
             "Port": 5432,
-            "MasterUsername": "postgres",
-            ...some output truncated...
+            "MasterUsername": "postgres"
         }
     }
 

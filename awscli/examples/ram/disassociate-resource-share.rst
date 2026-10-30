@@ -10,10 +10,12 @@ Output::
 
     {
         "resourceShareAssociations": [
-            "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/7ab63972-b505-7e2a-420d-6f5d3EXAMPLE",
-            "associatedEntity": "arn:aws:ec2:us-west-2:123456789012:subnet/subnet-0250c25a1fEXAMPLE",
-            "associationType": "RESOURCE",
-            "status": "DISASSOCIATING",
-            "external": false
+            {
+                "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/7ab63972-b505-7e2a-420d-6f5d3EXAMPLE",
+                "associatedEntity": "arn:aws:ec2:us-west-2:123456789012:subnet/subnet-0250c25a1fEXAMPLE",
+                "associationType": "RESOURCE",
+                "status": "DISASSOCIATING",
+                "external": false
+            }
         ]
     }

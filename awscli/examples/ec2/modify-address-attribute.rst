@@ -17,16 +17,15 @@ Windows command. ::
 Output::
 
     {
-        "Addresses": [
-            {
-                "PublicIp": "192.0.2.0",
-                "AllocationId": "eipalloc-abcdef01234567890",
-                "PtrRecord": "example.net."
-                "PtrRecordUpdate": {
-                    "Value": "example.com.",
-                    "Status": "PENDING"
+        "Address": {
+            "PublicIp": "192.0.2.0",
+            "AllocationId": "eipalloc-abcdef01234567890",
+            "PtrRecord": "example.net.",
+            "PtrRecordUpdate": {
+                "Value": "example.com.",
+                "Status": "PENDING"
             }
-        ]
+        }
     }
 
 To monitor the pending change and to view the modified attributes of an elastic IP address, see `describe-addresses-attribute <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-addresses-attribute.html>`__ in the *AWS CLI Command Reference*.

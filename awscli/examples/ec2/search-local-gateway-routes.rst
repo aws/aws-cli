@@ -9,11 +9,13 @@ The following ``search-local-gateway-routes`` example searches for static routes
 Output::
 
     {
-        "Route": {
-            "DestinationCidrBlock": "0.0.0.0/0",
-            "LocalGatewayVirtualInterfaceGroupId": "lgw-vif-grp-07145b276bEXAMPLE",
-            "Type": "static",
-            "State": "deleted",
-            "LocalGatewayRouteTableId": "lgw-rtb-059615ef7EXAMPLE"
-        }
+        "Routes": [
+            {
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "LocalGatewayVirtualInterfaceGroupId": "lgw-vif-grp-07145b276bEXAMPLE",
+                "Type": "static",
+                "State": "deleted",
+                "LocalGatewayRouteTableId": "lgw-rtb-059615ef7EXAMPLE"
+            }
+        ]
     }

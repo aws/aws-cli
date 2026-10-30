@@ -22,7 +22,7 @@ Output::
             },
             {
                 "id": "349c86d4579e4e7298d500ff57a6b2EX",
-                "name": my-demo-ssh-env",
+                "name": "my-demo-ssh-env",
                 "description": "",
                 "type": "ssh",
                 "arn": "arn:aws:cloud9:us-east-1:123456789012:environment:349c86d4579e4e7298d500ff57a6b2EX",

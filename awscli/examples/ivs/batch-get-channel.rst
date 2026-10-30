@@ -48,7 +48,7 @@ Output::
                 "name": "channel-2",
                 "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel-2.abcdEFGH.m3u8",
                 "preset": "",
-                "playbackRestrictionPolicyArn": "arn:aws:ivs:us-west-2:123456789012:playback-restriction-policy/ABcdef34ghIJ"",
+                "playbackRestrictionPolicyArn": "arn:aws:ivs:us-west-2:123456789012:playback-restriction-policy/ABcdef34ghIJ",
                 "recordingConfigurationArn": "",
                 "srt": {
                     "endpoint": "a1b2c3d4e5f6.srt.live-video.net",

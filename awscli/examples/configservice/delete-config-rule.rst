@@ -4,3 +4,5 @@ The following ``delete-config-rule`` example deletes an AWS Config rule named ``
 
     aws configservice delete-config-rule \
         --config-rule-name MyConfigRule
+
+This command produces no output.

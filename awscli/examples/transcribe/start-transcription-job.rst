@@ -15,6 +15,21 @@ Contents of ``myfile.json``::
         }
     }
 
+Output::
+
+    {
+        "TranscriptionJob": {
+            "TranscriptionJobName": "cli-simple-transcription-job",
+            "TranscriptionJobStatus": "IN_PROGRESS",
+            "LanguageCode": "the-language-of-your-transcription-job",
+            "Media": {
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
+            },
+            "StartTime": "2020-09-17T16:01:42.912000+00:00",
+            "CreationTime": "2020-09-17T16:01:42.886000+00:00"
+        }
+    }
+
 For more information, see `Getting Started (AWS Command Line Interface) <https://docs.aws.amazon.com/transcribe/latest/dg/getting-started-cli.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 2: To transcribe a multi-channel audio file**

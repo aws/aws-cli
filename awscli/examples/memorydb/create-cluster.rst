@@ -6,7 +6,7 @@ The following ``create-cluster`` example creates a new cluster. ::
         --cluster-name my-new-cluster \
         --node-type db.r6g.large \
         --acl-name my-acl \
-        --subnet-group my-sg
+        --subnet-group-name my-sg
 
 Output::
 

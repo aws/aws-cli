@@ -4,7 +4,7 @@ The following ``update-role-trust-policy`` example updates the trust policy of a
 **example_namespace** namespace from an EKS cluster named **example_cluster**. ::
 
     aws emr-containers update-role-trust-policy \
-        --cluster example_cluster \
+        --cluster-name example_cluster \
         --namespace example_namespace \
         --role-name example_iam_role
 

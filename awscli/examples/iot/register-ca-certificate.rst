@@ -4,7 +4,7 @@ The following ``register-ca-certificate`` example registers a CA certificate. Th
 
     aws iot register-ca-certificate \
         --ca-certificate file://rootCA.pem \
-        --verification-cert file://verificationCert.pem
+        --verification-certificate file://verificationCert.pem
 
 Contents of ``rootCA.pem``::
 

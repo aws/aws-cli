@@ -27,7 +27,10 @@ import json
 import os
 import re
 import shlex
+import tempfile
 import textwrap
+import zipfile
+from unittest import mock
 
 import docutils.nodes
 import docutils.parsers.rst
@@ -43,7 +46,11 @@ from awscli.argparser import (
 )
 from awscli.clidriver import ServiceOperation
 from awscli.customizations.waiters import WaitCommand
-from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
+from awscli.testutils import (
+    BaseAWSHelpOutputTest,
+    capture_output,
+    create_clidriver,
+)
 
 # Mapping of command names to subcommands that have examples in their help
 # output.  This isn't mean to be an exhaustive list, but should help catch
@@ -132,6 +139,32 @@ REGION_RE = re.compile(
 # then the file, then the example's title, with the reason for each example.
 EXCEPTIONS_PATH = os.path.join(
     _dname(os.path.abspath(__file__)), 'example_style_exceptions.json'
+)
+RUN_ENVIRONMENT = {
+    'AWS_ACCESS_KEY_ID': 'AKIAIOSFODNN7EXAMPLE',
+    'AWS_SECRET_ACCESS_KEY': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+    'AWS_DEFAULT_REGION': APPROVED_REGION,
+    'AWS_CONFIG_FILE': os.devnull,
+    'AWS_SHARED_CREDENTIALS_FILE': os.devnull,
+    'AWS_EC2_METADATA_DISABLED': 'true',
+    'AWS_PAGER': '',
+}
+LOCAL_FILE_RE = re.compile(r'(?P<scheme>fileb?)://(?P<path>[^\s,\'"]+)')
+VALIDATION_ERRORS = (
+    'Parameter validation failed',
+    'Error parsing parameter',
+    'Invalid base64',
+    'Bad value for --query',
+    'Unknown options',
+    'the following arguments are required',
+    'expected one argument',
+    'Found invalid choice',
+)
+# Errors from the machine that runs the example, such as a local file that
+# the example uses but doesn't show.
+ENVIRONMENT_ERRORS = (
+    'Unable to load paramfile',
+    'Blob values must be a path to a file',
 )
 
 
@@ -1132,6 +1165,136 @@ def find_all_cli_commands(filename):
     return visitor.cli_commands
 
 
+def _command_args(command):
+    lines = [line.rstrip() for line in command.splitlines()]
+    marker = _continuation_marker(lines[0])
+    if marker != '\\':
+        # Windows examples continue lines with ^ or `, which are not
+        # arguments.
+        command = '\n'.join(
+            line[:-1] if line.endswith(marker) else line for line in lines
+        )
+    args = shlex.split(command)[1:]
+    # Strip newlines from arguments that may have been included due to
+    # backslash line continuations in the RST examples, and drop the
+    # arguments that are only a line continuation
+    args = [part.lstrip('\n') for part in args if not part or part.strip('\n')]
+    # Only the arguments before a redirect or pipe, such as
+    # "> skeleton.json", are passed to the CLI.
+    for i, part in enumerate(args):
+        if part in SHELL_OPERATORS or part.startswith(SHELL_OPERATOR_PREFIXES):
+            return args[:i]
+    return args
+
+
+class _RequestReady(Exception):
+    pass
+
+
+def _runs_api_operation(command_table, args):
+    command = None
+    for arg in args:
+        if arg not in command_table:
+            break
+        command = command_table[arg]
+        command_table = command.subcommand_table
+    return isinstance(command, ServiceOperation)
+
+
+def _write_files(blocks, directory):
+    for block in blocks:
+        if block.kind != 'literal' or block.intro is None:
+            continue
+        match = CONTENTS_HEADER_RE.match(block.intro.lines[-1].strip())
+        if match:
+            name = os.path.basename(match.group('name'))
+            with open(os.path.join(directory, name), 'w') as f:
+                f.write(textwrap.dedent('\n'.join(block.lines)) + '\n')
+
+
+def _local_files(directory):
+    def local_file(match):
+        name = os.path.basename(match.group('path').replace('\\', '/'))
+        path = os.path.join(directory, name)
+        # A binary file that isn't shown, such as an image, is created empty.
+        if match.group('scheme') == 'fileb' and not os.path.exists(path):
+            if name.endswith('.zip'):
+                zipfile.ZipFile(path, 'w').close()
+            else:
+                open(path, 'wb').close()
+        if not os.path.exists(path):
+            return match.group(0)
+        return f'{match.group("scheme")}://{path}'
+
+    return lambda arg: LOCAL_FILE_RE.sub(local_file, arg)
+
+
+def _run_command(args):
+    """Run a command until its request would be sent, and return the error
+    it prints, or None if it got that far or succeeded without a request.
+    """
+    ready = []
+
+    def stop(**kwargs):
+        ready.append(True)
+        raise _RequestReady()
+
+    with mock.patch.dict(os.environ):
+        for name in list(os.environ):
+            if name.startswith('AWS_') and name != 'AWS_DATA_PATH':
+                del os.environ[name]
+        os.environ.update(RUN_ENVIRONMENT)
+        driver = create_clidriver()
+        driver.session.register('before-call', stop)
+        with capture_output() as output:
+            rc = driver.main(args)
+    if ready or rc == 0:
+        return None
+    return ' '.join(output.stderr.getvalue().split())
+
+
+def check_commands_run(example, command_table):
+    errors = []
+    with tempfile.TemporaryDirectory() as directory:
+        local_files = _local_files(directory)
+        for section in example.sections:
+            # Several examples in a file can show different files with the
+            # same name, so each example uses the files it shows, or else
+            # the ones shown before it.
+            _write_files(section.blocks, directory)
+            commands = [
+                command
+                for block in section.commands
+                if not _is_os_specific(block)
+                for command in _split_commands(block)
+            ]
+            for command in commands:
+                command, _ = _aws_part(command)
+                lineno = command[0][0]
+                text = '\n'.join(scanned[0] for _, scanned in command)
+                try:
+                    args = _command_args(text)
+                except ValueError:
+                    # Reported by test_rst_doc_examples.
+                    continue
+                if not _runs_api_operation(command_table, args):
+                    continue
+                # The profile only changes where the CLI finds credentials.
+                while '--profile' in args[:-1]:
+                    i = args.index('--profile')
+                    del args[i : i + 2]
+                error = _run_command([local_files(arg) for arg in args])
+                if error is None:
+                    continue
+                environment = any(e in error for e in ENVIRONMENT_ERRORS)
+                if environment and directory not in error:
+                    continue
+                if any(e in error for e in VALIDATION_ERRORS):
+                    error = error.replace('aws: [ERROR]: ', '')
+                    errors.append(f'Line {lineno}: the command fails: {error}')
+    return errors
+
+
 class CommandValidator:
     def __init__(self, driver):
         self.driver = driver
@@ -1157,32 +1320,8 @@ class CommandValidator:
         - Invalid sub-commands, such as waiters of "wait", and their
           arguments
         """
-        lines = [line.rstrip() for line in command.splitlines()]
-        marker = _continuation_marker(lines[0])
-        if marker != '\\':
-            # Windows examples continue lines with ^ or `, which are not
-            # arguments.
-            command = '\n'.join(
-                line[:-1] if line.endswith(marker) else line for line in lines
-            )
         try:
-            command_parts = shlex.split(command)[1:]
-            # Strip newlines from arguments that may have been included due to
-            # backslash line continuations in the RST examples, and drop the
-            # arguments that are only a line continuation
-            command_parts = [
-                part.lstrip('\n')
-                for part in command_parts
-                if not part or part.strip('\n')
-            ]
-            # Only the arguments before a redirect or pipe, such as
-            # "> skeleton.json", are passed to the CLI.
-            for i, part in enumerate(command_parts):
-                if part in SHELL_OPERATORS or part.startswith(
-                    SHELL_OPERATOR_PREFIXES
-                ):
-                    command_parts = command_parts[:i]
-                    break
+            command_parts = _command_args(command)
         except Exception as e:
             raise AssertionError(
                 "Failed to parse this example as shell command: %s\n\n"
@@ -1409,6 +1548,13 @@ def test_example_sanitization(example_file):
     example = Example(example_file)
     errors = check_sanitization(example)
     _assert_follows_rule('sanitization', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_commands_run(command_table, example_file):
+    example = Example(example_file)
+    errors = check_commands_run(example, command_table)
+    _assert_follows_rule('commands-run', example, errors)
 
 
 def test_example_style_exceptions_exist():

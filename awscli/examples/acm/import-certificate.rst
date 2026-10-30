@@ -3,9 +3,9 @@
 The following ``import-certificate`` example imports a certificate into ACM. Replace the file names with your own. ::
 
     aws acm import-certificate \
-        --certificate file://Certificate.pem \
-        --certificate-chain file://CertificateChain.pem \
-        --private-key file://PrivateKey.pem
+        --certificate fileb://Certificate.pem \
+        --certificate-chain fileb://CertificateChain.pem \
+        --private-key fileb://PrivateKey.pem
 
 Contents of ``Certificate.pem``::
 

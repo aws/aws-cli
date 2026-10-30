@@ -13,12 +13,10 @@ Contents of ``update-identity-provider.json``::
             "email_verified": "idp_email_verified",
             "username": "sub"
         },
-        "CreationDate": 1.701129701653E9,
         "IdpIdentifiers": [
             "corp",
             "dev"
         ],
-        "LastModifiedDate": 1.701129701653E9,
         "ProviderDetails": {
             "attributes_request_method": "GET",
             "attributes_url": "https://example.com/userInfo",

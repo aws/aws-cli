@@ -125,7 +125,7 @@ Output::
 The following ``describe-db-clusters`` example retrieves only the ``DBClusterIdentifier`` and ``Engine`` attributes of your DB clusters that use the ``aurora-postgresql`` DB engine. ::
 
     aws rds describe-db-clusters \
-        --query 'DBClusters[].{DBClusterIdentifier:DBClusterIdentifier,Engine:Engine} | [?Engine == `aurora-postgresql`]'
+        --query 'DBClusters[].{DBClusterIdentifier:DBClusterIdentifier,Engine:Engine} | [?Engine == `"aurora-postgresql"`]'
 
 Output::
 

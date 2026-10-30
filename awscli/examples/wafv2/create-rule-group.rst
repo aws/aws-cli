@@ -1,13 +1,14 @@
 **To create a custom rule group for use in your web ACLs**
 
-The following ``create-rule-group`` example creates a custom rule group for regional use. The rule statements for the group are provided in a JSON-formatted file. ::
+The following ``create-rule-group`` example creates a custom rule group for regional use. The rule statements for the group are provided in a JSON-formatted file. The ``--cli-binary-format raw-in-base64-out`` option lets you specify the ``SearchString`` value as plain text instead of base64. ::
 
     aws wafv2 create-rule-group \
         --name "TestRuleGroup" \
         --scope REGIONAL \
         --capacity 250 \
         --rules file://waf-rule.json \
-        --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestRuleGroupMetrics
+        --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestRuleGroupMetrics \
+        --cli-binary-format raw-in-base64-out
 
 Contents of ``waf-rule.json``::
 

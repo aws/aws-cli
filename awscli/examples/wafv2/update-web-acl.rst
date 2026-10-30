@@ -1,6 +1,6 @@
 **To update a web ACL**
 
-The following ``update-web-acl`` example changes settings for an existing web ACL. This call requires an ID, which you can obtain from the call, ``list-web-acls``, and a lock token and other settings, which you can obtain from the call ``get-web-acl``. This call also returns a lock token that you can use for a subsequent update. ::
+The following ``update-web-acl`` example changes settings for an existing web ACL. This call requires an ID, which you can obtain from the call, ``list-web-acls``, and a lock token and other settings, which you can obtain from the call ``get-web-acl``. This call also returns a lock token that you can use for a subsequent update. The ``--cli-binary-format raw-in-base64-out`` option lets you specify the ``SearchString`` value as plain text instead of base64. ::
 
     aws wafv2 update-web-acl \
         --name TestWebAcl \
@@ -9,7 +9,8 @@ The following ``update-web-acl`` example changes settings for an existing web AC
         --lock-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --default-action Block={} \
         --visibility-config SampledRequestsEnabled=false,CloudWatchMetricsEnabled=false,MetricName=NewMetricTestWebAcl \
-        --rules file://waf-rule.json
+        --rules file://waf-rule.json \
+        --cli-binary-format raw-in-base64-out
 
 Contents of ``waf-rule.json``::
 

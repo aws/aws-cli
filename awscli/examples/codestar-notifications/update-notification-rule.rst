@@ -9,11 +9,11 @@ The following ``update-notification-rule`` example updates a notification rule n
 Contents of ``update.json``::
 
     {
+        "Arn": "arn:aws:codestar-notifications:us-west-2:123456789012:notificationrule/dc82df7a-EXAMPLE",
         "Name": "MyUpdatedNotificationRule",
         "EventTypeIds": [
             "codecommit-repository-branches-and-tags-created"
         ],
-        "Resource": "arn:aws:codecommit:us-west-2:123456789012:MyDemoRepo",
         "Targets": [
             {
                 "TargetType": "SNS",

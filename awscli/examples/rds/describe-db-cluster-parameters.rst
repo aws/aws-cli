@@ -102,7 +102,7 @@ The following ``describe-db-cluster-parameters`` example retrieves the names of 
 
     aws rds describe-db-cluster-parameters \
         --db-cluster-parameter-group-name default.aurora-mysql5.7 \
-        --query 'Parameters[].{ParameterName:ParameterName,DataType:DataType,IsModifiable:IsModifiable} | [?DataType == `boolean`] | [?IsModifiable == `true`]'
+        --query 'Parameters[].{ParameterName:ParameterName,DataType:DataType,IsModifiable:IsModifiable} | [?DataType == `"boolean"`] | [?IsModifiable == `true`]'
 
 Output::
 

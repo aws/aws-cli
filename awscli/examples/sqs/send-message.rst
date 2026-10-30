@@ -1,12 +1,13 @@
 **To send a message**
 
-The following ``send-message`` example sends a message with the specified message body, delay period, and message attributes, to the specified queue. ::
+The following ``send-message`` example sends a message with the specified message body, delay period, and message attributes, to the specified queue. The ``--cli-binary-format raw-in-base64-out`` option lets you pass the binary ``Greeting`` attribute as plain text instead of base64. ::
 
     aws sqs send-message \
         --queue-url https://sqs.us-west-2.amazonaws.com/80398EXAMPLE/MyQueue \
         --message-body "Information about the largest city in Any Region." \
         --delay-seconds 10 \
-        --message-attributes file://send-message.json
+        --message-attributes file://send-message.json \
+        --cli-binary-format raw-in-base64-out
 
 Contents of ``send-message.json``::
 

@@ -5,8 +5,8 @@ The following ``respond-to-auth-challenge`` example responds to a NEW_PASSWORD_R
     aws cognito-idp respond-to-auth-challenge \
         --client-id 1example23456789 \
         --challenge-name NEW_PASSWORD_REQUIRED \
-        --challenge-responses USERNAME=jane@example.com,NEW_PASSWORD=[Password] \
-        --session AYABeEv5HklEXAMPLE
+        --challenge-responses USERNAME=jane@example.com,NEW_PASSWORD=ExamplePassword1! \
+        --session AYABeEv5HklEXAMPLEsession
 
 Output::
 
@@ -33,7 +33,7 @@ The following ``respond-to-auth-challenge`` example chooses TOTP MFA as the MFA 
 
     aws cognito-idp respond-to-auth-challenge \
         --client-id 1example23456789 \
-        --session AYABeEv5HklEXAMPLE \
+        --session AYABeEv5HklEXAMPLEsession \
         --challenge-name SELECT_MFA_TYPE \
         --challenge-responses USERNAME=testuser,ANSWER=SOFTWARE_TOKEN_MFA
 
@@ -41,7 +41,7 @@ Output::
 
     {
         "ChallengeName": "SOFTWARE_TOKEN_MFA",
-        "Session": "AYABeEv5HklEXAMPLE",
+        "Session": "AYABeEv5HklEXAMPLEsession",
         "ChallengeParameters": {
             "FRIENDLY_DEVICE_NAME": "transparent"
         }
@@ -55,7 +55,7 @@ The following ``respond-to-auth-challenge`` example provides a TOTP MFA code and
 
     aws cognito-idp respond-to-auth-challenge \
         --client-id 1example23456789 \
-        --session AYABeEv5HklEXAMPLE \
+        --session AYABeEv5HklEXAMPLEsession \
         --challenge-name SOFTWARE_TOKEN_MFA \
         --challenge-responses USERNAME=testuser,SOFTWARE_TOKEN_MFA_CODE=123456
 

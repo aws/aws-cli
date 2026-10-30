@@ -1,10 +1,10 @@
 **To add an attachment to a set**
 
-The following ``add-attachments-to-set`` example adds an image to a set that you can then specify for a support case in your AWS account. ::
+The following ``add-attachments-to-set`` example adds an image to a set that you can then specify for a support case in your AWS account. The ``data`` value is the base64-encoded contents of the image. ::
 
     aws support add-attachments-to-set \
         --attachment-set-id "as-2f5a6faa2a4a1e600-mu-nk5xQlBr70-G1cUos5LZkd38KOAHZa9BMDVzNEXAMPLE" \
-        --attachments fileName=troubleshoot-screenshot.png,data=base64-encoded-string 
+        --attachments fileName=troubleshoot-screenshot.png,data=iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==
 
 Output::
 

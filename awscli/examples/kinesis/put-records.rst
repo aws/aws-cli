@@ -1,9 +1,10 @@
 **To write multiple records into a data stream**
 
-The following ``put-records`` example writes a data record using the specified partition key and another data record using a different partition key in a single call. ::
+The following ``put-records`` example writes a data record using the specified partition key and another data record using a different partition key in a single call. The ``--cli-binary-format raw-in-base64-out`` option passes the data as raw text instead of base64. ::
 
     aws kinesis put-records \
         --stream-name samplestream \
+        --cli-binary-format raw-in-base64-out \
         --records Data=blob1,PartitionKey=partitionkey1 Data=blob2,PartitionKey=partitionkey2
 
 Output::

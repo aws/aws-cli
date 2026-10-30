@@ -40,6 +40,7 @@ You can also pass the manifest as a string in quotes. ::
 
     aws importexport create-job \
         --job-type import \
+        --no-validate-only \
         --manifest 'manifestVersion: 2.0;
         returnAddress:
         name: Jane Roe

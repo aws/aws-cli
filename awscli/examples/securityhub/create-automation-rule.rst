@@ -3,23 +3,23 @@
 The following ``create-automation-rule`` example creates an automation rule in the current AWS account and AWS Region. Security Hub filters your findings based on the specified criteria and applies the actions to matching findings. Only the Security Hub administrator account can run this command. ::
 
     aws securityhub create-automation-rule \
-        --actions '[{ \
-            "Type": "FINDING_FIELDS_UPDATE", \
-            "FindingFieldsUpdate": { \
-                "Severity": { \
-                    "Label": "HIGH" \
-                }, \
-                "Note": { \
-                    "Text": "Known issue that is a risk. Updated by automation rules", \
-                    "UpdatedBy": "sechub-automation" \
-                } \
-            } \
+        --actions '[{
+            "Type": "FINDING_FIELDS_UPDATE",
+            "FindingFieldsUpdate": {
+                "Severity": {
+                    "Label": "HIGH"
+                },
+                "Note": {
+                    "Text": "Known issue that is a risk. Updated by automation rules",
+                    "UpdatedBy": "sechub-automation"
+                }
+            }
         }]' \
-        --criteria '{ \
-            "SeverityLabel": [{ \
-                "Value": "INFORMATIONAL", \
-                "Comparison": "EQUALS" \
-            }] \
+        --criteria '{
+            "SeverityLabel": [{
+                "Value": "INFORMATIONAL",
+                "Comparison": "EQUALS"
+            }]
         }' \
         --description "A sample rule" \
         --no-is-terminal \

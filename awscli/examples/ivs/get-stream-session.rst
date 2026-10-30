@@ -4,13 +4,13 @@ The following ``get-stream-session`` example gets the metadata configuration for
 
     aws ivs get-stream-session \
         --channel-arn 'arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh' \
-        --stream-id 'mystream'
+        --stream-id 'st-1A2b3C4d5E6f7G8h9I0j1K2l'
 
 Output::
 
     {
         "streamSession": {
-            "streamId": "mystream1",
+            "streamId": "st-1A2b3C4d5E6f7G8h9I0j1K2l",
             "startTime": "2023-06-26T19:09:28+00:00",
             "channel": {
                 "arn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",

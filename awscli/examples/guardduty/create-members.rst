@@ -4,7 +4,7 @@ The following ``create-members`` example associates member accounts to be manage
 
     aws guardduty create-members \
         --detector-id b6b992d6d2f48e64bc59180bfexample \
-        --account-details AccountId=123456789111,Email=first+member@example.com AccountId=123456789222 ,Email=another+member@example.com
+        --account-details AccountId=123456789111,Email=first+member@example.com AccountId=123456789222,Email=another+member@example.com
 
 Output::
 

@@ -5,7 +5,7 @@ The following ``create-system-instance`` example creates a system instance. The 
     aws iotthingsgraph create-system-instance \
         --definition language=GRAPHQL,text="MySystemInstanceDefinition" \
         --target CLOUD \
-        --flow-actions-role-arn myRoleARN
+        --flow-actions-role-arn arn:aws:iam::123456789012:role/MyThingsGraphRole
 
 Output::
 

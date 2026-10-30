@@ -17,6 +17,8 @@ Output::
         }
     }
 
+For more information, see `How AWS Site-to-Site VPN works <https://docs.aws.amazon.com/vpn/latest/s2svpn/how_it_works.html>`__ in the *AWS Site-to-Site VPN User Guide*.
+
 **Example 2: To create a virtual private gateway with a specific Amazon-side ASN**
 
 The following ``create-vpn-gateway`` example creates a virtual private gateway and specifies the Autonomous System Number (ASN) for the Amazon side of the BGP session. ::
@@ -36,3 +38,5 @@ Output::
             "VpcAttachments": []
         }
     }
+
+For more information, see `How AWS Site-to-Site VPN works <https://docs.aws.amazon.com/vpn/latest/s2svpn/how_it_works.html>`__ in the *AWS Site-to-Site VPN User Guide*.

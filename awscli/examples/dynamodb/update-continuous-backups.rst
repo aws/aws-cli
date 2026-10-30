@@ -19,4 +19,4 @@ Output::
         }
     }
 
-For more information, see `Point-in-Time Recovery for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Point-in-time backups for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Point-in-time-recovery.html>`__ in the *Amazon DynamoDB Developer Guide*.

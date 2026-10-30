@@ -32,3 +32,5 @@ Output::
             "s3BucketName": "config-bucket-123456789012"
         }
     ]
+
+For more information, see `Setting Up AWS Config with the AWS CLI <https://docs.aws.amazon.com/config/latest/developerguide/gs-cli.html>`__ in the *AWS Config Developer Guide*.

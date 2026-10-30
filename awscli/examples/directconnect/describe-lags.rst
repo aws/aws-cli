@@ -44,3 +44,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View LAG details at a Direct Connect endpoint <https://docs.aws.amazon.com/directconnect/latest/UserGuide/view-lag.html>`__ in the *AWS Direct Connect User Guide*.

@@ -44,3 +44,4 @@ Output::
         ]
     }
 
+For more information, see `Managing inbound endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries-managing.html>`__ and `Managing outbound endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-outbound-queries-managing.html>`__ in the *Amazon Route 53 Developer Guide*.

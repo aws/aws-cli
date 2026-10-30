@@ -31,4 +31,4 @@ Output::
         "streamVersion": 1
     }
 
-For more information, see `CreateStream <https://docs.aws.amazon.com/iot/latest/apireference/API_CreateStream.html>`__ in the *AWS IoT API Reference*.
+For more information, see `MQTT-based file delivery <https://docs.aws.amazon.com/iot/latest/developerguide/mqtt-based-file-delivery.html>`__ in the *AWS IoT Developer Guide*.

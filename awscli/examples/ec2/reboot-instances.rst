@@ -7,7 +7,4 @@ The following ``reboot-instances`` example reboots the specified instance. ::
 
 This command produces no output.
 
-For more information, see `Reboot Your Instance`_ in the *Amazon Elastic Compute Cloud User Guide*.
-
-.. _`Reboot Your Instance`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-reboot.html
-
+For more information, see `Reboot your Amazon EC2 instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-reboot.html>`__ in the *Amazon EC2 User Guide*.

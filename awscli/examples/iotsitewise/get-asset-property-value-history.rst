@@ -55,4 +55,4 @@ Output::
         ]
     }
 
-For more information, see `Querying historical asset property values <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/query-industrial-data.html#historical-values>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Querying historical asset property values <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/historical-values.html>`__ in the *AWS IoT SiteWise User Guide*.

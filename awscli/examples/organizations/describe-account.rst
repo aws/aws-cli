@@ -22,3 +22,5 @@ Output::
             "Status": "ACTIVE"
         }
     }
+
+For more information, see `View details of an account in AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_view_account.html>`__ in the *AWS Organizations User Guide*.

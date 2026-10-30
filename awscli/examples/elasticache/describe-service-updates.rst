@@ -38,3 +38,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Service updates in ElastiCache <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Self-Service-Updates.html>`__ in the *Amazon ElastiCache User Guide*.

@@ -10,3 +10,5 @@ Output::
     {
         "Return": true
     }
+
+For more information, see `Deregister an Amazon EC2 AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/deregister-ami.html>`__ in the *Amazon EC2 User Guide*.

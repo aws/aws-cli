@@ -15,4 +15,5 @@ Output::
             ]
         }
     }
-    
+
+For more information, see `Logging Web ACL traffic information <https://docs.aws.amazon.com/waf/latest/developerguide/classic-logging.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

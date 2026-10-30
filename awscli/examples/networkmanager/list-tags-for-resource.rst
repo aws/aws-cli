@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Resource tags in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/gnw-tagging.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

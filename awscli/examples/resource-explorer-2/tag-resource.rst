@@ -8,4 +8,4 @@ The following ``tag-resource`` example adds the tag key "environment" with the v
 
 This command produces no output.
 
-For more information, see `Tagging views for access control <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-views-tag.html>`__ in the *AWS Resource Explorer Users Guide*.
+For more information, see `Adding tags to views <https://docs.aws.amazon.com/resource-explorer/latest/userguide/configure-views-tag.html>`__ in the *AWS Resource Explorer Users Guide*.

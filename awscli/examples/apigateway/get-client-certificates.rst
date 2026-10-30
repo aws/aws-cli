@@ -18,3 +18,4 @@ Output::
         ]
     }
 
+For more information, see `Use an API Gateway-generated certificate for backend authentication in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-client-side-ssl-authentication.html>`__ in the *Amazon API Gateway Developer Guide*.

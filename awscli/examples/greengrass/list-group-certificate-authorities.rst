@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Certificate authority (CA) certificates <https://docs.aws.amazon.com/greengrass/v1/developerguide/device-auth.html#ca-certificates>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

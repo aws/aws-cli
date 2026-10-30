@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Encryption using hardware security modules <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html#working-with-HSM>`__ in the *Amazon Redshift Management Guide*.

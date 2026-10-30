@@ -7,3 +7,5 @@ The following ``start-fleet-actions`` example resumes the use of all scaling pol
         --actions AUTO_SCALING
 
 This command produces no output.
+
+For more information, see `Auto-scale fleet capacity with Amazon GameLift Servers <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/fleets-autoscaling.html>`__ in the *Amazon GameLift Servers Developer Guide*.

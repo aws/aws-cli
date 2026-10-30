@@ -13,3 +13,5 @@ Output::
             "Status": "ON"
         }
     }
+
+For more information, see `Locking objects with Object Lock <https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html>`__ in the *Amazon S3 User Guide*.

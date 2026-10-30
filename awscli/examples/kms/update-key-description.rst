@@ -11,7 +11,7 @@ The following ``update-key-description`` example adds a description to a custome
 
 This command produces no output. To view the description of a KMS key, use the ``describe-key`` command. 
 
-For more information, see `UpdateKeyDescription <https://docs.aws.amazon.com/cli/latest/reference/kms/update-key-description.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `Access and list KMS key details <https://docs.aws.amazon.com/kms/latest/developerguide/finding-keys.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 **Example 2: To delete the description of a customer managed KMS key**
 
@@ -26,4 +26,4 @@ The following ``update-key-description`` example deletes the description to a cu
 
 This command produces no output. To view the description of a KMS key, use the the describe-key command.
 
-For more information, see `UpdateKeyDescription <https://docs.aws.amazon.com/cli/latest/reference/kms/update-key-description.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `Access and list KMS key details <https://docs.aws.amazon.com/kms/latest/developerguide/finding-keys.html>`__ in the *AWS Key Management Service Developer Guide*.

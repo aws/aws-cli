@@ -38,4 +38,4 @@ Output::
         }
     }
 
-For more information, see `Attachments <https://docs.aws.amazon.com/vpc/latest/cloudwan/cloudwan-attachments-working-with.html>`__ in the *Cloud WAN User Guide*.
+For more information, see `Attachments in AWS Cloud WAN <https://docs.aws.amazon.com/network-manager/latest/cloudwan/cloudwan-create-attachment.html>`__ in the *Cloud WAN User Guide*.

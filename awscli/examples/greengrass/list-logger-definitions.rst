@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Monitoring with AWS IoT Greengrass logs <https://docs.aws.amazon.com/greengrass/v1/developerguide/greengrass-logs-overview.html>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

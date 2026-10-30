@@ -8,3 +8,4 @@ The following ``delete-user-pool-client`` example deletes a user pool client. ::
 
 This command produces no output.
 
+For more information, see `Application-specific settings with app clients <https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html>`__ in the *Amazon Cognito Developer Guide*.

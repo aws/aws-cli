@@ -33,3 +33,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Manage triggers for an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-notify.html>`__ in the *AWS CodeCommit User Guide*.

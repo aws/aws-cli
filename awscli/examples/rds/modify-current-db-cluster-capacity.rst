@@ -15,5 +15,3 @@ Output::
         "SecondsBeforeTimeout": 300,
         "TimeoutAction": "ForceApplyCapacityChange"
     }
-
-For more information, see `Scaling Aurora Serverless v1 DB cluster capacity manually <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.setting-capacity.html>`__ in the *Amazon Aurora User Guide*.

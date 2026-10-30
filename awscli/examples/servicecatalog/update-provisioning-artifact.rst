@@ -30,3 +30,5 @@ Output::
             "CreatedTime": 1562097906.0
         }
     }
+
+For more information, see `Managing Versions <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/managing-versions.html>`__ in the *AWS Service Catalog Administrator Guide*.

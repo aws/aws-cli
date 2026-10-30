@@ -22,3 +22,5 @@ Output::
             "ConnectionNotificationArn": "arn:aws:sns:us-east-2:123456789012:VpceNotification"
         }
     }
+
+For more information, see `Receive alerts for endpoint service events <https://docs.aws.amazon.com/vpc/latest/privatelink/create-notification-endpoint-service.html>`__ in the *AWS PrivateLink User Guide*.

@@ -17,3 +17,5 @@ Output::
             "permissions": "read-only"
         }
     }
+
+For more information, see `Working with shared environment in AWS Cloud9 <https://docs.aws.amazon.com/cloud9/latest/user-guide/share-environment.html>`__ in the *AWS Cloud9 User Guide*.

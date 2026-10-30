@@ -53,3 +53,5 @@ Output::
             }
         }
     }
+
+For more information, see `Distribute web traffic with Lightsail load balancers <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-lightsail-load-balancers.html>`__ in the *Amazon Lightsail User Guide*.

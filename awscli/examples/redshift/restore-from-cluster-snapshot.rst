@@ -38,3 +38,4 @@ Output::
         }
     }
 
+For more information, see `Restoring a cluster from a snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshot-restore-cluster-from-snapshot.html>`__ in the *Amazon Redshift Management Guide*.

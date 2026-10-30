@@ -20,6 +20,8 @@ This command produces no output.
 
 If an alarm with the same name already exists, it will be overwritten by the new alarm.
 
+For more information, see `Create a CPU usage alarm <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/US_AlarmAtThresholdEC2.html>`__ in the *Amazon CloudWatch User Guide*.
+
 **Example 2: To specify multiple dimensions**
 
 The following ``put-metric-alarm`` example illustrates how to specify multiple dimensions. Each dimension is specified as a Name/Value pair, with a comma between the name and the value. Multiple dimensions are separated by a space. ::
@@ -37,3 +39,5 @@ The following ``put-metric-alarm`` example illustrates how to specify multiple d
         --dimensions Name=key1,Value=value1 Name=key2,Value=value2
 
 This command produces no output.
+
+For more information, see `Using Amazon CloudWatch alarms <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Alarms.html>`__ in the *Amazon CloudWatch User Guide*.

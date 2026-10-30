@@ -28,6 +28,4 @@ Upload the .csv file with curl using the pre-signed URL. ::
 
     curl -v -T "PATH_TO_CSV_FILE" -H "x-amz-server-side-encryption:aws:kms" "PRE_SIGNED_URL"
 
-For more information about importing users, see `Importing Users into User Pools From a CSV File`_.
-
-.. _`Importing Users into User Pools From a CSV File`: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html
+For more information, see `Importing users into user pools from a CSV file <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html>`__ in the *Amazon Cognito Developer Guide*.

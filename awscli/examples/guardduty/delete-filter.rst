@@ -8,4 +8,4 @@ The following ``delete-filter`` example deletes a filter. ::
 
 This command produces no output.
 
-For more information, see `Filtering findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_filter-findings.html>`__ in the GuardDuty User Guide.
+For more information, see `Filtering findings in GuardDuty <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_filter-findings.html>`__ in the *Amazon GuardDuty User Guide*.

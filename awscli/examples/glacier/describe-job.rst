@@ -23,3 +23,5 @@ Output::
 
 The job ID can be found in the output of ``aws glacier initiate-job`` and ``aws glacier list-jobs``.
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
+
+For more information, see `Downloading a Vault Inventory in Amazon Glacier <https://docs.aws.amazon.com/amazonglacier/latest/dev/vault-inventory.html>`__ in the *Amazon Glacier Developer Guide*.

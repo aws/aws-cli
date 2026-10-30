@@ -49,4 +49,4 @@ Output::
         ]
     }
 
-For more information, see `TestAuthorization <https://docs.aws.amazon.com/iot/latest/apireference/API_TestAuthorization.html>`__ in the *AWS IoT API Reference*.
+For more information, see `AWS IoT Core policies <https://docs.aws.amazon.com/iot/latest/developerguide/iot-policies.html>`__ in the *AWS IoT Core Developer Guide*.

@@ -18,3 +18,4 @@ Output::
         }
     }
 
+For more information, see `Health checks for the instances for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-healthchecks.html>`__ in the *Classic Load Balancers User Guide*.

@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Accepting and rejecting resource share invitations <https://docs.aws.amazon.com/ram/latest/userguide/working-with-shared-invitations.html>`__ in the *AWS RAM User Guide*.

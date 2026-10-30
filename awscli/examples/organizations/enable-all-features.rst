@@ -30,3 +30,5 @@ Output::
             "State": "REQUESTED"
         }
     }
+
+For more information, see `Enabling all features for an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html>`__ in the *AWS Organizations User Guide*.

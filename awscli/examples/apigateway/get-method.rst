@@ -39,3 +39,4 @@ Output::
         "authorizationType": "NONE"
     }
 
+For more information, see `Methods for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html>`__ in the *Amazon API Gateway Developer Guide*.

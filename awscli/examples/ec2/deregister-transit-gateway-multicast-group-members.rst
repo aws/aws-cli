@@ -19,4 +19,4 @@ Output::
         }
     }
 
-For more information, see `Deregister Members from a Multicast Group <https://docs.aws.amazon.com/vpc/latest/tgw/working-with-multicast.html#remove-members-multicast-group>`__ in the *AWS Transit Gateways Users Guide*.
+For more information, see `Deregister members from a multicast group in AWS Transit Gateway <https://docs.aws.amazon.com/vpc/latest/tgw/remove-members-multicast-group.html>`__ in the *AWS Transit Gateways Users Guide*.

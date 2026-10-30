@@ -64,4 +64,4 @@ Output::
         ]
     }
 
-For more information, see `Managing Users <https://docs.aws.amazon.com/chime/latest/ag/manage-users.html>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Managing users <https://docs.aws.amazon.com/chime/latest/ag/manage-users.html>`__ in the *Amazon Chime Administration Guide*.

@@ -13,3 +13,5 @@ Output::
             "vpc-cni"
         ]
     }
+
+For more information, see `Amazon EKS add-ons <https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html>`__ in the *Amazon EKS User Guide*.

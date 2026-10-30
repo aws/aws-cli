@@ -35,5 +35,3 @@ Output::
         "ETag": "2aa333bbcc8d8d22d777e999c88d4aa9eeeeee4dd89ff7f555555555555da6d3",
         "ContentLength": 101
     }
-
-For more information, see `Downloading an Object <https://docs.aws.amazon.com/mediastore/latest/ug/objects-download.html>`__ in the *AWS Elemental MediaStore User Guide*.

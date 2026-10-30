@@ -1274,7 +1274,7 @@ Output::
         ]
     ]
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 12: To filter to instances with the specified placement group and partition number**
 
@@ -1316,7 +1316,7 @@ Output::
         ]
     }
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 13: To filter to instances that are configured to allow access to tags from instance metadata**
 
@@ -1334,4 +1334,4 @@ Output::
     i-11111111aaaaaaaaa
     i-aaaaaaaa111111111
 
-For more information, see `Work with instance tags in instance metadata <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/Using_Tags.html#view-access-to-tags-in-IMDS>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Work with instance tags in instance metadata <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.

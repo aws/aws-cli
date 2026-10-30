@@ -9,3 +9,5 @@ The following ``put-mailbox-permissions`` example sets full access permissions f
         --permission-values FULL_ACCESS
 
 This command produces no output.
+
+For more information, see `Managing mailbox permissions for users <https://docs.aws.amazon.com/workmail/latest/adminguide/enable_mail_perms.html>`__ in the *Amazon WorkMail Administrator Guide*.

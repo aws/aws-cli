@@ -20,4 +20,4 @@ Output::
         }
     }
 
-For more information, see `Creating long audio files <https://docs.aws.amazon.com/polly/latest/dg/longer-cli.html>`__ in the *Amazon Polly Developer Guide*.
+For more information, see `Creating long audio files <https://docs.aws.amazon.com/polly/latest/dg/longer-console.html>`__ in the *Amazon Polly Developer Guide*.

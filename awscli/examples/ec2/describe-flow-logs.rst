@@ -36,6 +36,8 @@ Output::
         ]
     }
 
+For more information, see `Work with flow logs <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-flow-logs.html>`__ in the *Amazon VPC User Guide*.
+
 **Example 2: To describe a subset of your flow logs**
 
 The following ``describe-flow-logs`` example uses a filter to display details for only those flow logs that are in the specified log group in Amazon CloudWatch Logs. ::
@@ -62,3 +64,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Work with flow logs <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-flow-logs.html>`__ in the *Amazon VPC User Guide*.

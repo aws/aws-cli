@@ -8,3 +8,5 @@ The following ``report-instance-status`` example reports status feedback for the
         --reason-codes unresponsive
 
 This command produces no output.
+
+For more information, see `Status checks for Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html>`__ in the *Amazon EC2 User Guide*.

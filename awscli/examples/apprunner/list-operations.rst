@@ -27,3 +27,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Tracking App Runner service activity <https://docs.aws.amazon.com/apprunner/latest/dg/monitor-activity.html>`__ in the *AWS App Runner Developer Guide*.

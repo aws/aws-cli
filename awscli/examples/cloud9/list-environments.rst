@@ -12,3 +12,5 @@ Output::
             "1980b80e5f584920801c09086667f0EX"
         ]
     }
+
+For more information, see `Working with environments in AWS Cloud9 <https://docs.aws.amazon.com/cloud9/latest/user-guide/environments.html>`__ in the *AWS Cloud9 User Guide*.

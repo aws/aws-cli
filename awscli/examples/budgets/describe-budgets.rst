@@ -54,3 +54,4 @@ Output::
         ]
     }
 
+For more information, see `Viewing your budgets <https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-view.html>`__ in the *AWS Cost Management User Guide*.

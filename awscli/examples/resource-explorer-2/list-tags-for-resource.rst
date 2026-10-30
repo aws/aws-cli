@@ -14,4 +14,4 @@ Output::
         }
     }
 
-For more information about tagging views, see `Tagging views for access control <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-views-tag.html>`__ in the *AWS Resource Explorer Users Guide*.
+For more information about tagging views, see `Adding tags to views <https://docs.aws.amazon.com/resource-explorer/latest/userguide/configure-views-tag.html>`__ in the *AWS Resource Explorer Users Guide*.

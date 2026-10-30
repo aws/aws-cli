@@ -63,4 +63,4 @@ Output::
         }
     }
 
-For more information, see `Updating asset models <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-assets-and-models.html#update-asset-models>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Updating asset models <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-asset-models.html>`__ in the *AWS IoT SiteWise User Guide*.

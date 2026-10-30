@@ -49,3 +49,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create an Amazon EC2 launch template <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#create-launch-template-from-instance>`__ in the *Amazon EC2 User Guide*.

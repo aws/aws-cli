@@ -7,3 +7,5 @@ The following ``enable-vgw-route-propagation`` example enables the specified vir
         --gateway-id vgw-9a4cacf3
 
 This command produces no output.
+
+For more information, see `Manage subnet route tables <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithRouteTables.html#EnableDisableRouteProp>`__ in the *Amazon VPC User Guide*.

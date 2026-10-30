@@ -51,6 +51,8 @@ Output::
         ]
     }
 
+For more information, see `Buy Reserved Instances for Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-concepts-buying.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe your Reserved Instances offerings using options**
 
 The following ``describe-reserved-instances-offerings`` example lists Reserved Instances offered by AWS with the following specifications: t1.micro instance types, Windows (Amazon VPC) product, and No Upfront offerings. ::
@@ -108,3 +110,4 @@ Output::
         ]
     }
 
+For more information, see `Buy Reserved Instances for Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-concepts-buying.html>`__ in the *Amazon EC2 User Guide*.

@@ -7,4 +7,4 @@ The following ``confirm-topic-rule-destination`` example confirms a topic rule d
 
 This command produces no output.
 
-For more information, see `Confirming a topic rule destination <https://docs.aws.amazon.com/iot/latest/developerguide/rule-destination.html#confirm-destination>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Confirming HTTP action destinations <https://docs.aws.amazon.com/iot/latest/developerguide/http-action-destination.html#http-action-destination-confirming>`__ in the *AWS IoT Developer Guide*.

@@ -40,3 +40,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Using Amazon CloudWatch alarms <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Alarms.html>`__ in the *Amazon CloudWatch User Guide*.

@@ -7,4 +7,4 @@ The following ``delete-webhook`` example deletes a webhook for a GitHub version 
 
 This command produces no output.
 
-For more information, see `Delete the webhook for your GitHub source <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html#pipelines-webhooks-delete>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `Delete the webhook for your GitHub source <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html>`__ in the *AWS CodePipeline User Guide*.

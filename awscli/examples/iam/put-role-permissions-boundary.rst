@@ -18,4 +18,4 @@ The following ``put-role-permissions-boundary`` example applies the AWS managed 
 
 This command produces no output.
 
-For more information, see `Modifying a role <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_manage_modify.html>`__ in the *AWS IAM User Guide*.
+For more information, see `IAM role management <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_manage.html>`__ in the *AWS IAM User Guide*.

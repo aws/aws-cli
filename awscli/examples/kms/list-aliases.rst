@@ -59,4 +59,4 @@ Output::
         ]
     }
 
-For more information, see `Working with Aliases <https://docs.aws.amazon.com/kms/latest/developerguide/programming-aliases.html>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Aliases in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/kms-alias.html>`__ in the *AWS Key Management Service Developer Guide*.

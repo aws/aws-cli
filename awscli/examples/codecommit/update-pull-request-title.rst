@@ -47,3 +47,5 @@ Output::
             "title": "Consolidation of global variables - updated review"
         }
     }
+
+For more information, see `Update a pull request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-update-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

@@ -19,6 +19,8 @@ Output::
         ]
     }
 
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe the ID format for all resources**
 
 The following ``describe-id-format`` example describes the ID format for all resource types. All resource types that supported the short ID format were switched to use the long ID format. ::
@@ -56,3 +58,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.

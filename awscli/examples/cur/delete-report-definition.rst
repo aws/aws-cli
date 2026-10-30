@@ -11,3 +11,5 @@ Output::
     {
         "ResponseMessage": "Report ExampleReport deleted successfully."
     }
+
+For more information, see `What are AWS Cost and Usage Reports? <https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html>`__ in the *AWS Data Exports User Guide*.

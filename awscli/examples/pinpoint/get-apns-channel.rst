@@ -22,3 +22,5 @@ Output::
             "Version": 2
         }
     }
+
+For more information, see `Amazon Pinpoint push notifications <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-push.html>`__ in the *Amazon Pinpoint User Guide*.

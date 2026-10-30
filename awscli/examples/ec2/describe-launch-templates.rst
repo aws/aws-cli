@@ -42,3 +42,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Store instance launch parameters in Amazon EC2 launch templates <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html>`__ in the *Amazon EC2 User Guide*.

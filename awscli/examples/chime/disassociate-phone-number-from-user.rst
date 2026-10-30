@@ -8,4 +8,4 @@ The following ``disassociate-phone-number-from-user`` example disassociates a ph
 
 This command produces no output.
 
-For more information, see `Managing User Phone Numbers <https://docs.aws.amazon.com/chime/latest/ag/user-phone.html>`__ in the *Amazon Chime Administration Guide*.
+For more information, see `Unassigning Amazon Chime Business Calling phone numbers <https://docs.aws.amazon.com/chime/latest/ag/unassign-cbc-numbers.html>`__ in the *Amazon Chime Administration Guide*.

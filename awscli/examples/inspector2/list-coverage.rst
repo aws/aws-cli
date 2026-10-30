@@ -59,3 +59,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Assessing Amazon Inspector coverage of your AWS environment <https://docs.aws.amazon.com/inspector/latest/user/assessing-coverage.html>`__ in the *Amazon Inspector User Guide*.

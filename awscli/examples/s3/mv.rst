@@ -113,3 +113,5 @@ The following ``mv`` example moves a single file named ``mydoc.txt`` to the acce
 Output::
 
     move: mydoc.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+For more information, see `Using high-level (s3) commands in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html#using-s3-commands-managing-objects-move>`__ in the *AWS CLI User Guide*.

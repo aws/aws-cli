@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Terminology and concepts for AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html>`__ in the *AWS Organizations User Guide*.

@@ -46,3 +46,5 @@ Output::
         "virtualInterfaceType": "private",
         "virtualInterfaceName": "VIF1A"
     }
+
+For more information, see `Direct Connect virtual interfaces and hosted virtual interfaces <https://docs.aws.amazon.com/directconnect/latest/UserGuide/WorkingWithVirtualInterfaces.html>`__ in the *AWS Direct Connect User Guide*.

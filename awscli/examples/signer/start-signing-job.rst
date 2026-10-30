@@ -12,3 +12,5 @@ Output::
     {
         "jobId": "2065c468-73e2-4385-a6c9-0123456789abc"
     }
+
+For more information, see `Create a signing job for IoT in AWS Signer <https://docs.aws.amazon.com/signer/latest/developerguide/signing-jobs-iot.html>`__ in the *AWS Signer Developer Guide*.

@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Use Elastic Load Balancing to distribute incoming application traffic in your Auto Scaling group <https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-load-balancer.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

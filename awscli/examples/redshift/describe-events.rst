@@ -26,4 +26,4 @@ Output::
 
     2013-01-22T19:17:03.640Z    myclusterparametergroup Cluster parameter group myclusterparametergroup has been created.       cluster-parameter-group
 
-
+For more information, see `Amazon Redshift events <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-events.html>`__ in the *Amazon Redshift Management Guide*.

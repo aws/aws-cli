@@ -14,6 +14,8 @@ Output::
         ]
     }
 
+For more information, see `Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 2: To list the tasks on a particular container instance**
 
 The following ``list-tasks`` example lists the tasks on a container instance, using the container instance UUID as a filter. ::
@@ -30,4 +32,4 @@ Output::
         ]
     }
 
-For more information, see `Amazon ECS Task Definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.

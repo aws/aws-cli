@@ -23,6 +23,8 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 2: To list all the tags for an Amazon EKS Node group ARN**
 
 The following ``list-tags-for-resource`` example lists all the tags for an Amazon EKS Node group ARN. ::
@@ -53,6 +55,8 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 3: To list all the tags on an Amazon EKS Fargate profil ARNe**
 
 The following ``list-tags-for-resource`` example lists all the tags for an Amazon EKS Fargate profile ARN. ::
@@ -68,6 +72,8 @@ Output::
             "eks-fargate-profile-key-1": "value-1"
         }
     }
+
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
 
 **Example 4: To list all the tags for an Amazon EKS Add-on ARN**
 
@@ -85,6 +91,8 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 5: To list all the tags for an Amazon EKS OIDC identity provider ARN**
 
 The following ``list-tags-for-resource`` example lists all the tags for an Amazon EKS OIDC identity provider ARN. ::
@@ -100,3 +108,4 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.

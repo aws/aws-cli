@@ -7,3 +7,5 @@ The following ``disassociate-principal-from-portfolio`` example disassociates th
         --principal-arn arn:aws:iam::123456789012:group/myendusers
 
 This command produces no output.
+
+For more information, see `Granting Access to Users <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_portfolios_users.html>`__ in the *AWS Service Catalog Administrator Guide*.

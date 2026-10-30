@@ -16,3 +16,5 @@ Output::
     {
         "OperationId": "853a7d5b-fc9f-4730-831b-fd8037ab832a"
     }
+
+For more information, see `Deploying a new application version to App Runner <https://docs.aws.amazon.com/apprunner/latest/dg/manage-deploy.html>`__ in the *AWS App Runner Developer Guide*.

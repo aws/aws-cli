@@ -10,5 +10,3 @@ Output::
     {
         "State": "FINISHED"
     }
-
-For more information, see `Transactional data operations <https://docs.aws.amazon.com/lake-formation/latest/dg/transactions-data-operations.html>`__ in the *AWS Lake Formation Developer Guide*.

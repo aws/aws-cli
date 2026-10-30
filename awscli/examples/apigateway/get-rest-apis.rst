@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `API Gateway REST APIs <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html>`__ in the *Amazon API Gateway Developer Guide*.

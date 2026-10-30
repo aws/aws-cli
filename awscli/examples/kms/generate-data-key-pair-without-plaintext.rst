@@ -26,4 +26,4 @@ Output::
 
 The ``PublicKey`` and ``PrivateKeyCiphertextBlob`` are returned in base64-encoded format. 
 
-For more information, see `Data key pairs <https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-key-pairs>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Data key pairs <https://docs.aws.amazon.com/kms/latest/developerguide/data-key-pairs.html>`__ in the *AWS Key Management Service Developer Guide*.

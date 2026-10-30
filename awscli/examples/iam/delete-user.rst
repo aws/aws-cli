@@ -7,4 +7,4 @@ The following ``delete-user`` example removes the IAM user named ``Bob`` from th
 
 This command produces no output.
 
-For more information, see `Deleting an IAM user <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_manage.html#id_users_deleting>`__ in the *AWS IAM User Guide*.
+For more information, see `Deleting an IAM user <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_manage.html>`__ in the *AWS IAM User Guide*.

@@ -84,6 +84,8 @@ Output::
         }
     }
 
+For more information, see `Creating an App Runner service <https://docs.aws.amazon.com/apprunner/latest/dg/manage-create.html>`__ in the *AWS App Runner Developer Guide*.
+
 **Example 2: To create a source code repository service**
 
 The following ``create-service`` example creates an App Runner service based on a Python source code repository. ::
@@ -170,6 +172,8 @@ Output::
         }
     }
 
+For more information, see `Creating an App Runner service <https://docs.aws.amazon.com/apprunner/latest/dg/manage-create.html>`__ in the *AWS App Runner Developer Guide*.
+
 **Example 3: To create a source image repository service**
 
 The following ``create-service`` example creates an App Runner service based on an image stored in Elastic Container Registry (ECR). ::
@@ -237,3 +241,5 @@ Output::
             }
         }
     }
+
+For more information, see `Creating an App Runner service <https://docs.aws.amazon.com/apprunner/latest/dg/manage-create.html>`__ in the *AWS App Runner Developer Guide*.

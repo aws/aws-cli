@@ -7,3 +7,5 @@ The following ``set-instance-health`` example sets the health status of the spec
         --health-status Unhealthy
 
 This command produces no output.
+
+For more information, see `Set up a custom health check for your Auto Scaling group <https://docs.aws.amazon.com/autoscaling/ec2/userguide/set-up-a-custom-health-check.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

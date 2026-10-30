@@ -17,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `AWS-managed prefix lists <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-aws-managed-prefix-lists.html>`__ in the *Amazon VPC User Guide*.

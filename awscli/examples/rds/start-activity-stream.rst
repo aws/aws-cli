@@ -18,4 +18,4 @@ Output::
         "ApplyImmediately": true
     }
 
-For more information, see `Starting a database activity stream <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html#DBActivityStreams.Enabling>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Starting a database activity stream <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.Enabling.html>`__ in the *Amazon Aurora User Guide*.

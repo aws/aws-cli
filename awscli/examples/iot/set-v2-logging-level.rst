@@ -8,3 +8,5 @@ The following ``set-v2-logging-level`` example sets the logging level to log war
 
 
 This command produces no output.
+
+For more information, see `Configure AWS IoT logging <https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html#fine-logging-cli>`__ in the *AWS IoT Core Developer Guide*.

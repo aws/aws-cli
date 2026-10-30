@@ -366,5 +366,5 @@ Output::
         ]
     }
 
-For more information, see `View Build Details (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-details.html#view-build-details-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `View build details in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-details.html>`__ in the *AWS CodeBuild User Guide*.
 

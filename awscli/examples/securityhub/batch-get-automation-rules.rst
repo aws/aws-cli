@@ -64,4 +64,4 @@ Output::
         "UnprocessedAutomationRules": []
     }
 
-For more information, see `Viewing automation rules <https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html#view-automation-rules>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Viewing automation rules <https://docs.aws.amazon.com/securityhub/latest/userguide/view-automation-rules.html>`__ in the *AWS Security Hub User Guide*.

@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Editing resource details <https://docs.aws.amazon.com/workmail/latest/adminguide/edit_resource.html>`__ in the *Amazon WorkMail Administrator Guide*.

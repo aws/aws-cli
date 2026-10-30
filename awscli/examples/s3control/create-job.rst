@@ -15,3 +15,5 @@ Output::
     {
         "JobId": "93735294-df46-44d5-8638-6356f335324e"
     }
+
+For more information, see `Creating an S3 Batch Operations job <https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-create-job.html>`__ in the *Amazon S3 User Guide*.

@@ -42,4 +42,4 @@ Output::
         ]
     }
 
-
+For more information, see `Modify Reserved Instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html>`__ in the *Amazon EC2 User Guide*.

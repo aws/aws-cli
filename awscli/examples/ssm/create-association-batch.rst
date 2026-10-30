@@ -64,3 +64,5 @@ Output::
         ],
         "Failed": []
     }
+
+For more information, see `Creating associations <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations-creating.html>`__ in the *AWS Systems Manager User Guide*.

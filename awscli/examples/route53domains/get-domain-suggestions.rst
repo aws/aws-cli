@@ -51,3 +51,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Registering a new domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html>`__ in the *Amazon Route 53 Developer Guide*.

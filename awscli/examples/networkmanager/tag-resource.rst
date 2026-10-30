@@ -7,3 +7,5 @@ The following ``tag-resource`` example applies the tag ``Network=Northeast`` to 
         --tags Key=Network,Value=Northeast
 
 This command produces no output.
+
+For more information, see `Resource tags in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/gnw-tagging.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

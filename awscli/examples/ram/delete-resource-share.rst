@@ -10,3 +10,5 @@ Output::
     {
         "returnValue": true
     }
+
+For more information, see `Deleting a resource share in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-delete.html>`__ in the *AWS RAM User Guide*.

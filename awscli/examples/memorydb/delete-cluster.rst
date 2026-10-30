@@ -31,4 +31,4 @@ Output::
         }
     }
 
-For more information, see `Deleting a cluster <https://docs.aws.amazon.com/memorydb/latest/devguide/clusters.delete.html>`__ in the *MemoryDB User Guide*.
+For more information, see `Getting started with MemoryDB <https://docs.aws.amazon.com/memorydb/latest/devguide/getting-started.html>`__ in the *MemoryDB User Guide*.

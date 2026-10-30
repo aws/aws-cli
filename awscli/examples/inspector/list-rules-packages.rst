@@ -14,7 +14,3 @@ Output::
             "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-vg5GGHSD"
         ]
     }
-
-For more information, see `Amazon Inspector Rules Packages and Rules`_ in the *Amazon Inspector* guide.
-
-.. _`Amazon Inspector Rules Packages and Rules`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rule-packages.html

@@ -58,3 +58,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Select the right Lightsail database engine for your project <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-choosing-a-database.html>`__ in the *Amazon Lightsail User Guide*.

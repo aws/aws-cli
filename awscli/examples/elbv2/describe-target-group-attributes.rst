@@ -63,3 +63,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Edit target group attributes for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-target-group-attributes.html>`__ in the *Application Load Balancers Guide*.

@@ -28,3 +28,5 @@ Contents of ``tags.json``::
     }
 
 This command produces no output.
+
+For more information, see `Tag a CloudFront resource <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html>`__ in the *Amazon CloudFront Developer Guide*.

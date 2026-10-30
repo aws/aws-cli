@@ -35,7 +35,7 @@ Output::
         ]
     }
 
-For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-associations.html>`__ in the *Systems Manager User Guide*.
+For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations.html>`__ in the *Systems Manager User Guide*.
 
 **Example 2: To list your associations for a specific document**
 
@@ -96,4 +96,4 @@ Output::
         ]
     }
 
-For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-associations.html>`__ in the *Systems Manager User Guide*.
+For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations.html>`__ in the *Systems Manager User Guide*.

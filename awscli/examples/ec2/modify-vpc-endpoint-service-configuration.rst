@@ -11,3 +11,5 @@ Output::
     {
         "Return": true
     }
+
+For more information, see `Configure an endpoint service <https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html>`__ in the *AWS PrivateLink User Guide*.

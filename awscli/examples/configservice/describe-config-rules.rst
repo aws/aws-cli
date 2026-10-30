@@ -34,3 +34,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Components of an AWS Config Rule <https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_components.html>`__ in the *AWS Config Developer Guide*.

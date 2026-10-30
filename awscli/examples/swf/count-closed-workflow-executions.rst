@@ -25,7 +25,4 @@ To reduce the number of results returned, you can:
 -  use the ``--close-status-filter``, ``--execution-filter``, ``--tag-filter`` or ``--type-filter`` arguments to further
     filter the results. However, these arguments are also mutually exclusive.
 
-See Also
---------
-
--  `CountClosedWorkflowExecutions <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_CountClosedWorkflowExecutions.html>`_ in the *Amazon Simple Workflow Service API Reference*
+For more information, see `Workflow execution closure in Amazon SWF <https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-workflow-exec-closure.html>`__ in the *Amazon Simple Workflow Service Developer Guide*.

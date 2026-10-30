@@ -20,4 +20,4 @@ Output::
         "Marker": null
     }
 
-For more information, see `ListFileShares <https://docs.aws.amazon.com/storagegateway/latest/APIReference/API_ListFileShares.html>`__ in the *AWS Storage Gateway Service API Reference*.
+For more information, see `Managing your Amazon S3 File Gateway <https://docs.aws.amazon.com/filegateway/latest/files3/managing-gateway-file.html>`__ in the *Amazon S3 File Gateway User Guide*.

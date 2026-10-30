@@ -26,6 +26,8 @@ Output::
         ]
     }
 
+For more information, see `Viewing Compliance Information and Evaluation Results for your AWS Resources with AWS Config <https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_view-compliance.html>`__ in the *AWS Config Developer Guide*.
+
 **Example 2: To get the compliance summary for a specific resource type**
 
 The following ``get-compliance-summary-by-resource-type`` example returns the number of EC2 instances that are noncompliant and the number that are compliant. ::
@@ -55,3 +57,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing Compliance Information and Evaluation Results for your AWS Resources with AWS Config <https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_view-compliance.html>`__ in the *AWS Config Developer Guide*.

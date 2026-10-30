@@ -136,5 +136,4 @@ Output::
         }
     }
 
-For more information, see `Working with AWS Elemental MediaConvert Job Templates <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-job-templates.html>`_ in the *AWS Elemental MediaConvert User Guide*.
-
+For more information, see `Working with job templates <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-job-templates.html>`__ in the *AWS Elemental MediaConvert User Guide*.

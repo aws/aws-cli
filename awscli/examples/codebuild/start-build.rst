@@ -63,4 +63,4 @@ Output::
         }
     }
 
-For more information, see `Run a Build (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/run-build.html#run-build-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Run a build (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/run-build-cli.html>`__ in the *AWS CodeBuild User Guide*.

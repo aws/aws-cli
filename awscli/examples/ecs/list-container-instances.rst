@@ -14,4 +14,4 @@ Output::
         ]
     }
 
-For more information, see `Amazon ECS Container Instances <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon EC2 container instances for Amazon ECS <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-capacity.html>`__ in the *Amazon ECS Developer Guide*.

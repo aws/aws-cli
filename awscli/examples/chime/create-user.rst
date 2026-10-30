@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Preparing for Setup <https://docs.aws.amazon.com/chime/latest/ag/prepare-setup.html>`__ in the *Amazon Chime Administration Guide*.
+For more information, see `Adding users <https://docs.aws.amazon.com/chime/latest/ag/adding-users.html>`__ in the *Amazon Chime Administration Guide*.

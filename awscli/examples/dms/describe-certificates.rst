@@ -16,4 +16,4 @@ Output::
         ]
     }
 
-For more information, see `Using SSL <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#CHAP_Security.SSL>`__ in the *AWS Database Migration Service User Guide*.
+For more information, see `Using SSL <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.SSL.html>`__ in the *AWS Database Migration Service User Guide*.

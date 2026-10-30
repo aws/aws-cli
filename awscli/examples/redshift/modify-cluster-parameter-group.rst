@@ -21,3 +21,5 @@ Output::
         "ParameterGroupStatus": "Your parameter group has been updated but changes won't get applied until you reboot the associated Clusters.",
         "ParameterGroupName": "myclusterparametergroup"
     }
+
+For more information, see `Modifying a parameter group <https://docs.aws.amazon.com/redshift/latest/mgmt/parameter-group-modify.html>`__ in the *Amazon Redshift Management Guide*.

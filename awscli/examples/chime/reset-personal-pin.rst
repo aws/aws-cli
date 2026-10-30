@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `Changing Personal Meeting PINs <https://docs.aws.amazon.com/chime/latest/ag/change-PINs.html>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Changing personal meeting PINs <https://docs.aws.amazon.com/chime/latest/ag/change-PINs.html>`__ in the *Amazon Chime Administration Guide*.

@@ -13,3 +13,5 @@ Output::
         "nextToken": "",
         "pullRequestIds": ["2","12","16","22","23","35","30","39","47"]
     }
+
+For more information, see `View pull requests in an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-view-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

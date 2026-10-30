@@ -70,3 +70,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Monitor Lightsail database performance metrics <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-viewing-database-health-metrics.html>`__ in the *Amazon Lightsail User Guide*.

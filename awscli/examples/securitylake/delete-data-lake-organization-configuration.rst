@@ -7,4 +7,4 @@ The following ``delete-data-lake-organization-configuration`` example stops the 
 
 This command produces no output.
 
-For more information, see `Managing multiple accounts with AWS Organizations <https://docs.aws.amazon.com/securityhub/latest/userguide/multi-account-management.html>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Managing multiple accounts with AWS Organizations <https://docs.aws.amazon.com/security-lake/latest/userguide/multi-account-management.html>`__ in the *Amazon Security Lake User Guide*.

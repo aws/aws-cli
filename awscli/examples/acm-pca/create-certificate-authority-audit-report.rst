@@ -13,3 +13,5 @@ Output::
         "AuditReportId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "S3Key": "audit-report/12345678-1234-1234-1234-123456789012/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.json"
     }
+
+For more information, see `Use audit reports with your private CA <https://docs.aws.amazon.com/privateca/latest/userguide/PcaAuditReport.html>`__ in the *AWS Private Certificate Authority User Guide*.

@@ -26,3 +26,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Sites and links in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-sites.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

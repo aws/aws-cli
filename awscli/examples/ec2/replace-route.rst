@@ -8,3 +8,5 @@ The following ``replace-route`` example replaces the specified route in the spec
         --gateway-id vgw-9a4cacf3
 
 This command produces no output.
+
+For more information, see `Manage subnet route tables <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithRouteTables.html>`__ in the *Amazon VPC User Guide*.

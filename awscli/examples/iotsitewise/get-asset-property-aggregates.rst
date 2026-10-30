@@ -25,4 +25,4 @@ Output::
         ]
     }
 
-For more information, see `Querying asset property aggregates <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/query-industrial-data.html#aggregates>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Querying asset property aggregates <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/aggregates.html>`__ in the *AWS IoT SiteWise User Guide*.

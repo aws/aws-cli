@@ -22,6 +22,8 @@ Output::
         "cacheKeyParameters": []
     }
 
+For more information, see `Mock integrations for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-mock-integration.html>`__ in the *Amazon API Gateway Developer Guide*.
+
 **Example 2: To create a HTTP integration request**
 
 The following ``put-integration`` example creates an HTTP integration request. ::
@@ -47,6 +49,8 @@ Output::
         "cacheKeyParameters": []
     }
 
+For more information, see `HTTP integrations for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/setup-http-integrations.html>`__ in the *Amazon API Gateway Developer Guide*.
+
 **Example 3: To create an AWS integration request with a Lambda Function endpoint**
 
 The following ``put-integration`` example creates an AWS integration request with a Lambda function endpoint. ::
@@ -70,3 +74,5 @@ Output::
         "cacheNamespace": "a1b2c3",
         "cacheKeyParameters": []
     }
+
+For more information, see `Lambda integrations for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-integrations.html>`__ in the *Amazon API Gateway Developer Guide*.

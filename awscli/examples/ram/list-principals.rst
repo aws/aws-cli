@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing the principals you share resources with in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-view-principals.html>`__ in the *AWS RAM User Guide*.

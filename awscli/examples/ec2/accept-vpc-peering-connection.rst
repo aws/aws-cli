@@ -27,3 +27,5 @@ Output::
             }
         }
     }
+
+For more information, see `Accept or reject a VPC peering connection <https://docs.aws.amazon.com/vpc/latest/peering/accept-vpc-peering-connection.html>`__ in the *Amazon VPC Peering Guide*.

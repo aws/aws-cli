@@ -48,3 +48,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Expand storage and performance with Lightsail block storage disks <https://docs.aws.amazon.com/lightsail/latest/userguide/elastic-block-storage-and-ssd-disks-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

@@ -29,3 +29,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Specify signers that can create signed URLs and signed cookies <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-trusted-signers.html>`__ in the *Amazon CloudFront Developer Guide*.

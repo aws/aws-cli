@@ -24,3 +24,5 @@ Output::
             "ProviderType": "GITHUB"
         }
     }
+
+For more information, see `Managing App Runner connections <https://docs.aws.amazon.com/apprunner/latest/dg/manage-connections.html>`__ in the *AWS App Runner Developer Guide*.

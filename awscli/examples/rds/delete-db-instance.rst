@@ -14,3 +14,5 @@ Output::
             "DBInstanceStatus": "deleting"
         }
     }
+
+For more information, see `Deleting a DB instance <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html>`__ in the *Amazon RDS User Guide*.

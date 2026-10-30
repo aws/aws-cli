@@ -14,4 +14,4 @@ Output::
         }
     }
 
-For more information, see `Tagging Your Greengrass Resources <https://docs.aws.amazon.com/greengrass/latest/developerguide/tagging.html>`__ in the **AWS IoT Greengrass Developer Guide**.
+For more information, see `Tagging your AWS IoT Greengrass resources <https://docs.aws.amazon.com/greengrass/v1/developerguide/tagging.html>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

@@ -19,3 +19,5 @@ Output::
     dHRsZTEVMBMGA1UECgwMRXhhbXBsZSBDb3JwMQ4wDAYDVQQLDAVTYWxlczEUMBIG
     A1UEAwwLZXhhbXBsZS5jb20=
     -----END CERTIFICATE-----
+
+For more information, see `Installing the CA certificate <https://docs.aws.amazon.com/privateca/latest/userguide/PCACertInstall.html>`__ in the *AWS Private Certificate Authority User Guide*.

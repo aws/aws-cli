@@ -41,3 +41,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing and listing database log files <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.Procedural.Viewing.html>`__ in the *Amazon RDS User Guide*.

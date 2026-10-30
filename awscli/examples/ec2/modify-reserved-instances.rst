@@ -12,6 +12,7 @@ Output::
         "ReservedInstancesModificationId": "rimod-d3ed4335-b1d3-4de6-ab31-0f13aaf46687"
     }
 
+For more information, see `Modify Reserved Instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To modify the network platform of Reserved Instances**
 
@@ -27,7 +28,7 @@ Output::
         "ReservedInstancesModificationId": "rimod-82fa9020-668f-4fb6-945d-61537009d291"
     }
 
-For more information, see `Modifying Your Reserved Instances`_ in the *Amazon EC2 User Guide*.
+For more information, see `Modify Reserved Instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To modify the instance size of Reserved Instances**
 
@@ -45,8 +46,4 @@ Output::
         "ReservedInstancesModificationId": "rimod-acc5f240-080d-4717-b3e3-1c6b11fa00b6"
     }
 
-For more information, see `Modifying the Instance Size of Your Reservations`_ in the *Amazon EC2 User Guide*.
-
-.. _`Modifying the Instance Size of Your Reservations`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modification-instancemove.html
-.. _`Modifying Your Reserved Instances`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html
-
+For more information, see `Modify Reserved Instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html#ri-modification-instancemove>`__ in the *Amazon EC2 User Guide*.

@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Retrieving Amazon Glacier Archives <https://docs.aws.amazon.com/amazonglacier/latest/dev/downloading-an-archive-two-steps.html>`__ in the *Amazon Glacier Developer Guide*.

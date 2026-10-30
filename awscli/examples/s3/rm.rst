@@ -60,3 +60,5 @@ The following ``rm`` example deletes a single object (``mykey``) from the access
 Output::
 
     delete: s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+For more information, see `Using high-level (s3) commands in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html#using-s3-commands-delete-objects>`__ in the *AWS CLI User Guide*.

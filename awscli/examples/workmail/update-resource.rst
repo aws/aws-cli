@@ -8,3 +8,5 @@ The following ``update-resource`` example updates the name of the specified reso
         --name exampleRoom2
 
 This command produces no output.
+
+For more information, see `Editing resource details <https://docs.aws.amazon.com/workmail/latest/adminguide/edit_resource.html>`__ in the *Amazon WorkMail Administrator Guide*.

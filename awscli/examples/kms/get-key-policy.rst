@@ -37,4 +37,4 @@ Contents of ``policy.txt``::
 
 This command produces no output.
 
-For more information, see `PutKeyPolicy <https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html>`__ in the *AWS KMS API Reference*.
+For more information, see `Key policies in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html>`__ in the *AWS Key Management Service Developer Guide*.

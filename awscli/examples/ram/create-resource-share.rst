@@ -19,6 +19,8 @@ Output::
         }
     }
 
+For more information, see `Creating a resource share in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-create.html>`__ in the *AWS RAM User Guide*.
+
 **Example 2: To create a resource share with AWS accounts as principals**
 
 The following ``create-resource-share`` example creates a resource share and grants access to the specified AWS account (222222222222). If the specified principals are not part of the same AWS Organization, then invitations are sent and must be accepted before access is granted. ::
@@ -40,6 +42,8 @@ Output::
             "lastUpdatedTime": 1634586751.437
         }
     }
+
+For more information, see `Creating a resource share in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-create.html>`__ in the *AWS RAM User Guide*.
 
 **Example 3: To create a resource share restricted to your AWS Organization**
 
@@ -63,3 +67,5 @@ Output::
             "lastUpdatedTime": 1634587042.49
         }
     }
+
+For more information, see `Creating a resource share in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-create.html>`__ in the *AWS RAM User Guide*.

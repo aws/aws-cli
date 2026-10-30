@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Job queues <https://docs.aws.amazon.com/batch/latest/userguide/job_queues.html>`__ in the *AWS Batch User Guide*.

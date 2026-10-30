@@ -8,3 +8,5 @@ The following ``resend-validation-email`` example tells the Amazon certificate a
         --validation-domain example.com
 
 This command produces no output.
+
+For more information, see `AWS Certificate Manager email validation <https://docs.aws.amazon.com/acm/latest/userguide/email-validation.html>`__ in the *AWS Certificate Manager User Guide*.

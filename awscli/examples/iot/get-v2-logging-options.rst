@@ -12,4 +12,4 @@ Output::
         "disableAllLogs": false
     }
 
-For more information, see `title <link>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Configure AWS IoT logging <https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html>`__ in the *AWS IoT Core Developer Guide*.

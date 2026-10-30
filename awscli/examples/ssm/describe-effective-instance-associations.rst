@@ -17,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations.html>`__ in the *AWS Systems Manager User Guide*.

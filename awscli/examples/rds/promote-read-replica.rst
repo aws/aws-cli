@@ -15,3 +15,5 @@ Output::
             "DBInstanceStatus": "modifying"
         }
     }
+
+For more information, see `Promoting a read replica to be a standalone DB instance <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.Promote.html>`__ in the *Amazon RDS User Guide*.

@@ -35,5 +35,3 @@ Output::
         "ContentSHA256": "f29bc64a9d3732b4b9035125fdb3285f5b6455778edca72414671e0ca3b2e0de",
         "StorageClass": "TEMPORAL"
     }
-
-For more information, see `Uploading an Object <https://docs.aws.amazon.com/mediastore/latest/ug/objects-upload.html>`__ in the *AWS Elemental MediaStore User Guide*.

@@ -17,5 +17,3 @@ Output::
             "Endpoint": "https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com"
         }
     }
-
-For more information, see `Viewing the Details for a Container <https://docs.aws.amazon.com/mediastore/latest/ug/containers-view-details.html>`__ in the *AWS Elemental MediaStore User Guide*.

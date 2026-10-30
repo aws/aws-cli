@@ -16,3 +16,5 @@ Output::
         },
         "VersionId": "YdnYvTCVDqRRFA.NFJjy36p0hxifMlkA"
     }
+
+For more information, see `Copying, moving, and renaming objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/copy-object.html>`__ in the *Amazon S3 User Guide*.

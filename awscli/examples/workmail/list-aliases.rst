@@ -14,3 +14,5 @@ Output::
             "exampleAlias1@site.awsapps.com"
         ]
     }
+
+For more information, see `Managing user aliases <https://docs.aws.amazon.com/workmail/latest/adminguide/managing_users.html>`__ in the *Amazon WorkMail Administrator Guide*.

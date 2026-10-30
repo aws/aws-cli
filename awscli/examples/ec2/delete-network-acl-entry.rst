@@ -8,3 +8,5 @@ The following ``delete-network-acl-entry`` example deletes ingress rule number 1
         --rule-number 100
 
 This command produces no output.
+
+For more information, see `Network ACL rules <https://docs.aws.amazon.com/vpc/latest/userguide/nacl-rules.html>`__ in the *Amazon VPC User Guide*.

@@ -105,3 +105,5 @@ If the output includes a ``NextToken`` field, there are more launch configuratio
 
     aws autoscaling describe-launch-configurations \
         --starting-token Z3M3LMPEXAMPLE
+
+For more information, see `Auto Scaling launch configurations <https://docs.aws.amazon.com/autoscaling/ec2/userguide/launch-configurations.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

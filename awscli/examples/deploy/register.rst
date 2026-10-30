@@ -13,3 +13,5 @@ Output::
     Adding tags to the on-premises instance... DONE
     Copy the on-premises configuration file named codedeploy.onpremises.yml to the on-premises instance, and run the following command on the on-premises instance to install and configure the AWS CodeDeploy Agent:
     aws deploy install --config-file codedeploy.onpremises.yml
+
+For more information, see `Use the register command (IAM user ARN) to register an on-premises instance <https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-on-premises-register-instance.html>`__ in the *AWS CodeDeploy User Guide*.

@@ -18,3 +18,5 @@ Output::
                 }
         }
     }
+
+For more information, see `Managing Amazon Pinpoint projects <https://docs.aws.amazon.com/pinpoint/latest/userguide/projects-manage.html>`__ in the *Amazon Pinpoint User Guide*.

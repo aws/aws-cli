@@ -8,3 +8,5 @@ The following ``move-account`` example moves the management account in the organ
         --destination-parent-id ou-examplerootid111-exampleouid111
 
 This command produces no output.
+
+For more information, see `Moving accounts to an organizational unit (OU) or between the root and OUs with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/move_account_to_ou.html>`__ in the *AWS Organizations User Guide*.

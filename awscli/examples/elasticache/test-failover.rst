@@ -106,3 +106,5 @@ Output::
             "AtRestEncryptionEnabled": false
         }
     }
+
+For more information, see `Minimizing downtime in ElastiCache by using Multi-AZ with Valkey and Redis OSS <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/AutoFailover.html>`__ in the *Amazon ElastiCache User Guide*.

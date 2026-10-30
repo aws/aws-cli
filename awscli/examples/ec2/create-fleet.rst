@@ -30,6 +30,8 @@ Output::
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
 
+For more information, see `Create an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-ec2-fleet.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To create an EC2 Fleet that launches On-Demand Instances as the default purchasing model**
 
 The following ``create-fleet`` example creates an EC2 Fleet using the minimum parameters required to launch a fleet: a launch template, target capacity, and default purchasing model. The launch template is identified by its launch template ID and version number. The target capacity for the fleet is 2 instances, and the default purchasing model is ``on-demand``, which results in the fleet launching 2 On-Demand Instances.
@@ -62,6 +64,7 @@ Output::
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
 
+For more information, see `Create an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-ec2-fleet.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To create an EC2 Fleet that launches On-Demand Instances as the primary capacity**
 
@@ -95,6 +98,8 @@ Output::
     {
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
+
+For more information, see `Create an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-ec2-fleet.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 4: To create an EC2 Fleet that launches Spot Instances using the lowest-price allocation strategy**
 
@@ -144,3 +149,5 @@ Output::
     {
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
+
+For more information, see `Use allocation strategies to determine how EC2 Fleet or Spot Fleet fulfills Spot and On-Demand capacity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-allocation-strategy.html>`__ in the *Amazon EC2 User Guide*.

@@ -20,3 +20,5 @@ Output::
         "connectionName": "mydcinterconnect",
         "region": "sa-east-1"
     }
+
+For more information, see `Direct Connect link aggregation groups (LAGs) <https://docs.aws.amazon.com/directconnect/latest/UserGuide/lags.html>`__ in the *AWS Direct Connect User Guide*.

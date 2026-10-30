@@ -20,6 +20,8 @@ Output::
         "name": "newName"
     }
 
+For more information, see `Set up API keys for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-setup-api-keys.html>`__ in the *Amazon API Gateway Developer Guide*.
+
 **Example 2: To disable the API Key**
 
 The following ``update-api-key`` example disables the API Key. ::
@@ -41,3 +43,5 @@ Output::
         "id": "sNvjQDMReA1vEQPNzW8r3dXsU2rrD7fcjm2SiMnu",
         "name": "newName"
     }
+
+For more information, see `Set up API keys for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-setup-api-keys.html>`__ in the *Amazon API Gateway Developer Guide*.

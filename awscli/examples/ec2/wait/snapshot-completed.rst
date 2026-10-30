@@ -6,3 +6,5 @@ The following ``wait snapshot-completed`` example pauses and resumes running onl
         --snapshot-ids snap-1234567890abcdef0
 
 This command produces no output.
+
+For more information, see `Create Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-snapshot.html>`__ in the *Amazon EBS User Guide*.

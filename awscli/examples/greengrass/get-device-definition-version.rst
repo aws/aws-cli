@@ -30,3 +30,5 @@ Output::
         "Id": "f9ba083d-5ad4-4534-9f86-026a45df1ccd",
         "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/f9ba083d-5ad4-4534-9f86-026a45df1ccd/versions/83c13984-6fed-447e-84d5-5b8aa45d5f71"
     }
+
+For more information, see `Create client devices in an AWS IoT Greengrass group <https://docs.aws.amazon.com/greengrass/v1/developerguide/device-group.html>`__ in the *AWS IoT Greengrass Developer Guide*.

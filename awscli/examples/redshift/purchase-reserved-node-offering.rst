@@ -29,3 +29,4 @@ Output::
         }
     }
 
+For more information, see `Purchasing a reserved node <https://docs.aws.amazon.com/redshift/latest/mgmt/purchase-reserved-node-offering-console.html>`__ in the *Amazon Redshift Management Guide*.

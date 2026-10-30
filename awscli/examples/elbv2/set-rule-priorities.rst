@@ -30,3 +30,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Edit a listener rule for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-rule.html>`__ in the *Application Load Balancers Guide*.

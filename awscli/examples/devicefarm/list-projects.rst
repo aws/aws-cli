@@ -20,3 +20,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Projects in AWS Device Farm <https://docs.aws.amazon.com/devicefarm/latest/developerguide/projects.html>`__ in the *AWS Device Farm Developer Guide*.

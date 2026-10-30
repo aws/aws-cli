@@ -55,7 +55,7 @@ Output::
         ]
     }
 
-For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html#DHCPOptionSet>`__ in the *AWS VPC User Guide*.
+For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/DHCPOptionSet.html>`__ in the *AWS VPC User Guide*.
 
 **Example 2: To describe your DHCP options and filter the output**
 
@@ -91,4 +91,4 @@ Output::
         ]
     ]
 
-For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html#DHCPOptionSet>`__ in the *AWS VPC User Guide*.
+For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/DHCPOptionSet.html>`__ in the *AWS VPC User Guide*.

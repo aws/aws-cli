@@ -161,4 +161,4 @@ Output::
         "PopulationSize": 4
     }
 
-For more information, see `Viewing a Sample of Web Requests <https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-testing.html#web-acl-testing-view-sample>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.
+For more information, see `Viewing a Sample of Web Requests <https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-testing-view-sample.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

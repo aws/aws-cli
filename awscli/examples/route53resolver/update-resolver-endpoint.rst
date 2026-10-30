@@ -26,3 +26,5 @@ Output::
             "ModificationTime": "2020-01-08T18:33:59.265Z"
         }
     }
+
+For more information, see `Managing inbound endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries-managing.html>`__ in the *Amazon Route 53 Developer Guide*.

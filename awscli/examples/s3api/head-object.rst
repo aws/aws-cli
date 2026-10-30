@@ -17,3 +17,5 @@ Output::
         "ETag": "\"30a6ec7e1a9ad79c203d05a589c8b400\"",
         "Metadata": {}
     }
+
+For more information, see `Working with object metadata <https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingMetadata.html>`__ in the *Amazon S3 User Guide*.

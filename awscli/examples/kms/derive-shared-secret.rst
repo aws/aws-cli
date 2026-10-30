@@ -18,4 +18,4 @@ Output::
         "KeyOrigin": "AWS_KMS"
     }
 
-For more information, see `DeriveSharedSecret <https://docs.aws.amazon.com/kms/latest/APIReference/API_DeriveSharedSecret.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `AWS KMS cryptography essentials <https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#asymmetric-key-ops>`__ in the *AWS Key Management Service Developer Guide*.

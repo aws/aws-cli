@@ -13,7 +13,4 @@ Output::
         "ChangeToken": "12cs345-67cd-890b-1cd2-c3a4567d89f1"
     }
 
-For more information, see `Working with Cross-site Scripting Match Conditions`_ in the *AWS WAF* developer guide.
-
-.. _`Working with Cross-site Scripting Match Conditions`: https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-xss-conditions.html
-
+For more information, see `Working with cross-site scripting match conditions <https://docs.aws.amazon.com/waf/latest/developerguide/classic-web-acl-xss-conditions.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

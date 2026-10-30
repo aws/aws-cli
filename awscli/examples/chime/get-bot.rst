@@ -22,4 +22,4 @@ Output::
         }
     }
 
-For more information, see `Update Chat Bots <https://docs.aws.amazon.com/chime/latest/dg/update-bots.html>`__ in the *Amazon Chime Developer Guide*.
+For more information, see `Update chatbots <https://docs.aws.amazon.com/chime/latest/ag/update-bots.html>`__ in the *Amazon Chime Administration Guide*.

@@ -43,3 +43,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Compute environments for AWS Batch <https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html>`__ in the *AWS Batch User Guide*.

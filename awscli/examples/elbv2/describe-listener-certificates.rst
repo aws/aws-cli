@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `SSL certificates for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/https-listener-certificates.html>`__ in the *Application Load Balancers Guide*.

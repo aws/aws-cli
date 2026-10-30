@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Define which container instances Amazon ECS uses for tasks <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement-constraints.html>`__ in the *Amazon ECS Developer Guide*.

@@ -17,3 +17,5 @@ Output::
         "Type": "DOMAIN_LOCK",
         "SubmittedDate": 1573749367.864
     }
+
+For more information, see `Viewing the status of a domain registration <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-view-status.html>`__ in the *Amazon Route 53 Developer Guide*.

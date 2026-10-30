@@ -35,3 +35,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Run Lambda functions on the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/lambda-functions.html>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

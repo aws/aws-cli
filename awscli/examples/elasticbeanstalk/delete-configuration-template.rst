@@ -7,3 +7,5 @@ The following ``delete-configuration-template`` example deletes a configuration 
         --application-name my-app
 
 This command produces no output.
+
+For more information, see `Using Elastic Beanstalk saved configurations <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-configuration-savedconfig.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

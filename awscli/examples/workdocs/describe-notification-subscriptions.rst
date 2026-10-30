@@ -16,5 +16,3 @@ Output::
             }
         ]
     }
-
-For more information, see `Subscribe to Notifications <https://docs.aws.amazon.com/workdocs/latest/developerguide/subscribe-notifications.html>`__ in the *Amazon WorkDocs Developer Guide*.

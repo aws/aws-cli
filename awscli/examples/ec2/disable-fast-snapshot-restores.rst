@@ -21,3 +21,5 @@ Output::
         ],
         "Unsuccessful": []
     }
+
+For more information, see `Amazon EBS fast snapshot restore <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-fast-snapshot-restore.html>`__ in the *Amazon EBS User Guide*.

@@ -15,3 +15,5 @@ Output::
             "RestrictPublicBuckets": true
         }
     }
+
+For more information, see `Configuring block public access settings for your S3 buckets <https://docs.aws.amazon.com/AmazonS3/latest/userguide/configuring-block-public-access-bucket.html>`__ in the *Amazon S3 User Guide*.

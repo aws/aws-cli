@@ -59,3 +59,5 @@ Output::
         ],
         "nextToken": "exampleToken"
     }
+
+For more information, see `Comment on a commit in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-commit-comment.html#how-to-commit-comment-cli-get-comments>`__ in the *AWS CodeCommit User Guide*.

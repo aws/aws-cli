@@ -11,3 +11,5 @@ Output::
     {
         "NewAssociationId": "aclassoc-3999875b"
     }
+
+For more information, see `Control subnet traffic with network access control lists <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html>`__ in the *Amazon VPC User Guide*.

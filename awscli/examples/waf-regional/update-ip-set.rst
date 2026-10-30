@@ -47,4 +47,4 @@ Output::
         "ChangeToken": "12cs345-67cd-890b-1cd2-c3a4567d89f1"
     }
 
-For more information, see `Working with IP Match Conditions <https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-ip-conditions.html>`__ in the *AWS WAF Developer Guide*.
+For more information, see `Working with IP match conditions <https://docs.aws.amazon.com/waf/latest/developerguide/classic-web-acl-ip-conditions.html>`__ in the *AWS WAF Developer Guide*.

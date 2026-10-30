@@ -30,3 +30,5 @@ Output::
             "ShareStatus": "NOT_SHARED"
         }
     }
+
+For more information, see `Managing forwarding rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-rules-managing.html#resolver-rules-managing-deleting>`__ in the *Amazon Route 53 Developer Guide*.

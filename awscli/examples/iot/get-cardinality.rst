@@ -39,4 +39,4 @@ Output::
         "cardinality": 2
     }
 
-For more information, see `Querying for Aggregate Data<https://docs.aws.amazon.com/iot/latest/developerguide/index-aggregate.html>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Querying for aggregate data <https://docs.aws.amazon.com/iot/latest/developerguide/index-aggregate.html>`__ in the *AWS IoT Core Developer Guide*.

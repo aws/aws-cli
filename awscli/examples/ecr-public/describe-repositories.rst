@@ -19,6 +19,8 @@ Output::
         ]
     }
 
+For more information, see `Viewing the contents and details of a repository in Amazon ECR public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-info.html>`__ in the *Amazon ECR Public User Guide*.
+
 **Example 2: To describe all repositories in a public registry in a table**
 
 The following ``describe-repositories`` example describes all repositories in a public registry and then outputs the repository names into a table format. ::
@@ -41,3 +43,5 @@ Output::
     |  nginx-web-app            |
     |  sample-repo              |
     +---------------------------+
+
+For more information, see `Viewing the contents and details of a repository in Amazon ECR public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-info.html>`__ in the *Amazon ECR Public User Guide*.

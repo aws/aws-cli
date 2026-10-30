@@ -7,3 +7,5 @@ The following ``tag-certificate-authority`` example attaches one or more tags to
         --tags Key=Admin,Value=Alice
 
 This command produces no output.
+
+For more information, see `Add tags for your private CA <https://docs.aws.amazon.com/privateca/latest/userguide/PcaCaTagging.html>`__ in the *AWS Private Certificate Authority User Guide*.

@@ -44,7 +44,7 @@ Output::
         "Errors": []
     }
 
-For more information, see `Retrieve a group of secrets in a batch <https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_batch.html>`__ in the *AWS Secrets Manager User Guide*.
+For more information, see `Get a secret value using the AWS CLI <https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_cli.html>`__ in the *AWS Secrets Manager User Guide*.
 
 **Example 2: To retrieve the secret value for a group of secrets selected by filter**
 
@@ -91,4 +91,4 @@ Output::
         "Errors": []
     }
 
-For more information, see `Retrieve a group of secrets in a batch <https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_batch.html>`__ in the *AWS Secrets Manager User Guide*.
+For more information, see `Get a secret value using the AWS CLI <https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_cli.html>`__ in the *AWS Secrets Manager User Guide*.

@@ -23,4 +23,4 @@ Output::
         }
     }
 
-For more information, see `Working with AWS Elemental MediaConvert Queues <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-queues.html>`_ in the *AWS Elemental MediaConvert User Guide*.
+For more information, see `Working with queues in AWS Elemental MediaConvert <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-queues.html>`__ in the *AWS Elemental MediaConvert User Guide*.

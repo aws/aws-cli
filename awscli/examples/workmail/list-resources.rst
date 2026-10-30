@@ -17,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing a list of resources <https://docs.aws.amazon.com/workmail/latest/adminguide/display_resource.html>`__ in the *Amazon WorkMail Administrator Guide*.

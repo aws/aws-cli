@@ -36,10 +36,6 @@ Output::
         "WarningMessage": "**** Device will be erased before being returned. ****"
     }
 
-For more information on the manifest file format, see `Creating Import Manifests`_ in the *AWS Import/Export Developer Guide*.
-
-.. _`Creating Import Manifests`: http://docs.aws.amazon.com/AWSImportExport/latest/DG/ImportManifestFile.html
-
 You can also pass the manifest as a string in quotes. ::
 
     aws importexport create-job \
@@ -59,6 +55,4 @@ You can also pass the manifest as a string in quotes. ::
         notificationEmail: john.doe@example.com;jane.roe@example.com
         bucket: amzn-s3-demo-bucket'
 
-For information on quoting string arguments and using files, see `Specifying Parameter Values`_ in the *AWS CLI User Guide*.
-
-.. _`Specifying Parameter Values`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html
+For information on quoting string arguments and using files, see `Specifying parameter values in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html>`__ in the *AWS CLI User Guide*.

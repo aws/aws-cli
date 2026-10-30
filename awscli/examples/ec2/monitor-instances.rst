@@ -17,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Manage detailed monitoring for your EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-detailed-monitoring.html>`__ in the *Amazon EC2 User Guide*.

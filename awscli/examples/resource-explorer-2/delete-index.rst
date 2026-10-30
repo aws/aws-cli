@@ -13,4 +13,4 @@ Output::
         "State": "DELETING"
     }
 
-For more information about deleting an index, see `Turning off AWS Resource Explorer in an AWS Region <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-service-deregister.html>`__ in the *AWS Resource Explorer Users Guide*.
+For more information about deleting an index, see `Turning off Resource Explorer <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-service-turn-off.html>`__ in the *AWS Resource Explorer Users Guide*.

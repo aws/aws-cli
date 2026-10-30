@@ -78,3 +78,4 @@ For example, to set a service-specific endpoint URL for EC2 in a services sub-se
     aws configure set ec2.endpoint_url http://localhost:4567 \
         --services my-services
 
+For more information, see `Configuration and credential file settings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html>`__ in the *AWS CLI User Guide*.

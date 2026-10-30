@@ -31,3 +31,5 @@ Output::
         "virtualInterfaceType": "public",
         "virtualInterfaceName": "PublicVirtualInterface"
     }
+
+For more information, see `Create a Direct Connect public virtual interface <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-public-vif.html>`__ in the *AWS Direct Connect User Guide*.

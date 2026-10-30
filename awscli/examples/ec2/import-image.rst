@@ -23,3 +23,5 @@ Output::
         "Status": "active",
         "StatusMessage": "pending"
     }
+
+For more information, see `Import a VM to Amazon EC2 as an image using VM Import/Export <https://docs.aws.amazon.com/vm-import/latest/userguide/vmimport-image-import.html>`__ in the *VM Import/Export User Guide*.

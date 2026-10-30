@@ -17,4 +17,4 @@ Output::
         ]
     }
 
-For more information, see `How AWS Shield Works<https://docs.aws.amazon.com/waf/latest/developerguide/ddos-overview.html>`__ in the *AWS Shield Advanced Developer Guide*.
+For more information, see `How AWS Shield and Shield Advanced work <https://docs.aws.amazon.com/waf/latest/developerguide/ddos-overview.html>`__ in the *AWS Shield Advanced Developer Guide*.

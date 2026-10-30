@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Adding a custom source <https://docs.aws.amazon.com/security-lake/latest/userguide/custom-sources.html#adding-custom-sources>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Adding a custom source <https://docs.aws.amazon.com/security-lake/latest/userguide/adding-custom-sources.html>`__ in the *Amazon Security Lake User Guide*.

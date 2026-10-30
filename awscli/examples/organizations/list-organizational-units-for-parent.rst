@@ -21,3 +21,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing organizational units (OUs) with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html>`__ in the *AWS Organizations User Guide*.

@@ -35,3 +35,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Get information about multiple on-premises instances <https://docs.aws.amazon.com/codedeploy/latest/userguide/on-premises-instances-operations-view-details-multiple.html>`__ in the *AWS CodeDeploy User Guide*.

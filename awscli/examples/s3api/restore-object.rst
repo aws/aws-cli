@@ -8,3 +8,5 @@ The following ``restore-object`` example restores the specified Amazon S3 Glacie
         --restore-request Days=10
 
 This command produces no output.
+
+For more information, see `Restoring an archived object <https://docs.aws.amazon.com/AmazonS3/latest/userguide/restoring-objects.html>`__ in the *Amazon S3 User Guide*.

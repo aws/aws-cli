@@ -57,7 +57,9 @@ Output::
                 ]
             }
         ]
-    }  
+    }
+
+For more information, see `Configure a virtual private cloud <https://docs.aws.amazon.com/vpc/latest/userguide/configure-your-vpc.html>`__ in the *Amazon VPC User Guide*.
 
 **Example 2: To describe a specified VPC**
 
@@ -96,3 +98,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Configure a virtual private cloud <https://docs.aws.amazon.com/vpc/latest/userguide/configure-your-vpc.html>`__ in the *Amazon VPC User Guide*.

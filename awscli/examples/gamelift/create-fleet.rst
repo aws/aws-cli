@@ -34,6 +34,8 @@ Output::
         }
     }
 
+For more information, see `Create an Amazon GameLift Servers managed EC2 fleet <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/fleets-creating.html>`__ in the *Amazon GameLift Servers Developer Guide*.
+
 **Example 2: To create a basic Windows fleet**
 
 The following ``create-fleet`` example creates a minimally configured fleet of spot Windows instances to host a custom server build. You can complete the configuration by using ``update-fleet``. ::
@@ -70,6 +72,7 @@ Output::
         }
     }
 
+For more information, see `Create an Amazon GameLift Servers managed EC2 fleet <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/fleets-creating.html>`__ in the *Amazon GameLift Servers Developer Guide*.
 
 **Example 3: To create a fully configured fleet**
 
@@ -123,6 +126,8 @@ Output::
         }
     }
 
+For more information, see `Create an Amazon GameLift Servers managed EC2 fleet <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/fleets-creating.html>`__ in the *Amazon GameLift Servers Developer Guide*.
+
 **Example 4: To create a Realtime Servers fleet**
 
 The following ``create-fleet`` example creates a fleet of Spot instances with a Realtime configuration script that has been uploaded to Amazon GameLift. All Realtime servers are deployed onto Linux machines. For the purposes of this example, assume that the uploaded Realtime script includes multiple script files, with the ``Init()`` function located in the script file called ``MainScript.js``. As shown, this file is identified as the launch script in the runtime configuration. ::
@@ -159,3 +164,5 @@ Output::
             "OperatingSystem": "AMAZON_LINUX"
         }
     }
+
+For more information, see `Create an Amazon GameLift Servers managed EC2 fleet <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/fleets-creating.html>`__ in the *Amazon GameLift Servers Developer Guide*.

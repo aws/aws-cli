@@ -22,3 +22,5 @@ Output::
         "disableExecuteApiEndpoint": false,
         "rootResourceId": "a1b2c3d4f5"
     }
+
+For more information, see `Develop REST APIs using OpenAPI in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api.html>`__ in the *Amazon API Gateway Developer Guide*.

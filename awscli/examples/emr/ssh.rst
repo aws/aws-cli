@@ -37,3 +37,5 @@ Output::
     --------------------------------------------------------------------------------
 
     [hadoop@ip-172-31-16-216 ~]$
+
+For more information, see `Connect to the Amazon EMR cluster primary node using SSH <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-connect-master-node-ssh.html>`__ in the *Amazon EMR Management Guide*.

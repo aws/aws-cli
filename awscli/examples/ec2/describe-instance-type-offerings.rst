@@ -26,6 +26,8 @@ Output::
         ]
     }
 
+For more information, see `Find an Amazon EC2 instance type <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-discovery.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To list the instance types offered in an Availability Zone**
 
 The following ``describe-instance-type-offerings`` example lists the instance types offered in the specified Availability Zone. The Availability Zone must be in the specified Region. ::
@@ -51,6 +53,8 @@ Output::
             }
         ]
     }
+
+For more information, see `Find an Amazon EC2 instance type <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-discovery.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To check whether an instance type is supported**
 
@@ -96,3 +100,5 @@ Output::
         "c5.9xlarge",
         "c5.4xlarge"
     ]
+
+For more information, see `Find an Amazon EC2 instance type <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-discovery.html>`__ in the *Amazon EC2 User Guide*.

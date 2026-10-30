@@ -44,4 +44,4 @@ Output::
         }
     }
 
-For more information, see `Change a Build Project's Settings (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/change-project.html#change-project-cli>`_ in the *AWS CodeBuild User Guide*
+For more information, see `Change build project settings in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/change-project.html#change-project-cli>`__ in the *AWS CodeBuild User Guide*.

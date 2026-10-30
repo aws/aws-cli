@@ -35,3 +35,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing Your Volume Gateway <https://docs.aws.amazon.com/storagegateway/latest/vgw/managing-gateway-common.html>`__ in the *AWS Storage Gateway Volume Gateway User Guide*.

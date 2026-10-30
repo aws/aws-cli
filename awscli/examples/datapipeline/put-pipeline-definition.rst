@@ -98,3 +98,5 @@ Output::
         "errored": false,
         "validationWarnings": []
     }
+
+For more information, see `Pipeline definition file syntax <https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-writing-pipeline-definition.html>`__ in the *AWS Data Pipeline Developer Guide*.

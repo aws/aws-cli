@@ -17,3 +17,5 @@ Output::
         "IsMultiRegionTrail": true, 
         "S3BucketName": "amzn-s3-demo-bucket"
     }
+
+For more information, see `Using the create-trail command to create a trail <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-create-and-update-a-trail-by-using-the-aws-cli-create-trail.html>`__ in the *AWS CloudTrail User Guide*.

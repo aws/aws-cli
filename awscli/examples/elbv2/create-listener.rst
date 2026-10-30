@@ -38,7 +38,7 @@ Output::
         ]
     }
 
-For more information, see `Tutorial: Create an Application Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-application-load-balancer-cli.html#create-load-balancer-aws-cli>`__ in the *User Guide for Application Load Balancers*.
+For more information, see `Create an HTTP listener for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-listener.html>`__ in the *Application Load Balancers Guide*.
 
 **Example 2: To create an HTTPS listener**
 
@@ -88,7 +88,7 @@ Output::
         ]
     }
 
-For more information, see `Add an HTTPS listener <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-application-load-balancer-cli.html#https-listener-aws-cli>`__ in the *User Guide for Application Load Balancers*.
+For more information, see `Create an HTTPS listener for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html>`__ in the *Application Load Balancers Guide*.
 
 **Example 3: To create a TCP listener**
 
@@ -130,7 +130,7 @@ Output::
         ]
     }
 
-For more information, see `Tutorial: Create a Network Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/network-load-balancer-cli.html#create-load-balancer-aws-cli>`__ in the *User Guide for Network Load Balancers*.
+For more information, see `Create a listener for your Network Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-listener.html>`__ in the *Network Load Balancers Guide*.
 
 **Example 4: To create a TLS listener**
 
@@ -180,7 +180,7 @@ Output::
         ]
     }
 
-For more information, see `TLS listeners for your Network Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html>`__ in the *User Guide for Network Load Balancers*.
+For more information, see `Server certificates for your Network Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/tls-listener-certificates.html>`__ in the *Network Load Balancers Guide*.
 
 **Example 5: To create a UDP listener**
 
@@ -222,7 +222,7 @@ Output::
         ]
     }
 
-For more information, see `Tutorial: Create a Network Load Balancer using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/network-load-balancer-cli.html#create-load-balancer-aws-cli>`__ in the *User Guide for Network Load Balancers*.
+For more information, see `Create a listener for your Network Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-listener.html>`__ in the *Network Load Balancers Guide*.
 
 **Example 6: To create a listener for the specified gateway and forwarding**
 
@@ -256,4 +256,4 @@ Output::
         ]
     }
 
-For more information, see `Getting started with Gateway Load Balancers using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/getting-started-cli.html>`__ in the *User Guide for Gateway Load Balancers*.
+For more information, see `Getting started with Gateway Load Balancers using the AWS CLI <https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/getting-started-cli.html>`__ in the *Gateway Load Balancers Guide*.

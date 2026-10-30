@@ -83,3 +83,6 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon SQS batch actions <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-batch-api-actions.html>`__ in the *Amazon Simple Queue Service Developer Guide*.
+  

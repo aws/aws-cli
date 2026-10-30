@@ -21,3 +21,5 @@ Output::
         },
         "CloudWatchDashboards": []
     }
+
+For more information, see `Managing Provisioned Products <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/provisioned-products.html>`__ in the *AWS Service Catalog Administrator Guide*.

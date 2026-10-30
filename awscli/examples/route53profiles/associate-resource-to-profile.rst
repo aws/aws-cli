@@ -26,3 +26,4 @@ Output::
         }
     }
 
+For more information, see `Associate DNS Firewall rule groups to a Route 53 Profile <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profile-associate-dns-firewall.html>`__ in the *Amazon Route 53 Developer Guide*.

@@ -166,4 +166,4 @@ Output::
         ]
     }
 
-For more information, see `Filtering and grouping findings <https://docs.aws.amazon.com/securityhub/latest/userguide/findings-filtering-grouping.html>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Filtering findings in Security Hub CSPM <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-manage.html>`__ in the *AWS Security Hub User Guide*.

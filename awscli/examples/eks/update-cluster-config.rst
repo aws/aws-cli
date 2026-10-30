@@ -28,6 +28,8 @@ Output::
         }
     }
 
+For more information, see `Cluster API server endpoint <https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 2: To enable logging for a cluster**
 
 The following ``update-cluster-config`` example enables all cluster control plane logging types for a cluster named ``example``. ::
@@ -53,3 +55,5 @@ Output::
             "errors": []
         }
     }
+
+For more information, see `Send control plane logs to CloudWatch Logs <https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html>`__ in the *Amazon EKS User Guide*.

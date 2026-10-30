@@ -34,3 +34,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Using the Elastic Beanstalk environment management console <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-console.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

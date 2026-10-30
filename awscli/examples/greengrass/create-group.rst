@@ -15,4 +15,4 @@ Output::
         "Name": "cli-created-group"
     }
 
-For more information, see `Overview of the AWS IoT Greengrass Group Object Model <https://docs.aws.amazon.com/greengrass/latest/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Deploy AWS IoT Greengrass groups to an AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.

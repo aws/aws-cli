@@ -10,3 +10,5 @@ Output::
     {
         "Unsuccessful": []
     }
+
+For more information, see `Delete an interface endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/delete-interface-endpoint.html>`__ in the *AWS PrivateLink User Guide*.

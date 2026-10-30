@@ -47,3 +47,4 @@ Output::
         ]
     }
 
+For more information, see `Elastic Beanstalk supported platforms <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.platforms.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

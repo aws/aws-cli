@@ -25,4 +25,4 @@ Output::
         ]
     }
 
-For more information, see `Inviting and Suspending Users <https://docs.aws.amazon.com/chime/latest/ag/manage-access.html#invite-users-team>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Managing user permissions and access <https://docs.aws.amazon.com/chime/latest/ag/manage-access.html>`__ in the *Amazon Chime Administration Guide*.

@@ -58,3 +58,5 @@ Output::
             }
         }
     }
+
+For more information, see `Delete a managed node group from your cluster <https://docs.aws.amazon.com/eks/latest/userguide/delete-managed-node-group.html>`__ in the *Amazon EKS User Guide*.

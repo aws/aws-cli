@@ -9,7 +9,4 @@ The following ``set-identity-notification-topic`` example specifies the Amazon S
 
 This command produces no output.
 
-For more information about notifications, see `Using Notifications With Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Using Notifications With Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/notifications.html
-
+For more information, see `Configuring Amazon SNS notifications for Amazon SES <https://docs.aws.amazon.com/ses/latest/dg/configure-sns-notifications.html>`__ in the *Amazon Simple Email Service Developer Guide*.

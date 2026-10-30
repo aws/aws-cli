@@ -17,6 +17,8 @@ Output::
         ]
     }
 
+For more information, see `Secondary IP addresses for your EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-secondary-ip-addresses.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To assign secondary private IP addresses that Amazon EC2 selects to a network interface**
 
 The following ``assign-private-ip-addresses`` example assigns two secondary private IP addresses to the specified network interface. Amazon EC2 automatically assigns these IP addresses from the available IP addresses in the CIDR block range of the subnet the network interface is associated with. ::
@@ -38,3 +40,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Secondary IP addresses for your EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-secondary-ip-addresses.html>`__ in the *Amazon EC2 User Guide*.

@@ -61,3 +61,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Describe step scaling policies for Application Auto Scaling using the AWS CLI <https://docs.aws.amazon.com/autoscaling/application/userguide/describe-step-scaling-policy.html>`__ in the *Application Auto Scaling User Guide*.

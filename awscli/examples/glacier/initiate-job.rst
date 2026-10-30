@@ -16,6 +16,8 @@ Output::
 
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
 
+For more information, see `Downloading a Vault Inventory in Amazon Glacier <https://docs.aws.amazon.com/amazonglacier/latest/dev/vault-inventory.html>`__ in the *Amazon Glacier Developer Guide*.
+
 The following ``initiate-job`` example initiates a job to retrieve an archive from the vault ``my-vault``. ::
 
     aws glacier initiate-job \
@@ -43,6 +45,4 @@ Output::
         "jobId": "l7IL5-EkXy2O5uLYaFdAYOiEY9Ws95fClzIbk-azsX_Z8V6NH4yERHzars8wTKYQMX6nBDI9cMNHzyZJO59-8N9aHWav"
     }
 
-See `Initiate Job`_ in the *Amazon Glacier API Reference* for details on the job parameters format.
-
-.. _`Initiate Job`: http://docs.aws.amazon.com/amazonglacier/latest/dev/api-initiate-job-post.html
+For more information, see `Retrieving Amazon Glacier Archives <https://docs.aws.amazon.com/amazonglacier/latest/dev/downloading-an-archive-two-steps.html>`__ in the *Amazon Glacier Developer Guide*.

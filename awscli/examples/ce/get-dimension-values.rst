@@ -39,3 +39,5 @@ Output::
         ],
         "ReturnSize": 6
     }
+
+For more information, see `Filtering the data that you want to view <https://docs.aws.amazon.com/cost-management/latest/userguide/ce-filtering.html>`__ in the *AWS Cost Management User Guide*.

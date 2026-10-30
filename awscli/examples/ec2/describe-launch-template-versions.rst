@@ -80,3 +80,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Modify a launch template (manage launch template versions) <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-launch-template-versions.html>`__ in the *Amazon EC2 User Guide*.

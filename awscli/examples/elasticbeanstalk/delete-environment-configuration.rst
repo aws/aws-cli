@@ -7,3 +7,5 @@ The following ``delete-environment-configuration`` example deletes a draft confi
         --application-name my-app
 
 This command produces no output.
+
+For more information, see `Setting configuration options after environment creation <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-configuration-methods-after.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

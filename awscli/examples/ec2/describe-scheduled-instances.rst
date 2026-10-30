@@ -39,3 +39,5 @@ Output::
 The following ``describe-scheduled-instances`` example describes all your Scheduled Instances. ::
 
     aws ec2 describe-scheduled-instances
+
+For more information, see `Amazon EC2 billing and purchasing options <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html>`__ in the *Amazon EC2 User Guide*.

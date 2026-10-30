@@ -638,3 +638,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Engine specific parameters <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/ParameterGroups.Engine.html>`__ in the *Amazon ElastiCache User Guide*.

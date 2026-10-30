@@ -6,3 +6,5 @@ The following ``wait db-instance-deleted`` example pauses and continues only aft
         --db-instance-identifier "sample-instance"
 
 This command produces no output.
+
+For more information, see `Deleting an Amazon DocumentDB instance <https://docs.aws.amazon.com/documentdb/latest/devguide/db-instance-delete.html>`__ in the *Amazon DocumentDB Developer Guide*.

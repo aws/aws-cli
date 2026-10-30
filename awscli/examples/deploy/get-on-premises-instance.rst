@@ -21,3 +21,5 @@ Output::
             "instanceArn": "arn:aws:codedeploy:us-east-1:123456789012:instance/AssetTag12010298EX_4IwLNI2Alh"
         }
     }
+
+For more information, see `Get information about a single on-premises instance <https://docs.aws.amazon.com/codedeploy/latest/userguide/on-premises-instances-operations-view-details-single.html>`__ in the *AWS CodeDeploy User Guide*.

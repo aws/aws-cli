@@ -7,3 +7,5 @@ The following ``wait services-inactive`` example waits until ECS services become
         --services MyService 
 
 This command produces no output.
+
+For more information, see `Amazon ECS services <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html>`__ in the *Amazon ECS Developer Guide*.

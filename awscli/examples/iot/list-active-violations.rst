@@ -102,3 +102,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Detect <https://docs.aws.amazon.com/iot-device-defender/latest/devguide/device-defender-detect.html>`__ in the *AWS IoT Device Defender Developer Guide*.

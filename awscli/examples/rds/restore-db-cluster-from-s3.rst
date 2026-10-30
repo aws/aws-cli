@@ -61,4 +61,4 @@ Output::
         }
     }
 
-For more information, see `Migrating Data from MySQL by Using an Amazon S3 Bucket <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Migrating.ExtMySQL.html#AuroraMySQL.Migrating.ExtMySQL.S3>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Migrating Data from MySQL by Using an Amazon S3 Bucket <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Migrating.ExtMySQL.S3.html>`__ in the *Amazon Aurora User Guide*.

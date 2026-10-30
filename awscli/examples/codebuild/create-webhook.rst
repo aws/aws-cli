@@ -47,4 +47,4 @@ Output::
         }
     }
 
-For more information, see `Filter GitHub Webhook Events (SDK) <https://docs.aws.amazon.com/codebuild/latest/userguide/sample-github-pull-request.html#sample-github-pull-request-filter-webhook-events-sdk>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Run the GitHub pull request and webhook filter sample for CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/sample-github-pull-request.html>`__ in the *AWS CodeBuild User Guide*.

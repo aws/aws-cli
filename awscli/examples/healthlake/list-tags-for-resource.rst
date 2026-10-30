@@ -20,4 +20,4 @@ Output::
         ]
     }
 
-For more information, see `Tagging resources in AWS HealthLake <https://docs.aws.amazon.com/healthlake/latest/devguide/tagging.html>`__ in the AWS HealthLake Developer Guide.
+For more information, see `Tagging HealthLake data stores <https://docs.aws.amazon.com/healthlake/latest/devguide/managing-data-stores-tagging.html>`__ in the *AWS HealthLake Developer Guide*.

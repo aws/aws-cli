@@ -13,3 +13,5 @@ Output::
             "my-key-1": "my-value-1"
         }
     }
+
+For more information, see `Tagging Amazon Route 53 resources <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/tagging-resources.html>`__ in the *Amazon Route 53 Developer Guide*.

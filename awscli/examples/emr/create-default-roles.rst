@@ -135,3 +135,5 @@ Output::
             }
         }
     ]
+
+For more information, see `Configure IAM service roles for Amazon EMR permissions to AWS services and resources <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html>`__ in the *Amazon EMR Management Guide*.

@@ -23,6 +23,8 @@ Output::
         }
     }
 
+For more information, see `Request Amazon EBS volume modifications <https://docs.aws.amazon.com/ebs/latest/userguide/requesting-ebs-volume-modifications.html>`__ in the *Amazon EBS User Guide*.
+
 **Example 2: To modify a volume by changing its type, size, and IOPS value**
 
 The following ``modify-volume`` example changes the volume type to Provisioned IOPS SSD, sets the target IOPS rate to 10000, and sets the volume size to 350GB. ::
@@ -49,3 +51,5 @@ Output::
             "OriginalSize": 50
         }
     }
+
+For more information, see `Request Amazon EBS volume modifications <https://docs.aws.amazon.com/ebs/latest/userguide/requesting-ebs-volume-modifications.html>`__ in the *Amazon EBS User Guide*.

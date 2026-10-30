@@ -6,3 +6,5 @@ The following ``delete-bucket-replication`` example deletes a replication config
         --bucket amzn-s3-demo-bucket
 
 This command produces no output.
+
+For more information, see `Replicating objects within and across Regions <https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html>`__ in the *Amazon S3 User Guide*.

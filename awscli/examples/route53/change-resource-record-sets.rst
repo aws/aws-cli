@@ -37,11 +37,6 @@ Output::
         }
     }
 
-For more information, see `POST ChangeResourceRecordSets`_ in the *Amazon Route 53 API Reference*.
-
-.. _`POST ChangeResourceRecordSets`: http://docs.aws.amazon.com/Route53/latest/APIReference/API_ChangeResourceRecordSets.html
-
-
 The configuration in the JSON file depends on the kind of resource record set you want to create:
 
 - Basic
@@ -59,8 +54,6 @@ The configuration in the JSON file depends on the kind of resource record set yo
 - Failover
 
 - Failover Alias
-
-
 
 **Basic Syntax**::
 
@@ -84,7 +77,6 @@ The configuration in the JSON file depends on the kind of resource record set yo
             {...}
         ]
     }
-
 
 **Weighted Syntax**::
 
@@ -112,7 +104,6 @@ The configuration in the JSON file depends on the kind of resource record set yo
         ]
     }
 
-
 **Alias Syntax**::
 
     {
@@ -134,7 +125,6 @@ The configuration in the JSON file depends on the kind of resource record set yo
             {...}
         ]
     }
-
 
 **Weighted Alias Syntax**::
 
@@ -159,8 +149,6 @@ The configuration in the JSON file depends on the kind of resource record set yo
             {...}
         ]
     }
-
-
 
 **Latency Syntax**::
 
@@ -188,7 +176,6 @@ The configuration in the JSON file depends on the kind of resource record set yo
         ]
     }
 
-
 **Latency Alias Syntax**::
 
     {
@@ -212,7 +199,6 @@ The configuration in the JSON file depends on the kind of resource record set yo
             {...}
         ]
     }
-
 
 **Failover Syntax**::
 
@@ -240,7 +226,6 @@ The configuration in the JSON file depends on the kind of resource record set yo
         ]
     }
 
-
 **Failover Alias Syntax**::
 
     {
@@ -264,3 +249,5 @@ The configuration in the JSON file depends on the kind of resource record set yo
             {...}
         ]
     }
+
+For more information, see `Working with records <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/rrsets-working-with.html>`__ in the *Amazon Route 53 Developer Guide*.

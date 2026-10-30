@@ -11,3 +11,5 @@ Output::
     {
         "status": "InProgress"
     }
+
+For more information, see `Create and add a custom action in CodePipeline <https://docs.aws.amazon.com/codepipeline/latest/userguide/actions-create-custom-action.html>`__ in the *AWS CodePipeline User Guide*.

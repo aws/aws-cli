@@ -12,4 +12,4 @@ Output::
         "UnprocessedAccounts": []
     }
 
-For more information, see `Managing multiple accounts <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_accounts.html>`__ in the GuardDuty User Guide.
+For more information, see `Managing multiple accounts in Amazon GuardDuty <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_accounts.html>`__ in the *Amazon GuardDuty User Guide*.

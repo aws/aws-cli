@@ -38,3 +38,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Modify the target gateway of an AWS Site-to-Site VPN connection <https://docs.aws.amazon.com/vpn/latest/s2svpn/modify-vpn-target.html>`__ in the *AWS Site-to-Site VPN User Guide*.

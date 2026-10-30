@@ -18,3 +18,5 @@ Output::
         "connectionName": "Connection to AWS",
         "region": "sa-east-1"
     }
+
+For more information, see `Dedicated Direct Connect connections <https://docs.aws.amazon.com/directconnect/latest/UserGuide/dedicated_connection.html>`__ in the *AWS Direct Connect User Guide*.

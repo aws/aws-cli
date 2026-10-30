@@ -70,4 +70,4 @@ Output::
         "Name": "my-testing-job"
     }
 
-For more information, see `Authoring Jobs in AWS Glue <https://docs.aws.amazon.com/glue/latest/dg/author-job.html>`__ in the *AWS Glue Developer Guide*.
+For more information, see `Working with jobs in AWS Glue <https://docs.aws.amazon.com/glue/latest/dg/author-glue-job.html>`__ in the *AWS Glue Developer Guide*.

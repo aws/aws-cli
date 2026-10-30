@@ -40,3 +40,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Components of a Configuration Item <https://docs.aws.amazon.com/config/latest/developerguide/config-item-table.html>`__ in the *AWS Config Developer Guide*.

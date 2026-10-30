@@ -55,3 +55,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Delete Lightsail instances <https://docs.aws.amazon.com/lightsail/latest/userguide/delete-an-amazon-lightsail-instance.html>`__ in the *Amazon Lightsail User Guide*.

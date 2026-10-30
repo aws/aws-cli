@@ -30,4 +30,4 @@ Output::
         "failedSet": []
     }
 
-For more information, see `Event details pane <https://docs.aws.amazon.com/health/latest/ug/getting-started-phd.html#event-details>`__ in the *AWS Health User Guide*.
+For more information, see `Event details pane <https://docs.aws.amazon.com/health/latest/ug/getting-started-phd.html>`__ in the *AWS Health User Guide*.

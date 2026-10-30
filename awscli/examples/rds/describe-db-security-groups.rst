@@ -28,4 +28,4 @@ Output::
         ]
     }
 
-For more information, see `Listing Available DB Security Groups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithSecurityGroups.html#USER_WorkingWithSecurityGroups.Listing>`__ in the *Amazon RDS User Guide*.
+For more information, see `Listing Available DB Security Groups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.RDSSecurityGroups.html>`__ in the *Amazon RDS User Guide*.

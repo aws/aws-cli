@@ -8,6 +8,8 @@ The following ``associate-dhcp-options`` example associates the specified DHCP o
 
 This command produces no output.
 
+For more information, see `Work with DHCP option sets <https://docs.aws.amazon.com/vpc/latest/userguide/DHCPOptionSet.html>`__ in the *Amazon VPC User Guide*.
+
 **Example 2: To associate the default DHCP options set with your VPC**
 
 The following ``associate-dhcp-options`` example associates the default DHCP options set with the specified VPC. ::
@@ -17,3 +19,5 @@ The following ``associate-dhcp-options`` example associates the default DHCP opt
         --vpc-id vpc-a01106c2
 
 This command produces no output.
+
+For more information, see `Work with DHCP option sets <https://docs.aws.amazon.com/vpc/latest/userguide/DHCPOptionSet.html>`__ in the *Amazon VPC User Guide*.

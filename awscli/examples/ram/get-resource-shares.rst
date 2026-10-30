@@ -36,6 +36,8 @@ Output::
         ]
     }
 
+For more information, see `Viewing resource shares you created in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-view-rs.html>`__ in the *AWS RAM User Guide*.
+
 **Example 2: To list resource shares owned by others and shared with you**
 
 The following ``get-resource-shares`` example lists the resource shares that others created and shared with you. In this example, there are none. ::
@@ -48,3 +50,5 @@ Output::
     {
         "resourceShares": []
     }
+
+For more information, see `Viewing resource shares shared with you <https://docs.aws.amazon.com/ram/latest/userguide/working-with-shared-view-rs.html>`__ in the *AWS RAM User Guide*.

@@ -26,3 +26,5 @@ Contents of ``report-definition.json``::
 
 This command produces no output.
 
+For more information, see `Creating a Legacy CUR export <https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-legacy.html>`__ in the *AWS Data Exports User Guide*.
+

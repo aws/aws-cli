@@ -24,6 +24,8 @@ Output::
         ]
     }
 
+For more information, see `Health checks for the instances for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-healthchecks.html>`__ in the *Classic Load Balancers User Guide*.
+
 **Example 2: To describe the health of an instance for a load balancer**
 
 The following ``describe-instance-health`` example describes the health of the specified instance for the specified load balancer. ::
@@ -61,3 +63,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Troubleshoot a Classic Load Balancer: Health checks <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/ts-elb-healthcheck.html>`__ in the *Classic Load Balancers User Guide*.

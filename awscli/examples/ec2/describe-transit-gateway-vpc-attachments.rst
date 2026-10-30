@@ -33,4 +33,4 @@ Output::
         ]
     }
 
-For more information, see `View your VPC attachments <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#view-vpc-attachment>`__ in the *Transit Gateways Guide*.
+For more information, see `View your VPC attachments <https://docs.aws.amazon.com/vpc/latest/tgw/view-vpc-attachment.html>`__ in the *Transit Gateways Guide*.

@@ -42,7 +42,4 @@ Output::
         }
     }
 
-For more information, see `Creating, Uploading, and Deleting Server Certificates`__ in the *Using IAM* guide.
-
-.. _`Creating, Uploading, and Deleting Server Certificates`: http://docs.aws.amazon.com/IAM/latest/UserGuide/InstallCert.html
-
+For more information, see `Manage server certificates in IAM <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html>`__ in the *AWS IAM User Guide*.

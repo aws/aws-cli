@@ -8,6 +8,6 @@ The following ``request-environment-info`` example requests logs from an environ
 
 This command produces no output.
 
-After requesting logs, retrieve their location with `retrieve-environment-info`_.
+After requesting logs, retrieve their location with `retrieve-environment-info <https://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/retrieve-environment-info.html>`__.
 
-.. _`retrieve-environment-info`: http://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/retrieve-environment-info.html
+For more information, see `Viewing logs from Amazon EC2 instances in your Elastic Beanstalk environment <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.logging.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

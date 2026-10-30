@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `Promoting a read replica to be a DB cluster <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Replication.CrossRegion.html#AuroraMySQL.Replication.CrossRegion.Promote>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Promoting a read replica to be a DB cluster <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Replication.CrossRegion.Promote.html>`__ in the *Amazon Aurora User Guide*.

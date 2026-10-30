@@ -28,3 +28,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Reserved DB instances for Amazon RDS <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithReservedDBInstances.html>`__ in the *Amazon RDS User Guide*.

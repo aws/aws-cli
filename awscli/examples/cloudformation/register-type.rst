@@ -13,4 +13,4 @@ Output::
         "RegistrationToken": "f5525280-104e-4d35-bef5-8f1f1example"
     }
 
-For more information, see `Registering Resource Providers <https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-register.html>`__ in the *CloudFormation Command Line Interface User Guide for Type Development*.
+For more information, see `Registering extensions for use in the CloudFormation registry <https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-register.html>`__ in the *CloudFormation Command Line Interface (CLI) User Guide*.

@@ -10,3 +10,5 @@ Output::
     {
         "connectionState": "pending"
     }
+
+For more information, see `Accept a Direct Connect hosted connection <https://docs.aws.amazon.com/directconnect/latest/UserGuide/accept-hosted-connection.html>`__ in the *AWS Direct Connect User Guide*.

@@ -7,3 +7,5 @@ The following ``update-account-settings`` example disables the remote control of
         --account-settings DisableRemoteControl=true
 
 This command produces no output.
+
+For more information, see `Managing meeting settings <https://docs.aws.amazon.com/chime/latest/ag/mtg-settings.html>`__ in the *Amazon Chime Administration Guide*.

@@ -51,4 +51,4 @@ Output::
         }
     }
 
-For more information, see `Rebooting a Cluster <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.Rebooting.html`__ in the *Elasticache User Guide*.
+For more information, see `Rebooting nodes <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/nodes.rebooting.html>`__ in the *Amazon ElastiCache User Guide*.

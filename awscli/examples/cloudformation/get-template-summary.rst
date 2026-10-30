@@ -70,3 +70,5 @@ Output::
         ],
         "Version": "2010-09-09"
     }
+
+For more information, see `Working with CloudFormation templates <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html>`__ in the *AWS CloudFormation User Guide*.

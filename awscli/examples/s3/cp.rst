@@ -206,3 +206,5 @@ The following ``cp`` example downloads a single object (``mykey``) from the acce
 Output::
 
     download: s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey to mydoc.txt
+
+For more information, see `Using high-level (s3) commands in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html#using-s3-commands-managing-objects-copy>`__ in the *AWS CLI User Guide*.

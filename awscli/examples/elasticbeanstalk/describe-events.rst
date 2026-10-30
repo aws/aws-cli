@@ -42,3 +42,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing an Elastic Beanstalk environment's event stream <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.events.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

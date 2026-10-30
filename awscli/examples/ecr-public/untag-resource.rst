@@ -9,4 +9,4 @@ The following ``untag-resource`` example tags a repository named ``project-a/ngi
 
 This command produces no output.
 
-For more information, see `Using Tags for a public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/ecr-public-using-tags.html>`__ in the *Amazon ECR Public*.
+For more information, see `Tag an Amazon ECR Public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/ecr-public-using-tags.html>`__ in the *Amazon ECR Public User Guide*.

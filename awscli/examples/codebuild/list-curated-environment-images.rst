@@ -35,5 +35,5 @@ Output::
         ]
     }
 
+For more information, see `Docker images provided by CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html>`__ in the *AWS CodeBuild User Guide*.
 
-For more information, see `Docker Images Provided by CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html>`_ in the *AWS CodeBuild User Guide*

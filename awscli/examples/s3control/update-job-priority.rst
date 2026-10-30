@@ -13,3 +13,5 @@ Output::
         "JobId": "8d9a18fe-c303-4d39-8ccc-860d372da386",
         "Priority": 52
     }
+
+For more information, see `Assigning job priority <https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-job-priority.html>`__ in the *Amazon S3 User Guide*.

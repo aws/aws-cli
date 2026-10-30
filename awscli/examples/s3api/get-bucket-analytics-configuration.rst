@@ -14,3 +14,5 @@ Output::
             "Id": "1"
         }
     }
+
+For more information, see `Amazon S3 analytics - Storage Class Analysis <https://docs.aws.amazon.com/AmazonS3/latest/userguide/analytics-storage-class.html>`__ in the *Amazon S3 User Guide*.

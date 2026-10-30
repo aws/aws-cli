@@ -8,3 +8,5 @@ The following ``enable-stage-transition`` example enables transitions into the B
         --transition-type Inbound
 
 This command produces no output.
+
+For more information, see `Working with stage transitions in CodePipeline <https://docs.aws.amazon.com/codepipeline/latest/userguide/transitions.html>`__ in the *AWS CodePipeline User Guide*.

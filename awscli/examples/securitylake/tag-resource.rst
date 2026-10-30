@@ -8,4 +8,4 @@ The following ``tag-resource`` example add tags to an existing subscriber resour
 
 This command produces no output.
 
-For more information, see `Tagging Amazon Security Lake resources <https://docs.aws.amazon.com/security-lake/latest/userguide/tagging-resources.html#tags-retrieve>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Tagging Amazon Security Lake resources <https://docs.aws.amazon.com/security-lake/latest/userguide/tagging-resources.html>`__ in the *Amazon Security Lake User Guide*.

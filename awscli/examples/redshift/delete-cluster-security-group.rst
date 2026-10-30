@@ -7,3 +7,4 @@ The following ``delete-cluster-security-group`` example deletes a cluster securi
 
 This command produces no output.
 
+For more information, see `Infrastructure security in Amazon Redshift <https://docs.aws.amazon.com/redshift/latest/mgmt/security-network-isolation.html>`__ in the *Amazon Redshift Management Guide*.

@@ -10,3 +10,5 @@ Output::
     {
         "Unsuccessful": []
     }
+
+For more information, see `Delete an endpoint service <https://docs.aws.amazon.com/vpc/latest/privatelink/delete-endpoint-service.html>`__ in the *AWS PrivateLink User Guide*.

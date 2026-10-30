@@ -49,4 +49,4 @@ Output::
         }
     }
 
-For more information, see `Create a webhook for a GitHub source <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html#pipelines-webhooks-create>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `Create a webhook for a GitHub source <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html>`__ in the *AWS CodePipeline User Guide*.

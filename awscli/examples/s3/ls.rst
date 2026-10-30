@@ -85,3 +85,5 @@ Output::
 
                                PRE somePrefix/
     2013-07-25 17:06:27         88 test.txt
+
+For more information, see `Using high-level (s3) commands in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html#using-s3-commands-listing-buckets>`__ in the *AWS CLI User Guide*.

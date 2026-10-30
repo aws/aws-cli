@@ -7,4 +7,4 @@ The following ``delete-topic-rule-destination`` example deletes the specified to
 
 This command produces no output.
 
-For more information, see `Deleting a topic rule destination <https://docs.aws.amazon.com/iot/latest/developerguide/rule-destination.html#delete-destination>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Disabling and deleting an HTTP action destination <https://docs.aws.amazon.com/iot/latest/developerguide/http-action-destination.html#http-action-destination-deleting>`__ in the *AWS IoT Developer Guide*.

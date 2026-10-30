@@ -29,3 +29,5 @@ Output::
     }
 
 To monitor the pending change, see `describe-addresses-attribute <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-addresses-attribute.html>`__ in the *AWS CLI Command Reference*.
+
+For more information, see `Create a reverse DNS record for email on Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Elastic_Addressing_Reverse_DNS.html>`__ in the *Amazon EC2 User Guide*.

@@ -11,3 +11,5 @@ Amazon CloudWatch alarm named "myalarm" and sets it to the ALARM state for testi
 This command produces no output.
 
 This command returns to the prompt if successful.
+
+For more information, see `Using Amazon CloudWatch alarms <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Alarms.html>`__ in the *Amazon CloudWatch User Guide*.

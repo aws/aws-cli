@@ -1,6 +1,6 @@
 **To create a custom action**
 
-The following ``create-custom-action-type`` example creates a custom action for AWS CodePipeline using an already-created JSON file (here named MyCustomAction.json) that contains the structure of the custom action. For more information about the requirements for creating a custom action, including the structure of the file, see the AWS CodePipeline User Guide. ::
+The following ``create-custom-action-type`` example creates a custom action for AWS CodePipeline using an already-created JSON file (here named MyCustomAction.json) that contains the structure of the custom action. ::
 
     aws codepipeline create-custom-action-type \
         --cli-input-json file://MyCustomAction.json
@@ -73,3 +73,5 @@ Output::
             }
         }
     }
+
+For more information, see `Create and add a custom action in CodePipeline <https://docs.aws.amazon.com/codepipeline/latest/userguide/actions-create-custom-action.html>`__ in the *AWS CodePipeline User Guide*.

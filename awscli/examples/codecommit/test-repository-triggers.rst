@@ -15,3 +15,5 @@ Output::
         ],
         "failedExecutions": []
     }
+
+For more information, see `Test triggers for an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-notify-test.html>`__ in the *AWS CodeCommit User Guide*.

@@ -15,4 +15,4 @@ Output::
         ]
     }
 
-For more information, see `ListEntitlements <https://docs.aws.amazon.com/mediaconnect/latest/api/v1-entitlements.html>`__ in the *AWS Elemental MediaConnect API Reference*.
+For more information, see `Managing entitlements in MediaConnect <https://docs.aws.amazon.com/mediaconnect/latest/ug/entitlements.html>`__ in the *AWS Elemental MediaConnect User Guide*.

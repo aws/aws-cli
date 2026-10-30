@@ -265,3 +265,5 @@ Output::
             "Id": "j-XXXXXXXX"
         }
     }
+
+For more information, see `View Amazon EMR cluster status and details <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-manage-view-clusters.html>`__ in the *Amazon EMR Management Guide*.

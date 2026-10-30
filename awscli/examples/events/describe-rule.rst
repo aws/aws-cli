@@ -15,3 +15,5 @@ Output::
         "EventBusName": "default",
         "CreatedBy": "123456789012"
     }
+
+For more information, see `Rules in Amazon EventBridge <https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rules.html>`__ in the *Amazon EventBridge User Guide*.

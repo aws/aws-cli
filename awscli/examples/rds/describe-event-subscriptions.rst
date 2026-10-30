@@ -24,3 +24,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Listing Amazon RDS event notification subscriptions <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.ListSubscription.html>`__ in the *Amazon RDS User Guide*.

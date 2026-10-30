@@ -25,6 +25,8 @@ Output::
         ]
     }
 
+For more information, see `AWS Site-to-Site VPN customer gateway devices <https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html>`__ in the *AWS Site-to-Site VPN User Guide*.
+
 **Example 2: To describe a specific customer gateway**
 
 The following ``describe-customer-gateways`` example describes the specified customer gateway. ::
@@ -45,3 +47,5 @@ Output::
             }
         ]
     }
+
+For more information, see `AWS Site-to-Site VPN customer gateway devices <https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html>`__ in the *AWS Site-to-Site VPN User Guide*.

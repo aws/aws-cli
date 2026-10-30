@@ -9,3 +9,4 @@ The following ``admin-forget-device`` example forgets a device for username jane
 
 This command produces no output.
 
+For more information, see `Working with user devices in your user pool <https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html>`__ in the *Amazon Cognito Developer Guide*.

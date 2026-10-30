@@ -17,4 +17,4 @@ Output::
         "treeId":"6bc824cEXAMPLE"
     }
 
-For more information, see `Edit or Delete a File in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-edit-file.html?shortFooter=true#how-to-edit-file-cli>`__ in the *AWS CodeCommit API Reference* guide.
+For more information, see `Edit the contents of a file in an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-edit-file.html#how-to-edit-file-cli>`__ in the *AWS CodeCommit User Guide*.

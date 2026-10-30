@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Copying a DB Cluster Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_WorkingWithParamGroups.html#USER_WorkingWithParamGroups.CopyingCluster>`__ in the *Amazon Aurora Users Guide*.
+For more information, see `Copying a DB Cluster Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_WorkingWithParamGroups.CopyingCluster.html>`__ in the *Amazon Aurora Users Guide*.

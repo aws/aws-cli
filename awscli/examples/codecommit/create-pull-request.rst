@@ -49,3 +49,5 @@ Output::
             "creationDate": 1508962823.285
         }
     }
+
+For more information, see `Create a pull request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-create-pull-request.html#how-to-create-pull-request-cli>`__ in the *AWS CodeCommit User Guide*.

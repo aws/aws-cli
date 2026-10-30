@@ -21,3 +21,5 @@ Output::
             "Tags": []
         }
     }
+
+For more information, see `Amazon Redshift database encryption <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html>`__ in the *Amazon Redshift Management Guide*.

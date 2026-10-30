@@ -19,4 +19,4 @@ Output::
         ]
     }
 
-For more information, see `Customer-owned IP addresses <https://docs.aws.amazon.com/outposts/latest/userguide/outposts-networking-components.html#ip-addressing>`__ in the *AWS Outposts User Guide*.
+For more information, see `Create a CoIP pool <https://docs.aws.amazon.com/outposts/latest/userguide/coip-pools.html>`__ in the *AWS Outposts User Guide*.

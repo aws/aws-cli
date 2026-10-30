@@ -29,6 +29,8 @@ If you do not specify a volume type, the default volume type is ``gp2``. ::
         --size 80 \
         --availability-zone us-east-1a
 
+For more information, see `Create an Amazon EBS volume <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-volume.html>`__ in the *Amazon EBS User Guide*.
+
 **Example 2: To create a Provisioned IOPS SSD (io1) volume from a snapshot**
 
 The following ``create-volume`` example creates a Provisioned IOPS SSD (io1) volume with 1000 provisioned IOPS in the specified Availability Zone using the specified snapshot. ::
@@ -54,6 +56,8 @@ Output::
         "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 500
     }
+
+For more information, see `Create an Amazon EBS volume <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-volume.html>`__ in the *Amazon EBS User Guide*.
 
 **Example 3: To create an encrypted volume**
 
@@ -95,6 +99,8 @@ If you use the ``--kms-key-id`` parameter to specify a customer managed CMK, you
         --kms-key-id 0ea3fef3-80a7-4778-9d8c-1c0c6EXAMPLE \
         --availability-zone us-east-1a 
 
+For more information, see `Amazon EBS encryption <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption.html>`__ in the *Amazon EBS User Guide*.
+
 **Example 4: To create a volume with tags**
 
 The following ``create-volume`` example creates a volume and adds two tags. ::
@@ -129,3 +135,5 @@ Output::
         "CreateTime": "2025-03-12T19:21:34.000Z",
         "Size": 80
     }
+
+For more information, see `Create an Amazon EBS volume <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-volume.html>`__ in the *Amazon EBS User Guide*.

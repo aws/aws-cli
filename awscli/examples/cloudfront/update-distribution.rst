@@ -136,6 +136,8 @@ Output::
         }
     }
 
+For more information, see `Update a distribution <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToUpdateDistribution.html>`__ in the *Amazon CloudFront Developer Guide*.
+
 **Example 2: To update a CloudFront distribution**
 
 The following ``update-distribution`` example disables the CloudFront distribution with the ID ``EMLARXS9EXAMPLE`` by providing the distribution configuration in a JSON file named ``dist-config-disable.json``. To update a distribution, you must use the ``--if-match`` option to provide the distribution's ``ETag``. To get the
@@ -365,3 +367,5 @@ Output::
             }
         }
     }
+
+For more information, see `Update a distribution <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToUpdateDistribution.html>`__ in the *Amazon CloudFront Developer Guide*.

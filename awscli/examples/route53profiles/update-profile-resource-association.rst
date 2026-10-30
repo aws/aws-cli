@@ -23,3 +23,5 @@ Output::
             "StatusMessage": "Updating the Profile to DNS Firewall rule group association"
         }
     }
+
+For more information, see `Viewing and updating Route 53 resources associated to an Amazon Route 53 Profile <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles-resources-editing.html>`__ in the *Amazon Route 53 Developer Guide*.

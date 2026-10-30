@@ -48,3 +48,5 @@ Output::
             }
         ]
     }
+
+For more information, see `List private CAs <https://docs.aws.amazon.com/privateca/latest/userguide/list-CAs.html>`__ in the *AWS Private Certificate Authority User Guide*.

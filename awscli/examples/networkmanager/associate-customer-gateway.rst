@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Customer Gateway Associations <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#cgw-association>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Gateway associations in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/gw-association.html>`__ in the *Transit Gateway Network Manager Guide*.

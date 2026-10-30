@@ -23,6 +23,8 @@ If you specify the empty string as the tag value, the tag is deleted only if the
         --tags Key=Name,Value=
 
 This command produces no output.
+
+For more information, see `Tag your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.
   
 **Example 2: To delete a tag from multiple resources**
   
@@ -33,3 +35,5 @@ The following ``delete-tags`` example deletes the tag``Purpose=Test`` from both 
         --tags Key=Purpose
 
 This command produces no output.
+
+For more information, see `Tag your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.

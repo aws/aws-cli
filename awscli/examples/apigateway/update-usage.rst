@@ -22,3 +22,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Maintain a usage plan for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-usage-plan-manage-usage.html>`__ in the *Amazon API Gateway Developer Guide*.

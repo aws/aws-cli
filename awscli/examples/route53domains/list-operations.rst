@@ -42,3 +42,5 @@ The output includes all the operations that return an operation ID and that you 
 
     aws route53domains list-operations \
         --submitted-since 1577836800
+
+For more information, see `Viewing the status of a domain registration <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-view-status.html>`__ in the *Amazon Route 53 Developer Guide*.

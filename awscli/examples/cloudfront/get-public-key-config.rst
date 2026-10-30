@@ -19,3 +19,5 @@ Output::
             "Comment": "example public key"
         }
     }
+
+For more information, see `Use field-level encryption to help protect sensitive data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`__ in the *Amazon CloudFront Developer Guide*.

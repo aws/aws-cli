@@ -36,5 +36,3 @@ Output::
         ],
         "nextToken": "urn:tdm:us-west-2/123456789012/default:Event:MotionSensorEventV2"
     }
-
-For more information, see `AWS IoT Things Graph Data Model Reference <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-models.html>`__ in the *AWS IoT Things Graph User Guide*.

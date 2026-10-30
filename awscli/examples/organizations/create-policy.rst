@@ -39,6 +39,8 @@ Output::
         }
     }
 
+For more information, see `Creating organization policies with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_policies_create.html>`__ in the *AWS Organizations User Guide*.
+
 **Example 2: To create a policy with a JSON policy as a parameter**
 
 The following ``create-policy`` example creates the same SCP, this time by embedding the policy contents as a JSON string in the parameter. The string must be escaped with backslashes before the double quotes to ensure that they are treated as literals in the parameter, which itself is surrounded by double quotes. ::
@@ -63,6 +65,5 @@ Output::
         }
     }
 
-For more information about creating and using policies in your organization, see `Managing Organization Policies`_ in the *AWS Organizations User Guide*.
+For more information, see `Creating organization policies with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_policies_create.html>`__ in the *AWS Organizations User Guide*.
 
-.. _`Managing Organization Policies`: http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies.html

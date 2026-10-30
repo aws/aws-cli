@@ -27,4 +27,4 @@ Output::
         }
     }
 
-For more information, see `Getting Started <https://docs.aws.amazon.com/chime/latest/ag/getting-started.html>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Getting started <https://docs.aws.amazon.com/chime/latest/ag/getting-started.html>`__ in the *Amazon Chime Administration Guide*.

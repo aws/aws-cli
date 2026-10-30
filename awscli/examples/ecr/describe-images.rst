@@ -22,3 +22,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing image details in Amazon ECR <https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-info.html>`__ in the *Amazon ECR User Guide*.

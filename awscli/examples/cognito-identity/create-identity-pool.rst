@@ -23,3 +23,4 @@ Output::
         ]
     }
 
+For more information, see `Getting started with Amazon Cognito identity pools <https://docs.aws.amazon.com/cognito/latest/developerguide/getting-started-with-identity-pools.html>`__ in the *Amazon Cognito Developer Guide*.

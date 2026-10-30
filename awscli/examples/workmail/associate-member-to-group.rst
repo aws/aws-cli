@@ -8,3 +8,5 @@ The following ``associate-member-to-group`` example adds the specified member to
         --member-id S-1-1-11-1111111111-2222222222-3333333333-3333
 
 This command produces no output.
+
+For more information, see `Adding members to a group <https://docs.aws.amazon.com/workmail/latest/adminguide/add-group-users.html>`__ in the *Amazon WorkMail Administrator Guide*.

@@ -70,8 +70,7 @@ Output::
         ]
     }
 
-For more information, see `Instance Types <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html>`__ in *Amazon Elastic Compute Cloud
-User Guide for Linux Instances*.
+For more information, see `Amazon EC2 instance types <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To filter the available instance types**
 
@@ -101,5 +100,4 @@ Output::
         "c5.4xlarge"
     ]
 
-For more information, see `Instance Types <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html>`__ in *Amazon Elastic Compute Cloud
-User Guide for Linux Instances*.
+For more information, see `Amazon EC2 instance types <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html>`__ in the *Amazon EC2 User Guide*.

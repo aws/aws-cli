@@ -57,3 +57,5 @@ Output::
         ],
         "Tags": null
     }
+
+For more information, see `View a change set for a CloudFormation stack <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-view.html>`__ in the *AWS CloudFormation User Guide*.

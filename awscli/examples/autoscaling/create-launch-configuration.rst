@@ -104,7 +104,7 @@ The following ``create-launch-configuration`` example creates a launch configura
 
 This command produces no output.
 
-For more information, see `EBS <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_Ebs.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
+For more information, see `Block device mappings for volumes on Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.
 
 For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 
 
@@ -120,7 +120,7 @@ The following ``create-launch-configuration`` example creates a launch configura
 
 This command produces no output.
 
-For more information, see `BlockDeviceMapping <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_BlockDeviceMapping.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
+For more information, see `Instance store temporary block storage for EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html>`__ in the *Amazon EC2 User Guide*.
 
 For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 
 
@@ -136,6 +136,6 @@ The following ``create-launch-configuration`` example creates a launch configura
 
 This command produces no output.
 
-For more information, see `BlockDeviceMapping <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_BlockDeviceMapping.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
+For more information, see `Block device mappings for volumes on Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.
 
 For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 

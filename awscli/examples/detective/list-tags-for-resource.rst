@@ -13,4 +13,4 @@ Output::
         }
     }
 
-For more information, see `Managing tags for a behavior graph <https://docs.aws.amazon.com/detective/latest/adminguide/graph-tags.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Managing tags for a behavior graph <https://docs.aws.amazon.com/detective/latest/userguide/graph-tags.html>`__ in the *Amazon Detective Administration Guide*.

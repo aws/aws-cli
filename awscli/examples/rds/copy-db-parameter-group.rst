@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Copying a DB Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html#USER_WorkingWithParamGroups.Copying>`__ in the *Amazon RDS Users Guide*.
+For more information, see `Copying a DB Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.Copying.html>`__ in the *Amazon RDS Users Guide*.

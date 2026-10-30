@@ -24,3 +24,5 @@ Output::
             "statusChangedAt": 1571694233.104
         }
     }
+
+For more information, see `Connect Lightsail resources to AWS services using VPC peering <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-set-up-vpc-peering-with-aws-resources.html>`__ in the *Amazon Lightsail User Guide*.

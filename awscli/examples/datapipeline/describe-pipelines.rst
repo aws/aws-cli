@@ -54,3 +54,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with pipelines <https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-managing-pipeline.html>`__ in the *AWS Data Pipeline Developer Guide*.

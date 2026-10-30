@@ -22,3 +22,5 @@ Output::
             "AssignIpv6AddressOnCreation": false
         }
     }
+
+For more information, see `Work with your default VPC and default subnets <https://docs.aws.amazon.com/vpc/latest/userguide/work-with-default-vpc.html>`__ in the *Amazon VPC User Guide*.

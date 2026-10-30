@@ -11,3 +11,5 @@ Output::
     {
         "NewAssociationId": "rtbassoc-3a1f0f58"
     }
+
+For more information, see `Manage subnet route tables <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithRouteTables.html>`__ in the *Amazon VPC User Guide*.

@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon ECR Public images <https://docs.aws.amazon.com/AmazonECR/latest/public/public-images.html>`__ in the *Amazon ECR Public User Guide*.

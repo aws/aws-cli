@@ -26,6 +26,8 @@ Output::
         "jobQueueName": "LowPriority"
     }
 
+For more information, see `Create a job queue <https://docs.aws.amazon.com/batch/latest/userguide/create-job-queue.html>`__ in the *AWS Batch User Guide*.
+
 **Example 2: To create a high priority job queue with two compute environments**
 
 The following ``create-job-queue`` example creates a job queue called `HighPriority` that uses the `C4OnDemand` compute environment with an order of 1 and the `M4Spot` compute environment with an order of 2. The scheduler will attempt to place jobs on the `C4OnDemand` compute environment first. ::
@@ -57,3 +59,5 @@ Output::
         "jobQueueArn": "arn:aws:batch:us-east-1:012345678910:job-queue/HighPriority",
         "jobQueueName": "HighPriority"
     }
+
+For more information, see `Create a job queue <https://docs.aws.amazon.com/batch/latest/userguide/create-job-queue.html>`__ in the *AWS Batch User Guide*.

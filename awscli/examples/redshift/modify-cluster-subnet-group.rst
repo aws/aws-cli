@@ -31,3 +31,4 @@ Output::
         }
     }
 
+For more information, see `Modifying a cluster subnet group <https://docs.aws.amazon.com/redshift/latest/mgmt/modify-cluster-subnet-group.html>`__ in the *Amazon Redshift Management Guide*.

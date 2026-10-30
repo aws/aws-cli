@@ -8,3 +8,4 @@ The following ``untag-resource`` example removes the tag with the key ``Name`` f
 
 This command produces no output.
 
+For more information, see `Tag AWS Direct Connect resources <https://docs.aws.amazon.com/directconnect/latest/UserGuide/using-tags.html>`__ in the *AWS Direct Connect User Guide*.

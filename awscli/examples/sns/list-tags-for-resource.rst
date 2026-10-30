@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Amazon SNS topic tagging <https://docs.aws.amazon.com/sns/latest/dg/sns-tags.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

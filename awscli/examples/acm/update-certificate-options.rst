@@ -8,3 +8,4 @@ The following ``update-certificate-options`` example opts out of certificate tra
 
 This command produces no output.
 
+For more information, see `Certificate Transparency Logging <https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency>`__ in the *AWS Certificate Manager User Guide*.

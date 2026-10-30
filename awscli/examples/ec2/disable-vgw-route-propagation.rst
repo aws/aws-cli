@@ -7,3 +7,5 @@ The following ``disable-vgw-route-propagation`` example disables the specified v
         --gateway-id vgw-9a4cacf3
 
 This command produces no output.
+
+For more information, see `Enable or disable route propagation <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithRouteTables.html#EnableDisableRouteProp>`__ in the *Amazon VPC User Guide*.

@@ -43,3 +43,5 @@ Output::
             "title": "Consolidation of global variables"
         }
     }
+
+For more information, see `Close a pull request in an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-close-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

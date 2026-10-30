@@ -39,4 +39,4 @@ Contents of ``config.json``::
 
 This command produces no output.
 
-For more information, see `Service configurations for resource groups <https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html>`__ in the *Resource Groups API Reference Guide*.
+For more information, see `Service configurations for resource groups <https://docs.aws.amazon.com/ARG/latest/userguide/about-slg.html>`__ in the *AWS Resource Groups User Guide*.

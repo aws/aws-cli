@@ -41,4 +41,4 @@ Output::
         }
     }
 
-
+For more information, see `Creating a cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/create-cluster.html>`__ in the *Amazon Redshift Management Guide*.

@@ -22,4 +22,4 @@ Output::
         }
     }
 
-For more information, see `DescribeAuthorizer <https://docs.aws.amazon.com/iot/latest/apireference/API_DescribeAuthorizer.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Creating and managing custom authorizers (CLI) <https://docs.aws.amazon.com/iot/latest/developerguide/config-custom-auth.html>`__ in the *AWS IoT Developer Guide*.

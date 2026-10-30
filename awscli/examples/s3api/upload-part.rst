@@ -18,3 +18,5 @@ Output::
     }
 
 Save the ETag value of each part for later. They are required to complete the multipart upload.
+
+For more information, see `Uploading and copying objects using multipart upload in Amazon S3 <https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html>`__ in the *Amazon S3 User Guide*.

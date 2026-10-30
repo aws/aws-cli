@@ -41,3 +41,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Sending events with PutEvents in Amazon EventBridge <https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevents.html>`__ in the *Amazon EventBridge User Guide*.

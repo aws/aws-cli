@@ -42,3 +42,5 @@ Output::
         ],
         "IsTruncated": false
     }
+
+For more information, see `Cataloging and analyzing your data with S3 Inventory <https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html>`__ in the *Amazon S3 User Guide*.

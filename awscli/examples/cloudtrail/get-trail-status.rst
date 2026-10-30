@@ -21,3 +21,5 @@ Output::
         "LatestNotificationAttemptTime": "2016-01-28T23:02:24Z",
         "TimeLoggingStopped": "2015-11-06T18:36:36Z"
     }
+
+For more information, see `Managing trails with the AWS CLI <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-additional-cli-commands.html>`__ in the *AWS CloudTrail User Guide*.

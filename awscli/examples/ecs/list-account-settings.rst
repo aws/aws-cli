@@ -27,6 +27,8 @@ Output::
         ]
     }
 
+For more information, see `Access Amazon ECS features with account settings <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 2: To view the account settings for a specific IAM user or IAM role**
 
 The following ``list-account-settings`` example displays the account settings for the specified IAM user or IAM role. ::
@@ -46,4 +48,4 @@ Output::
         ]
     }
 
-For more information, see `Amazon Resource Names (ARNs) and IDs <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-resource-ids.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Access Amazon ECS features with account settings <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html>`__ in the *Amazon ECS Developer Guide*.

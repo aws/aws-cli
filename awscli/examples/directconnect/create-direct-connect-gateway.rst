@@ -16,3 +16,5 @@ Output::
             "directConnectGatewayState": "available"
         }
     }
+
+For more information, see `Create a Direct Connect gateway <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-direct-connect-gateway.html>`__ in the *AWS Direct Connect User Guide*.

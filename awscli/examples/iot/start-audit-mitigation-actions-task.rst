@@ -14,4 +14,4 @@ Output::
         "taskId": "myActionsTaskId"
     }
 
-For more information, see `StartAuditMitigationActionsTask (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html#dd-api-iot-StartAuditMitigationActionsTask>`__ in the *AWS IoT Developer Guide*.
+For more information, see `StartAuditMitigationActionsTask (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html>`__ in the *AWS IoT Developer Guide*.

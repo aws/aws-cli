@@ -30,4 +30,4 @@ Output::
         ]
     }
 
-For more information, see `List webhooks in your account <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html#pipelines-webhooks-view>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `List webhooks in your account <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html>`__ in the *AWS CodePipeline User Guide*.

@@ -19,3 +19,5 @@ Output::
     }
 
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
+
+For more information, see `Amazon Glacier Data Retrieval Policies <https://docs.aws.amazon.com/amazonglacier/latest/dev/data-retrieval-policy.html>`__ in the *Amazon Glacier Developer Guide*.

@@ -51,3 +51,4 @@ Output::
         "createdDate": "2022-07-18T10:25:42-07:00"
     }
 
+For more information, see `Deploy REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-deploy-api.html>`__ in the *Amazon API Gateway Developer Guide*.

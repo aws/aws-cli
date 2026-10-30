@@ -51,3 +51,5 @@ Output::
             "State": "ACCEPTED"
         }
     }
+
+For more information, see `Accepting or declining account invitations with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_accept-decline-invite.html>`__ in the *AWS Organizations User Guide*.

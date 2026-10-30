@@ -19,7 +19,7 @@ Output::
         "tags": {}
     }
 
-For more information, see `Updating existing VPC link <https://docs.aws.amazon.com/cli/latest/reference/apigateway/update-vpc-link.html>`__ in the *AWS CLI Command Reference*.
+For more information, see `Private integration using VPC links V1 (legacy) <https://docs.aws.amazon.com/apigateway/latest/developerguide/vpc-links-v1.html>`__ in the *Amazon API Gateway Developer Guide*.
 
 
 **Example 2: To update an existing VPC link name and description**
@@ -44,4 +44,4 @@ Output::
         "tags": {}
     }
 
-For more information, see `Updating existing VPC link <https://docs.aws.amazon.com/cli/latest/reference/apigateway/update-vpc-link.html>`__ in the *AWS CLI Command Reference*.
+For more information, see `Private integration using VPC links V1 (legacy) <https://docs.aws.amazon.com/apigateway/latest/developerguide/vpc-links-v1.html>`__ in the *Amazon API Gateway Developer Guide*.

@@ -22,3 +22,5 @@ Output::
     delete: s3://amzn-s3-demo-bucket/test1.txt
     delete: s3://amzn-s3-demo-bucket/test2.txt
     remove_bucket: amzn-s3-demo-bucket
+
+For more information, see `Using high-level (s3) commands in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html#using-s3-commands-delete-buckets>`__ in the *AWS CLI User Guide*.

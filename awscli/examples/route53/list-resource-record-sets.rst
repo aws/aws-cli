@@ -60,3 +60,4 @@ To view all the resource record sets of a particular name, use the ``--query`` p
         --hosted-zone-id Z2LD58HEXAMPLE \
         --query "ResourceRecordSets[?Name == 'example.domain.']"
 
+For more information, see `Listing records <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-listing.html>`__ in the *Amazon Route 53 Developer Guide*.

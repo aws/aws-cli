@@ -26,4 +26,4 @@ Output::
 
     redshift-1.0        My first cluster parameter group        myclusterparametergroup
 
-
+For more information, see `Amazon Redshift parameter groups <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html>`__ in the *Amazon Redshift Management Guide*.

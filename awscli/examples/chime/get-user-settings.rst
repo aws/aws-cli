@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Managing User Phone Numbers <https://docs.aws.amazon.com/chime/latest/ag/user-phone.html>`__ in the *Amazon Chime Administration Guide*.
+For more information, see `Managing phone numbers in Amazon Chime <https://docs.aws.amazon.com/chime/latest/ag/phone-numbers.html>`__ in the *Amazon Chime Administration Guide*.

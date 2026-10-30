@@ -46,6 +46,8 @@ Output::
         "NextToken": "--token string truncated--"
     }
 
+For more information, see `Learn details about Compliance <https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-about.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 2: To list compliance items for a specific instance and association ID**
 
 The following ``list-compliance-items`` example lists all compliance items for the specified instance and association ID. ::
@@ -78,6 +80,8 @@ Output::
         ]
     }
 
+For more information, see `Learn details about Compliance <https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-about.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 3: To list compliance items for an instance after a specific date and time**
 
 The following ``list-compliance-items`` example lists all compliance items for an instance after the specified date and time. ::
@@ -109,3 +113,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Learn details about Compliance <https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-about.html>`__ in the *AWS Systems Manager User Guide*.

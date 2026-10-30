@@ -22,3 +22,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Viewing details of an organization from the management account <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_view_org.html>`__ in the *AWS Organizations User Guide*.

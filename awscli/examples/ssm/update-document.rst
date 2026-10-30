@@ -67,4 +67,4 @@ Output::
         }
     }
 
-
+For more information, see `AWS Systems Manager Documents <https://docs.aws.amazon.com/systems-manager/latest/userguide/documents.html>`__ in the *AWS Systems Manager User Guide*.

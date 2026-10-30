@@ -61,4 +61,4 @@ Output::
         ]
     }
 
-For more information, see `BatchGetDeploymentTargets <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_BatchGetDeploymentTargets.html>`_ in the *AWS CodeDeploy API Reference*.
+For more information, see `View CodeDeploy deployment details <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

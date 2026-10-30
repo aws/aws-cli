@@ -12,3 +12,5 @@ Output::
         "CertificateExpiryInMilliseconds": "604800000",
         "GroupId": "1013db12-8b58-45ff-acc7-704248f66731"
     }
+
+For more information, see `Overview of AWS IoT Greengrass security <https://docs.aws.amazon.com/greengrass/v1/developerguide/gg-sec.html>`__ in the *AWS IoT Greengrass Developer Guide*.

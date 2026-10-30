@@ -66,3 +66,5 @@ CodePipeline like format::
             "Key2": "Value2"
         }
     ]
+
+For more information, see `Examples of CloudFormation stack operation commands for the AWS CLI and PowerShell <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/service_code_examples.html#deploy-sdk>`__ in the *AWS CloudFormation User Guide*.

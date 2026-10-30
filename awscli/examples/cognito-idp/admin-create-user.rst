@@ -33,3 +33,5 @@ Output::
             "UserStatus": "FORCE_CHANGE_PASSWORD"
         }
     }
+
+For more information, see `Creating user accounts as administrator <https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-create-user-accounts.html>`__ in the *Amazon Cognito Developer Guide*.

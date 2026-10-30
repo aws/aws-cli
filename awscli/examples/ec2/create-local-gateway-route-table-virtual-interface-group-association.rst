@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `VIF group associations <https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#vif-group-associations>`__ in the *AWS Outposts User Guide*.
+For more information, see `VIF group associations <https://docs.aws.amazon.com/outposts/latest/userguide/routing.html>`__ in the *AWS Outposts User Guide*.

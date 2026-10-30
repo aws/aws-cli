@@ -30,4 +30,4 @@ Output::
         }
     }
 
-For more information, see `Restoring a Table from a Snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html#working-with-snapshot-restore-table-from-snapshot>`__ in the *Amazon Redshift Cluster Management Guide*.
+For more information, see `Restoring a Table from a Snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshot-restore-table-from-snapshot.html>`__ in the *Amazon Redshift Cluster Management Guide*.

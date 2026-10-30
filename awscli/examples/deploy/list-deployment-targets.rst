@@ -14,4 +14,4 @@ Output::
         ]
     }
 
-For more information, see `ListDeploymentTargets <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeploymentTargets.html>`_ in the *AWS CodeDeploy API Reference*.
+For more information, see `View instance details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

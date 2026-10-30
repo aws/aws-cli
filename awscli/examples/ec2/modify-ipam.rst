@@ -42,3 +42,5 @@ Output::
             "State": "modify-in-progress"
         }
     }
+
+For more information, see `Modify IPAM operating Regions <https://docs.aws.amazon.com/vpc/latest/ipam/mod-ipam-region.html>`__ in the *Amazon VPC IPAM User Guide*.

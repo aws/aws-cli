@@ -33,4 +33,4 @@ Output::
         }
     }
 
-For more information, see `Creating and monitoring a FHIR data stores <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>`__ in the *AWS HealthLake Developer Guide*.
+For more information, see `Getting HealthLake data store properties <https://docs.aws.amazon.com/healthlake/latest/devguide/managing-data-stores-describe.html>`__ in the *AWS HealthLake Developer Guide*.

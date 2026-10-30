@@ -27,3 +27,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Working with hosted zones <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html>`__ in the *Amazon Route 53 Developer Guide*.

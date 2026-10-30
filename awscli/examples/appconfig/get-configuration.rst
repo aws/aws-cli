@@ -19,4 +19,4 @@ Output::
         "ContentType": "application/json"
     }
 
-For more information, see `Step 6: Receiving the configuration <https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-retrieving-the-configuration.html>`__ in the *AWS AppConfig User Guide*.
+For more information, see `Retrieving feature flags and configuration data in AWS AppConfig <https://docs.aws.amazon.com/appconfig/latest/userguide/retrieving-feature-flags.html>`__ in the *AWS AppConfig User Guide*.

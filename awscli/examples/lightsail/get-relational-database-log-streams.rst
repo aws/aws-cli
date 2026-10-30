@@ -15,3 +15,5 @@ Output::
             "slowquery"
         ]
     }
+
+For more information, see `Monitor MySQL query performance with general and slow query logs in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-enabling-mysql-general-and-slow-query-logs.html>`__ in the *Amazon Lightsail User Guide*.

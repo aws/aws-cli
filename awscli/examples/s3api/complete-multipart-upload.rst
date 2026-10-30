@@ -41,3 +41,5 @@ Output::
         "Location": "https://amzn-s3-demo-bucket.s3.amazonaws.com/multipart%2F01",
         "Key": "multipart/01"
     }
+
+For more information, see `Uploading and copying objects using multipart upload in Amazon S3 <https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html>`__ in the *Amazon S3 User Guide*.

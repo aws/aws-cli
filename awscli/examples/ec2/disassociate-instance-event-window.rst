@@ -22,7 +22,7 @@ Output::
         }
     }
 
-For event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the Scheduled Events section of the *Amazon EC2 User Guide*.
+For more information about event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To disassociate instance tags from an event window**
 
@@ -48,7 +48,7 @@ Output::
         }
     }
 
-For event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the Scheduled Events section of the *Amazon EC2 User Guide*.
+For more information about event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To disassociate a Dedicated Host from an event window**
 
@@ -74,4 +74,4 @@ Output::
         }
     }
 
-For event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the Scheduled Events section of the *Amazon EC2 User Guide*.
+For more information about event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the *Amazon EC2 User Guide*.

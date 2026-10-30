@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `Admin authentication flow <https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#amazon-cognito-user-pools-admin-authentication-flow>`__ in the *Amazon Cognito Developer Guide*.
+For more information, see `Admin authentication flow <https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html>`__ in the *Amazon Cognito Developer Guide*.

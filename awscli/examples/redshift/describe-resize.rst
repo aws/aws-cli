@@ -14,3 +14,4 @@ Output::
         "TargetNumberOfNodes": 3
     }
 
+For more information, see `Resizing a cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/resizing-cluster.html>`__ in the *Amazon Redshift Management Guide*.

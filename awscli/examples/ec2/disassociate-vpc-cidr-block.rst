@@ -18,6 +18,8 @@ Output::
         "VpcId": "vpc-a034d6c4"
     }
 
+For more information, see `Add or remove a CIDR block from your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/add-ipv4-cidr.html>`__ in the *Amazon VPC User Guide*.
+
 **Example 2: To disassociate an IPv4 CIDR block from a VPC**
 
 The following ``disassociate-vpc-cidr-block`` example disassociates an IPv4 CIDR block from a VPC. ::
@@ -37,3 +39,5 @@ Output::
         },
         "VpcId": "vpc-27621243"
     }
+
+For more information, see `Add or remove a CIDR block from your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/add-ipv4-cidr.html>`__ in the *Amazon VPC User Guide*.

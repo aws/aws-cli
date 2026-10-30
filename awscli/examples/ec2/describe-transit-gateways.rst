@@ -52,3 +52,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Transit gateways in AWS Transit Gateway <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-transit-gateways.html>`__ in the *Transit Gateways Guide*.

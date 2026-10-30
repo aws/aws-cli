@@ -94,3 +94,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Code signing workflows in Signer <https://docs.aws.amazon.com/signer/latest/developerguide/workflows.html>`__ in the *AWS Signer Developer Guide*.

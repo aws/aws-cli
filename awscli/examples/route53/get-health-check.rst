@@ -28,3 +28,4 @@ Output::
         }
     }
 
+For more information, see `Creating, updating, and deleting health checks <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/health-checks-creating-deleting.html>`__ in the *Amazon Route 53 Developer Guide*.

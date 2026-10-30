@@ -13,3 +13,5 @@ Output::
             "sg-5943793c"
         ]
     }
+
+For more information, see `Security groups for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-update-security-groups.html>`__ in the *Application Load Balancers Guide*.

@@ -34,3 +34,5 @@ Output::
         "lifecyclePolicyText": "{\n    \"rules\": [\n        {\n            \"rulePriority\": 1,\n            \"description\": \"Expire images older than 14 days\",\n            \"selection\": {\n                \"tagStatus\": \"untagged\",\n                \"countType\": \"sinceImagePushed\",\n                \"countUnit\": \"days\",\n                \"countNumber\": 14\n            },\n            \"action\": {\n                \"type\": \"expire\"\n            }\n        }\n    ]\n}\n",
         "status": "IN_PROGRESS"
     }
+
+For more information, see `Creating a lifecycle policy preview in Amazon ECR <https://docs.aws.amazon.com/AmazonECR/latest/userguide/lpp_creation.html>`__ in the *Amazon ECR User Guide*.

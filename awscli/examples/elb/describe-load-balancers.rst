@@ -95,6 +95,8 @@ Output::
         ]
     }
 
+For more information, see `What is a Classic Load Balancer? <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/introduction.html>`__ in the *Classic Load Balancers User Guide*.
+
 **Example 2: To describe one of your load balancers**
 
 The following ``describe-load-balancers`` example describes the specified load balancer. ::
@@ -195,3 +197,4 @@ Output::
         ]
     }
 
+For more information, see `What is a Classic Load Balancer? <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/introduction.html>`__ in the *Classic Load Balancers User Guide*.

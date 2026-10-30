@@ -8,3 +8,5 @@ The following ``reset-password`` example resets the password for the specified u
         --password examplePa$$w0rd
 
 This command produces no output.
+
+For more information, see `Resetting user password <https://docs.aws.amazon.com/workmail/latest/adminguide/reset_password.html>`__ in the *Amazon WorkMail Administrator Guide*.

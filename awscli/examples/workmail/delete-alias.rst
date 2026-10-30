@@ -8,3 +8,5 @@ The following ``delete-alias`` example deletes the alias for the specified entit
         --alias exampleAlias@site.awsapps.com
 
 This command produces no output.
+
+For more information, see `Managing user aliases <https://docs.aws.amazon.com/workmail/latest/adminguide/managing_users.html>`__ in the *Amazon WorkMail Administrator Guide*.

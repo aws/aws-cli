@@ -31,3 +31,5 @@ Output::
             "MinSize": 5
         }
     }
+
+For more information, see `Managing App Runner automatic scaling <https://docs.aws.amazon.com/apprunner/latest/dg/manage-autoscaling.html>`__ in the *AWS App Runner Developer Guide*.

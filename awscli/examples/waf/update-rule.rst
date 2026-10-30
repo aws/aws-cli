@@ -14,8 +14,4 @@ Output::
         "ChangeToken": "12cs345-67cd-890b-1cd2-c3a4567d89f1"
     }
 
-For more information, see `Working with Rules`_ in the *AWS WAF* developer guide.
-
-.. _`Working with Rules`:
-    https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-rules.html
-
+For more information, see `Working with rules <https://docs.aws.amazon.com/waf/latest/developerguide/classic-web-acl-rules.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

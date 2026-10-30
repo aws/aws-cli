@@ -18,6 +18,8 @@ Output::
       AlbumTitle: "Blue Sky Blues"
     ScannedCount: 3
 
+For more information, see `Scanning tables in DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html>`__ in the *Amazon DynamoDB Developer Guide*.
+
 **Example 2: To query for specific primary keys**
 
 The following ``select`` example queries items in the *MusicCollection* table. The table has a
@@ -36,3 +38,5 @@ Output::
     - SongTitle: "Call Me Today"
     - SongTitle: "Scared of My Shadow"
     ScannedCount: 2
+
+For more information, see `Querying tables in DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html>`__ in the *Amazon DynamoDB Developer Guide*.

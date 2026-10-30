@@ -45,6 +45,8 @@ Output::
         "location": "CSVA1"
     }
 
+For more information, see `Create a LAG at a Direct Connect endpoint <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-lag.html>`__ in the *AWS Direct Connect User Guide*.
+
 **Example 2: To create a LAG using an existing connection**
 
 The following ``create-lag`` example creates a LAG from an existing connection in your account, and requests a second new connection for the LAG with the same bandwidth and location as the existing connection. ::
@@ -92,3 +94,5 @@ Output::
         "region": "us-east-1",
         "location": "EqDC2"
     }
+
+For more information, see `Create a LAG at a Direct Connect endpoint <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-lag.html>`__ in the *AWS Direct Connect User Guide*.

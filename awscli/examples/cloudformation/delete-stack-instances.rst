@@ -15,3 +15,5 @@ Output::
     }
 
 To delete an empty stack set, use the ``delete-stack-set`` command.
+
+For more information, see `Delete stacks from CloudFormation StackSets <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stackinstances-delete.html>`__ in the *AWS CloudFormation User Guide*.

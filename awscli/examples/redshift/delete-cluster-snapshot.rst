@@ -38,3 +38,4 @@ Output::
         }
     }
 
+For more information, see `Deleting a manual snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/snapshot-delete.html>`__ in the *Amazon Redshift Management Guide*.

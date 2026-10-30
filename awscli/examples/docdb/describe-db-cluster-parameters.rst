@@ -45,4 +45,4 @@ Output::
         ]
     }
 
-For more information, see `Viewing Amazon DocumentDB Cluster Parameters <https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameters-describe.html>`__ in the *Amazon DocumentDB Developer Guide*.
+For more information, see `Describing Amazon DocumentDB cluster parameter groups <https://docs.aws.amazon.com/documentdb/latest/devguide/cluster_parameter_groups-describe.html>`__ in the *Amazon DocumentDB Developer Guide*.

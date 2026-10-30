@@ -35,3 +35,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Sign Internet of Things (IoT) objects <https://docs.aws.amazon.com/signer/latest/developerguide/iot-workflow.html>`__ in the *AWS Signer Developer Guide*.

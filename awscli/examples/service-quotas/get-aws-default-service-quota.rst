@@ -32,3 +32,5 @@ Output::
             }
         }
     }
+
+For more information, see `Viewing service quotas <https://docs.aws.amazon.com/servicequotas/latest/userguide/gs-request-quota.html>`__ in the *Service Quotas User Guide*.

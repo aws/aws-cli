@@ -14,3 +14,4 @@ Output::
         ]
     }
 
+For more information, see `Configure security groups for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-vpc-security-groups.html>`__ in the *Classic Load Balancers Guide*.

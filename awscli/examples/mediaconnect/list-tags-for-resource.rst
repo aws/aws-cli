@@ -14,4 +14,4 @@ Output::
         }
     }
 
-For more information, see `ListTagsForResource, TagResource, UntagResource <https://docs.aws.amazon.com/mediaconnect/latest/api/tags-resourcearn.html>`__ in the *AWS Elemental MediaConnect API Reference*.
+For more information, see `Tagging AWS Elemental MediaConnect resources <https://docs.aws.amazon.com/mediaconnect/latest/ug/tagging.html>`__ in the *AWS Elemental MediaConnect User Guide*.

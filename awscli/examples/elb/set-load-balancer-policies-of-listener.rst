@@ -9,6 +9,8 @@ The following ``set-load-balancer-policies-of-listener`` example replaces the po
 
 This command produces no output.
 
+For more information, see `Update the SSL negotiation configuration of your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/ssl-config-update.html>`__ in the *Classic Load Balancers Guide*.
+
 
 **Example 2: To remove all policies associated with your listener**
 
@@ -23,3 +25,4 @@ This command produces no output.
 
 To confirm that the policies are removed from the load balancer, use the ``describe-load-balancer-policies`` command.
 
+For more information, see `Update the SSL negotiation configuration of your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/ssl-config-update.html>`__ in the *Classic Load Balancers Guide*.

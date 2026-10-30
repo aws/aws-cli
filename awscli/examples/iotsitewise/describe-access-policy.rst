@@ -25,4 +25,4 @@ Output::
         "accessPolicyLastUpdateDate": "2020-02-20T22:35:15.552880124Z"
     }
 
-For more information, see `Adding or removing portal administrators <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Adding or removing portal administrators <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/portal-change-admins.html>`__ in the *AWS IoT SiteWise User Guide*.

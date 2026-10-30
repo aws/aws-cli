@@ -11,3 +11,5 @@ Output::
     {
         "ReturnValue": true
     }
+
+For more information, see `Change the instance tenancy of a VPC <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/change-tenancy-vpc.html>`__ in the *Amazon EC2 User Guide*.

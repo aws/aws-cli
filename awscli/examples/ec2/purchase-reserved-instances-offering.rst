@@ -13,4 +13,4 @@ Output::
         "ReservedInstancesId": "af9f760e-6f91-4559-85f7-4980eexample"
     }
 
-
+For more information, see `Buy Reserved Instances for Amazon EC2 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-concepts-buying.html>`__ in the *Amazon EC2 User Guide*.

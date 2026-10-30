@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `Querying current asset property values <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/query-industrial-data.html#current-values>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Querying current asset property values <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/current-values.html>`__ in the *AWS IoT SiteWise User Guide*.

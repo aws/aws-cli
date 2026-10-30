@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Creating a topic rule destination <https://docs.aws.amazon.com/iot/latest/developerguide/rule-destination.html#create-destination>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Creating HTTP action destinations <https://docs.aws.amazon.com/iot/latest/developerguide/http-action-destination.html#http-action-destination-creating>`__ in the *AWS IoT Developer Guide*.

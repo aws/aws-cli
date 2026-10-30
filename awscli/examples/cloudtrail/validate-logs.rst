@@ -13,3 +13,5 @@ Output::
     Results found for 2016-01-29T19:24:57Z to 2016-01-29T21:24:57Z:
     3/3 digest files valid
     15/15 log files valid
+
+For more information, see `Validating CloudTrail log file integrity with the AWS CLI <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-cli.html>`__ in the *AWS CloudTrail User Guide*.

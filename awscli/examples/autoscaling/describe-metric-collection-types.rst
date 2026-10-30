@@ -55,4 +55,4 @@ Output::
         ]
     }
 
-For more information, see `Auto Scaling group metrics <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html#as-group-metrics>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Auto Scaling group metrics <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

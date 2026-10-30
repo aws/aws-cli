@@ -8,4 +8,4 @@ The following ``update-resource-definition`` example updates the name for the sp
 
 This command produces no output.
 
-For more information, see `Access Local Resources with Lambda Functions and Connectors <https://docs.aws.amazon.com/greengrass/latest/developerguide/access-local-resources.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Access local resources with Lambda functions and connectors <https://docs.aws.amazon.com/greengrass/v1/developerguide/access-local-resources.html>`__ in the *AWS IoT Greengrass Developer Guide*.

@@ -55,3 +55,5 @@ Output::
             "Status": "Complete"
         }
     }
+
+For more information, see `Tracking job status and completion reports <https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-job-status.html>`__ in the *Amazon S3 User Guide*.

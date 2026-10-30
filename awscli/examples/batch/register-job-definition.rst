@@ -14,3 +14,5 @@ Output::
         "jobDefinitionName": "sleep30",
         "revision": 1
     }
+
+For more information, see `Create a single-node job definition <https://docs.aws.amazon.com/batch/latest/userguide/create-job-definition.html>`__ in the *AWS Batch User Guide*.

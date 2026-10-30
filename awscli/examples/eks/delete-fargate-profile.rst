@@ -33,4 +33,4 @@ Output::
         }
     }
 
-For more information, see `AWS Fargate profile - Deleting a Fargate <https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html#delete-fargate-profile>`__ in the *Amazon EKS User Guide*.
+For more information, see `AWS Fargate profile - Deleting a Fargate <https://docs.aws.amazon.com/eks/latest/userguide/delete-fargate-profile.html>`__ in the *Amazon EKS User Guide*.

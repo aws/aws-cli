@@ -187,9 +187,4 @@ Output::
         ]
     }
 
-See Also
---------
-
--  `ListActivityTypes <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListActivityTypes.html>`_
-   in the *Amazon Simple Workflow Service API Reference*
-
+For more information, see `Registering an Activity Type with Amazon SWF <https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-register-activity.html>`__ in the *Amazon Simple Workflow Service Developer Guide*.

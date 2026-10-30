@@ -44,3 +44,5 @@ Output::
             "pendingMaintenanceActions": []
         }
     }
+
+For more information, see `Create and manage relational databases in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-databases.html>`__ in the *Amazon Lightsail User Guide*.

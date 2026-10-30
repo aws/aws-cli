@@ -13,7 +13,7 @@ Output::
         "ImageId": "ami-abcdef01234567890"
     }
 
-For more information about specifying a block device mapping for your AMI, see `Specifying a block device mapping for an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html#create-ami-bdm>`__ in the *Amazon EC2 User Guide*.
+For more information about specifying a block device mapping for your AMI, see `Specifying a block device mapping for an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To create an AMI from an Amazon EBS-backed instance without reboot**
 
@@ -30,7 +30,7 @@ Output::
         "ImageId": "ami-abcdef01234567890"
     }
 
-For more information about specifying a block device mapping for your AMI, see `Specifying a block device mapping for an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html#create-ami-bdm>`__ in the *Amazon EC2 User Guide*.
+For more information about specifying a block device mapping for your AMI, see `Specifying a block device mapping for an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.
 
 
 **Example 3: To tag an AMI and snapshots on creation**
@@ -49,4 +49,4 @@ Output::
         "ImageId": "ami-abcdef01234567890"
     }
 
-For more information about tagging your resources on creation, see `Add tags on resource creation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#tag-on-create-examples>`__ in the *Amazon EC2 User Guide*.
+For more information about tagging your resources on creation, see `Add tags on resource creation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.

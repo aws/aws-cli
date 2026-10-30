@@ -18,4 +18,4 @@ Output::
         "fileSize":1563
     }
 
-For more information, see `GetFile <https://docs.aws.amazon.com/codecommit/latest/APIReference/API_GetFile.html>`__ in the *AWS CodeCommit API Reference* guide.
+For more information, see `Browse files in an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-browse.html>`__ in the *AWS CodeCommit User Guide*.

@@ -93,3 +93,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Modifying an Amazon RDS DB instance <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.Modifying.html>`__ in the *Amazon RDS User Guide*.

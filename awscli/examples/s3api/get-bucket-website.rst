@@ -15,3 +15,5 @@ Output::
             "Key": "error.html"
         }
     }
+
+For more information, see `Hosting a static website using Amazon S3 <https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html>`__ in the *Amazon S3 User Guide*.

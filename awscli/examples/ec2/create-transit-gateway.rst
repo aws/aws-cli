@@ -29,4 +29,4 @@ Output::
         }
     }
 
-For more information, see `Create a transit gateway <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-transit-gateways.html#create-tgw>`__ in the *Transit Gateways Guide*.
+For more information, see `Create a transit gateway <https://docs.aws.amazon.com/vpc/latest/tgw/create-tgw.html>`__ in the *Transit Gateways Guide*.

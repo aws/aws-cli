@@ -15,3 +15,4 @@ Output::
         }
     }
 
+For more information, see `Deleting a public hosted zone <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DeleteHostedZone.html>`__ in the *Amazon Route 53 Developer Guide*.

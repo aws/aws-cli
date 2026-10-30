@@ -267,3 +267,5 @@ Output::
         ],
         "failures": []
     }
+
+For more information, see `Draining Amazon ECS container instances <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-draining.html>`__ in the *Amazon ECS Developer Guide*.

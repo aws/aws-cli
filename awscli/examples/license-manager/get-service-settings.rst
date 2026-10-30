@@ -26,3 +26,5 @@ Output::
         },
         "EnableCrossAccountsDiscovery": true
     }
+
+For more information, see `Settings in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/settings.html>`__ in the *AWS License Manager User Guide*.

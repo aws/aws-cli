@@ -7,3 +7,5 @@ The following ``delete-object-tagging`` example deletes the tag with the specifi
         --key doc1.rtf
 
 This command produces no output.
+
+For more information, see `Tagging your objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-tagging.html>`__ in the *Amazon S3 User Guide*.

@@ -7,4 +7,4 @@ The following ``delete-db-subnet-group`` example deletes the Amazon DocumentDB s
 
 This command produces no output.
 
-For more information, see `Deleting an Amazon DocumentDB Subnet Group <https://docs.aws.amazon.com/documentdb/latest/developerguide/document-db-subnet-groups.html#document-db-subnet-group-delete>`__ in the *Amazon DocumentDB Developer Guide*.
+For more information, see `Deleting an Amazon DocumentDB Subnet Group <https://docs.aws.amazon.com/documentdb/latest/devguide/document-db-subnet-group-delete.html>`__ in the *Amazon DocumentDB Developer Guide*.

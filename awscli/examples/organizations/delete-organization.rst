@@ -5,3 +5,5 @@ The following ``delete-organization`` example deletes an organization. To perfor
     aws organizations delete-organization
 
 This command produces no output.
+
+For more information, see `Deleting an organization with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_delete.html>`__ in the *AWS Organizations User Guide*.

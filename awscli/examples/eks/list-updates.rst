@@ -44,3 +44,5 @@ Output::
             "9cdba8d4-79fb-3c83-afe8-00b508d33268"
         ]
     }
+
+For more information, see `Update existing cluster to new Kubernetes version <https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html>`__ in the *Amazon EKS User Guide*.

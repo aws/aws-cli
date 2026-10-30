@@ -81,3 +81,5 @@ Output::
         ],
         "FormatVersion": "aws_v1"
     }
+
+For more information, see `Finding services and products using AWS Price List Query API <https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/using-price-list-query-api.html>`__ in the *AWS Billing User Guide*.

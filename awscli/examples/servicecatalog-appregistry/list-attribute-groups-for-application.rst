@@ -17,4 +17,4 @@ Output::
         ]
     }
 
-For more information, see `Viewing attribute group details <https://servicecatalog/latest/arguide/view-attr-group.html>`__ in the *AWS Service Catalog AppRegistry Administrator Guide*.
+For more information, see `Viewing attribute group details <https://docs.aws.amazon.com/servicecatalog/latest/arguide/view-attr-group.html>`__ in the *AWS Service Catalog AppRegistry Administrator Guide*.

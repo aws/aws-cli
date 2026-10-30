@@ -24,3 +24,5 @@ Output::
     {
         "Return": true
     }
+
+For more information, see `Modify a Spot Fleet request <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.

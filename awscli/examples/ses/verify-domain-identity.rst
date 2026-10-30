@@ -12,6 +12,4 @@ Output::
     }
 
 
-To complete domain verification, you must add a TXT record with the returned verification token to your domain's DNS settings. For more information, see `Verifying Domains in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Verifying Domains in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-domains.html
+To complete domain verification, you must add a TXT record with the returned verification token to your domain's DNS settings. For more information, see `Creating and verifying identities in Amazon SES <https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html>`__ in the *Amazon Simple Email Service Developer Guide*.

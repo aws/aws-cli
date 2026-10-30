@@ -82,4 +82,4 @@ Output::
         "Capacity":15
     }
 
-For more information, see `AWS WAF Web ACL Capacity Units (WCU) <https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html#aws-waf-capacity-units>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.
+For more information, see `AWS WAF Web ACL Capacity Units (WCU) <https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

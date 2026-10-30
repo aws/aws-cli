@@ -25,4 +25,4 @@ Output::
         "lastModifiedDate": "2019-12-10T11:09:35.999000-08:00"
     }
 
-For more information, see `DescribeMitigationAction (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html#dd-api-iot-DescribeMitigationAction>`__ in the *AWS IoT Developer Guide*.
+For more information, see `DescribeMitigationAction (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html>`__ in the *AWS IoT Developer Guide*.

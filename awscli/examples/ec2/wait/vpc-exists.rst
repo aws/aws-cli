@@ -6,3 +6,5 @@ The following ``wait vpc-exists`` example command pauses and resumes running onl
         --vpc-ids vpc-1234567890abcdef0
 
 This command produces no output.
+
+For more information, see `Create a VPC <https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc.html>`__ in the *Amazon VPC User Guide*.

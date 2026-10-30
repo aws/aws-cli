@@ -7,4 +7,4 @@ The following ``delete-webhook`` example deletes a webhook from the specified Co
     
 This command produces no output.
 
-For more information, see `Stop Running Builds Automatically (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/run-build.html#run-build-cli-auto-stop>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Use webhooks with AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/webhooks.html>`__ in the *AWS CodeBuild User Guide*.

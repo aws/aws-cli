@@ -200,3 +200,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Virtual private server instances in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-instances-virtual-private-servers-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

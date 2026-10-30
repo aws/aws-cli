@@ -13,3 +13,5 @@ Contents of ``my-rsa-key.pub``::
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCEXAMPLEKEY ec2-user@example
 
 This command produces no output.
+
+For more information, see `Connect to a Linux instance using EC2 Instance Connect <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-methods.html>`__ in the *Amazon EC2 User Guide*.

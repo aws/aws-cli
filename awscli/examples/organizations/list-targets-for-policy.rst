@@ -29,3 +29,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Getting information about your organization's policies <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_info-operations.html>`__ in the *AWS Organizations User Guide*.

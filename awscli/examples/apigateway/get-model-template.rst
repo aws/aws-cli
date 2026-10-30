@@ -12,3 +12,4 @@ Output::
         "value": "#set($inputRoot = $input.path('$'))\n{ }"
     }
 
+For more information, see `Mapping template transformations for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html>`__ in the *Amazon API Gateway Developer Guide*.

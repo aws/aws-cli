@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Devices in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-devices.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

@@ -7,3 +7,5 @@ The following ``disassociate-product-from-portfolio`` example disassociates the 
         --portfolio-id port-2s6abcdq5wdh4
 
 This command produces no output.
+
+For more information, see `Adding products to portfolios <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_portfolios_adding-products.html>`__ in the *AWS Service Catalog Administrator Guide*.

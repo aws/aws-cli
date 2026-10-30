@@ -14,3 +14,5 @@ Output::
         "Id": "55d0052b-0d7d-44d6-b56f-21867215e118",
         "Version": "33f709a0-c825-49cb-9eea-dc8964fbd635"
     }
+
+For more information, see `Getting started with Greengrass connectors (CLI) <https://docs.aws.amazon.com/greengrass/v1/developerguide/connectors-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.

@@ -174,3 +174,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Detecting text in an image <https://docs.aws.amazon.com/rekognition/latest/dg/text-detecting-text-procedure.html>`__ in the *Amazon Rekognition Developer Guide*.

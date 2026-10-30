@@ -78,4 +78,4 @@ Output::
         }
     }
 
-For more information, see `Cluster Maintenance <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-cluster-maintenance>`__ in the *Amazon Redshift Cluster Management Guide*.
+For more information, see `Cluster Maintenance <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html>`__ in the *Amazon Redshift Cluster Management Guide*.

@@ -22,3 +22,5 @@ Output::
         "Status": "active",
         "StatusMessage": "validating"
     }
+
+For more information, see `Export a VM from an Amazon Machine Image (AMI) using VM Import/Export <https://docs.aws.amazon.com/vm-import/latest/userguide/vmexport_image.html>`__ in the *VM Import/Export User Guide*.

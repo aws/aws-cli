@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing stacks across accounts and Regions with StackSets <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html>`__ in the *AWS CloudFormation User Guide*.

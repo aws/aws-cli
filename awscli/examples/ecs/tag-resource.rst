@@ -8,6 +8,8 @@ The following ``tag-resource`` example adds a single tag to the specified resour
 
 This command produces no output.
 
+For more information, see `Tagging Amazon ECS resources <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 2: To add multiple tags to a resource**
 
 The following ``tag-resource`` example adds multiple tags to the specified resource. ::
@@ -17,3 +19,5 @@ The following ``tag-resource`` example adds multiple tags to the specified resou
         --tags key=key1,value=value1 key=key2,value=value2 key=key3,value=value3
 
 This command produces no output.
+
+For more information, see `Tagging Amazon ECS resources <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html>`__ in the *Amazon ECS Developer Guide*.

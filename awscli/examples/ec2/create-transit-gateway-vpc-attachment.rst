@@ -27,7 +27,7 @@ Output::
         }
     }
 
-For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#create-vpc-attachment>`__ in the *Transit Gateways Guide*.
+For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/create-vpc-attachment.html>`__ in the *Transit Gateways Guide*.
 
 **Example 2: To associate a transit gateway with multiple subnets in a VPC**
 
@@ -59,4 +59,4 @@ Output::
         }
     }
 
-For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#create-vpc-attachment>`__ in the *Transit Gateways Guide*.
+For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/create-vpc-attachment.html>`__ in the *Transit Gateways Guide*.

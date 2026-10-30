@@ -15,3 +15,4 @@ Output::
         "createdDate": 1455218022
     }
 
+For more information, see `Deploy REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-deploy-api.html>`__ in the *Amazon API Gateway Developer Guide*.

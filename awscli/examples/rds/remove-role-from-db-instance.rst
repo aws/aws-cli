@@ -9,4 +9,4 @@ The following ``remove-role-from-db-instance`` example removes the role named ``
 
 This command produces no output.
 
-For more information, see `Disabling RDS SQL Server Integration with S3 <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/User.SQLServer.Options.S3-integration.html#Appendix.SQLServer.Options.S3-integration.disabling>`__ in the *Amazon RDS User Guide*.
+For more information, see `Disabling RDS SQL Server Integration with S3 <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.SQLServer.Options.S3-integration.disabling.html>`__ in the *Amazon RDS User Guide*.

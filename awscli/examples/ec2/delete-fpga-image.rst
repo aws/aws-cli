@@ -10,3 +10,5 @@ Output::
     {
         "Return": true
     }
+
+For more information, see `Specifications for Amazon EC2 accelerated computing instances <https://docs.aws.amazon.com/ec2/latest/instancetypes/ac.html>`__ in the *Amazon EC2 Instance Types Guide*.

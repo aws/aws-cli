@@ -23,3 +23,5 @@ Output::
             "StatusMessage": "Deleting the Profile to DNS Firewall rule group association"
         }
     }
+
+For more information, see `Disassociating a resource from an Amazon Route 53 Profile <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles-disassociate-resources.html>`__ in the *Amazon Route 53 Developer Guide*.

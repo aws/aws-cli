@@ -40,3 +40,5 @@ Output::
             }
         ]
     }
+
+For more information, see `SSL/TLS certificates in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-tls-ssl-certificates-in-lightsail-https.html>`__ in the *Amazon Lightsail User Guide*.

@@ -16,4 +16,4 @@ Output::
         ]
     }
 
-For more information, see `ListOTAUpdates <https://docs.aws.amazon.com/iot/latest/apireference/API_ListOTAUpdates.html>`__ in the *AWS IoT API Reference*.
+For more information, see `FreeRTOS Over-the-Air Updates <https://docs.aws.amazon.com/freertos/latest/userguide/freertos-ota-dev.html>`__ in the *FreeRTOS User Guide*.

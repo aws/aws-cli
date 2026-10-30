@@ -9,4 +9,4 @@ The following ``update-user-settings`` example enables the specified user to mak
 
 This command produces no output.
 
-For more information, see `Managing User Phone Numbers <https://docs.aws.amazon.com/chime/latest/ag/user-phone.html>`__ in the *Amazon Chime Administration Guide*.
+For more information, see `Managing phone numbers in Amazon Chime <https://docs.aws.amazon.com/chime/latest/ag/phone-numbers.html>`__ in the *Amazon Chime Administration Guide*.

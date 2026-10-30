@@ -10,3 +10,4 @@ The following ``confirm-forgot-password`` example confirms a forgotten password 
 
 This command produces no output.
 
+For more information, see `Passwords, account recovery, and password policies <https://docs.aws.amazon.com/cognito/latest/developerguide/managing-users-passwords.html>`__ in the *Amazon Cognito Developer Guide*.

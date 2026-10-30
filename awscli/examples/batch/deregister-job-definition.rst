@@ -7,3 +7,4 @@ The following ``deregister-job-definition`` example deregisters a job definition
 
 This command produces no output.
 
+For more information, see `Job definitions <https://docs.aws.amazon.com/batch/latest/userguide/job_definitions.html>`__ in the *AWS Batch User Guide*.

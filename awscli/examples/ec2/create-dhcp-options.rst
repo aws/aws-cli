@@ -41,3 +41,5 @@ Output::
             "DhcpOptionsId": "dopt-06d52773eff4c55f3"
         }
     }
+
+For more information, see `DHCP option sets in Amazon VPC <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html>`__ in the *Amazon VPC User Guide*.

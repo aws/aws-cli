@@ -84,3 +84,5 @@ Output::
             }
         }
     }
+
+For more information, see `Amazon EKS cluster lifecycle and configuration <https://docs.aws.amazon.com/eks/latest/userguide/clusters.html>`__ in the *Amazon EKS User Guide*.

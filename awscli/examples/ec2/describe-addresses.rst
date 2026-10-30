@@ -28,6 +28,8 @@ Output::
         ]
     }
 
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To retrieve details your Elastic IP addresses for EC2-VPC**
 
 The following ``describe-addresses`` example displays details about your Elastic IP addresses for use with instances in a VPC. ::
@@ -52,6 +54,8 @@ Output::
             }
         ]
     }
+
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To retrieve details about an Elastic IP address specified by allocation ID**
 
@@ -78,6 +82,8 @@ Output::
         ]
     }
 
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 4: To retrieve details about an Elastic IP address specified by its VPC private IP address**
 
 The following ``describe-addresses`` example displays details about the Elastic IP address associated with a particular private IP address in EC2-VPC. ::
@@ -103,6 +109,8 @@ Output::
         ]
     }
 
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 5: To retrieve details about Elastic IP addresses in EC2-Classic**
 
 The following ``describe-addresses`` example displays details about your Elastic IP addresses for use in EC2-Classic. ::
@@ -122,6 +130,8 @@ Output::
             }
         ]
     }
+
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 6: To retrieve details about an Elastic IP addresses specified by its public IP address**
 
@@ -143,3 +153,4 @@ Output::
         ]
     }
 
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.

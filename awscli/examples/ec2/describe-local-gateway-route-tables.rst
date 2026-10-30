@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Local gateway route tables <https://docs.aws.amazon.com/outposts/latest/userguide/routing.html>`__ in the *AWS Outposts User Guide*.

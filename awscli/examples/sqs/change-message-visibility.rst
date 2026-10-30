@@ -8,3 +8,5 @@ The following ``change-message-visibility`` example changes the specified messag
         --visibility-timeout 36000
 
 This command produces no output.
+
+For more information, see `Amazon SQS visibility timeout <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

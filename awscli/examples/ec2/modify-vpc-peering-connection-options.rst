@@ -45,3 +45,5 @@ Output::
             "AllowDnsResolutionFromRemoteVpc": true
         }
     }
+
+For more information, see `Enable DNS resolution for a VPC peering connection <https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-dns.html>`__ in the *Amazon VPC Peering Guide*.

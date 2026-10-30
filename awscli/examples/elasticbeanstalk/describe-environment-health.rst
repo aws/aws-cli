@@ -47,6 +47,4 @@ Output::
         "Causes": []
     }
 
-Health information is only available for environments with enhanced health reporting enabled. For more information, see `Enhanced Health Reporting and Monitoring`_ in the *AWS Elastic Beanstalk Developer Guide*.
-
-.. _`Enhanced Health Reporting and Monitoring`: http://integ-docs-aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced.html
+Health information is only available for environments with enhanced health reporting enabled. For more information, see `Enhanced health reporting and monitoring in Elastic Beanstalk <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

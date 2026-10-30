@@ -6,6 +6,8 @@ The following ``put`` example adds a new item to the *MusicCollection* table. ::
 
 This command produces no output.
 
+For more information, see `Working with items and attributes in DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html>`__ in the *Amazon DynamoDB Developer Guide*.
+
 **Example 2: To add items to a table from a file**
 
 The following ``put`` example adds two new items from a file to the *MusicCollection* table. ::
@@ -31,6 +33,8 @@ Contents of ``items.json``::
         }
     ]
 
+For more information, see `Working with items and attributes in DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html>`__ in the *Amazon DynamoDB Developer Guide*.
+
 **Example 3: To add items to a table from stdin**
 
 The following ``put`` example adds a new item to the *MusicCollection* table by reading it from
@@ -40,6 +44,8 @@ stdin. ::
         | aws ddb put MusicCollection -
 
 This command produces no output.
+
+For more information, see `Working with items and attributes in DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 4: To add an item to a table with a conditional expression**
 
@@ -55,3 +61,5 @@ If the key already exists, you should see:
 Output::
 
     A client error (ConditionalCheckFailedException) occurred when calling the PutItem operation: The conditional request failed
+
+For more information, see `DynamoDB condition expression CLI example <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html>`__ in the *Amazon DynamoDB Developer Guide*.

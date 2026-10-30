@@ -20,3 +20,5 @@ Output::
         "region": "us-east-1",
         "location": "EqDC2"
     }
+
+For more information, see `Delete a Direct Connect endpoint LAG <https://docs.aws.amazon.com/directconnect/latest/UserGuide/delete-lag.html>`__ in the *AWS Direct Connect User Guide*.

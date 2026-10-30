@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Automate backups with Amazon Data Lifecycle Manager <https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-lifecycle.html>`__ in the *Amazon EBS User Guide*.

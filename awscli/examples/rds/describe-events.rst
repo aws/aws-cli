@@ -32,3 +32,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing Amazon RDS events <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ListEvents.html>`__ in the *Amazon RDS User Guide*.

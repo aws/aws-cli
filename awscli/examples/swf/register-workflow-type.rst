@@ -18,4 +18,4 @@ On an error (for example, if you try to register the same workflow typetwice, or
 
 The ``--domain``, ``--name`` and ``--workflow-version`` are required. You can also set the workflow description, timeouts, and child workflow policy.
 
-For more information, see `RegisterWorkflowType <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_RegisterWorkflowType.html>`__ in the *Amazon Simple Workflow Service API Reference*
+For more information, see `Basic workflow concepts in Amazon SWF <https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-basic.html>`__ in the *Amazon Simple Workflow Service Developer Guide*.

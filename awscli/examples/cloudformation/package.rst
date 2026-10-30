@@ -15,3 +15,5 @@ Output::
     Successfully packaged artifacts and wrote output template to file packaged-template.json.
     Execute the following command to deploy the packaged template
     aws cloudformation deploy --template-file /path_to_current_directory/packaged-template.json --stack-name <YOUR STACK NAME>
+
+For more information, see `Upload local artifacts to an S3 bucket with the AWS CLI <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-package.html>`__ in the *AWS CloudFormation User Guide*.

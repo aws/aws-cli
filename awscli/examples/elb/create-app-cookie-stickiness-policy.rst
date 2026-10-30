@@ -8,3 +8,5 @@ The following ``create-app-cookie-stickiness-policy`` example generates a sticki
         --cookie-name my-app-cookie
 
 This command produces no output.
+
+For more information, see `Configure sticky sessions for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-sticky-sessions.html>`__ in the *Classic Load Balancers User Guide*.

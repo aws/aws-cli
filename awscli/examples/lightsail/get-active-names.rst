@@ -14,3 +14,5 @@ Output::
             "Plesk_Hosting_Stack_on_Ubuntu-1"
         ]
     }
+
+For more information, see `What is Amazon Lightsail? <https://docs.aws.amazon.com/lightsail/latest/userguide/what-is-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

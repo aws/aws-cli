@@ -41,3 +41,4 @@ Output::
 If you want to purchase a reserved node offering, you can call ``purchase-reserved-node-offering`` using a valid
 *ReservedNodeOfferingId*.
 
+For more information, see `Reserved nodes <https://docs.aws.amazon.com/redshift/latest/mgmt/purchase-reserved-node-instance.html>`__ in the *Amazon Redshift Management Guide*.

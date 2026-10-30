@@ -44,4 +44,4 @@ Output::
         "lastUpdatedAt": "2022-12-02T16:02:45.857000-05:00"
     }
 
-For more information, see `UpdateSuiteDefinition <https://docs.aws.amazon.com/iot/latest/apireference/API_iotdeviceadvisor_UpdateSuiteDefinition.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Device Advisor workflow <https://docs.aws.amazon.com/iot/latest/developerguide/device-advisor-workflow.html#device-advisor-workflow-create-suite-definition>`__ in the *AWS IoT Core Developer Guide*.

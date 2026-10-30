@@ -20,3 +20,4 @@ Output::
         }
     }
 
+For more information, see `Creating a test run in Device Farm <https://docs.aws.amazon.com/devicefarm/latest/developerguide/how-to-create-test-run.html>`__ in the *AWS Device Farm Developer Guide*.

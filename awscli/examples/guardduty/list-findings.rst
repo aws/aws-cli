@@ -16,7 +16,7 @@ Output::
         ]
     }
 
-For more information, see `Findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the GuardDuty User Guide.
+For more information, see `Understanding and generating Amazon GuardDuty findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the *Amazon GuardDuty User Guide*.
 
 **Example 2: To list findings for the current region matching a specific finding criteria**
 
@@ -39,7 +39,7 @@ Output::
         ]
     }
 
-For more information, see `Findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the GuardDuty User Guide.
+For more information, see `Understanding and generating Amazon GuardDuty findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the *Amazon GuardDuty User Guide*.
 
 **Example 3: To list findings for the current region matching a specific set of finding criteria defined within a JSON file**
 
@@ -73,4 +73,4 @@ Output::
         ]
     }
 
-For more information, see `Findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the GuardDuty User Guide.
+For more information, see `Understanding and generating Amazon GuardDuty findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the *Amazon GuardDuty User Guide*.

@@ -55,3 +55,5 @@ Output::
             "ExpirationTimestamp": 1.47137983521E9
         }
     }
+
+For more information, see `Managing pending account invitations with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_manage-invites.html>`__ in the *AWS Organizations User Guide*.

@@ -7,3 +7,5 @@ The following ``set-platform-application-attributes`` example sets the ``EventDe
         --attributes EventDeliveryFailure=arn:aws:sns:us-west-2:123456789012:AnotherTopic
 
 This command produces no output.
+
+For more information, see `Amazon SNS mobile app attributes <https://docs.aws.amazon.com/sns/latest/dg/sns-msg-status.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

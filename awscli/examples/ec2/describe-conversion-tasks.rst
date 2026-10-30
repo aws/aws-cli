@@ -35,3 +35,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Import a VM as an EC2 instance using VM Import/Export <https://docs.aws.amazon.com/vm-import/latest/userguide/vmimport-instance-import.html>`__ in the *VM Import/Export User Guide*.

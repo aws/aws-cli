@@ -13,6 +13,7 @@ The following ``create-network-acl-entry`` example creates an entry for the spec
 
 This command produces no output.
 
+For more information, see `Network ACL rules <https://docs.aws.amazon.com/vpc/latest/userguide/nacl-rules.html>`__ in the *Amazon VPC User Guide*.
 
 The following ``create-network-acl-entry`` example creates a rule for the specified network ACL that allows ingress traffic from any IPv6 address (::/0) on TCP port 80 (HTTP). ::
 
@@ -26,3 +27,5 @@ The following ``create-network-acl-entry`` example creates a rule for the specif
         --rule-action allow
 
 This command produces no output.
+
+For more information, see `Network ACL rules <https://docs.aws.amazon.com/vpc/latest/userguide/nacl-rules.html>`__ in the *Amazon VPC User Guide*.

@@ -26,3 +26,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing Your Pipelines <https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-list-pipelines.html>`__ in the *AWS Data Pipeline Developer Guide*.

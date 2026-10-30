@@ -1,6 +1,6 @@
 **To create a pipeline**
 
-The following ``create-pipeline`` example creates a pipeline in AWS CodePipeline using an already-created JSON file (here named MySecondPipeline.json) that contains the structure of the pipeline. For more information about the requirements for creating a pipeline, including the structure of the file, see the AWS CodePipeline User Guide. ::
+The following ``create-pipeline`` example creates a pipeline in AWS CodePipeline using an already-created JSON file (here named MySecondPipeline.json) that contains the structure of the pipeline. ::
 
     aws codepipeline create-pipeline \
         --cli-input-json file://MySecondPipeline.json
@@ -138,3 +138,5 @@ Output::
             "version": 1
         }
     }
+
+For more information, see `Create a pipeline, stages, and actions <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html>`__ in the *AWS CodePipeline User Guide*.

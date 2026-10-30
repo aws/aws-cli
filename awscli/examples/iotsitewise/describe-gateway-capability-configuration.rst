@@ -15,4 +15,4 @@ Output::
         "capabilitySyncStatus": "IN_SYNC"
     }
 
-For more information, see `Configuring data sources <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/configure-sources.html>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `OPC UA data sources for AWS IoT SiteWise Edge gateways <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/configure-sources-opcua.html>`__ in the *AWS IoT SiteWise User Guide*.

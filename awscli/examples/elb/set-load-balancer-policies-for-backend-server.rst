@@ -9,6 +9,8 @@ The following ``set-load-balancer-policies-for-backend-server`` example replaces
 
 This command produces no output.
 
+For more information, see `Configure proxy protocol for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-proxy-protocol.html>`__ in the *Classic Load Balancers Guide*.
+
 
 **Example 2: To remove all policies that are currently associated with a port on your backend instance**
 
@@ -24,3 +26,4 @@ This command produces no output.
 
 To confirm that the policies are removed, use the ``describe-load-balancer-policies`` command.
 
+For more information, see `Configure proxy protocol for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-proxy-protocol.html>`__ in the *Classic Load Balancers Guide*.

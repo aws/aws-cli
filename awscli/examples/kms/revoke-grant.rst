@@ -8,4 +8,4 @@ The following ``revoke-grant`` example deletes a grant from a KMS key. The follo
 
 This command produces no output. To confirm that the grant was revoked, use the ``list-grants`` command.
 
-For more information, see `Retiring and revoking grants <https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#grant-delete>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Retiring and revoking grants <https://docs.aws.amazon.com/kms/latest/developerguide/grant-delete.html>`__ in the *AWS Key Management Service Developer Guide*.

@@ -14,4 +14,4 @@ Output::
         "Status": "stopping"
     }
 
-For more information, see `Stopping an activity stream <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html#DBActivityStreams.Disabling>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Stopping an activity stream <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.Disabling.html>`__ in the *Amazon Aurora User Guide*.

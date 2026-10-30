@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Transit gateway registrations in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/tgw-registrations.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

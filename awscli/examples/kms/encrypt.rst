@@ -14,7 +14,7 @@ The command does several things:
 
     The value of the ``plaintext`` parameter must be base64-encoded, or you must use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file.
     
-    If the file is not in the current directory, type the full path to file. For example: ``fileb:///var/tmp/ExamplePlaintextFile`` or ``fileb://C:\Temp\ExamplePlaintextFile``. For more information about reading AWS CLI parameter values from a file, see `Loading Parameters from a File <https://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html#cli-using-param-file>`__ in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters <https://blogs.aws.amazon.com/cli/post/TxLWWN1O25V1HE/Best-Practices-for-Local-File-Parameters>`__ on the AWS Command Line Tool Blog.
+    If the file is not in the current directory, type the full path to file. For example: ``fileb:///var/tmp/ExamplePlaintextFile`` or ``fileb://C:\Temp\ExamplePlaintextFile``. For more information about reading AWS CLI parameter values from a file, see `Loading Parameters from a File <https://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html>`__ in the *AWS Command Line Interface User Guide*.
 
 #. Uses the ``--output`` and ``--query`` parameters to control the command's output.
 

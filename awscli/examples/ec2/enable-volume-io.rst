@@ -6,3 +6,5 @@ The following ``enable-volume-io`` example enables I/O on volume ``vol-123456789
         --volume-id vol-1234567890abcdef0
 
 This command produces no output.
+
+For more information, see `Work with an impaired Amazon EBS volume <https://docs.aws.amazon.com/ebs/latest/userguide/work_volumes_impaired.html>`__ in the *Amazon EBS User Guide*.

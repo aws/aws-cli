@@ -36,5 +36,5 @@ Output::
         ]
     }
 
-For more information, see `View a List of Build Project Names (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/view-project-list.html#view-project-list-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `View build project names in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/view-project-list.html#view-project-list-cli>`__ in the *AWS CodeBuild User Guide*.
 

@@ -37,6 +37,8 @@ Output::
         ]
     }
 
+For more information, see `Create a target tracking scaling policy for Application Auto Scaling using the AWS CLI <https://docs.aws.amazon.com/autoscaling/application/userguide/create-target-tracking-policy-cli.html>`__ in the *Application Auto Scaling User Guide*.
+
 **Example 2: To apply a target tracking scaling policy with a customized metric specification**
 
 The following ``put-scaling-policy`` example applies a target tracking scaling policy with a customized metric specification to an Amazon ECS service called web-app in the default cluster. The policy keeps the average utilization of the service at 75 percent, with scale-out and scale-in cooldown periods of 60 seconds. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf. ::
@@ -85,6 +87,8 @@ Output::
         ]
     }
 
+For more information, see `Create a target tracking scaling policy for Application Auto Scaling using the AWS CLI <https://docs.aws.amazon.com/autoscaling/application/userguide/create-target-tracking-policy-cli.html>`__ in the *Application Auto Scaling User Guide*.
+
 **Example 3: To apply a target tracking scaling policy for scale out only**
 
 The following ``put-scaling-policy`` example applies a target tracking scaling policy to an Amazon ECS service called ``web-app`` in the default cluster. The policy is used to scale out the ECS service when the ``RequestCountPerTarget`` metric from the Application Load Balancer exceeds the threshold. The output contains the ARN and name of the CloudWatch alarm created on your behalf. ::
@@ -122,4 +126,4 @@ Output::
         ]
     }
 
-For more information, see `Target Tracking Scaling Policies for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html>`_ in the *AWS Application Auto Scaling User Guide*.
+For more information, see `Target tracking scaling policies for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html>`__ in the *Application Auto Scaling User Guide*.

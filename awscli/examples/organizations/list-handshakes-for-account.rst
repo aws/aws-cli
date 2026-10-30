@@ -54,3 +54,5 @@ Output::
         }
         ]
     }
+
+For more information, see `Managing account invitations with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_invites.html>`__ in the *AWS Organizations User Guide*.

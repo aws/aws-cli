@@ -38,3 +38,5 @@ Output::
             "tags": []
         }
     }
+
+For more information, see `Amazon ECS standalone tasks <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/standalone-tasks.html>`__ in the *Amazon ECS Developer Guide*.

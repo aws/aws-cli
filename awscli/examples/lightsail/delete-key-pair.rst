@@ -23,3 +23,5 @@ Output::
             "statusChangedAt": 1569874626.685
         }
     }
+
+For more information, see `Control secure instance connectivity with Lightsail SSH keys <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-managing-ssh-keys.html>`__ in the *Amazon Lightsail User Guide*.

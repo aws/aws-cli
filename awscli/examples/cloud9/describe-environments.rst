@@ -33,3 +33,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with environments in AWS Cloud9 <https://docs.aws.amazon.com/cloud9/latest/user-guide/environments.html>`__ in the *AWS Cloud9 User Guide*.

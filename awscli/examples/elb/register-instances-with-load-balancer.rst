@@ -22,3 +22,4 @@ Output::
         ]
     }
 
+For more information, see `Register instances with your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-deregister-register-instances.html>`__ in the *Classic Load Balancers Guide*.

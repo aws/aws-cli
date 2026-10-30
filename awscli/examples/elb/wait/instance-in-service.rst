@@ -7,3 +7,5 @@ The following ``wait instance-in-service`` example pauses and continues only aft
         --instances InstanceId=i-1234567890abcdef0
 
 This command produces no output.
+
+For more information, see `Health checks for the instances for your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-healthchecks.html>`__ in the *Classic Load Balancers Guide*.

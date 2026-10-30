@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with organizations <https://docs.aws.amazon.com/workmail/latest/adminguide/organizations_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

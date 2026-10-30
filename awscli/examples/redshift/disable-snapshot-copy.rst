@@ -70,4 +70,4 @@ Output::
         }
     }
 
-For more information, see `Copying Snapshots to Another AWS Region <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html#cross-region-snapshot-copy>`__ in the *Amazon Redshift Cluster Management Guide*.
+For more information, see `Copying Snapshots to Another AWS Region <https://docs.aws.amazon.com/redshift/latest/mgmt/cross-region-snapshot-copy.html>`__ in the *Amazon Redshift Cluster Management Guide*.

@@ -26,3 +26,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View pull requests in an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-view-pull-request.html#how-to-view-pull-request-cli>`__ in the *AWS CodeCommit User Guide*.

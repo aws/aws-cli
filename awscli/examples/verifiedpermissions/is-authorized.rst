@@ -42,4 +42,4 @@ Output::
         "errors": []
     }
 
-For more information,  see the `Amazon Verified Permissions User Guide <https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/>`__.
+For more information, see `Implementing authorization in Amazon Verified Permissions <https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/authorization.html>`__ in the *Amazon Verified Permissions User Guide*.

@@ -26,3 +26,5 @@ Contents of ``stack-policy.json``::
     }
 
 This command produces no output.
+
+For more information, see `Prevent updates to stack resources <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html>`__ in the *AWS CloudFormation User Guide*.

@@ -26,5 +26,3 @@ Contents of ``ExampleLifecyclePolicy.json``::
     }
 
 This command produces no output.
-
-For more information, see `Adding an Object Lifecycle Policy to a Container <https://docs.aws.amazon.com/mediastore/latest/ug/policies-object-lifecycle-add.html>`__ in the *AWS Elemental MediaStore User Guide*.

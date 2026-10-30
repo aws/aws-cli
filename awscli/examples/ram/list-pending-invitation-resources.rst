@@ -27,3 +27,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing resources shared with you <https://docs.aws.amazon.com/ram/latest/userguide/working-with-shared-view-sr.html>`__ in the *AWS RAM User Guide*.

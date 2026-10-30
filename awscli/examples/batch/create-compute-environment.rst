@@ -47,6 +47,8 @@ Output::
         "computeEnvironmentArn": "arn:aws:batch:us-east-1:012345678910:compute-environment/C4OnDemand"
     }
 
+For more information, see `Create a compute environment <https://docs.aws.amazon.com/batch/latest/userguide/create-compute-environment.html>`__ in the *AWS Batch User Guide*.
+
 **Example 2: To create a managed compute environment with Spot Instances**
 
 The following ``create-compute-environment`` example creates a managed compute environment with the M4 instance type that is launched when the Spot bid price is at or below 20% of the On-Demand price for the instance type. The compute environment is called `M4Spot`. ::
@@ -93,3 +95,5 @@ Output::
         "computeEnvironmentName": "M4Spot",
         "computeEnvironmentArn": "arn:aws:batch:us-east-1:012345678910:compute-environment/M4Spot"
     }
+
+For more information, see `Create a compute environment <https://docs.aws.amazon.com/batch/latest/userguide/create-compute-environment.html>`__ in the *AWS Batch User Guide*.

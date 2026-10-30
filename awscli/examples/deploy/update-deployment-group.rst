@@ -12,3 +12,5 @@ The following ``update-deployment-group`` example changes the settings of a depl
         --service-role-arn arn:aws:iam::80398EXAMPLE:role/CodeDeployDemo-2
 
 This command produces no output.
+
+For more information, see `Change deployment group settings with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-groups-edit.html>`__ in the *AWS CodeDeploy User Guide*.

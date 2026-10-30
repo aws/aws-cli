@@ -14,3 +14,5 @@ Output::
         "Id": "9d611d57-5d5d-44bd-a3b4-feccbdd69112",
         "Version": "7b65dfae-50b6-4d0f-b3e0-27728bfb0620"
     }
+
+For more information, see `Configure subscriptions <https://docs.aws.amazon.com/greengrass/v1/developerguide/config_subs.html>`__ in the *AWS IoT Greengrass Developer Guide*.

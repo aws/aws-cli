@@ -17,3 +17,5 @@ The following output indicates that EBS encryption by default is enabled. ::
     {
         "EbsEncryptionByDefault": true
     }
+
+For more information, see `Enable Amazon EBS encryption by default <https://docs.aws.amazon.com/ebs/latest/userguide/encryption-by-default.html>`__ in the *Amazon EBS User Guide*.

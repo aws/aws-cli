@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing permissions in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/security-ram-permissions.html>`__ in the *AWS RAM User Guide*.

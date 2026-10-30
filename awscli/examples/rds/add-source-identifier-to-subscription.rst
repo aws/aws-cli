@@ -28,3 +28,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Adding a source identifier to an Amazon RDS event notification subscription <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.AddingSource.html>`__ in the *Amazon RDS User Guide*.

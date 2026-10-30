@@ -35,6 +35,7 @@ Output::
         ]
     }
 
+For more information, see `View Spot Instance pricing history <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances-history.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To describe Spot price history for Linux/UNIX Amazon VPC**
 
@@ -66,3 +67,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View Spot Instance pricing history <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances-history.html>`__ in the *Amazon EC2 User Guide*.

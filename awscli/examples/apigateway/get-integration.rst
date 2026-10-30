@@ -25,3 +25,4 @@ Output::
         "cacheNamespace": "y9h6rt"
     }
 
+For more information, see `Integrations for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-integration-settings.html>`__ in the *Amazon API Gateway Developer Guide*.

@@ -7,4 +7,4 @@ The following ``cancel-audit-mitigation-actions-task`` example cancels the appli
 
 This command produces no output.
 
-For more information, see `CancelAuditMitigationActionsTask  (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html#dd-api-iot-CancelAuditMitigationActionsTask>`__ in the *AWS IoT Developer Guide*.
+For more information, see `CancelAuditMitigationActionsTask  (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html>`__ in the *AWS IoT Developer Guide*.

@@ -41,3 +41,5 @@ Output::
         "Status": "Cancelling",
         "JobId": "5782949f-3301-4fb3-be34-8d5bab54dbca"
     }
+
+For more information, see `Tracking job status and completion reports <https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-job-status.html>`__ in the *Amazon S3 User Guide*.

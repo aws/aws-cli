@@ -39,3 +39,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Listing object keys programmatically <https://docs.aws.amazon.com/AmazonS3/latest/userguide/ListingKeysUsingAPIs.html>`__ in the *Amazon S3 User Guide*.

@@ -16,4 +16,4 @@ Output::
         }
     }
 
-For more information, see `Managing multicast domains <https://docs.aws.amazon.com/vpc/latest/tgw/manage-domain.html>`__ in the *Transit Gateways Guide*.
+For more information, see `Delete a multicast domain in AWS Transit Gateway <https://docs.aws.amazon.com/vpc/latest/tgw/delete-tgw-domain.html>`__ in the *Transit Gateways Guide*.

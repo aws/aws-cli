@@ -18,3 +18,5 @@ Contents of ``set-queue-attributes.json``::
     }
 
 This command produces no output.
+
+For more information, see `Configuring queue parameters using the Amazon SQS console <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-queue-parameters.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

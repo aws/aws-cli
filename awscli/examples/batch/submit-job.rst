@@ -13,3 +13,5 @@ Output::
         "jobName": "example",
         "jobId": "876da822-4198-45f2-a252-6cea32512ea8"
     }
+
+For more information, see `Tutorial: submit a job <https://docs.aws.amazon.com/batch/latest/userguide/submit_job.html>`__ in the *AWS Batch User Guide*.

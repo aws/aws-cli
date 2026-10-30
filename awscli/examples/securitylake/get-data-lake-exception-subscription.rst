@@ -12,4 +12,4 @@ Output::
         "subscriptionProtocol": "sms"
     }
 
-For more information, see `Troubleshooting data lake status <https://docs.aws.amazon.com/securityhub/latest/userguide/security-lake-troubleshoot.html#securitylake-data-lake-troubleshoot>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Troubleshooting data lake status <https://docs.aws.amazon.com/security-lake/latest/userguide/securitylake-data-lake-troubleshoot.html>`__ in the *Amazon Security Lake User Guide*.

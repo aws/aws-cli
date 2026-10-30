@@ -18,5 +18,4 @@ Output::
         }
     }
 
-For more information, see `Increasing Parameter Store Throughput <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html>`_ in the *AWS Systems Manager User Guide*.
-
+For more information, see `Managing Parameter Store throughput <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html>`__ in the *AWS Systems Manager User Guide*.

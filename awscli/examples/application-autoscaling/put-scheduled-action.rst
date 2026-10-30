@@ -12,6 +12,4 @@ The following ``put-scheduled-action`` example adds a scheduled action to a Dyna
 
 This command produces no output.
 
-For more information, see `Scheduled Scaling`_ in the *Application Auto Scaling User Guide*.
-
-.. _`Scheduled Scaling`: https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scheduled-scaling.html
+For more information, see `Scheduled scaling for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scheduled-scaling.html>`__ in the *Application Auto Scaling User Guide*.

@@ -46,5 +46,6 @@ Output::
             "createdAt": "2022-11-15T10:49:00+00:00",
             "modifiedAt": "2022-11-15T10:49:00+00:00"
         }
-    ]   
+    ]
 
+For more information, see `Option 1: Enable EKS Pod Identity on the EKS Cluster <https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-enable-IAM.html>`__ in the *Amazon EMR on EKS Development Guide*.

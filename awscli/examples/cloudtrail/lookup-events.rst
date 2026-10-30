@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing recent management events with the AWS CLI <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events-cli.html>`__ in the *AWS CloudTrail User Guide*.

@@ -36,7 +36,7 @@ Output::
         }
     }
 
-For more information, see `CreateAssociation <https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_CreateAssociation.html>`__ in the *AWS Systems Manager API Reference*.
+For more information, see `Creating associations <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations-creating.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 2: To associate a document using targets**
 
@@ -76,7 +76,7 @@ Output::
         }
     }
 
-For more information, see `CreateAssociation <https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_CreateAssociation.html>`__ in the *AWS Systems Manager API Reference*.
+For more information, see `Creating associations <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations-creating.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 3: To create an association that runs only once**
 
@@ -118,4 +118,4 @@ Output::
         }
     }
 
-For more information, see `CreateAssociation <https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_CreateAssociation.html>`__ in the *AWS Systems Manager API Reference* or `Reference: Cron and rate expressions for Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/reference-cron-and-rate-expressions.html>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `Creating associations <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations-creating.html>`__ and `Reference: Cron and rate expressions for Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/reference-cron-and-rate-expressions.html>`__ in the *AWS Systems Manager User Guide*.

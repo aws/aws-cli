@@ -22,3 +22,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Access control list (ACL) overview <https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html>`__ in the *Amazon S3 User Guide*.

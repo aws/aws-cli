@@ -13,4 +13,4 @@ Output::
         ]
     }
 
-For more information, see `Amazon ECS Clusters <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_clusters.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS clusters <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/clusters.html>`__ in the *Amazon ECS Developer Guide*.

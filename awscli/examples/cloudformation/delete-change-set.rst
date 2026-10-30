@@ -14,3 +14,5 @@ The following ``delete-change-set`` example deletes a change set by specifying t
         --change-set-name arn:aws:cloudformation:us-east-2:123456789012:changeSet/my-change-set/4eca1a01-e285-xmpl-8026-9a1967bfb4b0
 
 This command produces no output.
+
+For more information, see `Delete a change set for a CloudFormation stack <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-delete.html>`__ in the *AWS CloudFormation User Guide*.

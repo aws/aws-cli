@@ -22,3 +22,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Understand CloudFormation quotas <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html>`__ in the *AWS CloudFormation User Guide*.

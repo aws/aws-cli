@@ -44,3 +44,5 @@ Output::
             }
         ]
     }
+
+For more information, see `AWS Application Discovery Agent <https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-agent.html>`__ in the *AWS Application Discovery Service User Guide*.

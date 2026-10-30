@@ -43,4 +43,4 @@ Output::
         ]
     }
 
-For more information, see `Viewing Dedicated Hosts <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-dedicated-hosts-work.html#dedicated-hosts-managing>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Monitor the state of your Amazon EC2 Dedicated Hosts <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-monitoring.html>`__ in the *Amazon EC2 User Guide*.

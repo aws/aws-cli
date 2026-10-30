@@ -78,6 +78,8 @@ Output::
         "NextToken": "--token string truncated--"
     }
 
+For more information, see `Learn details about Compliance <https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-about.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 2: To list resource-level compliance summaries for a specific compliance type**
 
 The following ``list-resource-compliance-summaries`` example lists resource-level compliance summaries for the Patch compliance type. ::
@@ -125,3 +127,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Learn details about Compliance <https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-about.html>`__ in the *AWS Systems Manager User Guide*.

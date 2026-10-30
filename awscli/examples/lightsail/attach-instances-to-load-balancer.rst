@@ -102,3 +102,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Distribute web traffic with a Lightsail load balancer <https://docs.aws.amazon.com/lightsail/latest/userguide/create-lightsail-load-balancer-and-attach-lightsail-instances.html>`__ in the *Amazon Lightsail User Guide*.

@@ -46,3 +46,5 @@ Output::
             }
         ]
     }
+
+For more information, see `What is Amazon Managed Grafana? <https://docs.aws.amazon.com/grafana/latest/userguide/what-is-Amazon-Managed-Service-Grafana.html>`__ in the *Amazon Managed Grafana User Guide*.

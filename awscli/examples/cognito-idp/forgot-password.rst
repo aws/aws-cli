@@ -15,3 +15,5 @@ Output::
             "AttributeName": "email"
         }
     }
+
+For more information, see `Passwords, account recovery, and password policies <https://docs.aws.amazon.com/cognito/latest/developerguide/managing-users-passwords.html>`__ in the *Amazon Cognito Developer Guide*.

@@ -52,3 +52,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Review the Lightsail instance blueprint offerings <https://docs.aws.amazon.com/lightsail/latest/userguide/compare-options-choose-lightsail-instance-image.html>`__ in the *Amazon Lightsail User Guide*.

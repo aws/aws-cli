@@ -86,4 +86,4 @@ Output::
         ]
     }
 
-For more information, see `Searching for Systems Manager Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-search.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `Searching for Parameter Store parameters in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-search.html>`__ in the *AWS Systems Manager User Guide*.

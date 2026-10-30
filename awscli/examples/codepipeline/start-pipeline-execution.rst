@@ -11,3 +11,5 @@ Output::
     {
         "pipelineExecutionId": "3137f7cb-7cf7-EXAMPLE"
     }
+
+For more information, see `Start a pipeline manually <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-rerun-manually.html>`__ in the *AWS CodePipeline User Guide*.

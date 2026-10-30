@@ -22,6 +22,8 @@ Output::
         "id": "z40xj0"
     }
 
+For more information, see `Use API Gateway Lambda authorizers <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html>`__ in the *Amazon API Gateway Developer Guide*.
+
 **Example 2: To create a Cognito User Pools based API Gateway Custom Authorizer for the API**
 
 The following ``create-authorizer`` example creates a Cognito User Pools based API Gateway Custom Authorizer. ::
@@ -46,6 +48,8 @@ Output::
         "id": "5yid1t"
     }
 
+For more information, see `Control access to REST APIs using Amazon Cognito user pools as an authorizer <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-integrate-with-cognito.html>`__ in the *Amazon API Gateway Developer Guide*.
+
 **Example 3: To create a request-based API Gateway Custom Authorizer for the API**
 
 The following ``create-authorizer`` example creates a request-based authorizer. ::
@@ -69,3 +73,5 @@ Output::
         "identitySource": "method.request.header.Authorization,context.accountId",
         "authorizerResultTtlInSeconds": 300
     }
+
+For more information, see `Use API Gateway Lambda authorizers <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html>`__ in the *Amazon API Gateway Developer Guide*.

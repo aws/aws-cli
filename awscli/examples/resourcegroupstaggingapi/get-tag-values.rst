@@ -15,4 +15,4 @@ Output::
         ]
     }
 
-For more information, see `GetTagValues <https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetTagValues.html>`__ in the *Resource Groups Tagging API Reference*.
+For more information, see `What is Tag Editor? <https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html>`__ in the *Tagging AWS Resources and Tag Editor User Guide*.

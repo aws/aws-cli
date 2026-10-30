@@ -27,3 +27,5 @@ Output::
             "statusChangedAt": 1569874157.005
         }
     }
+
+For more information, see `Edit a Lightsail DNS zone <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-edit-or-delete-a-dns-zone.html>`__ in the *Amazon Lightsail User Guide*.

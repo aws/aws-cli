@@ -19,3 +19,5 @@ Output::
         },
         "State": "ENABLED"
     }
+
+For more information, see `Working with resources <https://docs.aws.amazon.com/workmail/latest/adminguide/resources_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

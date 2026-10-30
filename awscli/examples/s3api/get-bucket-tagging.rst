@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Using cost allocation S3 bucket tags <https://docs.aws.amazon.com/AmazonS3/latest/userguide/CostAllocTagging.html>`__ in the *Amazon S3 User Guide*.

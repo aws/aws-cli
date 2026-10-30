@@ -60,3 +60,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Regions and Zones <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html>`__ in the *Amazon EC2 User Guide*.

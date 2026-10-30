@@ -91,7 +91,7 @@ Output::
         }
     }
 
-For more information, see `Modifying a role maximum session duration (AWS API) <https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html#roles-modify_max-session-duration-api>`__ in the *AWS IAM User Guide*.
+For more information, see `Modifying a role maximum session duration (AWS API) <https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html>`__ in the *AWS IAM User Guide*.
 
 **Example 3: To create an IAM Role with tags**
 

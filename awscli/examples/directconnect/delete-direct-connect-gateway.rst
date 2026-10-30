@@ -16,3 +16,5 @@ Output::
             "directConnectGatewayState": "deleting"
         }
     }
+
+For more information, see `Delete a Direct Connect gateway <https://docs.aws.amazon.com/directconnect/latest/UserGuide/delete-direct-connect-gateway.html>`__ in the *AWS Direct Connect User Guide*.

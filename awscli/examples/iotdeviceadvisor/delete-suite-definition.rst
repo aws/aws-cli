@@ -7,4 +7,4 @@ The following ``delete-suite-definition`` example deletes the device advisor tes
 
 This command produces no output.
 
-For more information, see `DeleteSuiteDefinition <https://docs.aws.amazon.com/iot/latest/apireference/API_iotdeviceadvisor_DeleteSuiteDefinition.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Device Advisor workflow <https://docs.aws.amazon.com/iot/latest/developerguide/device-advisor-workflow.html>`__ in the *AWS IoT Core Developer Guide*.

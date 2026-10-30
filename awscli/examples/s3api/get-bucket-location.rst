@@ -10,3 +10,5 @@ Output::
     {
         "LocationConstraint": "us-west-2"
     }
+
+For more information, see `General purpose buckets overview <https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html>`__ in the *Amazon S3 User Guide*.

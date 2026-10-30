@@ -31,6 +31,8 @@ Output::
         }
     }
 
+For more information, see `Create an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 2: To create a new cluster with private endpoint access and logging enabled**
 
 The following ``create-cluster`` example creates a cluster named ``example`` in your default region with public endpoint access disabled, private endpoint access enabled, and all logging types enabled. ::
@@ -86,3 +88,5 @@ Output::
             "platformVersion": "eks.3"
         }
     }
+
+For more information, see `Create an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html>`__ in the *Amazon EKS User Guide*.

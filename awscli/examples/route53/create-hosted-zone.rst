@@ -36,7 +36,4 @@ Output::
         }
     }
 
-For more information, see `Working with Hosted Zones`_ in the *Amazon Route 53 Developer Guide*.
-
-.. _`Working with Hosted Zones`: http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html
-
+For more information, see `Creating a public hosted zone <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html>`__ in the *Amazon Route 53 Developer Guide*.

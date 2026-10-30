@@ -16,4 +16,4 @@ Output::
         }
     }
 
-For more information, see 'Tagging Amazon Pinpoint Resources <https://docs.aws.amazon.com/pinpoint/latest/developerguide/tagging-resources.html>'__ in the *Amazon Pinpoint Developer Guide*.
+For more information, see `Manage Amazon Pinpoint resource tags <https://docs.aws.amazon.com/pinpoint/latest/developerguide/tagging-resources.html>`__ in the *Amazon Pinpoint Developer Guide*.

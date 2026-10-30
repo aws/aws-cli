@@ -15,6 +15,8 @@ Output::
         }
     }
 
+For more information, see `DNS attributes for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html>`__ in the *Amazon VPC User Guide*.
+
 **Example 2: To describe the enableDnsHostnames attribute**
 
 The following ``describe-vpc-attribute`` example describes the ``enableDnsHostnames`` attribute. This attribute indicates whether the instances launched in the VPC get DNS hostnames. If this attribute is ``true``, instances in the VPC get DNS hostnames; otherwise, they do not. ::
@@ -31,3 +33,5 @@ Output::
             "Value": true
         }
     }
+
+For more information, see `DNS attributes for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html>`__ in the *Amazon VPC User Guide*.

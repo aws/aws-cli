@@ -15,6 +15,8 @@ Output::
     https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
+For more information, see `Creating a Lambda Web Function <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-create.html>`__ in the *AWS Lambda Developer Guide*.
+
 **Example 2: To create a Web Function from existing source code**
 
 The following ``deploy`` example creates a Web Function from an existing HTTP
@@ -32,6 +34,8 @@ Output::
     https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
+For more information, see `Creating a Lambda Web Function <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-create.html>`__ in the *AWS Lambda Developer Guide*.
+
 **Example 3: To deploy new source code**
 
 The following ``deploy`` example deploys a revision to an existing Web
@@ -45,6 +49,8 @@ Output::
 
     https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+
+For more information, see `Deploying Web Functions <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-deploying.html>`__ in the *AWS Lambda Developer Guide*.
 
 **Example 4: To deploy source code with environment variables**
 
@@ -62,6 +68,8 @@ Output::
     https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
+For more information, see `Environment variables <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-revisions-env-vars.html>`__ in the *AWS Lambda Developer Guide*.
+
 **Example 5: To update configuration without uploading source code**
 
 The following ``deploy`` example updates an environment variable and the
@@ -78,6 +86,8 @@ Output::
     https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
+For more information, see `Configuring Lambda Web Functions <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-configuration.html>`__ in the *AWS Lambda Developer Guide*.
+
 **Example 6: To create another endpoint**
 
 The following ``deploy`` example creates a ``staging`` endpoint for an
@@ -93,6 +103,8 @@ Output::
 
     https://f6g7h8i9j0.x9y.lambda-web.us-east-1.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+
+For more information, see `Lambda Web Function endpoints <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-endpoints.html>`__ in the *AWS Lambda Developer Guide*.
 
 **Example 7: To create a MultiRegion endpoint**
 
@@ -111,6 +123,8 @@ Output::
 
     https://k1l2m3n4o5.lambda-web.global.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+
+For more information, see `Multi-Region deployment <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-endpoint-replication.html>`__ in the *AWS Lambda Developer Guide*.
 
 **Example 8: To deploy a built entry file with its dependencies**
 
@@ -131,6 +145,8 @@ Output::
 
     https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
     Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+
+For more information, see `Web Function deployment package <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-configuration-deployment-package.html>`__ in the *AWS Lambda Developer Guide*.
 
 **Example 9: To select the entry file with an environment variable**
 
@@ -154,3 +170,5 @@ variable, or your AWS CLI configuration. You can use a different AWS Region.
 Endpoint and console URLs reflect the AWS Region used for the deployment. A
 ``MultiRegion`` endpoint uses the global endpoint domain. The endpoint
 identifiers are fictitious and do not identify live resources.
+
+For more information, see `Environment variables <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-revisions-env-vars.html>`__ in the *AWS Lambda Developer Guide*.

@@ -62,6 +62,8 @@ Output::
         ]
     }
 
+For more information, see `Amazon EC2 service quotas <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe a single attribute for your AWS account**
 
 The following ``describe-account-attributes`` example describes the ``supported-platforms`` attribute for your AWS account. ::
@@ -87,3 +89,4 @@ Output::
         ]
     }
 
+For more information, see `Amazon EC2 service quotas <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html>`__ in the *Amazon EC2 User Guide*.

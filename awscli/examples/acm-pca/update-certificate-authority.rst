@@ -19,3 +19,5 @@ Contents of ``C:\revoke_config.txt``::
     }
 
 This command produces no output.
+
+For more information, see `Update a private CA in AWS Private Certificate Authority <https://docs.aws.amazon.com/privateca/latest/userguide/PCAUpdateCA.html>`__ in the *AWS Private Certificate Authority User Guide*.

@@ -49,5 +49,5 @@ Output::
         ]
     }
 
+For more information, see `Describing an Amazon DocumentDB subnet group <https://docs.aws.amazon.com/documentdb/latest/devguide/document-db-subnet-group-describe.html>`__ in the *Amazon DocumentDB Developer Guide*.
 
-For more information, see `Describing Subnet Groups <https://docs.aws.amazon.com/documentdb/latest/developerguide/ document-db-subnet-groups.html#document-db-subnet-groups-describe>`__ in the *Amazon DocumentDB Developer Guide*.

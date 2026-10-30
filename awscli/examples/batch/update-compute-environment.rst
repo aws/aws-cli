@@ -12,3 +12,5 @@ Output::
         "computeEnvironmentName": "P2OnDemand",
         "computeEnvironmentArn": "arn:aws:batch:us-east-1:012345678910:compute-environment/P2OnDemand"
     }
+
+For more information, see `Update a compute environment in AWS Batch <https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html>`__ in the *AWS Batch User Guide*.

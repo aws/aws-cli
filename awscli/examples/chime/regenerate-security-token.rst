@@ -23,4 +23,4 @@ Output::
     }
 
 
-For more information, see `Authenticate Chat Bot Requests <https://docs.aws.amazon.com/chime/latest/dg/auth-bots.html>`__ in the *Amazon Chime Developer Guide*.
+For more information, see `Authenticate chatbot requests <https://docs.aws.amazon.com/chime/latest/ag/auth-bots.html>`__ in the *Amazon Chime Administration Guide*.

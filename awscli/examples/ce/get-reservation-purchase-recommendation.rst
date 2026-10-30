@@ -17,3 +17,5 @@ Output::
             "RecommendationId": "00d59dde-a1ad-473f-8ff2-iexample3330b"
         }
     }
+
+For more information, see `Accessing reservation recommendations <https://docs.aws.amazon.com/cost-management/latest/userguide/ri-recommendations.html>`__ in the *AWS Cost Management User Guide*.

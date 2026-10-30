@@ -47,4 +47,4 @@ Output::
         ]
     }
 
-For more information, see `Sharing an Application Through the Console <https://docs.aws.amazon.com/serverlessrepo/latest/devguide/serverlessrepo-how-to-publish.html#share-application>`_ in the *AWS Serverless Application Repository Developer Guide*
+For more information, see `Sharing an Application Through the AWS CLI <https://docs.aws.amazon.com/serverlessrepo/latest/devguide/serverlessrepo-how-to-publish.html#share-application-cli>`__ in the *AWS Serverless Application Repository Developer Guide*.

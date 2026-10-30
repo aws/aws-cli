@@ -21,4 +21,4 @@ Output::
     ]
     }
 
-For more information, see `Viewing your list of behavior graph invitations<https://docs.aws.amazon.com/detective/latest/adminguide/member-view-graph-invitations.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Viewing your list of behavior graph invitations <https://docs.aws.amazon.com/detective/latest/userguide/member-view-graph-invitations.html>`__ in the *Amazon Detective User Guide*.

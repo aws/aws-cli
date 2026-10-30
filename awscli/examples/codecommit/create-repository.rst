@@ -20,3 +20,5 @@ Output::
             "accountId": "111111111111"
         }
     }
+
+For more information, see `Create an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-create-repository.html#how-to-create-repository-cli>`__ in the *AWS CodeCommit User Guide*.

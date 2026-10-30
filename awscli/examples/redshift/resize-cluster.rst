@@ -82,4 +82,4 @@ Output::
         }
     }
 
-For more information, see `Resizing a Cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-resize-intro>`__ in the *Amazon Redshift Cluster Management Guide*.
+For more information, see `Resizing a Cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html>`__ in the *Amazon Redshift Cluster Management Guide*.

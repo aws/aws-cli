@@ -26,4 +26,4 @@ Output::
         }
     }
 
-
+For more information, see `Subnets for Redshift resources <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-cluster-subnet-groups.html>`__ in the *Amazon Redshift Management Guide*.

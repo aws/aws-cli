@@ -67,3 +67,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Listeners for your Application Load Balancers <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html>`__ in the *Application Load Balancers Guide*.

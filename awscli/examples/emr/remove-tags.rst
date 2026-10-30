@@ -7,3 +7,5 @@ The following ``remove-tags`` example removes a tag with the key ``prod`` from a
         --tag-keys prod
 
 This command produces no output.
+
+For more information, see `Tag and categorize Amazon EMR cluster resources <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html>`__ in the *Amazon EMR Management Guide*.

@@ -24,3 +24,5 @@ Output::
         "Id": "70e49321-83d5-45d2-bc09-81f4917ae152",
         "Version": "88ae8699-12ac-4663-ba3f-4d7f0519140b"
     }
+
+For more information, see `Deploy AWS IoT Greengrass groups to an AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html>`__ in the *AWS IoT Greengrass Developer Guide*.

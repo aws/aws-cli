@@ -19,4 +19,4 @@ Output::
             "certificatePem": "<certificate-text>"
     }
 
-For more information, see `CreateCertificateFromCSR <https://docs.aws.amazon.com/iot/latest/apireference/API_CreateCertificateFromCsr.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Create AWS IoT client certificates <https://docs.aws.amazon.com/iot/latest/developerguide/device-certs-create.html>`__ in the *AWS IoT Developer Guide*.

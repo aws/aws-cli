@@ -25,3 +25,4 @@ Output::
         }
     }
 
+For more information, see `Configure your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-configure-load-balancer.html>`__ in the *Classic Load Balancers User Guide*.

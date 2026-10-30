@@ -144,3 +144,5 @@ Output::
             "version": 3
         }
     }
+
+For more information, see `Edit a pipeline in CodePipeline <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-edit.html>`__ in the *AWS CodePipeline User Guide*.

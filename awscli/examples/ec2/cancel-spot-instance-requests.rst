@@ -16,3 +16,4 @@ Output::
         ]
     }
 
+For more information, see `Cancel a Spot Instance request <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances-cancel.html>`__ in the *Amazon EC2 User Guide*.

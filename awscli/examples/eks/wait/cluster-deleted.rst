@@ -6,3 +6,5 @@ The following ``wait cluster-deleted`` example command waits until ``ResourceNot
         --name my-eks-cluster
 
 This command produces no output.
+
+For more information, see `Delete a cluster <https://docs.aws.amazon.com/eks/latest/userguide/delete-cluster.html>`__ in the *Amazon EKS User Guide*.

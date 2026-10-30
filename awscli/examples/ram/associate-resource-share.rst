@@ -20,6 +20,8 @@ Output::
         ]
     }
 
+For more information, see `Update a resource share in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-update.html>`__ in the *AWS RAM User Guide*.
+
 **Example 2: To associate a principal with a resource share**
 
 The following ``associate-resource-share`` example grants access for the specified resource share to all accounts in the specified organizational unit. ::
@@ -41,3 +43,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Update a resource share in AWS RAM <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-update.html>`__ in the *AWS RAM User Guide*.

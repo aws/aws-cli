@@ -45,4 +45,4 @@ Output::
         ]
     }
 
-For more information, see `Managing Your Amazon Chime Accounts <https://docs.aws.amazon.com/chime/latest/ag/manage-chime-account.html>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Managing your Amazon Chime accounts <https://docs.aws.amazon.com/chime/latest/ag/manage-chime-account.html>`__ in the *Amazon Chime Administration Guide*.

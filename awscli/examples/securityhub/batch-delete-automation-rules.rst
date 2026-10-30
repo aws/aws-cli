@@ -15,4 +15,4 @@ Output::
         "UnprocessedAutomationRules": []
     }
 
-For more information, see `Deleting automation rules <https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html#delete-automation-rules>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Deleting automation rules <https://docs.aws.amazon.com/securityhub/latest/userguide/delete-automation-rules.html>`__ in the *AWS Security Hub User Guide*.

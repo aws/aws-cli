@@ -15,6 +15,8 @@ Output::
         }
     }
 
+For more information, see `Amazon EC2 instance type changes <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe the disableApiTermination attribute**
 
 The following ``describe-instance-attribute`` example describes the ``disableApiTermination`` attribute of the specified instance. ::
@@ -31,6 +33,8 @@ Output::
             "Value": false
         }
     }
+
+For more information, see `Change instance termination protection <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_ChangingDisableAPITermination.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To describe the block device mapping for an instance**
 
@@ -65,3 +69,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Block device mappings for volumes on Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.

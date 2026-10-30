@@ -14,3 +14,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing the list of accounts <https://docs.aws.amazon.com/detective/latest/userguide/accounts-view-list.html>`__ in the *Amazon Detective User Guide*.

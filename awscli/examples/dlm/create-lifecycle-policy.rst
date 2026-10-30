@@ -49,3 +49,5 @@ Output::
     {
         "PolicyId": "policy-0123456789abcdef0"
     }
+
+For more information, see `Create Amazon Data Lifecycle Manager custom policy for EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-ami-policy.html>`__ in the *Amazon EBS User Guide*.

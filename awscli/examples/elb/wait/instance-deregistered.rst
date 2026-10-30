@@ -7,3 +7,5 @@ The following ``wait instance-deregistered`` example pauses and continues only a
         --instances InstanceId=i-1234567890abcdef0
 
 This command produces no output.
+
+For more information, see `Register instances with your Classic Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-deregister-register-instances.html>`__ in the *Classic Load Balancers Guide*.

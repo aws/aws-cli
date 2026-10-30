@@ -21,6 +21,8 @@ Output::
         "SnapshotId": "snap-066877671789bd71b"
     }
 
+For more information, see `Create Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-snapshot.html>`__ in the *Amazon EBS User Guide*.
+
 **Example 2: To create a snapshot with tags**
 
 The following ``create-snapshot`` example creates a snapshot and applies two tags: purpose=prod and costcenter=123. ::
@@ -53,3 +55,5 @@ Output::
         "OwnerId": "012345678910",
         "SnapshotId": "snap-09ed24a70bc19bbe4"
     }
+
+For more information, see `Create Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-snapshot.html>`__ in the *Amazon EBS User Guide*.

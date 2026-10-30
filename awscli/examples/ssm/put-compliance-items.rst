@@ -11,3 +11,4 @@ The following ``put-compliance-items`` example registers the compliance type ``C
 
 This command produces no output.
 
+For more information, see `Assign custom compliance metadata using the AWS CLI <https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-custom-metadata-cli.html>`__ in the *AWS Systems Manager User Guide*.

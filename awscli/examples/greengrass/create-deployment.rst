@@ -14,4 +14,4 @@ Output::
         "DeploymentId": "bfceb608-4e97-45bc-af5c-460144270308"
     }
 
-For more information, see `Getting Started with Connectors (CLI) <https://docs.aws.amazon.com/greengrass/latest/developerguide/connectors-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Getting started with Greengrass connectors (CLI) <https://docs.aws.amazon.com/greengrass/v1/developerguide/connectors-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.

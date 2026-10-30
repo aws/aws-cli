@@ -18,4 +18,5 @@ Output::
             }
         ]
     }
-    
+
+For more information, see `Use security configurations to set up Amazon EMR cluster security <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-security-configurations.html>`__ in the *Amazon EMR Management Guide*.

@@ -35,7 +35,7 @@ Output::
         }
     }
 
-For more information, see `Batch Transcription Overview <https://docs.aws.amazon.com/transcribe/latest/dg/batch-med-transcription.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Transcribing an audio file of a medical conversation <https://docs.aws.amazon.com/transcribe/latest/dg/batch-medical-conversation.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 2: To transcribe a clinician-patient dialogue stored as an audio file**
 
@@ -74,7 +74,7 @@ Output::
         }
     }
 
-For more information, see `Batch Transcription Overview <https://docs.aws.amazon.com/transcribe/latest/dg/batch-med-transcription.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Transcribing an audio file of a medical conversation <https://docs.aws.amazon.com/transcribe/latest/dg/batch-medical-conversation.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 3: To transcribe a multichannel audio file of a clinician-patient dialogue**
 
@@ -119,7 +119,7 @@ Output::
         }
     }
 
-For more information, see `Channel Identification <https://docs.aws.amazon.com/transcribe/latest/dg/how-channel-id-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Transcribing multi-channel audio <https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 4: To transcribe an audio file of a clinician-patient dialogue and identify the speakers in the transcription output**
 
@@ -166,7 +166,7 @@ Output::
         }
     }
 
-For more information, see `Identifying Speakers <https://docs.aws.amazon.com/transcribe/latest/dg/diarization-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Enabling speaker partitioning <https://docs.aws.amazon.com/transcribe/latest/dg/conversation-diarization-med.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 5: To transcribe a medical conversation stored as an audio file with up to two transcription alternatives**
 
@@ -213,7 +213,7 @@ Output::
         }
     }
 
-For more information, see `Alternative Transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Alternative transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/alternatives.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 6: To transcribe an audio file of a medical dictation with up to two alternative transcriptions**
 
@@ -260,7 +260,7 @@ Output::
         }
     }
 
-For more information, see `Alternative Transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Alternative transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/alternatives.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 7: To transcribe an audio file of a medical dictation with increased accuracy by using a custom vocabulary**
 
@@ -305,4 +305,4 @@ Output::
         }
     }
 
-For more information, see `Medical Custom Vocabularies <https://docs.aws.amazon.com/transcribe/latest/dg/how-vocabulary-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Improving transcription accuracy with medical custom vocabularies <https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-med.html>`__ in the *Amazon Transcribe Developer Guide*.

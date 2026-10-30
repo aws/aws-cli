@@ -57,4 +57,4 @@ Output::
         "failures": []
     }
 
-For more information, see `Amazon ECS service revisions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS service revisions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html>`__ in the *Amazon ECS Developer Guide*.

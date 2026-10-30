@@ -47,3 +47,5 @@ Output::
             "RemainingTotalValue": "845.447828"
         }
     }
+
+For more information, see `Exchange Convertible Reserved Instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-convertible-exchange.html>`__ in the *Amazon EC2 User Guide*.

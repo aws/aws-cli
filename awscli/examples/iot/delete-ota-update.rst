@@ -9,4 +9,4 @@ The following ``delete-ota-update`` example deletes the specified OTA update. ::
 
 This command produces no output.
 
-For more information, see `DeleteOTAUpdate <https://docs.aws.amazon.com/iot/latest/apireference/API_DeleteOTAUpdate.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Creating an OTA update with the AWS CLI <https://docs.aws.amazon.com/freertos/latest/userguide/ota-cli-workflow.html>`__ in the *FreeRTOS User Guide*.

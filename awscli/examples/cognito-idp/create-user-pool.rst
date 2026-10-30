@@ -247,6 +247,8 @@ Output::
         }
     }
 
+For more information, see `Authenticating users with Amazon Cognito user pools <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools.html>`__ in the *Amazon Cognito Developer Guide*.
+
 **Example 2: To create a user pool with two required attributes**
 
 The following ``create-user-pool`` example creates a user pool MyUserPool. The pool is configured to accept
@@ -504,3 +506,5 @@ Output::
             "LambdaConfig": {}
         }
     }
+
+For more information, see `Authenticating users with Amazon Cognito user pools <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools.html>`__ in the *Amazon Cognito Developer Guide*.

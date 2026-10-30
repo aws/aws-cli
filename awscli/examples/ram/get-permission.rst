@@ -20,3 +20,5 @@ Output::
             "isResourceTypeDefault": false
         }
     }
+
+For more information, see `Viewing managed permissions <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-view-permissions.html>`__ in the *AWS RAM User Guide*.

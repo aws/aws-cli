@@ -37,3 +37,5 @@ Output::
             }
         }
     }
+
+For more information, see `Add endpoints to Amazon Pinpoint <https://docs.aws.amazon.com/pinpoint/latest/developerguide/audience-define-endpoints.html>`__ in the *Amazon Pinpoint Developer Guide*.

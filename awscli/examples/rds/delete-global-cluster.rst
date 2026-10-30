@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `Deleting an Aurora global database <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-managing.html#aurora-global-database-deleting>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Deleting an Aurora global database <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-deleting.html>`__ in the *Amazon Aurora User Guide*.

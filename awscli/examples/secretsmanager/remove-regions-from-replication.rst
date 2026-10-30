@@ -13,4 +13,4 @@ Output::
         "ReplicationStatus": []
     }
 
-For more information, see `Delete a replica secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/delete-replica.html>`__ in the *Secrets Manager User Guide*.
+For more information, see `Replicate AWS Secrets Manager secrets across Regions <https://docs.aws.amazon.com/secretsmanager/latest/userguide/replicate-secrets.html>`__ in the *Secrets Manager User Guide*.

@@ -46,5 +46,3 @@ Output::
             }
         ]
     }
-
-For more information, see `Viewing a List of Objects <https://docs.aws.amazon.com/mediastore/latest/ug/objects-view-list.html>`__ in the *AWS Elemental MediaStore User Guide*.

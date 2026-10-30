@@ -19,3 +19,5 @@ Output::
             "CustomDomainConfig": {}
         }
     }
+
+For more information, see `Configuring a user pool domain <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html>`__ in the *Amazon Cognito Developer Guide*.

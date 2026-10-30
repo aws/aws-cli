@@ -28,7 +28,7 @@ Output::
         "accessPolicyArn": "arn:aws:iotsitewise:us-west-2:123456789012:access-policy/a1b2c3d4-5678-90ab-cdef-cccccEXAMPLE"
     }
 
-For more information, see `Adding or removing portal administrators <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Adding or removing portal administrators <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/portal-change-admins.html>`__ in the *AWS IoT SiteWise User Guide*.
 
 **Example 2: To grant a user read-only access to a project**
 

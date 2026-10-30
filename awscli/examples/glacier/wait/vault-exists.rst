@@ -7,3 +7,5 @@ The following ``wait vault-exists`` example pauses running and continues only af
         --vault-name example_vault
 
 This command produces no output.
+
+For more information, see `Creating a Vault in Amazon Glacier <https://docs.aws.amazon.com/amazonglacier/latest/dev/creating-vaults.html>`__ in the *Amazon Glacier Developer Guide*.

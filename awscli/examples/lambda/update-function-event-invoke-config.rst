@@ -20,3 +20,5 @@ Output::
             }
         }
     }
+
+For more information, see `Invoking a Lambda Event Function asynchronously <https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html>`__ in the *AWS Lambda Developer Guide*.

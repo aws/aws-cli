@@ -7,3 +7,5 @@ The following ``logout-user`` example logs out the specified user. ::
         --user-id a1b2c3d4-5678-90ab-cdef-22222EXAMPLE
 
 This command produces no output.
+
+For more information, see `Managing users <https://docs.aws.amazon.com/chime/latest/ag/manage-users.html>`__ in the *Amazon Chime Administration Guide*.

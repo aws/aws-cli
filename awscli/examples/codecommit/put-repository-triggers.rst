@@ -40,3 +40,5 @@ Output::
     {
         "configurationId": "6fa51cd8-35c1-EXAMPLE"
     }
+
+For more information, see `Edit triggers for an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-notify-edit.html>`__ in the *AWS CodeCommit User Guide*.

@@ -68,3 +68,7 @@ Output::
             }
         ]
     }
+
+For more information, see `Receiving and deleting a message in Amazon SQS <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/step-receive-delete-message.html>`__ in the *Amazon Simple Queue Service Developer Guide*.
+
+For more information, see `Receiving and deleting a message in Amazon SQS <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/step-receive-delete-message.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

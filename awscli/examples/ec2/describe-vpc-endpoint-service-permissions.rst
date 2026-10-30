@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Manage permissions <https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions>`__ in the *AWS PrivateLink User Guide*.

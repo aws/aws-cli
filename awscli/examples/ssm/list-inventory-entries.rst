@@ -31,6 +31,8 @@ Output::
         ]
     }
 
+For more information, see `AWS Systems Manager Inventory <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-inventory.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 2: To view custom inventory entries assigned to an instance**
 
 The following ``list-inventory-entries`` example lists a custom inventory entry assigned to an instance. ::
@@ -52,3 +54,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Assigning custom inventory metadata to a managed node <https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom-metadata.html>`__ in the *AWS Systems Manager User Guide*.

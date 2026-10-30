@@ -8,3 +8,5 @@ The following ``revoke-certificate`` example revokes a private certificate from 
         --revocation-reason "KEY_COMPROMISE"
 
 This command produces no output.
+
+For more information, see `Revoke a private certificate <https://docs.aws.amazon.com/privateca/latest/userguide/PcaRevokeCert.html>`__ in the *AWS Private Certificate Authority User Guide*.

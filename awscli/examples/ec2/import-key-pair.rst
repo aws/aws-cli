@@ -25,3 +25,5 @@ Output::
         "KeyName": "my-key",
         "KeyFingerprint": "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca"
     }
+
+For more information, see `Create a key pair for your Amazon EC2 instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws>`__ in the *Amazon EC2 User Guide*.

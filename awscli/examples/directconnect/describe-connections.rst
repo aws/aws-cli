@@ -22,3 +22,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View Direct Connect connection details <https://docs.aws.amazon.com/directconnect/latest/UserGuide/viewdetails.html>`__ in the *AWS Direct Connect User Guide*.

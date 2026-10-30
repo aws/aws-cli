@@ -58,3 +58,5 @@ Output::
             ]
         }
     }
+
+For more information, see `View AWS Certificate Manager certificate details <https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-describe.html>`__ in the *AWS Certificate Manager User Guide*.

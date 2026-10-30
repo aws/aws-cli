@@ -7,3 +7,5 @@ The following ``wait composite-alarm-exists`` example pauses and resumes running
         --alarm-types CompositeAlarm
 
 This command produces no output.
+
+For more information, see `Composite alarms <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-combining.html>`__ in the *Amazon CloudWatch User Guide*.

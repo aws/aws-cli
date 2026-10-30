@@ -31,4 +31,4 @@ The following ``add-tags-to-resource`` example adds a tag to to the specified do
 
 This command produces no output.
 
-For more information, see `Tagging Systems Manager resources <https://docs.aws.amazon.com/systems-manager/latest/userguide/tagging-resources.html>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `Managing tags with Tag Editor <https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging-resources.html>`__ in the *AWS Systems Manager User Guide*.

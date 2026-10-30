@@ -12,4 +12,4 @@ Output::
         ]
     }
 
-For more information, see `Concepts and Terminology <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_concepts.html>`__ in the GuardDuty User Guide.
+For more information, see `Concepts and key terms in Amazon GuardDuty <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_concepts.html>`__ in the *Amazon GuardDuty User Guide*.

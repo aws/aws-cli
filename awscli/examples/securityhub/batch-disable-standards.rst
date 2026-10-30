@@ -18,4 +18,4 @@ Output::
         ]
     }
 
-For more information, see `Disabling or enabling a security standard <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-enable-disable.html>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Disabling a security standard <https://docs.aws.amazon.com/securityhub/latest/userguide/disable-standards.html>`__ in the *AWS Security Hub User Guide*.

@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Configuring an App Runner service <https://docs.aws.amazon.com/apprunner/latest/dg/manage-configure.html>`__ in the *AWS App Runner Developer Guide*.

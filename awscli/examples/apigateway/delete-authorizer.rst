@@ -7,3 +7,5 @@ The following ``delete-authorizer`` example deletes a custom authorizer in an AP
         --authorizer-id 7gkfbo
 
 This command produces no output.
+
+For more information, see `Use API Gateway Lambda authorizers <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html>`__ in the *Amazon API Gateway Developer Guide*.

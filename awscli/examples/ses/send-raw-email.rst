@@ -23,14 +23,10 @@ Output::
     }
 
 Replace sender@example.com and recipient@example.com with the addresses you want to use. Note that the sender's email address must be verified with Amazon SES. Until you are granted production access to Amazon SES, you must also verify the email address of the recipient
-unless the recipient is the Amazon SES mailbox simulator. For more information on verification, see `Verifying Email Addresses and Domains in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
+unless the recipient is the Amazon SES mailbox simulator. For more information on verification, see `Verified identities in Amazon SES <https://docs.aws.amazon.com/ses/latest/dg/verify-addresses-and-domains.html>`__ in the *Amazon Simple Email Service Developer Guide*.
 
 The Message ID in the output indicates that the call to send-raw-email was successful.
 
 If you don't receive the email, check your Junk box.
 
-For more information on sending raw email, see `Sending Raw Email Using the Amazon SES API`_ in the *Amazon Simple Email Service Developer Guide*.
-
-.. _`Sending Raw Email Using the Amazon SES API`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html
-.. _`Verifying Email Addresses and Domains in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html
-
+For more information, see `Sending raw email using the Amazon SES API v2 <https://docs.aws.amazon.com/ses/latest/dg/send-email-raw.html>`__ in the *Amazon Simple Email Service Developer Guide*.

@@ -25,3 +25,5 @@ Output::
         "DateUpdated": "2015-08-12T19:05:54.744Z",
         "DateCreated": "2015-08-12T18:52:53.622Z"
     }
+
+For more information, see `Terminate an Elastic Beanstalk environment <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.terminating.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

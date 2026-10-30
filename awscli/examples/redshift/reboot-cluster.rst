@@ -43,4 +43,4 @@ Output::
         }
     }
 
-
+For more information, see `Rebooting a cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/reboot-cluster.html>`__ in the *Amazon Redshift Management Guide*.

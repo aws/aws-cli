@@ -30,3 +30,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create a managed database from a snapshot in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-a-database-from-snapshot.html>`__ in the *Amazon Lightsail User Guide*.

@@ -130,4 +130,4 @@ Output::
         }
     }
 
-For more information, see `Stop a Build (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/stop-build.html#stop-build-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Stop builds in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/stop-build.html#stop-build-cli>`__ in the *AWS CodeBuild User Guide*.

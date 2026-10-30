@@ -98,3 +98,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Application Load Balancers <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html>`__ in the *Application Load Balancers Guide*.

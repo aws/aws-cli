@@ -22,3 +22,5 @@ Output::
             "fingerprint": "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff:gg:hh:ii:jj"
         }
     }
+
+For more information, see `Manage SSH key pairs and connect to your Lightsail instances <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-ssh-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

@@ -6,3 +6,5 @@ The following ``disassociate-route-table`` example disassociates the specified r
         --association-id rtbassoc-781d0d1a
 
 This command produces no output.
+
+For more information, see `Change the route table for a subnet <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithRouteTables.html#ChangeRouteTable>`__ in the *Amazon VPC User Guide*.

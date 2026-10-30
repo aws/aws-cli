@@ -19,7 +19,7 @@ Output::
         "UnsuccessfulFleetDeletions": []
     }
 
-For more information, see `Delete an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-ec2-fleet.html#delete-fleet>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Delete an EC2 Fleet request and the instances in the fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-fleet.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To delete an EC2 Fleet without terminating the associated instances**
 
@@ -42,4 +42,4 @@ Output::
         "UnsuccessfulFleetDeletions": []
     }
 
-For more information, see `Delete an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-ec2-fleet.html#delete-fleet>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Delete an EC2 Fleet request and the instances in the fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-fleet.html>`__ in the *Amazon EC2 User Guide*.

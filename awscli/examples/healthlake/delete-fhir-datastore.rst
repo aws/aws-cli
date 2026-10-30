@@ -14,4 +14,4 @@ Output::
         "DatastoreId": "(Data store ID)"
     }
 
-For more information, see `Creating and monitoring a FHIR data store <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>` in the *AWS HealthLake Developer Guide*.
+For more information, see `Deleting a HealthLake data store <https://docs.aws.amazon.com/healthlake/latest/devguide/managing-data-stores-delete.html>`__ in the *AWS HealthLake Developer Guide*.

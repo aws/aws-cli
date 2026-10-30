@@ -10,4 +10,4 @@ The following example command specifies the ``grant-id`` and the ``key-id`` para
 
 This command produces no output. To confirm that the grant was retired, use the ``list-grants`` command.
 
-For more information, see `Retiring and revoking grants <https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#grant-delete>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Retiring and revoking grants <https://docs.aws.amazon.com/kms/latest/developerguide/grant-delete.html>`__ in the *AWS Key Management Service Developer Guide*.

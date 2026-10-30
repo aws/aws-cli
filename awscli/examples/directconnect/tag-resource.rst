@@ -8,3 +8,4 @@ The following ``tag-resource`` example adds a tag with a key of ``Name`` and a v
 
 This command produces no output.
 
+For more information, see `Tag AWS Direct Connect resources <https://docs.aws.amazon.com/directconnect/latest/UserGuide/using-tags.html>`__ in the *AWS Direct Connect User Guide*.

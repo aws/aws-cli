@@ -19,5 +19,5 @@ Output::
         ]
     }
 
-For more information, see `Delete Builds (AWS CLI)  <https://docs.aws.amazon.com/codebuild/latest/userguide/delete-builds.html#delete-builds-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Delete builds in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/delete-builds.html>`__ in the *AWS CodeBuild User Guide*.
 

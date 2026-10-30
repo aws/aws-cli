@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Detach and delete Lightsail block storage disks <https://docs.aws.amazon.com/lightsail/latest/userguide/detach-and-delete-block-storage-disks.html>`__ in the *Amazon Lightsail User Guide*.

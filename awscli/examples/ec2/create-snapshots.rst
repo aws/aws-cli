@@ -37,6 +37,8 @@ Output::
         ]
     }
 
+For more information, see `Create Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-snapshot.html>`__ in the *Amazon EBS User Guide*.
+
 **Example 2: To create a multi-volume snapshot with tags from the source volume**
 
 The following ``create-snapshots`` example creates snapshots of all volumes attached to the specified instance and copies the tags from each volume to its corresponding snapshot. ::
@@ -70,6 +72,8 @@ Output::
         ]
     }
 
+For more information, see `Create Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-snapshot.html>`__ in the *Amazon EBS User Guide*.
+
 **Example 3: To create a multi-volume snapshot not including the root volume**
 
 The following ``create-snapshots`` example creates a snapshot of all volumes attached to the specified instance except for the root volume. ::
@@ -95,6 +99,8 @@ Output::
             }
         ]
     }
+
+For more information, see `Create Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-snapshot.html>`__ in the *Amazon EBS User Guide*.
 
 **Example 4: To create a multi-volume snapshot and add tags**
 
@@ -152,3 +158,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-creating-snapshot.html>`__ in the *Amazon EBS User Guide*.

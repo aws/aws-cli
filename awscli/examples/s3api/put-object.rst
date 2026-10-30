@@ -16,7 +16,7 @@ Output::
         "ServerSideEncryption": "AES256"
     }
 
-For more information about uploading objects, see `Uploading Objects < http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html>`__ in the *Amazon S3 Developer Guide*.
+For more information, see `Uploading objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html>`__ in the *Amazon S3 User Guide*.
 
 **Example 2: To upload a video file to Amazon S3**
 
@@ -36,4 +36,4 @@ Output::
         "ServerSideEncryption": "AES256"
     }
 
-For more information about uploading objects, see `Uploading Objects < http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html>`__ in the *Amazon S3 Developer Guide*.
+For more information, see `Uploading objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html>`__ in the *Amazon S3 User Guide*.

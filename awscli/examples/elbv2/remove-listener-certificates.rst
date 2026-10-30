@@ -7,3 +7,5 @@ The following ``remove-listener-certificates`` example removes the specified cer
         --certificates CertificateArn=arn:aws:acm:us-west-2:123456789012:certificate/5cc54884-f4a3-4072-80be-05b9ba72f705
 
 This command produces no output.
+
+For more information, see `SSL certificates for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/https-listener-certificates.html>`__ in the *Application Load Balancers Guide*.

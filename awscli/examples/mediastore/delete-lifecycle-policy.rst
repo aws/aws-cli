@@ -6,5 +6,3 @@ The following ``delete-lifecycle-policy`` example deletes the object lifecycle p
         --container-name LiveEvents
 
 This command produces no output.
-
-For more information, see `Deleting an Object Lifecycle Policy <https://docs.aws.amazon.com/mediastore/latest/ug/policies-object-lifecycle-delete.html>`__ in the *AWS Elemental MediaStore User Guide*.

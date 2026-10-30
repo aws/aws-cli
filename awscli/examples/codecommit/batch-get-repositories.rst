@@ -36,3 +36,5 @@ Output::
         ],
         "repositoriesNotFound": []
     }
+
+For more information, see `View CodeCommit repository details <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-view-repository-details.html#how-to-view-repository-details-with-names-cli>`__ in the *AWS CodeCommit User Guide*.

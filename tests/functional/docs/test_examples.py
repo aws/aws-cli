@@ -86,6 +86,12 @@ SHELL_OPERATOR_RE = re.compile(r'(?:^|\s)(?:\|\|?|&&|;|>>?|<)(?=\s|$)')
 OS_NAME_RE = re.compile(
     r'\b(?:on|using) (?:Linux|Mac ?OS|macOS|Windows|PowerShell|Unix)\b'
 )
+# A link to a guide topic: `Title <https://...>`__ in the *... Guide*.
+GUIDE_LINK_RE = re.compile(
+    r'`[^`<]+ <https://(?:[\w-]+\.)*amazon\.com/[^>\s]*>`__ '
+    r'in the \*[^*]*Guide\*\.'
+)
+API_REFERENCE_URL = '/apireference/'
 # Examples that are known to break a style rule, keyed by the rule's name,
 # then the file, then the example's title, with the reason for each example.
 EXCEPTIONS_PATH = os.path.join(
@@ -794,6 +800,25 @@ def check_output(example, command_table):
     return errors
 
 
+def check_link(example):
+    errors = []
+    prose = ' '.join(b.text for b in example.blocks if b.kind != 'literal')
+    if not GUIDE_LINK_RE.search(prose):
+        titles = [b for b in example.blocks if b.kind == 'title']
+        lineno = titles[0].lineno if titles else 1
+        errors.append(
+            f'Line {lineno}: missing a link in the format "For more '
+            'information, see `Title <https://...>`__ in the *... Guide*."'
+        )
+    for i, line in enumerate(example.lines, 1):
+        if API_REFERENCE_URL in line.lower():
+            errors.append(
+                f'Line {i}: link to a user or developer guide instead of '
+                'the API Reference'
+            )
+    return errors
+
+
 def _is_description(filename):
     if filename == '_examples.rst':
         return False
@@ -1204,6 +1229,13 @@ def test_example_output(command_table, example_file):
     example = Example(example_file)
     errors = check_output(example, command_table)
     _assert_follows_rule('output', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_link(example_file):
+    example = Example(example_file)
+    errors = check_link(example)
+    _assert_follows_rule('link', example, errors)
 
 
 def test_example_style_exceptions_exist():

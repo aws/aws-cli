@@ -17,6 +17,4 @@ Output::
 
 The archive description parameter is optional. Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
 
-This command outputs an upload ID when successful. Use the upload ID when uploading each part of your archive with ``aws glacier upload-multipart-part``. For more information on multipart uploads to Amazon Glacier using the AWS CLI, see `Using Amazon Glacier`_ in the *AWS CLI User Guide*.
-
-.. _`Using Amazon Glacier`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-glacier.html
+This command outputs an upload ID when successful. Use the upload ID when uploading each part of your archive with ``aws glacier upload-multipart-part``. For more information on multipart uploads to Amazon Glacier using the AWS CLI, see `Using Amazon Glacier in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-glacier.html>`__ in the *AWS CLI User Guide*.

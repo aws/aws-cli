@@ -13,3 +13,5 @@ Output::
             "burstLimit": 1000
         }
     }
+
+For more information, see `Set up CloudWatch logging for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-logging.html>`__ in the *Amazon API Gateway Developer Guide*.

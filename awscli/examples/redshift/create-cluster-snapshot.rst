@@ -26,4 +26,4 @@ Output::
         }
     }
 
-
+For more information, see `Creating a manual snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/snapshot-create.html>`__ in the *Amazon Redshift Management Guide*.

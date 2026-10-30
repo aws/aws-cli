@@ -67,3 +67,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Retrieving metrics with the Performance Insights API for Amazon RDS <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.API.html>`__ in the *Amazon RDS User Guide*.

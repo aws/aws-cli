@@ -47,3 +47,5 @@ Output::
             }
         ]
     }
+
+For more information, see `How IPAM works <https://docs.aws.amazon.com/vpc/latest/ipam/how-it-works-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

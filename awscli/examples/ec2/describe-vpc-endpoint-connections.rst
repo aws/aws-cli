@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Accept or reject connection requests <https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#accept-reject-connection-requests>`__ in the *AWS PrivateLink User Guide*.

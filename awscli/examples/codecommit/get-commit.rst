@@ -28,3 +28,5 @@ Output::
             "message": "Fix incorrect variable name"
         }
     }
+
+For more information, see `View commit details in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-view-commit-details.html>`__ in the *AWS CodeCommit User Guide*.

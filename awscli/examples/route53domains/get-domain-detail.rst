@@ -87,3 +87,5 @@ Output::
             "clientTransferProhibited"
         ]
     }
+
+For more information, see `Registering and managing domains using Amazon Route 53 <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar.html>`__ in the *Amazon Route 53 Developer Guide*.

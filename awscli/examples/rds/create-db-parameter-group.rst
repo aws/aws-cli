@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Creating a DB Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html#USER_WorkingWithParamGroups.Creating>`__ in the *Amazon RDS User Guide*.
+For more information, see `Creating a DB Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.Creating.html>`__ in the *Amazon RDS User Guide*.

@@ -21,17 +21,8 @@ import os
 from botocore import utils
 from botocore.exceptions import InvalidConfigError
 
-
-def _resolve_new_retries():
-    _env_new_retries = os.environ.get('AWS_NEW_RETRIES_2026')
-    if _env_new_retries is not None:
-        return _env_new_retries.lower() == 'true'
-    return False
-
-
-NEW_RETRIES_ENABLED = _resolve_new_retries()
-
 logger = logging.getLogger(__name__)
+
 
 #: A default dictionary that maps the logical names for session variables
 #: to the specific environment variables and configuration file names
@@ -151,7 +142,7 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         None,
     ),
     'retry_mode': ('retry_mode', 'AWS_RETRY_MODE', 'standard', None),
-    'max_attempts': ('max_attempts', 'AWS_MAX_ATTEMPTS', 3, int),
+    'max_attempts': ('max_attempts', 'AWS_MAX_ATTEMPTS', None, int),
     'user_agent_appid': ('sdk_ua_app_id', 'AWS_SDK_UA_APP_ID', None, None),
     'request_min_compression_size_bytes': (
         'request_min_compression_size_bytes',

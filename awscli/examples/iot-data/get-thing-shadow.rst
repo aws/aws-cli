@@ -2,9 +2,8 @@
 
 The following ``get-thing-shadow`` example gets the thing shadow document for the specified IoT thing. ::
 
-    aws iot-data get-thing-shadow \
-        --thing-name MyRPi \
-        output.txt
+    aws iot-data get-thing-shadow output.txt \
+        --thing-name MyRPi
 
 The command produces no output on the display, but the following shows the contents of ``output.txt``::
 

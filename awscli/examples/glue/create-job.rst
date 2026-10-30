@@ -9,14 +9,11 @@ The following ``create-job`` example creates a streaming job that runs a script 
             "Name": "gluestreaming", \
             "ScriptLocation": "s3://amzn-s3-demo-bucket/folder/" \
         }' \
-        --region us-east-1 \
-        --output json \
         --default-arguments '{ \
             "--job-language":"scala", \
             "--class":"GlueApp" \
         }' \
-        --profile my-profile \
-        --endpoint https://glue.us-east-1.amazonaws.com 
+        --profile my-profile
 
 Contents of ``test_script.scala``::
 

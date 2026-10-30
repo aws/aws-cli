@@ -4,9 +4,8 @@ The following ``create-site`` example creates a site in the specified global net
 
     aws networkmanager create-site \
         --global-network-id global-network-01231231231231231 \
-        --description  "New York head office" \
-        --location Latitude=40.7128,Longitude=-74.0060 \
-        --region us-west-2
+        --description "New York head office" \
+        --location Latitude=40.7128,Longitude=-74.0060
 
 Output::
 

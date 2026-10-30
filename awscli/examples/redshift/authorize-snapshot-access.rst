@@ -3,7 +3,9 @@
 The following ``authorize-snapshot-access`` example authorizes the AWS account ``444455556666`` to restore the snapshot ``my-snapshot-id``.
 By default, the output is in JSON format. ::
 
-    aws redshift authorize-snapshot-access --snapshot-id my-snapshot-id --account-with-restore-access 444455556666
+    aws redshift authorize-snapshot-access \
+        --snapshot-id my-snapshot-id \
+        --account-with-restore-access 444455556666
 
 Result::
 

@@ -7,8 +7,7 @@ The following ``create-nodegroup`` example creates a managed node group for an A
         --nodegroup-name my-eks-nodegroup \
         --node-role arn:aws:iam::111122223333:role/role-name \
         --subnets "subnet-0e2907431c9988b72" "subnet-04ad87f71c6e5ab4d" "subnet-09d912bb63ef21b9a" \
-        --scaling-config minSize=1,maxSize=3,desiredSize=1 \
-        --region us-east-2
+        --scaling-config minSize=1,maxSize=3,desiredSize=1
 
 Output::
 
@@ -61,8 +60,7 @@ The following ``create-nodegroup`` example creates a managed node group for an A
         --scaling-config minSize=1,maxSize=3,desiredSize=1 \
         --capacity-type ON_DEMAND \
         --instance-types 'm5.large' \
-        --disk-size 50 \
-        --region us-east-2
+        --disk-size 50
 
 Output::
 

@@ -238,14 +238,12 @@ The following ``describe-instances`` examples use the ``--query`` parameter to d
 For Linux and macOS, use the following command. ::
 
     aws ec2 describe-instances \
-        --query 'Reservations[*].Instances[*].{Instance:InstanceId,Subnet:SubnetId}' \
-        --output json
+        --query 'Reservations[*].Instances[*].{Instance:InstanceId,Subnet:SubnetId}'
 
 For Windows, use the following command. ::
 
     aws ec2 describe-instances ^
-        --query "Reservations[*].Instances[*].{Instance:InstanceId,Subnet:SubnetId}" ^
-        --output json
+        --query "Reservations[*].Instances[*].{Instance:InstanceId,Subnet:SubnetId}"
 
 Output::
 

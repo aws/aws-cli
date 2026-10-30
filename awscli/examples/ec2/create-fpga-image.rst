@@ -2,7 +2,11 @@
 
 The following ``create-fpga-image`` example creates an AFI from the specified tarball in the specified bucket. ::
 
-    aws ec2 create-fpga-image --name my-afi --description test-afi --input-storage-location Bucket=my-fpga-bucket,Key=dcp/17_12_22-103226.Developer_CL.tar --logs-storage-location Bucket=my-fpga-bucket,Key=logs
+    aws ec2 create-fpga-image \
+        --name my-afi \
+        --description test-afi \
+        --input-storage-location Bucket=my-fpga-bucket,Key=dcp/17_12_22-103226.Developer_CL.tar \
+        --logs-storage-location Bucket=my-fpga-bucket,Key=logs
 
 Output::
 

@@ -21,7 +21,8 @@ Result::
 
 You can also obtain the same information in text format using the ``--output text`` option. ::
 
-    aws redshift describe-events --output text
+    aws redshift describe-events \
+        --output text
 
 Result::
 

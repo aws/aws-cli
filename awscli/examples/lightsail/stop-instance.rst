@@ -3,7 +3,7 @@
 The following ``stop-instance`` example stops the specified instance. ::
 
     aws lightsail stop-instance \
-    --instance-name WordPress-1
+        --instance-name WordPress-1
 
 Output::
 

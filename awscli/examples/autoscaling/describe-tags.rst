@@ -31,7 +31,8 @@ For more information, see `Tagging Auto Scaling groups and instances <https://do
 
 The following ``describe-tags`` example uses the ``--filters`` option to describe tags for a specific Auto Scaling group. ::
 
-    aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-asg
+    aws autoscaling describe-tags \
+        --filters Name=auto-scaling-group,Values=my-asg
 
 For more information, see `Tagging Auto Scaling groups and instances <https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-tagging.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 

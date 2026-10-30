@@ -2,7 +2,8 @@
 
 The following ``describe-instance-health`` example describes the health of the instances for the specified load balancer. ::
 
-    aws elb describe-instance-health --load-balancer-name my-load-balancer
+    aws elb describe-instance-health \
+        --load-balancer-name my-load-balancer
 
 Output::
 
@@ -27,7 +28,9 @@ Output::
 
 The following ``describe-instance-health`` example describes the health of the specified instance for the specified load balancer. ::
 
-    aws elb describe-instance-health --load-balancer-name my-load-balancer --instances i-7299c809
+    aws elb describe-instance-health \
+        --load-balancer-name my-load-balancer \
+        --instances i-7299c809
 
 The following is an example response for an instance that is registering.
 

@@ -2,7 +2,8 @@
 
 The following ``delete-connection`` example deletes the specified connection. ::
 
-    aws directconnect delete-connection --connection-id dxcon-fg31dyv6
+    aws directconnect delete-connection \
+        --connection-id dxcon-fg31dyv6
 
 Output::
 

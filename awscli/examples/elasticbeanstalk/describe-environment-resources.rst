@@ -2,7 +2,8 @@
 
 The following ``describe-environment-resources`` example retrieves information about resources in an environment named ``my-env``. ::
 
-    aws elasticbeanstalk describe-environment-resources --environment-name my-env
+    aws elasticbeanstalk describe-environment-resources \
+        --environment-name my-env
 
 Output::
 

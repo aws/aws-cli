@@ -2,7 +2,8 @@
 
 The following ``create-compute-environment`` example creates a managed compute environment with specific C4 instance types that are launched on demand. The compute environment is called `C4OnDemand`. ::
 
-    aws batch create-compute-environment --cli-input-json file://<path_to_json_file>/C4OnDemand.json
+    aws batch create-compute-environment \
+        --cli-input-json file://<path_to_json_file>/C4OnDemand.json
 
 JSON file format::
 
@@ -50,7 +51,8 @@ Output::
 
 The following ``create-compute-environment`` example creates a managed compute environment with the M4 instance type that is launched when the Spot bid price is at or below 20% of the On-Demand price for the instance type. The compute environment is called `M4Spot`. ::
 
-    aws batch create-compute-environment --cli-input-json file://<path_to_json_file>/M4Spot.json
+    aws batch create-compute-environment \
+        --cli-input-json file://<path_to_json_file>/M4Spot.json
 
 JSON file format::
 

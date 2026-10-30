@@ -2,7 +2,7 @@
 
 The following ``create-resource-gateway`` example creates a resource gateway for the specified subnet. ::
 
-    aws vpc-lattice create-resource-gateway \ 
+    aws vpc-lattice create-resource-gateway \
         --name my-resource-gateway \
         --vpc-identifier vpc-0bf4c2739bc05a69 \
         --subnet-ids subnet-08e8943905b63a683

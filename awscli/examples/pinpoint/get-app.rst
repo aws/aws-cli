@@ -3,8 +3,7 @@
 The following ``get-app`` example retrieves information about an application (project). ::
 
     aws pinpoint get-app \
-        --application-id 810c7aab86d42fb2b56c8c966example \
-        --region us-east-1
+        --application-id 810c7aab86d42fb2b56c8c966example
 
 Output::
 

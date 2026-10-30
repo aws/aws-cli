@@ -4,7 +4,11 @@ The following ``request-spot-instances`` example creates a one-time Spot Instanc
 If your account supports EC2-VPC only, Amazon EC2 launches the instances in the default subnet of the specified Availability Zone.
 If your account supports EC2-Classic, Amazon EC2 launches the instances in EC2-Classic in the specified Availability Zone. ::
 
-    aws ec2 request-spot-instances --spot-price "0.03" --instance-count 5 --type "one-time" --launch-specification file://specification.json
+    aws ec2 request-spot-instances \
+        --spot-price "0.03" \
+        --instance-count 5 \
+        --type "one-time" \
+        --launch-specification file://specification.json
 
 Specification.json::
 
@@ -66,7 +70,11 @@ The following ``request-spot-instances`` example creates a one-time Spot Instanc
 Amazon EC2 launches the instances in the specified subnet. If the VPC is a nondefault VPC, the instances
 do not receive a public IP address by default. ::
 
-    aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification file://specification.json
+    aws ec2 request-spot-instances \
+        --spot-price "0.050" \
+        --instance-count 5 \
+        --type "one-time" \
+        --launch-specification file://specification.json
 
 Specification.json::
 
@@ -125,7 +133,11 @@ The following ``request-spot-instances`` example assigns a public IP address to 
 Note that when you specify a network interface, you must include the subnet ID and security group ID
 using the network interface. ::
 
-    aws ec2 request-spot-instances --spot-price "0.050" --instance-count 1 --type "one-time" --launch-specification file://specification.json
+    aws ec2 request-spot-instances \
+        --spot-price "0.050" \
+        --instance-count 1 \
+        --type "one-time" \
+        --launch-specification file://specification.json
 
 Specification.json::
 

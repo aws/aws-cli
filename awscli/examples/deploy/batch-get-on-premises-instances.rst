@@ -2,7 +2,8 @@
 
 The following ``batch-get-on-premises-instances`` example gets information about two on-premises instances. ::
 
-    aws deploy batch-get-on-premises-instances --instance-names AssetTag12010298EX AssetTag23121309EX
+    aws deploy batch-get-on-premises-instances \
+        --instance-names AssetTag12010298EX AssetTag23121309EX
 
 Output::
 

@@ -17,7 +17,9 @@ Output::
 
 The following ``mfa-login`` example updates an existing profile with temporary credentials obtained using MFA authentication. ::
 
-    aws configure mfa-login --profile myprofile --update-profile mytemp
+    aws configure mfa-login \
+        --profile myprofile \
+        --update-profile mytemp
 
 Output::
 

@@ -5,7 +5,6 @@ The following ``put-resolver-rule-policy`` example specifies a Resolver rule tha
 **Note** You must run this command using credentials from the same account that created the rule. ::
 
     aws route53resolver put-resolver-rule-policy \
-        --region us-east-1 \
         --arn "arn:aws:route53resolver:us-east-1:111122223333:resolver-rule/rslvr-rr-42b60677c0example" \
         --resolver-rule-policy "{\"Version\": \"2012-10-17\", \
             \"Statement\": [ { \

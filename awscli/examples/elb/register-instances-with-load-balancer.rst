@@ -2,7 +2,9 @@
 
 The following ``register-instances-with-load-balancer`` example registers the specified instance with the specified load balancer. ::
 
-    aws elb register-instances-with-load-balancer --load-balancer-name my-load-balancer --instances i-d6f6fae3
+    aws elb register-instances-with-load-balancer \
+        --load-balancer-name my-load-balancer \
+        --instances i-d6f6fae3
 
 Output::
 

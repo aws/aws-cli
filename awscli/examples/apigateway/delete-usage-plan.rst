@@ -2,4 +2,5 @@
 
 The following ``delete-usage-plan`` example deletes the specified usage plan. ::
 
-    aws apigateway delete-usage-plan --usage-plan-id a1b2c3
+    aws apigateway delete-usage-plan \
+        --usage-plan-id a1b2c3

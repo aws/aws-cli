@@ -2,10 +2,12 @@
 
 The following ``disassociate-address`` example disassociates an Elastic IP address from an instance in EC2-Classic. If the command succeeds, no output is returned. ::
 
-    aws ec2 disassociate-address --public-ip 198.51.100.0
+    aws ec2 disassociate-address \
+        --public-ip 198.51.100.0
 
 **Example 2: To disassociate an Elastic IP address in EC2-VPC**
 
 The following ``disassociate-address`` example disassociates an Elastic IP address from an instance in a VPC. If the command succeeds, no output is returned. ::
 
-    aws ec2 disassociate-address --association-id eipassoc-2bebb745
+    aws ec2 disassociate-address \
+        --association-id eipassoc-2bebb745

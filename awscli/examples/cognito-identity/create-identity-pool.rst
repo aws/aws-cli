@@ -3,7 +3,10 @@
 The following ``create-identity-pool`` example creates an identity pool named MyIdentityPool. It has a Cognito identity pool provider.
 Unauthenticated identities are not allowed. ::
 
-    aws cognito-identity create-identity-pool --identity-pool-name MyIdentityPool --no-allow-unauthenticated-identities --cognito-identity-providers ProviderName="cognito-idp.us-west-2.amazonaws.com/us-west-2_aaaaaaaaa",ClientId="3n4b5urk1ft4fl3mg5e62d9ado",ServerSideTokenCheck=false
+    aws cognito-identity create-identity-pool \
+        --identity-pool-name MyIdentityPool \
+        --no-allow-unauthenticated-identities \
+        --cognito-identity-providers ProviderName="cognito-idp.us-west-2.amazonaws.com/us-west-2_aaaaaaaaa",ClientId="3n4b5urk1ft4fl3mg5e62d9ado",ServerSideTokenCheck=false
 
 Output::
 

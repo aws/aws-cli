@@ -19,8 +19,7 @@ Use the ``--if-match`` option to provide the OAI's ``ETag``. ::
     aws cloudfront update-cloud-front-origin-access-identity \
         --id E74FTE3AEXAMPLE \
         --if-match E2QWRUHEXAMPLE \
-        --cloud-front-origin-access-identity-config \
-            CallerReference=cli-example,Comment="Example OAI Updated"
+        --cloud-front-origin-access-identity-config CallerReference=cli-example,Comment="Example OAI Updated"
 
 You can accomplish the same thing by providing the OAI configuration in a JSON
 file, as shown in the following example. ::

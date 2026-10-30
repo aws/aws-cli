@@ -2,7 +2,8 @@
 
 The following ``describe-scaling-policies`` example describes the scaling policies for the `ecs` service namespace. ::
 
-    aws application-autoscaling describe-scaling-policies --service-namespace ecs
+    aws application-autoscaling describe-scaling-policies \
+        --service-namespace ecs
 
 Output::
 

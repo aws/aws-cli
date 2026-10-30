@@ -3,9 +3,9 @@
 The following ``list-connections`` example retrieves a list of all connections in your account for the Bitbucket provider type. ::
 
     aws codestar-connections list-connections \
-    --provider-type Bitbucket \
-    --max-results 5 \
-    --next-token: next-token
+        --provider-type Bitbucket \
+        --max-results 5 \
+        --next-token next-token
 
 Output::
 

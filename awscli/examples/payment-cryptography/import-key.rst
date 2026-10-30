@@ -3,12 +3,12 @@
 The following ``import-key`` example imports a TR-34 key. ::
 
     aws payment-cryptography import-key \
-            --key-material='{ "Tr34KeyBlock": {" \
-                CertificateAuthorityPublicKeyIdentifier": "arn:aws:payment-cryptography:us-west-2:123456789012:key/rmm5wn2q564njnjm", \
-                "ImportToken": "import-token-5ott6ho5nts7bbcg", \
-                "KeyBlockFormat": "X9_TR34_2012", \
-                "SigningKeyCertificate": file://signing-key-certificate.pem, \
-                "WrappedKeyBlock": file://wrapped-key-block.pem }}' 
+        --key-material='{ "Tr34KeyBlock": {" \
+            CertificateAuthorityPublicKeyIdentifier": "arn:aws:payment-cryptography:us-west-2:123456789012:key/rmm5wn2q564njnjm", \
+            "ImportToken": "import-token-5ott6ho5nts7bbcg", \
+            "KeyBlockFormat": "X9_TR34_2012", \
+            "SigningKeyCertificate": file://signing-key-certificate.pem, \
+            "WrappedKeyBlock": file://wrapped-key-block.pem }}'
 
 Contents of ``signing-key-certificate.pem``::
 

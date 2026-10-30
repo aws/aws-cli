@@ -3,7 +3,14 @@
 The following ``get-metric-statistics`` example gets the CPU utilization for an EC2
 instance with the ID i-abcdef. ::
 
-    aws cloudwatch get-metric-statistics --metric-name CPUUtilization --start-time 2014-04-08T23:18:00Z --end-time 2014-04-09T23:18:00Z --period 3600 --namespace AWS/EC2 --statistics Maximum --dimensions Name=InstanceId,Value=i-abcdef
+    aws cloudwatch get-metric-statistics \
+        --metric-name CPUUtilization \
+        --start-time 2014-04-08T23:18:00Z \
+        --end-time 2014-04-09T23:18:00Z \
+        --period 3600 \
+        --namespace AWS/EC2 \
+        --statistics Maximum \
+        --dimensions Name=InstanceId,Value=i-abcdef
 
 Output::
 
@@ -132,7 +139,15 @@ Output::
 
 The following ``get-metric-statistics`` example illustrates how to specify multiple dimensions. Each dimension is specified as a Name/Value pair, with a comma between the name and the value. Multiple dimensions are separated by a space. If a single metric includes multiple dimensions, you must specify a value for every defined dimension. ::
 
-    aws cloudwatch get-metric-statistics --metric-name Buffers --namespace MyNameSpace --dimensions Name=InstanceID,Value=i-abcdef Name=InstanceType,Value=m1.small --start-time 2016-10-15T04:00:00Z --end-time 2016-10-19T07:00:00Z --statistics Average --period 60
+    aws cloudwatch get-metric-statistics \
+        --metric-name Buffers \
+        --namespace MyNameSpace \
+        --dimensions Name=InstanceID,Value=i-abcdef Name=InstanceType,Value=m1.small \
+        --start-time 2016-10-15T04:00:00Z \
+        --end-time 2016-10-19T07:00:00Z \
+        --statistics Average \
+        --period 60
+
 
 For more examples using the ``get-metric-statistics`` command, see `Get Statistics for a Metric`__ in the *Amazon CloudWatch Developer Guide*.
 

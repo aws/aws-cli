@@ -29,7 +29,8 @@ Output::
 
 The following ``describe-customer-gateways`` example describes the specified customer gateway. ::
 
-    aws ec2 describe-customer-gateways --customer-gateway-ids cgw-0e11f167
+    aws ec2 describe-customer-gateways \
+        --customer-gateway-ids cgw-0e11f167
 
 Output::
 

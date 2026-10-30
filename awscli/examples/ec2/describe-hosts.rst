@@ -2,7 +2,8 @@
 
 The following ``describe-hosts`` example displays details for the ``available`` Dedicated Hosts in your AWS account. ::
 
-    aws ec2 describe-hosts --filter "Name=state,Values=available"
+    aws ec2 describe-hosts \
+        --filter "Name=state,Values=available"
 
 Output::
 

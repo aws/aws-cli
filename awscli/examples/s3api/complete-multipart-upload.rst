@@ -2,7 +2,11 @@
 
 The following ``complete-multipart-upload`` example completes a multipart upload for the key ``multipart/01`` in the bucket ``amzn-s3-demo-bucket``. ::
 
-    aws s3api complete-multipart-upload --multipart-upload file://mpustruct --bucket amzn-s3-demo-bucket --key 'multipart/01' --upload-id dfRtDYU0WWCCcH43C3WFbkRONycyCpTJJvxu2i5GYkZljF.Yxwh6XG7WfS2vC4to6HiV6Yjlx.cph0gtNBtJ8P3URCSbB7rjxI5iEwVDmgaXZOGgkk5nVTW16HOQ5l0R
+    aws s3api complete-multipart-upload \
+        --multipart-upload file://mpustruct \
+        --bucket amzn-s3-demo-bucket \
+        --key 'multipart/01' \
+        --upload-id dfRtDYU0WWCCcH43C3WFbkRONycyCpTJJvxu2i5GYkZljF.Yxwh6XG7WfS2vC4to6HiV6Yjlx.cph0gtNBtJ8P3URCSbB7rjxI5iEwVDmgaXZOGgkk5nVTW16HOQ5l0R
 
 The upload ID required by this command is output by ``create-multipart-upload`` and can also be retrieved with ``list-multipart-uploads``.
 

@@ -2,7 +2,9 @@
 
 The following ``update-budget`` example replaces a Cost and Usage budget with a new budget. ::
 
-    aws budgets update-budget --account-id 111122223333 --new-budget file://new-budget.json
+    aws budgets update-budget \
+        --account-id 111122223333 \
+        --new-budget file://new-budget.json
 
 new-budget.json::
 

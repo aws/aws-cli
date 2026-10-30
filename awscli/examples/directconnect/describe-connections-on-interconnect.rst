@@ -2,7 +2,8 @@
 
 The following ``describe-connections-on-interconnect`` example lists connections that have been provisioned on the given interconnect. ::
 
-    aws directconnect describe-connections-on-interconnect --interconnect-id dxcon-fgktov66
+    aws directconnect describe-connections-on-interconnect \
+        --interconnect-id dxcon-fgktov66
 
 Output::
 

@@ -3,7 +3,6 @@
 The following ``describe-instance-connect-endpoints`` example describes the specified EC2 Instance Connect Endpoint. ::
 
     aws ec2 describe-instance-connect-endpoints \
-        --region us-east-1 \
         --instance-connect-endpoint-ids eice-0123456789example
 
 Output::

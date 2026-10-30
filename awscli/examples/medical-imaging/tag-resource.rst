@@ -3,8 +3,8 @@
 The following ``tag-resource`` example tags a data store. ::
 
     aws medical-imaging tag-resource \
-      --resource-arn "arn:aws:medical-imaging:us-east-1:123456789012:datastore/12345678901234567890123456789012" \
-      --tags '{"Deployment":"Development"}'
+        --resource-arn "arn:aws:medical-imaging:us-east-1:123456789012:datastore/12345678901234567890123456789012" \
+        --tags '{"Deployment":"Development"}'
 
 This command produces no output.
 

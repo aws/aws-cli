@@ -3,7 +3,7 @@
 The following ``list-resources`` example lists all resources in the specified resource share that are of the specified resource type. ::
 
     aws ram list-resources \
-        --resource-type ec2:Subnet \ 
+        --resource-type ec2:Subnet \
         --resource-owner SELF \
         --resource-share-arn arn:aws:ram:us-west-2:123456789012:resource-share/7ab63972-b505-7e2a-420d-6f5d3EXAMPLE
 

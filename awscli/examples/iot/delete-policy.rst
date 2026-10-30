@@ -2,7 +2,8 @@
 
 The following ``delete-policy`` example deletes the specified policy from your AWS account. ::
 
-    aws iot delete-policy --policy-name UpdateDeviceCertPolicy
+    aws iot delete-policy \
+        --policy-name UpdateDeviceCertPolicy
 
 This command produces no output.
 

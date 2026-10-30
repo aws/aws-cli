@@ -2,7 +2,8 @@
 
 The following ``create-project`` example creates a new project named ``my-project``. ::
 
-    aws devicefarm create-project --name my-project
+    aws devicefarm create-project \
+        --name my-project
 
 Output::
 

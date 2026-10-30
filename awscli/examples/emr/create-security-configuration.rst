@@ -2,27 +2,29 @@
 
 The following ``create-security-configuration`` example creates a security configuration named ``MySecurityConfig`` with in-transit encryption enabled with PEM for certificate provider, and at-rest encryption enabled with SSE-S3 for S3 encryption and AWS-KMS for local disk key provider. ::
 
-    aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
-        "EncryptionConfiguration": {
-            "EnableInTransitEncryption" : true,
-            "EnableAtRestEncryption" : true,
-            "InTransitEncryptionConfiguration" : {
-                "TLSCertificateConfiguration" : {
-                    "CertificateProviderType" : "PEM",
-                    "S3Object" : "s3://mycertstore/artifacts/MyCerts.zip"
-                }
-            },
-            "AtRestEncryptionConfiguration" : {
-                "S3EncryptionConfiguration" : {
-                    "EncryptionMode" : "SSE-S3"
+    aws emr create-security-configuration \
+        --name MySecurityConfig \
+        --security-configuration '{
+            "EncryptionConfiguration": {
+                "EnableInTransitEncryption" : true,
+                "EnableAtRestEncryption" : true,
+                "InTransitEncryptionConfiguration" : {
+                    "TLSCertificateConfiguration" : {
+                        "CertificateProviderType" : "PEM",
+                        "S3Object" : "s3://mycertstore/artifacts/MyCerts.zip"
+                    }
                 },
-                "LocalDiskEncryptionConfiguration" : {
-                    "EncryptionKeyProviderType" : "AwsKms",
-                    "AwsKmsKey" : "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+                "AtRestEncryptionConfiguration" : {
+                    "S3EncryptionConfiguration" : {
+                        "EncryptionMode" : "SSE-S3"
+                    },
+                    "LocalDiskEncryptionConfiguration" : {
+                        "EncryptionKeyProviderType" : "AwsKms",
+                        "AwsKmsKey" : "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+                    }
                 }
             }
-        }
-    }'
+        }'
 
 - Output::
 
@@ -57,7 +59,9 @@ The following ``create-security-configuration`` example creates a security confi
 
 The following ``create-security-configuration`` example creates the same security configuration by using the ``security_configuration.json`` file. ::
 
-    aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
+    aws emr create-security-configuration \
+        --name "MySecurityConfig" \
+        --security-configuration file://./security_configuration.json
 
 - Output::
 
@@ -70,22 +74,24 @@ The following ``create-security-configuration`` example creates the same securit
 
 The following ``create-security-configuration`` example creates a security configuration named ``MySecurityConfig`` with Kerberos enabled using cluster-dedicated KDC and cross-realm trust. ::
 
-    aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
-        "AuthenticationConfiguration": {
-            "KerberosConfiguration": {
-                "Provider": "ClusterDedicatedKdc",
-                "ClusterDedicatedKdcConfiguration": {
-                    "TicketLifetimeInHours": 24,
-                    "CrossRealmTrustConfiguration": {
-                        "Realm": "AD.DOMAIN.COM",
-                        "Domain": "ad.domain.com",
-                        "AdminServer": "ad.domain.com",
-                        "KdcServer": "ad.domain.com"
+    aws emr create-security-configuration \
+        --name MySecurityConfig \
+        --security-configuration '{
+            "AuthenticationConfiguration": {
+                "KerberosConfiguration": {
+                    "Provider": "ClusterDedicatedKdc",
+                    "ClusterDedicatedKdcConfiguration": {
+                        "TicketLifetimeInHours": 24,
+                        "CrossRealmTrustConfiguration": {
+                            "Realm": "AD.DOMAIN.COM",
+                            "Domain": "ad.domain.com",
+                            "AdminServer": "ad.domain.com",
+                            "KdcServer": "ad.domain.com"
+                        }
                     }
                 }
             }
-        }
-    }'
+        }'
 
 - Output::
 
@@ -115,7 +121,9 @@ The following ``create-security-configuration`` example creates a security confi
 
 The following ``create-security-configuration`` example creates the same security configuration by using the ``security_configuration.json`` file. ::
 
-    aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
+    aws emr create-security-configuration \
+        --name "MySecurityConfig" \
+        --security-configuration file://./security_configuration.json
 
 - Output::
 

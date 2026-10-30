@@ -2,7 +2,11 @@
 
 The following ``get-products`` example retrieves a list of products that match the given criteria. ::
 
-    aws pricing get-products --filters file://filters.json --format-version aws_v1 --max-results 1 --service-code AmazonEC2
+    aws pricing get-products \
+        --filters file://filters.json \
+        --format-version aws_v1 \
+        --max-results 1 \
+        --service-code AmazonEC2
 
 filters.json::
 

@@ -9,8 +9,7 @@ The following ``update-web-acl`` example changes settings for an existing web AC
         --lock-token 2294b3a1-0000-0000-0000-a3ae04329de9 \
         --default-action Block={} \
         --visibility-config SampledRequestsEnabled=false,CloudWatchMetricsEnabled=false,MetricName=NewMetricTestWebAcl \
-        --rules file://waf-rule.json \
-        --region us-west-2
+        --rules file://waf-rule.json
 
 Output::
 

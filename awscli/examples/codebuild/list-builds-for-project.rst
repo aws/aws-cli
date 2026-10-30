@@ -2,7 +2,9 @@
 
 The following ``list-builds-for-project`` example lists the build IDs in descending order for the specified CodeBuild build project. ::
 
-    aws codebuild list-builds-for-project --project-name codebuild-demo-project --sort-order DESCENDING
+    aws codebuild list-builds-for-project \
+        --project-name codebuild-demo-project \
+        --sort-order DESCENDING
 
 Output::
 

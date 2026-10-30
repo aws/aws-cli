@@ -19,7 +19,8 @@ Output::
 
 The following ``list-task-definition-families`` example lists the task definition revisions that start with "hpcc". ::
 
-    aws ecs list-task-definition-families --family-prefix hpcc
+    aws ecs list-task-definition-families \
+        --family-prefix hpcc
 
 Output::
 

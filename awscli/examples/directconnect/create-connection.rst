@@ -2,7 +2,10 @@
 
 The following ``create-connection`` example creates a connection from your network to an AWS Direct Connect location. ::
 
-    aws directconnect create-connection --location TIVIT --bandwidth 1Gbps --connection-name "Connection to AWS"
+    aws directconnect create-connection \
+        --location TIVIT \
+        --bandwidth 1Gbps \
+        --connection-name "Connection to AWS"
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``describe-scheduled-instances`` example describes the specified Scheduled Instance. ::
 
-    aws ec2 describe-scheduled-instances --scheduled-instance-ids sci-1234-1234-1234-1234-123456789012
+    aws ec2 describe-scheduled-instances \
+        --scheduled-instance-ids sci-1234-1234-1234-1234-123456789012
 
 Output::
 

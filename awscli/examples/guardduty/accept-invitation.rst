@@ -2,8 +2,8 @@
 
 The following ``accept-invitation`` example shows how to accept an invitation to become a GuardDuty member account in the current region. ::
 
-    aws guardduty accept-invitation  \
-        --detector-id 12abc34d567e8fa901bc2d34eexample \ 
+    aws guardduty accept-invitation \
+        --detector-id 12abc34d567e8fa901bc2d34eexample \
         --master-id 123456789111 \
         --invitation-id d6b94fb03a66ff665f7db8764example
 

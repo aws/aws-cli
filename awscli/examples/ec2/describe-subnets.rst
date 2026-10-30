@@ -117,13 +117,14 @@ The following ``describe-subnets`` example uses a filter to retrieve the details
 
     aws ec2 describe-subnets \
         --filters "Name=tag:CostCenter,Values=123" \
-        --query "Subnets[*].SubnetId" \
-        --output text
+        --query "Subnets[*].SubnetId"
 
 Output::
 
-    subnet-0987a87c8b37348ef
-    subnet-02a95061c45f372ee
-    subnet-03f720e7de2788d73
+    [
+        "subnet-0987a87c8b37348ef",
+        "subnet-02a95061c45f372ee",
+        "subnet-03f720e7de2788d73"
+    ]
 
 For more information, see `Working with VPCs and Subnets <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html>`__ in the *Amazon VPC User Guide*.

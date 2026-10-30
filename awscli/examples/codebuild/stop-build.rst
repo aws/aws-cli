@@ -2,7 +2,8 @@
 
 The following ``stop-build`` example stops the specified CodeBuild build. ::
 
-    aws codebuild stop-build --id my-demo-project:12345678-a1b2-c3d4-e5f6-11111EXAMPLE
+    aws codebuild stop-build \
+        --id my-demo-project:12345678-a1b2-c3d4-e5f6-11111EXAMPLE
 
 Output::
 

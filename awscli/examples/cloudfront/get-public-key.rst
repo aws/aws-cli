@@ -5,7 +5,8 @@ The following ``get-public-key`` example gets the CloudFront public key with the
 `create-public-key <create-public-key.html>`_ and `list-public-keys
 <list-public-keys.html>`_ commands. ::
 
-    aws cloudfront get-public-key --id KDFB19YGCR002
+    aws cloudfront get-public-key \
+        --id KDFB19YGCR002
 
 Output::
 

@@ -2,7 +2,10 @@
 
 The following ``upload-documents`` example uploads a batch of JSON documents to an Amazon CloudSearch domain. ::
 
-    aws cloudsearchdomain upload-documents --endpoint-url https://doc-my-domain.us-west-1.cloudsearch.amazonaws.com --content-type application/json --documents document-batch.json
+    aws cloudsearchdomain upload-documents \
+        --endpoint-url https://doc-my-domain.us-west-1.cloudsearch.amazonaws.com \
+        --content-type application/json \
+        --documents document-batch.json
 
 Output::
 

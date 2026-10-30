@@ -2,7 +2,10 @@
 
 The following ``send-email`` example sends a formatted email. ::
 
-    aws ses send-email --from sender@example.com --destination file://destination.json --message file://message.json
+    aws ses send-email \
+        --from sender@example.com \
+        --destination file://destination.json \
+        --message file://message.json
 
 Output::
 

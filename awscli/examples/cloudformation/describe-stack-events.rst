@@ -6,6 +6,8 @@ The following ``describe-stack-events`` example displays the 2 most recent event
         --stack-name my-stack \
         --max-items 2
 
+Output::
+
     {
         "StackEvents": [
             {

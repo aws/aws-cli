@@ -2,7 +2,8 @@
 
 The following ``delete-nat-gateway`` example deletes NAT gateway ``nat-04ae55e711cec5680``. ::
 
-    aws ec2 delete-nat-gateway --nat-gateway-id nat-04ae55e711cec5680
+    aws ec2 delete-nat-gateway \
+        --nat-gateway-id nat-04ae55e711cec5680
 
 Output::
 

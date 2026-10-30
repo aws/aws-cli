@@ -3,7 +3,6 @@
 The following ``update-extension`` example adds an additional parameter Key to an extension in AWS AppConfig. ::
 
     aws appconfig update-extension \
-        --region us-west-2 \
         --extension-identifier S3-backup-extension \
         --parameters S3bucket={Required=true},CampaignID={Required=false}
 

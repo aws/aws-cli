@@ -5,8 +5,7 @@ The following ``register`` example registers an on-premises instance with AWS Co
     aws deploy register \
         --instance-name AssetTag12010298EX \
         --iam-user-arn arn:aws:iam::80398EXAMPLE:user/CodeDeployUser-OnPrem \
-        --tags Key=Name,Value=CodeDeployDemo-OnPrem \
-        --region us-west-2
+        --tags Key=Name,Value=CodeDeployDemo-OnPrem
 
 Output::
 

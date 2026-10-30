@@ -2,7 +2,8 @@
 
 The following ``delete-vpc-endpoint-service-configurations`` example deletes the specified endpoint service configuration. ::
 
-    aws ec2 delete-vpc-endpoint-service-configurations --service-ids vpce-svc-03d5ebb7d9579a2b3
+    aws ec2 delete-vpc-endpoint-service-configurations \
+        --service-ids vpce-svc-03d5ebb7d9579a2b3
 
 Output::
 

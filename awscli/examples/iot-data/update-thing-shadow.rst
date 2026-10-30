@@ -2,11 +2,10 @@
 
 The following ``update-thing-shadow`` example modifies the current state of the device shadow for the specified thing and saves it to the file ``output.txt``. ::
 
-    aws iot-data update-thing-shadow \
+    aws iot-data update-thing-shadow "output.txt" \
         --cli-binary-format raw-in-base64-out \
         --thing-name MyRPi \
-        --payload '{"state":{"reported":{"moisture":"okay"}}}' \
-        "output.txt"
+        --payload '{"state":{"reported":{"moisture":"okay"}}}'
 
 The command produces no output on the display, but the following shows the contents of ``output.txt``::
 

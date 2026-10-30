@@ -2,4 +2,5 @@
 
 The following ``start-config-rules-evaluation`` example starts an evaluation for two AWS managed rules. ::
 
-    aws configservice start-config-rules-evaluation --config-rule-names s3-bucket-versioning-enabled cloudtrail-enabled
+    aws configservice start-config-rules-evaluation \
+        --config-rule-names s3-bucket-versioning-enabled cloudtrail-enabled

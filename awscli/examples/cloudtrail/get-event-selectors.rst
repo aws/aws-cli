@@ -2,7 +2,8 @@
 
 The following ``get-event-selectors`` example returns the settings for ``Trail1``. ::
 
-    aws cloudtrail get-event-selectors --trail-name Trail1
+    aws cloudtrail get-event-selectors \
+        --trail-name Trail1
 
 Output::
 

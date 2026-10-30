@@ -2,7 +2,8 @@
 
 The following ``describe-config-rules`` example returns details for an AWS Config rule named ``InstanceTypesAreT2micro``. ::
 
-    aws configservice describe-config-rules --config-rule-names InstanceTypesAreT2micro
+    aws configservice describe-config-rules \
+        --config-rule-names InstanceTypesAreT2micro
 
 Output::
 

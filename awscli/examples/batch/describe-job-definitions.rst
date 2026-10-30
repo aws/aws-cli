@@ -2,7 +2,8 @@
 
 The following ``describe-job-definitions`` example describes all of your active job definitions. ::
 
-    aws batch describe-job-definitions --status ACTIVE
+    aws batch describe-job-definitions \
+        --status ACTIVE
 
 Output::
 

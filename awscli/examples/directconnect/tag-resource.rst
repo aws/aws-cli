@@ -2,5 +2,7 @@
 
 The following ``tag-resource`` example adds a tag with a key of ``Name`` and a value of ``VAConnection`` to the connection ``dxcon-abcabc12``. If the command succeeds, no output is returned. ::
 
-    aws directconnect tag-resource --resource-arn arn:aws:directconnect:us-east-1:123456789012:dxcon/dxcon-abcabc12 --tags "key=Name,value=VAConnection"
+    aws directconnect tag-resource \
+        --resource-arn arn:aws:directconnect:us-east-1:123456789012:dxcon/dxcon-abcabc12 \
+        --tags "key=Name,value=VAConnection"
 

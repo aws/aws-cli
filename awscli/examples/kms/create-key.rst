@@ -44,8 +44,8 @@ For more information, see `Creating keys <https://docs.aws.amazon.com/kms/latest
 The following ``create-key`` example creates a KMS key that contains an asymmetric RSA key pair for encryption and decryption. The key spec and key usage can't be changed after the key is created. ::
 
     aws kms create-key \
-       --key-spec RSA_4096 \
-       --key-usage ENCRYPT_DECRYPT
+        --key-spec RSA_4096 \
+        --key-usage ENCRYPT_DECRYPT
 
 Output::
 

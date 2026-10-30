@@ -2,7 +2,9 @@
 
 The following ``modify-load-balancer-attributes`` example enables deletion protection for the specified load balancer. ::
 
-    aws elbv2 modify-load-balancer-attributes --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 --attributes Key=deletion_protection.enabled,Value=true
+    aws elbv2 modify-load-balancer-attributes \
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
+        --attributes Key=deletion_protection.enabled,Value=true
 
 Output::
 
@@ -35,7 +37,9 @@ Output::
 
 The following ``modify-load-balancer-attributes`` example changes the idle timeout value for the specified load balancer. ::
 
-    aws elbv2 modify-load-balancer-attributes --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 --attributes Key=idle_timeout.timeout_seconds,Value=30
+    aws elbv2 modify-load-balancer-attributes \
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
+        --attributes Key=idle_timeout.timeout_seconds,Value=30
 
 Output::
 
@@ -68,7 +72,9 @@ Output::
 
 The following ``modify-load-balancer-attributes`` example enables access logs for the specified load balancer. Note that the S3 bucket must exist in the same region as the load balancer and must have a policy attached that grants access to the Elastic Load Balancing service. ::
 
-    aws elbv2 modify-load-balancer-attributes --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 --attributes Key=access_logs.s3.enabled,Value=true Key=access_logs.s3.bucket,Value=my-loadbalancer-logs Key=access_logs.s3.prefix,Value=myapp
+    aws elbv2 modify-load-balancer-attributes \
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
+        --attributes Key=access_logs.s3.enabled,Value=true Key=access_logs.s3.bucket,Value=my-loadbalancer-logs Key=access_logs.s3.prefix,Value=myapp
 
 Output::
 

@@ -5,7 +5,8 @@ The following ``create-environment-ec2`` example creates an AWS Cloud9 developme
     aws cloud9 create-environment-ec2 \
         --name my-demo-env \
         --description "My demonstration development environment." \
-        --instance-type t2.micro --image-id amazonlinux-2023-x86_64 \
+        --instance-type t2.micro \
+        --image-id amazonlinux-2023-x86_64 \
         --subnet-id subnet-1fab8aEX \
         --automatic-stop-time-minutes 60 \
         --owner-arn arn:aws:iam::123456789012:user/MyDemoUser

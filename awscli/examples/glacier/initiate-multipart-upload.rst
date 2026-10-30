@@ -2,7 +2,11 @@
 
 The following ``initiate-multipart-upload`` example initiates a multipart upload to a vault named ``my-vault`` with a part size of 1 MiB (1024 x 1024 bytes) per file. ::
 
-    aws glacier initiate-multipart-upload --account-id - --part-size 1048576 --vault-name my-vault --archive-description "multipart upload test"
+    aws glacier initiate-multipart-upload \
+        --account-id - \
+        --part-size 1048576 \
+        --vault-name my-vault \
+        --archive-description "multipart upload test"
 
 The archive description parameter is optional. Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
 

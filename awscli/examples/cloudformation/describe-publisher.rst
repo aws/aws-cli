@@ -3,7 +3,6 @@
 The following ``describe-publisher`` example configures the information for a publisher. ::
 
     aws cloudformation describe-publisher \
-        --region us-west-2 \
         --publisher-id 000q6TfUovXsEMmgKowxDZLlwqr2QUsh
 
 Output::

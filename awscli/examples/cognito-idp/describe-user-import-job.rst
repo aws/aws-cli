@@ -2,7 +2,9 @@
 
 The following ``describe-user-import-job`` example describes a user import job. ::
 
-    aws cognito-idp describe-user-import-job --user-pool-id us-west-2_aaaaaaaaa --job-id import-TZqNQvDRnW
+    aws cognito-idp describe-user-import-job \
+        --user-pool-id us-west-2_aaaaaaaaa \
+        --job-id import-TZqNQvDRnW
 
 Output::
 

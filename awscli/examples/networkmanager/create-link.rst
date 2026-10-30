@@ -8,8 +8,7 @@ The following ``create-link`` example creates a link in the specified global net
         --type "broadband" \
         --bandwidth UploadSpeed=10,DownloadSpeed=20 \
         --provider "AnyCompany" \
-        --site-id site-444555aaabbb11223 \
-        --region us-west-2
+        --site-id site-444555aaabbb11223
 
 Output::
 

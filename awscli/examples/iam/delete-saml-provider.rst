@@ -3,7 +3,7 @@
 The following ``delete-saml-provider`` example deletes the IAM SAML 2.0 provider whose ARN is ``arn:aws:iam::123456789012:saml-provider/SAMLADFSProvider``. ::
 
     aws iam delete-saml-provider \
-    --saml-provider-arn arn:aws:iam::123456789012:saml-provider/SAMLADFSProvider
+        --saml-provider-arn arn:aws:iam::123456789012:saml-provider/SAMLADFSProvider
 
 This command produces no output.
 

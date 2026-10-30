@@ -4,8 +4,7 @@ The following ``update-sms-channel`` example enables SMS channel for an SMS chan
 
     aws pinpoint update-sms-channel \
         --application-id 611e3e3cdd47474c9c1399a505665b91 \
-        --sms-channel-request Enabled=true \
-        --region us-west-2
+        --sms-channel-request Enabled=true
 
 Output::
 

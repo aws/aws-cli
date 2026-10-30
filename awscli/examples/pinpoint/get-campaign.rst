@@ -4,8 +4,7 @@ The following ``get-campaign`` example retrieves information about the status, c
 
     aws pinpoint get-campaign \
         --application-id 6e0b7591a90841d2b5d93fa11143e5a7 \
-        --campaign-id a1e63c6cc0eb43ed826ffcc3cc90b30d \
-        --region us-east-1
+        --campaign-id a1e63c6cc0eb43ed826ffcc3cc90b30d
 
 Output::
 

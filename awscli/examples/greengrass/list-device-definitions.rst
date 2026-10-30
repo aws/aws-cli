@@ -1,9 +1,8 @@
 **To list your device definitions**
 
-The following ``list-device-definitions`` example displays details about the device definitions in your AWS account in the specified AWS Region. ::
+The following ``list-device-definitions`` example displays details about the device definitions in your AWS account in the current AWS Region. ::
 
-    aws greengrass list-device-definitions \
-        --region us-west-2
+    aws greengrass list-device-definitions
 
 Output::
 

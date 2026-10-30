@@ -2,7 +2,8 @@
 
 The following ``describe-log-groups`` example describes a log group named ``my-logs``. ::
 
-    aws logs describe-log-groups --log-group-name-prefix my-logs
+    aws logs describe-log-groups \
+        --log-group-name-prefix my-logs
 
 Output::
 

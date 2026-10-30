@@ -2,7 +2,8 @@
 
 The following ``get-status`` example returns the status of the specified job. ::
 
-    aws importexport get-status  --job-id EX1ID
+    aws importexport get-status \
+        --job-id EX1ID
 
 The output for the get-status command looks like the following::
 

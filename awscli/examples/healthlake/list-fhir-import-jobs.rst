@@ -7,8 +7,8 @@ The following ``list-fhir-import-jobs`` example shows how to use the command to 
         --submitted-before (DATE like 2024-10-13T19:00:00Z) \
         --submitted-after (DATE like 2020-10-13T19:00:00Z ) \
         --job-name "FHIR-IMPORT" \
-        --job-status SUBMITTED  \
-        -max-results (Integer between 1 and 500)
+        --job-status SUBMITTED \
+        --max-results (Integer between 1 and 500)
 
 Output::
 

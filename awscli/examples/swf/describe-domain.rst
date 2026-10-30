@@ -6,30 +6,36 @@ about. ::
 
     aws swf describe-domain \
         --name DataFrobotz
-            {
-                "domainInfo": {
-                    "status": "REGISTERED",
-                    "name": "DataFrobotz"
-                },
-                "configuration": {
-                    "workflowExecutionRetentionPeriodInDays": "1"
-                }
-            }
+
+Output::
+
+    {
+        "domainInfo": {
+            "status": "REGISTERED",
+            "name": "DataFrobotz"
+        },
+        "configuration": {
+            "workflowExecutionRetentionPeriodInDays": "1"
+        }
+    }
 
 You can also use ``describe-domain`` to get information about deprecated
 domains. ::
 
     aws swf describe-domain \
         --name MyNeatNewDomain
-            {
-                "domainInfo": {
-                    "status": "DEPRECATED",
-                    "name": "MyNeatNewDomain"
-                },
-                "configuration": {
-                    "workflowExecutionRetentionPeriodInDays": "0"
-                }
-            }
+
+Output::
+
+    {
+        "domainInfo": {
+            "status": "DEPRECATED",
+            "name": "MyNeatNewDomain"
+        },
+        "configuration": {
+            "workflowExecutionRetentionPeriodInDays": "0"
+        }
+    }
 
 See Also
 --------

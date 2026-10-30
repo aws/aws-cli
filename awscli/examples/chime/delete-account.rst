@@ -2,7 +2,8 @@
 
 The following ``delete-account`` example deletes the specified account. ::
 
-    aws chime delete-account --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+    aws chime delete-account \
+        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
 
 This command produces no output.
 

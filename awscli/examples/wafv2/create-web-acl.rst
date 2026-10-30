@@ -7,8 +7,7 @@ The following ``create-web-acl`` example creates a web ACL for regional use. The
         --scope REGIONAL \
         --default-action Allow={} \
         --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestWebAclMetrics \
-        --rules file://waf-rule.json \
-        --region us-west-2
+        --rules file://waf-rule.json
 
 Contents of `file://waf-rule.json`::
 

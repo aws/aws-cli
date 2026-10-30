@@ -3,8 +3,7 @@
 The following ``delete-custom-metric`` example deletes a custom metric. ::
 
     aws iot delete-custom-metric \
-        --metric-name batteryPercentage \
-        --region us-east-1
+        --metric-name batteryPercentage
 
 Output::
 

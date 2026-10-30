@@ -11,8 +11,7 @@ This example may be useful if:
 
 To view the resource discovery in the ``us-east-1`` Region, use the following command. ::
 
-    aws ec2 describe-ipam-resource-discoveries \
-        --region us-east-1
+    aws ec2 describe-ipam-resource-discoveries
 
 Output::
 
@@ -42,11 +41,12 @@ For more information, see `Integrate IPAM with accounts outside of your organiza
 The following ``describe-ipam-resource-discoveries`` example lists the ID of the resource discovery in your AWS account. You can have one resource discovery per AWS Region. ::
 
     aws ec2 describe-ipam-resource-discoveries \
-        --query "IpamResourceDiscoveries[*].IpamResourceDiscoveryId" \
-        --output text
+        --query "IpamResourceDiscoveries[*].IpamResourceDiscoveryId"
 
 Output::
 
-    ipam-res-disco-0481e39b242860333
+    [
+        "ipam-res-disco-0481e39b242860333"
+    ]
 
 For more information, see `Integrate IPAM with accounts outside of your organization <https://docs.aws.amazon.com/vpc/latest/ipam/enable-integ-ipam-outside-org.html>`__ in the *Amazon VPC IPAM User Guide*.

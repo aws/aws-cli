@@ -7,7 +7,8 @@ The following ``register-task-with-maintenance-window`` example registers an Aut
         --window-id "mw-082dcd7649EXAMPLE" \
         --targets Key=InstanceIds,Values=i-1234520122EXAMPLE \
         --task-arn AWS-RestartEC2Instance \
-        --service-role-arn arn:aws:iam::111222333444:role/SSM --task-type AUTOMATION \
+        --service-role-arn arn:aws:iam::111222333444:role/SSM \
+        --task-type AUTOMATION \
         --task-invocation-parameters "{\"Automation\":{\"DocumentVersion\":\"\$LATEST\",\"Parameters\":{\"InstanceId\":[\"{{RESOURCE_ID}}\"]}}}" \
         --priority 0 \
         --max-concurrency 1 \

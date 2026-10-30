@@ -2,7 +2,9 @@
 
 The following ``change-resource-record-sets`` example creates a resource record set using the ``hosted-zone-id`` ``Z1R8UBAEXAMPLE`` and the JSON-formatted configuration in the file ``C:\awscli\route53\change-resource-record-sets.json``. ::
 
-    aws route53 change-resource-record-sets --hosted-zone-id Z1R8UBAEXAMPLE --change-batch file://C:\awscli\route53\change-resource-record-sets.json
+    aws route53 change-resource-record-sets \
+        --hosted-zone-id Z1R8UBAEXAMPLE \
+        --change-batch file://C:\awscli\route53\change-resource-record-sets.json
 
 For more information, see `POST ChangeResourceRecordSets`_ in the *Amazon Route 53 API Reference*.
 

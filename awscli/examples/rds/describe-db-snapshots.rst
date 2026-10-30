@@ -40,12 +40,11 @@ For more information, see `Creating a DB Snapshot <https://docs.aws.amazon.com/A
 
 **Example 2: To find the number of manual snapshots taken**
 
-The following ``describe-db-snapshots`` example uses the ``length`` operator in the ``--query`` option to return the number of manual snapshots that have been taken in a particular AWS Region. ::
+The following ``describe-db-snapshots`` example uses the ``length`` operator in the ``--query`` option to return the number of manual snapshots that have been taken in the current AWS Region. ::
 
     aws rds describe-db-snapshots \
         --snapshot-type manual \
-        --query "length(*[].{DBSnapshots:SnapshotType})" \
-        --region eu-central-1
+        --query "length(*[].{DBSnapshots:SnapshotType})"
 
 Output::
 

@@ -4,7 +4,7 @@ The following ``list-operations`` example lists summary information, including t
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
-    aws route53domains list-operations
+    aws route53domains list-operations \
         --region us-east-1
 
 Output::

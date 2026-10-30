@@ -1,9 +1,8 @@
 **Example 1: To describe the AMI metadata for all instances**
 
-The following ``describe-instance-image-metadata`` example describes the AMI metadata of all the instances in your AWS account in the specified Region. ::
+The following ``describe-instance-image-metadata`` example describes the AMI metadata of all the instances in your AWS account. ::
 
-    aws ec2 describe-instance-image-metadata \
-        --region us-east-1
+    aws ec2 describe-instance-image-metadata
 
 Output::
 
@@ -47,7 +46,6 @@ For more information, see `Amazon Machine Images in Amazon EC2 <https://docs.aws
 The following ``describe-instance-image-metadata`` example describes the AMI metadata for the specified instances. ::
 
     aws ec2 describe-instance-image-metadata \
-        --region us-east-1 \
         --instance-ids i-1234567890EXAMPLE i-0987654321EXAMPLE
 
 Output::
@@ -118,7 +116,6 @@ For more information, see `Amazon Machine Images in Amazon EC2 <https://docs.aws
 The following ``describe-instance-image-metadata`` example describes the AMI metadata for ``t2.nano`` and ``t2.micro`` instances in the ``us-east-1a`` Availability Zone. ::
 
     aws ec2 describe-instance-image-metadata \
-        --region us-east-1 \
         --filters Name=availability-zone,Values=us-east-1a Name=instance-type,Values=t2.nano,t2.micro
 
 Output::

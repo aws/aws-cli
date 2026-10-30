@@ -3,8 +3,7 @@
 The following ``get-logging-configuration`` example retrieves the logging configuration for the specified web ACL. ::
 
     aws wafv2 get-logging-configuration \
-        --resource-arn arn:aws:wafv2:us-west-2:123456789012:regional/webacl/test/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
-        --region us-west-2
+        --resource-arn arn:aws:wafv2:us-west-2:123456789012:regional/webacl/test/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 

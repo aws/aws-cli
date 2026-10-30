@@ -2,7 +2,9 @@
 
 The following ``create-bgp-peer`` example creates an IPv6 BGP peering session on private virtual interface ``dxvif-fg1vuj3d``. The peer IPv6 addresses are automatically allocated by Amazon. ::
 
-    aws directconnect create-bgp-peer --virtual-interface-id dxvif-fg1vuj3d --new-bgp-peer asn=64600,addressFamily=ipv6
+    aws directconnect create-bgp-peer \
+        --virtual-interface-id dxvif-fg1vuj3d \
+        --new-bgp-peer asn=64600,addressFamily=ipv6
 
 Output::
 

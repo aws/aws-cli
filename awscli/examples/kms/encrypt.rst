@@ -6,8 +6,7 @@ The following ``encrypt`` example demonstrates the recommended way to encrypt da
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
         --plaintext fileb://ExamplePlaintextFile \
         --output text \
-        --query CiphertextBlob | base64 \
-        --decode > ExampleEncryptedFile
+        --query CiphertextBlob | base64 --decode > ExampleEncryptedFile
 
 The command does several things:
 
@@ -35,11 +34,13 @@ The command does several things:
 
 The following ``encrypt`` example is the same as the previous one, except that it uses the ``certutil`` tool instead of ``base64``. This procedure requires two commands, as shown in the following example. ::
 
-    aws kms encrypt \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
-        --plaintext fileb://ExamplePlaintextFile \
-        --output text \
+    aws kms encrypt ^
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab ^
+        --plaintext fileb://ExamplePlaintextFile ^
+        --output text ^
         --query CiphertextBlob > C:\Temp\ExampleEncryptedFile.base64
+
+Run the ``certutil`` command. ::
 
     certutil -decode C:\Temp\ExampleEncryptedFile.base64 C:\Temp\ExampleEncryptedFile
 
@@ -52,7 +53,6 @@ The following ``encrypt`` example shows how to encrypt plaintext with an asymmet
         --encryption-algorithm RSAES_OAEP_SHA_256 \
         --plaintext fileb://ExamplePlaintextFile \
         --output text \
-        --query CiphertextBlob | base64 \
-        --decode > ExampleEncryptedFile
+        --query CiphertextBlob | base64 --decode > ExampleEncryptedFile
 
 This command produces no output.

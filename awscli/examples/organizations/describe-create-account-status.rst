@@ -2,7 +2,8 @@
 
 The following ``describe-create-account-status`` example requests the latest status for a previous request to create an account in an organization. The specified ``--create-account-request-id`` comes from the response of the original call to create-account. The account creation request shows by the status field that Organizations successfully completed the creation of the account. ::
 
-    aws organizations describe-create-account-status --create-account-request-id car-examplecreateaccountrequestid111
+    aws organizations describe-create-account-status \
+        --create-account-request-id car-examplecreateaccountrequestid111
 
 Output::
 

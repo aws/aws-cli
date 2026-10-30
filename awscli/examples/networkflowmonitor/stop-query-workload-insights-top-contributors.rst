@@ -2,7 +2,7 @@
 
 The following ``stop-query-workload-insights-top-contributors`` example stops the query in the specified account. ::
 
-    aws networkflowmonitor stop-query-workload-insights-top-contributors \ 
+    aws networkflowmonitor stop-query-workload-insights-top-contributors \
         --scope-id e21cda79-30a0-4c12-9299-d8629d76d8cf \
         --query-id 1fc423d3-b144-37a6-80e6-e2c7d26eea0c
 

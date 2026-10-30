@@ -2,7 +2,8 @@
 
 The following ``get-application`` example displays information about an application that is associated with the user's AWS account. ::
 
-    aws deploy get-application --application-name WordPress_App
+    aws deploy get-application \
+        --application-name WordPress_App
 
 Output::
 

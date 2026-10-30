@@ -2,7 +2,11 @@
 
 The following ``import-source-credentials`` example imports a token for a Bitbucket repository that uses BASIC_AUTH for its authentication type. ::
 
-    aws codebuild import-source-credentials --server-type BITBUCKET --auth-type BASIC_AUTH --token my-Bitbucket-password --username my-Bitbucket-username
+    aws codebuild import-source-credentials \
+        --server-type BITBUCKET \
+        --auth-type BASIC_AUTH \
+        --token my-Bitbucket-password \
+        --username my-Bitbucket-username
 
 Output::
 

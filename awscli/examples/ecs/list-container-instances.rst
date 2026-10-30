@@ -2,7 +2,8 @@
 
 The following ``list-container-instances`` example lists all of the available container instances in a cluster. ::
 
-    aws ecs list-container-instances --cluster MyCluster
+    aws ecs list-container-instances \
+        --cluster MyCluster
 
 Output::
 

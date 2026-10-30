@@ -3,7 +3,7 @@
 The following ``describe-user`` example displays the details for the specified Amazon Connect user. ::
 
     aws connect describe-user \
-        --user-id 0c245dc0-0cf5-4e37-800e-2a7481cc8a60
+        --user-id 0c245dc0-0cf5-4e37-800e-2a7481cc8a60 \
         --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e
 
 Output::

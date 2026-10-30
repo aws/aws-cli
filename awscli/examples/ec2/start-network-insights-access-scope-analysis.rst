@@ -3,7 +3,6 @@
 The following ``start-network-insights-access-scope-analysis`` example starts the scope analysis in your AWS account. ::
 
     aws ec2 start-network-insights-access-scope-analysis \
-        --region us-east-1 \
         --network-insights-access-scope-id nis-123456789111
 
 Output::

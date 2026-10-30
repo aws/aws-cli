@@ -2,7 +2,8 @@
 
 The following ``describe-pull-request-events`` example retrieves the events for a pull request with the ID of '8'. ::
 
-    aws codecommit describe-pull-request-events --pull-request-id 8
+    aws codecommit describe-pull-request-events \
+        --pull-request-id 8
 
 Output::
 

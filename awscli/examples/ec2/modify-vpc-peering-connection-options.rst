@@ -2,7 +2,9 @@
 
 The following ``modify-vpc-peering-connection-options`` example modifies the VPC peering connection options for peering connection ``pcx-aaaabbbb`` to enable a local ClassicLink connection to communicate with the peer VPC. In this example, the owner of the requester VPC modifies the options. ::
 
-    aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --requester-peering-connection-options AllowEgressFromLocalClassicLinkToRemoteVpc=true
+    aws ec2 modify-vpc-peering-connection-options \
+        --vpc-peering-connection-id pcx-aaaabbbb \
+        --requester-peering-connection-options AllowEgressFromLocalClassicLinkToRemoteVpc=true
 
 Output::
 
@@ -16,7 +18,9 @@ Output::
 
 The following ``modify-vpc-peering-connection-options`` example modifies the VPC peering connection options for ``pcx-aaaabbbb`` to enable the local VPC to communicate with the ClassicLink connection in the peer VPC. In this example, the owner of the accepter VPC modifies the options. ::
 
-    aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --accepter-peering-connection-options AllowEgressFromLocalVpcToRemoteClassicLink=true
+    aws ec2 modify-vpc-peering-connection-options \
+        --vpc-peering-connection-id pcx-aaaabbbb \
+        --accepter-peering-connection-options AllowEgressFromLocalVpcToRemoteClassicLink=true
 
 Output::
 
@@ -30,7 +34,9 @@ Output::
 
 The following ``modify-vpc-peering-connection-options`` example modifies the VPC peering connection options for ``pcx-aaaabbbb`` to enable the local VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the peer VPC. In this example, the owner of the requester VPC modifies the options. ::
 
-    aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --requester-peering-connection-options AllowDnsResolutionFromRemoteVpc=true
+    aws ec2 modify-vpc-peering-connection-options \
+        --vpc-peering-connection-id pcx-aaaabbbb \
+        --requester-peering-connection-options AllowDnsResolutionFromRemoteVpc=true
 
 Output::
 

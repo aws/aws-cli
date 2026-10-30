@@ -2,7 +2,9 @@
 
 The following ``associate-hosted-connection`` example associates the specified hosted connection with the specified LAG. ::
 
-    aws directconnect associate-hosted-connection --parent-connection-id dxlag-fhccu14t --connection-id dxcon-fg9607vm
+    aws directconnect associate-hosted-connection \
+        --parent-connection-id dxlag-fhccu14t \
+        --connection-id dxcon-fg9607vm
 
 Output::
 

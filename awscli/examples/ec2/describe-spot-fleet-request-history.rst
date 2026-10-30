@@ -2,7 +2,9 @@
 
 The following ``describe-spot-fleet-request-history`` example returns the history for the specified Spot fleet starting at the specified time. ::
 
-    aws ec2 describe-spot-fleet-request-history --spot-fleet-request-id sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE --start-time 2015-05-26T00:00:00Z
+    aws ec2 describe-spot-fleet-request-history \
+        --spot-fleet-request-id sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE \
+        --start-time 2015-05-26T00:00:00Z
 
 The following example output shows the successful launches of two Spot Instances for the Spot fleet.
 

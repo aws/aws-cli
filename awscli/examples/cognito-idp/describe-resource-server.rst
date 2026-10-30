@@ -2,7 +2,9 @@
 
 The following ``describe-resource-server`` example describes the resource server weather.example.com. ::
 
-    aws cognito-idp describe-resource-server --user-pool-id us-west-2_aaaaaaaaa --identifier weather.example.com
+    aws cognito-idp describe-resource-server \
+        --user-pool-id us-west-2_aaaaaaaaa \
+        --identifier weather.example.com
 
 Output::
 

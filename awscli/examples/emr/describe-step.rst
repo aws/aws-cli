@@ -2,7 +2,9 @@
 
 The following ``describe-step`` example describes a step with the step ID ``s-3LZC0QUT43AM`` in a cluster with the cluster ID ``j-3SD91U2E1L2QX``. ::
 
-    aws emr describe-step --cluster-id j-3SD91U2E1L2QX --step-id s-3LZC0QUT43AM
+    aws emr describe-step \
+        --cluster-id j-3SD91U2E1L2QX \
+        --step-id s-3LZC0QUT43AM
 
 Output::
 

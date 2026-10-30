@@ -2,7 +2,8 @@
 
 The following ``create-application`` example creates an application and associates it with the user's AWS account. ::
 
-    aws deploy create-application --application-name MyOther_App
+    aws deploy create-application \
+        --application-name MyOther_App
 
 Output::
 

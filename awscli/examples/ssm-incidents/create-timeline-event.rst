@@ -20,11 +20,11 @@ Output::
 The following ``create-timeline-event`` example creates a timeline event that is listed in the 'Incident notes' panel. ::
 
     aws ssm-incidents create-timeline-event \
-         --event-data "\"New Note\"" \
-         --event-type "Note" \
-         --incident-record-arn "arn:aws:ssm-incidents::111122223333:incident-record/Test/6cc46130-ca6c-3b38-68f1-f6abeEXAMPLE" \
-         --event-time 2023-06-20T12:06:00.000 \
-         --event-references '[{"resource":"arn:aws:ssm-incidents::111122223333:incident-record/Test/6cc46130-ca6c-3b38-68f1-f6abeEXAMPLE"}]'
+        --event-data "\"New Note\"" \
+        --event-type "Note" \
+        --incident-record-arn "arn:aws:ssm-incidents::111122223333:incident-record/Test/6cc46130-ca6c-3b38-68f1-f6abeEXAMPLE" \
+        --event-time 2023-06-20T12:06:00.000 \
+        --event-references '[{"resource":"arn:aws:ssm-incidents::111122223333:incident-record/Test/6cc46130-ca6c-3b38-68f1-f6abeEXAMPLE"}]'
 
 Output::
 

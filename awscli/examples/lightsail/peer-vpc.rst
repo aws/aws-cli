@@ -1,9 +1,8 @@
 **To peer the Amazon Lightsail virtual private cloud**
 
-The following ``peer-vpc`` example peers the Amazon Lightsail virtual private cloud (VPC) for the specified AWS Region. ::
+The following ``peer-vpc`` example peers the Amazon Lightsail virtual private cloud (VPC) for the current AWS Region. ::
 
-    aws lightsail peer-vpc \
-        --region us-west-2
+    aws lightsail peer-vpc
 
 
 Output::

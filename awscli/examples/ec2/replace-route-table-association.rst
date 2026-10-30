@@ -2,7 +2,9 @@
 
 The following ``replace-route-table-association`` example associates the specified route table with the subnet for the specified route table association. ::
 
-    aws ec2 replace-route-table-association --association-id rtbassoc-781d0d1a --route-table-id rtb-22574640
+    aws ec2 replace-route-table-association \
+        --association-id rtbassoc-781d0d1a \
+        --route-table-id rtb-22574640
 
 Output::
 

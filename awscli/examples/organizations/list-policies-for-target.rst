@@ -2,8 +2,10 @@
 
 The following ``list-policies-for-target`` example gets a list of all service control policies (SCPs), as specified by the ``--filter`` parameter, that are directly attached to an account. ::
 
-    aws organizations list-policies-for-target --filter SERVICE_CONTROL_POLICY --target-id 444444444444
-
+    aws organizations list-policies-for-target \
+        --filter SERVICE_CONTROL_POLICY \
+        --target-id 444444444444
+  
 The output includes a list of policy structures with summary information about the policies. The list does not include policies that apply to the account because of inheritance from its location in an OU hierarchy: ::
 
     {

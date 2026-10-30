@@ -2,7 +2,10 @@
 
 The following ``create-interconnect`` example creates an interconnect between an AWS Direct Connect partner's network and a specific AWS Direct Connect location. ::
 
-    aws directconnect create-interconnect --interconnect-name "1G Interconnect to AWS" --bandwidth 1Gbps --location TIVIT
+    aws directconnect create-interconnect \
+        --interconnect-name "1G Interconnect to AWS" \
+        --bandwidth 1Gbps \
+        --location TIVIT
 
 Output::
 

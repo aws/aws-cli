@@ -2,7 +2,8 @@
 
 The following ``get-rest-api`` example gets information about the specified REST API. ::
 
-    aws apigateway get-rest-api --rest-api-id 1234123412
+    aws apigateway get-rest-api \
+        --rest-api-id 1234123412
 
 Output::
 

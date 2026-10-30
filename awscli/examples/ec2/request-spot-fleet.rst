@@ -7,7 +7,8 @@ If the instances are launched in a nondefault VPC, they do not receive a public 
 
 Note that you can't specify different subnets from the same Availability Zone in a Spot fleet request. ::
 
-    aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
+    aws ec2 request-spot-fleet \
+        --spot-fleet-request-config file://config.json
 
 Config.json::
 
@@ -47,7 +48,8 @@ The Spot fleet launches the instances in the specified Availability Zone with th
 If your account supports EC2-VPC only, Amazon EC2 launches the Spot instances in the default subnet of the Availability Zone. 
 If your account supports EC2-Classic, Amazon EC2 launches the instances in EC2-Classic in the Availability Zone. ::
 
-    aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
+    aws ec2 request-spot-fleet \
+        --spot-fleet-request-config file://config.json
 
 Config.json::
 
@@ -81,7 +83,8 @@ The following ``request-spot-fleet`` example assigns public addresses to instanc
 Note that when you specify a network interface, you must include the subnet ID and security group ID
 using the network interface. ::
 
-    aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
+    aws ec2 request-spot-fleet \
+        --spot-fleet-request-config file://config.json
 
 Config.json::
 
@@ -115,7 +118,8 @@ The following ``request-spot-fleet`` example creates a Spot fleet request that l
 The launch specifications differ by instance type. The Spot fleet distributes the instances
 across the launch specifications such that there are 10 instances of each type. ::
 
-    aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
+    aws ec2 request-spot-fleet \
+        --spot-fleet-request-config file://config.json
 
 Config.json::
 

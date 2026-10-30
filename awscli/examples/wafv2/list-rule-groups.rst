@@ -1,10 +1,9 @@
 **To retrieve a list of custom rule groups**
 
-The following ``list-rule-groups`` example retrieves all custom rule groups that are defined for the account for the specified scope and region location. ::
+The following ``list-rule-groups`` example retrieves all custom rule groups that are defined for the account for the specified scope. ::
 
     aws wafv2 list-rule-groups \
-        --scope REGIONAL \
-        --region us-west-2
+        --scope REGIONAL
 
 Output::
 

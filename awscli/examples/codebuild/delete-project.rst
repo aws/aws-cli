@@ -2,7 +2,8 @@
 
 The following ``delete-project`` example deletes the specified CodeBuild build project. ::
 
-    aws codebuild delete-project --name my-project
+    aws codebuild delete-project \
+        --name my-project
     
 This command produces no output.
 

@@ -4,10 +4,10 @@ The following ``list-fhir-export-jobs`` example shows how to use the command to 
 
     aws healthlake list-fhir-export-jobs \
         --datastore-id (Data store ID) \
-        --submitted-before (DATE like 2024-10-13T19:00:00Z)\
-        --submitted-after (DATE like 2020-10-13T19:00:00Z )\
+        --submitted-before (DATE like 2024-10-13T19:00:00Z) \
+        --submitted-after (DATE like 2020-10-13T19:00:00Z ) \
         --job-name "FHIR-EXPORT" \
-        --job-status SUBMITTED  \
+        --job-status SUBMITTED \
         --max-results (Integer between 1 and 500)
 
 Output::

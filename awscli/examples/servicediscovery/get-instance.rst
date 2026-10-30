@@ -3,7 +3,7 @@
 The following ``get-instance`` example gets the attributes of a service. ::
 
     aws servicediscovery get-instance \
-        --service-id srv-e4anhexample0004
+        --service-id srv-e4anhexample0004 \
         --instance-id i-abcd1234
 
 Output::

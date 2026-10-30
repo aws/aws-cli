@@ -2,7 +2,9 @@
 
 The following ``get-stage`` example gets information about the ``dev`` stage of a REST API. ::
 
-    aws apigateway get-stage --rest-api-id 1234123412 --stage-name dev
+    aws apigateway get-stage \
+        --rest-api-id 1234123412 \
+        --stage-name dev
 
 Output::
 

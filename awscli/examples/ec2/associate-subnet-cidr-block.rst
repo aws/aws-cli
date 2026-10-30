@@ -2,7 +2,9 @@
 
 The following ``associate-subnet-cidr-block`` example associates an IPv6 CIDR block with the specified subnet. ::
 
-    aws ec2 associate-subnet-cidr-block --subnet-id subnet-5f46ec3b --ipv6-cidr-block 2001:db8:1234:1a00::/64
+    aws ec2 associate-subnet-cidr-block \
+        --subnet-id subnet-5f46ec3b \
+        --ipv6-cidr-block 2001:db8:1234:1a00::/64
 
 Output::
 

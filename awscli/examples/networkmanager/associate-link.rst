@@ -5,8 +5,7 @@ The following ``associate-link`` example associates link ``link-11112222aaaabbbb
     aws networkmanager associate-link \
         --global-network-id global-network-01231231231231231 \
         --device-id device-07f6fd08867abc123 \
-        --link-id link-11112222aaaabbbb1 \
-        --region us-west-2
+        --link-id link-11112222aaaabbbb1
 
 Output::
 

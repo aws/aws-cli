@@ -2,7 +2,10 @@
 
 The following ``create-job`` example creates an import job from a manifest file. ::
 
-    aws importexport create-job --job-type import --manifest file://manifest --no-validate-only
+    aws importexport create-job \
+        --job-type import \
+        --manifest file://manifest \
+        --no-validate-only
 
 The file ``manifest`` is a YAML formatted text file in the current directory with the following content::
 
@@ -27,7 +30,9 @@ For more information on the manifest file format, see `Creating Import Manifests
 
 You can also pass the manifest as a string in quotes. ::
 
-    aws importexport create-job --job-type import --manifest 'manifestVersion: 2.0;
+    aws importexport create-job \
+        --job-type import \
+        --manifest 'manifestVersion: 2.0;
         returnAddress:
         name: Jane Roe
         company: Example Corp.

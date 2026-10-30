@@ -6,32 +6,38 @@ will not be retained after the specified number of days have passed. ::
     aws swf register-domain \
         --name MyNeatNewDomain \
         --workflow-execution-retention-period-in-days 0
-        ""
 
 When you register a domain, nothing is returned (""), but you can use ``swf list-domains`` or ``swf describe-domain`` to see the new domain. ::
 
     aws swf list-domains \
         --registration-status REGISTERED
+
+Output::
+
+    {
+        "domainInfos": [
             {
-                "domainInfos": [
-                    {
-                        "status": "REGISTERED",
-                        "name": "DataFrobotz"
-                    },
-                    {
-                        "status": "REGISTERED",
-                        "name": "MyNeatNewDomain"
-                    },
-                    {
-                        "status": "REGISTERED",
-                        "name": "erontest"
-                    }
-                ]
+                "status": "REGISTERED",
+                "name": "DataFrobotz"
+            },
+            {
+                "status": "REGISTERED",
+                "name": "MyNeatNewDomain"
+            },
+            {
+                "status": "REGISTERED",
+                "name": "erontest"
             }
+        ]
+    }
 
 The following example uses ``swf describe-domain`` to see the new domain. ::
 
-    aws swf describe-domain --name MyNeatNewDomain
+    aws swf describe-domain \
+        --name MyNeatNewDomain
+
+Output::
+
     {
         "domainInfo": {
             "status": "REGISTERED",

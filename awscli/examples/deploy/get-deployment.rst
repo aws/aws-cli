@@ -2,7 +2,8 @@
 
 The following ``get-deployment`` example displays information about a deployment that is associated with the user's AWS account. ::
 
-    aws deploy get-deployment --deployment-id d-A1B2C3123
+    aws deploy get-deployment \
+        --deployment-id d-A1B2C3123
 
 Output::
 

@@ -3,8 +3,7 @@
 The following ``get-links`` example gets the links in the specified global network. ::
 
     aws networkmanager get-links \
-        --global-network-id global-network-01231231231231231 \
-        --region us-west-2
+        --global-network-id global-network-01231231231231231
 
 Output::
 

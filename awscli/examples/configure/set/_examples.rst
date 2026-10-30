@@ -66,10 +66,12 @@ To set a parameter in a sub-section, use one of the available sub-section parame
 
 For example, to set the ``sso_start_url`` in the ``my-sso-session`` SSO session sub-section, use the following command. ::
 
-    aws configure set --sso-session my-sso-session sso_start_url https://my-sso-portal.awsapps.com/start
+    aws configure set sso_start_url https://my-sso-portal.awsapps.com/start \
+        --sso-session my-sso-session
 
 To set a nested property, use dotted notation for the parameter name along with a sub-section parameter.
 For example, to set a service-specific endpoint URL for EC2 in a services sub-section called ``my-services``, use the following command. ::
 
-    aws configure set --services my-services ec2.endpoint_url http://localhost:4567
+    aws configure set ec2.endpoint_url http://localhost:4567 \
+        --services my-services
 

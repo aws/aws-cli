@@ -3,7 +3,7 @@
 The following ``describe-custom-routing-accelerator-attributes`` example describes the attributes for a custom routing accelerator. ::
 
     aws globalaccelerator describe-custom-routing-accelerator-attributes \
-       --accelerator-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh
+        --accelerator-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh
 
 Output::
 

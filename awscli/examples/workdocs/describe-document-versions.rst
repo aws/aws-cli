@@ -2,7 +2,9 @@
 
 The following ``describe-document-versions`` example retrieves the document versions for the specified document, including initialized versions and a URL for the source document. ::
 
-    aws workdocs describe-document-versions --document-id d90d93c1fe44bad0c8471e973ebaab339090401a95e777cffa58e977d2983b65 --fields SOURCE
+    aws workdocs describe-document-versions \
+        --document-id d90d93c1fe44bad0c8471e973ebaab339090401a95e777cffa58e977d2983b65 \
+        --fields SOURCE
 
 Output::
 

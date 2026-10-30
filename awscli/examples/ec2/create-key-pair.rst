@@ -2,7 +2,8 @@
 
 The following ``create-key-pair`` example creates a key pair named ``MyKeyPair``. ::
 
-    aws ec2 create-key-pair --key-name MyKeyPair
+    aws ec2 create-key-pair \
+        --key-name MyKeyPair
 
 The output is an ASCII version of the private key and key fingerprint. You need to save the key to a file.
 

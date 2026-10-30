@@ -3,7 +3,7 @@
 The following ``create-build`` example creates a custom game build resource. It uses zipped files that are stored in an S3 location in an AWS account that you control. This example assumes that you've already created an IAM role that gives Amazon GameLift permission to access the S3 location. Since the request does not specify an operating system, the new build resource defaults to WINDOWS_2012. ::
 
     aws gamelift create-build \
-        --storage-location file://storage-loc.json \ 
+        --storage-location file://storage-loc.json \
         --name MegaFrogRaceServer.NA \
         --build-version 12345.678
 

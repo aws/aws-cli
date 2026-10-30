@@ -4,8 +4,7 @@ The following ``get-endpoint`` example retrieves information about the settings 
 
     aws pinpoint get-endpoint \
         --application-id 611e3e3cdd47474c9c1399a505665b91 \
-        --endpoint-id testendpoint \
-        --region us-east-1
+        --endpoint-id testendpoint
 
 Output::
 

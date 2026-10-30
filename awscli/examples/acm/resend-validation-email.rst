@@ -2,4 +2,7 @@
 
 The following ``resend-validation-email`` example tells the Amazon certificate authority to send validation email to the appropriate addresses. ::
 
-    aws acm resend-validation-email --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 --domain www.example.com --validation-domain example.com
+    aws acm resend-validation-email \
+        --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 \
+        --domain www.example.com \
+        --validation-domain example.com

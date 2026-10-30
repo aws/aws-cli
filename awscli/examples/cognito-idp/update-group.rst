@@ -2,7 +2,11 @@
 
 The following ``update-group`` example updates the description and precedence for MyGroup. ::
 
-    aws cognito-idp update-group --user-pool-id us-west-2_aaaaaaaaa --group-name MyGroup --description "New description" --precedence 2
+    aws cognito-idp update-group \
+        --user-pool-id us-west-2_aaaaaaaaa \
+        --group-name MyGroup \
+        --description "New description" \
+        --precedence 2
 
 Output::
 

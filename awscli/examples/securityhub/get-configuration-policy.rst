@@ -3,7 +3,7 @@
 The following ``get-configuration-policy`` example retrieves details about the specified configuration policy. ::
 
     aws securityhub get-configuration-policy \
-       --identifier "arn:aws:securityhub:eu-central-1:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+        --identifier "arn:aws:securityhub:eu-central-1:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 

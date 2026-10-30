@@ -3,7 +3,8 @@
 The following ``describe-default-cluster-parameters`` example returns a description of the default cluster parameters for the
 ``redshift-1.0`` family. By default, the output is in JSON format. ::
 
-    aws redshift describe-default-cluster-parameters --parameter-group-family redshift-1.0
+    aws redshift describe-default-cluster-parameters \
+        --parameter-group-family redshift-1.0
 
 Result::
 

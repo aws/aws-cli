@@ -2,7 +2,7 @@
 
 The following ``get-signing-platform`` example displays details about the specified signing platform. ::
 
-    aws signer get-signing-platform \ 
+    aws signer get-signing-platform \
         --platform-id AmazonFreeRTOS-TI-CC3220SF
 
 Output::

@@ -2,7 +2,8 @@
 
 The following ``list-runs`` example lists the runs for the specified pipeline. ::
 
-    aws datapipeline list-runs --pipeline-id df-00627471SOVYZEXAMPLE
+    aws datapipeline list-runs \
+        --pipeline-id df-00627471SOVYZEXAMPLE
 
 Output::
 
@@ -17,4 +18,6 @@ Output::
 
 The following ``list-runs`` example uses the ``--start-interval`` to specify the dates to include in the output. ::
 
-    aws datapipeline list-runs --pipeline-id df-01434553B58A2SHZUKO5 --start-interval 2017-10-07T00:00:00,2017-10-08T00:00:00
+    aws datapipeline list-runs \
+        --pipeline-id df-01434553B58A2SHZUKO5 \
+        --start-interval 2017-10-07T00:00:00,2017-10-08T00:00:00

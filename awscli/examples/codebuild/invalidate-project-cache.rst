@@ -2,7 +2,8 @@
 
 The following ``invalidate-project-cache`` example resets the cache for the specified CodeBuild project. ::
 
-    aws codebuild invalidate-project-cache --project-name my-project
+    aws codebuild invalidate-project-cache \
+        --project-name my-project
 
 This command produces no output.
 

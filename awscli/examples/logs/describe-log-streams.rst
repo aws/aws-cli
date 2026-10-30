@@ -2,7 +2,9 @@
 
 The following ``describe-log-streams`` example shows all log streams starting with the prefix ``2015`` in the log group ``my-logs``. ::
 
-    aws logs describe-log-streams --log-group-name my-logs --log-stream-name-prefix 2015
+    aws logs describe-log-streams \
+        --log-group-name my-logs \
+        --log-stream-name-prefix 2015
 
 Output::
 

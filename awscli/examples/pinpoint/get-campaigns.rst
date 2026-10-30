@@ -3,8 +3,7 @@
 The following ``get-campaigns`` example retrieves information about the status, configuration, and other settings for all the campaigns that are associated with an application. ::
 
     aws pinpoint get-campaigns \
-        --application-id 6e0b7591a90841d2b5d93fa11143e5a7 \
-        --region us-east-1
+        --application-id 6e0b7591a90841d2b5d93fa11143e5a7
 
 Output::
 

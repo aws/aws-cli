@@ -2,7 +2,7 @@
 
 The following ``list-flywheel-iteration-history`` example lists all iterations of a flywheel. ::
 
-    aws comprehend list-flywheel-iteration-history
+    aws comprehend list-flywheel-iteration-history \
         --flywheel-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel
 
 Output::

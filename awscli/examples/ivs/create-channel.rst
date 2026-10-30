@@ -95,7 +95,7 @@ For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/
 The following ``create-channel`` example creates a new channel and an associated stream key to start streaming, and sets up a playback restriction policy for the channel. ::
 
     aws ivs create-channel \
-        --name test-channel-with-playback-restriction-policy\
+        --name test-channel-with-playback-restriction-policy \
         --insecure-ingest \
         --playback-restriction-policy-arn 'arn:aws:ivs:us-west-2:123456789012:playback-restriction-policy/ABcdef34ghIJ'
 

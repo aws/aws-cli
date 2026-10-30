@@ -2,7 +2,9 @@
 
 The following ``send-message-batch`` example sends 2 messages with the specified message bodies, delay periods, and message attributes, to the specified queue. ::
 
-    aws sqs send-message-batch --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --entries file://send-message-batch.json
+    aws sqs send-message-batch \
+        --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue \
+        --entries file://send-message-batch.json
 
 Input file (send-message-batch.json)::
 

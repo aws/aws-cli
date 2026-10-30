@@ -2,7 +2,8 @@
 
 The following ``describe-virtual-interfaces`` example lists the information about all virtual interfaces associated with your AWS account. ::
 
-    aws directconnect describe-virtual-interfaces --connection-id dxcon-ffjrkx17
+    aws directconnect describe-virtual-interfaces \
+        --connection-id dxcon-ffjrkx17
 
 Output::
 

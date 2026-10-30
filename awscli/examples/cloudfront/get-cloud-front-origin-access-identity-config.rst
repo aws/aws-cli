@@ -8,7 +8,8 @@ returned in the output of the
 `list-cloud-front-origin-access-identities
 <list-cloud-front-origin-access-identities.html>`_ commands. ::
 
-    aws cloudfront get-cloud-front-origin-access-identity-config --id E74FTE3AEXAMPLE
+    aws cloudfront get-cloud-front-origin-access-identity-config \
+        --id E74FTE3AEXAMPLE
 
 Output::
 

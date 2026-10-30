@@ -2,8 +2,7 @@
 
 The following ``describe-global-networks`` example describes all of your global networks in your account. ::
 
-    aws networkmanager describe-global-networks \
-        --region us-west-2
+    aws networkmanager describe-global-networks
 
 Output::
 

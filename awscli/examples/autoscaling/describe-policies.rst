@@ -89,6 +89,8 @@ See example 1 for sample output.
 
 If the output includes a ``NextToken`` field, use the value of this field with the ``--starting-token`` option in a subsequent call to get the additional policies. ::
 
-    aws autoscaling describe-policies --auto-scaling-group-name my-asg --starting-token Z3M3LMPEXAMPLE
+    aws autoscaling describe-policies \
+        --auto-scaling-group-name my-asg \
+        --starting-token Z3M3LMPEXAMPLE
 
 For more information, see `Dynamic scaling <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

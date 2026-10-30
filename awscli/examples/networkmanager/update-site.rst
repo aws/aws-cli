@@ -5,8 +5,7 @@ The following ``update-site`` example updates the description for site ``site-44
     aws networkmanager update-site \
         --global-network-id global-network-01231231231231231 \
         --site-id site-444555aaabbb11223 \
-        --description "New York Office site" \
-        --region us-west-2
+        --description "New York Office site"
 
 Output::
 

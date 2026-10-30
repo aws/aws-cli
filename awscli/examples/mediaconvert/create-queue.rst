@@ -4,7 +4,6 @@ The following ``create-queue`` example creates a custom transcoding queue. ::
 
     aws mediaconvert create-queue \
         --endpoint-url https://abcd1234.mediaconvert.region-name-1.amazonaws.com \
-        --region region-name-1 \
         --name Queue1 \
         --description "Keep this queue empty unless job is urgent."
 

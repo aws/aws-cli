@@ -2,7 +2,8 @@
 
 The following ``describe-compute-environments`` example describes the `P2OnDemand` compute environment. ::
 
-    aws batch describe-compute-environments --compute-environments P2OnDemand
+    aws batch describe-compute-environments \
+        --compute-environments P2OnDemand
 
 Output::
 

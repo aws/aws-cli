@@ -2,8 +2,7 @@
 
 The following ``describe-network-insights-access-scope-analyses`` example describes the access scope analysis in your AWS account. ::
 
-    aws ec2 describe-network-insights-access-scope-analyses \
-        --region us-east-1
+    aws ec2 describe-network-insights-access-scope-analyses
 
 Output::
 

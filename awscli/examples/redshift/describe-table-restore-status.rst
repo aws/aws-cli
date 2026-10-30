@@ -2,7 +2,7 @@
 
 The following ``describe-table-restore-status`` example displays details for table restore requests made for the specified cluster. ::
 
-    aws redshift describe-table-restore-status /
+    aws redshift describe-table-restore-status \
         --cluster-identifier mycluster
 
 Output::

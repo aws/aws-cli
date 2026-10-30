@@ -2,7 +2,8 @@
 
 The following ``get-document`` example retrieves the details of the specified document. ::
 
-    aws workdocs get-document --document-id d90d93c1fe44bad0c8471e973ebaab339090401a95e777cffa58e977d2983b65
+    aws workdocs get-document \
+        --document-id d90d93c1fe44bad0c8471e973ebaab339090401a95e777cffa58e977d2983b65
 
 Output::
 

@@ -2,7 +2,8 @@
 
 The following ``poll-for-jobs`` example returns information about any jobs for a job worker to act upon. This example uses a pre-defined JSON file (MyActionTypeInfo.json) to supply information about the action type for which the job worker processes jobs. This command is only used for custom actions. When this command is called, AWS CodePipeline returns temporary credentials for the Amazon S3 bucket used to store artifacts for the pipeline. This command will also return any secret values defined for the action, if any are defined. ::
 
-    aws codepipeline poll-for-jobs --cli-input-json file://MyActionTypeInfo.json
+    aws codepipeline poll-for-jobs \
+        --cli-input-json file://MyActionTypeInfo.json
 
 JSON file sample contents::
 

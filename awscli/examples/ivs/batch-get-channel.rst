@@ -3,8 +3,7 @@
 The following ``batch-get-channel`` example lists information about the specified channels. ::
 
     aws ivs batch-get-channel \
-        --arns arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
-            arn:aws:ivs:us-west-2:123456789012:channel/efghEFGHijkl
+        --arns arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh arn:aws:ivs:us-west-2:123456789012:channel/efghEFGHijkl
 
 Output::
 

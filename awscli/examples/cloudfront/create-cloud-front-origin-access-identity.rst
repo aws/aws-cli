@@ -4,8 +4,7 @@ The following ``create-cloud-front-origin-access-identity`` example creates a Cl
 providing the OAI configuration as a command line argument. ::
 
     aws cloudfront create-cloud-front-origin-access-identity \
-        --cloud-front-origin-access-identity-config \
-            CallerReference="cli-example",Comment="Example OAI"
+        --cloud-front-origin-access-identity-config CallerReference="cli-example",Comment="Example OAI"
 
 You can accomplish the same thing by providing the OAI configuration in a JSON
 file, as shown in the following example. ::

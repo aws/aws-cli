@@ -3,8 +3,8 @@
 The following ``delete-repository-policy`` example delete repository policy for the ECR Public repository in your AWS account. ::
 
     aws ecr-public delete-repository-policy \
-         --repository-name project-a/nginx-web-app \
-         --region us-east-1
+        --repository-name project-a/nginx-web-app \
+        --region us-east-1
 
 Output::
 

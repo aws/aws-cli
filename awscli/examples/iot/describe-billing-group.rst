@@ -2,7 +2,8 @@
 
 The following ``describe-billing-group`` example gets information for the specified billing group. ::
 
-    aws iot describe-billing-group --billing-group-name GroupOne
+    aws iot describe-billing-group \
+        --billing-group-name GroupOne
 
 Output::
 

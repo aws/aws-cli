@@ -1,9 +1,8 @@
 **To unpeer the Amazon Lightsail virtual private cloud**
 
-The following ``unpeer-vpc`` example unpeers the Amazon Lightsail virtual private cloud (VPC) for the specified AWS Region. ::
+The following ``unpeer-vpc`` example unpeers the Amazon Lightsail virtual private cloud (VPC) for the current AWS Region. ::
 
-    aws lightsail unpeer-vpc \
-        --region us-west-2
+    aws lightsail unpeer-vpc
 
 Output::
 

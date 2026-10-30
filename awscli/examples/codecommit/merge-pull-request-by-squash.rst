@@ -8,7 +8,8 @@ The following ``merge-pull-request-by-squash`` example merges and closes the spe
         --repository-name MyDemoRepo \
         --conflict-detail-level LINE_LEVEL \
         --conflict-resolution-strategy ACCEPT_SOURCE \
-        --name "Jorge Souza" --email "jorge_souza@example.com" \
+        --name "Jorge Souza" \
+        --email "jorge_souza@example.com" \
         --commit-message "Merging pull request 47 by squash and accepting source in merge conflicts"
 
 Output::

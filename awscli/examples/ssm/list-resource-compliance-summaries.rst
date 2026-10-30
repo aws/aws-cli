@@ -82,5 +82,6 @@ Output::
 
 The following ``list-resource-compliance-summaries`` example lists resource-level compliance summaries for the Patch compliance type. ::
 
-    aws ssm list-resource-compliance-summaries --filters "Key=ComplianceType,Values=Patch,Type=EQUAL"
+    aws ssm list-resource-compliance-summaries \
+        --filters "Key=ComplianceType,Values=Patch,Type=EQUAL"
 

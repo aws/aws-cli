@@ -4,7 +4,6 @@ The following ``create-job`` example creates a transcoding job with the settings
 
     aws mediaconvert create-job \
         --endpoint-url https://abcd1234.mediaconvert.region-name-1.amazonaws.com \
-        --region region-name-1 \
         --cli-input-json file://~/job.json
 
 You can use the AWS Elemental MediaConvert console to generate the JSON job specification by choosing your job settings, and then choosing **Show job JSON** at the bottom of the **Job** section. 

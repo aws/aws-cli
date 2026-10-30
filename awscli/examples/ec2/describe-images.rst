@@ -1,9 +1,8 @@
 **Example 1: To describe an AMI**
 
-The following ``describe-images`` example describes the specified AMI in the specified Region. ::
+The following ``describe-images`` example describes the specified AMI. ::
 
     aws ec2 describe-images \
-        --region us-east-1 \
         --image-ids ami-1234567890EXAMPLE
 
 Output::
@@ -65,12 +64,17 @@ The following ``describe-images`` example describes all AMIs that have the tag `
 
     aws ec2 describe-images \
         --filters "Name=tag:Type,Values=Custom" \
-        --query 'Images[*].[ImageId]' \
-        --output text
+        --query 'Images[*].[ImageId]'
 
 Output::
 
-    ami-1234567890EXAMPLE
-    ami-0abcdef1234567890
+    [
+        [
+            "ami-1234567890EXAMPLE"
+        ],
+        [
+            "ami-0abcdef1234567890"
+        ]
+    ]
 
 For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.

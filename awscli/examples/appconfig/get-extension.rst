@@ -3,7 +3,6 @@
 The following ``get-extension`` example displays information about an extension. ::
 
     aws appconfig get-extension \
-        --region us-west-2 \
         --extension-identifier S3-backup-extension
 
 Output::

@@ -2,7 +2,9 @@
 
 The following ``associate-route-table`` example associates the specified route table with the specified subnet. ::
 
-    aws ec2 associate-route-table --route-table-id rtb-22574640 --subnet-id subnet-9d4a7b6c
+    aws ec2 associate-route-table \
+        --route-table-id rtb-22574640 \
+        --subnet-id subnet-9d4a7b6c
 
 Output::
 

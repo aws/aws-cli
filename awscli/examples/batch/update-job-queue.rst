@@ -2,7 +2,9 @@
 
 The following ``update-job-queue`` example disables a job queue so that it can be deleted. ::
 
-    aws batch update-job-queue --job-queue GPGPU --state DISABLED
+    aws batch update-job-queue \
+        --job-queue GPGPU \
+        --state DISABLED
 
 Output::
 

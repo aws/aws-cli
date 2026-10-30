@@ -2,7 +2,8 @@
 
 The following ``describe-launch-template-versions`` example describes the versions of the specified launch template. ::
 
-    aws ec2 describe-launch-template-versions --launch-template-id lt-068f72b72934aff71
+    aws ec2 describe-launch-template-versions \
+        --launch-template-id lt-068f72b72934aff71
 
 Output::
 

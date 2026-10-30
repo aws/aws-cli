@@ -5,7 +5,8 @@ The following ``create-maintenance-window`` example creates a new maintenance wi
     aws ssm create-maintenance-window \
         --name "My-Tutorial-Maintenance-Window" \
         --schedule "rate(5 minutes)" \
-        --duration 2 --cutoff 1 \
+        --duration 2 \
+        --cutoff 1 \
         --allow-unassociated-targets \
         --tags "Key=Purpose,Value=Tutorial"
 

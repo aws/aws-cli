@@ -2,7 +2,9 @@
 
 The following ``describe-compliance-by-resource`` example returns compliance information for each EC2 instance that is recorded by AWS Config and that violates one or more rules. ::
 
-    aws configservice describe-compliance-by-resource --resource-type AWS::EC2::Instance --compliance-types NON_COMPLIANT
+    aws configservice describe-compliance-by-resource \
+        --resource-type AWS::EC2::Instance \
+        --compliance-types NON_COMPLIANT
 
 In the output, the value for each ``CappedCount`` attribute indicates how many rules the resource violates. For example, the following output indicates that instance ``i-1a2b3c4d`` violates 2 rules.
 

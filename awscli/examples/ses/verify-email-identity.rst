@@ -2,7 +2,8 @@
 
 The following ``verify-email-identity`` example verifies an email address. ::
 
-    aws ses verify-email-identity --email-address user@example.com
+    aws ses verify-email-identity \
+        --email-address user@example.com
 
 Before you can send an email using Amazon SES, you must verify the address or domain that you are sending the email
 from to prove that you own it. If you do not have production access yet, you also need to verify any email addresses

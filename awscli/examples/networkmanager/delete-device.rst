@@ -4,8 +4,7 @@ The following ``delete-device`` example deletes the specified device from the sp
 
     aws networkmanager delete-device \
         --global-network-id global-network-01231231231231231 \
-        --device-id device-07f6fd08867abc123 \
-        --region us-west-2
+        --device-id device-07f6fd08867abc123
 
 Output::
 

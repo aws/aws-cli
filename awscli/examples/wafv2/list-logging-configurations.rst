@@ -3,8 +3,7 @@
 The following ``list-logging-configurations`` example retrieves all logging configurations for web ACLs that are scoped for regional use in the ``us-west-2`` region. ::
 
     aws wafv2 list-logging-configurations \
-        --scope REGIONAL \
-        --region us-west-2 
+        --scope REGIONAL
 
 Output::
 

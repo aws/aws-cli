@@ -3,8 +3,8 @@
 The following ``batch-associate-client-device-with-core-device`` example associates two client devices with a core device. ::
 
     aws greengrassv2 batch-associate-client-device-with-core-device \
-      --core-device-thing-name MyGreengrassCore \
-      --entries thingName=MyClientDevice1 thingName=MyClientDevice2
+        --core-device-thing-name MyGreengrassCore \
+        --entries thingName=MyClientDevice1 thingName=MyClientDevice2
 
 Output::
 

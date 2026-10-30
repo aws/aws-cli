@@ -2,4 +2,5 @@
 
 The following ``cancel-update-stack`` example cancels a stack update on the ``myteststack`` stack. ::
 
-    aws cloudformation cancel-update-stack --stack-name myteststack
+    aws cloudformation cancel-update-stack \
+        --stack-name myteststack

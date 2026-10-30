@@ -2,7 +2,8 @@
 
 The following ``get-pipeline`` example returns the structure of a pipeline named MyFirstPipeline. ::
 
-    aws codepipeline get-pipeline --name MyFirstPipeline
+    aws codepipeline get-pipeline \
+        --name MyFirstPipeline
 
 
 Output::

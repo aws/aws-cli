@@ -2,7 +2,12 @@
 
 The following ``create-model`` example creates a model named ``firstModel`` for the specified API. ::
 
-    aws apigateway create-model --rest-api-id 1234123412 --name 'firstModel' --description 'The First Model' --content-type 'application/json'  --schema '{ "$schema": "http://json-schema.org/draft-04/schema#", "title": "firstModel", "type": "object", "properties": { "firstProperty" : { "type": "object", "properties": { "key": { "type": "string" } } } } }'
+    aws apigateway create-model \
+        --rest-api-id 1234123412 \
+        --name 'firstModel' \
+        --description 'The First Model' \
+        --content-type 'application/json' \
+        --schema '{ "$schema": "http://json-schema.org/draft-04/schema#", "title": "firstModel", "type": "object", "properties": { "firstProperty" : { "type": "object", "properties": { "key": { "type": "string" } } } } }'
 
 Output::
 

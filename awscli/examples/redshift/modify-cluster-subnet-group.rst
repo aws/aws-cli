@@ -2,7 +2,9 @@
 
 The following ``modify-cluster-subnet-group`` example modifies the list of subnets in a cluster subnet group. By default, the output is in JSON format. ::
 
-    aws redshift modify-cluster-subnet-group --cluster-subnet-group-name mysubnetgroup --subnet-ids subnet-763fdd1 subnet-ac830e9
+    aws redshift modify-cluster-subnet-group \
+        --cluster-subnet-group-name mysubnetgroup \
+        --subnet-ids subnet-763fdd1 subnet-ac830e9
 
 Result::
 

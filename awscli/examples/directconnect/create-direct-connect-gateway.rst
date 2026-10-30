@@ -2,7 +2,8 @@
 
 The following ``create-direct-connect-gateway`` example creates a Direct Connect gateway with the name ``DxGateway1``. ::
 
-    aws directconnect create-direct-connect-gateway --direct-connect-gateway-name "DxGateway1"
+    aws directconnect create-direct-connect-gateway \
+        --direct-connect-gateway-name "DxGateway1"
 
 Output::
 

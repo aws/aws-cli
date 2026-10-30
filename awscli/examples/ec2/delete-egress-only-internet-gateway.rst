@@ -2,7 +2,8 @@
 
 The following ``delete-egress-only-internet-gateway`` example deletes the specified egress-only Internet gateway. ::
 
-    aws ec2 delete-egress-only-internet-gateway --egress-only-internet-gateway-id eigw-01eadbd45ecd7943f
+    aws ec2 delete-egress-only-internet-gateway \
+        --egress-only-internet-gateway-id eigw-01eadbd45ecd7943f
 
 Output::
 

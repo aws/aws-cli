@@ -2,9 +2,7 @@
 
 The following ``list-webhooks`` example retrieves a list of all tags attached to the specified pipeline resource. ::
 
-    aws codepipeline list-webhooks \
-        --endpoint-url "https://codepipeline.eu-central-1.amazonaws.com" \
-        --region "eu-central-1"
+    aws codepipeline list-webhooks
 
 Output::
 

@@ -42,7 +42,8 @@ Result::
 
 You can also obtain the same information in text format using the ``--output text`` option. ::
 
-    aws redshift describe-orderable-cluster-options --output text
+    aws redshift describe-orderable-cluster-options \
+        --output text
 
 Result::
 

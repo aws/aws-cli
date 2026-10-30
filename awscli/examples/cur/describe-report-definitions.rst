@@ -2,7 +2,9 @@
 
 The following ``describe-report-definitions`` example describes a list of AWS Cost and Usage Reports owned by an account. ::
 
-    aws cur --region us-east-1 describe-report-definitions --max-items 5
+    aws cur describe-report-definitions \
+        --region us-east-1 \
+        --max-items 5
 
 Output::
 

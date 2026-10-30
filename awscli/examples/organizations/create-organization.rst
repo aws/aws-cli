@@ -27,7 +27,8 @@ The output includes an organization object with details about the new organizati
 
 The following ``create-organization`` example creates an organization that supports only the consolidated billing features. ::
 
-    aws organizations create-organization --feature-set CONSOLIDATED_BILLING
+    aws organizations create-organization \
+        --feature-set CONSOLIDATED_BILLING
 
 The output includes an organization object with details about the new organization: ::
 

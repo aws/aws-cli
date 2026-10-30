@@ -66,7 +66,8 @@ Output::
 
 The following ``describe-account-attributes`` example describes the ``supported-platforms`` attribute for your AWS account. ::
 
-    aws ec2 describe-account-attributes --attribute-names supported-platforms
+    aws ec2 describe-account-attributes \
+        --attribute-names supported-platforms
 
 Output::
 

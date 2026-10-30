@@ -2,7 +2,8 @@
 
 The following ``update-user-pool`` example modifies a user pool with example syntax for each of the available configuration options. To update a user pool, you must specify all previously-configured options or they will reset to a default value. ::
 
-    aws cognito-idp update-user-pool --user-pool-id us-west-2_EXAMPLE \
+    aws cognito-idp update-user-pool \
+        --user-pool-id us-west-2_EXAMPLE \
         --policies PasswordPolicy=\{MinimumLength=6,RequireUppercase=true,RequireLowercase=true,RequireNumbers=true,RequireSymbols=true,TemporaryPasswordValidityDays=7\} \
         --deletion-protection ACTIVE \
         --lambda-config PreSignUp="arn:aws:lambda:us-west-2:123456789012:function:cognito-test-presignup-function",PreTokenGeneration="arn:aws:lambda:us-west-2:123456789012:function:cognito-test-pretoken-function" \

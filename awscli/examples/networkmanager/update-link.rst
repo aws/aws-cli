@@ -5,8 +5,7 @@ The following ``update-link`` example updates the bandwidth information for link
     aws networkmanager update-link \
         --global-network-id global-network-01231231231231231 \
         --link-id link-11112222aaaabbbb1 \
-        --bandwidth  UploadSpeed=20,DownloadSpeed=20 \
-        --region us-west-2
+        --bandwidth UploadSpeed=20,DownloadSpeed=20
 
 Output::
 

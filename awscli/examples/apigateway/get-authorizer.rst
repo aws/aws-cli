@@ -2,7 +2,9 @@
 
 The following ``get-authorizer`` example gets the settings of the specified per-API authorizer. ::
 
-    aws apigateway get-authorizer --rest-api-id 1234123412 --authorizer-id gfi4n3
+    aws apigateway get-authorizer \
+        --rest-api-id 1234123412 \
+        --authorizer-id gfi4n3
 
 Output::
 

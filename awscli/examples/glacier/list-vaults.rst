@@ -2,7 +2,8 @@
 
 The following ``list-vaults`` example lists the vaults in the default account and region. ::
 
-    aws glacier list-vaults --account-id -
+    aws glacier list-vaults \
+        --account-id -
 
 Output::
 

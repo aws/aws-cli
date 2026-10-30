@@ -30,7 +30,8 @@ Output::
 
 The following ``get-compliance-summary-by-resource-type`` example returns the number of EC2 instances that are noncompliant and the number that are compliant. ::
 
-    aws configservice get-compliance-summary-by-resource-type --resource-types AWS::EC2::Instance
+    aws configservice get-compliance-summary-by-resource-type \
+        --resource-types AWS::EC2::Instance
 
 In the output, the value for each ``CappedCount`` attribute indicates how many resources are compliant or noncompliant.
 

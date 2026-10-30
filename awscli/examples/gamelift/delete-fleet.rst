@@ -3,7 +3,7 @@
 The following ``delete-fleet`` example removes a fleet that has been scaled down to zero instances. If the fleet capacity is greater than zero, the request fails with an HTTP 400 error. ::
 
     aws gamelift delete-fleet \
-       --fleet-id fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
+        --fleet-id fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

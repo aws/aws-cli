@@ -51,7 +51,6 @@ Output::
 The following ``describe-volumes`` example describes all volumes that are both attached to the specified instance and set to delete when the instance terminates. ::
 
     aws ec2 describe-volumes \
-        --region us-east-1 \
         --filters Name=attachment.instance-id,Values=i-1234567890abcdef0 Name=attachment.delete-on-termination,Values=true
 
 For an example of the output for ``describe-volumes``, see Example 1.

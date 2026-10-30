@@ -2,7 +2,8 @@
 
 The following ``get-stages`` example gets the list of stages for the specified REST API. ::
 
-    aws apigateway get-stages --rest-api-id 1234123412
+    aws apigateway get-stages \
+        --rest-api-id 1234123412
 
 Output::
 

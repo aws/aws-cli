@@ -70,6 +70,11 @@ ERROR_LINE_RE = re.compile(r'^Line (\d+):')
 LIST_ITEM_RE = re.compile(r'^(\s*(?:[*+-]|\d+\.|#\.)\s+)\S')
 # An OS named as the shell the example runs in, as opposed to a resource
 # such as "Windows AMIs" or "maintenance windows".
+OPTION_RE = re.compile(r'(?:^|\s)--(?P<name>[A-Za-z0-9][\w-]*)')
+# A pipe, redirect or command separator ends the arguments of an aws
+# command, e.g. "--output text | base64 --decode".  "<value>" is a
+# placeholder, not a redirect.
+SHELL_OPERATOR_RE = re.compile(r'(?:^|\s)(?:\|\|?|&&|;|>>?|<)(?=\s|$)')
 OS_NAME_RE = re.compile(
     r'\b(?:on|using) (?:Linux|Mac ?OS|macOS|Windows|PowerShell|Unix)\b'
 )
@@ -391,6 +396,122 @@ def check_description(example):
                 f"Line {lineno}: the paragraph before a command must end "
                 "with '. ::'"
             )
+    return errors
+
+
+def _scan_command_lines(lines):
+    """Split a command block's lines into shell-aware pieces.
+
+    Yields ``(line, starts_unquoted, ends_unquoted, unquoted_text)`` for
+    each physical line, where ``unquoted_text`` is the part of the line that
+    is outside of any quotes.
+    """
+    quote = None
+    for line in lines:
+        starts_unquoted = quote is None
+        unquoted = []
+        escaped = False
+        for ch in line:
+            if escaped:
+                escaped = False
+            elif ch == '\\' and quote != "'":
+                escaped = True
+            elif quote:
+                if ch == quote:
+                    quote = None
+                continue
+            elif ch in ('"', "'"):
+                quote = ch
+                continue
+            if quote is None:
+                unquoted.append(ch)
+        yield line, starts_unquoted, quote is None, ''.join(unquoted)
+
+
+def _split_commands(block):
+    """Split a command block into the separate ``aws`` commands in it."""
+    commands = []
+    for offset, scanned in enumerate(_scan_command_lines(block.lines)):
+        line, starts_unquoted = scanned[0], scanned[1]
+        if starts_unquoted and line.strip().startswith('aws '):
+            commands.append([])
+        if commands:
+            commands[-1].append((block.start + offset + 1, scanned))
+    return commands
+
+
+def _aws_part(command):
+    """Return the lines of a command before any pipe or redirect.
+
+    Also returns whether the next line continues the command with a pipe,
+    as in "aws ecr get-login-password \\" followed by "| docker login".
+    """
+    for n, (_, scanned) in enumerate(command):
+        _, starts_unquoted, _, unquoted = scanned
+        if not starts_unquoted:
+            continue
+        operator = SHELL_OPERATOR_RE.search(unquoted)
+        if operator:
+            if unquoted[: operator.start()].strip():
+                return command[: n + 1], False
+            return command[:n], True
+    return command, False
+
+
+def check_command(example):
+    errors = []
+    for block in example.commands:
+        for command in _split_commands(block):
+            command, piped = _aws_part(command)
+            last = len(command) - 1
+            marker = _continuation_marker(command[0][1][0])
+            for n, (lineno, scanned) in enumerate(command):
+                line, starts_unquoted, ends_unquoted, unquoted = scanned
+                if not starts_unquoted:
+                    continue
+                operator = SHELL_OPERATOR_RE.search(unquoted)
+                if operator:
+                    unquoted = unquoted[: operator.start()]
+                expected_indent = 4 if n == 0 else 8
+                if _indent(line) != expected_indent:
+                    errors.append(
+                        f'Line {lineno}: expected an indent of '
+                        f'{expected_indent} spaces'
+                    )
+                continued = line.endswith(marker)
+                if (
+                    n < last
+                    and ends_unquoted
+                    and not line.endswith(' ' + marker)
+                ):
+                    errors.append(
+                        f'Line {lineno}: continued lines must end with '
+                        f"' {marker}'"
+                    )
+                if n == last and continued and not piped:
+                    errors.append(
+                        f'Line {lineno}: the last line must not end with '
+                        f"'{marker}'"
+                    )
+                options = [
+                    m.group('name') for m in OPTION_RE.finditer(unquoted)
+                ]
+                if n == 0 and options:
+                    errors.append(
+                        f'Line {lineno}: put parameters on the following '
+                        'lines, not on the first line with the command'
+                    )
+                elif n > 0 and not line.strip().startswith('--'):
+                    errors.append(
+                        f'Line {lineno}: each continued line must start with '
+                        'a --parameter'
+                    )
+                if len(options) > 1:
+                    found = ', '.join('--' + o for o in options)
+                    errors.append(
+                        f'Line {lineno}: put each parameter on its own line, '
+                        f'found {found}'
+                    )
     return errors
 
 
@@ -783,6 +904,13 @@ def test_example_description(example_file):
     example = Example(example_file)
     errors = check_description(example)
     _assert_follows_rule('description', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_command(example_file):
+    example = Example(example_file)
+    errors = check_command(example)
+    _assert_follows_rule('command', example, errors)
 
 
 def test_example_style_exceptions_exist():

@@ -2,7 +2,9 @@
 
 The following ``get-base-path-mapping`` example gets the base path mapping for a custom domain name. ::
 
-    aws apigateway get-base-path-mapping --domain-name subdomain.domain.tld --base-path v1
+    aws apigateway get-base-path-mapping \
+        --domain-name subdomain.domain.tld \
+        --base-path v1
 
 Output::
 

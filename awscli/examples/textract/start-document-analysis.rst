@@ -14,7 +14,6 @@ For Windows, use the following command. ::
     aws textract start-document-analysis \
         --document-location "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
         --feature-types "[\"TABLES\", \"FORMS\"]" \
-        --region region-name \
         --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
 
 Output::

@@ -2,7 +2,10 @@
 
 The following ``create-configuration-template`` example creates a configuration template named ``my-app-v1`` from the settings applied to an environment with the id ``e-rpqsewtp2j``. ::
 
-    aws elasticbeanstalk create-configuration-template --application-name my-app --template-name my-app-v1 --environment-id e-rpqsewtp2j
+    aws elasticbeanstalk create-configuration-template \
+        --application-name my-app \
+        --template-name my-app-v1 \
+        --environment-id e-rpqsewtp2j
 
 Output::
 

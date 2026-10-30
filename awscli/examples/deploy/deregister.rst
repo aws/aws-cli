@@ -4,8 +4,7 @@ The following ``deregister`` example deregisters an on-premises instance with AW
 
     aws deploy deregister \
         --instance-name AssetTag12010298EX \
-        --no-delete-iam-user \
-        --region us-west-2
+        --no-delete-iam-user
 
 Output::
 

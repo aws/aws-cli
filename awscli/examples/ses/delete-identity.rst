@@ -2,7 +2,8 @@
 
 The following ``delete-identity`` example deletes an identity from the list of identities verified with Amazon SES. ::
 
-    aws ses delete-identity --identity user@example.com
+    aws ses delete-identity \
+        --identity user@example.com
 
 For more information about verified identities, see `Verifying Email Addresses and Domains in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 

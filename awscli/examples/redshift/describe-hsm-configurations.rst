@@ -2,7 +2,7 @@
 
 The following ``describe-hsm-configurations`` example displays details for the available HSM configurations for the calling AWS account. ::
 
-    aws redshift describe-hsm-configurations /
+    aws redshift describe-hsm-configurations \
         --hsm-configuration-identifier myhsmconnection
 
 Output::

@@ -4,8 +4,7 @@ The following ``check-capacity`` example retrieves the capacity requirements for
 
     aws wafv2 check-capacity \
         --scope REGIONAL \
-        --rules file://waf-rule-list.json \
-        --region us-west-2
+        --rules file://waf-rule-list.json
 
 Contents of `file://waf-rule-list.json`::
 

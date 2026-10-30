@@ -2,7 +2,13 @@
 
 The following ``create-user`` example creates a new user in a Simple AD or Microsoft AD directory. ::
 
-    aws workdocs create-user --organization-id d-926726012c --username exampleUser2 --email-address exampleUser2@site.awsapps.com --given-name example2Name --surname example2Surname --password examplePa$$w0rd
+    aws workdocs create-user \
+        --organization-id d-926726012c \
+        --username exampleUser2 \
+        --email-address exampleUser2@site.awsapps.com \
+        --given-name example2Name \
+        --surname example2Surname \
+        --password examplePa$$w0rd
 
 Output::
 

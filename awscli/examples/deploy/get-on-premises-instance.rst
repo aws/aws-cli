@@ -2,7 +2,8 @@
 
 The following ``get-on-premises-instance`` example retrieves information about the specified on-premises instance. ::
 
-    aws deploy get-on-premises-instance --instance-name AssetTag12010298EX
+    aws deploy get-on-premises-instance \
+        --instance-name AssetTag12010298EX
 
 Output::
 

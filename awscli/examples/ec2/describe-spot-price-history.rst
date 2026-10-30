@@ -2,7 +2,10 @@
 
 The following ``describe-spot-price-history`` example returns the Spot Price history for m1.xlarge instances for a particular day in January. ::
 
-    aws ec2 describe-spot-price-history --instance-types m1.xlarge --start-time 2014-01-06T07:08:09 --end-time 2014-01-06T08:09:10
+    aws ec2 describe-spot-price-history \
+        --instance-types m1.xlarge \
+        --start-time 2014-01-06T07:08:09 \
+        --end-time 2014-01-06T08:09:10
 
 Output::
 
@@ -37,7 +40,11 @@ Output::
 
 The following ``describe-spot-price-history`` example returns the Spot Price history for m1.xlarge, Linux/UNIX Amazon VPC instances for a particular day in January. ::
 
-    aws ec2 describe-spot-price-history --instance-types m1.xlarge --product-description "Linux/UNIX (Amazon VPC)" --start-time 2014-01-06T07:08:09 --end-time 2014-01-06T08:09:10
+    aws ec2 describe-spot-price-history \
+        --instance-types m1.xlarge \
+        --product-description "Linux/UNIX (Amazon VPC)" \
+        --start-time 2014-01-06T07:08:09 \
+        --end-time 2014-01-06T08:09:10
 
 Output::
 

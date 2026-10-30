@@ -2,7 +2,8 @@
 
 The following ``get-bucket-lifecycle`` example retrieves the lifecycle configuration for a bucket named ``amzn-s3-demo-bucket``. ::
 
-    aws s3api get-bucket-lifecycle --bucket amzn-s3-demo-bucket
+    aws s3api get-bucket-lifecycle \
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

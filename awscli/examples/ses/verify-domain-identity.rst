@@ -2,7 +2,8 @@
 
 The following ``verify-domain-identity`` example verifies a domain. ::
 
-    aws ses verify-domain-identity --domain example.com
+    aws ses verify-domain-identity \
+        --domain example.com
 
 Output::
 

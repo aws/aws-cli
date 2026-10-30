@@ -2,7 +2,8 @@
 
 The following ``describe-vpc-endpoint-service-permissions`` example describes the permissions for the specified endpoint service. ::
 
-    aws ec2 describe-vpc-endpoint-service-permissions --service-id vpce-svc-03d5ebb7d9579a2b3
+    aws ec2 describe-vpc-endpoint-service-permissions \
+        --service-id vpce-svc-03d5ebb7d9579a2b3
 
 Output::
 

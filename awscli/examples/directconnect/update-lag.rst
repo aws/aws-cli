@@ -2,7 +2,9 @@
 
 The following ``update-lag`` example changes the name of the specified LAG. ::
 
-    aws directconnect update-lag --lag-id dxlag-ffjhj9lx --lag-name 2ConnLag
+    aws directconnect update-lag \
+        --lag-id dxlag-ffjhj9lx \
+        --lag-name 2ConnLag
 
 Output::
 

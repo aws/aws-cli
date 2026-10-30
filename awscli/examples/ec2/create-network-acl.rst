@@ -2,7 +2,8 @@
 
 The following ``create-network-acl`` example creates a network ACL for the specified VPC. ::
 
-    aws ec2 create-network-acl --vpc-id vpc-a01106c2
+    aws ec2 create-network-acl \
+        --vpc-id vpc-a01106c2
 
 Output::
 

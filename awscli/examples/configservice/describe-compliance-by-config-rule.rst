@@ -2,7 +2,8 @@
 
 The following ``describe-compliance-by-config-rule`` example returns compliance information for each AWS Config rule that is violated by one or more AWS resources. ::
 
-    aws configservice describe-compliance-by-config-rule --compliance-types NON_COMPLIANT
+    aws configservice describe-compliance-by-config-rule \
+        --compliance-types NON_COMPLIANT
 
 In the output, the value for each ``CappedCount`` attribute indicates how many resources do not comply with the related rule. For example, the following output indicates that 3 resources do not comply with the rule named ``InstanceTypesAreT2micro``.
 

@@ -3,7 +3,6 @@
 The following ``batch-describe-type-configurations`` example configures the data for the type. ::
 
     aws cloudformation batch-describe-type-configurations \
-        --region us-west-2 \
         --type-configuration-identifiers TypeArn="arn:aws:cloudformation:us-west-2:123456789012:type/resource/Example-Test-Type,TypeConfigurationAlias=MyConfiguration"
 
 Output::

@@ -36,7 +36,7 @@ Output::
 You can then call the command again with the ``--next-token`` parameter as follows to see the next two builds. ::
 
     aws gamelift list-builds \
-        --limit 2
+        --limit 2 \
         --next-token eyJhd3NBY2NvdW50SWQiOnsicyI6IjMwMjc3NjAxNjM5OCJ9LCJidWlsZElkIjp7InMiOiJidWlsZC01NWYxZTZmMS1jY2FlLTQ3YTctOWI5ZS1iYjFkYTQwMjJEXAMPLE=
 
 Repeat until the response doesn't include a ``NextToken`` value.

@@ -5,7 +5,6 @@ The following ``install`` example copies the on-premises configuration file from
     aws deploy install \
         --override-config \
         --config-file C:\temp\codedeploy.onpremises.yml \
-        --region us-west-2 \
         --agent-installer s3://aws-codedeploy-us-west-2/latest/codedeploy-agent.msi
 
 Output::

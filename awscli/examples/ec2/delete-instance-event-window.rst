@@ -3,7 +3,6 @@
 The following ``delete-instance-event-window`` example deletes an event window. ::
 
     aws ec2 delete-instance-event-window \
-        --region us-east-1 \
         --instance-event-window-id iew-0abcdef1234567890
 
 Output::
@@ -22,7 +21,6 @@ For event window constraints, see `Considerations <https://docs.aws.amazon.com/A
 The following ``delete-instance-event-window`` example force deletes an event window if the event window is currently associated with targets. ::
 
     aws ec2 delete-instance-event-window \
-        --region us-east-1 \
         --instance-event-window-id iew-0abcdef1234567890 \
         --force-delete
 

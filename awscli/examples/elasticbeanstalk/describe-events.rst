@@ -2,7 +2,8 @@
 
 The following ``describe-events`` example retrieves events for an environment named ``my-env``. ::
 
-    aws elasticbeanstalk describe-events --environment-name my-env
+    aws elasticbeanstalk describe-events \
+        --environment-name my-env
 
 Output (abbreviated)::
 

@@ -2,7 +2,8 @@
 
 The following ``get-password-data`` example gets the encrypted password. ::
 
-    aws ec2 get-password-data --instance-id i-1234567890abcdef0
+    aws ec2 get-password-data \
+        --instance-id i-1234567890abcdef0
 
 Output::
 
@@ -20,7 +21,9 @@ Output::
 
 The following ``get-password-data`` example gets the decrypted password. ::
 
-    aws ec2 get-password-data --instance-id  i-1234567890abcdef0 --priv-launch-key C:\Keys\MyKeyPair.pem
+    aws ec2 get-password-data \
+        --instance-id i-1234567890abcdef0 \
+        --priv-launch-key C:\Keys\MyKeyPair.pem
 
 Output::
 

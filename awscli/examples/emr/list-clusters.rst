@@ -2,7 +2,8 @@
 
 The following ``list-clusters`` example lists all active EMR clusters in the current region. ::
 
-    aws emr list-clusters --active
+    aws emr list-clusters \
+        --active
 
 Output::
 

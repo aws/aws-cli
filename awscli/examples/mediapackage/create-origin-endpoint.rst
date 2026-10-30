@@ -5,7 +5,8 @@ The following ``create-origin-endpoint`` example creates an origin endpoint name
     aws mediapackage create-origin-endpoint \
         --channel-id sportschannel \
         --id cmafsports \
-        --cmaf-package file://file/path/cmafpkg.json --description "cmaf output of sports" \
+        --cmaf-package file://file/path/cmafpkg.json \
+        --description "cmaf output of sports" \
         --id cmaf_sports \
         --manifest-name sports_channel \
         --startover-window-seconds 300 \

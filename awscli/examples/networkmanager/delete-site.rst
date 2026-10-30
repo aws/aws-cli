@@ -3,9 +3,8 @@
 The following ``delete-site`` example deletes the specified site (``site-444555aaabbb11223``) in the specified global network. ::
 
     aws networkmanager delete-site \
-        --global-network-id global-network-01231231231231231  \
-        --site-id site-444555aaabbb11223 \
-        --region us-west-2
+        --global-network-id global-network-01231231231231231 \
+        --site-id site-444555aaabbb11223
 
 Output::
 

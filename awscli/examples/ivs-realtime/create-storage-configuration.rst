@@ -3,7 +3,8 @@
 The following ``create-storage-configuration`` example creates a composition storage configuration with the specified properties. ::
 
     aws ivs-realtime create-storage-configuration \
-        --name "test-sc" --s3 "bucketName=amzn-s3-demo-bucket"
+        --name "test-sc" \
+        --s3 "bucketName=amzn-s3-demo-bucket"
 
 Output::
 

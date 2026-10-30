@@ -21,7 +21,8 @@ Output::
 
 The following ``list-task-definitions`` example lists the task definition revisions of a specified family. ::
 
-    aws ecs list-task-definitions --family-prefix wordpress
+    aws ecs list-task-definitions \
+        --family-prefix wordpress
 
 Output::
 

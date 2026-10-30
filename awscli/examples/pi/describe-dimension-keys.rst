@@ -2,7 +2,13 @@
 
 The following ``describe-dimension-keys`` example requests the names of all wait events. The data is summarized by event name, and the aggregate values of those events over the specified time period. ::
 
-    aws pi describe-dimension-keys --service-type RDS --identifier db-LKCGOBK26374TPTDFXOIWVCPPM --start-time 1527026400 --end-time 1527080400 --metric db.load.avg --group-by '{"Group":"db.wait_event"}'
+    aws pi describe-dimension-keys \
+        --service-type RDS \
+        --identifier db-LKCGOBK26374TPTDFXOIWVCPPM \
+        --start-time 1527026400 \
+        --end-time 1527080400 \
+        --metric db.load.avg \
+        --group-by '{"Group":"db.wait_event"}'
 
 Output::
 

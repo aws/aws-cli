@@ -3,8 +3,7 @@
 The following ``get-apns-channel`` example retrieves information about the status and settings of the APNs channel for an application. ::
 
     aws pinpoint get-apns-channel \
-        --application-id 9ab1068eb0a6461c86cce7f27ce0efd7 \
-        --region us-east-1
+        --application-id 9ab1068eb0a6461c86cce7f27ce0efd7
 
 Output::
 

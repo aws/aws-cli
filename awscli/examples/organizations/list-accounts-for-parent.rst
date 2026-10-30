@@ -2,7 +2,8 @@
 
 The following ``list-accounts-for-parent`` example requests a list of the accounts in an OU. ::
 
-    aws organizations list-accounts-for-parent --parent-id ou-examplerootid111-exampleouid111
+    aws organizations list-accounts-for-parent \
+        --parent-id ou-examplerootid111-exampleouid111
 
 The output includes a list of account summary objects. ::
 

@@ -3,9 +3,12 @@
 The following ``put-bucket-cors`` example enables ``PUT``, ``POST``, and ``DELETE`` requests from *www.example.com*, and enables ``GET``
 requests from any domain. ::
 
-    aws s3api put-bucket-cors --bucket amzn-s3-demo-bucket --cors-configuration file://cors.json
+    aws s3api put-bucket-cors \
+        --bucket amzn-s3-demo-bucket \
+        --cors-configuration file://cors.json
 
-    cors.json:
+Contents of ``cors.json``::
+
     {
         "CORSRules": [
             {

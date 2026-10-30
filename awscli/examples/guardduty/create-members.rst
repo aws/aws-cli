@@ -2,7 +2,7 @@
 
 The following ``create-members`` example associates member accounts to be managed by the current account as the GuardDuty master. ::
 
-    aws guardduty create-members
+    aws guardduty create-members \
         --detector-id b6b992d6d2f48e64bc59180bfexample \
         --account-details AccountId=111122223333,Email=first+member@example.com AccountId=111111111111 ,Email=another+member@example.com
 

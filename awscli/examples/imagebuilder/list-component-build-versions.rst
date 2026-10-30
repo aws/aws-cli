@@ -2,7 +2,8 @@
 
 The following ``list-component-build-versions`` example lists the component build versions with a specific semantic version. ::
 
-    aws imagebuilder list-component-build-versions --component-version-arn arn:aws:imagebuilder:us-west-2:123456789012:component/myexamplecomponent/2019.12.02
+    aws imagebuilder list-component-build-versions \
+        --component-version-arn arn:aws:imagebuilder:us-west-2:123456789012:component/myexamplecomponent/2019.12.02
 
 Output::
 

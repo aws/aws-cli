@@ -2,7 +2,8 @@
 
 The following ``get-identity-dkim-attributes`` example retrieves the Amazon SES Easy DKIM attributes for a list of identities. ::
 
-    aws ses get-identity-dkim-attributes --identities "example.com" "user@example.com"
+    aws ses get-identity-dkim-attributes \
+        --identities "example.com" "user@example.com"
 
 Output::
 

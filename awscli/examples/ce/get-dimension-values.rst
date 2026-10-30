@@ -2,7 +2,10 @@
 
 The following ``get-dimension-values`` example retrieves the tags for the dimension SERVICE, with a value of "Elastic" for January 01 2017 through May 18 2017. ::
 
-    aws ce get-dimension-values --search-string Elastic --time-period Start=2017-01-01,End=2017-05-18 --dimension SERVICE
+    aws ce get-dimension-values \
+        --search-string Elastic \
+        --time-period Start=2017-01-01,End=2017-05-18 \
+        --dimension SERVICE
 
 Output::
 

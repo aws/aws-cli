@@ -2,7 +2,10 @@
 
 The following ``create-network-interface-permission`` example grants permission to account ``123456789012`` to attach network interface ``eni-1a2b3c4d`` to an instance. ::
 
-    aws ec2 create-network-interface-permission --network-interface-id eni-1a2b3c4d --aws-account-id 123456789012 --permission INSTANCE-ATTACH
+    aws ec2 create-network-interface-permission \
+        --network-interface-id eni-1a2b3c4d \
+        --aws-account-id 123456789012 \
+        --permission INSTANCE-ATTACH
 
 Output::
 

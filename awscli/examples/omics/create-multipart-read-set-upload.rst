@@ -6,10 +6,10 @@ The following ``create-multipart-read-set-upload`` example initiates a multipart
         --sequence-store-id 0123456789 \
         --name HG00146 \
         --source-file-type FASTQ \
-        --subject-id mySubject\
-        --sample-id mySample\
-        --description "FASTQ for HG00146"\
-        --generated-from "1000 Genomes" 
+        --subject-id mySubject \
+        --sample-id mySample \
+        --description "FASTQ for HG00146" \
+        --generated-from "1000 Genomes"
 
 
 Output::

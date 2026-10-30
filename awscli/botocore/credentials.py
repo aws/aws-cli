@@ -770,7 +770,16 @@ class CachedCredentialFetcher:
 
     def _load_from_cache(self):
         if self._cache_key in self._cache:
-            creds = deepcopy(self._cache[self._cache_key])
+            try:
+                creds = deepcopy(self._cache[self._cache_key])
+            except KeyError:
+                # The cache entry exists but could not be read (e.g. an
+                # empty or corrupted JSON file), so treat it as a miss.
+                logger.debug(
+                    "Unable to load credentials from cache, "
+                    "fetching new credentials."
+                )
+                return None
             if not self._is_expired(creds):
                 return creds
             else:

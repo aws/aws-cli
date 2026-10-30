@@ -1069,7 +1069,7 @@ class TestCRTTransferManager(unittest.TestCase):
         self._assert_expected_crt_http_request(
             callargs_kwargs["request"],
             expected_http_method='GET',
-            expected_content_length=0,
+            expected_missing_headers=['Content-Length'],
         )
         self._assert_subscribers_called(future)
         with open(self.filename, 'rb') as f:
@@ -1099,7 +1099,7 @@ class TestCRTTransferManager(unittest.TestCase):
         self._assert_expected_crt_http_request(
             callargs_kwargs["request"],
             expected_http_method='GET',
-            expected_content_length=0,
+            expected_missing_headers=['Content-Length'],
         )
         self._assert_subscribers_called(future)
         with open(self.filename, 'rb') as f:
@@ -1134,7 +1134,7 @@ class TestCRTTransferManager(unittest.TestCase):
         self._assert_expected_crt_http_request(
             callargs_kwargs["request"],
             expected_http_method='GET',
-            expected_content_length=0,
+            expected_missing_headers=['Content-Length'],
         )
         self._assert_subscribers_called(future)
         self.assertEqual(
@@ -1363,6 +1363,8 @@ class TestDownloadMultipartThreshold:
         request_args = download(size, MULTIPART_THRESHOLD)
         assert request_args['type'] == awscrt.s3.S3RequestType.DEFAULT
         assert request_args['operation_name'] == 'GetObject'
+        assert request_args['request'].headers.get('Content-Length') is None
+        assert request_args['request'].body_stream is None
 
     def test_above_threshold_splits_download(self, download):
         request_args = download(MULTIPART_THRESHOLD + 1, MULTIPART_THRESHOLD)

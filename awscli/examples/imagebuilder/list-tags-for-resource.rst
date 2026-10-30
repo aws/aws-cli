@@ -1,16 +1,17 @@
-**To list tags for a specific resource**
+**To list the tags for a resource**
 
-The following ``list-tags-for-resource`` example lists all of the tags for a specific resource. ::
+The following ``list-tags-for-resource`` example lists the tags that are assigned to an existing component build version. ::
 
     aws imagebuilder list-tags-for-resource \
-        --resource-arn arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/mywindows2016pipeline
+        --resource-arn arn:aws:imagebuilder:us-west-2:123456789012:component/my-example-component/1.0.0/1
 
 Output::
 
     {
         "tags": {
-            "KeyName": "KeyValue"
+            "CostCenter": "12345",
+            "Environment": "Production"
         }
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Tag Image Builder output resources <https://docs.aws.amazon.com/imagebuilder/latest/userguide/tag-resources.html>`__ in the *EC2 Image Builder User Guide*.

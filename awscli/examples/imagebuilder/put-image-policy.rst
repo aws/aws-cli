@@ -1,16 +1,37 @@
-**To apply a resource policy to an image**
+**To share an image with another AWS account**
 
-The following ``put-image-policy`` command applies a resource policy to an image to enable cross-account sharing of images. We recommend you use the RAM CLI command create-resource-share. If you use the EC2 Image Builder CLI command put-image-policy, you must also use the RAM CLI command promote-resource-share-create-from-policy in order for the resource to be visible to all principals with whom the resource is shared.  ::
+The following ``put-image-policy`` example applies a resource policy to an image build version that grants another AWS account permission to view the image. ::
 
     aws imagebuilder put-image-policy \
-        --image-arn arn:aws:imagebuilder:us-west-2:123456789012:image/example-image/2019.12.02/1 \
-        --policy '{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Principal": { "AWS": [ "123456789012" ] }, "Action": [ "imagebuilder:GetImage", "imagebuilder:ListImages" ], "Resource": [ "arn:aws:imagebuilder:us-west-2:123456789012:image/example-image/2019.12.02/1" ] } ] }' 
+        --image-arn arn:aws:imagebuilder:us-west-2:123456789012:image/my-example-recipe/1.0.0/1 \
+        --policy file://image-policy.json
+
+Contents of ``image-policy.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::123456789111:root"
+                },
+                "Action": [
+                    "imagebuilder:GetImage",
+                    "imagebuilder:ListImages"
+                ],
+                "Resource": [
+                    "arn:aws:imagebuilder:us-west-2:123456789012:image/my-example-recipe/1.0.0/1"
+                ]
+            }
+        ]
+    }
 
 Output::
 
     {
         "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-        "imageArn": "arn:aws:imagebuilder:us-west-2:123456789012:image/example-image/2019.12.02/1"
+        "imageArn": "arn:aws:imagebuilder:us-west-2:123456789012:image/my-example-recipe/1.0.0/1"
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Share Image Builder resources with AWS RAM <https://docs.aws.amazon.com/imagebuilder/latest/userguide/manage-shared-resources.html>`__ in the *EC2 Image Builder User Guide*.

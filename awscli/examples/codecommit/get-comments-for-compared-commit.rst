@@ -4,7 +4,7 @@ The following ``get-comments-for-compared-commit`` example displays comments mad
 
     aws codecommit get-comments-for-compared-commit \
         --repository-name MyDemoRepo \
-        --before-commit-ID 6e147360EXAMPLE \
+        --before-commit-id 6e147360EXAMPLE \
         --after-commit-id 317f8570EXAMPLE
 
 Output::

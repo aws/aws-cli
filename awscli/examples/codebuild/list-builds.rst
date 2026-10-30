@@ -22,7 +22,7 @@ Run this command again and provide the ``nextToken`` value in the previous respo
 
     aws codebuild list-builds \
         --sort-order ASCENDING \
-        --next-token 4AEA6u7J...The full token has been omitted for brevity...MzY2OA==
+        --next-token "4AEA6u7J...The full token has been omitted for brevity...MzY2OA=="
 
 Output::
 

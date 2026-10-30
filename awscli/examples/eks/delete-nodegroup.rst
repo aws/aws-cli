@@ -1,4 +1,4 @@
-**Example 1: Delete a managed node group for an Amazon EKS cluster**
+**To delete a managed node group for an Amazon EKS cluster**
 
 The following ``delete-nodegroup`` example deletes a managed node group for an Amazon EKS cluster. ::
 

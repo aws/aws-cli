@@ -1,4 +1,4 @@
-**Example: To approve the latest version of a change template**
+**To approve the latest version of a change template**
 
 The following ``update-document-metadata`` provides an approval for the latest version of a change template that has been submitted for review. ::
 

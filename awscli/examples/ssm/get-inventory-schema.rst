@@ -1,4 +1,4 @@
-**To view your inventory schema**
+**Example 1: To view your inventory schema**
 
 This example returns a list of inventory type names for the account.
 
@@ -49,7 +49,7 @@ Output::
         "NextToken": "--token string truncated--"
     }
 
-**To view the inventory schema for a specific inventory type**
+**Example 2: To view the inventory schema for a specific inventory type**
 
 This example return the inventory schema for a the AWS:AWSComponent inventory type.
 

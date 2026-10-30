@@ -68,6 +68,11 @@ HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
 TITLE_RE = re.compile(r'^\*\*(?:Example (?P<num>\d+): )?(?P<text>.+)\*\*$')
 ERROR_LINE_RE = re.compile(r'^Line (\d+):')
 LIST_ITEM_RE = re.compile(r'^(\s*(?:[*+-]|\d+\.|#\.)\s+)\S')
+# An OS named as the shell the example runs in, as opposed to a resource
+# such as "Windows AMIs" or "maintenance windows".
+OS_NAME_RE = re.compile(
+    r'\b(?:on|using) (?:Linux|Mac ?OS|macOS|Windows|PowerShell|Unix)\b'
+)
 # Examples that are known to break a style rule, keyed by the rule's name,
 # then the file, then the example's title, with the reason for each example.
 EXCEPTIONS_PATH = os.path.join(
@@ -126,6 +131,23 @@ class Block:
     def lineno(self):
         return self.start + 1
 
+    @property
+    def is_command(self):
+        return self.kind == 'literal' and self.lines[0].strip().startswith(
+            'aws '
+        )
+
+
+class Section:
+    def __init__(self, title):
+        # The title block, or None for blocks before the first title.
+        self.title = title
+        self.blocks = []
+
+    @property
+    def commands(self):
+        return [b for b in self.blocks if b.is_command]
+
 
 class Example:
     def __init__(self, relpath):
@@ -133,6 +155,7 @@ class Example:
         with open(os.path.join(EXAMPLES_DIR, relpath)) as f:
             self.lines = f.read().splitlines()
         self.blocks = _parse_blocks(self.lines)
+        self.sections = _split_sections(self.blocks)
 
     @property
     def command_path(self):
@@ -173,7 +196,9 @@ def _parse_blocks(lines):
             end += 1
         para = lines[i:end]
         kind = (
-            'title' if len(para) == 1 and TITLE_RE.match(para[0]) else 'para'
+            'title'
+            if len(para) == 1 and TITLE_RE.match(para[0].rstrip())
+            else 'para'
         )
         block = Block(kind, i, para)
         blocks.append(block)
@@ -261,6 +286,78 @@ def check_location(example, command_table):
             waiter_path = '/'.join(path[:i] + ['wait', name + '.rst'])
             error += f'; waiter examples belong in {waiter_path}'
     return [error]
+
+
+def _split_sections(blocks):
+    sections = [Section(None)]
+    for block in blocks:
+        if block.kind == 'title':
+            sections.append(Section(block))
+        else:
+            sections[-1].blocks.append(block)
+    if not sections[0].blocks and len(sections) > 1:
+        sections.pop(0)
+    return sections
+
+
+def _continuation_marker(first_line):
+    # Windows Command Prompt and PowerShell examples continue lines with ^
+    # and ` instead of \.
+    marker = first_line[-1:]
+    return marker if marker in ('^', '`') else '\\'
+
+
+def _is_os_specific(block):
+    return _continuation_marker(block.lines[0]) != '\\'
+
+
+def check_title(example):
+    titles = [b for b in example.blocks if b.kind == 'title']
+    if not example.blocks or example.blocks[0].kind != 'title':
+        return ['Line 1: file must start with a title such as **To ...**']
+    errors = []
+    numbers = []
+    for title in titles:
+        match = TITLE_RE.match(title.lines[0].rstrip())
+        text = match.group('text')
+        numbers.append(match.group('num'))
+        if text != text.strip():
+            errors.append(
+                f'Line {title.lineno}: no spaces between the title and the '
+                'asterisks'
+            )
+        if not text.strip().startswith('To '):
+            errors.append(
+                f"Line {title.lineno}: title must start with 'To ', e.g. "
+                '**To ...** or **Example 1: To ...**'
+            )
+        suffix = re.search(r'\([^()]*\)$', text)
+        prefix = text[: suffix.start()] if suffix else text
+        if OS_NAME_RE.search(prefix):
+            errors.append(
+                f'Line {title.lineno}: put the OS name in a parenthesized '
+                'suffix, e.g. **To ... (Linux and macOS)**'
+            )
+    for section in example.sections:
+        commands = section.commands
+        if section.title and commands and all(map(_is_os_specific, commands)):
+            title_line = section.title.lines[0].rstrip()
+            if not re.search(r'\([^()]+\)\*\*$', title_line):
+                errors.append(
+                    f'Line {section.title.lineno}: commands that are not for '
+                    'Linux must name the OS in the title, e.g. '
+                    '**To ... (Windows)**'
+                )
+    if len(titles) > 1:
+        expected = [str(n) for n in range(1, len(titles) + 1)]
+        if numbers != expected:
+            errors.append(
+                'Titles must be numbered Example 1: to Example {}:, '
+                'found {}'.format(
+                    len(titles), ', '.join(n or '(none)' for n in numbers)
+                )
+            )
+    return errors
 
 
 def _is_description(filename):
@@ -638,6 +735,13 @@ def test_example_location(command_table, example_file):
     example = Example(example_file)
     errors = check_location(example, command_table)
     _assert_follows_rule('location', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_title(example_file):
+    example = Example(example_file)
+    errors = check_title(example)
+    _assert_follows_rule('title', example, errors)
 
 
 def test_example_style_exceptions_exist():

@@ -1,4 +1,4 @@
-**To delete a custom inventory type**
+**Example 1: To delete a custom inventory type**
 
 This example deletes a custom inventory schema.
 
@@ -24,7 +24,7 @@ Output::
         }
     }
 
-**To disable a custom inventory type**
+**Example 2: To disable a custom inventory type**
 
 This example disables a custom inventory schema.
 

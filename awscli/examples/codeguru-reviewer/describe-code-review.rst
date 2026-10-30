@@ -1,4 +1,4 @@
-**List details about a code review.**
+**To list details about a code review**
 
 The following ``describe-code-review`` lists information about a review of code in the "mainline" branch of an AWS CodeCommit repository that is named "my-repo-name". ::
 

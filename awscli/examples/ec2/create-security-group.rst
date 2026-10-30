@@ -1,4 +1,4 @@
-**To create a security group for EC2-Classic**
+**Example 1: To create a security group for EC2-Classic**
 
 This example creates a security group named ``MySecurityGroup``.
 
@@ -12,7 +12,7 @@ Output::
         "GroupId": "sg-903004f8"
     }
 
-**To create a security group for EC2-VPC**
+**Example 2: To create a security group for EC2-VPC**
 
 This example creates a security group named ``MySecurityGroup`` for the specified VPC.
 

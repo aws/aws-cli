@@ -1,4 +1,4 @@
-**To describe the enableDnsSupport attribute**
+**Example 1: To describe the enableDnsSupport attribute**
 
 This example describes the ``enableDnsSupport`` attribute. This attribute indicates whether DNS resolution is enabled for the VPC. If this attribute is ``true``, the Amazon DNS server resolves DNS hostnames for your instances to their corresponding IP addresses; otherwise, it does not.
 
@@ -15,7 +15,7 @@ Output::
         }
     }
 
-**To describe the enableDnsHostnames attribute**
+**Example 2: To describe the enableDnsHostnames attribute**
 
 This example describes the ``enableDnsHostnames`` attribute. This attribute indicates whether the instances launched in the VPC get DNS hostnames. If this attribute is ``true``, instances in the VPC get DNS hostnames; otherwise, they do not.
 

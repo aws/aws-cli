@@ -1,4 +1,4 @@
-**To move a resource and place it under a different parent resource in an API**
+**Example 1: To move a resource and place it under a different parent resource in an API**
 
 Command::
 
@@ -13,7 +13,7 @@ Output::
         "parentId": "3c2b1a"
     }
 
-**To rename a resource (pathPart) in an API**
+**Example 2: To rename a resource (pathPart) in an API**
 
 Command::
 

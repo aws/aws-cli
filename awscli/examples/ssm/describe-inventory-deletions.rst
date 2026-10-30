@@ -1,4 +1,4 @@
-**To get inventory deletions**
+**Example 1: To get inventory deletions**
 
 This example retrieves details for inventory deletion operations.
 
@@ -45,7 +45,7 @@ Output::
         ]
     }
 
-**To get details of a specific inventory deletion**
+**Example 2: To get details of a specific inventory deletion**
 
 This example retrieves details for a specific inventory deletion operation.
 

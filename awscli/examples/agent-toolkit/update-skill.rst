@@ -25,7 +25,7 @@ Output::
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 
-**Example 3: When a skill is already up to date**
+**Example 3: To update a skill that is already up to date**
 
 The following ``update-skill`` example shows the output when the installed skill is already at the latest version. ::
 
@@ -66,7 +66,7 @@ Output::
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 
-**Example 6: When all installed skills are up to date**
+**Example 6: To update every installed skill when all skills are already up to date**
 
 The following ``update-skill`` example shows the output when every installed skill is already at the latest version. ::
 

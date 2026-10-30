@@ -1,3 +1,5 @@
+**To list the instances in a cluster**
+
 The following command lists all of the instances in a cluster with the cluster ID ``j-3C6XNQ39VR9WL``::
 
     aws emr list-instances --cluster-id j-3C6XNQ39VR9WL

@@ -1,5 +1,4 @@
-Create a Cluster Subnet Group
------------------------------
+**To create a cluster subnet group**
 
 This example creates a new cluster subnet group.
 

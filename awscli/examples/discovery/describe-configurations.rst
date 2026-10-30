@@ -1,4 +1,4 @@
-**Describe selected asset configurations**
+**Example 1: To describe selected server configurations**
 
 This example command describes the configurations of two specified servers. The action detects the type of asset from the configuration ID. Only one type of asset is allowed per command.
 
@@ -90,7 +90,7 @@ Output::
     }
 
 
-**Describe selected asset configurations**
+**Example 2: To describe selected application configurations**
 
 This example command describes the configurations of two specified applications. The action detects the type of asset from the configuration ID. Only one type of asset is allowed per command.
 

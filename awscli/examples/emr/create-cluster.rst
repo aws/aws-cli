@@ -1,5 +1,3 @@
-Most of the following examples assume that you specified your Amazon EMR service role and Amazon EC2 instance profile. If you have not done this, you must specify each required IAM role or use the ``--use-default-roles`` parameter when creating your cluster. For more information about specifying IAM roles, see `Configure IAM Roles for Amazon EMR Permissions to AWS Services <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html>`_ in the *Amazon EMR Management Guide*.
-
 **Example 1: To create a cluster**
 
 The following ``create-cluster`` example creates a simple EMR cluster. ::
@@ -10,6 +8,8 @@ The following ``create-cluster`` example creates a simple EMR cluster. ::
         --instance-count 2
 
 This command produces no output.
+
+This example and most of the following examples assume that you specified your Amazon EMR service role and Amazon EC2 instance profile. If you have not done this, you must specify each required IAM role or use the ``--use-default-roles`` parameter when creating your cluster. For more information about specifying IAM roles, see `Configure IAM Roles for Amazon EMR Permissions to AWS Services <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html>`_ in the *Amazon EMR Management Guide*.
 
 **Example 2: To create an Amazon EMR cluster with default ServiceRole and InstanceProfile roles**
 
@@ -350,7 +350,7 @@ Contents of ``instancegroupconfig.json``::
         }
     ]
 
-**Example 17: Add custom JAR steps when creating a cluster**
+**Example 17: To add custom JAR steps when creating a cluster**
 
 The following ``create-cluster`` example adds steps by specifying a JAR file stored in Amazon S3. Steps submit work to a cluster. The main function defined in the JAR file executes after EC2 instances are provisioned, any bootstrap actions have executed, and applications are installed. The steps are specified using ``Type=CUSTOM_JAR``.
 

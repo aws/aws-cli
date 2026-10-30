@@ -1,4 +1,4 @@
-**Delete an Amazon EKS cluster control plane**
+**To delete an Amazon EKS cluster control plane**
 
 The following ``delete-cluster`` example deletes an Amazon EKS cluster control plane. ::
 

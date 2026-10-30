@@ -1,4 +1,4 @@
-**To modify Reserved Instances**
+**Example 1: To modify Reserved Instances**
 
 This example command moves a Reserved Instance to another Availability Zone in the same region.
 
@@ -13,7 +13,7 @@ Output::
     }
 
 
-**To modify the network platform of Reserved Instances**
+**Example 2: To modify the network platform of Reserved Instances**
 
 This example command converts EC2-Classic Reserved Instances to EC2-VPC.
 
@@ -29,7 +29,7 @@ Output::
 
 For more information, see `Modifying Your Reserved Instances`_ in the *Amazon EC2 User Guide*.
 
-**To modify the instance size of Reserved Instances**
+**Example 3: To modify the instance size of Reserved Instances**
 
 This example command modifies a Reserved Instance that has 10 m1.small Linux/UNIX instances in us-west-1c so that 8
 m1.small instances become 2 m1.large instances, and the remaining 2 m1.small become 1 m1.medium instance in the same

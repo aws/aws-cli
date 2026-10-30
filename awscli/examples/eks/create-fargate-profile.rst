@@ -1,4 +1,4 @@
-**Example 1: Create EKS Fargate Profile for a selector with a namespace**
+**Example 1: To create an EKS Fargate profile for a selector with a namespace**
 
 The following ``create-fargate-profile`` example creates an EKS Fargate Profile for a selector with a namespace. ::
 
@@ -34,7 +34,7 @@ Output::
 
 For more information, see `AWS Fargate profile - Creating a Fargate profile <https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html#create-fargate-profile>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: Create EKS Fargate Profile for a selector with a namespace and labels**
+**Example 2: To create an EKS Fargate profile for a selector with a namespace and labels**
 
 The following ``create-fargate-profile`` example creates an EKS Fargate Profile for a selector with a namespace and labels. ::
 
@@ -73,7 +73,7 @@ Output::
 
 For more information, see `AWS Fargate profile - Creating a Fargate profile <https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html#create-fargate-profile>`__ in the *Amazon EKS User Guide*.
 
-**Example 3: Create EKS Fargate Profile for a selector with a namespace and labels, along with IDs of subnets to launch a Pod into.**
+**Example 3: To create an EKS Fargate profile for a selector with a namespace and labels, along with IDs of subnets to launch a Pod into**
 
 The following ``create-fargate-profile`` example create EKS Fargate Profile for a selector with a namespace and labels, along with IDs of subnets to launch a Pod into. ::
 
@@ -113,7 +113,7 @@ Output::
 
 For more information, see `AWS Fargate profile - Creating a Fargate profile <https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html#create-fargate-profile>`__ in the *Amazon EKS User Guide*.
 
-**Example 4: Create EKS Fargate Profile for a selector with multiple namespace and labels, along with IDs of subnets to launch a Pod into**
+**Example 4: To create an EKS Fargate profile for a selector with multiple namespaces and labels, along with IDs of subnets to launch a Pod into**
 
 The following ``create-fargate-profile`` example creates an EKS Fargate Profile for a selector with multiple namespace and labels, along with IDs of subnets to launch a Pod into. ::
 
@@ -165,7 +165,7 @@ Output::
 
 For more information, see `AWS Fargate profile - Creating a Fargate profile <https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html#create-fargate-profile>`__ in the *Amazon EKS User Guide*.
 
-**Example 5: Create EKS Fargate Profile with a wildcard selector for namespaces and labels, along with IDs of subnets to launch a Pod into**
+**Example 5: To create an EKS Fargate profile with a wildcard selector for namespaces and labels, along with IDs of subnets to launch a Pod into**
 
 The following ``create-fargate-profile`` example creates an EKS Fargate Profile for a selector with multiple namespace and labels, along with IDs of subnets to launch a Pod into. ::
 

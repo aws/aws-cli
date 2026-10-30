@@ -1,3 +1,5 @@
+**To get the notification configuration for a vault**
+
 The following command gets a description of the notification configuration for a vault named ``my-vault``::
 
     aws glacier get-vault-notifications --account-id - --vault-name my-vault

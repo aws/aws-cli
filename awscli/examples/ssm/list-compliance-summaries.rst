@@ -1,4 +1,4 @@
-**To list compliance summaries for all compliance types**
+**Example 1: To list compliance summaries for all compliance types**
 
 This example lists compliance summaries for all compliance types in your account.
 
@@ -65,7 +65,7 @@ Output::
         "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
     }
 
-**To list compliance summaries for a specific compliance type**
+**Example 2: To list compliance summaries for a specific compliance type**
 
 This example lists the compliance summary for the Patch compliance type.
 

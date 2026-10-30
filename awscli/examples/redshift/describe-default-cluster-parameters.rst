@@ -1,5 +1,4 @@
-Get a Description of Default Cluster Parameters
------------------------------------------------
+**To get a description of default cluster parameters**
 
 This example returns a description of the default cluster parameters for the
 ``redshift-1.0`` family. By default, the output is in JSON format.

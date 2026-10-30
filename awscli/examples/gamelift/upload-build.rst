@@ -1,4 +1,4 @@
-**Example1: To upload a Linux game server build**
+**Example 1: To upload a Linux game server build**
 
 The following ``upload-build`` example uploads Linux game server build files from a file directory to the GameLift service and creates a build resource. ::
 
@@ -19,7 +19,7 @@ Output::
     Successfully uploaded ~/MegaFrogRace_Server/release-na to AWS GameLift
     Build ID: build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
-**Example2: To upload a Windows game server build**
+**Example 2: To upload a Windows game server build**
 
 The following ``upload-build`` example uploads Windows game server build files from a directory to the GameLift service and creates a build record. ::
 

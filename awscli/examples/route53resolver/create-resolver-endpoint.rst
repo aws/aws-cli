@@ -1,4 +1,4 @@
-**To create an inbound Resolver endpoint**
+**Example 1: To create an inbound Resolver endpoint**
 
 The following ``create-resolver-endpoint`` example creates an inbound Resolver endpoint. You can use the same command to create both inbound and outbound endpoints.
 
@@ -30,7 +30,7 @@ Output::
         }
     }
 
-**To create an outbound Resolver endpoint**
+**Example 2: To create an outbound Resolver endpoint**
 
 The following ``create-resolver-endpoint`` example creates an outbound resolver endpoint using the values in the JSON-formatted document ``create-outbound-resolver-endpoint.json``. ::
 

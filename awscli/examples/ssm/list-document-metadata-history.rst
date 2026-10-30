@@ -1,4 +1,4 @@
-**Example: To view approval history and status for a change template**
+**To view approval history and status for a change template**
 
 The following ``list-document-metadata-history`` example returns the approval history for the specified Change Manager change template. ::
 

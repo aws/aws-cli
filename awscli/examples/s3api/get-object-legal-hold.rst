@@ -1,4 +1,4 @@
-**Retrieves the Legal Hold status of an object**
+**To retrieve the Legal Hold status of an object**
 
 The following ``get-object-legal-hold`` example retrieves the Legal Hold status for the specified object. ::
 

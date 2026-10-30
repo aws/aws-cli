@@ -1,4 +1,4 @@
-**Wait until an ECS service becomes inactive**
+**To wait until an ECS service becomes inactive**
 
 The following ``service-inactive`` example waits until ECS services becomes inactive in the cluster. ::
 

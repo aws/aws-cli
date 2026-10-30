@@ -1,4 +1,4 @@
-**To create a new gRPC route**
+**Example 1: To create a new gRPC route**
 
 The following ``create-route`` example uses a JSON input file to create a gRPC route. GRPC traffic that has metadata that starts with 123 is routed to a virtual node named serviceBgrpc. If there are specific gRPC, HTTP, or TCP failures when attempting to communicate with the target of the route, the route is retried three times. There is a 15 second delay between each retry attempt. ::
 
@@ -112,7 +112,7 @@ Output::
         }
     }
 
-**To create a new HTTP or HTTP/2 route**
+**Example 2: To create a new HTTP or HTTP/2 route**
 
 The following ``create-route`` example uses a JSON input file to create an HTTP/2 route. To create an HTTP route, replace http2Route with httpRoute under spec. All HTTP/2 traffic addressed to any URL prefix that has a header value that starts with 123 is routed to a virtual node named serviceBhttp2. If there are specific HTTP or TCP failures when attempting to communicate with the target of the route, the route is retried three times. There is a 15 second delay between each retry attempt. ::
 
@@ -229,7 +229,7 @@ Output::
         }
     }
 
-**To create a new TCP route**
+**Example 3: To create a new TCP route**
 
 The following ``create-route`` example uses a JSON input file to create a TCP route. 75 percent of traffic is routed to a virtual node named serviceBtcp, and 25 percent of traffic is routed to a virtual node named serviceBv2tcp. Specifying different weightings for different targets is an effective way to do a deployment of a new version of an application. You can adjust the weights so that eventually, 100 percent of all traffic is routed to a target that has the new version of an application. ::
 

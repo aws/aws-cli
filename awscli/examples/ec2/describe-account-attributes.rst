@@ -1,4 +1,4 @@
-**To describe all the attributes for your AWS account**
+**Example 1: To describe all the attributes for your AWS account**
 
 This example describes the attributes for your AWS account.
 
@@ -64,7 +64,7 @@ Output::
         ]
     }
 
-**To describe a single attribute for your AWS account**
+**Example 2: To describe a single attribute for your AWS account**
 
 This example describes the ``supported-platforms`` attribute for your AWS account.
 

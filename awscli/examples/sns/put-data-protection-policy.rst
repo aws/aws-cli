@@ -1,5 +1,3 @@
-**To set data protection policy**
-
 **Example 1: To deny publishers from publishing messages with CreditCardNumber**
 
 The following ``put-data-protection-policy`` example denies publishers from publishing messages with CreditCardNumber. ::

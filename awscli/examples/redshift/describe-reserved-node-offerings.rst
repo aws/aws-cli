@@ -1,5 +1,4 @@
-Describe Reserved Node Offerings
---------------------------------
+**To describe reserved node offerings**
 
 This example shows all of the reserved node offerings that are available for
 purchase.

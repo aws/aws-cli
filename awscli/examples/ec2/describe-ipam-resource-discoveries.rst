@@ -1,4 +1,4 @@
-**Example 1: View complete details of resource discoveries**
+**Example 1: To view complete details of resource discoveries**
 
 In this example, you're a delegated IPAM admin who wants to create and share a resource discovery with the IPAM admin in another AWS Organization so that the admin can manage and monitor the IP addresses of resources in your organization.
 
@@ -35,7 +35,7 @@ Output::
 
 For more information, see `Integrate IPAM with accounts outside of your organization <https://docs.aws.amazon.com/vpc/latest/ipam/enable-integ-ipam-outside-org.html>`__ in the *Amazon VPC IPAM User Guide*.
 
-**Example 2: View only resource discovery IDs**
+**Example 2: To view only resource discovery IDs**
 
 The following ``describe-ipam-resource-discoveries`` example lists the ID of the resource discovery in your AWS account. You can have one resource discovery per AWS Region. ::
 

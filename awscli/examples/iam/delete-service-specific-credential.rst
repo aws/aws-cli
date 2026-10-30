@@ -1,4 +1,4 @@
-**Example 1: Delete a service-specific credential for the requesting user**
+**Example 1: To delete a service-specific credential for the requesting user**
 
 The following ``delete-service-specific-credential`` example deletes the specified service-specific credential for the user making the request. The ``service-specific-credential-id`` is provided when you create the credential and you can retrieve it by using the ``list-service-specific-credentials`` command. ::
 
@@ -7,7 +7,7 @@ The following ``delete-service-specific-credential`` example deletes the specifi
 
 This command produces no output.
 
-**Example 2: Delete a service-specific credential for a specified user**
+**Example 2: To delete a service-specific credential for a specified user**
 
 The following ``delete-service-specific-credential`` example deletes the specified service-specific credential for the specified user. The ``service-specific-credential-id`` is provided when you create the credential and you can retrieve it by using the ``list-service-specific-credentials`` command. ::
 

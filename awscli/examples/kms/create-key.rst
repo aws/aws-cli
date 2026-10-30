@@ -251,7 +251,7 @@ Output::
 For more information, see `Importing key material in AWS KMS keys <https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
-**Example 6: To create a KMS key in an AWS CloudHSM key store**
+**Example 8: To create a KMS key in an AWS CloudHSM key store**
 
 The following ``create-key`` example creates a creates a KMS key in the specified AWS CloudHSM key store. The operation creates the KMS key and its metadata in AWS KMS and creates the key material in the AWS CloudHSM cluster associated with the custom key store. The ``--custom-key-store-id`` and ``--origin`` parameters are required. ::
 
@@ -288,7 +288,7 @@ Output::
 For more information, see `AWS CloudHSM key stores <https://docs.aws.amazon.com/kms/latest/developerguide/keystore-cloudhsm.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
-**Example 8: To create a KMS key in an external key store**
+**Example 9: To create a KMS key in an external key store**
 
 The following ``create-key`` example creates a creates a KMS key in the specified external key store. The ``--custom-key-store-id``, ``--origin``, and ``--xks-key-id`` parameters are required in this command.
 

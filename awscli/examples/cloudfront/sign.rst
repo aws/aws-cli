@@ -1,4 +1,4 @@
-**To sign a CloudFront URL**
+**Example 1: To sign a CloudFront URL**
 
 The following example signs a CloudFront URL. To sign a URL, you need the key
 pair ID (called the **Access Key ID** in the AWS Management Console) and the
@@ -20,7 +20,7 @@ Output::
 
     https://d111111abcdef8.cloudfront.net/private-content/private-file.html?Expires=1577836800&Signature=v7tTOShSbp6U853uAIy3IWkegvCyg5kfulm2m7qLAc8NX-wtRFXbLSAmRep3uqYsckuij8c0KE97OQE1QadcusZa3uU~ez6QVoQ9-FSsaiB3hgB-DNxZyCu4~zrx-RfZkI7ZZQXDOEOVjurup2dXIb~obJEymOUMiADckQI-FwnC0utB7ax8Y2sjU7GeP9fcU9sT~I50MUgaxqqZo6-CUOAlER55-pnuuJRc3pCWZKtEI~3YMZ5Gbfv1sF~egkphOYzbGm7iO9~L0YK4S2naC57EmoByvCdiphA6XjXdZmoLzKXEjtniryC0k-mVm99RVz2QQQDJX9hGmhjz3uj7rw__&Key-Pair-Id=APKAEIBAERJR2EXAMPLE
 
-**To sign a CloudFront URL using SHA-256**
+**Example 2: To sign a CloudFront URL using SHA-256**
 
 The following example signs a CloudFront URL using the SHA-256 hash
 algorithm, which is recommended for its stronger security posture. The signed
@@ -38,7 +38,7 @@ Output::
 
     https://d111111abcdef8.cloudfront.net/private-content/private-file.html?Expires=1577836800&Signature=YS1t-C1br-5iHCU1ggKKk3pio61TpuQtgQaOekhfA-JzdAG35qwU8Fjz78BwJmZUGHAFnxJTq2msCigm9cm1~m6~M-ue8wsoAxDXpTlCmJGWWt2bJLFaBpLSHaHAjj8C9J6Qn07IyVP7jTv4m0HTzO-O2VhCYCYQK018twXjGmf44~FynVJK~GFgpl8OBp4Nv673twzXbzwuEU~0kq-zvXOZCiqZqMQ6~uVtOxa6JzKd6Y453fGyLXtzJj6D9mw6vLIup1zaKA2vVekFWsljwyYfMhVfJRshoHlU8wq0mhYJlFM7jNQGJyI14guHXLh-3Cailhe7dkIeMebzJ26klA__&Key-Pair-Id=APKAEIBAERJR2EXAMPLE&Hash-Algorithm=SHA256
 
-**To sign a CloudFront URL using an ECDSA key**
+**Example 3: To sign a CloudFront URL using an ECDSA key**
 
 The following example signs a CloudFront URL with an ECDSA (P-256) private
 key. ECDSA keys always sign with SHA-256, so the signed URL includes the
@@ -56,7 +56,7 @@ Output::
 
     https://d111111abcdef8.cloudfront.net/private-content/private-file.html?Expires=1577836800&Signature=MEUCIQC9y65NPHY3Y0ADS3pIIBjYoVbB~N1rnGwYcTudKTj9ZAIgV3pHaL-WuumMpAApEaTN3svwatuNGDt2n0sKDrEGSfM_&Key-Pair-Id=K2JCJMDEHXQW5F&Hash-Algorithm=SHA256
 
-**To sign a CloudFront URL with a wildcard policy resource**
+**Example 4: To sign a CloudFront URL with a wildcard policy resource**
 
 The following example signs a policy for every object under ``/videos/`` and
 applies the signature to a specific URL. Because the policy resource contains a

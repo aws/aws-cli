@@ -1,4 +1,4 @@
-**Connect an AWS CodeBuild user to a source provider by importing credentials for the source provider.**
+**To connect an AWS CodeBuild user to a source provider by importing credentials for the source provider**
 
 The following ``import-source-credentials`` example imports a token for a Bitbucket repository that uses BASIC_AUTH for its authentication type. ::
 

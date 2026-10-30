@@ -1,4 +1,4 @@
-**Example 1: Register an external EKS_ANYWHERE Kubernetes cluster to Amazon EKS**
+**Example 1: To register an external EKS_ANYWHERE Kubernetes cluster to Amazon EKS**
 
 The following ``register-cluster`` example registers an external EKS_ANYWHERE Kubernetes cluster to Amazon EKS. ::
 
@@ -27,7 +27,7 @@ Output::
 
 For more information, see `Connecting an external cluster <https://docs.aws.amazon.com/eks/latest/userguide/connecting-cluster.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: Register any external Kubernetes cluster to Amazon EKS**
+**Example 2: To register any external Kubernetes cluster to Amazon EKS**
 
 The following ``register-cluster`` example registers an external EKS_ANYWHERE Kubernetes cluster to Amazon EKS. ::
 

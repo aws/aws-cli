@@ -1,4 +1,4 @@
-**To create a LAG with new connections**
+**Example 1: To create a LAG with new connections**
 
 The following example creates a LAG and requests two new AWS Direct Connect connections for the LAG with a bandwidth of 1 Gbps.
 
@@ -43,7 +43,7 @@ Output::
         "location": "CSVA1"
     }
 
-**To create a LAG using an existing connection**
+**Example 2: To create a LAG using an existing connection**
 
 The following example creates a LAG from an existing connection in your account, and requests a second new connection for the LAG with the same bandwidth and location as the existing connection.
 

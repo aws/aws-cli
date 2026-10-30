@@ -1,4 +1,4 @@
-**To get the CPU utilization per EC2 instance**
+**Example 1: To get the CPU utilization per EC2 instance**
 
 The following example uses the ``get-metric-statistics`` command to get the CPU utilization for an EC2
 instance with the ID i-abcdef.
@@ -132,7 +132,7 @@ Output::
         "Label": "CPUUtilization"
     }
 
-**Specifying multiple dimensions**
+**Example 2: To get statistics for a metric with multiple dimensions**
 
 The following example illustrates how to specify multiple dimensions. Each dimension is specified as a Name/Value pair, with a comma between the name and the value. Multiple dimensions are separated by a space. If a single metric includes multiple dimensions, you must specify a value for every defined dimension.
 

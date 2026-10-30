@@ -1,5 +1,4 @@
-Create a Cluster Snapshot
--------------------------
+**To create a cluster snapshot**
 
 This example creates a new cluster snapshot.  By default, the output is in JSON format.
 

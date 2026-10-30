@@ -1,4 +1,4 @@
-**To get the compliance summary for all resource types**
+**Example 1: To get the compliance summary for all resource types**
 
 The following command returns the number of AWS resources that are noncompliant and the number that are compliant::
 
@@ -26,7 +26,7 @@ Output::
         ]
     }
 
-**To get the compliance summary for a specific resource type**
+**Example 2: To get the compliance summary for a specific resource type**
 
 The following command returns the number of EC2 instances that are noncompliant and the number that are compliant::
 

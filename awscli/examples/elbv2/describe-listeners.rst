@@ -1,4 +1,4 @@
-**To describe a listener**
+**Example 1: To describe a listener**
 
 This example describes the specified listener.
 
@@ -25,7 +25,7 @@ Output::
         ]
     }
 
-**To describe the listeners for a load balancer**
+**Example 2: To describe the listeners for a load balancer**
 
 This example describe the listeners for the specified load balancer.
 

@@ -1,3 +1,5 @@
+**To upload an archive to a vault**
+
 The following command uploads an archive in the current folder named ``archive.zip`` to a vault named ``my-vault``::
 
     aws glacier upload-archive --account-id - --vault-name my-vault --body archive.zip

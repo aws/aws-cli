@@ -24,7 +24,7 @@ Output::
 
 For more information, see `Getting Amazon SNS notifications when your Auto Scaling group scales <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ASGettingNotifications.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-**Example 1: To describe a specified number of notification configurations**
+**Example 2: To describe a specified number of notification configurations**
 
 To return a specific number of notification configurations, use the ``max-items`` parameter. ::
 

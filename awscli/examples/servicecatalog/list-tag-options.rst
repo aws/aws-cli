@@ -1,3 +1,5 @@
+**To list all TagOptions**
+
 The following ``list-tag-options`` example lists all values for ``TagOptions``. ::
 
     aws servicecatalog list-tag-options 

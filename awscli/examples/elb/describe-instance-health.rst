@@ -1,4 +1,4 @@
-**To describe the health of the instances for a load balancer**
+**Example 1: To describe the health of the instances for a load balancer**
 
 This example describes the health of the instances for the specified load balancer.
 
@@ -25,7 +25,7 @@ Output::
         ]
     }
 
-**To describe the health of an instance for a load balancer**
+**Example 2: To describe the health of an instance for a load balancer**
 
 This example describes the health of the specified instance for the specified load balancer.
 

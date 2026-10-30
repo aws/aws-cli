@@ -1,4 +1,4 @@
-**Describe a managed node group for an Amazon EKS cluster**
+**To describe a managed node group for an Amazon EKS cluster**
 
 The following ``describe-nodegroup`` example describes a managed node group for an Amazon EKS cluster. ::
 

@@ -1,4 +1,4 @@
-**Deprecating a Domain**
+**To deprecate a domain**
 
 To deprecate a domain (you can still see it, but cannot create new workflow executions or register types on it), use ``swf deprecate-domain``. It has a sole required parameter, ``--name``, which takes the name of the domain to deprecate. ::
 

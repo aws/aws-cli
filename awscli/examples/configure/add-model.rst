@@ -1,4 +1,4 @@
-**Add a model**
+**To add a model**
 
 The following command adds a service model from a file named ``service.json``::
 

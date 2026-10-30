@@ -1,4 +1,4 @@
-**To generate CloudFront signed cookies**
+**Example 1: To generate CloudFront signed cookies**
 
 The following example generates signed cookies that grant access to every
 object in a CloudFront distribution. To generate signed cookies, you need the
@@ -29,7 +29,7 @@ Set each cookie in the response to the viewer, adding the cookie attributes
 (such as ``Domain``, ``Path``, ``Secure`` and ``HttpOnly``) that your
 application needs.
 
-**To extract a single cookie value**
+**Example 2: To extract a single cookie value**
 
 The set of cookies depends on the policy type and hash algorithm, so the
 columns of ``--output text`` vary between invocations. Use ``--query`` to

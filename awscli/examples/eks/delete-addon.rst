@@ -1,4 +1,4 @@
-**Example 1. To deletes an Amazon EKS add-on but preserve the add-on software on the EKS Cluster**
+**Example 1: To delete an Amazon EKS add-on but preserve the add-on software on the EKS cluster**
 
 The following ``delete-addon`` example command deletes an Amazon EKS add-on but preserve the add-on software on the EKS Cluster. ::
 
@@ -27,7 +27,7 @@ Output::
 
 For more information, see `Managing Amazon EKS add-ons - Deleting an add-on <https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#removing-an-add-on>`__ in the *Amazon EKS*.
 
-**Example 2. To deletes an Amazon EKS add-on and also delete the add-on software from the EKS Cluster**
+**Example 2: To delete an Amazon EKS add-on and also delete the add-on software from the EKS cluster**
 
 The following ``delete-addon`` example command deletes an Amazon EKS add-on and also delete the add-on software from the EKS Cluster. ::
 

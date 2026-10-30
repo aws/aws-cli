@@ -1,4 +1,4 @@
-**To publish a custom metric to Amazon CloudWatch**
+**Example 1: To publish a custom metric to Amazon CloudWatch**
 
 The following example uses the ``put-metric-data`` command to publish a custom metric to Amazon CloudWatch::
 
@@ -21,7 +21,7 @@ For more information, see `Publishing Custom Metrics`_ in the *Amazon CloudWatch
 
 .. _`Publishing Custom Metrics`: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html
 
-**To specify multiple dimensions**
+**Example 2: To specify multiple dimensions**
 
 The following example illustrates how to specify multiple dimensions. Each dimension is specified as a Name=Value pair. Multiple dimensions are separated by a comma.::
 

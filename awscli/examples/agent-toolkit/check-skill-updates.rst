@@ -21,7 +21,7 @@ Output::
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 
-**Example 2: When every installed skill is up to date**
+**Example 2: To check for updates when every installed skill is up to date**
 
 The following ``check-skill-updates`` example shows the output when no updates are available. ::
 

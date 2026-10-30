@@ -1,4 +1,4 @@
-**To get a list of traces** 
+**To get a list of traces**
 
 The following ``batch-get-traces`` example retrieves a list of traces specified by an ID. The full trace includes a document for each segment, compiled from all of the segment documents received with the same trace ID. ::
 

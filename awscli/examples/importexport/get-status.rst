@@ -1,3 +1,5 @@
+**To get the status of a job**
+
 The following command returns the status the specified job::
 
     aws importexport get-status  --job-id EX1ID

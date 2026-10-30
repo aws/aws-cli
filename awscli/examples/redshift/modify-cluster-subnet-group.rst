@@ -1,5 +1,4 @@
-Modify the Subnets in a Cluster Subnet Group
---------------------------------------------
+**To modify the subnets in a cluster subnet group**
 
 This example shows how to modify the list of subnets in a cache subnet group.  By default, the output is in JSON format.
 

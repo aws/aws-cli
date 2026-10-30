@@ -1,4 +1,4 @@
-**Example 1: Configures your kubectl by creating or updating the kubeconfig so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`**
+**Example 1: To configure your kubectl by creating or updating the kubeconfig so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`**
 
 The following ``update-kubeconfig`` example configures your kubectl by creating or updating the kubeconfig so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`. ::
 
@@ -11,7 +11,7 @@ Output::
 
 For more information, see `Creating or updating a kubeconfig file for an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: Configures your kubectl by creating or updating the kubeconfig (with role-arn option to assume a role for cluster authentication) so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`**
+**Example 2: To configure your kubectl by creating or updating the kubeconfig (with role-arn option to assume a role for cluster authentication) so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`**
 
 The following ``update-kubeconfig`` example configures your kubectl by creating or updating the kubeconfig (with role-arn option to assume a role for cluster authentication) so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`. ::
 
@@ -25,7 +25,7 @@ Output::
 
 For more information, see `Creating or updating a kubeconfig file for an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 3: Configures your kubectl by creating or updating the kubeconfig (with role-arn option to assume a role for cluster authentication along with custom cluster alias and user-alias) so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`**
+**Example 3: To configure your kubectl by creating or updating the kubeconfig (with role-arn option to assume a role for cluster authentication along with custom cluster alias and user-alias) so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`**
 
 The following ``update-kubeconfig`` example configures your kubectl by creating or updating the kubeconfig (with role-arn option to assume a role for cluster authentication along with custom cluster alias and user-alias) so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`. ::
 
@@ -41,7 +41,7 @@ Output::
 
 For more information, see `Creating or updating a kubeconfig file for an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 4: Print kubeconfig file entries for review and configures your kubectl so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`**
+**Example 4: To print kubeconfig file entries for review and configure your kubectl so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`**
 
 The following ``update-kubeconfig`` example configures your kubectl by creating or updating the kubeconfig (with role-arn option to assume a role for cluster authentication along with custom cluster alias and user-alias) so that you can connect to an Amazon EKS Cluster named `my-eks-cluster`. ::
 

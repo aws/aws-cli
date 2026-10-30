@@ -1,4 +1,4 @@
-**To enable an IAM role to use longer IDs for a resource**
+**Example 1: To enable an IAM role to use longer IDs for a resource**
 
 The following ``modify-identity-id-format`` example enables the IAM role ``EC2Role`` in your AWS account to use long ID format for the ``instance`` resource type. ::
 
@@ -7,7 +7,7 @@ The following ``modify-identity-id-format`` example enables the IAM role ``EC2Ro
         --resource instance \
         --use-long-ids
 
-**To enable an IAM user to use longer IDs for a resource**
+**Example 2: To enable an IAM user to use longer IDs for a resource**
 
 The following ``modify-identity-id-format`` example enables the IAM user ``AdminUser`` in your AWS account to use the longer ID format for the ``volume`` resource type. ::
 

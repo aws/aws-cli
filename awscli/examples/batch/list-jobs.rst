@@ -1,4 +1,4 @@
-**To list running jobs**
+**Example 1: To list running jobs**
 
 This example lists the running jobs in the `HighPriority` job queue.
 
@@ -18,7 +18,7 @@ Output::
     }
 
 
-**To list submitted jobs**
+**Example 2: To list submitted jobs**
 
 This example lists jobs in the `HighPriority` job queue that are in the `SUBMITTED` job status.
 

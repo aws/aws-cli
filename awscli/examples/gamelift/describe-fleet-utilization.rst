@@ -1,4 +1,4 @@
-**Example1: To view usage data for a list of fleets**
+**Example 1: To view usage data for a list of fleets**
 
 The following ``describe-fleet-utilization`` example retrieves current usage information for one specified fleet. ::
 
@@ -19,7 +19,7 @@ Output::
         ]
     }
 
-**Example2: To request usage data for all fleets**
+**Example 2: To request usage data for all fleets**
 
 The following ``describe-fleet-utilization`` returns fleet usage data for all fleets with any status. This example uses pagination parameters to return data for two fleets at a time. ::
 

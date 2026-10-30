@@ -1,4 +1,4 @@
-**1. To create a security configuration with in-transit encryption enabled with PEM for certificate provider, and at-rest encryption enabled with SSE-S3 for S3 encryption and AWS-KMS for local disk key provider**
+**Example 1: To create a security configuration with in-transit encryption enabled with PEM for certificate provider, and at-rest encryption enabled with SSE-S3 for S3 encryption and AWS-KMS for local disk key provider**
 
 - Command::
 
@@ -66,7 +66,7 @@
         "Name": "MySecurityConfig"
     }
 
-**2. To create a security configuration with Kerberos enabled using cluster-dedicated KDC and cross-realm trust**
+**Example 2: To create a security configuration with Kerberos enabled using cluster-dedicated KDC and cross-realm trust**
 
 - Command::
 

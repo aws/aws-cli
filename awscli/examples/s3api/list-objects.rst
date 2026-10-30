@@ -1,3 +1,5 @@
+**To list the objects in a bucket**
+
 The following example uses the ``list-objects`` command to display the names of all the objects in the specified bucket::
 
     aws s3api list-objects --bucket text-content --query 'Contents[].{Key: Key, Size: Size}'

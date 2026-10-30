@@ -1,3 +1,5 @@
+**To list the names of all your Amazon S3 buckets**
+
 The following command uses the ``list-buckets`` command to display the names of all your Amazon S3 buckets (across all
 regions)::
 

@@ -1,4 +1,4 @@
-**Example 1: Delete an S3 object**
+**Example 1: To delete an S3 object**
 
 The following ``rm`` command deletes a single S3 object::
 
@@ -8,7 +8,7 @@ Output::
 
     delete: s3://amzn-s3-demo-bucket/test2.txt
 
-**Example 2: Delete all contents in a bucket**
+**Example 2: To delete all contents in a bucket**
 
 The following ``rm`` command recursively deletes all objects under a specified bucket and prefix when passed with the
 parameter ``--recursive``.  In this example, the bucket ``amzn-s3-demo-bucket`` contains the objects ``test1.txt`` and
@@ -22,7 +22,7 @@ Output::
     delete: s3://amzn-s3-demo-bucket/test1.txt
     delete: s3://amzn-s3-demo-bucket/test2.txt
 
-**Example 3: Delete all contents in a bucket, except ``.jpg`` files**
+**Example 3: To delete all contents in a bucket, except ``.jpg`` files**
 
 
 The following ``rm`` command recursively deletes all objects under a specified bucket and prefix when passed with the
@@ -37,7 +37,7 @@ Output::
 
     delete: s3://amzn-s3-demo-bucket/test1.txt
 
-**Example 4: Delete all contents in a bucket, except objects under the specified prefix**
+**Example 4: To delete all contents in a bucket, except objects under the specified prefix**
 
 The following ``rm`` command recursively deletes all objects under a specified bucket and prefix when passed with the
 parameter ``--recursive`` while excluding all objects under a particular prefix by using an ``--exclude`` parameter.  In
@@ -51,7 +51,7 @@ Output::
 
     delete: s3://amzn-s3-demo-bucket/test1.txt
 
-**Example 5: Delete an object from an S3 access point**
+**Example 5: To delete an object from an S3 access point**
 
 The following ``rm`` command deletes a single object (``mykey``) from the access point (``myaccesspoint``). ::
 

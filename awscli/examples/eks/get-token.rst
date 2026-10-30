@@ -1,4 +1,4 @@
-**Example 1: Get an authentication token for an Amazon EKS Cluster named `my-eks-cluster`**
+**Example 1: To get an authentication token for an Amazon EKS Cluster named `my-eks-cluster`**
 
 The following ``get-token`` example gets an authentication token for an Amazon EKS Cluster named `my-eks-cluster`. ::
 
@@ -17,7 +17,7 @@ Output::
         }
     }
 
-**Example 2: Gets an authentication token for an Amazon EKS Cluster named `my-eks-cluster` by assuming this roleARN for credentials when signing the token**
+**Example 2: To get an authentication token for an Amazon EKS Cluster named `my-eks-cluster` by assuming a role ARN for credentials when signing the token**
 
 The following ``get-token`` example gets an authentication token for an Amazon EKS Cluster named `my-eks-cluster` by assuming this roleARN for credentials when signing the token. ::
 

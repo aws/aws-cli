@@ -1,4 +1,4 @@
-**Associate an existing API key with a Usage Plan**
+**To associate an existing API key with a Usage Plan**
 
 Command::
 

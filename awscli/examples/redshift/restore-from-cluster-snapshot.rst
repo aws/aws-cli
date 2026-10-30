@@ -1,5 +1,4 @@
-Restore a Cluster From a Snapshot
----------------------------------
+**To restore a cluster from a snapshot**
 
 This example restores a cluster from a snapshot.
 

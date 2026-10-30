@@ -1,4 +1,4 @@
-**Describe an identity provider configuration associated to your Amazon EKS Cluster**
+**To describe an identity provider configuration associated to your Amazon EKS Cluster**
 
 The following ``describe-identity-provider-config`` example describes an identity provider configuration associated to your Amazon EKS Cluster. ::
 

@@ -1,3 +1,5 @@
+**To list the tags for a vault**
+
 The following command lists the tags applied to a vault named ``my-vault``::
 
     aws glacier list-tags-for-vault --account-id - --vault-name my-vault

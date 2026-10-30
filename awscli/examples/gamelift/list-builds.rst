@@ -1,4 +1,4 @@
-**Example1: To get a list of custom game builds**
+**Example 1: To get a list of custom game builds**
 
 The following ``list-builds`` example retrieves properties for all game server builds in the current Region. The sample request illustrates how to use the pagination parameters, ``Limit`` and ``NextToken``, to retrieve the results in sequential sets. The first command retrieves the first two builds. Because there are more than two available, the response includes a ``NextToken`` to indicate that more results are available. ::
 
@@ -41,7 +41,7 @@ You can then call the command again with the ``--next-token`` parameter as follo
 
 Repeat until the response doesn't include a ``NextToken`` value.
 
-**Example2: To get a list of custom game builds in failure status**
+**Example 2: To get a list of custom game builds in failure status**
 
 The following ``list-builds`` example retrieves properties for all game server builds in the current region that currently have status FAILED. ::
 

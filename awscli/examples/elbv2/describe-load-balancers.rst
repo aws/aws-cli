@@ -1,4 +1,4 @@
-**To describe a load balancer**
+**Example 1: To describe a load balancer**
 
 This example describes the specified load balancer.
 
@@ -40,7 +40,7 @@ Output::
         ]
     }
 
-**To describe all load balancers**
+**Example 2: To describe all load balancers**
 
 This example describes all of your load balancers.
 

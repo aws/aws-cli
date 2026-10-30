@@ -1,4 +1,4 @@
-**To update an environment to a new version**
+**Example 1: To update an environment to a new version**
 
 The following command updates an environment named "my-env" to version "v2" of the application to which it belongs::
 
@@ -27,7 +27,7 @@ Output::
         "DateCreated": "2015-02-03T23:04:54.453Z"
     }
 
-**To set an environment variable**
+**Example 2: To set an environment variable**
 
 The following command sets the value of the "PARAM1" variable in the "my-env" environment to "ParamValue"::
 
@@ -35,7 +35,7 @@ The following command sets the value of the "PARAM1" variable in the "my-env" en
 
 The ``option-settings`` parameter takes a namespace in addition to the name and value of the variable. Elastic Beanstalk supports several namespaces for options in addition to environment variables.
 
-**To configure option settings from a file**
+**Example 3: To configure option settings from a file**
 
 The following command configures several options in the ``aws:elb:loadbalancer`` namespace from a file::
 

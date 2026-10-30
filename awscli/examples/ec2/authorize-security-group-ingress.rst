@@ -171,7 +171,7 @@ Output::
         ]
     }
 
-**Example 7: Add a rule with a description**
+**Example 7: To add a rule with a description**
 
 The following ``authorize-security-group-ingress`` example uses the ``ip-permissions`` parameter to add an inbound rule that allows RDP traffic from the specified IPv4 address range. The rule includes a description to help you identify it later. ::
 

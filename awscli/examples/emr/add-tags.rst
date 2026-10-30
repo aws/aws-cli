@@ -1,4 +1,4 @@
-**1. To add tags to a cluster**
+**Example 1: To add tags to a cluster**
 
 - Command::
 
@@ -8,7 +8,7 @@
 
     None
 
-**2. To list tags of a cluster**
+**Example 2: To list tags of a cluster**
 
 --Command::
 

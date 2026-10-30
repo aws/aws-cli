@@ -1,4 +1,4 @@
-**Example 1: Create EKS Fargate Profile for a selector with a namespace**
+**To delete an EKS Fargate profile**
 
 The following ``delete-fargate-profile`` example creates an EKS Fargate Profile for a selector with a namespace. ::
 

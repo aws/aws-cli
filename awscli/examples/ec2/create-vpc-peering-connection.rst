@@ -1,4 +1,4 @@
-**To create a VPC peering connection between your VPCs**
+**Example 1: To create a VPC peering connection between your VPCs**
 
 This example requests a peering connection between your VPCs vpc-1a2b3c4d and vpc-11122233.
 
@@ -29,7 +29,7 @@ Output::
         }
     }
 
-**To create a VPC peering connection with a VPC in another account**
+**Example 2: To create a VPC peering connection with a VPC in another account**
 
 This example requests a peering connection between your VPC (vpc-1a2b3c4d), and a VPC (vpc-11122233) that belongs AWS account 123456789012.
 
@@ -37,7 +37,7 @@ Command::
 
     aws ec2 create-vpc-peering-connection --vpc-id vpc-1a2b3c4d --peer-vpc-id vpc-11122233 --peer-owner-id 123456789012
 
-**To create a VPC peering connection with a VPC in a different region**
+**Example 3: To create a VPC peering connection with a VPC in a different region**
 
 This example requests a peering connection between your VPC in the current region (vpc-1a2b3c4d), and a VPC (vpc-11122233) in your account in the ``us-west-2`` region.
 

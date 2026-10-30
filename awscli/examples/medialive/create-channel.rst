@@ -150,8 +150,6 @@ Contents of ``channel-in-hls-out-hls-akamai.json``::
         }
     }
 
-**Output:**
-
 The output repeats back the contents of the JSON file, plus the following values. All parameters are ordered alphabetically.
 
 * ``ARN`` for the channel. The last part of the ARN is the unique channel ID.

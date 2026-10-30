@@ -1,4 +1,4 @@
-**Describe a Fargate profile**
+**To describe a Fargate profile**
 
 The following ``describe-fargate-profile`` example describes a Fargate profile. ::
 

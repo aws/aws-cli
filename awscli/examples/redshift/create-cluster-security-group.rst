@@ -1,5 +1,4 @@
-Creating a Cluster Security Group
----------------------------------
+**To create a cluster security group**
 
 This example creates a new cluster security group. By default, the output is in JSON format.
 

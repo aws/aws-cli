@@ -1,5 +1,4 @@
-Get a Description of All Cluster Versions
------------------------------------------
+**To get a description of all cluster versions**
 
 This example returns a description of all cluster versions.  By default, the output is in JSON format.
 

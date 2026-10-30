@@ -1,4 +1,6 @@
-Suppose you had the following config file::
+**To get configuration values**
+
+The following ``get`` examples read values from this config file::
 
     [default]
     aws_access_key_id=default_access_key

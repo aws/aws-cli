@@ -1,4 +1,4 @@
-**To create a new environment for an application**
+**Example 1: To create a new environment for an application**
 
 The following command creates a new environment for version "v1" of a java application named "my-app"::
 
@@ -28,7 +28,7 @@ Output::
 
 .. _`create-application-version`: http://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/create-application-version.html
 
-**To specify a JSON file to define environment configuration options**
+**Example 2: To specify a JSON file to define environment configuration options**
 
 The following ``create-environment`` command specifies that a JSON file with the name ``myoptions.json`` should be used to override values obtained from the solution stack or the configuration template::
 

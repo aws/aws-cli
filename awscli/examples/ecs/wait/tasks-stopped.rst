@@ -1,4 +1,4 @@
-**Example 1: Wait until an ECS task is in stopped state**
+**Example 1: To wait until an ECS task is in stopped state**
 
 The following ``wait tasks-stopped`` example waits until the provided tasks in the command are in a stopped state. You can pass IDs or full ARN of the tasks. This example uses ID of the task. ::
 
@@ -8,7 +8,7 @@ The following ``wait tasks-stopped`` example waits until the provided tasks in t
 
 This command produces no output.
 
-**Example 2: Wait until multiple ECS tasks are in stopped state**
+**Example 2: To wait until multiple ECS tasks are in stopped state**
 
 The following ``wait tasks-stopped`` example waits until the multiple tasks provided in the command are in a stopped state. You can pass IDs or full ARN of the tasks. This example uses IDs of the tasks. ::
 

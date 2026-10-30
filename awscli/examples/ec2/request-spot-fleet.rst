@@ -1,4 +1,4 @@
-**To request a Spot fleet in the subnet with the lowest price**
+**Example 1: To request a Spot fleet in the subnet with the lowest price**
 
 This example command creates a Spot fleet request with two launch specifications that differ only by subnet.
 The Spot fleet launches the instances in the specified subnet with the lowest price.
@@ -42,7 +42,7 @@ Output::
     }
 
 
-**To request a Spot fleet in the Availability Zone with the lowest price**
+**Example 2: To request a Spot fleet in the Availability Zone with the lowest price**
 
 This example command creates a Spot fleet request with two launch specifications that differ only by Availability Zone.
 The Spot fleet launches the instances in the specified Availability Zone with the lowest price.
@@ -79,7 +79,7 @@ Config.json::
         ]
     }
 
-**To launch Spot instances in a subnet and assign them public IP addresses**
+**Example 3: To launch Spot instances in a subnet and assign them public IP addresses**
 
 This example command assigns public addresses to instances launched in a nondefault VPC.
 Note that when you specify a network interface, you must include the subnet ID and security group ID
@@ -115,7 +115,7 @@ Config.json::
         ]
     }
 
-**To request a Spot fleet using the diversified allocation strategy**
+**Example 4: To request a Spot fleet using the diversified allocation strategy**
 
 This example command creates a Spot fleet request that launches 30 instances using the diversified allocation strategy.
 The launch specifications differ by instance type. The Spot fleet distributes the instances

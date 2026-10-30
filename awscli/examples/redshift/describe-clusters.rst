@@ -1,5 +1,4 @@
-Get a Description of All Clusters
----------------------------------
+**To get a description of all clusters**
 
 This example returns a description of all clusters for the account.  By default, the output is in JSON format.
 

@@ -1,4 +1,4 @@
-**Example: To get member information for your organization**
+**To get member information for your organization**
 
     aws inspector2 get-member \
         --account-id 123456789012

@@ -1,4 +1,4 @@
-**To assign specific IPv6 addresses to a network interface**
+**Example 1: To assign specific IPv6 addresses to a network interface**
 
 This example assigns the specified IPv6 addresses to the specified network interface.
 
@@ -16,7 +16,7 @@ Output::
         "NetworkInterfaceId": "eni-38664473"
     }
 
-**To assign IPv6 addresses that Amazon selects to a network interface**
+**Example 2: To assign IPv6 addresses that Amazon selects to a network interface**
 
 This example assigns two IPv6 addresses to the specified network interface. Amazon automatically assigns these IPv6 addresses from the available IPv6 addresses in the IPv6 CIDR block range of the subnet.
 

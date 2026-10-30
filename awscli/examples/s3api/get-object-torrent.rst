@@ -1,3 +1,5 @@
+**To create a torrent for an object**
+
 The following command creates a torrent for an object in a bucket named ``amzn-s3-demo-bucket``::
 
     aws s3api get-object-torrent --bucket amzn-s3-demo-bucket --key large-video-file.mp4 large-video-file.torrent

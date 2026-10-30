@@ -1,4 +1,4 @@
-**To list compliance items for a specific instance**
+**Example 1: To list compliance items for a specific instance**
 
 This example lists all compliance items for the specified instance.
 
@@ -47,7 +47,7 @@ Output::
         "NextToken": "--token string truncated--"
     }
 
-**To list compliance items for a specific instance and association ID**
+**Example 2: To list compliance items for a specific instance and association ID**
 
 This example lists all compliance items for the specified instance and association ID.
 
@@ -56,7 +56,7 @@ Command::
     aws ssm list-compliance-items --resource-ids "i-1234567890abcdef0" --resource-types "ManagedInstance" --filters "Key=ComplianceType,Values=Association,Type=EQUAL" "Key=Id,Values=e4c2ed6d-516f-41aa-aa2a-0123456789ab,Type=EQUAL"
 
 
-**To list compliance items for a instance after a specific date and time**
+**Example 3: To list compliance items for an instance after a specific date and time**
 
 This example lists all compliance items for an instance after the specified date and time.
 

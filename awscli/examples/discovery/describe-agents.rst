@@ -1,4 +1,4 @@
-**Describe agents with specified collectionStatus states**
+**To describe agents with specified collectionStatus states**
 
 This example command describes collection agents with collection status of "STARTED" or "STOPPED".
 

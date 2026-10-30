@@ -1,4 +1,4 @@
-**To create a virtual private gateway**
+**Example 1: To create a virtual private gateway**
 
 This example creates a virtual private gateway.
 
@@ -18,7 +18,7 @@ Output::
         }
     }
 
-**To create a virtual private gateway with a specific Amazon-side ASN**
+**Example 2: To create a virtual private gateway with a specific Amazon-side ASN**
 
 This example creates a virtual private gateway and specifies the Autonomous System Number (ASN) for the Amazon side of the BGP session.
 

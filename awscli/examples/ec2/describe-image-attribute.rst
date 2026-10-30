@@ -1,4 +1,4 @@
-**To describe the launch permissions for an AMI**
+**Example 1: To describe the launch permissions for an AMI**
 
 This example describes the launch permissions for the specified AMI.
 
@@ -17,7 +17,7 @@ Output::
         "ImageId": "ami-5731123e",
     }
 
-**To describe the product codes for an AMI**
+**Example 2: To describe the product codes for an AMI**
 
 This example describes the product codes for the specified AMI. Note that this AMI has no product codes.
 

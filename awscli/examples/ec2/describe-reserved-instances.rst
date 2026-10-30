@@ -1,4 +1,4 @@
-**To describe your Reserved Instances**
+**Example 1: To describe your Reserved Instances**
 
 This example command describes the Reserved Instances that you own.
 
@@ -36,7 +36,7 @@ Output::
         ]
     }
 
-**To describe your Reserved Instances using filters**
+**Example 2: To describe your Reserved Instances using filters**
 
 This example filters the response to include only three-year, t2.micro Linux/UNIX Reserved Instances in us-west-1c.
 

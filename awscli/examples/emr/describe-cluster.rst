@@ -1,3 +1,5 @@
+**To describe a cluster**
+
 - Command::
 
     aws emr describe-cluster --cluster-id j-XXXXXXXX

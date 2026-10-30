@@ -1,5 +1,4 @@
-Delete a Cluster Security Group
--------------------------------
+**To delete a cluster security group**
 
 This example deletes a cluster security group.
 

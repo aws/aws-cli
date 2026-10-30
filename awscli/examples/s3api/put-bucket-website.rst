@@ -1,3 +1,5 @@
+**To apply a static website configuration to a bucket**
+
 The applies a static website configuration to a bucket named ``amzn-s3-demo-bucket``::
 
     aws s3api put-bucket-website --bucket amzn-s3-demo-bucket --website-configuration file://website.json

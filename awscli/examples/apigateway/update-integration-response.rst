@@ -1,4 +1,4 @@
-**To change an integration response header to have a static mapping of '*'**
+**Example 1: To change an integration response header to have a static mapping of '*'**
 
 Command::
 
@@ -13,7 +13,7 @@ Output::
         }
     }
 
-**To remove an integration response header**
+**Example 2: To remove an integration response header**
 
 Command::
 

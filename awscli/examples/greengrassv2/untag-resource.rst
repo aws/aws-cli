@@ -2,7 +2,7 @@
 
 The following ``untag-resource`` example removes an owner tag from an AWS IoT Greengrass core device. ::
 
-    aws iotsitewise untag-resource \
+    aws greengrassv2 untag-resource \
         --resource-arn arn:aws:greengrass:us-west-2:123456789012:coreDevices:MyGreengrassCore \
         --tag-keys Owner
 

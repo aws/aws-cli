@@ -3,7 +3,7 @@
 The following ``describe-nat-gateways`` example describes the specified public NAT gateway. ::
 
     aws ec2 describe-nat-gateways \
-        --nat-gateway-id nat-01234567890abcdef
+        --nat-gateway-ids nat-01234567890abcdef
 
 Output::
 
@@ -51,7 +51,7 @@ Output::
 The following ``describe-nat-gateways`` example describes the specified private NAT gateway. ::
 
     aws ec2 describe-nat-gateways \
-        --nat-gateway-id nat-1234567890abcdef0
+        --nat-gateway-ids nat-1234567890abcdef0
 
 Output::
 

@@ -6,7 +6,7 @@ The following ``create-notification`` example creates a notification for the spe
         --account-id 123456789012 \
         --budget-name "Example Budget" \
         --notification NotificationType=ACTUAL,ComparisonOperator=GREATER_THAN,Threshold=80,ThresholdType=PERCENTAGE \
-        --subscriber SubscriptionType=EMAIL,Address=example@example.com
+        --subscribers SubscriptionType=EMAIL,Address=example@example.com
 
 This command produces no output.
 

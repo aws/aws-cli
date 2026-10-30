@@ -8,7 +8,7 @@ The following ``describe-cases`` example returns information about the specified
         --include-resolved-cases \
         --language "en" \
         --no-include-communications \
-        --max-item 1
+        --max-items 1
 
 Output::
 

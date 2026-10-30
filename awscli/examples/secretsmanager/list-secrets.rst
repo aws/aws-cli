@@ -38,7 +38,7 @@ For more information, see `Find a secret <https://docs.aws.amazon.com/secretsman
 The following ``list-secrets`` example gets a list of the secrets in your account that have ``Test`` in the name. Filtering by name is case sensitive. ::
 
     aws secretsmanager list-secrets \
-        --filter Key="name",Values="Test" 
+        --filters Key="name",Values="Test" 
 
 Output::
 
@@ -64,7 +64,7 @@ For more information, see `Find a secret <https://docs.aws.amazon.com/secretsman
 The following ``list-secrets`` example returns the secrets in your account that are managed by Amazon RDS. ::
 
     aws secretsmanager list-secrets \
-        --filter Key="owning-service",Values="rds"
+        --filters Key="owning-service",Values="rds"
 
 Output::
 

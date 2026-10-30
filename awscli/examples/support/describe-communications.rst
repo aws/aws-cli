@@ -5,7 +5,7 @@ The following ``describe-communications`` example returns the latest communicati
     aws support describe-communications \
         --case-id "case-12345678910-2013-c4c1d2bf33c5cf47" \
         --after-time "2020-03-23T21:31:47.774Z" \
-        --max-item 1
+        --max-items 1
 
 Output::
 

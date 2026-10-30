@@ -5,7 +5,7 @@ The following ``list-resources`` example lists all resources in the specified re
     aws ram list-resources \
         --resource-type ec2:Subnet \
         --resource-owner SELF \
-        --resource-share-arn arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
+        --resource-share-arns arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

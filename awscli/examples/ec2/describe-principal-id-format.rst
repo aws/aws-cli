@@ -3,7 +3,7 @@
 The following ``describe-principal-id-format`` example describes the ID format for the root user, all IAM roles, and all IAM users with long ID format enabled. ::
 
     aws ec2 describe-principal-id-format \
-        --resource instance
+        --resources instance
 
 Output::
 

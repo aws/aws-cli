@@ -3,7 +3,7 @@
 The following ``delete-task-definitions`` example deletes an INACTIVE task definition. ::
 
     aws ecs delete-task-definitions \
-        --task-definition curltest:1
+        --task-definitions curltest:1
 
 Output::
 

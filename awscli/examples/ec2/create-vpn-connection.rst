@@ -6,7 +6,7 @@ The following ``create-vpn-connection`` example creates a VPN connection between
         --type ipsec.1 \
         --customer-gateway-id cgw-0abc1234def567890 \
         --vpn-gateway-id vgw-1a1a1a1a1a1a2b2b2 \
-        --tag-specification 'ResourceType=vpn-connection,Tags=[{Key=Name,Value=BGP-VPN}]'
+        --tag-specifications 'ResourceType=vpn-connection,Tags=[{Key=Name,Value=BGP-VPN}]'
 
 Output::
 

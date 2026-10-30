@@ -3,7 +3,7 @@
 The following ``modify-hosts`` example enables auto-placement for a Dedicated Host so that it accepts any untargeted instance launches that match its instance type configuration. ::
 
     aws ec2 modify-hosts \
-        --host-id h-06c2f189b4EXAMPLE \
+        --host-ids h-06c2f189b4EXAMPLE \
         --auto-placement on
 
 Output::
@@ -22,7 +22,7 @@ For more information, see `Modify the auto-placement setting for a Dedicated Hos
 The following ``modify-hosts`` example enables host recovery for the specified Dedicated Host. ::
 
     aws ec2 modify-hosts \
-        --host-id h-06c2f189b4EXAMPLE \
+        --host-ids h-06c2f189b4EXAMPLE \
         --host-recovery on
 
 Output::

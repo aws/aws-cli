@@ -4,7 +4,7 @@ The following ``disassociate-transit-gateway-multicast-domain`` example disassoc
 
     aws ec2 disassociate-transit-gateway-multicast-domain \
         --transit-gateway-attachment-id tgw-attach-070e571cd1EXAMPLE \
-        --subnet-id subnet-000de86e3bEXAMPLE \
+        --subnet-ids subnet-000de86e3bEXAMPLE \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef7EXAMPLE
 
 Output::

@@ -7,7 +7,7 @@ The following ``create-user`` example adds a user with the specified attributes 
         --password Pass@Word1 \
         --identity-info FirstName=Mary,LastName=Major \
         --phone-config PhoneType=DESK_PHONE,AutoAccept=true,AfterContactWorkTimeLimit=60,DeskPhoneNumber=+15555551212 \
-        --security-profile-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
+        --security-profile-ids a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --routing-profile-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333 \
         --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
 

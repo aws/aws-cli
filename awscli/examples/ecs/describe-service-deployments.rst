@@ -3,7 +3,7 @@
 The following ``describe-service-deployments`` example returns the service deployment details for the service deployment with the ARN ``arn:aws:ecs:us-west-2:123456789012:service-deployment/example-cluster/example-service/ejGvqq2ilnbKT9qj0vLJe``. ::
 
     aws ecs describe-service-deployments \
-        --service-deployment-arn arn:aws:ecs:us-west-2:123456789012:service-deployment/example-cluster/example-service/ejGvqq2ilnbKT9qj0vLJe
+        --service-deployment-arns arn:aws:ecs:us-west-2:123456789012:service-deployment/example-cluster/example-service/ejGvqq2ilnbKT9qj0vLJe
 
 Output::
 

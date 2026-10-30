@@ -24,13 +24,17 @@ at the man output, we look one step before at the generated rst output
 
 import collections.abc
 import contextlib
+import copy
 import functools
 import gc
 import json
 import os
 import re
 import shlex
+import tempfile
 import textwrap
+import zipfile
+from unittest import mock
 
 import docutils.nodes
 import docutils.parsers.rst
@@ -48,7 +52,11 @@ from awscli.argparser import (
 from awscli.clidriver import ServiceOperation
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 from awscli.customizations.waiters import WaitCommand
-from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
+from awscli.testutils import (
+    BaseAWSHelpOutputTest,
+    capture_output,
+    create_clidriver,
+)
 
 # Mapping of command names to subcommands that have examples in their help
 # output.  This isn't mean to be an exhaustive list, but should help catch
@@ -137,6 +145,32 @@ REGION_RE = re.compile(
 # then the file, then the example's title, with the reason for each example.
 EXCEPTIONS_PATH = os.path.join(
     _dname(os.path.abspath(__file__)), 'example_style_exceptions.json'
+)
+RUN_ENVIRONMENT = {
+    'AWS_ACCESS_KEY_ID': 'AKIAIOSFODNN7EXAMPLE',
+    'AWS_SECRET_ACCESS_KEY': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+    'AWS_DEFAULT_REGION': APPROVED_REGION,
+    'AWS_CONFIG_FILE': os.devnull,
+    'AWS_SHARED_CREDENTIALS_FILE': os.devnull,
+    'AWS_EC2_METADATA_DISABLED': 'true',
+    'AWS_PAGER': '',
+}
+LOCAL_FILE_RE = re.compile(r'(?P<scheme>fileb?)://(?P<path>[^\s,\'"]+)')
+VALIDATION_ERRORS = (
+    'Parameter validation failed',
+    'Error parsing parameter',
+    'Invalid base64',
+    'Bad value for --query',
+    'Unknown options',
+    'the following arguments are required',
+    'expected one argument',
+    'Found invalid choice',
+)
+# Errors from the machine that runs the example, such as a local file that
+# the example uses but doesn't show.
+ENVIRONMENT_ERRORS = (
+    'Unable to load paramfile',
+    'Blob values must be a path to a file',
 )
 
 
@@ -1243,7 +1277,11 @@ class ServiceCommandTable(collections.abc.Mapping):
 
     def driver(self, service_name):
         if service_name != self._service_name:
-            self._driver = awscli.clidriver.create_clidriver()
+            # The driver reads the config file when it is created, and the
+            # examples of the service are run in it, so it is created in the
+            # environment they run in.
+            with _run_environment():
+                self._driver = awscli.clidriver.create_clidriver()
             self._service_name = service_name
         return self._driver
 
@@ -1260,6 +1298,190 @@ class ServiceCommandTable(collections.abc.Mapping):
 
     def __len__(self):
         return len(self._names)
+
+
+def _command_args(command):
+    lines = [line.rstrip() for line in command.splitlines()]
+    marker = _continuation_marker(lines[0])
+    if marker != '\\':
+        # Windows examples continue lines with ^ or `, which are not
+        # arguments.
+        command = '\n'.join(
+            line[:-1] if line.endswith(marker) else line for line in lines
+        )
+    args = shlex.split(command)[1:]
+    # Strip newlines from arguments that may have been included due to
+    # backslash line continuations in the RST examples, and drop the
+    # arguments that are only a line continuation
+    args = [part.lstrip('\n') for part in args if not part or part.strip('\n')]
+    # Only the arguments before a redirect or pipe, such as
+    # "> skeleton.json", are passed to the CLI.
+    for i, part in enumerate(args):
+        if part in SHELL_OPERATORS or part.startswith(SHELL_OPERATOR_PREFIXES):
+            return args[:i]
+    return args
+
+
+class _RequestReady(Exception):
+    pass
+
+
+def _api_operation(command_table, args):
+    """The command that the arguments run, if it is an API operation."""
+    command = None
+    for arg in args:
+        if arg not in command_table:
+            break
+        command = command_table[arg]
+        command_table = command.subcommand_table
+    return command if isinstance(command, ServiceOperation) else None
+
+
+def _write_files(blocks, directory):
+    for block in blocks:
+        if block.kind != 'literal' or block.intro is None:
+            continue
+        match = CONTENTS_HEADER_RE.match(block.intro.lines[-1].strip())
+        if match:
+            name = os.path.basename(match.group('name'))
+            with open(os.path.join(directory, name), 'w') as f:
+                f.write(textwrap.dedent('\n'.join(block.lines)) + '\n')
+
+
+def _local_files(directory):
+    def local_file(match):
+        name = os.path.basename(match.group('path').replace('\\', '/'))
+        path = os.path.join(directory, name)
+        # A binary file that isn't shown, such as an image, is created empty.
+        if match.group('scheme') == 'fileb' and not os.path.exists(path):
+            if name.endswith('.zip'):
+                zipfile.ZipFile(path, 'w').close()
+            else:
+                open(path, 'wb').close()
+        if not os.path.exists(path):
+            return match.group(0)
+        return f'{match.group("scheme")}://{path}'
+
+    return lambda arg: LOCAL_FILE_RE.sub(local_file, arg)
+
+
+@contextlib.contextmanager
+def _run_environment():
+    """Make the CLI use fake credentials and ignore the user's config."""
+    with mock.patch.dict(os.environ):
+        for name in list(os.environ):
+            if name.startswith('AWS_') and name != 'AWS_DATA_PATH':
+                del os.environ[name]
+        os.environ.update(RUN_ENVIRONMENT)
+        yield
+
+
+@contextlib.contextmanager
+def _isolated_session(session):
+    """Undo what a command changes in the session, so that it doesn't
+    affect the next command.
+
+    Each command registers handlers for its options (such as the handler
+    that decodes base64 blobs, unless --cli-binary-format is
+    raw-in-base64-out), and --region and --no-sign-request change the
+    session's settings.  The command runs with a copy of the session's
+    handlers, which is dropped afterwards.
+    """
+    events = session._events
+    client_config = session.get_default_client_config()
+    session._events = copy.copy(events)
+    # The copy shares these caches with the original.  Through the init
+    # cache, plugins that the copy loads would count as loaded in the
+    # original too, though only the copy has their handlers.
+    session._events._init_cache = {}
+    session._events._lookup_cache = {}
+    session.register_component('event_emitter', session._events)
+    try:
+        yield
+    finally:
+        session._events = events
+        session.register_component('event_emitter', events)
+        session.set_default_client_config(client_config)
+        session.set_config_variable('region', None)
+
+
+def _run_command(driver, operation, args):
+    """Run a command until its request would be sent, and return the error
+    it prints, or None if it got that far or succeeded without a request.
+
+    The command runs in the driver that the other checks use for its
+    service, so the service's model is loaded once.
+    """
+    ready = []
+
+    def stop(**kwargs):
+        ready.append(True)
+        raise _RequestReady()
+
+    session = driver.session
+    with _run_environment(), _isolated_session(session):
+        session.register('before-call', stop)
+        # CommandValidator unregisters the handlers of arguments such as
+        # --cli-input-json once it has used them, so they are registered
+        # again, for this run only.
+        for arg in operation.arg_table.values():
+            if isinstance(arg, OverrideRequiredArgsArgument):
+                session.register(
+                    'before-building-argument-table-parser',
+                    arg.override_required_args,
+                )
+        with capture_output() as output:
+            rc = driver.main(args)
+    if ready or rc == 0:
+        return None
+    return ' '.join(output.stderr.getvalue().split())
+
+
+def check_commands_run(example, command_table):
+    errors = []
+    with tempfile.TemporaryDirectory() as directory:
+        local_files = _local_files(directory)
+        for section in example.sections:
+            # Several examples in a file can show different files with the
+            # same name, so each example uses the files it shows, or else
+            # the ones shown before it.
+            _write_files(section.blocks, directory)
+            commands = [
+                command
+                for block in section.commands
+                if not _is_os_specific(block)
+                for command in _split_commands(block)
+            ]
+            for command in commands:
+                command, _ = _aws_part(command)
+                lineno = command[0][0]
+                text = '\n'.join(scanned[0] for _, scanned in command)
+                try:
+                    args = _command_args(text)
+                except ValueError:
+                    # Reported by test_rst_doc_examples.
+                    continue
+                operation = _api_operation(command_table, args)
+                if operation is None:
+                    continue
+                # The profile only changes where the CLI finds credentials.
+                while '--profile' in args[:-1]:
+                    i = args.index('--profile')
+                    del args[i : i + 2]
+                error = _run_command(
+                    command_table.driver(args[0]),
+                    operation,
+                    [local_files(arg) for arg in args],
+                )
+                if error is None:
+                    continue
+                environment = any(e in error for e in ENVIRONMENT_ERRORS)
+                if environment and directory not in error:
+                    continue
+                if any(e in error for e in VALIDATION_ERRORS):
+                    error = error.replace('aws: [ERROR]: ', '')
+                    errors.append(f'Line {lineno}: the command fails: {error}')
+    return errors
 
 
 class CommandValidator:
@@ -1288,32 +1510,8 @@ class CommandValidator:
         - Invalid sub-commands, such as waiters of "wait", and their
           arguments
         """
-        lines = [line.rstrip() for line in command.splitlines()]
-        marker = _continuation_marker(lines[0])
-        if marker != '\\':
-            # Windows examples continue lines with ^ or `, which are not
-            # arguments.
-            command = '\n'.join(
-                line[:-1] if line.endswith(marker) else line for line in lines
-            )
         try:
-            command_parts = shlex.split(command)[1:]
-            # Strip newlines from arguments that may have been included due to
-            # backslash line continuations in the RST examples, and drop the
-            # arguments that are only a line continuation
-            command_parts = [
-                part.lstrip('\n')
-                for part in command_parts
-                if not part or part.strip('\n')
-            ]
-            # Only the arguments before a redirect or pipe, such as
-            # "> skeleton.json", are passed to the CLI.
-            for i, part in enumerate(command_parts):
-                if part in SHELL_OPERATORS or part.startswith(
-                    SHELL_OPERATOR_PREFIXES
-                ):
-                    command_parts = command_parts[:i]
-                    break
+            command_parts = _command_args(command)
         except Exception as e:
             raise AssertionError(
                 f"Failed to parse this example as shell command: {command}\n\n"
@@ -1512,6 +1710,7 @@ def test_example_style(command_table, global_options, example_file):
         'output': check_output(example, command_table),
         'link': check_link(example),
         'sanitization': check_sanitization(example),
+        'commands-run': check_commands_run(example, command_table),
     }
     failures = []
     for rule, errors in errors_by_rule.items():

@@ -18,7 +18,7 @@ Contents of ``input.json``::
             "TrustedResourceOwners": [],
             "AllowExternalDataFiltering": true,
             "ExternalDataFilteringAllowList": [{
-                "DataLakePrincipalIdentifier ": "123456789111"
+                "DataLakePrincipalIdentifier": "123456789111"
             }],
             "AuthorizedSessionTagValueList": ["Amazon EMR"]
         }

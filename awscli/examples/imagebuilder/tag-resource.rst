@@ -10,7 +10,7 @@ Contents of ``tag-resource.json``::
     {
         "resourceArn": "arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/mywindows2016pipeline",
         "tags": {
-            "KeyName: "KeyValue"
+            "KeyName": "KeyValue"
         }
     }
 

@@ -10,8 +10,8 @@ The following ``create-build`` example creates a custom game build resource. It 
 Contents of ``storage-loc.json``::
 
     {
-        "Bucket":"MegaFrogRaceServer_NA_build_files"
-        "Key":"MegaFrogRaceServer_build_123.zip"
+        "Bucket":"MegaFrogRaceServer_NA_build_files",
+        "Key":"MegaFrogRaceServer_build_123.zip",
         "RoleArn":"arn:aws:iam::123456789012:role/gamelift"
     }
 

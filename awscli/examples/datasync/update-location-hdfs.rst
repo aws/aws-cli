@@ -5,8 +5,8 @@ The following ``update-location-hdfs`` example updates your DataSync HDFS locati
     aws datasync update-location-hdfs \
         --location-arn arn:aws:datasync:us-west-2:123456789012:location/loc-abcdef01234567890 \
         --agent-arns arn:aws:datasync:us-west-2:123456789012:agent/agent-1234567890abcdef0 \
-        --kerberos-keytab file://hdfs.keytab \
-        --kerberos-krb5-conf file://krb5.conf
+        --kerberos-keytab fileb://hdfs.keytab \
+        --kerberos-krb5-conf fileb://krb5.conf
 
 Contents of ``hdfs.keytab``::
 

@@ -4,7 +4,7 @@ The following ``update-data-source`` example updates the configuration of an Ama
 
     aws kendra update-data-source \
         --id exampledatasource1 \
-        --index-id exampleindex1 \
+        --index-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --name "new name for example data source 1" \
         --description "new description for example data source 1" \
         --role-arn arn:aws:iam::my-account-id:role/KendraNewRoleForExampleDataSource \

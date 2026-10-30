@@ -4,7 +4,7 @@ The following ``update-service-instance`` example updates a service instance to 
 
     aws proton update-service-instance \
         --service-name "simple-svc" \
-        --spec "file://service-spec.yaml " \
+        --spec "file://service-spec.yaml" \
         --template-major-version "1" \
         --template-minor-version "1" \
         --deployment-type "MINOR_VERSION" \

@@ -3,7 +3,7 @@
 The following ``describe-index`` example gets information about an Amazon Kendra index. You can view the configuration of an index, and read any error messages if the status shows an index "FAILED" to completely create. ::
 
     aws kendra describe-index \
-        --id exampleindex1
+        --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -77,7 +77,7 @@ Output::
             }
         ],
         "Edition": "DEVELOPER_EDITION",
-        "Id": "index1",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "IndexStatistics": {
             "FaqStatistics": {
                 "IndexedQuestionAnswersCount": 10

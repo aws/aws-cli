@@ -18,8 +18,8 @@ Contents of ``update-stream.json``::
                     "key":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 }
             }
-        ]
-        "roleArn": "arn:aws:iam:us-west-2:123456789012:role/service-role/my_ota_stream_role"
+        ],
+        "roleArn": "arn:aws:iam::123456789012:role/service-role/my_ota_stream_role"
     }
 
 Output::

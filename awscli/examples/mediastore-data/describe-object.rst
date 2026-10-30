@@ -3,7 +3,7 @@
 The following ``describe-object`` example displays the headers for an object at the specified path. ::
 
     aws mediastore-data describe-object \
-        --endpoint https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
+        --endpoint-url https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
         --path events/baseball/setup.jpg
 
 Output::

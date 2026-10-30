@@ -34,7 +34,7 @@ The following ``create-vpc-endpoint`` example creates an interface VPC endpoint 
         --vpc-endpoint-type Interface \
         --service-name com.amazonaws.us-west-2.s3 \
         --subnet-ids subnet-7b16de0c \
-        --security-group-id sg-1a2b3c4d \
+        --security-group-ids sg-1a2b3c4d \
         --tag-specifications ResourceType=vpc-endpoint,Tags=[{Key=service,Value=S3}]
 
 Output::

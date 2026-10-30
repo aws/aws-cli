@@ -1,12 +1,12 @@
 **To create, update, or delete a resource record set**
 
-The following ``change-resource-record-sets`` example creates a resource record set using the ``hosted-zone-id`` ``Z1R8UBAEXAMPLE`` and the JSON-formatted configuration in the file ``C:\awscli\route53\change-resource-record-sets.json``. ::
+The following ``change-resource-record-sets`` example creates a resource record set using the ``hosted-zone-id`` ``Z1R8UBAEXAMPLE`` and the JSON-formatted configuration in the file ``change-resource-record-sets.json``. ::
 
     aws route53 change-resource-record-sets \
         --hosted-zone-id Z1R8UBAEXAMPLE \
-        --change-batch file://C:\awscli\route53\change-resource-record-sets.json
+        --change-batch file://change-resource-record-sets.json
 
-Contents of ``C:\awscli\route53\change-resource-record-sets.json``::
+Contents of ``change-resource-record-sets.json``::
 
     {
         "Comment": "Create a basic A record for www.example.com",

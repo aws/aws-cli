@@ -3,7 +3,7 @@
 The following ``list-snapshots-in-recycle-bin`` example lists information about snapshots in the Recycle Bin, including the snapshot ID, a description of the snapshot, The ID of the volume from which the snapshot was created, the date and time when the snapshot was deleted and it entered the Recycle Bin, and the date and time when the retention period expires. ::
 
     aws ec2 list-snapshots-in-recycle-bin \
-        --snapshot-id snap-01234567890abcdef
+        --snapshot-ids snap-01234567890abcdef
 
 Output::
 

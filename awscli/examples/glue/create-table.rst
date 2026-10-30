@@ -22,7 +22,7 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                 "classification":"json"}
             }' \
         --profile my-profile \
-        --endpoint https://glue.us-west-2.amazonaws.com
+        --endpoint-url https://glue.us-west-2.amazonaws.com
 
 This command produces no output.
 
@@ -52,7 +52,7 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                 "separatorChar":","}
             }' \
         --profile my-profile \
-        --endpoint https://glue.us-west-2.amazonaws.com
+        --endpoint-url https://glue.us-west-2.amazonaws.com
 
 This command produces no output.
 
@@ -79,7 +79,7 @@ describes a AWS Simple Storage Service (AWS S3) data store. ::
                 "classification":"json"}
             }' \
         --profile my-profile \
-        --endpoint https://glue.us-west-2.amazonaws.com
+        --endpoint-url https://glue.us-west-2.amazonaws.com
 
 This command produces no output.
 

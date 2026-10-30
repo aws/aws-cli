@@ -3,7 +3,7 @@
 The following ``describe-replication-subnet-groups`` example lists the available subnet groups. ::
 
     aws dms describe-replication-subnet-groups \
-        --filter "Name=replication-subnet-group-id,Values=my-subnet-group"
+        --filters "Name=replication-subnet-group-id,Values=my-subnet-group"
 
 Output::
 

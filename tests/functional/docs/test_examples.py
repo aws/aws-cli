@@ -150,21 +150,13 @@ RUN_ENVIRONMENT = {
     'AWS_PAGER': '',
 }
 LOCAL_FILE_RE = re.compile(r'(?P<scheme>fileb?)://(?P<path>[^\s,\'"]+)')
-VALIDATION_ERRORS = (
-    'Parameter validation failed',
-    'Error parsing parameter',
-    'Invalid base64',
-    'Bad value for --query',
-    'Unknown options',
-    'the following arguments are required',
-    'expected one argument',
-    'Found invalid choice',
-)
 # Errors from the machine that runs the example, such as a local file that
 # the example uses but doesn't show.
 ENVIRONMENT_ERRORS = (
     'Unable to load paramfile',
     'Blob values must be a path to a file',
+    'priv-launch-key should be a path to the local SSH private key file',
+    'SessionManagerPlugin is not found',
 )
 
 
@@ -635,6 +627,43 @@ def check_command(example):
     return errors
 
 
+def _command_object(command_table, line):
+    """The command or operation that the first line of a command runs."""
+    command = None
+    for word in line.split()[1:]:
+        if word not in command_table:
+            break
+        command = command_table[word]
+        command_table = command.subcommand_table
+    return command
+
+
+def check_option_names(example, command_table, global_options):
+    # The CLI accepts an abbreviated option such as "--max-it" for
+    # "--max-items", but the example must use the full name.
+    errors = []
+    for block in example.commands:
+        for command in _split_commands(block):
+            command, _ = _aws_part(command)
+            command_obj = _command_object(command_table, command[0][1][0])
+            if command_obj is None:
+                continue
+            names = set(command_obj.arg_table) | global_options
+            for lineno, scanned in command:
+                for match in OPTION_RE.finditer(scanned[3]):
+                    name = match.group('name')
+                    if name in names:
+                        continue
+                    full = sorted(n for n in names if n.startswith(name))
+                    if full:
+                        found = ' or '.join('--' + n for n in full)
+                        errors.append(
+                            f'Line {lineno}: use the full option name '
+                            f'{found} instead of --{name}'
+                        )
+    return errors
+
+
 def check_file_contents(example):
     shown = set()
     errors = []
@@ -1040,6 +1069,11 @@ def command_table():
     return create_clidriver().subcommand_table
 
 
+@pytest.fixture(scope="module")
+def global_options():
+    return set(create_clidriver().create_help_command().arg_table)
+
+
 @pytest.mark.parametrize("command, subcommand", EXAMPLE_COMMAND_TESTS)
 def test_examples(command, subcommand):
     t = _ExampleTests(methodName='noop_test')
@@ -1208,8 +1242,15 @@ def _write_files(blocks, directory):
         match = CONTENTS_HEADER_RE.match(block.intro.lines[-1].strip())
         if match:
             name = os.path.basename(match.group('name'))
-            with open(os.path.join(directory, name), 'w') as f:
-                f.write(textwrap.dedent('\n'.join(block.lines)) + '\n')
+            path = os.path.join(directory, name)
+            text = textwrap.dedent('\n'.join(block.lines)) + '\n'
+            if name.endswith('.zip'):
+                # The example shows the code in the .zip file.
+                with zipfile.ZipFile(path, 'w') as f:
+                    f.writestr('index', text)
+            else:
+                with open(path, 'w') as f:
+                    f.write(text)
 
 
 def _local_files(directory):
@@ -1219,7 +1260,8 @@ def _local_files(directory):
         # A binary file that isn't shown, such as an image, is created empty.
         if match.group('scheme') == 'fileb' and not os.path.exists(path):
             if name.endswith('.zip'):
-                zipfile.ZipFile(path, 'w').close()
+                with zipfile.ZipFile(path, 'w') as f:
+                    f.writestr('index.py', '')
             else:
                 open(path, 'wb').close()
         if not os.path.exists(path):
@@ -1289,9 +1331,8 @@ def check_commands_run(example, command_table):
                 environment = any(e in error for e in ENVIRONMENT_ERRORS)
                 if environment and directory not in error:
                     continue
-                if any(e in error for e in VALIDATION_ERRORS):
-                    error = error.replace('aws: [ERROR]: ', '')
-                    errors.append(f'Line {lineno}: the command fails: {error}')
+                error = error.replace('aws: [ERROR]: ', '')
+                errors.append(f'Line {lineno}: the command fails: {error}')
     return errors
 
 
@@ -1520,6 +1561,13 @@ def test_example_command(example_file):
     example = Example(example_file)
     errors = check_command(example)
     _assert_follows_rule('command', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_option_names(command_table, global_options, example_file):
+    example = Example(example_file)
+    errors = check_option_names(example, command_table, global_options)
+    _assert_follows_rule('option-names', example, errors)
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)

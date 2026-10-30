@@ -1,14 +1,13 @@
 **To create a custom rule group for use in your web ACLs**
 
-The following ``create-rule-group`` example creates a custom rule group for regional use. The rule statements for the group are provided in a JSON-formatted file. The ``--cli-binary-format raw-in-base64-out`` option lets you specify the ``SearchString`` value as plain text instead of base64. ::
+The following ``create-rule-group`` example creates a custom rule group for regional use. The rule statements for the group are provided in a JSON-formatted file. The ``SearchString`` value is the base64-encoded text ``example.com``. ::
 
     aws wafv2 create-rule-group \
         --name "TestRuleGroup" \
         --scope REGIONAL \
         --capacity 250 \
         --rules file://waf-rule.json \
-        --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestRuleGroupMetrics \
-        --cli-binary-format raw-in-base64-out
+        --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestRuleGroupMetrics
 
 Contents of ``waf-rule.json``::
 
@@ -21,7 +20,7 @@ Contents of ``waf-rule.json``::
                     "Statements":[
                         {
                             "ByteMatchStatement":{
-                                "SearchString":"example.com",
+                                "SearchString":"ZXhhbXBsZS5jb20=",
                                 "FieldToMatch":{
                                     "SingleHeader":{
                                         "Name":"host"

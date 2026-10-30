@@ -4,7 +4,7 @@ The following ``update-package-versions-status`` example updates the status of v
 
     aws codeartifact update-package-versions-status \
         --domain test-domain \
-        --repo test-repo \
+        --repository test-repo \
         --format npm \
         --package test-package \
         --versions 4.0.0 \

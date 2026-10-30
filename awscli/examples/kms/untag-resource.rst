@@ -6,7 +6,7 @@ To specify the KMS key, use the ``key-id`` parameter. This example uses a key ID
 
     aws kms untag-resource \
         --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
-        --tag-key 'Purpose'
+        --tag-keys 'Purpose'
 
 This command produces no output. To view the tags on an AWS KMS KMS key, use the ``list-resource-tags`` command.
 

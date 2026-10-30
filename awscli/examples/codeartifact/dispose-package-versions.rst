@@ -4,7 +4,7 @@ The following ``dispose-package-versions`` example deletes the assets of test-pa
 
     aws codeartifact dispose-package-versions \
         --domain test-domain \
-        --repo test-repo \
+        --repository test-repo \
         --format npm \
         --package test-package \
         --versions 4.0.0

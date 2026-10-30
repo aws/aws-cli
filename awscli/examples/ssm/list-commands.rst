@@ -55,7 +55,7 @@ Output::
 The following ``list-commands`` example retrieves the details of commands requested after the specified date. ::
 
     aws ssm list-commands \
-        --filter "key=InvokedAfter,value=2020-02-01T00:00:00Z"
+        --filters "key=InvokedAfter,value=2020-02-01T00:00:00Z"
 
 Output::
 

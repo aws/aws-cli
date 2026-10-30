@@ -3,7 +3,7 @@
 The following ``associate-resource-share`` example adds a license configuration to the specified resource share. ::
 
     aws ram associate-resource-share \
-        --resource-share arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --resource-share-arn arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --resource-arns arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-36be0485f5ae379cc74cf8e92EXAMPLE
 
 Output::

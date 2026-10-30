@@ -4,7 +4,7 @@ The following ``modify-traffic-mirror-filter-network-services`` example adds the
 
     aws ec2 modify-traffic-mirror-filter-network-services \
         --traffic-mirror-filter-id tmf-04812ff784EXAMPLE \
-        --add-network-service amazon-dns
+        --add-network-services amazon-dns
 
 Output::
 

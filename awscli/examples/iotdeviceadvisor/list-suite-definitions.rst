@@ -30,7 +30,7 @@ Output::
 The following ``list-suite-definitions`` example lists device advisor test suites you created in AWS IoT with the specified max-result number. If you have more test suites than the max number, the "nextToken" will be shown in the output. If you have "nextToken", you can use "nextToken" to show the test suites you created that weren't shown before. ::
 
     aws iotdeviceadvisor list-suite-definitions \
-        --max-result 1 \
+        --max-results 1 \
         --next-token "nextTokenValue"
 
 Output::

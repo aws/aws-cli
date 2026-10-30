@@ -47,3 +47,40 @@ class TestECSClient(unittest.TestCase):
             create_args[1]['config'].user_agent_extra,
             expected_user_agent_extra,
         )
+
+    def _get_service_details_with_cluster(self, cluster):
+        args = Namespace(cluster=cluster, service='my-service')
+        test_client = ECSClient(
+            self.session, args, self.global_args, ECSDeploy.USER_AGENT_EXTRA
+        )
+        test_client._client = mock.Mock()
+        test_client._client.describe_services.return_value = {
+            'services': [
+                {
+                    'serviceArn': (
+                        'arn:aws:ecs:us-east-1:123456789012:service/my-service'
+                    ),
+                    'serviceName': 'my-service',
+                    'clusterArn': (
+                        'arn:aws:ecs:us-east-1:123456789012:cluster/default'
+                    ),
+                }
+            ]
+        }
+        test_client.get_service_details()
+        return test_client._client.describe_services.call_args[1]['cluster']
+
+    def test_get_service_details_defaults_cluster_when_not_specified(self):
+        used_cluster = self._get_service_details_with_cluster(None)
+        self.assertEqual(used_cluster, 'default')
+
+    def test_get_service_details_defaults_cluster_when_empty_string(self):
+        # A caller may pass an empty string for --cluster (e.g. by
+        # interpolating an unset shell variable), which should be treated
+        # the same as not specifying a cluster at all.
+        used_cluster = self._get_service_details_with_cluster('')
+        self.assertEqual(used_cluster, 'default')
+
+    def test_get_service_details_uses_specified_cluster(self):
+        used_cluster = self._get_service_details_with_cluster('my-cluster')
+        self.assertEqual(used_cluster, 'my-cluster')

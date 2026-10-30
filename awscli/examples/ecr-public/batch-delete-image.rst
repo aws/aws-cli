@@ -4,18 +4,18 @@ The following ``batch-delete-image`` example deletes an image by specifying the 
 
     aws ecr-public batch-delete-image \
         --repository-name project-a/nginx-web-app \
-        --image-ids imageDigest=sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2 
+        --image-ids imageDigest=sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2
 
 Output::
 
     {
-    "imageIds": [
-        {
-            "imageDigest": "sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2",
-            "imageTag": "latest"
-        }
-    ],
-    "failures": []
+        "imageIds": [
+            {
+                "imageDigest": "sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2",
+                "imageTag": "latest"
+            }
+        ],
+        "failures": []
     }
 
 For more information, see `Deleting an image in a public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/public-image-delete.html>`__ in the *Amazon ECR Public User Guide*.
@@ -52,7 +52,7 @@ The following ``batch-delete-image`` example delete multiple images from a repos
 
 Output::
 
-   {
+    {
         "imageIds": [
             {
                 "imageDigest": "sha256:47ba980bc055353d9c0af89b1894f68faa43ca93856917b8406316be86f01278"

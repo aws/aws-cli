@@ -18,13 +18,13 @@ Output::
             "RequestId": "12345678-12ab-12a1-1a2a-12ab-12a12EXAMPLE",
             "HTTPStatusCode": 200,
             "HTTPHeaders": {
-        	    "x-amzn-requestid": "12345678-12ab-12a1-1a2a-12ab-12a12EXAMPLE,
-        	    "content-type": "text/xml",
-        	    "content-length": "480",
-    		    "date": "Sat, 07 Dec 2019 00:36:09 GMT",
-    		    "connection": "keep-alive"
-    	    },
-    	    "RetryAttempts": 0
+                "x-amzn-requestid": "12345678-12ab-12a1-1a2a-12ab-12a12EXAMPLE,
+                "content-type": "text/xml",
+                "content-length": "480",
+                "date": "Sat, 07 Dec 2019 00:36:09 GMT",
+                "connection": "keep-alive"
+            },
+            "RetryAttempts": 0
         }
     }
 

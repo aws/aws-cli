@@ -1,6 +1,6 @@
-**Example 1: Upload an object to Amazon S3** 
+**Example 1: Upload an object to Amazon S3**
 
-The following ``put-object`` command example uploads an object to Amazon S3. ::
+The following ``put-object`` example uploads an object to Amazon S3. ::
 
     aws s3api put-object \
         --bucket amzn-s3-demo-bucket \
@@ -9,9 +9,9 @@ The following ``put-object`` command example uploads an object to Amazon S3. ::
 
 For more information about uploading objects, see `Uploading Objects < http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html>`__ in the *Amazon S3 Developer Guide*.
 
-**Example 2: Upload a video file to Amazon S3** 
+**Example 2: Upload a video file to Amazon S3**
 
-The following ``put-object`` command example uploads a video file. ::
+The following ``put-object`` example uploads a video file. ::
 
     aws s3api put-object \
         --bucket amzn-s3-demo-bucket \

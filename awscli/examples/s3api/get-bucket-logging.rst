@@ -11,5 +11,5 @@ Output::
         "LoggingEnabled": {
             "TargetPrefix": "",
             "TargetBucket": "amzn-s3-demo-bucket-logs"
-              }
+        }
     }

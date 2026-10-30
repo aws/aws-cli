@@ -21,7 +21,7 @@ Original format::
 CloudFormation like format::
 
     [
-       {
+        {
             "ParameterKey": "Key1",
             "ParameterValue": "Value1"
         },
@@ -33,7 +33,7 @@ CloudFormation like format::
 
 .. note::
 
- Only ParameterKey and ParameterValue are expected keys, command will throw an exception if receives unexpected keys (e.g. UsePreviousValue or ResolvedValue).
+    Only ParameterKey and ParameterValue are expected keys, command will throw an exception if receives unexpected keys (e.g. UsePreviousValue or ResolvedValue).
 
 CodePipeline like format::
 

@@ -25,16 +25,16 @@ Output::
             "DICOMTags": {
                 "DICOMStudyId": "2011201407",
                 "DICOMStudyDate": "19991122",
-                 "DICOMPatientSex": "F",
-                 "DICOMStudyInstanceUID": "1.2.840.99999999.84710745.943275268089",
-                 "DICOMPatientBirthDate": "19201120",
-                 "DICOMStudyDescription": "UNKNOWN",
-                 "DICOMPatientId": "SUBJECT08701",
-                 "DICOMPatientName": "Melissa844 Huel628",
-                 "DICOMNumberOfStudyRelatedInstances": 1,
-                 "DICOMStudyTime": "140728",
-                 "DICOMNumberOfStudyRelatedSeries": 1
-                },
+                "DICOMPatientSex": "F",
+                "DICOMStudyInstanceUID": "1.2.840.99999999.84710745.943275268089",
+                "DICOMPatientBirthDate": "19201120",
+                "DICOMStudyDescription": "UNKNOWN",
+                "DICOMPatientId": "SUBJECT08701",
+                "DICOMPatientName": "Melissa844 Huel628",
+                "DICOMNumberOfStudyRelatedInstances": 1,
+                "DICOMStudyTime": "140728",
+                "DICOMNumberOfStudyRelatedSeries": 1
+            },
             "updatedAt": "2022-12-06T21:40:59.429000+00:00"
         }]
     }

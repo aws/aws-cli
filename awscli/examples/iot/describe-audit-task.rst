@@ -7,7 +7,7 @@ The following ``describe-audit-task`` example gets information about an instance
 
 Output::
 
-     {
+    {
         "taskStatus": "COMPLETED",
         "taskType": "ON_DEMAND_AUDIT_TASK",
         "taskStartTime": 1560356923.434,

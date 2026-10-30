@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway delete-usage-plan --usage-plan-id a1b2c3
+    aws apigateway delete-usage-plan --usage-plan-id a1b2c3

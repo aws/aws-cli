@@ -2,33 +2,33 @@
 
 - Command::
 
-	 aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
-		"EncryptionConfiguration": {
-			"EnableInTransitEncryption" : true,
-			"EnableAtRestEncryption" : true,
-			"InTransitEncryptionConfiguration" : {
-				"TLSCertificateConfiguration" : {
-					"CertificateProviderType" : "PEM",
-					"S3Object" : "s3://mycertstore/artifacts/MyCerts.zip"
-				}
-			},
-			"AtRestEncryptionConfiguration" : {
-				"S3EncryptionConfiguration" : {
-					"EncryptionMode" : "SSE-S3"
-				},
-				"LocalDiskEncryptionConfiguration" : {
-					"EncryptionKeyProviderType" : "AwsKms",
-					"AwsKmsKey" : "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
-				}
-			}
-		}
-	}'
+    aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
+        "EncryptionConfiguration": {
+            "EnableInTransitEncryption" : true,
+            "EnableAtRestEncryption" : true,
+            "InTransitEncryptionConfiguration" : {
+                "TLSCertificateConfiguration" : {
+                    "CertificateProviderType" : "PEM",
+                    "S3Object" : "s3://mycertstore/artifacts/MyCerts.zip"
+                }
+            },
+            "AtRestEncryptionConfiguration" : {
+                "S3EncryptionConfiguration" : {
+                    "EncryptionMode" : "SSE-S3"
+                },
+                "LocalDiskEncryptionConfiguration" : {
+                    "EncryptionKeyProviderType" : "AwsKms",
+                    "AwsKmsKey" : "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+                }
+            }
+        }
+    }'
 
 - Output::
 
     {
-    "CreationDateTime": "2016-09-16T20:08:09.129000-0400",
-    "Name": "MySecurityConfig"
+        "CreationDateTime": "2016-09-16T20:08:09.129000-0400",
+        "Name": "MySecurityConfig"
     }
 
 - JSON equivalent (contents of security_configuration.json)::
@@ -57,41 +57,41 @@
 
 - Command (using security_configuration.json)::
 
-   aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
+    aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
 
 - Output::
 
     {
-    "CreationDateTime": "2016-09-16T20:08:09.129000-0400",
-    "Name": "MySecurityConfig"
+        "CreationDateTime": "2016-09-16T20:08:09.129000-0400",
+        "Name": "MySecurityConfig"
     }
 
 **2. To create a security configuration with Kerberos enabled using cluster-dedicated KDC and cross-realm trust**
 
 - Command::
 
-     aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
-         "AuthenticationConfiguration": {
-             "KerberosConfiguration": {
-                 "Provider": "ClusterDedicatedKdc",
-                 "ClusterDedicatedKdcConfiguration": {
-                     "TicketLifetimeInHours": 24,
-                     "CrossRealmTrustConfiguration": {
-                       "Realm": "AD.DOMAIN.COM",
-                       "Domain": "ad.domain.com",
-                       "AdminServer": "ad.domain.com",
-                       "KdcServer": "ad.domain.com"
-                     }
-                 }
-             }
-         }
+    aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
+        "AuthenticationConfiguration": {
+            "KerberosConfiguration": {
+                "Provider": "ClusterDedicatedKdc",
+                "ClusterDedicatedKdcConfiguration": {
+                    "TicketLifetimeInHours": 24,
+                    "CrossRealmTrustConfiguration": {
+                        "Realm": "AD.DOMAIN.COM",
+                        "Domain": "ad.domain.com",
+                        "AdminServer": "ad.domain.com",
+                        "KdcServer": "ad.domain.com"
+                    }
+                }
+            }
+        }
     }'
 
 - Output::
 
     {
-    "CreationDateTime": "2017-03-22T19:32:38.982000-0400",
-    "Name": "MySecurityConfig"
+        "CreationDateTime": "2017-03-22T19:32:38.982000-0400",
+        "Name": "MySecurityConfig"
     }
 
 - JSON equivalent (contents of security_configuration.json)::
@@ -115,11 +115,11 @@
 
 - Command (using security_configuration.json)::
 
-   aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
+    aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
 
 - Output::
 
     {
-    "CreationDateTime": "2017-03-22T19:32:38.982000-0400",
-    "Name": "MySecurityConfig"
+        "CreationDateTime": "2017-03-22T19:32:38.982000-0400",
+        "Name": "MySecurityConfig"
     }

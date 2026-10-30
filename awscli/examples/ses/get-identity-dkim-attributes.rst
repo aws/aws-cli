@@ -6,23 +6,23 @@ The following example uses the ``get-identity-dkim-attributes`` command to retri
 
 Output::
 
- {
-    "DkimAttributes": {
-        "example.com": {
-            "DkimTokens": [
-                "EXAMPLEjcs5xoyqytjsotsijas7236gr",
-                "EXAMPLEjr76cvoc6mysspnioorxsn6ep",
-                "EXAMPLEkbmkqkhlm2lyz77ppkulerm4k"
-            ],
-            "DkimEnabled": true,
-            "DkimVerificationStatus": "Success"
-        },
-        "user@example.com": {
-            "DkimEnabled": false,
-            "DkimVerificationStatus": "NotStarted"
+    {
+        "DkimAttributes": {
+            "example.com": {
+                "DkimTokens": [
+                    "EXAMPLEjcs5xoyqytjsotsijas7236gr",
+                    "EXAMPLEjr76cvoc6mysspnioorxsn6ep",
+                    "EXAMPLEkbmkqkhlm2lyz77ppkulerm4k"
+                ],
+                "DkimEnabled": true,
+                "DkimVerificationStatus": "Success"
+            },
+            "user@example.com": {
+                "DkimEnabled": false,
+                "DkimVerificationStatus": "NotStarted"
+            }
         }
     }
- }
 
 If you call this command with an identity that you have never submitted for verification, that identity won't appear in the output.
 

@@ -61,16 +61,16 @@ The following ``start-task`` example configures an encrypted Amazon EBS volume f
 Contents of ``ebs.json``::
 
     {
-       "cluster": "default",
-       "taskDefinition": "mytaskdef",
-       "networkConfiguration":{
+        "cluster": "default",
+        "taskDefinition": "mytaskdef",
+        "networkConfiguration":{
             "awsvpcConfiguration":{
                 "assignPublicIp": "ENABLED",
                 "securityGroups": ["sg-12344321"],
                 "subnets":["subnet-12344321"]
             }
         },
-       "volumeConfigurations": [
+        "volumeConfigurations": [
             {
                 "name": "myEBSVolume",
                 "managedEBSVolume": {
@@ -157,7 +157,7 @@ Output::
                     ],
                     "inferenceAcceleratorOverrides": []
                 },
-                 "tags": [],
+                "tags": [],
                 "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/default/bb122ace3ed84add92c00a351a03c69e",
                 "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/mytaskdef:4",
                 "version": 1

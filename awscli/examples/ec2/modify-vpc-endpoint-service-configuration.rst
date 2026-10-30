@@ -4,10 +4,10 @@ This example changes the acceptance requirement for the specified endpoint servi
 
 Command::
 
-  aws ec2 modify-vpc-endpoint-service-configuration --service-id vpce-svc-09222513e6e77dc86 --no-acceptance-required
+    aws ec2 modify-vpc-endpoint-service-configuration --service-id vpce-svc-09222513e6e77dc86 --no-acceptance-required
 
 Output::
 
- {
-    "ReturnValue": true
- }
+    {
+        "ReturnValue": true
+    }

@@ -946,4 +946,3 @@ Output::
     }
 
 For more information, see `Apply branding to managed login pages <https://docs.aws.amazon.com/cognito/latest/developerguide/managed-login-branding.html>`__ in the *Amazon Cognito Developer Guide*.
- 

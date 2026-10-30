@@ -7,7 +7,7 @@ The following ``update-skill`` example updates the aws-serverless skill to the l
 
 Output::
 
-      Updated aws-serverless (v1) to Kiro.
+    Updated aws-serverless (v1) to Kiro.
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 
@@ -21,7 +21,7 @@ The following ``update-skill`` example updates the aws-serverless skill only for
 
 Output::
 
-      Updated aws-serverless (v2) to Kiro.
+    Updated aws-serverless (v2) to Kiro.
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 
@@ -47,8 +47,8 @@ The following ``update-skill`` example updates all installed skills that are out
 
 Output::
 
-      Updated aws-cloudformation (v2) to Kiro.
-      Updated aws-serverless (v2) to Kiro.
+    Updated aws-cloudformation (v2) to Kiro.
+    Updated aws-serverless (v2) to Kiro.
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 
@@ -62,7 +62,7 @@ The following ``update-skill`` example updates all out-of-date skills, but only 
 
 Output::
 
-      Updated aws-serverless (v2) to Kiro.
+    Updated aws-serverless (v2) to Kiro.
 
 For more information, see `Getting started with the AWS Agent Toolkit <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started.html>`__ in the *AWS Agent Toolkit User Guide*.
 

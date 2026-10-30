@@ -4,7 +4,7 @@ The following ``get-ipam-address-history`` example gets the history of a CIDR.
 
 (Linux)::
 
-     aws ec2 get-ipam-address-history \
+    aws ec2 get-ipam-address-history \
         --cidr 10.0.0.0/16 \
         --ipam-scope-id ipam-scope-02fc38cd4c48e7d38 \
         --start-time 2021-12-08T01:00:00.000Z \
@@ -12,7 +12,7 @@ The following ``get-ipam-address-history`` example gets the history of a CIDR.
 
 (Windows)::
 
-     aws ec2 get-ipam-address-history ^
+    aws ec2 get-ipam-address-history ^
         --cidr 10.0.0.0/16 ^
         --ipam-scope-id ipam-scope-02fc38cd4c48e7d38 ^
         --start-time 2021-12-08T01:00:00.000Z ^
@@ -61,4 +61,4 @@ Output::
         ]
     }
 
-For more information, see `View the history of IP addresses <https://docs.aws.amazon.com/vpc/latest/ipam/view-history-cidr-ipam.html>`__ in the *Amazon VPC IPAM User Guide*. 
+For more information, see `View the history of IP addresses <https://docs.aws.amazon.com/vpc/latest/ipam/view-history-cidr-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

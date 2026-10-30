@@ -6,7 +6,7 @@ The following ``list-profiles`` lists the Profiles in your AWS account and displ
 
 Output::
 
-   {
+    {
         "ProfileSummaries": [
             {
                 "Arn": "arn:aws:route53profiles:us-east-1:123456789012:profile/rp-4987774726example",

@@ -2,7 +2,7 @@
 
 The following command requests logs from an environment named ``my-env``::
 
-  aws elasticbeanstalk request-environment-info --environment-name my-env --info-type tail
+    aws elasticbeanstalk request-environment-info --environment-name my-env --info-type tail
 
 After requesting logs, retrieve their location with `retrieve-environment-info`_.
 

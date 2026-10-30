@@ -4,7 +4,7 @@ This example describes all of your VPC peering connections.
 
 Command::
 
-  aws ec2 describe-vpc-peering-connections
+    aws ec2 describe-vpc-peering-connections
 
 Output::
 
@@ -29,7 +29,7 @@ Output::
                 "VpcPeeringConnectionId": "pcx-11122233",
                 "RequesterVpcInfo": {
                     "PeeringOptions": {
-                        "AllowEgressFromLocalVpcToRemoteClassicLink": false, 
+                        "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
                     "OwnerId": "444455556666",
@@ -45,7 +45,7 @@ Output::
                 "Tags": [],
                 "RequesterVpcInfo": {
                     "PeeringOptions": {
-                        "AllowEgressFromLocalVpcToRemoteClassicLink": false, 
+                        "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
                     "OwnerId": "444455556666",
@@ -69,19 +69,19 @@ This example describes all of your VPC peering connections that are in the pendi
 
 Command::
 
-  aws ec2 describe-vpc-peering-connections --filters Name=status-code,Values=pending-acceptance
+    aws ec2 describe-vpc-peering-connections --filters Name=status-code,Values=pending-acceptance
 
 
 This example describes all of your VPC peering connections that have the tag Owner=Finance.
 
 Command::
 
-  aws ec2 describe-vpc-peering-connections --filters Name=tag:Owner,Values=Finance
+    aws ec2 describe-vpc-peering-connections --filters Name=tag:Owner,Values=Finance
 
 
 This example describes all of the VPC peering connections you requested for the specified VPC, vpc-1a2b3c4d.
 
 Command::
 
-  aws ec2 describe-vpc-peering-connections --filters Name=requester-vpc-info.vpc-id,Values=vpc-1a2b3c4d
+    aws ec2 describe-vpc-peering-connections --filters Name=requester-vpc-info.vpc-id,Values=vpc-1a2b3c4d
 

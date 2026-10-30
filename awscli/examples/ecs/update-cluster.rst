@@ -171,6 +171,6 @@ Output::
                 "namespace": "arn:aws:servicediscovery:us-west-2:123456789012:namespace/ns-dtjmxqpfi46ht7dr"
             }
         }
-   }
-   
+    }
+
 For more information on Service Connect, see `Use Service Connect to connect Amazon ECS services with short names <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html>`__ in the *Amazon ECS Developer Guide*.

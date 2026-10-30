@@ -6,8 +6,8 @@ The following ``describe-pending-maintenance-actions`` example lists all your pe
 
 Output::
 
-   {
-       "PendingMaintenanceActions": []
-   }
+    {
+        "PendingMaintenanceActions": []
+    }
 
 For more information, see `Maintaining Amazon DocumentDB <https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-maintain.html>`__ in the *Amazon DocumentDB Developer Guide*.

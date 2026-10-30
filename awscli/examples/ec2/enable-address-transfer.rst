@@ -9,7 +9,7 @@ The following ``enable-address-transfer`` example enables Elastic IP address tra
 Output::
 
     {
-         "AddressTransfer": {
+        "AddressTransfer": {
             "PublicIp": "100.21.184.216",
             "AllocationId": "eipalloc-09ad461b0d03f6aaf",
             "TransferAccountId": "123456789012",

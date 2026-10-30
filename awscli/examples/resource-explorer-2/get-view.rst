@@ -8,12 +8,12 @@ The following ``get-view`` example displays the details about a view specified b
 Output::
 
     {
-      "Tags" : {},
-      "View" : {
+        "Tags" : {},
+        "View" : {
             "Filters" : {
                 "FilterString" : "service:ec2"
             },
-            "IncludedProperties" : [ 
+            "IncludedProperties" : [
                 {
                     "Name" : "tags"
                 }
@@ -22,7 +22,7 @@ Output::
             "Owner" : "123456789012",
             "Scope" : "arn:aws:iam::123456789012:root",
             "ViewArn" : "arn:aws:resource-explorer-2:us-east-1:123456789012:view/EC2-Only-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111"
-      }
+        }
     }
 
 For more information about views, see `About Resource Explorer views <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-views-about.html>`__ in the *AWS Resource Explorer Users Guide*.

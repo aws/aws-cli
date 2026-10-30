@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway get-usage-plans
+    aws apigateway get-usage-plans

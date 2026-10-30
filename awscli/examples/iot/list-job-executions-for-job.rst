@@ -7,7 +7,7 @@ The following ``list-job-executions-for-job`` example lists all job executions f
 
 Output::
 
-   {
+    {
         "executionSummaries": [
             {
                 "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/my_thing",

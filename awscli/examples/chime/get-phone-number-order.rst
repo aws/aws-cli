@@ -14,8 +14,8 @@ Output::
             "Status": "Partial",
             "OrderedPhoneNumbers": [
                 {
-                  "E164PhoneNumber": "+12065550100",
-                  "Status": "Acquired"
+                    "E164PhoneNumber": "+12065550100",
+                    "Status": "Acquired"
                 },
                 {
                     "E164PhoneNumber": "+12065550101",

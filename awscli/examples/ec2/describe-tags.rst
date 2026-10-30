@@ -91,22 +91,22 @@ The following ``describe-tags`` example describes the tags for your resources th
 
 Output::
 
-  {
-      "Tags": [
-          {
-              "ResourceType": "image",
-              "ResourceId": "ami-3ac336533f021f3bd",
-              "Value": "Test",
-              "Key": "Stack"
-          },
-          {
-              "ResourceType": "instance",
-              "ResourceId": "i-1234567890abcdef8",
-              "Value": "Test",
-              "Key": "Stack"
-          }
-      ]
-  }
+    {
+        "Tags": [
+            {
+                "ResourceType": "image",
+                "ResourceId": "ami-3ac336533f021f3bd",
+                "Value": "Test",
+                "Key": "Stack"
+            },
+            {
+                "ResourceType": "instance",
+                "ResourceId": "i-1234567890abcdef8",
+                "Value": "Test",
+                "Key": "Stack"
+            }
+        ]
+    }
 
 The following ``describe-tags`` example uses alternate syntax to describe resources with the tag ``Stack=Test``. ::
 
@@ -120,13 +120,13 @@ The following ``describe-tags`` example describes the tags for all your instance
 
 Output::
 
-  {
-      "Tags": [
-          {
-              "ResourceType": "instance", 
-              "ResourceId": "i-1234567890abcdef5", 
-              "Value": null, 
-              "Key": "Purpose"
-          }
-      ]
-  }
+    {
+        "Tags": [
+            {
+                "ResourceType": "instance",
+                "ResourceId": "i-1234567890abcdef5",
+                "Value": null,
+                "Key": "Purpose"
+            }
+        ]
+    }

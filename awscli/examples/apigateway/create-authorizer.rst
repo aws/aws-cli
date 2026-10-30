@@ -12,15 +12,15 @@ The following ``create-authorizer`` example creates a token-based authorizer. ::
 
 Output::
 
-  {
-      "authType": "custom", 
-      "name": "First_Token_Custom_Authorizer", 
-      "authorizerUri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:customAuthFunction/invocations", 
-      "authorizerResultTtlInSeconds": 300, 
-      "identitySource": "method.request.header.Authorization", 
-      "type": "TOKEN", 
-      "id": "z40xj0"
-  }
+    {
+        "authType": "custom",
+        "name": "First_Token_Custom_Authorizer",
+        "authorizerUri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:customAuthFunction/invocations",
+        "authorizerResultTtlInSeconds": 300,
+        "identitySource": "method.request.header.Authorization",
+        "type": "TOKEN",
+        "id": "z40xj0"
+    }
 
 **Example 2: To create a Cognito User Pools based API Gateway Custom Authorizer for the API**
 
@@ -35,16 +35,16 @@ The following ``create-authorizer`` example creates a Cognito User Pools based A
 
 Output::
 
-  {
-      "authType": "cognito_user_pools", 
-      "identitySource": "method.request.header.Authorization", 
-      "name": "First_Cognito_Custom_Authorizer", 
-      "providerARNs": [
-          "arn:aws:cognito-idp:us-east-1:342398297714:userpool/us-east-1_qWbZzQhzE"
-      ], 
-      "type": "COGNITO_USER_POOLS", 
-      "id": "5yid1t"
-  }
+    {
+        "authType": "cognito_user_pools",
+        "identitySource": "method.request.header.Authorization",
+        "name": "First_Cognito_Custom_Authorizer",
+        "providerARNs": [
+            "arn:aws:cognito-idp:us-east-1:342398297714:userpool/us-east-1_qWbZzQhzE"
+        ],
+        "type": "COGNITO_USER_POOLS",
+        "id": "5yid1t"
+    }
 
 **Example 3: To create a request-based API Gateway Custom Authorizer for the API**
 

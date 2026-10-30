@@ -2,7 +2,7 @@
 
 The following ``disable-ebs-encryption-by-default`` example disables EBS encryption by default for your AWS account in the current Region. ::
 
-  aws ec2 disable-ebs-encryption-by-default
+    aws ec2 disable-ebs-encryption-by-default
 
 Output::
 

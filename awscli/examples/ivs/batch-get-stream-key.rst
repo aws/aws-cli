@@ -22,7 +22,7 @@ Output::
                 "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",
                 "tags": {}
             }
-         ]
+        ]
     }
 
 For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/getting-started-create-channel.html>`__ in the *IVS Low-Latency User Guide*.

@@ -2,7 +2,7 @@
 
 The following ``list-topics`` example lists all of SNS topics in your AWS account. ::
 
-  aws sns list-topics
+    aws sns list-topics
 
 Output::
 

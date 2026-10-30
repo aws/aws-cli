@@ -50,7 +50,7 @@ Output::
                 "VpcId": "vpc-a87f92c1",
                 "SelfServicePortalUrl": "https://self-service.clientvpn.amazonaws.com/endpoints/cvpn-endpoint-123456789123abcde",
                 "ClientConnectOptions": {
-                     "Enabled": false
+                    "Enabled": false
                 }
             }
         ]

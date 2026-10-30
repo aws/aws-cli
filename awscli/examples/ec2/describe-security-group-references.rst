@@ -4,16 +4,16 @@ This example describes the security group references for ``sg-bbbb2222``. The re
 
 Command::
 
-  aws ec2 describe-security-group-references --group-id sg-bbbbb22222
+    aws ec2 describe-security-group-references --group-id sg-bbbbb22222
 
 Output::
 
-  {    
-    "SecurityGroupsReferenceSet": [
-      {
-        "ReferencingVpcId": "vpc-aaaaaaaa ",
-        "GroupId": "sg-bbbbb22222", 
-        "VpcPeeringConnectionId": "pcx-b04deed9"      
-      }   
-    ]
-  }
+    {
+        "SecurityGroupsReferenceSet": [
+            {
+                "ReferencingVpcId": "vpc-aaaaaaaa ",
+                "GroupId": "sg-bbbbb22222",
+                "VpcPeeringConnectionId": "pcx-b04deed9"
+            }
+        ]
+    }

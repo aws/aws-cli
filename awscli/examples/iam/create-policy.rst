@@ -44,7 +44,7 @@ For more information on using files as input for string parameters, see `Specify
 
 **Example 2: To create a customer managed policy with a description**
 
-The following command creates a customer managed policy named ``my-policy`` with an immutable description. 
+The following command creates a customer managed policy named ``my-policy`` with an immutable description.
 
 The file ``policy.json`` is a JSON document in the current folder that grants access to all Put, List, and Get actions for an Amazon S3 bucket named ``amzn-s3-demo-bucket``. ::
 
@@ -56,11 +56,11 @@ The file ``policy.json`` is a JSON document in the current folder that grants ac
 Contents of policy.json::
 
     {
-       "Version": "2012-10-17",
-       "Statement": [
-           {
-               "Effect": "Allow",
-               "Action": [
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
                     "s3:ListBucket*",
                     "s3:PutBucket*",
                     "s3:GetBucket*"
@@ -93,7 +93,7 @@ For more information on Idenity-based Policies, see `Identity-based policies and
 
 **Example 3: To create a customer managed policy with tags**
 
-The following command creates a customer managed policy named ``my-policy`` with tags. This example uses the ``--tags`` parameter with the following JSON-formatted tags: ``'{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'``. Alternatively, the ``--tags`` parameter can be used with tags in the shorthand format: ``'Key=Department,Value=Accounting Key=Location,Value=Seattle'``. 
+The following command creates a customer managed policy named ``my-policy`` with tags. This example uses the ``--tags`` parameter with the following JSON-formatted tags: ``'{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'``. Alternatively, the ``--tags`` parameter can be used with tags in the shorthand format: ``'Key=Department,Value=Accounting Key=Location,Value=Seattle'``.
 
 The file ``policy.json`` is a JSON document in the current folder that grants access to all Put, List, and Get actions for an Amazon S3 bucket named ``amzn-s3-demo-bucket``. ::
 

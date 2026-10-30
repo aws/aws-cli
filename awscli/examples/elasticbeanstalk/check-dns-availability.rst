@@ -2,11 +2,11 @@
 
 The following command checks the availability of the subdomain ``my-cname.elasticbeanstalk.com``::
 
-  aws elasticbeanstalk check-dns-availability --cname-prefix my-cname
+    aws elasticbeanstalk check-dns-availability --cname-prefix my-cname
 
 Output::
 
-  {
-      "Available": true,
-      "FullyQualifiedCNAME": "my-cname.elasticbeanstalk.com"
-  }
+    {
+        "Available": true,
+        "FullyQualifiedCNAME": "my-cname.elasticbeanstalk.com"
+    }

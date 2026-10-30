@@ -31,10 +31,10 @@ The following ``create-resource-share`` example creates a resource share and gra
 
 The following ``create-resource-share`` example creates a resource share that is restricted to accounts in the AWS Organization that your account is a member of, and adds the specified OU as a principal. All accounts in that OU can use the resources in the resource share. ::
 
-     aws ram create-resource-share \
-         --name MyNewResourceShare \
-         --no-allow-external-principals \
-         --principals arn:aws:organizations::123456789012:ou/o-63bEXAMPLE/ou-46xi-rEXAMPLE 
+    aws ram create-resource-share \
+        --name MyNewResourceShare \
+        --no-allow-external-principals \
+        --principals arn:aws:organizations::123456789012:ou/o-63bEXAMPLE/ou-46xi-rEXAMPLE
 
 Output::
 

@@ -9,7 +9,7 @@ The following ``set-log-delivery-configuration`` example configures the requeste
 Output::
 
     {
-       "LogDeliveryConfiguration": {
+        "LogDeliveryConfiguration": {
             "LogConfigurations": [
                 {
                     "CloudWatchLogsConfiguration": {
@@ -27,7 +27,7 @@ Output::
                 }
             ],
             "UserPoolId": "us-west-2_EXAMPLE"
-       }
+        }
     }
 
 For more information, see `Exporting user pool logs <https://docs.aws.amazon.com/cognito/latest/developerguide/exporting-quotas-and-usage.html>`__ in the *Amazon Cognito Developer Guide*.

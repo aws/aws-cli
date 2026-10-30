@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway delete-client-certificate --client-certificate-id a1b2c3
+    aws apigateway delete-client-certificate --client-certificate-id a1b2c3

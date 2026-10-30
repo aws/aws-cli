@@ -4,4 +4,4 @@ This example detaches the specified network interface from the specified instanc
 
 Command::
 
-  aws ec2 detach-network-interface --attachment-id eni-attach-66c4350a
+    aws ec2 detach-network-interface --attachment-id eni-attach-66c4350a

@@ -2,7 +2,7 @@
 
 The following ``describe-trusts`` example displays details about the trust relationships for the specified directory. ::
 
-     aws ds describe-trusts \
+    aws ds describe-trusts \
         --directory-id d-a1b2c3d4e5
 
 Output::

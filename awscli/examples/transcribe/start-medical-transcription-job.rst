@@ -91,12 +91,12 @@ Contents of ``mythirdfile.json``::
         "Specialty": "PRIMARYCARE",
         "Type": "CONVERSATION",
         "OutputBucketName":"amzn-s3-demo-bucket",
-            "Media": {
-              "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
-            },
-            "Settings":{
-              "ChannelIdentification": true
-            }
+        "Media": {
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
+        },
+        "Settings":{
+            "ChannelIdentification": true
+        }
     }
 
 Output::
@@ -138,11 +138,11 @@ Contents of ``myfourthfile.json``::
         "OutputBucketName":"amzn-s3-demo-bucket",
         "Media": {
             "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
-            },
+        },
         "Settings":{
             "ShowSpeakerLabels": true,
             "MaxSpeakerLabels": 2
-            }
+        }
     }
 
 Output::
@@ -234,8 +234,8 @@ Contents of ``mysixthfile.json``::
             "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
         },
         "Settings":{
-              "ShowAlternatives": true,
-              "MaxAlternatives": 2
+            "ShowAlternatives": true,
+            "MaxAlternatives": 2
         }
     }
 

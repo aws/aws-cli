@@ -16,7 +16,7 @@ Output::
                 "type": "transitGateway",
                 "ownerAccount": "123456789012",
                 "region": "us-east-1"
-           },
+            },
             "associationId": " be85116d-46eb-4b43-a27a-da0c2ad648deEXAMPLE ",
             "allowedPrefixesToDirectConnectGateway": [
                 {

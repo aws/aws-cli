@@ -9,7 +9,7 @@ This example shows how to associate member accounts to be managed by the current
 Output::
 
     {
-       "UnprocessedAccounts": []
+        "UnprocessedAccounts": []
     }
 
 For more information, see `Managing multiple accounts <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_accounts.html>`__ in the GuardDuty User Guide.

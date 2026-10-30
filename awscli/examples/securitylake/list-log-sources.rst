@@ -12,7 +12,7 @@ Output::
         "region": "xy-region-1",
         "sources": [
             {
-                   "awsLogSource": {
+                "awsLogSource": {
                     "sourceName": "VPC_FLOW",
                     "sourceVersion": "2.0"
                 }

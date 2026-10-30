@@ -24,6 +24,6 @@ Output::
     FFBjvSfpJIlJ00zbhNYS5f6GuoEDmFJl0ZxBHjJnyp378OD8uTs7fLvjx79LjSTb
     NYiytVbZPQUQ5Yaxu2jXnimvw3rrszlaEXAMPLE=
     -----END X509 CRL-----
-    STATUS	pending
+    STATUS    pending
 
 For more information, see `Client Certificate Revocation Lists <https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/cvpn-working-certificates.html>`__ in the *AWS Client VPN Administrator Guide*.

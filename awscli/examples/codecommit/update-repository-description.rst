@@ -4,8 +4,8 @@ This example changes the description for an AWS CodeCommit repository. This comm
 
 Command::
 
-  aws codecommit update-repository-description --repository-name MyDemoRepo --repository-description "This description was changed"
+    aws codecommit update-repository-description --repository-name MyDemoRepo --repository-description "This description was changed"
 
 Output::
 
-  None.
+    None.

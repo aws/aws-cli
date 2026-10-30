@@ -84,7 +84,7 @@ Output::
                                 "subnet-12344321"
                             ],
                             "securityGroups": [
-                                 "sg-12344321"
+                                "sg-12344321"
                             ],
                             "assignPublicIp": "ENABLED"
                         }
@@ -232,7 +232,7 @@ Output::
                     "id": "e764ec63-f53f-45e3-9af2-d99f922d2957",
                     "createdAt": "2024-12-30T12:32:21.600000-05:00",
                     "message": "(service my-http-service) has reached a steady state."
-                },          
+                },
                 {
                     "id": "28444756-c2fa-47f8-bd60-93a8e05f3991",
                     "createdAt": "2024-12-08T19:26:10.367000-05:00",
@@ -279,26 +279,26 @@ The following ``update-service`` example updates the service ``my-http-service``
 Contents of ``ebs.json``::
 
     {
-       "cluster": "mycluster",
-       "taskDefinition": "mytaskdef",
-       "service": "my-http-service",
-       "desiredCount": 2,
-       "volumeConfigurations": [
+        "cluster": "mycluster",
+        "taskDefinition": "mytaskdef",
+        "service": "my-http-service",
+        "desiredCount": 2,
+        "volumeConfigurations": [
             {
                 "name": "myEbsVolume",
                 "managedEBSVolume": {
                     "roleArn":"arn:aws:iam::123456789012:role/ecsInfrastructureRole",
                     "volumeType": "gp3",
                     "sizeInGiB": 100,
-                    "iops": 3000, 
-                    "throughput": 125, 
+                    "iops": 3000,
+                    "throughput": 125,
                     "filesystemType": "ext4"
                 }
             }
-       ]
+        ]
     }
 
-Output:: 
+Output::
 
     {
         "service": {
@@ -366,7 +366,7 @@ Output::
                                 "roleArn": "arn:aws:iam::123456789012:role/ecsInfrastructureRole",
                                 "filesystemType": "ext4"
                             }
-                        }  
+                        }
                     ]
                 },
                 {
@@ -444,11 +444,11 @@ Output::
 
 
 For more information, see `Use Amazon EBS volumes with Amazon ECS <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html>`__ in the *Amazon ECS Developer Guide*.
-   
+
 **Example 4: To update a service to no longer use Amazon EBS volumes**
 
 The following ``update-service`` example updates the service ``my-http-service`` to no longer use Amazon EBS volumes. You must specify a task definition revision with ``configuredAtLaunch`` set to ``false``. ::
-    
+
     aws ecs update-service \
         --cluster mycluster \
         --task-definition mytaskdef \
@@ -497,7 +497,7 @@ Output::
                     "failedTasks": 0,
                     "createdAt": "2025-02-21T15:25:38.598000-06:00",
                     "updatedAt": "2025-02-21T15:25:38.598000-06:00",
-                        "launchType": "FARGATE",
+                    "launchType": "FARGATE",
                     "platformVersion": "1.4.0",
                     "platformFamily": "Linux",
                     "networkConfiguration": {

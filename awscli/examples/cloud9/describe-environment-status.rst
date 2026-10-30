@@ -4,11 +4,11 @@ This example gets status information for the specified AWS Cloud9 development en
 
 Command::
 
-  aws cloud9 describe-environment-status --environment-id 685f892f431b45c2b28cb69eadcdb0EX
+    aws cloud9 describe-environment-status --environment-id 685f892f431b45c2b28cb69eadcdb0EX
 
 Output::
 
-  {
-    "status": "ready",
-    "message": "Environment is ready to use"
-  }
+    {
+        "status": "ready",
+        "message": "Environment is ready to use"
+    }

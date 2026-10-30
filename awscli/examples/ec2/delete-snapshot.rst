@@ -4,4 +4,4 @@ This example command deletes a snapshot with the snapshot ID of ``snap-123456789
 
 Command::
 
-  aws ec2 delete-snapshot --snapshot-id snap-1234567890abcdef0
+    aws ec2 delete-snapshot --snapshot-id snap-1234567890abcdef0

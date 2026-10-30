@@ -7,7 +7,7 @@ The following ``get-invitations-count`` example retrieves the number of invitati
 Output::
 
     {
-      "InvitationsCount": 3
+        "InvitationsCount": 3
     }
 
 

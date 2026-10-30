@@ -11,40 +11,40 @@ Contents of ``create-route-grpc.json``::
         "meshName" : "apps",
         "routeName" : "grpcRoute",
         "spec" : {
-           "grpcRoute" : {
-              "action" : {
-                 "weightedTargets" : [
-                    {
-                       "virtualNode" : "serviceBgrpc",
-                       "weight" : 100
-                    }
-                 ]
-              },
-              "match" : {
-                 "metadata" : [
-                    {
-                       "invert" : false,
-                       "match" : {
-                          "prefix" : "123"
-                       },
-                       "name" : "myMetadata"
-                    }
-                 ],
-                 "methodName" : "GetColor",
-                 "serviceName" : "com.amazonaws.services.ColorService"
-              },
-              "retryPolicy" : {
-                 "grpcRetryEvents" : [ "deadline-exceeded" ],
-                 "httpRetryEvents" : [ "server-error", "gateway-error" ],
-                 "maxRetries" : 3,
-                 "perRetryTimeout" : {
-                    "unit" : "s",
-                    "value" : 15
-                 },
-                 "tcpRetryEvents" : [ "connection-error" ]
-              }
-           },
-           "priority" : 100
+            "grpcRoute" : {
+                "action" : {
+                    "weightedTargets" : [
+                        {
+                            "virtualNode" : "serviceBgrpc",
+                            "weight" : 100
+                        }
+                    ]
+                },
+                "match" : {
+                    "metadata" : [
+                        {
+                            "invert" : false,
+                            "match" : {
+                                "prefix" : "123"
+                            },
+                            "name" : "myMetadata"
+                        }
+                    ],
+                    "methodName" : "GetColor",
+                    "serviceName" : "com.amazonaws.services.ColorService"
+                },
+                "retryPolicy" : {
+                    "grpcRetryEvents" : [ "deadline-exceeded" ],
+                    "httpRetryEvents" : [ "server-error", "gateway-error" ],
+                    "maxRetries" : 3,
+                    "perRetryTimeout" : {
+                        "unit" : "s",
+                        "value" : 15
+                    },
+                    "tcpRetryEvents" : [ "connection-error" ]
+                }
+            },
+            "priority" : 100
         },
         "virtualRouterName" : "serviceBgrpc"
     }

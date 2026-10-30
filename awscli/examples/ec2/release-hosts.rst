@@ -4,14 +4,13 @@ To release a Dedicated host from your account. Instances that are on the host mu
 
 Command::
 
-  aws ec2 release-hosts --host-id=h-0029d6e3cacf1b3da
+    aws ec2 release-hosts --host-id=h-0029d6e3cacf1b3da
 
 Output::
 
-  { 
-      "Successful":  [
-          "h-0029d6e3cacf1b3da"
-           ],
-    "Unsuccessful": []
-    
-   }
+    {
+        "Successful":  [
+            "h-0029d6e3cacf1b3da"
+        ],
+        "Unsuccessful": []
+    }

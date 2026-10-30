@@ -9,7 +9,7 @@ The following ``modify-db-proxy`` example modifies a DB proxy named ``proxyExamp
 Output::
 
     {
-    "DBProxy":
+        "DBProxy":
         {
             "DBProxyName": "proxyExample",
             "DBProxyArn": "arn:aws:rds:us-east-1:123456789012:db-proxy:prx-0123a01b12345c0ab",
@@ -20,8 +20,8 @@ Output::
                 "sg-1234"
             ],
             "VpcSubnetIds": [
-                "subnetgroup1", 
-                "subnetgroup2" 
+                "subnetgroup1",
+                "subnetgroup2"
             ],
             "Auth": "[
                 {

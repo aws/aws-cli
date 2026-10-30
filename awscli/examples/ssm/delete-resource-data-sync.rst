@@ -4,4 +4,4 @@ This example deletes a resource data sync. There is no output if the command suc
 
 Command::
 
-  aws ssm delete-resource-data-sync --sync-name "ssm-resource-data-sync"
+    aws ssm delete-resource-data-sync --sync-name "ssm-resource-data-sync"

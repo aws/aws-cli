@@ -8,7 +8,7 @@ The following ``describe-user-hierarchy-group`` example displays the details for
 
 Output::
 
-   {
+    {
         "HierarchyGroup": {
             "Id": "12345678-1111-2222-800e-a2b3c4d5f6g7",
             "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/agent-group/12345678-1111-2222-800e-a2b3c4d5f6g7",

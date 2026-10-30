@@ -2,9 +2,9 @@
 
 The following ``enable-fast-snapshot-restores`` example enables fast snapshot restore for the specified snapshot in the specified Availability Zones. ::
 
-  aws ec2 enable-fast-snapshot-restores \
-      --availability-zones us-east-2a us-east-2b \
-      --source-snapshot-ids snap-1234567890abcdef0
+    aws ec2 enable-fast-snapshot-restores \
+        --availability-zones us-east-2a us-east-2b \
+        --source-snapshot-ids snap-1234567890abcdef0
 
 Output::
 

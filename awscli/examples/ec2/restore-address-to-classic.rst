@@ -4,11 +4,11 @@ This example restores Elastic IP address 198.51.100.0 to the EC2-Classic platfor
 
 Command::
 
-  aws ec2 restore-address-to-classic --public-ip 198.51.100.0
+    aws ec2 restore-address-to-classic --public-ip 198.51.100.0
 
 Output::
 
-  {
-    "Status": "MoveInProgress", 
-    "PublicIp": "198.51.100.0"
-  }
+    {
+        "Status": "MoveInProgress",
+        "PublicIp": "198.51.100.0"
+    }

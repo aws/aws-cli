@@ -9,18 +9,18 @@ The following ``set-stack-policy`` example disables updates for the specified re
 Output::
 
     {
-      "Statement" : [
-        {
-          "Effect" : "Allow",
-          "Action" : "Update:*",
-          "Principal": "*",
-          "Resource" : "*"
-        },
-        {
-          "Effect" : "Deny",
-          "Action" : "Update:*",
-          "Principal": "*",
-          "Resource" : "LogicalResourceId/bucket"
-        }
-      ]
+        "Statement" : [
+            {
+                "Effect" : "Allow",
+                "Action" : "Update:*",
+                "Principal": "*",
+                "Resource" : "*"
+            },
+            {
+                "Effect" : "Deny",
+                "Action" : "Update:*",
+                "Principal": "*",
+                "Resource" : "LogicalResourceId/bucket"
+            }
+        ]
     }

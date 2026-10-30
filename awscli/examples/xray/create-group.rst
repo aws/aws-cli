@@ -2,7 +2,7 @@
 
 The following ``create-group`` example creates a group resource named ``AdminGroup``. The group gets a filter expression that defines the criteria of the group as a segment related to a specific service causing a fault or an error. ::
 
-     aws xray create-group \
+    aws xray create-group \
         --group-name "AdminGroup" \
         --filter-expression "service(\"mydomain.com\") {fault OR error}"
 

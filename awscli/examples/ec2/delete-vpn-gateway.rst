@@ -4,4 +4,4 @@ This example deletes the specified virtual private gateway. If the command succe
 
 Command::
 
-  aws ec2 delete-vpn-gateway --vpn-gateway-id vgw-9a4cacf3
+    aws ec2 delete-vpn-gateway --vpn-gateway-id vgw-9a4cacf3

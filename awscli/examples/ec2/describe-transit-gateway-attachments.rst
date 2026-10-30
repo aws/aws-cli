@@ -1,6 +1,6 @@
 **To view your transit gateway attachments**
 
- The following ``describe-transit-gateway-attachments`` example displays details for your transit gateway attachments. ::
+The following ``describe-transit-gateway-attachments`` example displays details for your transit gateway attachments. ::
 
     aws ec2 describe-transit-gateway-attachments
 

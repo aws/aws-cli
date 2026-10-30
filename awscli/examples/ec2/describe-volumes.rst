@@ -77,22 +77,22 @@ Output::
 
     [
         {
-           "Tag": [
-               {
-                   "Value": "Test2", 
-                   "Key": "Name"
-               }
-           ], 
-           "ID": "vol-1234567890abcdef0"
-       }, 
-       {
-           "Tag": [
-               {
-                   "Value": "Test1", 
-                   "Key": "Name"
-               }
-           ], 
-           "ID": "vol-049df61146c4d7901"
+            "Tag": [
+                {
+                    "Value": "Test2",
+                    "Key": "Name"
+                }
+            ],
+            "ID": "vol-1234567890abcdef0"
+        },
+        {
+            "Tag": [
+                {
+                    "Value": "Test1",
+                    "Key": "Name"
+                }
+            ],
+            "ID": "vol-049df61146c4d7901"
         }
     ]
 

@@ -11,14 +11,14 @@ Contents of ``create-virtual-gateway.json``::
 
     {
         "spec": {
-          "listeners": [
-            {
-              "portMapping": {
-                "port": 9080,
-                "protocol": "http"
-              }
-            }
-          ]
+            "listeners": [
+                {
+                    "portMapping": {
+                        "port": 9080,
+                        "protocol": "http"
+                    }
+                }
+            ]
         }
     }
 

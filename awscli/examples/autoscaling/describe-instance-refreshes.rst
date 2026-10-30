@@ -3,7 +3,7 @@
 The following ``describe-instance-refreshes`` example returns a description of all instance refresh requests for the specified Auto Scaling group, including the status message and (if available) the status reason. ::
 
     aws autoscaling describe-instance-refreshes \
-        --auto-scaling-group-name my-asg 
+        --auto-scaling-group-name my-asg
 
 Output::
 
@@ -17,7 +17,7 @@ Output::
                 "EndTime": "2023-03-23T16:42:55Z",
                 "PercentageComplete": 0,
                 "InstancesToUpdate": 0,
-        "Preferences": {
+                "Preferences": {
                     "MinHealthyPercentage": 100,
                     "InstanceWarmup": 300,
                     "CheckpointPercentages": [
@@ -37,7 +37,7 @@ Output::
                 "EndTime": "2022-06-02T16:53:37Z",
                 "PercentageComplete": 100,
                 "InstancesToUpdate": 0,
-        "Preferences": {
+                "Preferences": {
                     "MinHealthyPercentage": 90,
                     "InstanceWarmup": 300,
                     "SkipMatching": true,

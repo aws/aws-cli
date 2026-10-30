@@ -11,7 +11,7 @@ The following ``start-change-request-execution`` example starts a change request
 Output::
 
     {
-      "AutomationExecutionId": "9d32a4fc-f944-11e6-4105-0a1b2EXAMPLE"
+        "AutomationExecutionId": "9d32a4fc-f944-11e6-4105-0a1b2EXAMPLE"
     }
 
 **Example 2: To start a change request using an external JSON file**
@@ -65,7 +65,7 @@ Contents of ``MyChangeRequest.json``::
 Output::
 
     {
-      "AutomationExecutionId": "9d32a4fc-f944-11e6-4105-0a1b2EXAMPLE"
+        "AutomationExecutionId": "9d32a4fc-f944-11e6-4105-0a1b2EXAMPLE"
     }
 
 For more information, see `Creating change requests <https://docs.aws.amazon.com/systems-manager/latest/userguide/change-requests-create.html>`__ in the *AWS Systems Manager User Guide*.

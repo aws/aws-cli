@@ -12,7 +12,7 @@ Output::
             "arn": "arn:aws:controltower:us-east-1:123456789012:enabledcontrol/26RGJRSLXCP1KW8D",
             "controlIdentifier": "arn:aws:controltower:us-east-1::control/AWS-GR_CLOUDTRAIL_CHANGE_PROHIBITED",
             "driftStatusSummary": {
-                 "driftStatus": "NOT_CHECKING"
+                "driftStatus": "NOT_CHECKING"
             },
             "parameters": [],
             "statusSummary": {

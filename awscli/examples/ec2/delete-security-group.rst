@@ -4,7 +4,7 @@ This example deletes the security group named ``MySecurityGroup``. If the comman
 
 Command::
 
-  aws ec2 delete-security-group --group-name MySecurityGroup
+    aws ec2 delete-security-group --group-name MySecurityGroup
 
 **[EC2-VPC] To delete a security group**
 
@@ -12,7 +12,7 @@ This example deletes the security group with the ID ``sg-903004f8``. Note that y
 
 Command::
 
-  aws ec2 delete-security-group --group-id sg-903004f8
+    aws ec2 delete-security-group --group-id sg-903004f8
 
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 

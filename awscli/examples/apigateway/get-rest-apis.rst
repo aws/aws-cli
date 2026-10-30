@@ -2,16 +2,16 @@
 
 Command::
 
-  aws apigateway get-rest-apis
+    aws apigateway get-rest-apis
 
 Output::
 
-  {
-      "items": [
-          {
-              "createdDate": 1438884790, 
-              "id": "12s44z21rb", 
-              "name": "My First API"
-          }
-      ]
-  }
+    {
+        "items": [
+            {
+                "createdDate": 1438884790,
+                "id": "12s44z21rb",
+                "name": "My First API"
+            }
+        ]
+    }

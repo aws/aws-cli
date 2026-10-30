@@ -73,8 +73,8 @@ Contents of ``mythirdfile.json``::
             "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         },
         "Settings":{
-        "ShowSpeakerLabels": true,
-        "MaxSpeakerLabels": 2
+            "ShowSpeakerLabels": true,
+            "MaxSpeakerLabels": 2
         }
     }
 
@@ -112,7 +112,7 @@ Contents of ``myfourthfile.json``::
         "TranscriptionJobName": "cli-filter-mask-job",
         "LanguageCode": "the-language-of-your-transcription-job",
         "Media": {
-              "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         },
         "Settings":{
             "VocabularyFilterName": "your-vocabulary-filter",
@@ -312,8 +312,8 @@ Contents of ``myninthfile.json``::
         "TranscriptionJobName": "cli-redaction-job-with-unredacted-transcript",
         "LanguageCode": "language-code",
         "Media": {
-              "MediaFileUri": "s3://Amazon-S3-Prefix/your-media-file.file-extension"
-            },
+            "MediaFileUri": "s3://Amazon-S3-Prefix/your-media-file.file-extension"
+        },
         "ContentRedaction": {
             "RedactionOutput":"redacted_and_unredacted",
             "RedactionType":"PII"

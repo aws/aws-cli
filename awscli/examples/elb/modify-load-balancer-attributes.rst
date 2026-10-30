@@ -8,14 +8,14 @@ Command::
 
 Output::
 
-  {
-      "LoadBalancerAttributes": {
-          "CrossZoneLoadBalancing": {
-              "Enabled": true
-          }
-      },
-      "LoadBalancerName": "my-load-balancer"
-  }
+    {
+        "LoadBalancerAttributes": {
+            "CrossZoneLoadBalancing": {
+                "Enabled": true
+            }
+        },
+        "LoadBalancerName": "my-load-balancer"
+    }
 
 This example modifies the ``ConnectionDraining`` attribute of the specified load balancer.
 
@@ -25,12 +25,12 @@ Command::
 
 Output::
 
-  {
-      "LoadBalancerAttributes": {
-          "ConnectionDraining": {
-              "Enabled": true,
-              "Timeout": 300
-          }
-      },
-      "LoadBalancerName": "my-load-balancer"
-  }
+    {
+        "LoadBalancerAttributes": {
+            "ConnectionDraining": {
+                "Enabled": true,
+                "Timeout": 300
+            }
+        },
+        "LoadBalancerName": "my-load-balancer"
+    }

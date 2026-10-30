@@ -7,7 +7,7 @@ The following ``list-profile-resource-associations`` list the Profile resource a
 
 Output::
 
-   {
+    {
         "ProfileResourceAssociations": [
             {
                 "CreationTime": 1710851216.613,

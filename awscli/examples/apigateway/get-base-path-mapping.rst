@@ -2,12 +2,12 @@
 
 Command::
 
-  aws apigateway get-base-path-mapping --domain-name subdomain.domain.tld --base-path v1
+    aws apigateway get-base-path-mapping --domain-name subdomain.domain.tld --base-path v1
 
 Output::
 
-  {
-      "basePath": "v1", 
-      "restApiId": "1234w4321e", 
-      "stage": "api"
-  }
+    {
+        "basePath": "v1",
+        "restApiId": "1234w4321e",
+        "stage": "api"
+    }

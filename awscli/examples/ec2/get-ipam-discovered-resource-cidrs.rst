@@ -9,7 +9,7 @@ To complete this request:
 
 The following ``get-ipam-discovered-resource-cidrs`` example lists the IP addresses for resources that the IPAM is discovering. ::
 
-     aws ec2 get-ipam-discovered-resource-cidrs \
+    aws ec2 get-ipam-discovered-resource-cidrs \
         --ipam-resource-discovery-id ipam-res-disco-0365d2977fc1672fe \
         --resource-region us-east-1
 

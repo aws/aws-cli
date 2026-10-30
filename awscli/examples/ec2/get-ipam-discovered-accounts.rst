@@ -6,7 +6,7 @@ The ``--discovery-region`` is the IPAM operating Region you want to view the mon
 
 The following ``get-ipam-discovered-accounts`` example lists the AWS accounts that own resources that the IPAM is discovering. ::
 
-     aws ec2 get-ipam-discovered-accounts \
+    aws ec2 get-ipam-discovered-accounts \
         --ipam-resource-discovery-id ipam-res-disco-0365d2977fc1672fe \
         --discovery-region us-east-1
 

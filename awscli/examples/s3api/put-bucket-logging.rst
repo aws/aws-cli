@@ -33,7 +33,7 @@ To apply the logging policy, use ``put-bucket-logging``. ::
 
 Contents of ``logging.json``::
 
-   {
+    {
         "LoggingEnabled": {
             "TargetBucket": "amzn-s3-demo-bucket",
             "TargetPrefix": "Logs/"

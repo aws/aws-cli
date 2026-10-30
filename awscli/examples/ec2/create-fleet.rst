@@ -41,20 +41,20 @@ When you create an EC2 Fleet, use a JSON file to specify information about the i
 
 Contents of file_name.json::
 
-  {
-      "LaunchTemplateConfigs": [
-      {
-          "LaunchTemplateSpecification": {
-          "LaunchTemplateId": "lt-0e8c754449b27161c",
-          "Version": "1"
-          }
-      }
-      ],
-      "TargetCapacitySpecification": {
-      "TotalTargetCapacity": 2,
-      "DefaultTargetCapacityType": "on-demand"
-      }
-  }
+    {
+        "LaunchTemplateConfigs": [
+            {
+                "LaunchTemplateSpecification": {
+                    "LaunchTemplateId": "lt-0e8c754449b27161c",
+                    "Version": "1"
+                }
+            }
+        ],
+        "TargetCapacitySpecification": {
+            "TotalTargetCapacity": 2,
+            "DefaultTargetCapacityType": "on-demand"
+        }
+    }
 
 Output::
 

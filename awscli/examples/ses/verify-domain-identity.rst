@@ -6,9 +6,9 @@ The following example uses the ``verify-domain-identity`` command to verify a do
 
 Output::
 
- {
-    "VerificationToken": "eoEmxw+YaYhb3h3iVJHuXMJXqeu1q1/wwmvjuEXAMPLE"
- }
+    {
+        "VerificationToken": "eoEmxw+YaYhb3h3iVJHuXMJXqeu1q1/wwmvjuEXAMPLE"
+    }
 
 
 To complete domain verification, you must add a TXT record with the returned verification token to your domain's DNS settings. For more information, see `Verifying Domains in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.

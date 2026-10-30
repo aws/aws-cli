@@ -22,9 +22,11 @@ at the man output, we look one step before at the generated rst output
 
 """
 
+import json
 import os
 import re
 import shlex
+import textwrap
 
 import docutils.nodes
 import docutils.parsers.rst
@@ -60,6 +62,17 @@ EXAMPLES_DIR = os.path.join(
 
 ALLOWED_FILENAME_CHAR_REGEX = re.compile(r'([a-z0-9_\-\.]*$)')
 HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
+
+# Used by the checks that the examples follow the AWS CLI code example
+# style guide: https://aws.github.io/aws-cli/docs_styleguide.html
+TITLE_RE = re.compile(r'^\*\*(?:Example (?P<num>\d+): )?(?P<text>.+)\*\*$')
+ERROR_LINE_RE = re.compile(r'^Line (\d+):')
+LIST_ITEM_RE = re.compile(r'^(\s*(?:[*+-]|\d+\.|#\.)\s+)\S')
+# Examples that are known to break a style rule, keyed by the rule's name,
+# then the file, then the example's title, with the reason for each example.
+EXCEPTIONS_PATH = os.path.join(
+    _dname(os.path.abspath(__file__)), 'example_style_exceptions.json'
+)
 
 
 # Used so that docutils doesn't write errors to stdout/stderr.
@@ -99,8 +112,210 @@ def _get_all_doc_examples():
     return rst_doc_examples, other_doc_examples
 
 
+class Block:
+    def __init__(self, kind, start, lines, intro=None):
+        # kind is one of 'title', 'para' or 'literal'.
+        self.kind = kind
+        # 0-based index of the block's first line in the file.
+        self.start = start
+        self.lines = lines
+        # For literal blocks, the paragraph that ends with '::'.
+        self.intro = intro
+
+    @property
+    def lineno(self):
+        return self.start + 1
+
+
+class Example:
+    def __init__(self, relpath):
+        self.relpath = relpath
+        with open(os.path.join(EXAMPLES_DIR, relpath)) as f:
+            self.lines = f.read().splitlines()
+        self.blocks = _parse_blocks(self.lines)
+
+
+def _indent(line):
+    return len(line) - len(line.lstrip(' '))
+
+
+def _parse_blocks(lines):
+    blocks = []
+    i = 0
+    intro = None
+    while i < len(lines):
+        if not lines[i].strip():
+            i += 1
+            continue
+        if intro is not None and lines[i][:1] in (' ', '\t'):
+            end = i
+            while end < len(lines) and (
+                not lines[end].strip() or lines[end][:1] in (' ', '\t')
+            ):
+                end += 1
+            last = end
+            while not lines[last - 1].strip():
+                last -= 1
+            blocks.append(Block('literal', i, lines[i:last], intro))
+            intro = None
+            i = end
+            continue
+        end = i
+        while end < len(lines) and lines[end].strip():
+            end += 1
+        para = lines[i:end]
+        kind = (
+            'title' if len(para) == 1 and TITLE_RE.match(para[0]) else 'para'
+        )
+        block = Block(kind, i, para)
+        blocks.append(block)
+        intro = block if para[-1].rstrip().endswith('::') else None
+        i = end
+    return blocks
+
+
+def _indent_error(lineno, indent):
+    return f'Line {lineno}: indent of {indent} spaces is not a multiple of 4'
+
+
+def _is_json(block):
+    return _parse_json(block) is None
+
+
+def _parse_json(block):
+    """Return None if the block is JSON, otherwise the parse error."""
+    try:
+        json.loads(textwrap.dedent('\n'.join(block.lines)))
+    except ValueError as e:
+        return str(e)
+    return None
+
+
+def check_whitespace(example):
+    errors = []
+    for i, line in enumerate(example.lines, 1):
+        indentation = line[: len(line) - len(line.lstrip())]
+        if line.strip() and '\t' in indentation:
+            errors.append(f'Line {i}: tab used for indentation')
+
+    list_offsets = set()
+    for block in example.blocks:
+        if block.kind == 'title':
+            list_offsets = set()
+        if block.start > 0 and example.lines[block.start - 1].strip():
+            errors.append(
+                f'Line {block.lineno}: missing blank line before this section'
+            )
+        if block.kind == 'para':
+            for offset, line in enumerate(block.lines):
+                lineno = block.lineno + offset
+                if offset < len(block.lines) - 1 and TITLE_RE.match(line):
+                    errors.append(
+                        f'Line {lineno}: missing blank line after title'
+                    )
+                elif offset < len(block.lines) - 1 and line.endswith('::'):
+                    errors.append(
+                        f"Line {lineno}: missing blank line after '::'"
+                    )
+                list_item = LIST_ITEM_RE.match(line)
+                if list_item:
+                    list_offsets.add(len(list_item.group(1)))
+                indent = _indent(line)
+                if indent % 4 and indent not in list_offsets:
+                    errors.append(_indent_error(lineno, indent))
+        elif block.kind == 'literal':
+            if _is_json(block):
+                lines = enumerate(block.lines)
+            else:
+                # Only the base indent matters for text output, where
+                # columns are aligned to the content.
+                lines = [(0, block.lines[0])]
+            for offset, line in lines:
+                indent = _indent(line)
+                if line.strip() and indent % 4:
+                    errors.append(_indent_error(block.lineno + offset, indent))
+    return errors
+
+
+def _is_description(filename):
+    if filename == '_examples.rst':
+        return False
+    return filename.startswith('_') or filename.endswith('_description.rst')
+
+
+def _get_style_example_files():
+    example_files = []
+    for root, _, filenames in os.walk(EXAMPLES_DIR):
+        if root == EXAMPLES_DIR:
+            # The global option docs at the top level are not examples.
+            continue
+        for filename in filenames:
+            if filename.startswith('.') or not filename.endswith('.rst'):
+                continue
+            if _is_description(filename):
+                continue
+            relpath = os.path.relpath(
+                os.path.join(root, filename), EXAMPLES_DIR
+            )
+            example_files.append(relpath.replace(os.sep, '/'))
+    return sorted(example_files)
+
+
+def _load_exceptions():
+    with open(EXCEPTIONS_PATH) as f:
+        return json.load(f)
+
+
+def _get_exceptions(rule):
+    return EXCEPTIONS.get(rule, {})
+
+
+def _title(block):
+    return block.lines[0].strip()[2:-2]
+
+
+def _example_title(example, error):
+    """The title of the example that ``error`` is in, or None."""
+    match = ERROR_LINE_RE.match(error)
+    if not match:
+        return None
+    title = None
+    for block in example.blocks:
+        if block.lineno > int(match.group(1)):
+            break
+        if block.kind == 'title':
+            title = _title(block)
+    return title
+
+
+def _assert_follows_rule(rule, example, errors):
+    exceptions = _get_exceptions(rule).get(example.relpath, {})
+    excepted = set()
+    remaining = []
+    for error in errors:
+        title = _example_title(example, error)
+        if title in exceptions:
+            excepted.add(title)
+        else:
+            remaining.append(error)
+    fixed = sorted(set(exceptions) - excepted)
+    assert not fixed, (
+        f'These examples in {example.relpath} now follow the {rule} rule; '
+        f'remove them from "{rule}" in '
+        f'{os.path.basename(EXCEPTIONS_PATH)}: {fixed}'
+    )
+    if remaining:
+        details = '\n'.join(remaining)
+        raise AssertionError(
+            f'The example file "{example.relpath}" does not follow the '
+            f'{rule} rule:\n\n{details}\n'
+        )
+
+
 RST_DOC_EXAMPLES, OTHER_DOC_EXAMPLES = _get_all_doc_examples()
 EXAMPLE_COMMAND_TESTS = _get_example_test_cases()
+STYLE_EXAMPLE_FILES = _get_style_example_files()
+EXCEPTIONS = _load_exceptions()
 
 
 def line_num(content, loc):
@@ -378,3 +593,27 @@ def _assert_file_is_rst_or_txt(filepath):
 
 def _assert_name_contains_only_allowed_characters(filename):
     assert ALLOWED_FILENAME_CHAR_REGEX.match(filename)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_whitespace(example_file):
+    example = Example(example_file)
+    errors = check_whitespace(example)
+    _assert_follows_rule('whitespace', example, errors)
+
+
+def test_example_style_exceptions_exist():
+    missing = []
+    for rule, files in EXCEPTIONS.items():
+        for path, examples in files.items():
+            if path not in STYLE_EXAMPLE_FILES:
+                missing.append(f'{rule}: {path}')
+                continue
+            blocks = Example(path).blocks
+            titles = {_title(b) for b in blocks if b.kind == 'title'}
+            missing.extend(
+                f'{rule}: {path}: {title}'
+                for title in examples
+                if title not in titles
+            )
+    assert not missing, f"Exceptions for examples that do not exist: {missing}"

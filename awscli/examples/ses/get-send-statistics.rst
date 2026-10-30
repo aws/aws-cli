@@ -6,24 +6,24 @@ The following example uses the ``get-send-statistics`` command to return your Am
 
 Output::
 
- {
-    "SendDataPoints": [
-        {
-            "Complaints": 0,
-            "Timestamp": "2013-06-12T19:32:00Z",
-            "DeliveryAttempts": 2,
-            "Bounces": 0,
-            "Rejects": 0
-        },
-        {
-            "Complaints": 0,
-            "Timestamp": "2013-06-12T00:47:00Z",
-            "DeliveryAttempts": 1,
-            "Bounces": 0,
-            "Rejects": 0
-        }
-    ]
- }
+    {
+        "SendDataPoints": [
+            {
+                "Complaints": 0,
+                "Timestamp": "2013-06-12T19:32:00Z",
+                "DeliveryAttempts": 2,
+                "Bounces": 0,
+                "Rejects": 0
+            },
+            {
+                "Complaints": 0,
+                "Timestamp": "2013-06-12T00:47:00Z",
+                "DeliveryAttempts": 1,
+                "Bounces": 0,
+                "Rejects": 0
+            }
+        ]
+    }
 
 
 The result is a list of data points, representing the last two weeks of sending activity. Each data point in the list

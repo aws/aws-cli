@@ -22,7 +22,7 @@ This command produces no output.
 
 The following ``modify-instance-attribute`` example sets the ``sourceDestCheck`` attribute of the specified instance to ``true``. The instance must be in a VPC. ::
 
-  aws ec2 modify-instance-attribute --instance-id i-1234567890abcdef0 --source-dest-check "{\"Value\": true}"
+    aws ec2 modify-instance-attribute --instance-id i-1234567890abcdef0 --source-dest-check "{\"Value\": true}"
 
 This command produces no output.
 
@@ -32,15 +32,15 @@ The following ``modify-instance-attribute`` example sets the ``deleteOnTerminati
 
 Command::
 
-  aws ec2 modify-instance-attribute \
-    --instance-id i-1234567890abcdef0 \
-    --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":false}}]"
+    aws ec2 modify-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":false}}]"
 
 This command produces no output.
 
 **Example 5: To modify the user data attached to an instance**
 
-The following ``modify-instance-attribute`` example adds the contents of the file ``UserData.txt`` as the UserData for the specified instance. 
+The following ``modify-instance-attribute`` example adds the contents of the file ``UserData.txt`` as the UserData for the specified instance.
 
 Contents of original file ``UserData.txt``::
 
@@ -66,7 +66,7 @@ Output::
     Input Length = 67
     Output Length = 152
     CertUtil: -encode command completed successfully.
-    
+
 Now you can reference that file in the CLI command that follows::
 
     aws ec2 modify-instance-attribute \

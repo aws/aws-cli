@@ -38,15 +38,15 @@
 - JSON equivalent (contents of step.json)::
 
     [
-     {
-       "Name": "JSON Streaming Step",
-       "Args": ["-files","s3://elasticmapreduce/samples/wordcount/wordSplitter.py","-mapper","wordSplitter.py","-reducer","aggregate","-input","s3://elasticmapreduce/samples/wordcount/input","-output","s3://amzn-s3-demo-bucket/wordcount/output"],
-       "ActionOnFailure": "CONTINUE",
-       "Type": "STREAMING"
-     }
-   ]
+        {
+            "Name": "JSON Streaming Step",
+            "Args": ["-files","s3://elasticmapreduce/samples/wordcount/wordSplitter.py","-mapper","wordSplitter.py","-reducer","aggregate","-input","s3://elasticmapreduce/samples/wordcount/input","-output","s3://amzn-s3-demo-bucket/wordcount/output"],
+            "ActionOnFailure": "CONTINUE",
+            "Type": "STREAMING"
+        }
+    ]
 
-NOTE: JSON arguments must include options and values as their own items in the list. 
+NOTE: JSON arguments must include options and values as their own items in the list.
 
 - Command (using step.json)::
 
@@ -65,24 +65,24 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
 - JSON (multiplefiles.json)::
 
-   [
-     {
-        "Name": "JSON Streaming Step",
-        "Type": "STREAMING",
-        "ActionOnFailure": "CONTINUE",
-        "Args": [
-            "-files",
-            "s3://amzn-s3-demo-bucket/mapper.py,s3://amzn-s3-demo-bucket/reducer.py",
-            "-mapper",
-            "mapper.py",
-            "-reducer",
-            "reducer.py",
-            "-input",
-            "s3://amzn-s3-demo-bucket/input",
-            "-output",
-            "s3://amzn-s3-demo-bucket/output"]
-     }
-   ]
+    [
+        {
+            "Name": "JSON Streaming Step",
+            "Type": "STREAMING",
+            "ActionOnFailure": "CONTINUE",
+            "Args": [
+                "-files",
+                "s3://amzn-s3-demo-bucket/mapper.py,s3://amzn-s3-demo-bucket/reducer.py",
+                "-mapper",
+                "mapper.py",
+                "-reducer",
+                "reducer.py",
+                "-input",
+                "s3://amzn-s3-demo-bucket/input",
+                "-output",
+                "s3://amzn-s3-demo-bucket/output"]
+        }
+    ]
 
 - Command::
 

@@ -3,17 +3,17 @@
 The following ``list-multipart-read-set-uploads`` example lists all multipart read set uploads and their statuses. ::
 
     aws omics list-multipart-read-set-uploads \
-        --sequence-store-id 0123456789 
+        --sequence-store-id 0123456789
 
 Output::
 
     {
-    "uploads": 
+        "uploads":
         [
             {
-               "sequenceStoreId": "0123456789",
-               "uploadId": "8749584421",
-               "sourceFileType": "FASTQ",
+                "sequenceStoreId": "0123456789",
+                "uploadId": "8749584421",
+                "sourceFileType": "FASTQ",
                 "subjectId": "mySubject",
                 "sampleId": "mySample",
                 "generatedFrom": "1000 Genomes",

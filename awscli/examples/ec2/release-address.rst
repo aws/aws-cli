@@ -4,7 +4,7 @@ This example releases an Elastic IP address for use with instances in EC2-Classi
 
 Command::
 
-  aws ec2 release-address --public-ip 198.51.100.0
+    aws ec2 release-address --public-ip 198.51.100.0
 
 **To release an Elastic IP address for EC2-VPC**
 
@@ -12,4 +12,4 @@ This example releases an Elastic IP address for use with instances in a VPC. If 
 
 Command::
 
-  aws ec2 release-address --allocation-id eipalloc-64d5890a
+    aws ec2 release-address --allocation-id eipalloc-64d5890a

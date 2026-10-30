@@ -43,7 +43,7 @@ Output::
                 }
             ],
             "attachments": [
-               {
+                {
                     "id": "0fb0c8f4-6edd-4de1-9b09-17e470ee1918",
                     "type": "as_policy",
                     "status": "ACTIVE",
@@ -117,7 +117,7 @@ Output::
                 "base": 0
             ],
             "attachments": [
-               {
+                {
                     "id": "0fb0c8f4-6edd-4de1-9b09-17e470ee1918",
                     "type": "as_policy",
                     "status": "ACTIVE",
@@ -185,7 +185,7 @@ Output::
             "capacityProviders": [],
             "defaultCapacityProviderStrategy": [],
             "attachments": [
-               {
+                {
                     "id": "0fb0c8f4-6edd-4de1-9b09-17e470ee1918",
                     "type": "as_policy",
                     "status": "DELETING",

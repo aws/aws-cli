@@ -1,10 +1,8 @@
 **To view the accounts discovered by an IPAM**
 
-In this scenario, you're a IPAM delegated admin who wants to view the AWS accounts that own resources that the IPAM is discovering.
+The following ``get-ipam-discovered-accounts`` example lists the AWS accounts that own resources that the IPAM is discovering. In this scenario, you're an IPAM delegated admin.
 
-The ``--discovery-region`` is the IPAM operating Region you want to view the monitored account statuses in. For example, if you have three IPAM operating Regions, you may want to make this request three times to view the timestamps specific to discovery in each of those particular Regions.
-
-The following ``get-ipam-discovered-accounts`` example lists the AWS accounts that own resources that the IPAM is discovering. ::
+The ``--discovery-region`` is the IPAM operating Region you want to view the monitored account statuses in. For example, if you have three IPAM operating Regions, you may want to make this request three times to view the timestamps specific to discovery in each of those particular Regions. ::
 
     aws ec2 get-ipam-discovered-accounts \
         --ipam-resource-discovery-id ipam-res-disco-0365d2977fc1672fe \

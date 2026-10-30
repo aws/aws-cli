@@ -1,6 +1,6 @@
 **To disable metrics collection for an Auto Scaling group**
 
-This example disables collection of the ``GroupDesiredCapacity`` metric for the specified Auto Scaling group. ::
+The following ``disable-metrics-collection`` example disables collection of the ``GroupDesiredCapacity`` metric for the specified Auto Scaling group. ::
 
     aws autoscaling disable-metrics-collection \
         --auto-scaling-group-name my-asg \

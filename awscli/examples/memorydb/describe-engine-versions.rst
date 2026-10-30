@@ -1,6 +1,6 @@
 **To return a list of engine versions**
 
-The following `describe-engine-versions`` returns a list of engine versions. ::
+The following ``describe-engine-versions`` example returns a list of engine versions. ::
 
     aws memorydb describe-engine-versions
 

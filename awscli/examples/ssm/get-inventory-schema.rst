@@ -1,8 +1,6 @@
 **Example 1: To view your inventory schema**
 
-This example returns a list of inventory type names for the account.
-
-Command::
+The following ``get-inventory-schema`` example returns a list of inventory type names for the account. ::
 
     aws ssm get-inventory-schema
 
@@ -51,8 +49,6 @@ Output::
 
 **Example 2: To view the inventory schema for a specific inventory type**
 
-This example return the inventory schema for a the AWS:AWSComponent inventory type.
-
-Command::
+The following ``get-inventory-schema`` example returns the inventory schema for the ``AWS:AWSComponent`` inventory type. ::
 
     aws ssm get-inventory-schema --type-name "AWS:AWSComponent"

@@ -1,6 +1,6 @@
 **To remove a tag from a role**
 
-The following ``untag-role`` command removes any tag with the key name 'Department' from the specified role. ::
+The following ``untag-role`` example removes any tag with the key name 'Department' from the specified role. ::
 
     aws iam untag-role \
         --role-name my-role \

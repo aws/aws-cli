@@ -1,6 +1,6 @@
 **To get information about a stack set operation**
 
-The following `describe-stack-set-operation`` example displays details for an update operation on the specified stack set. ::
+The following ``describe-stack-set-operation`` example displays details for an update operation on the specified stack set. ::
 
     aws cloudformation describe-stack-set-operation \
         --stack-set-name enable-config \

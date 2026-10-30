@@ -1,8 +1,6 @@
 **Example 1: To describe dimension keys**
 
-This example requests the names of all wait events. The data is summarized by event name, and the aggregate values of those events over the specified time period.
-
-Command::
+The following ``describe-dimension-keys`` example requests the names of all wait events. The data is summarized by event name, and the aggregate values of those events over the specified time period. ::
 
     aws pi describe-dimension-keys --service-type RDS --identifier db-LKCGOBK26374TPTDFXOIWVCPPM --start-time 1527026400 --end-time 1527080400 --metric db.load.avg --group-by '{"Group":"db.wait_event"}'
 
@@ -57,7 +55,7 @@ Output::
 
 **Example 2: To find the SQL ID for statements contributing the most to DB load**
 
-The following ``describe-dimension-keys`` requests the SQL statement and SQL ID for the 10 statements that contributed the most to DB load. ::
+The following ``describe-dimension-keys`` example requests the SQL statement and SQL ID for the 10 statements that contributed the most to DB load. ::
 
     aws pi describe-dimension-keys \
         --service-type RDS \

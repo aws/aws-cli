@@ -1,6 +1,6 @@
 **To update the description of an approval rule template**
 
-The following ``update-approval-rule-template-description`` example changes the description of the specified approval rule template to ``Requires 1 approval for all pull requests from the CodeCommitReview pool``.::
+The following ``update-approval-rule-template-description`` example changes the description of the specified approval rule template to ``Requires 1 approval for all pull requests from the CodeCommitReview pool``. ::
 
     aws codecommit update-approval-rule-template-description \
         --approval-rule-template-name 1-approver-rule-for-all-pull-requests  \

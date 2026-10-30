@@ -1,8 +1,6 @@
 **To describe the repositories in a registry**
 
-This example describes the repositories in the default registry for an account.
-
-Command::
+The following ``describe-repositories`` example describes the repositories in the default registry for an account. ::
 
     aws ecr describe-repositories
 

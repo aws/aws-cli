@@ -1,8 +1,6 @@
 **To describe your virtual private gateways**
 
-This example describes your virtual private gateways.
-
-Command::
+The following ``describe-vpn-gateways`` example describes your virtual private gateways. ::
 
     aws ec2 describe-vpn-gateways
 

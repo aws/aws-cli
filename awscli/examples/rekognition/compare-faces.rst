@@ -1,6 +1,6 @@
 **To compare faces in two images**
 
-The following ``compare-faces`` command compares faces in two images stored in an Amazon S3 bucket. ::
+The following ``compare-faces`` example compares faces in two images stored in an Amazon S3 bucket. ::
 
     aws rekognition compare-faces \
         --source-image '{"S3Object":{"Bucket":"MyImageS3Bucket","Name":"source.jpg"}}' \

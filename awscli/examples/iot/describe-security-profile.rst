@@ -1,6 +1,6 @@
 **To get information about a security profile**
 
-The following ``describe-security-profile`` example gets information about the AWS IoT Device Defender security profile named ``PossibleIssue.`` ::
+The following ``describe-security-profile`` example gets information about the AWS IoT Device Defender security profile named ``PossibleIssue``. ::
 
     aws iot describe-security-profile \
         --security-profile-name PossibleIssue

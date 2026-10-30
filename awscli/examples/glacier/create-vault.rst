@@ -1,6 +1,6 @@
 **To create a vault**
 
-The following command creates a new vault named ``my-vault``::
+The following ``create-vault`` example creates a new vault named ``my-vault``. ::
 
     aws glacier create-vault --vault-name my-vault --account-id -
 

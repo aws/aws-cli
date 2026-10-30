@@ -1,6 +1,6 @@
 **To update a web ACL**
 
-The following ``update-web-acl`` changes settings for an existing web ACL. This call requires an ID, which you can obtain from the call, ``list-web-acls``, and a lock token and other settings, which you can obtain from the call ``get-web-acl``. This call also returns a lock token that you can use for a subsequent update. ::
+The following ``update-web-acl`` example changes settings for an existing web ACL. This call requires an ID, which you can obtain from the call, ``list-web-acls``, and a lock token and other settings, which you can obtain from the call ``get-web-acl``. This call also returns a lock token that you can use for a subsequent update. ::
 
     aws wafv2 update-web-acl \
         --name TestWebAcl \

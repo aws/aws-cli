@@ -1,8 +1,6 @@
 **To accept a VPC peering connection**
 
-This example accepts the specified VPC peering connection request.
-
-Command::
+The following ``accept-vpc-peering-connection`` example accepts the specified VPC peering connection request. ::
 
     aws ec2 accept-vpc-peering-connection --vpc-peering-connection-id pcx-1a2b3c4d
 

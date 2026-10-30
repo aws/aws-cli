@@ -1,8 +1,6 @@
 **To describe all events**
 
-this example returns all events. By default, the output is in JSON format.
-
-Command::
+The following ``describe-events`` example returns all events. By default, the output is in JSON format. ::
 
     aws redshift describe-events
 
@@ -21,9 +19,7 @@ Result::
         }
     }
 
-You can also obtain the same information in text format using the ``--output text`` option.
-
-Command::
+You can also obtain the same information in text format using the ``--output text`` option. ::
 
     aws redshift describe-events --output text
 

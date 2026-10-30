@@ -1,6 +1,6 @@
 **To register an existing or disabled entity**
 
-The following ``register-to-work-mail`` command enables the specified existing entity (user, group, or resource) to use Amazon WorkMail. ::
+The following ``register-to-work-mail`` example enables the specified existing entity (user, group, or resource) to use Amazon WorkMail. ::
 
     aws workmail register-to-work-mail \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

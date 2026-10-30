@@ -1,6 +1,6 @@
 **To describe a warm pool**
 
-This example describes the warm pool for the specified Auto Scaling group. ::
+The following ``describe-warm-pool`` example describes the warm pool for the specified Auto Scaling group. ::
 
     aws autoscaling describe-warm-pool \
         --auto-scaling-group-name my-asg

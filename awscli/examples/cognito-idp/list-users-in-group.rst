@@ -1,8 +1,6 @@
 **To list users in a group**
 
-This example lists users in group MyGroup.
-
-Command::
+The following ``list-users-in-group`` example lists users in group MyGroup. ::
 
     aws cognito-idp list-users-in-group --user-pool-id us-west-2_aaaaaaaaa --group-name MyGroup
 

@@ -1,8 +1,6 @@
 **Example 1: To create a LAG with new connections**
 
-The following example creates a LAG and requests two new AWS Direct Connect connections for the LAG with a bandwidth of 1 Gbps.
-
-Command::
+The following ``create-lag`` example creates a LAG and requests two new AWS Direct Connect connections for the LAG with a bandwidth of 1 Gbps. ::
 
     aws directconnect create-lag --location CSVA1 --number-of-connections 2 --connections-bandwidth 1Gbps --lag-name 1GBLag
 
@@ -45,9 +43,7 @@ Output::
 
 **Example 2: To create a LAG using an existing connection**
 
-The following example creates a LAG from an existing connection in your account, and requests a second new connection for the LAG with the same bandwidth and location as the existing connection.
-
-Command::
+The following ``create-lag`` example creates a LAG from an existing connection in your account, and requests a second new connection for the LAG with the same bandwidth and location as the existing connection. ::
 
     aws directconnect create-lag --location EqDC2 --number-of-connections 2 --connections-bandwidth 1Gbps --lag-name 2ConnLAG --connection-id dxcon-fgk145dr
 

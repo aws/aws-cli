@@ -1,6 +1,6 @@
 **To describe a user pool**
 
-The following example describes a user pool with the user pool id us-west-2_EXAMPLE. ::
+The following ``describe-user-pool`` example describes a user pool with the user pool id us-west-2_EXAMPLE. ::
 
     aws cognito-idp describe-user-pool \
         --user-pool-id us-west-2_EXAMPLE

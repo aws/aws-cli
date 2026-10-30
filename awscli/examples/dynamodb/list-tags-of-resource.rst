@@ -24,7 +24,7 @@ For more information, see `Tagging for DynamoDB <https://docs.aws.amazon.com/ama
 
 **Example 2: To limit the number of tags returned**
 
-The following example limits the number of tags returned to 1. The response includes a ``NextToken`` value with which to retrieve the next page of results. ::
+The following ``list-tags-of-resource`` example limits the number of tags returned to 1. The response includes a ``NextToken`` value with which to retrieve the next page of results. ::
 
     aws dynamodb list-tags-of-resource \
         --resource-arn arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection \
@@ -46,7 +46,7 @@ For more information, see `Tagging for DynamoDB <https://docs.aws.amazon.com/ama
 
 **Example 3: To retrieve the next page of results**
 
-The following command uses the ``NextToken`` value from a previous call to the ``list-tags-of-resource`` command to retrieve another page of results. Since the response in this case does not include a ``NextToken`` value, we know that we have reached the end of the results. ::
+The following ``list-tags-of-resource`` example uses the ``NextToken`` value from a previous call to the ``list-tags-of-resource`` command to retrieve another page of results. Since the response in this case does not include a ``NextToken`` value, we know that we have reached the end of the results. ::
 
     aws dynamodb list-tags-of-resource \
         --resource-arn arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection \

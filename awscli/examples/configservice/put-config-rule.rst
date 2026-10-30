@@ -1,6 +1,6 @@
 **Example 1: To add an AWS managed Config rule**
 
-The following command provides JSON code to add an AWS managed Config rule::
+The following ``put-config-rule`` example provides JSON code to add an AWS managed Config rule. ::
 
     aws configservice put-config-rule --config-rule file://RequiredTagsForEC2Instances.json
 
@@ -29,7 +29,7 @@ If the command succeeds, AWS Config returns no output. To verify the rule config
 
 **Example 2: To add a customer managed Config rule**
 
-The following command provides JSON code to add a customer managed Config rule::
+The following ``put-config-rule`` example provides JSON code to add a customer managed Config rule. ::
 
     aws configservice put-config-rule --config-rule file://InstanceTypesAreT2micro.json
 

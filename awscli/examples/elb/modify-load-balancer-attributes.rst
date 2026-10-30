@@ -1,8 +1,6 @@
 **To modify the attributes of a load balancer**
 
-This example modifies the ``CrossZoneLoadBalancing`` attribute of the specified load balancer.
-
-Command::
+The following ``modify-load-balancer-attributes`` example modifies the ``CrossZoneLoadBalancing`` attribute of the specified load balancer. ::
 
     aws elb modify-load-balancer-attributes --load-balancer-name my-load-balancer --load-balancer-attributes "{\"CrossZoneLoadBalancing\":{\"Enabled\":true}}"
 
@@ -17,9 +15,7 @@ Output::
         "LoadBalancerName": "my-load-balancer"
     }
 
-This example modifies the ``ConnectionDraining`` attribute of the specified load balancer.
-
-Command::
+The following ``modify-load-balancer-attributes`` example modifies the ``ConnectionDraining`` attribute of the specified load balancer. ::
 
     aws elb modify-load-balancer-attributes --load-balancer-name my-load-balancer --load-balancer-attributes "{\"ConnectionDraining\":{\"Enabled\":true,\"Timeout\":300}}"
 

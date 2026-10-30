@@ -1,6 +1,6 @@
 **To list DynamoDB streams**
 
-The following ``list-streams`` command lists all existing Amazon DynamoDB streams within the default AWS Region. ::
+The following ``list-streams`` example lists all existing Amazon DynamoDB streams within the default AWS Region. ::
 
     aws dynamodbstreams list-streams
 

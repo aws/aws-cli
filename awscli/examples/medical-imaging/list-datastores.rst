@@ -1,6 +1,6 @@
 **To list data stores**
 
-The following ``list-datastores`` code example lists available data stores. ::
+The following ``list-datastores`` example lists available data stores. ::
 
     aws medical-imaging list-datastores
 

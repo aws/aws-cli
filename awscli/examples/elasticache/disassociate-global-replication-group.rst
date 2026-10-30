@@ -1,6 +1,6 @@
 **To diassociate a secondary cluster from a global replication group**
 
-The following ``disassociate-global-replication-group`` example removes a secondary cluster from a Global datastore ::
+The following ``disassociate-global-replication-group`` example removes a secondary cluster from a Global datastore. ::
 
     aws elasticache disassociate-global-replication-group \
         --global-replication-group-id my-grg \

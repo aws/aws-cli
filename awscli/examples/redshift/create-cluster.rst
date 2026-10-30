@@ -1,8 +1,6 @@
 **To create a cluster with minimal parameters**
 
-This example creates a cluster with the minimal set of parameters. By default, the output is in JSON format.
-
-Command::
+The following ``create-cluster`` example creates a cluster with the minimal set of parameters. By default, the output is in JSON format. ::
 
     aws redshift create-cluster --node-type dw.hs1.xlarge --number-of-nodes 2 --master-username adminuser --master-user-password TopSecret1 --cluster-identifier mycluster
 

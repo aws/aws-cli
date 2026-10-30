@@ -1,6 +1,6 @@
 **To view details of a comment**
 
-This example demonstrates how to view details of a comment with the system-generated comment ID of ``ff30b348EXAMPLEb9aa670f``. ::
+The following ``get-comment`` example displays details of a comment with the system-generated comment ID of ``ff30b348EXAMPLEb9aa670f``. ::
 
     aws codecommit get-comment \
         --comment-id ff30b348EXAMPLEb9aa670f

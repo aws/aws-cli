@@ -1,6 +1,6 @@
 **To list event subscriptions**
 
-The following ``list-event-subscriptions`` command lists all the event subscriptions for the assessment template with the ARN of ``arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-7sbz2Kz0``::
+The following ``list-event-subscriptions`` example lists all the event subscriptions for the assessment template with the ARN of ``arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-7sbz2Kz0``. ::
 
     aws inspector list-event-subscriptions --resource-arn arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-7sbz2Kz0
 

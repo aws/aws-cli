@@ -24,7 +24,7 @@ Output::
 
 **Example 2: To request an authorization decision for a user request (deny)**
 
-The following example is the same as the previous example, except that the principal is ``User::"Bob"``. The policy store doesn't contain any policy that allows that user access to ``Album::"alice_folder"``.
+The following ``is-authorized`` example requests the same authorization decision as the previous example, except that the principal is ``User::"Bob"``. The policy store doesn't contain any policy that allows that user access to ``Album::"alice_folder"``.
 
 The output indicates that the ``Deny`` was implicit because the list of ``DeterminingPolicies`` is empty. ::
 

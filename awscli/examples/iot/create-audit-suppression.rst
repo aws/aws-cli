@@ -1,6 +1,6 @@
 **To create an audit finding suppression**
 
-The following ``create-audit-suppression`` example creates an audit finding suppression for a policy named "virtualMachinePolicy" that has been flagged for being overly permissive.  ::
+The following ``create-audit-suppression`` example creates an audit finding suppression for a policy named "virtualMachinePolicy" that has been flagged for being overly permissive. ::
 
     aws iot create-audit-suppression \
         --check-name IOT_POLICY_OVERLY_PERMISSIVE_CHECK \

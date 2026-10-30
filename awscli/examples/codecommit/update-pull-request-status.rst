@@ -1,6 +1,6 @@
 **To change the status of a pull request**
 
-This example demonstrates how to to change the status of a pull request with the ID of ``42`` to a status of ``CLOSED`` in an AWS CodeCommit repository named ``MyDemoRepo``. ::
+The following ``update-pull-request-status`` example changes the status of a pull request with the ID of ``42`` to a status of ``CLOSED`` in an AWS CodeCommit repository named ``MyDemoRepo``. ::
 
     aws codecommit update-pull-request-status \
         --pull-request-id 42 \

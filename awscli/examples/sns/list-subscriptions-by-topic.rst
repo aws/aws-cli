@@ -1,6 +1,6 @@
 **To list the subscriptions associated with a topic**
 
-The following ``list-subscriptions-by-topic`` retrieves a list of SNS subscriptions associated with the specified topic. ::
+The following ``list-subscriptions-by-topic`` example retrieves a list of SNS subscriptions associated with the specified topic. ::
 
     aws sns list-subscriptions-by-topic \
         --topic-arn "arn:aws:sns:us-west-2:123456789012:my-topic"

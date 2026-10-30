@@ -1,6 +1,6 @@
 **To update a size constraint set**
 
-The following ``update-size-constraint-set`` command  deletes a `SizeConstraint`` object (filters) in a size constraint set. Because the ``updates`` value contains embedded double quotes, you must surround the entire value with single quotes. ::
+The following ``update-size-constraint-set`` example deletes a `SizeConstraint`` object (filters) in a size constraint set. Because the ``updates`` value contains embedded double quotes, you must surround the entire value with single quotes. ::
 
     aws waf-regional update-size-constraint-set \
         --size-constraint-set-id a123fae4-b567-8e90-1234-5ab67ac8ca90 \

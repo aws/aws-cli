@@ -1,6 +1,6 @@
 **To execute a scaling policy**
 
-This example executes the scaling policy named ``my-step-scale-out-policy`` for the specified Auto Scaling group. ::
+The following ``execute-policy`` example executes the scaling policy named ``my-step-scale-out-policy`` for the specified Auto Scaling group. ::
 
     aws autoscaling execute-policy \
         --auto-scaling-group-name my-asg \

@@ -1,6 +1,6 @@
 **To retrieve a list of the handshakes sent to an account**
 
-The following example shows how to get a list of all handshakes that are associated with the account of the credentials that were used to call the operation: ::
+The following ``list-handshakes-for-account`` example gets a list of all handshakes that are associated with the account of the credentials that were used to call the operation. ::
 
     aws organizations list-handshakes-for-account
 

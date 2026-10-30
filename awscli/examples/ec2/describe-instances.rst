@@ -235,13 +235,13 @@ For example output, see Example 1.
 
 The following ``describe-instances`` examples use the ``--query`` parameter to display only the instance and subnet IDs for all instances, in JSON format.
 
-Linux and macOS::
+For Linux and macOS, use the following command. ::
 
     aws ec2 describe-instances \
         --query 'Reservations[*].Instances[*].{Instance:InstanceId,Subnet:SubnetId}' \
         --output json
 
-Windows::
+For Windows, use the following command. ::
 
     aws ec2 describe-instances ^
         --query "Reservations[*].Instances[*].{Instance:InstanceId,Subnet:SubnetId}" ^
@@ -287,14 +287,14 @@ Output::
 
 The following ``describe-instances`` examples display the instance ID, Availability Zone, and the value of the ``Name`` tag for instances that have a tag with the name ``tag-key``, in table format.
 
-Linux and macOS::
+For Linux and macOS, use the following command. ::
 
     aws ec2 describe-instances \
         --filters Name=tag-key,Values=Name \
         --query 'Reservations[*].Instances[*].{Instance:InstanceId,AZ:Placement.AvailabilityZone,Name:Tags[?Key==`Name`]|[0].Value}' \
         --output table
 
-Windows::
+For Windows, use the following command. ::
 
     aws ec2 describe-instances ^
         --filters Name=tag-key,Values=Name ^

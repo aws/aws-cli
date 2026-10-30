@@ -1,6 +1,6 @@
 **To list the versions of an AWS Lambda layer**
 
-The following ``list-layers-versions`` example displays information about the versions for the layer named ``my-layer``. ::
+The following ``list-layer-versions`` example displays information about the versions for the layer named ``my-layer``. ::
 
     aws lambda list-layer-versions \
         --layer-name my-layer

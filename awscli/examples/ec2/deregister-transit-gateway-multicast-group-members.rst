@@ -1,6 +1,6 @@
 **To deregister group members from a multicast group**
 
-This example deregisters the specified network interface group member from the transit gateway multicast group. ::
+The following ``deregister-transit-gateway-multicast-group-members`` example deregisters the specified network interface group member from the transit gateway multicast group. ::
 
     aws ec2 deregister-transit-gateway-multicast-group-members \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef7EXAMPLE \

@@ -1,6 +1,6 @@
 **To get a list of annotation import jobs**
 
-The following ``list-annotation-import-jobs`` gets a list of annotation import jobs. ::
+The following ``list-annotation-import-jobs`` example gets a list of annotation import jobs. ::
 
     aws omics list-annotation-import-jobs
 

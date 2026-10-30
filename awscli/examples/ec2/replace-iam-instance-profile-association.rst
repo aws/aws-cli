@@ -1,6 +1,6 @@
 **To replace an IAM instance profile for an instance**
 
-This example replaces the IAM instance profile represented by the association ``iip-assoc-060bae234aac2e7fa`` with the IAM instance profile named ``AdminRole``. ::
+The following ``replace-iam-instance-profile-association`` example replaces the IAM instance profile represented by the association ``iip-assoc-060bae234aac2e7fa`` with the IAM instance profile named ``AdminRole``. ::
 
     aws ec2 replace-iam-instance-profile-association \
         --iam-instance-profile Name=AdminRole \

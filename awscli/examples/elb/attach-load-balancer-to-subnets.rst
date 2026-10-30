@@ -1,8 +1,6 @@
 **To attach subnets to a load balancer**
 
-This example adds the specified subnet to the set of configured subnets for the specified load balancer.
-
-Command::
+The following ``attach-load-balancer-to-subnets`` example adds the specified subnet to the set of configured subnets for the specified load balancer. ::
 
     aws elb attach-load-balancer-to-subnets --load-balancer-name my-load-balancer --subnets subnet-0ecac448
 

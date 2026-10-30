@@ -1,8 +1,6 @@
 **To view a list of pipelines**
 
-This example lists all AWS CodePipeline pipelines associated with the user's AWS account.
-
-Command::
+The following ``list-pipelines`` example lists all AWS CodePipeline pipelines associated with the user's AWS account. ::
 
     aws codepipeline list-pipelines
 

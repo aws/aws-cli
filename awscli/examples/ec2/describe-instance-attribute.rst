@@ -1,8 +1,6 @@
 **Example 1: To describe the instance type**
 
-This example describes the instance type of the specified instance.
-
-Command::
+The following ``describe-instance-attribute`` example describes the instance type of the specified instance. ::
 
     aws ec2 describe-instance-attribute --instance-id i-1234567890abcdef0 --attribute instanceType
 
@@ -17,9 +15,7 @@ Output::
 
 **Example 2: To describe the disableApiTermination attribute**
 
-This example describes the ``disableApiTermination`` attribute of the specified instance.
-
-Command::
+The following ``describe-instance-attribute`` example describes the ``disableApiTermination`` attribute of the specified instance. ::
 
     aws ec2 describe-instance-attribute --instance-id i-1234567890abcdef0 --attribute disableApiTermination
 
@@ -34,9 +30,7 @@ Output::
 
 **Example 3: To describe the block device mapping for an instance**
 
-This example describes the ``blockDeviceMapping`` attribute of the specified instance.
-
-Command::
+The following ``describe-instance-attribute`` example describes the ``blockDeviceMapping`` attribute of the specified instance. ::
 
     aws ec2 describe-instance-attribute --instance-id i-1234567890abcdef0 --attribute blockDeviceMapping
 

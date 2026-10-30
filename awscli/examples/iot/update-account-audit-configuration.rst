@@ -9,7 +9,7 @@ This command produces no output.
 
 **Example 2: To enable an audit check**
 
-The following ``update-account-audit-configuration`` example enables the AWS IoT Device Defender audit check named ``AUTHENTICATED_COGNITO_ROLE_OVERLY_PERMISSIVE_CHECK``. You cannot disable an audit check if it is part of the ``targetCheckNames`` for one or more scheduled audits for the AWS account.  ::
+The following ``update-account-audit-configuration`` example enables the AWS IoT Device Defender audit check named ``AUTHENTICATED_COGNITO_ROLE_OVERLY_PERMISSIVE_CHECK``. You cannot disable an audit check if it is part of the ``targetCheckNames`` for one or more scheduled audits for the AWS account. ::
 
     aws iot update-account-audit-configuration \
         --audit-check-configurations "{\"AUTHENTICATED_COGNITO_ROLE_OVERLY_PERMISSIVE_CHECK\":{\"enabled\":true}}"

@@ -1,6 +1,6 @@
 **Example 1: To delete a DB instance in a DB cluster**
 
-The following ``delete-db-instance`` example deletes the final DB instance in a DB cluster. You can't delete a DB cluster if it contains DB instances that aren't in the **deleting** state. You can't take a final snapshot when deleting a DB instance in a DB cluster. ::
+The following ``delete-db-cluster`` example starts by using the ``delete-db-instance`` command to delete the final DB instance in a DB cluster. You can't delete a DB cluster if it contains DB instances that aren't in the **deleting** state. You can't take a final snapshot when deleting a DB instance in a DB cluster. ::
 
     aws rds delete-db-instance \
         --db-instance-identifier database-3

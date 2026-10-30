@@ -1,8 +1,6 @@
 **To describe your Scheduled Instances**
 
-This example describes the specified Scheduled Instance.
-
-Command::
+The following ``describe-scheduled-instances`` example describes the specified Scheduled Instance. ::
 
     aws ec2 describe-scheduled-instances --scheduled-instance-ids sci-1234-1234-1234-1234-123456789012
 
@@ -37,8 +35,6 @@ Output::
         ]
     }
 
-This example describes all your Scheduled Instances.
-
-Command::
+The following ``describe-scheduled-instances`` example describes all your Scheduled Instances. ::
 
     aws ec2 describe-scheduled-instances

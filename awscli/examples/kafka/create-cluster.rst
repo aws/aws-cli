@@ -1,6 +1,6 @@
 **To create an Amazon MSK cluster**
 
-The following ``create-cluster`` example creates an MSK cluster named ``MessagingCluster`` with three broker nodes. A JSON file named ``brokernodegroupinfo.json`` specifies the three subnets over which you want Amazon MSK to distribute the broker nodes. This example doesn't specify the monitoring level, so the cluster gets the ``DEFAULT`` level.  ::
+The following ``create-cluster`` example creates an MSK cluster named ``MessagingCluster`` with three broker nodes. A JSON file named ``brokernodegroupinfo.json`` specifies the three subnets over which you want Amazon MSK to distribute the broker nodes. This example doesn't specify the monitoring level, so the cluster gets the ``DEFAULT`` level. ::
 
     aws kafka create-cluster \
         --cluster-name "MessagingCluster" \

@@ -1,6 +1,6 @@
 **To get information about an Amazon Kendra index**
 
-The following ``describe-index`` gets information about an Amazon Kendra index. You can view the configuration of an index, and read any error messages if the status shows an index "FAILED" to completely create. ::
+The following ``describe-index`` example gets information about an Amazon Kendra index. You can view the configuration of an index, and read any error messages if the status shows an index "FAILED" to completely create. ::
 
     aws kendra describe-index \
         --id exampleindex1

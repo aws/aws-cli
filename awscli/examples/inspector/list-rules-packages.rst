@@ -1,6 +1,6 @@
 **To list rules packages**
 
-The following ``list-rules-packages`` command lists all available Inspector rules packages::
+The following ``list-rules-packages`` example lists all available Inspector rules packages. ::
 
     aws inspector list-rules-packages
 

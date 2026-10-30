@@ -1,6 +1,6 @@
 **To get details about a server certificate in your AWS account**
 
-The following ``get-server-certificate`` command retrieves all of the details about the specified server certificate in your AWS account. ::
+The following ``get-server-certificate`` example retrieves all of the details about the specified server certificate in your AWS account. ::
 
     aws iam get-server-certificate \
         --server-certificate-name myUpdatedServerCertificate

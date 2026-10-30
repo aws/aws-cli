@@ -1,8 +1,6 @@
 **To describe your placement groups**
 
-This example command describes all of your placement groups.
-
-Command::
+The following ``describe-placement-groups`` example describes all of your placement groups. ::
 
     aws ec2 describe-placement-groups
 

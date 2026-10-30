@@ -1,6 +1,6 @@
 **To list incident records**
 
-The following ``command-name`` example lists the incident records in your Amazon Web Services account. ::
+The following ``list-incident-records`` example lists the incident records in your Amazon Web Services account. ::
 
     aws ssm-incidents list-incident-records
 

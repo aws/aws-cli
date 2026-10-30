@@ -1,6 +1,6 @@
 **To remove a tag from a server certificate**
 
-The following ``untag-server-certificate`` command removes any tag with the key name 'Department' from the specified server certificate. ::
+The following ``untag-server-certificate`` example removes any tag with the key name 'Department' from the specified server certificate. ::
 
     aws iam untag-server-certificate \
         --server-certificate-name ExampleCertificate \

@@ -1,6 +1,6 @@
 **To create a regex pattern set for use in your web ACLs and rule groups**
 
-The following ``create-regex-pattern-set`` command creates a regex pattern set with two regex patterns specified. ::
+The following ``create-regex-pattern-set`` example creates a regex pattern set with two regex patterns specified. ::
 
     aws wafv2 create-regex-pattern-set \
         --name regexPatterSet01 \

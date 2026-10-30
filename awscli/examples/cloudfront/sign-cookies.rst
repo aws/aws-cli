@@ -1,6 +1,6 @@
 **Example 1: To generate CloudFront signed cookies**
 
-The following example generates signed cookies that grant access to every
+The following ``sign-cookies`` example generates signed cookies that grant access to every
 object in a CloudFront distribution. To generate signed cookies, you need the
 key pair ID (called the **Access Key ID** in the AWS Management Console) and
 the private key of the trusted signer's CloudFront key pair. Because the
@@ -31,6 +31,8 @@ application needs.
 
 **Example 2: To extract a single cookie value**
 
+The following ``sign-cookies`` example generates signed cookies and returns
+only the value of the ``CloudFront-Signature`` cookie.
 The set of cookies depends on the policy type and hash algorithm, so the
 columns of ``--output text`` vary between invocations. Use ``--query`` to
 select a cookie by name. ::

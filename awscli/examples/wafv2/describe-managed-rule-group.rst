@@ -1,6 +1,6 @@
 **To retrieve the description for a managed rule group**
 
-The following ``describe-managed-rule-group`` retrieves the description for an AWS managed rule group. ::
+The following ``describe-managed-rule-group`` example retrieves the description for an AWS managed rule group. ::
 
     aws wafv2 describe-managed-rule-group \
         --vendor-name AWS \

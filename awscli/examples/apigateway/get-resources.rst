@@ -1,6 +1,6 @@
 **To get a list of resources for a REST API**
 
-Command::
+The following ``get-resources`` example gets a list of resources for the specified REST API. ::
 
     aws apigateway get-resources --rest-api-id 1234123412
 

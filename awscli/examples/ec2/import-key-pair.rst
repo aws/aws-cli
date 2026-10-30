@@ -1,8 +1,6 @@
 **To import a public key**
 
-First, generate a key pair with the tool of your choice. For example, use this ssh-keygen command:
-
-Command::
+The following ``import-key-pair`` example imports a public key. First, generate a key pair with the tool of your choice. For example, use the following ``ssh-keygen`` command. ::
 
     ssh-keygen -t rsa -C "my-key" -f ~/.ssh/my-key
 
@@ -15,9 +13,7 @@ Output::
     Your public key has been saved in /home/ec2-user/.ssh/my-key.pub.
     ...
 
-This example command imports the specified public key.
-
-Command::
+The following command imports the specified public key. ::
 
     aws ec2 import-key-pair --key-name "my-key" --public-key-material fileb://~/.ssh/my-key.pub
 

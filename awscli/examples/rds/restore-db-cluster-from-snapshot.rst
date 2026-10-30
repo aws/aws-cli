@@ -1,6 +1,6 @@
 **To restore a DB cluster from a snapshot**
 
-The following ``restore-db-cluster-from-snapshot`` restores an Aurora PostgreSQL DB cluster compatible with PostgreSQL version 10.7 from a DB cluster snapshot named ``test-instance-snapshot``. ::
+The following ``restore-db-cluster-from-snapshot`` example restores an Aurora PostgreSQL DB cluster compatible with PostgreSQL version 10.7 from a DB cluster snapshot named ``test-instance-snapshot``. ::
 
     aws rds restore-db-cluster-from-snapshot \
         --db-cluster-identifier newdbcluster \

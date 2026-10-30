@@ -1,6 +1,6 @@
 **To add a notification**
 
-This example adds the specified notification to the specified Auto Scaling group. ::
+The following ``put-notification-configuration`` example adds the specified notification to the specified Auto Scaling group. ::
 
     aws autoscaling put-notification-configuration \
         --auto-scaling-group-name my-asg \

@@ -1,8 +1,6 @@
 **To retrieve a list of AWS Cost and Usage Reports**
 
-This example describes a list of AWS Cost and Usage Reports owned by an account.
-
-Command::
+The following ``describe-report-definitions`` example describes a list of AWS Cost and Usage Reports owned by an account. ::
 
     aws cur --region us-east-1 describe-report-definitions --max-items 5
 

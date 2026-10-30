@@ -1,8 +1,6 @@
 **To disassociate a resource discovery from an IPAM**
 
-In this example, you are an IPAM delegated admin account and you want to disassociate an IPAM resource discovery from your IPAM. You ran the describe command and noticed that the ``"ResourceDiscoveryStatus": "not-found"`` and you want to disassociate it from your IPAM to make room for other associations.
-
-The following ``disassociate-ipam-resource-discovery`` example disassociates an IPAM resource discovery in your AWS account. ::
+The following ``disassociate-ipam-resource-discovery`` example disassociates an IPAM resource discovery in your AWS account. In this example, you are an IPAM delegated admin account and you want to disassociate an IPAM resource discovery from your IPAM. You ran the describe command and noticed that the ``"ResourceDiscoveryStatus": "not-found"`` and you want to disassociate it from your IPAM to make room for other associations. ::
 
     aws ec2 disassociate-ipam-resource-discovery \
         --ipam-resource-discovery-association-id ipam-res-disco-assoc-04382a6346357cf82 \

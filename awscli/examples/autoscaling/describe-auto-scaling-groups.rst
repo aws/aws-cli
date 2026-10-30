@@ -1,6 +1,6 @@
 **Example 1: To describe the specified Auto Scaling group**
 
-This example describes the specified Auto Scaling group. ::
+The following ``describe-auto-scaling-groups`` example describes the specified Auto Scaling group. ::
 
     aws autoscaling describe-auto-scaling-groups \
         --auto-scaling-group-names my-asg
@@ -62,7 +62,7 @@ Output::
 
 **Example 2: To describe the first 100 specified Auto Scaling group**
 
-This example describes the specified Auto Scaling groups. It allows you to specify up to 100 group names. ::
+The following ``describe-auto-scaling-groups`` example describes the specified Auto Scaling groups. It allows you to specify up to 100 group names. ::
 
     aws autoscaling describe-auto-scaling-groups \
         --max-items 100 \
@@ -72,7 +72,7 @@ See example 1 for sample output.
 
 **Example 3: To describe an Auto Scaling group in the specified region**
 
-This example describes the Auto Scaling groups in the specified region, up to a maximum of 75 groups. ::
+The following ``describe-auto-scaling-groups`` example describes the Auto Scaling groups in the specified region, up to a maximum of 75 groups. ::
 
     aws autoscaling describe-auto-scaling-groups \
         --max-items 75 \
@@ -82,7 +82,7 @@ See example 1 for sample output.
 
 **Example 4: To describe the specified number of Auto Scaling group**
 
-To return a specific number of Auto Scaling groups, use the ``--max-items`` option. ::
+The following ``describe-auto-scaling-groups`` example uses the ``--max-items`` option to return a specific number of Auto Scaling groups. ::
 
     aws autoscaling describe-auto-scaling-groups \
         --max-items 1
@@ -98,7 +98,7 @@ See example 1 for sample output.
 
 **Example 5: To describe Auto Scaling groups that use launch configurations**
 
-This example uses the ``--query`` option to describe Auto Scaling groups that use launch configurations. ::
+The following ``describe-auto-scaling-groups`` example uses the ``--query`` option to describe Auto Scaling groups that use launch configurations. ::
 
     aws autoscaling describe-auto-scaling-groups \
         --query 'AutoScalingGroups[?LaunchConfigurationName!=`null`]'

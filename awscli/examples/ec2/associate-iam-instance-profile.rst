@@ -1,8 +1,6 @@
 **To associate an IAM instance profile with an instance**
 
-This example associates an IAM instance profile named ``admin-role`` with instance ``i-123456789abcde123``.
-
-Command::
+The following ``associate-iam-instance-profile`` example associates an IAM instance profile named ``admin-role`` with instance ``i-123456789abcde123``. ::
 
     aws ec2 associate-iam-instance-profile --instance-id i-123456789abcde123 --iam-instance-profile Name=admin-role
 

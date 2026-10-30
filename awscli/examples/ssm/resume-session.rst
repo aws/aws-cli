@@ -1,6 +1,6 @@
 **To resume a Session Manager session**
 
-This ``resume-session`` example resumes a Session Manager session with an instance after it has been disconnected. Note that this interactive command requires the Session Manager plugin to be installed on the client machine making the call. ::
+The following ``resume-session`` example resumes a Session Manager session with an instance after it has been disconnected. Note that this interactive command requires the Session Manager plugin to be installed on the client machine making the call. ::
 
     aws ssm resume-session \
         --session-id Mary-Major-07a16060613c408b5

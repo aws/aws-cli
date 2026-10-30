@@ -1,7 +1,7 @@
 **To get a CloudFront invalidation**
 
-The following example gets the invalidation with the ID ``I2J0I21PCUYOIK`` for
-the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``::
+The following ``get-invalidation`` example gets the invalidation with the ID ``I2J0I21PCUYOIK`` for
+the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``. ::
 
     aws cloudfront get-invalidation --id I2J0I21PCUYOIK --distribution-id EDFDVBD6EXAMPLE
 

@@ -1,6 +1,6 @@
 **To start a dicom import job**
 
-The following ``start-dicom-import-job`` code example starts a dicom import job. ::
+The following ``start-dicom-import-job`` example starts a dicom import job. ::
 
     aws medical-imaging start-dicom-import-job \
         --job-name "my-job" \

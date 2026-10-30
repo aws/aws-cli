@@ -1,6 +1,6 @@
 **To list all public keys for a trail**
 
-The following ``list-public-keys`` command returns all public keys whose private keys were used to sign the digest files within the specified time range::
+The following ``list-public-keys`` example returns all public keys whose private keys were used to sign the digest files within the specified time range. ::
 
     aws cloudtrail list-public-keys --start-time 2016-01-01T20:30:00.000Z
 

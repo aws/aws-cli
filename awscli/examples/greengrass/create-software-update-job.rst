@@ -1,6 +1,6 @@
 **To create a software update job for a core**
 
-The following ``create-software-update-job`` example creates an over-the-air (OTA) update job to update the AWS IoT Greengrass Core software on the core whose name is ``MyFirstGroup_Core``. This command requires an IAM role that allows access to software update packages in Amazon S3 and includes ``iot.amazonaws.com`` as a trusted entity.  ::
+The following ``create-software-update-job`` example creates an over-the-air (OTA) update job to update the AWS IoT Greengrass Core software on the core whose name is ``MyFirstGroup_Core``. This command requires an IAM role that allows access to software update packages in Amazon S3 and includes ``iot.amazonaws.com`` as a trusted entity. ::
 
     aws greengrass create-software-update-job \
         --update-targets-architecture armv7l \

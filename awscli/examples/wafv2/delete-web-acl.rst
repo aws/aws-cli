@@ -1,6 +1,6 @@
 **To delete a web ACL**
 
-The following ``delete-web-acl`` deletes the specified web ACL from your account. A web ACL can only be deleted when it's not associated with any resources. This call requires an ID, which you can obtain from the call, ``list-web-acls``, and a lock token, which you can obtain from the call ``list-web-acls`` or the call ``get-web-acl``. ::
+The following ``delete-web-acl`` example deletes the specified web ACL from your account. A web ACL can only be deleted when it's not associated with any resources. This call requires an ID, which you can obtain from the call, ``list-web-acls``, and a lock token, which you can obtain from the call ``list-web-acls`` or the call ``get-web-acl``. ::
 
     aws wafv2 delete-web-acl \
         --name test \

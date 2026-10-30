@@ -1,6 +1,6 @@
 **To retrieve mailbox permissions**
 
-The following ``list-mailbox-permissions`` command retrieves the mailbox permissions associated with the specified entity's mailbox. ::
+The following ``list-mailbox-permissions`` example retrieves the mailbox permissions associated with the specified entity's mailbox. ::
 
     aws workmail list-mailbox-permissions \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

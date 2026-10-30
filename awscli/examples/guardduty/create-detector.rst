@@ -1,6 +1,6 @@
 **To enable GuardDuty in the current region**
 
-This example shows how to create a new detector, which enables GuardDuty, in the current region.::
+The following ``create-detector`` example creates a new detector, which enables GuardDuty, in the current region. ::
 
     aws guardduty create-detector \
         --enable

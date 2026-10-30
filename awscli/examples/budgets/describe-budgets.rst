@@ -1,8 +1,6 @@
 **To retrieve the budgets associated with an account**
 
-This example retrieves the Cost and Usage budgets for an account.
-
-Command::
+The following ``describe-budgets`` example retrieves the Cost and Usage budgets for an account. ::
 
     aws budgets describe-budgets --account-id 111122223333 --max-results 20
 

@@ -1,6 +1,6 @@
 **To list the versions of a device definition**
 
-The following ``list-device-definition-versions`` example displays the device definition versions associated with the specified device definition.  ::
+The following ``list-device-definition-versions`` example displays the device definition versions associated with the specified device definition. ::
 
     aws greengrass list-device-definition-versions \
         --device-definition-id "f9ba083d-5ad4-4534-9f86-026a45df1ccd"

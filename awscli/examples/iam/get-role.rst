@@ -1,6 +1,6 @@
 **To get information about an IAM role**
 
-The following ``get-role`` command gets information about the role named ``Test-Role``. ::
+The following ``get-role`` example gets information about the role named ``Test-Role``. ::
 
     aws iam get-role \
         --role-name Test-Role

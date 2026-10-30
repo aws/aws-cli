@@ -1,6 +1,6 @@
 **To list all available access policies**
 
-This ``list-access-policies`` example returns the list of all available access policies. ::
+The following ``list-access-policies`` example returns the list of all available access policies. ::
 
     aws eks list-access-policies
 

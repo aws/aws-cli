@@ -2,7 +2,7 @@
 
 The following ``modify-ipam-resource-cidr`` example modifies a resource CIDR.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 modify-ipam-resource-cidr \
         --current-ipam-scope-id ipam-scope-02fc38cd4c48e7d38 \
@@ -12,7 +12,7 @@ The following ``modify-ipam-resource-cidr`` example modifies a resource CIDR.
         --resource-region us-east-1 \
         --monitored
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 modify-ipam-resource-cidr ^
         --current-ipam-scope-id ipam-scope-02fc38cd4c48e7d38 ^

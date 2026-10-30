@@ -1,8 +1,6 @@
 **To delete a branch**
 
-This example shows how to delete a branch in an AWS CodeCommit repository.
-
-Command::
+The following ``delete-branch`` example deletes a branch in an AWS CodeCommit repository. ::
 
     aws codecommit delete-branch --repository-name MyDemoRepo --branch-name MyNewBranch
 

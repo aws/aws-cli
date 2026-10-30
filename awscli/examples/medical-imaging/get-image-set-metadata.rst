@@ -1,8 +1,8 @@
 **Example 1: To get image set metadata without version**
 
-The following ``get-image-set-metadata`` code example gets metadata for an image set without specifying a version.
+The following ``get-image-set-metadata`` example gets metadata for an image set without specifying a version.
 
-Note: ``outfile`` is a required parameter ::
+Note: ``outfile`` is a required parameter. ::
 
     aws medical-imaging get-image-set-metadata \
         --datastore-id 12345678901234567890123456789012 \
@@ -20,9 +20,9 @@ Output::
 
 **Example 2: To get image set metadata with version**
 
-The following ``get-image-set-metadata`` code example gets metadata for an image set with a specified version.
+The following ``get-image-set-metadata`` example gets metadata for an image set with a specified version.
 
-Note: ``outfile`` is a required parameter ::
+Note: ``outfile`` is a required parameter. ::
 
     aws medical-imaging get-image-set-metadata \
         --datastore-id 12345678901234567890123456789012 \

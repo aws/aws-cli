@@ -1,8 +1,6 @@
 **To describe the certificates for a secure listener**
 
-This example describes the certificates for the specified secure listener.
-
-Command::
+The following ``describe-listener-certificates`` example describes the certificates for the specified secure listener. ::
 
     aws elbv2 describe-listener-certificates --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2
 

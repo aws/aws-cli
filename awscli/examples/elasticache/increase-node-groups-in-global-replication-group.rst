@@ -1,6 +1,6 @@
 **To increase the number of node groups in a global replication group**
 
-The following ``increase-node-groups-in-global-replication-group`` increases the node group count using the Redis engine. ::
+The following ``increase-node-groups-in-global-replication-group`` example increases the node group count using the Redis engine. ::
 
     aws elasticache increase-node-groups-in-global-replication-group \
         --global-replication-group-id sgaui-pat-test-4 \

@@ -1,6 +1,6 @@
 **To get details about the configuration recorder**
 
-The following command returns details about the default configuration recorder::
+The following ``describe-configuration-recorders`` example returns details about the default configuration recorder. ::
 
     aws configservice describe-configuration-recorders
 

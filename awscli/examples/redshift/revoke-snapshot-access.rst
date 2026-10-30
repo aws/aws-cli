@@ -1,10 +1,8 @@
 **To revoke the authorization of an AWS account to restore a snapshot**
 
-This example revokes the authorization of the AWS account ``444455556666`` to
+The following ``revoke-snapshot-access`` example revokes the authorization of the AWS account ``444455556666`` to
 restore the snapshot ``my-snapshot-id``. By default, the output is in JSON
-format.
-
-Command::
+format. ::
 
     aws redshift revoke-snapshot-access --snapshot-id my-snapshot-id --account-with-restore-access 444455556666
 

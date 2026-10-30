@@ -1,6 +1,6 @@
 **To describe target group attributes**
 
-The following ``describe-target-group-attributes``  example displays the attributes of the specified target group. ::
+The following ``describe-target-group-attributes`` example displays the attributes of the specified target group. ::
 
     aws elbv2 describe-target-group-attributes \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067

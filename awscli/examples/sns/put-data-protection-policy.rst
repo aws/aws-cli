@@ -10,7 +10,7 @@ This command produces no output.
 
 **Example 2: To load parameters from a file**
 
-The following ``put-data-protection-policy`` loads parameters from a file. ::
+The following ``put-data-protection-policy`` example loads parameters from a file. ::
 
     aws sns put-data-protection-policy \
         --resource-arn arn:aws:sns:us-west-2:123456789012:MyTopic \

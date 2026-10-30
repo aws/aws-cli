@@ -1,6 +1,6 @@
 **To validate configuration settings**
 
-The following command validates a CloudWatch custom metrics config document::
+The following ``validate-configuration-settings`` example validates a CloudWatch custom metrics config document. ::
 
     aws elasticbeanstalk validate-configuration-settings --application-name my-app --environment-name my-env --option-settings file://options.json
 

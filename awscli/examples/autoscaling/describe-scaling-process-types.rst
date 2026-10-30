@@ -1,6 +1,6 @@
 **To describe the available process types**
 
-This example describes the available process types. ::
+The following ``describe-scaling-process-types`` example describes the available process types. ::
 
     aws autoscaling describe-scaling-process-types
 

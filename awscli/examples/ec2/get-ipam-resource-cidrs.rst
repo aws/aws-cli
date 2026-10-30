@@ -2,13 +2,13 @@
 
 The following ``get-ipam-resource-cidrs`` example gets the CIDRs allocated to a resource.
 
-(Linux)::
+Linux command. ::
 
     aws ec2 get-ipam-resource-cidrs \
         --ipam-scope-id ipam-scope-02fc38cd4c48e7d38 \
         --filters Name=management-state,Values=unmanaged
 
-(Windows)::
+Windows command. ::
 
     aws ec2 get-ipam-resource-cidrs ^
         --ipam-scope-id ipam-scope-02fc38cd4c48e7d38 ^

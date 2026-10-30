@@ -1,6 +1,6 @@
 **To recognize celebrities in an image**
 
-The following ``recognize-celebrities`` command recognizes celebrities in the specified image stored in an Amazon S3 bucket.::
+The following ``recognize-celebrities`` example recognizes celebrities in the specified image stored in an Amazon S3 bucket. ::
 
     aws rekognition recognize-celebrities \
         --image "S3Object={Bucket=MyImageS3Bucket,Name=moviestars.jpg}"

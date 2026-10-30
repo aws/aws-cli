@@ -1,6 +1,6 @@
 **To create a new user**
 
-The following ``create-user`` command creates a new user. ::
+The following ``create-user`` example creates a new user. ::
 
     aws workmail create-user \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

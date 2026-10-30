@@ -1,8 +1,6 @@
 **To view information about a commit in a repository**
 
-This example shows details about a commit with the system-generated ID of '7e9fd3091thisisanexamplethisisanexample1' in an AWS CodeCommit repository named 'MyDemoRepo'.
-
-Command::
+The following ``get-commit`` example displays details about a commit with the system-generated ID of ``7e9fd3091thisisanexamplethisisanexample1`` in an AWS CodeCommit repository named ``MyDemoRepo``. ::
 
     aws codecommit get-commit --repository-name MyDemoRepo --commit-id 7e9fd3091thisisanexamplethisisanexample1
 

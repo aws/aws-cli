@@ -1,8 +1,6 @@
 **To describe your Direct Connect gateways**
 
-The following example describe all of your Direct Connect gateways.
-
-Command::
+The following ``describe-direct-connect-gateways`` example describes all of your Direct Connect gateways. ::
 
     aws directconnect describe-direct-connect-gateways
 

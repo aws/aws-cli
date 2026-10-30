@@ -1,6 +1,6 @@
 **To set the data retrieval policy for an account**
 
-The following command configures a data retrieval policy for the in-use account::
+The following ``set-data-retrieval-policy`` example configures a data retrieval policy for the in-use account. ::
 
     aws glacier set-data-retrieval-policy --account-id - --policy file://data-retrieval-policy.json
 
@@ -17,7 +17,7 @@ The following command configures a data retrieval policy for the in-use account:
 
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
 
-The following command sets the data retrieval policy to ``FreeTier`` using inline JSON::
+The following ``set-data-retrieval-policy`` example sets the data retrieval policy to ``FreeTier`` using inline JSON. ::
 
     aws glacier set-data-retrieval-policy --account-id - --policy '{"Rules":[{"Strategy":"FreeTier"}]}'
 

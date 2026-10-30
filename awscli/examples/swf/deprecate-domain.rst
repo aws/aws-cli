@@ -1,6 +1,6 @@
 **To deprecate a domain**
 
-To deprecate a domain (you can still see it, but cannot create new workflow executions or register types on it), use ``swf deprecate-domain``. It has a sole required parameter, ``--name``, which takes the name of the domain to deprecate. ::
+The following ``deprecate-domain`` example deprecates a domain. You can still see a deprecated domain, but cannot create new workflow executions or register types on it. The command has a sole required parameter, ``--name``, which takes the name of the domain to deprecate. ::
 
     aws swf deprecate-domain \
         --name MyNeatNewDomain ""

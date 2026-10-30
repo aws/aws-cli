@@ -1,6 +1,6 @@
 **To get the patch summary states for instances**
 
-This ``describe-instance-patch-states`` example gets the patch summary states for an instance. ::
+The following ``describe-instance-patch-states`` example gets the patch summary states for an instance. ::
 
     aws ssm describe-instance-patch-states \
         --instance-ids "i-1234567890abcdef0"

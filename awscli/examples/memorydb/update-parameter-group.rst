@@ -1,6 +1,6 @@
 **To update a parameter group**
 
-The following update-parameter-group`` updates a parameter group. ::
+The following ``update-parameter-group`` example updates a parameter group. ::
 
     aws memorydb update-parameter-group \
         --parameter-group-name my-parameter-group \

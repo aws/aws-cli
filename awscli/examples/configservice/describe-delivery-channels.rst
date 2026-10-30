@@ -1,6 +1,6 @@
 **To get details about the delivery channel**
 
-The following command returns details about the delivery channel::
+The following ``describe-delivery-channels`` example returns details about the delivery channel. ::
 
     aws configservice describe-delivery-channels
 

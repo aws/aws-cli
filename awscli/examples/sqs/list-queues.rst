@@ -1,8 +1,6 @@
 **To list queues**
 
-This example lists all queues.
-
-Command::
+The following ``list-queues`` example lists all queues. ::
 
     aws sqs list-queues
 
@@ -18,9 +16,7 @@ Output::
         ]
     }
 
-This example lists only queues that start with "My".
-
-Command::
+The following ``list-queues`` example lists only queues that start with "My". ::
 
     aws sqs list-queues --queue-name-prefix My
 

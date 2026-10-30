@@ -1,6 +1,6 @@
 **To list the tags attached to an instance profile**
 
-The following ``list-instance-profile-tags`` command retrieves the list of tags associated with the specified instance profile. ::
+The following ``list-instance-profile-tags`` example retrieves the list of tags associated with the specified instance profile. ::
 
     aws iam list-instance-profile-tags \
         --instance-profile-name deployment-role

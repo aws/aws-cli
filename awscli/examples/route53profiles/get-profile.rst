@@ -1,6 +1,6 @@
 **To get information about a Profile**
 
-The following ``get-profile`` returns information about the specified Profile. ::
+The following ``get-profile`` example returns information about the specified Profile. ::
 
     aws route53profiles get-profile \
         --profile-id rp-4987774726example

@@ -1,6 +1,6 @@
 **To modify a replication group shard configuration**
 
-The following ``modify-replication-group-shard-configuration`` decreases the node group count using the Redis engine. ::
+The following ``modify-replication-group-shard-configuration`` example decreases the node group count using the Redis engine. ::
 
     aws elasticache modify-replication-group-shard-configuration \
         --replication-group-id mycluster \

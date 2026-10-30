@@ -1,6 +1,6 @@
 **To view the template body for an AWS CloudFormation stack**
 
-The following ``get-template`` command shows the template for the ``myteststack`` stack::
+The following ``get-template`` example shows the template for the ``myteststack`` stack. ::
 
     aws cloudformation get-template --stack-name myteststack
 

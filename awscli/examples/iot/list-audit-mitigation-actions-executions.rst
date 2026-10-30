@@ -1,8 +1,6 @@
 **To list the details of an audit mitigation action execution**
 
-An audit mitigation action task applies a mitigation action to one or more findings from an AWS IoT Device 
-Defender audit. The following ``list-audit-mitigation-actions-executions`` example lists the details for the 
-mitigation action task with the specified ``taskId`` and for the specified finding. ::
+The following ``list-audit-mitigation-actions-executions`` example lists the details for the mitigation action task with the specified ``taskId`` and for the specified finding. An audit mitigation action task applies a mitigation action to one or more findings from an AWS IoT Device Defender audit. ::
 
     aws iot list-audit-mitigation-actions-executions \
         --task-id myActionsTaskId \

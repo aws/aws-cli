@@ -1,6 +1,6 @@
 **To get the Amazon SES notification attributes for a list of identities**
 
-The following example uses the ``get-identity-notification-attributes`` command to retrieve the Amazon SES notification attributes for a list of identities::
+The following ``get-identity-notification-attributes`` example retrieves the Amazon SES notification attributes for a list of identities. ::
 
     aws ses get-identity-notification-attributes --identities "user1@example.com" "user2@example.com"
 

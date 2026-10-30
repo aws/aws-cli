@@ -1,6 +1,6 @@
 **To list file shares**
 
-The following ``command-name`` example lists the available widgets in your AWS account. ::
+The following ``list-file-shares`` example lists the file shares for the specified gateway. ::
 
     aws storagegateway list-file-shares \
         --gateway-arn arn:aws:storagegateway:us-east-1:209870788375:gateway/sgw-FB02E292

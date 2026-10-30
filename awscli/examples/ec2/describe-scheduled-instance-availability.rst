@@ -1,8 +1,6 @@
 **To describe an available schedule**
 
-This example describes a schedule that occurs every week on Sunday, starting on the specified date.
-
-Command::
+The following ``describe-scheduled-instance-availability`` example describes a schedule that occurs every week on Sunday, starting on the specified date. ::
 
     aws ec2 describe-scheduled-instance-availability --recurrence Frequency=Weekly,Interval=1,OccurrenceDays=[1] --first-slot-start-time-range EarliestTime=2016-01-31T00:00:00Z,LatestTime=2016-01-31T04:00:00Z
 

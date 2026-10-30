@@ -1,8 +1,6 @@
 **Example 1: To get information about environment members for an AWS Cloud9 development environment**
 
-This example gets information about environment members for the specified AWS Cloud9 development environment.
-
-Command::
+The following ``describe-environment-memberships`` example gets information about environment members for the specified AWS Cloud9 development environment. ::
 
     aws cloud9 describe-environment-memberships --environment-id 8a34f51ce1e04a08882f1e811bd706EX
 
@@ -27,9 +25,7 @@ Output::
 
 **Example 2: To get information about the owner of an AWS Cloud9 development environment**
 
-This example gets information about the owner of the specified AWS Cloud9 development environment.
-
-Command::
+The following ``describe-environment-memberships`` example gets information about the owner of the specified AWS Cloud9 development environment. ::
 
     aws cloud9 describe-environment-memberships --environment-id 8a34f51ce1e04a08882f1e811bd706EX --permissions owner
 
@@ -48,9 +44,7 @@ Output::
 
 **Example 3: To get information about an environment member for multiple AWS Cloud9 development environments**
 
-This example gets information about the specified environment member for multiple AWS Cloud9 development environments.
-
-Command::
+The following ``describe-environment-memberships`` example gets information about the specified environment member for multiple AWS Cloud9 development environments. ::
 
     aws cloud9 describe-environment-memberships --user-arn arn:aws:iam::123456789012:user/MyDemoUser
 

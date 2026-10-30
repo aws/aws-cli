@@ -1,6 +1,6 @@
 **To retrieve the access control list of an object**
 
-The following command retrieves the access control list for an object in a bucket named ``amzn-s3-demo-bucket``::
+The following ``get-object-acl`` example retrieves the access control list for an object in a bucket named ``amzn-s3-demo-bucket``. ::
 
     aws s3api get-object-acl --bucket amzn-s3-demo-bucket --key index.html
 

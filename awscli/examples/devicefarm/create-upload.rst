@@ -1,6 +1,6 @@
 **To create an upload**
 
-The following command creates an upload for an Android app::
+The following ``create-upload`` example creates an upload for an Android app. ::
 
     aws devicefarm create-upload --project-arn "arn:aws:devicefarm:us-west-2:123456789012:project:070fc3ca-7ec1-4741-9c1f-d3e044efc506" --name app.apk --type ANDROID_APP
 

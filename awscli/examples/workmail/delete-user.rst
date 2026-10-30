@@ -1,6 +1,6 @@
 **To delete a user**
 
-The following ``delete-user`` command deletes the specified user from Amazon WorkMail and all subsequent systems. ::
+The following ``delete-user`` example deletes the specified user from Amazon WorkMail and all subsequent systems. ::
 
     aws workmail delete-user \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

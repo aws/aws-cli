@@ -1,6 +1,6 @@
 **To get a list of REST APIs**
 
-Command::
+The following ``get-rest-apis`` example gets a list of REST APIs. ::
 
     aws apigateway get-rest-apis
 

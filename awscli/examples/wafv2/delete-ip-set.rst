@@ -1,6 +1,6 @@
 **To delete an IP set**
 
-The following ``delete-ip-set`` deletes the specified IP set. This call requires an ID, which you can obtain from the call, ``list-ip-sets``, and a lock token, which you can obtain from the calls, ``list-ip-sets`` and ``get-ip-set``. ::
+The following ``delete-ip-set`` example deletes the specified IP set. This call requires an ID, which you can obtain from the call, ``list-ip-sets``, and a lock token, which you can obtain from the calls, ``list-ip-sets`` and ``get-ip-set``. ::
 
     aws wafv2 delete-ip-set \
         --name test1 \

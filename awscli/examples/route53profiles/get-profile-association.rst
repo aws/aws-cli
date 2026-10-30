@@ -1,6 +1,6 @@
 **To get information about a Profile association**
 
-The following ``get-profile-association`` returns information about the specified Profile association. ::
+The following ``get-profile-association`` example returns information about the specified Profile association. ::
 
     aws route53profiles get-profile-association \
         --profile-association-id rpassoc-489ce212fexample

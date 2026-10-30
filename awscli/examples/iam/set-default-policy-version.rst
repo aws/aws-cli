@@ -1,6 +1,6 @@
 **To set the specified version of the specified policy as the policy's default version.**
 
-This example sets the ``v2`` version of the policy whose ARN is ``arn:aws:iam::123456789012:policy/MyPolicy`` as the default active version. ::
+The following ``set-default-policy-version`` example sets the ``v2`` version of the policy whose ARN is ``arn:aws:iam::123456789012:policy/MyPolicy`` as the default active version. ::
 
     aws iam set-default-policy-version \
         --policy-arn arn:aws:iam::123456789012:policy/MyPolicy \

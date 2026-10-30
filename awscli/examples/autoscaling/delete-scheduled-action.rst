@@ -1,6 +1,6 @@
 **To delete a scheduled action from an Auto Scaling group**
 
-This example deletes the specified scheduled action from the specified Auto Scaling group. ::
+The following ``delete-scheduled-action`` example deletes the specified scheduled action from the specified Auto Scaling group. ::
 
     aws autoscaling delete-scheduled-action \
         --auto-scaling-group-name my-asg \

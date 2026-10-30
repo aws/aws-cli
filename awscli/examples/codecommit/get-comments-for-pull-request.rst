@@ -1,6 +1,6 @@
 **To view comments for a pull request**
 
-This example demonstrates how to view comments for a pull request in a repository named ``MyDemoRepo``. ::
+The following ``get-comments-for-pull-request`` example displays comments for a pull request in a repository named ``MyDemoRepo``. ::
 
     aws codecommit get-comments-for-pull-request \
         --repository-name MyDemoRepo \

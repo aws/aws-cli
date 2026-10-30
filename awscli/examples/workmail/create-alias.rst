@@ -1,6 +1,6 @@
 **To create an alias**
 
-The following ``create-alias`` command creates an alias for the specified entity (user or group). ::
+The following ``create-alias`` example creates an alias for the specified entity (user or group). ::
 
     aws workmail create-alias \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

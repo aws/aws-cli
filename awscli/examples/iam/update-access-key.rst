@@ -1,6 +1,6 @@
 **To activate or deactivate an access key for an IAM user**
 
-The following ``update-access-key`` command deactivates the specified access key (access key ID and secret access key)
+The following ``update-access-key`` example deactivates the specified access key (access key ID and secret access key)
 for the IAM user named ``Bob``. ::
 
     aws iam update-access-key \

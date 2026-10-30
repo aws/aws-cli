@@ -6,7 +6,7 @@ The following ``describe-change-set`` example displays the details of the change
         --change-set-name my-change-set \
         --stack-name my-stack
 
-The following ``describe-change-set`` example displays the details of the change set specified by the full ARN of the change set::
+The following ``describe-change-set`` example displays the details of the change set specified by the full ARN of the change set. ::
 
     aws cloudformation describe-change-set \
         --change-set-name arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/bc9555ba-a949-xmpl-bfb8-f41d04ec5784

@@ -1,6 +1,6 @@
 **To get details for all jobs in a region**
 
-The following example requests the information for all of your jobs in the specified region. ::
+The following ``list-jobs`` example requests the information for all of your jobs in the specified region. ::
 
     aws mediaconvert list-jobs \
         --endpoint-url https://abcd1234.mediaconvert.region-name-1.amazonaws.com \

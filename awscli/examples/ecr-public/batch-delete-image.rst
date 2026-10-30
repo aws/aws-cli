@@ -1,6 +1,6 @@
 **Example 1: To delete an image by using image digest ids, the image and all of its tags are deleted within a repository in a public registry**
 
-The following ``batch-delete-image`` example deletes an image by specifying the image digest.::
+The following ``batch-delete-image`` example deletes an image by specifying the image digest. ::
 
     aws ecr-public batch-delete-image \
         --repository-name project-a/nginx-web-app \
@@ -44,7 +44,7 @@ For more information, see `Deleting an image in a public repository <https://doc
 
 **Example 3: To delete multiple images, you can specify multiple image tags or image digests in the request for a repository in a public registry.**
 
-The following ``batch-delete-image`` example delete multiple images from a repository named `project-a/nginx-web-app` by specifying multiple image tags or image digests in the request. ::
+The following ``batch-delete-image`` example deletes multiple images from a repository named ``project-a/nginx-web-app`` by specifying multiple image tags or image digests in the request. ::
 
     aws ecr-public batch-delete-image \
         --repository-name project-a/nginx-web-app \
@@ -69,7 +69,7 @@ For more information, see `Deleting an image in a public repository <https://doc
 
 **Example 4: To delete an image in cross AWS Account using registry-id and imagedigest ids, the image and all of its tags are deleted within a repository in a public registry**
 
-The following ``batch-delete-image`` example deletes an image by specifying the image digest in the cross AWS Account.::
+The following ``batch-delete-image`` example deletes an image by specifying the image digest in the cross AWS Account. ::
 
     aws ecr-public batch-delete-image \
         --registry-id 123456789098 \

@@ -1,6 +1,6 @@
 **To list details about a code review**
 
-The following ``describe-code-review`` lists information about a review of code in the "mainline" branch of an AWS CodeCommit repository that is named "my-repo-name". ::
+The following ``describe-code-review`` example lists information about a review of code in the "mainline" branch of an AWS CodeCommit repository that is named "my-repo-name". ::
 
     aws codeguru-reviewer put-recommendation-feedback \
         --code-review-arn arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:code-review:RepositoryAnalysis-my-repository-name-branch-abcdefgh12345678 \

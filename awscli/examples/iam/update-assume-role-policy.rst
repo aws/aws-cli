@@ -1,6 +1,6 @@
 **To update the trust policy for an IAM role**
 
-The following ``update-assume-role-policy`` command updates the trust policy for the role named ``Test-Role``. ::
+The following ``update-assume-role-policy`` example updates the trust policy for the role named ``Test-Role``. ::
 
     aws iam update-assume-role-policy \
         --role-name Test-Role \

@@ -1,6 +1,6 @@
 **To delete tags for a domain**
 
-The following ``delete-tags-for-domain`` command deletes three tags from the specified domain. Note that you specify only the tag key, not the tag value. 
+The following ``delete-tags-for-domain`` example deletes three tags from the specified domain. Note that you specify only the tag key, not the tag value. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 

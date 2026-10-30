@@ -1,6 +1,6 @@
 **To send a custom event to CloudWatch Events**
 
-This example sends a custom event to CloudWatch Events. The event is contained within the putevents.json file::
+The following ``put-events`` example sends a custom event to CloudWatch Events. The event is contained within the ``putevents.json`` file. ::
 
     aws events put-events --entries file://putevents.json
 

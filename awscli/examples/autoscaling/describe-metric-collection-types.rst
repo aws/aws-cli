@@ -1,6 +1,6 @@
 **To describe the available metric collection types**
 
-This example describes the available metric collection types. ::
+The following ``describe-metric-collection-types`` example describes the available metric collection types. ::
 
     aws autoscaling describe-metric-collection-types
 

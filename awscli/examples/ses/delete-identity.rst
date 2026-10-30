@@ -1,6 +1,6 @@
 **To delete an identity**
 
-The following example uses the ``delete-identity`` command to delete an identity from the list of identities verified with Amazon SES::
+The following ``delete-identity`` example deletes an identity from the list of identities verified with Amazon SES. ::
 
     aws ses delete-identity --identity user@example.com
 

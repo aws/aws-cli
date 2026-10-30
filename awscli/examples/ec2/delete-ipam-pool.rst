@@ -1,13 +1,13 @@
 **To delete an IPAM pool**
 
-In this example, you're a IPAM delegated admin who wants to delete an IPAM pool that you no longer need, but the pool has a CIDR provisioned to it. You cannot delete a pool if it has CIDRs provisioned to it unless you use the ``--cascade`` option, so you'll use ``--cascade``.
+The following ``delete-ipam-pool`` example deletes an IPAM pool in your AWS account. In this example, you're an IPAM delegated admin who wants to delete an IPAM pool that you no longer need, but the pool has a CIDR provisioned to it. You cannot delete a pool if it has CIDRs provisioned to it unless you use the ``--cascade`` option, so you'll use ``--cascade``.
 
 To complete this request:
 
 * You'll need the IPAM pool ID which you can get with `describe-ipam-pools <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipam-pools.html>`__. 
 * The ``--region`` must be the IPAM home Region.
 
-The following ``delete-ipam-pool`` example deletes an IPAM pool in your AWS account. ::
+To delete the pool, use the following command. ::
 
     aws ec2 delete-ipam-pool \
         --ipam-pool-id ipam-pool-050c886a3ca41cd5b \

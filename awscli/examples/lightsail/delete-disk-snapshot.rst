@@ -1,6 +1,6 @@
 **To delete a snapshot of a block storage disk**
 
-The following ``delete-disk-snapshot`` example deletes the specified snapshot of a block storage disk ::
+The following ``delete-disk-snapshot`` example deletes the specified snapshot of a block storage disk. ::
 
     aws lightsail delete-disk-snapshot \
         --disk-snapshot-name DiskSnapshot-1

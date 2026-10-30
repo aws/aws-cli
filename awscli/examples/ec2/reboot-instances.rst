@@ -1,8 +1,6 @@
 **To reboot an Amazon EC2 instance**
 
-This example reboots the specified instance. If the command succeeds, no output is returned.
-
-Command::
+The following ``reboot-instances`` example reboots the specified instance. If the command succeeds, no output is returned. ::
 
     aws ec2 reboot-instances --instance-ids i-1234567890abcdef5
 

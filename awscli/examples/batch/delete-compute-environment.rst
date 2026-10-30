@@ -1,7 +1,5 @@
 **To delete a compute environment**
 
-This example deletes the `P2OnDemand` compute environment.
-
-Command::
+The following ``delete-compute-environment`` example deletes the `P2OnDemand` compute environment. ::
 
     aws batch delete-compute-environment --compute-environment P2OnDemand

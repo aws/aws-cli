@@ -1,6 +1,6 @@
 **To view configurations settings for an environment**
 
-The following command retrieves configuration settings for an environment named ``my-env``::
+The following ``describe-configuration-settings`` example retrieves configuration settings for an environment named ``my-env``. ::
 
     aws elasticbeanstalk describe-configuration-settings --environment-name my-env --application-name my-app
 

@@ -53,7 +53,7 @@ The following ``create-cluster`` example uses the ``--applications`` parameter t
 
 **Example 6: To create a cluster that includes Spark**
 
-The following example installs Spark. ::
+The following ``create-cluster`` example installs Spark. ::
 
     aws emr create-cluster \
         --release-label emr-5.9.0 \
@@ -77,7 +77,7 @@ The following ``create-cluster`` example creates a cluster instance based on the
 
 **Example 8: To customize application configurations**
 
-The following examples use the ``--configurations`` parameter to specify a JSON configuration file that contains application customizations for Hadoop. For more information, see `Configuring Applications <https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html>`__ in the *Amazon EMR Release Guide*.
+The following ``create-cluster`` examples use the ``--configurations`` parameter to specify a JSON configuration file that contains application customizations for Hadoop. For more information, see `Configuring Applications <https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html>`__ in the *Amazon EMR Release Guide*.
 
 Contents of ``configurations.json``::
 
@@ -230,7 +230,7 @@ The following ``create-cluster`` example uses the ``--enable-debugging`` paramet
 
 **Example 13: To add tags when creating a cluster**
 
-Tags are key-value pairs that help you identify and manage clusters. The following ``create-cluster`` example uses the ``--tags`` parameter to create three tags for a cluster, one with the key name ``name`` and the value ``Shirley Rodriguez``, a second with the key name ``age`` and the value ``29``, and a third tag with the key name ``department`` and the value ``Analytics``. ::
+The following ``create-cluster`` example uses the ``--tags`` parameter to create three tags for a cluster, one with the key name ``name`` and the value ``Shirley Rodriguez``, a second with the key name ``age`` and the value ``29``, and a third tag with the key name ``department`` and the value ``Analytics``. Tags are key-value pairs that help you identify and manage clusters. ::
 
     aws emr create-cluster \
         --tags name="Shirley Rodriguez" age=29 department="Analytics" \
@@ -256,9 +256,7 @@ The following ``create-cluster`` example uses the ``--security-configuration`` p
 
 **Example 15: To create a cluster with additional EBS storage volumes configured for the instance groups**
 
-When specifying additional EBS volumes, the following arguments are required: ``VolumeType``, ``SizeInGB`` if ``EbsBlockDeviceConfigs`` is specified.
-
-The following ``create-cluster`` example creates a cluster with multiple EBS volumes attached to EC2 instances in the core instance group. ::
+The following ``create-cluster`` example creates a cluster with multiple EBS volumes attached to EC2 instances in the core instance group. When specifying additional EBS volumes, the following arguments are required: ``VolumeType``, ``SizeInGB`` if ``EbsBlockDeviceConfigs`` is specified. ::
 
     aws emr create-cluster \
         --release-label emr-5.9.0  \
@@ -276,7 +274,7 @@ The following example creates a cluster with multiple EBS volumes attached to EC
 
 **Example 16: To create a cluster with an automatic scaling policy**
 
-You can attach automatic scaling policies to core and task instance groups using Amazon EMR version 4.0 and later. The automatic scaling policy dynamically adds and removes EC2 instances in response to an Amazon CloudWatch metric. For more information, see `Using Automatic Scaling in Amazon EMR` <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-automatic-scaling.html>`_ in the *Amazon EMR Management Guide*.
+The following ``create-cluster`` example creates a cluster with an automatic scaling policy. You can attach automatic scaling policies to core and task instance groups using Amazon EMR version 4.0 and later. The automatic scaling policy dynamically adds and removes EC2 instances in response to an Amazon CloudWatch metric. For more information, see `Using Automatic Scaling in Amazon EMR` <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-automatic-scaling.html>`_ in the *Amazon EMR Management Guide*.
 
 When attaching an automatic scaling policy, you must also specify the default role for automatic scaling using ``--auto-scaling-role EMR_AutoScaling_DefaultRole``.
 
@@ -406,7 +404,7 @@ Contents of ``multiplefiles.json``::
 
 **Example 19: To add Hive steps when creating a cluster**
 
-The following example add Hive steps when creating a cluster. Hive steps require parameters ``Type`` and ``Args``. Hive steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
+The following ``create-cluster`` example adds Hive steps when creating a cluster. Hive steps require parameters ``Type`` and ``Args``. Hive steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
 
     aws emr create-cluster \
         --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://amzn-s3-demo-bucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] \
@@ -416,7 +414,7 @@ The following example add Hive steps when creating a cluster. Hive steps require
 
 **Example 20: To add Pig steps when creating a cluster**
 
-The following example adds Pig steps when creating a cluster. Pig steps required parameters are ``Type`` and ``Args``. Pig steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
+The following ``create-cluster`` example adds Pig steps when creating a cluster. Pig steps required parameters are ``Type`` and ``Args``. Pig steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
 
     aws emr create-cluster \
         --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://amzn-s3-demo-bucket/pig-apache/output] \
@@ -525,7 +523,7 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
         --auto-termination-policy IdleTimeout=100
 
-The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--os-release-label" to define an Amazon Linux release for cluster launch ::
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--os-release-label" to define an Amazon Linux release for cluster launch. ::
 
     aws emr create-cluster \
         --release-label emr-6.6.0 \

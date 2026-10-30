@@ -1,6 +1,6 @@
 **To create a device pool**
 
-The following command creates an Android device pool for a project::
+The following ``create-device-pool`` example creates an Android device pool for a project. ::
 
     aws devicefarm create-device-pool --name pool1 --rules file://device-pool-rules.json --project-arn "arn:aws:devicefarm:us-west-2:123456789012:project:070fc3ca-7ec1-4741-9c1f-d3e044efc506"
 

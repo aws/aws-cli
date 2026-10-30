@@ -1,6 +1,6 @@
 **To start a stream processor**
 
-The following ``start-stream-processor`` command starts the specified video stream processor. ::
+The following ``start-stream-processor`` example starts the specified video stream processor. ::
 
     aws rekognition start-stream-processor \
         --name my-stream-processor 

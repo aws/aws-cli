@@ -1,6 +1,6 @@
 **To attach a managed policy to an IAM user**
 
-The following ``attach-user-policy`` command attaches the AWS managed policy named ``AdministratorAccess`` to the IAM user named ``Alice``. ::
+The following ``attach-user-policy`` example attaches the AWS managed policy named ``AdministratorAccess`` to the IAM user named ``Alice``. ::
 
     aws iam attach-user-policy \
         --policy-arn arn:aws:iam::aws:policy/AdministratorAccess \

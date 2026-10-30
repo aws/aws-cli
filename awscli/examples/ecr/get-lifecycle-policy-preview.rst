@@ -1,8 +1,6 @@
 **To retrieve details for a lifecycle policy preview**
 
-The following ``get-lifecycle-policy-preview`` example retrieves the result of a lifecycle policy preview for the specified repository in the default registry for an account.
-
-Command::
+The following ``get-lifecycle-policy-preview`` example retrieves the result of a lifecycle policy preview for the specified repository in the default registry for an account. ::
 
     aws ecr get-lifecycle-policy-preview \
         --repository-name "project-a/amazon-ecs-sample"

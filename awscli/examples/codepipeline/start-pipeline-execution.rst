@@ -1,8 +1,6 @@
 **To run the latest revision through a pipeline**
 
-This example runs the latest revision present in the source stage of a pipeline through the pipeline named "MyFirstPipeline".
-
-Command::
+The following ``start-pipeline-execution`` example runs the latest revision present in the source stage of a pipeline through the pipeline named "MyFirstPipeline". ::
 
     aws codepipeline start-pipeline-execution --name MyFirstPipeline
 

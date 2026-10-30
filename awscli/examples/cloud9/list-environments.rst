@@ -1,8 +1,6 @@
 **To get a list of available AWS Cloud9 development environment identifiers**
 
-This example gets a list of available AWS Cloud9 development environment identifiers.
-
-Command::
+The following ``list-environments`` example gets a list of available AWS Cloud9 development environment identifiers. ::
 
     aws cloud9 list-environments
 

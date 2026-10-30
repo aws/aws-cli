@@ -28,7 +28,7 @@ For more information, see `GenerateRandom <https://docs.aws.amazon.com/kms/lates
 
 **Example 2: To generate a 256-bit random number (Windows Command Prompt)**
 
-The following example uses the ``generate-random`` command to generate a 256-bit (32-byte), base64-encoded random byte string. The example decodes the byte string and saves it in the `random` file. This example is the same as the previous example, except that it uses the ``certutil`` utility in Windows to base64-decode the random byte string before saving it in a file. 
+The following ``generate-random`` example generates a 256-bit (32-byte), base64-encoded random byte string. The example decodes the byte string and saves it in the `random` file. This example is the same as the previous example, except that it uses the ``certutil`` utility in Windows to base64-decode the random byte string before saving it in a file. 
 
 First, generate a base64-encoded random byte string and saves it in a temporary file, ``ExampleRandom.base64``. ::
 

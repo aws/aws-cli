@@ -1,6 +1,6 @@
 **To accept a gateway association proposal**
 
-The following ``accept-direct-connect-gateway-association-proposal`` accepts the specified proposal. ::
+The following ``accept-direct-connect-gateway-association-proposal`` example accepts the specified proposal. ::
 
     aws directconnect  accept-direct-connect-gateway-association-proposal \
         --direct-connect-gateway-id 11460968-4ac1-4fd3-bdb2-00599EXAMPLE \

@@ -1,6 +1,6 @@
 **Example 1: To describe all tags**
 
-This example describes all your tags. ::
+The following ``describe-tags`` example describes all your tags. ::
 
     aws autoscaling describe-tags
 
@@ -29,7 +29,7 @@ For more information, see `Tagging Auto Scaling groups and instances <https://do
 
 **Example 2: To describe tags for a specified group**
 
-To describe tags for a specific Auto Scaling group, use the ``--filters`` option. ::
+The following ``describe-tags`` example uses the ``--filters`` option to describe tags for a specific Auto Scaling group. ::
 
     aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-asg
 
@@ -37,7 +37,7 @@ For more information, see `Tagging Auto Scaling groups and instances <https://do
 
 **Example 3: To describe the specified number of tags**
 
-To return a specific number of tags, use the ``--max-items`` option. ::
+The following ``describe-tags`` example uses the ``--max-items`` option to return a specific number of tags. ::
 
     aws autoscaling describe-tags \
         --max-items 1

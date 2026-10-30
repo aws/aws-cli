@@ -1,6 +1,6 @@
 **To enable the transfer lock on a domain**
 
-The following ``enable-domain-transfer-lock`` command  locks the specified domain so that it can't be transferred to another registrar. This command changes the ``clientTransferProhibited`` status. 
+The following ``enable-domain-transfer-lock`` example locks the specified domain so that it can't be transferred to another registrar. This command changes the ``clientTransferProhibited`` status. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 

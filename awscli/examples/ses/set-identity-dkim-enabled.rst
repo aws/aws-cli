@@ -1,6 +1,6 @@
 **To enable or disable Easy DKIM for an Amazon SES verified identity**
 
-The following example uses the ``set-identity-dkim-enabled`` command to disable DKIM for a verified email address::
+The following ``set-identity-dkim-enabled`` example disables DKIM for a verified email address. ::
 
     aws ses set-identity-dkim-enabled --identity user@example.com --no-dkim-enabled
 

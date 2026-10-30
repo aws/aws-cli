@@ -1,6 +1,6 @@
 **Example 1: To share an application publicly**
 
-The following ``put-application-policy`` shares an application publicly, so anyone can find and deploy your application in the AWS Serverless Application Repository. ::
+The following ``put-application-policy`` example shares an application publicly, so anyone can find and deploy your application in the AWS Serverless Application Repository. ::
 
     aws serverlessrepo put-application-policy \
         --application-id arn:aws:serverlessrepo:us-east-1:123456789012:applications/my-test-application \
@@ -24,7 +24,7 @@ Output::
 
 **Example 2:** To share an application privately
 
-The following ``put-application-policy`` shares an application privately, so only specific AWS accounts can find and deploy your application in the AWS Serverless Application Repository. ::
+The following ``put-application-policy`` example shares an application privately, so only specific AWS accounts can find and deploy your application in the AWS Serverless Application Repository. ::
 
     aws serverlessrepo put-application-policy \
         --application-id arn:aws:serverlessrepo:us-east-1:123456789012:applications/my-test-application \

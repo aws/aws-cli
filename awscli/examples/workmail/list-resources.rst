@@ -1,6 +1,6 @@
 **To retrieve a list of resources**
 
-The following ``list-resources`` command retrieves summaries of the resources for the specified organization. ::
+The following ``list-resources`` example retrieves summaries of the resources for the specified organization. ::
 
     aws workmail list-resources \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27

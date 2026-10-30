@@ -1,6 +1,6 @@
 **To retrieve the child accounts and OUs of a parent OU or root**
 
-The following example you how to list the root or OU that contains that account 444444444444: ::
+The following ``list-children`` example lists the child OUs of a parent OU. ::
 
     aws organizations list-children --child-type ORGANIZATIONAL_UNIT --parent-id ou-examplerootid111-exampleouid111
 

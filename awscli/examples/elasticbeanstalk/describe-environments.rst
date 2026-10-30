@@ -1,6 +1,6 @@
 **To view information about an environment**
 
-The following command retrieves information about an environment named ``my-env``::
+The following ``describe-environments`` example retrieves information about an environment named ``my-env``. ::
 
     aws elasticbeanstalk describe-environments --environment-names my-env
 

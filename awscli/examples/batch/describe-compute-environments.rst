@@ -1,8 +1,6 @@
 **To describe a compute environment**
 
-This example describes the `P2OnDemand` compute environment.
-
-Command::
+The following ``describe-compute-environments`` example describes the `P2OnDemand` compute environment. ::
 
     aws batch describe-compute-environments --compute-environments P2OnDemand
 

@@ -1,8 +1,6 @@
 **To delete a LAG**
 
-The following example deletes the specified LAG.
-
-Command::
+The following ``delete-lag`` example deletes the specified LAG. ::
 
     aws directconnect delete-lag --lag-id dxlag-ffrhowd9
 

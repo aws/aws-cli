@@ -1,5 +1,7 @@
 **Example 1: To list all member accounts associated with the Amazon Inspector delegated administrator for your organization**
 
+The following ``list-members`` example lists all member accounts associated with the Amazon Inspector delegated administrator for your organization. ::
+
     aws inspector2 list-members \
         --only-associated
 
@@ -38,6 +40,8 @@ Output::
 For more information, see `Managing multiple accounts in Amazon Inspector with AWS Organizations <https://docs.aws.amazon.com/inspector/latest/user/managing-multiple-accounts.html>`__ in the *Amazon Inspector User Guide*.
 
 **Example 2: To list all member accounts associated with and disassociated from the Amazon Inspector delegated administrator for your organization**
+
+The following ``list-members`` example lists all member accounts associated with and disassociated from the Amazon Inspector delegated administrator for your organization. ::
 
     aws inspector2 list-members \
         --no-only-associated

@@ -1,6 +1,6 @@
 **To initiate a document version upload**
 
-The following ``initiate-document-upload`` example creates a new document object and version object. ::
+The following ``initiate-document-version-upload`` example creates a new document object and version object. ::
 
     aws workdocs initiate-document-version-upload \
         --name exampledocname \

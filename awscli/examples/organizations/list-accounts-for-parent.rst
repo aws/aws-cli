@@ -1,6 +1,6 @@
 **To retrieve a list of all of the accounts in a specified parent root or OU**
 
-The following example shows how to request a list of the accounts in an OU: ::
+The following ``list-accounts-for-parent`` example requests a list of the accounts in an OU. ::
 
     aws organizations list-accounts-for-parent --parent-id ou-examplerootid111-exampleouid111
 

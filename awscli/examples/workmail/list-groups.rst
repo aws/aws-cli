@@ -1,6 +1,6 @@
 **To retrieve a list of groups**
 
-The following ``list-groups`` command retrieves summaries of the groups in the specified organization. ::
+The following ``list-groups`` example retrieves summaries of the groups in the specified organization. ::
 
     aws workmail list-groups \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27

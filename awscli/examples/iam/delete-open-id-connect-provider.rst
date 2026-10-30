@@ -1,6 +1,6 @@
 **To delete an IAM OpenID Connect identity provider**
 
-This example deletes the IAM OIDC provider that connects to the provider ``example.oidcprovider.com``. ::
+The following ``delete-open-id-connect-provider`` example deletes the IAM OIDC provider that connects to the provider ``example.oidcprovider.com``. ::
 
     aws iam delete-open-id-connect-provider \
         --open-id-connect-provider-arn arn:aws:iam::123456789012:oidc-provider/example.oidcprovider.com

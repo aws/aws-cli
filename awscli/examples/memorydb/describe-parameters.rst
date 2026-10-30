@@ -1,6 +1,6 @@
 **To return a list of parameters**
 
-The following ``describe-parameters`` returns a list of parameters. ::
+The following ``describe-parameters`` example returns a list of parameters. ::
 
     aws memorydb describe-parameters \
         --parameter-group-name default.memorydb-redis6

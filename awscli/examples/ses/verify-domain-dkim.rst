@@ -1,6 +1,6 @@
 **To generate a verified domain's DKIM tokens for DKIM signing with Amazon SES**
 
-The following example uses the ``verify-domain-dkim`` command to generate DKIM tokens for a domain that has been verified with Amazon SES::
+The following ``verify-domain-dkim`` example generates DKIM tokens for a domain that has been verified with Amazon SES. ::
 
     aws ses verify-domain-dkim --domain example.com
 

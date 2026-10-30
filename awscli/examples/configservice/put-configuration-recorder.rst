@@ -1,6 +1,6 @@
 **Example 1: To record all supported resources**
 
-The following command creates a configuration recorder that tracks changes to all supported resource types, including global resource types::
+The following ``put-configuration-recorder`` example creates a configuration recorder that tracks changes to all supported resource types, including global resource types. ::
 
     aws configservice put-configuration-recorder \
         --configuration-recorder name=default,roleARN=arn:aws:iam::123456789012:role/config-role \
@@ -12,7 +12,7 @@ If the command succeeds, AWS Config returns no output. To verify the settings of
 
 **Example 2: To record specific types of resources**
 
-The following command creates a configuration recorder that tracks changes to only those types of resources that are specified in the JSON file for the `--recording-group` option::
+The following ``put-configuration-recorder`` example creates a configuration recorder that tracks changes to only those types of resources that are specified in the JSON file for the `--recording-group` option. ::
 
     aws configservice put-configuration-recorder \
         --configuration-recorder name=default,roleARN=arn:aws:iam::123456789012:role/config-role \
@@ -44,7 +44,7 @@ If the command succeeds, AWS Config returns no output. To verify the settings of
 
 **Example 3: To select all supported resources excluding specific types of resources**
 
-The following command creates a configuration recorder that tracks changes to all current and future supported resource types excluding those types of resources that are specified in the JSON file for the `--recording-group` option::
+The following ``put-configuration-recorder`` example creates a configuration recorder that tracks changes to all current and future supported resource types excluding those types of resources that are specified in the JSON file for the `--recording-group` option. ::
 
     aws configservice put-configuration-recorder \
         --configuration-recorder name=default,roleARN=arn:aws:iam::123456789012:role/config-role \

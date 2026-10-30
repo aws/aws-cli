@@ -1,6 +1,6 @@
 **To detach an instance from an Auto Scaling group**
 
-This example detaches the specified instance from the specified Auto Scaling group. ::
+The following ``detach-instances`` example detaches the specified instance from the specified Auto Scaling group. ::
 
     aws autoscaling detach-instances \
         --instance-ids i-030017cfa84b20135 \

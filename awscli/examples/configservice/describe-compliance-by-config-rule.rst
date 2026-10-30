@@ -1,6 +1,6 @@
 **To get compliance information for your AWS Config rules**
 
-The following command returns compliance information for each AWS Config rule that is violated by one or more AWS resources::
+The following ``describe-compliance-by-config-rule`` example returns compliance information for each AWS Config rule that is violated by one or more AWS resources. ::
 
     aws configservice describe-compliance-by-config-rule --compliance-types NON_COMPLIANT
 

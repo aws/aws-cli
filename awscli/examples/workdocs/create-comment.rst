@@ -1,8 +1,6 @@
 **To add a new comment**
 
-This example adds a new comment to the specified document version.
-
-Command::
+The following ``create-comment`` example adds a new comment to the specified document version. ::
 
     aws workdocs create-comment --document-id 15df51e0335cfcc6a2e4de9dd8be9f22ee40545ad9176f54758dcf903be982d3 --version-id 1521672507741-9f7df0ea5dd0b121c4f3564a0c7c0b4da95cd12c635d3c442af337a88e297920 --text "This is a comment."
 

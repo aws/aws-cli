@@ -1,8 +1,6 @@
 **To list details about an instance export task**
 
-This example describes the export task with ID export-i-fh8sjjsq.
-
-Command::
+The following ``describe-export-tasks`` example describes the export task with ID export-i-fh8sjjsq. ::
 
     aws ec2 describe-export-tasks --export-task-ids export-i-fh8sjjsq
 

@@ -1,6 +1,6 @@
 **To list account aliases**
 
-The following ``list-account-aliases`` command lists the aliases for the current account. ::
+The following ``list-account-aliases`` example lists the aliases for the current account. ::
 
     aws iam list-account-aliases
 

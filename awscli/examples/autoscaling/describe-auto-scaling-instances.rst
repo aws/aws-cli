@@ -1,6 +1,6 @@
 **Example 1: To describe one or more instances**
 
-This example describes the specified instance. ::
+The following ``describe-auto-scaling-instances`` example describes the specified instance. ::
 
     aws autoscaling describe-auto-scaling-instances \
         --instance-ids i-06905f55584de02da
@@ -28,7 +28,7 @@ Output::
 
 **Example 2: To describe one or more instances**
 
-This example uses the ``--max-items`` option to specify how many instances to return with this call. ::
+The following ``describe-auto-scaling-instances`` example uses the ``--max-items`` option to specify how many instances to return with this call. ::
 
     aws autoscaling describe-auto-scaling-instances \
         --max-items 1
@@ -42,7 +42,7 @@ See example 1 for sample output.
 
 **Example 3: To describe instances that use launch configurations**
 
-This example uses the ``--query`` option to describe instances that use launch configurations. ::
+The following ``describe-auto-scaling-instances`` example uses the ``--query`` option to describe instances that use launch configurations. ::
 
     aws autoscaling describe-auto-scaling-instances \
         --query 'AutoScalingInstances[?LaunchConfigurationName!=`null`]'

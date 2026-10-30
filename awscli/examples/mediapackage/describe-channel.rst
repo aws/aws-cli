@@ -1,6 +1,6 @@
 **To describe a channel**
 
-The following ``describe-channel`` command displays all of the details of the channel named ``test``. ::
+The following ``describe-channel`` example displays all of the details of the channel named ``test``. ::
 
     aws mediapackage describe-channel \
         --id test

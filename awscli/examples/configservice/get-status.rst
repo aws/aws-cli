@@ -1,6 +1,6 @@
 **To get the status for AWS Config**
 
-The following command returns the status of the delivery channel and configuration recorder::
+The following ``get-status`` example returns the status of the delivery channel and configuration recorder. ::
 
     aws configservice get-status
 

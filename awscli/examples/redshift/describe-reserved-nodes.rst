@@ -1,8 +1,6 @@
 **To describe reserved nodes**
 
-This example shows a reserved node offering that has been purchased.
-
-Command::
+The following ``describe-reserved-nodes`` example shows a reserved node offering that has been purchased. ::
 
     aws redshift describe-reserved-nodes
 

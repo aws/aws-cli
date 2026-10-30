@@ -1,6 +1,6 @@
 **To upload a signing certificate for an IAM user**
 
-The following ``upload-signing-certificate`` command uploads a signing certificate for the IAM user named ``Bob``. ::
+The following ``upload-signing-certificate`` example uploads a signing certificate for the IAM user named ``Bob``. ::
 
     aws iam upload-signing-certificate \
         --user-name Bob \

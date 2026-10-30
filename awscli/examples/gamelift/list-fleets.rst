@@ -23,7 +23,7 @@ You can pass the ``NextToken`` value from the previous response in the next comm
 
 **Example 2: To get a list of all fleets in a Region with a specific build or script**
 
-The following ``list-builds`` example retrieves the IDs of fleets that are deployed with the specified game build. If you're working with Realtime Servers, you can provide a script ID in place of a build ID. Because this example does not specify the limit parameter, the results can include up to 16 fleet IDs. ::
+The following ``list-fleets`` example retrieves the IDs of fleets that are deployed with the specified game build. If you're working with Realtime Servers, you can provide a script ID in place of a build ID. Because this example does not specify the limit parameter, the results can include up to 16 fleet IDs. ::
 
     aws gamelift list-fleets \
         --build-id build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111

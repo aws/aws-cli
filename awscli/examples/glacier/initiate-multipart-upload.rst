@@ -1,6 +1,6 @@
 **To start a multipart upload**
 
-The following command initiates a multipart upload to a vault named ``my-vault`` with a part size of 1 MiB (1024 x 1024 bytes) per file::
+The following ``initiate-multipart-upload`` example initiates a multipart upload to a vault named ``my-vault`` with a part size of 1 MiB (1024 x 1024 bytes) per file. ::
 
     aws glacier initiate-multipart-upload --account-id - --part-size 1048576 --vault-name my-vault --archive-description "multipart upload test"
 

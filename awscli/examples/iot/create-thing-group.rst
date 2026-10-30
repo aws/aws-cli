@@ -16,7 +16,7 @@ Output::
 
 **Example 2: To create a thing group that's part of a parent group**
 
-The following ``create-thing-group`` creates a thing group named ``HalogenBulbs`` that has a parent thing group named ``LightBulbs``. ::
+The following ``create-thing-group`` example creates a thing group named ``HalogenBulbs`` that has a parent thing group named ``LightBulbs``. ::
 
     aws iot create-thing-group \
         --thing-group-name HalogenBulbs \

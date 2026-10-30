@@ -1,6 +1,6 @@
 **To update the privacy settings for the contacts for a domain**
 
-The following ``update-domain-contact-privacy`` command turns off privacy protection for the administrative contact for the example.com domain. This command runs only in the ``us-east-1`` Region. 
+The following ``update-domain-contact-privacy`` example turns off privacy protection for the administrative contact for the example.com domain. This command runs only in the ``us-east-1`` Region. 
 
 If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 

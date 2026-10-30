@@ -1,6 +1,6 @@
 **To detect drift for a resource**
 
-The following ``detect-stack-resource-drift`` example checks a resource named ``MyFunction`` in a stack named ``MyStack`` for drift::
+The following ``detect-stack-resource-drift`` example checks a resource named ``MyFunction`` in a stack named ``MyStack`` for drift. ::
 
     aws cloudformation detect-stack-resource-drift \
        --stack-name MyStack \

@@ -1,6 +1,6 @@
 **To list findings**
 
-The following ``list-findings`` command lists all of the generated findings::
+The following ``list-findings`` example lists all of the generated findings. ::
 
     aws inspector list-findings
 

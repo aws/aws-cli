@@ -1,8 +1,6 @@
 **To get a description of all cluster subnet groups**
 
-This example returns a description of all cluster subnet groups.  By default, the output is in JSON format.
-
-Command::
+The following ``describe-cluster-subnet-groups`` example returns a description of all cluster subnet groups.  By default, the output is in JSON format. ::
 
     aws redshift describe-cluster-subnet-groups
 

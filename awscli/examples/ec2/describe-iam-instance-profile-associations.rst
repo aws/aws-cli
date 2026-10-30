@@ -1,8 +1,6 @@
 **To describe IAM instance profile associations**
 
-This example describes all of your IAM instance profile associations.
-
-Command::
+The following ``describe-iam-instance-profile-associations`` example describes all of your IAM instance profile associations. ::
 
     aws ec2 describe-iam-instance-profile-associations
 

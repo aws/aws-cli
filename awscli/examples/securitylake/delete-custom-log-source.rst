@@ -1,6 +1,6 @@
 **To remove a custom source.**
 
-The following ``delete-custom-logsource`` example deletes a custom source in the designated log provider account in the designated Region. ::
+The following ``delete-custom-log-source`` example deletes a custom source in the designated log provider account in the designated Region. ::
 
     aws securitylake delete-custom-log-source \
         --source-name "CustomSourceName"

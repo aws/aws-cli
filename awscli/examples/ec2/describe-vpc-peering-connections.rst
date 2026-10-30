@@ -1,8 +1,6 @@
 **Example 1: To describe your VPC peering connections**
 
-This example describes all of your VPC peering connections.
-
-Command::
+The following ``describe-vpc-peering-connections`` example describes all of your VPC peering connections. ::
 
     aws ec2 describe-vpc-peering-connections
 
@@ -65,23 +63,17 @@ Output::
 
 **Example 2: To describe specific VPC peering connections**
 
-This example describes all of your VPC peering connections that are in the pending-acceptance state.
-
-Command::
+The following ``describe-vpc-peering-connections`` example describes all of your VPC peering connections that are in the pending-acceptance state. ::
 
     aws ec2 describe-vpc-peering-connections --filters Name=status-code,Values=pending-acceptance
 
 
-This example describes all of your VPC peering connections that have the tag Owner=Finance.
-
-Command::
+The following ``describe-vpc-peering-connections`` example describes all of your VPC peering connections that have the tag Owner=Finance. ::
 
     aws ec2 describe-vpc-peering-connections --filters Name=tag:Owner,Values=Finance
 
 
-This example describes all of the VPC peering connections you requested for the specified VPC, vpc-1a2b3c4d.
-
-Command::
+The following ``describe-vpc-peering-connections`` example describes all of the VPC peering connections you requested for the specified VPC, vpc-1a2b3c4d. ::
 
     aws ec2 describe-vpc-peering-connections --filters Name=requester-vpc-info.vpc-id,Values=vpc-1a2b3c4d
 

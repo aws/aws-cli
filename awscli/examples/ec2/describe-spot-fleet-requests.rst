@@ -1,8 +1,6 @@
 **Example 1: To describe your Spot fleet requests**
 
-This example describes all of your Spot fleet requests.
-
-Command::
+The following ``describe-spot-fleet-requests`` example describes all of your Spot fleet requests. ::
 
     aws ec2 describe-spot-fleet-requests
 
@@ -79,9 +77,7 @@ Output::
 
 **Example 2: To describe a Spot fleet request**
 
-This example describes the specified Spot fleet request.
-
-Command::
+The following ``describe-spot-fleet-requests`` example describes the specified Spot fleet request. ::
 
     aws ec2 describe-spot-fleet-requests --spot-fleet-request-ids sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE
 

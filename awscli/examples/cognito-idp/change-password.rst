@@ -1,7 +1,5 @@
 **To change a password**
 
-This example changes a password.
-
-Command::
+The following ``change-password`` example changes a password. ::
 
     aws cognito-idp change-password --previous-password OldPassword --proposed-password NewPassword --access-token ACCESS_TOKEN

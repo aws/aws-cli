@@ -1,6 +1,6 @@
 **To describe resource groups**
 
-The following ``describe-resource-groups`` command describes the resource group with the ARN of ``arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-PyGXopAI``::
+The following ``describe-resource-groups`` example describes the resource group with the ARN of ``arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-PyGXopAI``. ::
 
     aws inspector describe-resource-groups --resource-group-arns arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-PyGXopAI
 

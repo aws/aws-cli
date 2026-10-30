@@ -36,7 +36,7 @@ For more information, see `Starting a run <https://docs.aws.amazon.com/omics/lat
 
 **Example 2: To load source files from Amazon Omics**
 
-You can also load source files from Amazon Omics storage, by using service-specific URIs. The following example `workflow-inputs.json` file uses Amazon Omics URIs for read set and reference genome sources. ::
+The following ``start-run`` example loads source files from Amazon Omics storage by using service-specific URIs. The `workflow-inputs.json` file for this example uses Amazon Omics URIs for read set and reference genome sources. ::
 
     {
         "sample_name": "NA12878",

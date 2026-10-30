@@ -1,14 +1,14 @@
 **To view the attributes of the domain name associated with an elastic IP address**
 
-The following ``describe-addresses-attribute`` examples return the attributes of the domain name associated with the elastic IP address.
+The following ``describe-addresses-attribute`` example returns the attributes of the domain name associated with the elastic IP address.
 
-Linux::
+The following command is for Linux. ::
 
     aws ec2 describe-addresses-attribute \
         --allocation-ids eipalloc-abcdef01234567890 \
         --attribute domain-name
         
-Windows::
+The following command is for Windows. ::
 
     aws ec2 describe-addresses-attribute ^
         --allocation-ids eipalloc-abcdef01234567890 ^

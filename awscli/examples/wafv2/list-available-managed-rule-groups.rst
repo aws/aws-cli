@@ -1,6 +1,6 @@
 **To retrieve the managed rule groups**
 
-The following ``list-available-managed-rule-groups`` returns the list of all managed rule groups that are currently available for use in your web ACLs. ::
+The following ``list-available-managed-rule-groups`` example returns the list of all managed rule groups that are currently available for use in your web ACLs. ::
 
 
     aws wafv2 list-available-managed-rule-groups \

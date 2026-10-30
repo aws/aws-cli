@@ -59,7 +59,7 @@ For more information, see `Updating a Table <https://docs.aws.amazon.com/amazond
 
 **Example 2: To create a global secondary index**
 
-The following example adds a global secondary index to the ``MusicCollection`` table. ::
+The following ``update-table`` example adds a global secondary index to the ``MusicCollection`` table. ::
 
     aws dynamodb update-table \
         --table-name MusicCollection \
@@ -165,7 +165,7 @@ For more information, see `Updating a Table <https://docs.aws.amazon.com/amazond
 
 **Example 3: To enable DynamoDB Streams on a table**
 
-The following command enables DynamoDB Streams on the ``MusicCollection`` table. ::
+The following ``update-table`` example enables DynamoDB Streams on the ``MusicCollection`` table. ::
 
     aws dynamodb update-table \
         --table-name MusicCollection \
@@ -277,7 +277,7 @@ For more information, see `Updating a Table <https://docs.aws.amazon.com/amazond
 
 **Example 4: To enable server-side encryption**
 
-The following example enables server-side encryption on the ``MusicCollection`` table. ::
+The following ``update-table`` example enables server-side encryption on the ``MusicCollection`` table. ::
 
     aws dynamodb update-table \
         --table-name MusicCollection \

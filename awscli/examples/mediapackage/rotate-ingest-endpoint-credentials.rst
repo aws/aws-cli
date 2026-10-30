@@ -1,6 +1,6 @@
 **To rotate ingest credentials**
 
-The following ``rotate-ingest-endpoint-credentials`` command rotates the WebDAV username and password for the specified ingest endpoint. ::
+The following ``rotate-ingest-endpoint-credentials`` example rotates the WebDAV username and password for the specified ingest endpoint. ::
 
     aws mediapackage rotate-ingest-endpoint-credentials \
         --id test \

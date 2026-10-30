@@ -1,8 +1,6 @@
 **To view a list of repositories**
 
-This example lists all AWS CodeCommit repositories associated with the user's AWS account.
-
-Command::
+The following ``list-repositories`` example lists all AWS CodeCommit repositories associated with the user's AWS account. ::
 
     aws codecommit list-repositories
 

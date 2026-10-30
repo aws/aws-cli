@@ -1,6 +1,6 @@
 **To list the faces in a collection**
 
-The following ``list-faces`` command lists the faces in the specified collection. ::
+The following ``list-faces`` example lists the faces in the specified collection. ::
 
     aws rekognition list-faces \
         --collection-id MyCollection

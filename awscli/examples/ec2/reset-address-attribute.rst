@@ -2,13 +2,13 @@
 
 The following ``reset-address-attribute`` examples reset the domain name attribute of an elastic IP address.
 
-Linux::
+For Linux, use the following command. ::
 
     aws ec2 reset-address-attribute \
         --allocation-id eipalloc-abcdef01234567890 \
         --attribute domain-name
 
-Windows::
+For Windows, use the following command. ::
 
     aws ec2 reset-address-attribute ^
         --allocation-id eipalloc-abcdef01234567890 ^

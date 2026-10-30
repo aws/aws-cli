@@ -1,6 +1,6 @@
 **To create a CloudFront field-level encryption configuration**
 
-The following example creates a field-level encryption configuration by
+The following ``create-field-level-encryption-config`` example creates a field-level encryption configuration by
 providing the configuration parameters in a JSON file named
 ``fle-config.json``. Before you can create a field-level encryption
 configuration, you must have a field-level encryption profile. To create a
@@ -10,9 +10,7 @@ profile, see the `create-field-level-encryption-profile
 For more information about CloudFront field-level
 encryption, see
 `Using Field-Level Encryption to Help Protect Sensitive Data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`_
-in the *Amazon CloudFront Developer Guide*.
-
-::
+in the *Amazon CloudFront Developer Guide*. ::
 
     aws cloudfront create-field-level-encryption-config \
         --field-level-encryption-config file://fle-config.json

@@ -1,6 +1,6 @@
 **To detach a policy from a role**
 
-This example removes the managed policy with the ARN ``arn:aws:iam::123456789012:policy/FederatedTesterAccessPolicy`` from the role called ``FedTesterRole``. ::
+The following ``detach-role-policy`` example removes the managed policy with the ARN ``arn:aws:iam::123456789012:policy/FederatedTesterAccessPolicy`` from the role called ``FedTesterRole``. ::
 
     aws iam detach-role-policy \
         --role-name FedTesterRole \

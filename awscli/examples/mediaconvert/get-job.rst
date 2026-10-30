@@ -1,6 +1,6 @@
 **To get details for a particular job**
 
-The following example requests the information for the job with ID ``1234567890987-1ab2c3``, which in this example ended in an error. ::
+The following ``get-job`` example requests the information for the job with ID ``1234567890987-1ab2c3``, which in this example ended in an error. ::
 
     aws mediaconvert get-job \
         --endpoint-url https://abcd1234.mediaconvert.region-name-1.amazonaws.com \

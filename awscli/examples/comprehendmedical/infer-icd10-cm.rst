@@ -103,7 +103,7 @@ For more information, see `Infer ICD10-CM <https://docs.aws.amazon.com/comprehen
 
 **Example 2: To detect medical condition entities and link to the ICD-10-CM Ontology from a file pathway**
 
-The following ``infer-icd-10-cm`` example labels the detected medical condition entities and links those entities with codes in the 2019 edition of the International Classification of Diseases Clinical Modification (ICD-10-CM). ::
+The following ``infer-icd10-cm`` example labels the detected medical condition entities and links those entities with codes in the 2019 edition of the International Classification of Diseases Clinical Modification (ICD-10-CM). ::
 
     aws comprehendmedical infer-icd10-cm \
         --text file://icd10cm.txt

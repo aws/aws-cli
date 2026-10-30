@@ -1,6 +1,6 @@
 **To list the uploaded parts of a multipart upload**
 
-The following command lists the uploaded parts for a multipart upload to a vault named ``my-vault``::
+The following ``list-parts`` example lists the uploaded parts for a multipart upload to a vault named ``my-vault``. ::
 
     aws glacier list-parts --account-id - --vault-name my-vault --upload-id "SYZi7qnL-YGqGwAm8Kn3BLP2ElNCvnB-5961R09CSaPmPwkYGHOqeN_nX3-Vhnd2yF0KfB5FkmbnBU9GubbdrCs8ut-D"
 

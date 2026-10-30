@@ -1,6 +1,6 @@
 **To update a cluster**
 
-The following update-cluster`` updates the parameter group of a cluster to my-parameter-group. ::
+The following ``update-cluster`` example updates the parameter group of a cluster to my-parameter-group. ::
 
     aws memorydb update-cluster \
         --cluster-name my-cluster \

@@ -1,6 +1,6 @@
 **To return a list of ACLs**
 
-The following `describe-acls`` returns a list of ACLs. ::
+The following ``describe-acls`` example returns a list of ACLs. ::
 
     aws memorydb describe-acls
 

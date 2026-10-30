@@ -1,6 +1,6 @@
 **To delete a configuration**
 
-The following ``delete-playback-configuration`` deletes a configuration named ``campaign_short``. ::
+The following ``delete-playback-configuration`` example deletes a configuration named ``campaign_short``. ::
 
     aws mediatailor delete-playback-configuration \
         --name campaign_short

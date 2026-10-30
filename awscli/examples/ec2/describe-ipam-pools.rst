@@ -2,12 +2,12 @@
 
 The following ``describe-ipam-pools`` example shows the details for pools.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 describe-ipam-pools \
         --filters Name=owner-id,Values=123456789012 Name=ipam-scope-id,Values=ipam-scope-02fc38cd4c48e7d38
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 describe-ipam-pools ^
         --filters Name=owner-id,Values=123456789012 Name=ipam-scope-id,Values=ipam-scope-02fc38cd4c48e7d38

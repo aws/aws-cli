@@ -1,8 +1,6 @@
 **To create a key pair**
 
-This example creates a key pair named ``MyKeyPair``.
-
-Command::
+The following ``create-key-pair`` example creates a key pair named ``MyKeyPair``. ::
 
     aws ec2 create-key-pair --key-name MyKeyPair
 

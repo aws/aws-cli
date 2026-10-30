@@ -1,8 +1,6 @@
 **To create a default VPC**
 
-This example creates a default VPC.
-
-Command::
+The following ``create-default-vpc`` example creates a default VPC. ::
 
     aws ec2 create-default-vpc
 

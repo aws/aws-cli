@@ -1,6 +1,6 @@
 **Example 1: To get a list of custom domain names**
 
-The following ``get-domain-names`` command gets a list of domain names. ::
+The following ``get-domain-names`` example gets a list of domain names. ::
 
     aws apigateway get-domain-names
 
@@ -21,7 +21,7 @@ For more information, see `Custom domain names for private APIs in API Gateway <
 
 **Example 2: To get a list of custom domain names owned by this AWS account**
 
-The following ``get-domain-names`` command gets a list of domain names owned by this AWS account. ::
+The following ``get-domain-names`` example gets a list of domain names owned by this AWS account. ::
 
     aws apigateway get-domain-names \
         --resource-owner SELF
@@ -66,7 +66,7 @@ For more information, see `Custom domain names for private APIs in API Gateway <
 
 **Example 3: To get a list of custom domain names owned by other AWS accounts that you can create a domain name access association with.**
 
-The following ``get-domain-names`` command gets a list of domain names owned by other AWS accounts that you have access to create a domain name access association with. ::
+The following ``get-domain-names`` example gets a list of domain names owned by other AWS accounts that you have access to create a domain name access association with. ::
 
     aws apigateway get-domain-names \
         --resource-owner OTHER_ACCOUNTS

@@ -1,6 +1,6 @@
 **To attach a block storage disk to an instance**
 
-The following ``attach-disk`` example attaches disk ``Disk-1`` to instance ``WordPress_Multisite-1`` with the disk path of ``/dev/xvdf`` ::
+The following ``attach-disk`` example attaches disk ``Disk-1`` to instance ``WordPress_Multisite-1`` with the disk path of ``/dev/xvdf``. ::
 
     aws lightsail attach-disk \
         --disk-name Disk-1 \

@@ -1,6 +1,6 @@
 **Example 1: To encrypt the contents of a file (Linux and macOS)**
 
-The following ``encrypt`` command demonstrates the recommended way to encrypt data with the AWS CLI. ::
+The following ``encrypt`` example demonstrates the recommended way to encrypt data with the AWS CLI. ::
 
     aws kms encrypt \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
@@ -33,7 +33,7 @@ The command does several things:
 
 **Example 2: To encrypt the contents of a file (Windows)**
 
-This example is the same as the previous one, except that it uses the ``certutil`` tool instead of ``base64``. This procedure requires two commands, as shown in the following example. ::
+The following ``encrypt`` example is the same as the previous one, except that it uses the ``certutil`` tool instead of ``base64``. This procedure requires two commands, as shown in the following example. ::
 
     aws kms encrypt \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
@@ -45,7 +45,7 @@ This example is the same as the previous one, except that it uses the ``certutil
 
 **Example 3: To encrypt the contents of a file with an asymmetric KMS key**
 
-The following ``encrypt`` command shows how to encrypt plaintext with an asymmetric KMS key. The ``--encryption-algorithm`` parameter is required. As in all ``encrypt`` CLI commands, the ``plaintext`` parameter must be base64-encoded, or you must use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file. ::
+The following ``encrypt`` example shows how to encrypt plaintext with an asymmetric KMS key. The ``--encryption-algorithm`` parameter is required. As in all ``encrypt`` CLI commands, the ``plaintext`` parameter must be base64-encoded, or you must use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file. ::
 
     aws kms encrypt \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \

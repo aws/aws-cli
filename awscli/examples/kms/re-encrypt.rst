@@ -1,6 +1,6 @@
 **Example 1: To re-encrypt an encrypted message under a different symmetric KMS key (Linux and macOS)**
 
-The following ``re-encrypt`` command example demonstrates the recommended way to re-encrypt data with the AWS CLI.
+The following ``re-encrypt`` example demonstrates the recommended way to re-encrypt data with the AWS CLI.
 
 * Provide the ciphertext in a file. 
 
@@ -38,7 +38,7 @@ For more information, see `ReEncrypt <https://docs.aws.amazon.com/kms/latest/API
 
 **Example 2: To re-encrypt an encrypted message under a different symmetric KMS key (Windows command prompt)**
 
-The following ``re-encrypt`` command example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
+The following ``re-encrypt`` example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
 
 Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 
@@ -49,7 +49,7 @@ Before running this command, replace the example key ID with a valid key ID from
         --query CiphertextBlob ^
         --output text > ExampleReEncryptedFile.base64
         
-Then use the ``certutil`` utility ::
+Then use the ``certutil`` utility. ::
 
     certutil -decode ExamplePlaintextFile.base64 ExamplePlaintextFile
 

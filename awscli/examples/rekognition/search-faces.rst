@@ -1,6 +1,6 @@
 **To search for faces in a collection that match a face ID.**
 
-The following ``search-faces`` command searches for faces in a collection that match the specified face ID. ::
+The following ``search-faces`` example searches for faces in a collection that match the specified face ID. ::
 
     aws rekognition search-faces \
         --face-id 8d3cfc70-4ba8-4b36-9644-90fba29c2dac \

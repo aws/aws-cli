@@ -1,6 +1,6 @@
 **To list all current Rx-Norm inference jobs**
 
-The following  example shows how ``list-rx-norm-inference-jobs`` returns a list of current asynchronous Rx-Norm batch inference jobs. ::
+The following ``list-rx-norm-inference-jobs`` example returns a list of current asynchronous Rx-Norm batch inference jobs. ::
 
     aws comprehendmedical list-rx-norm-inference-jobs
 

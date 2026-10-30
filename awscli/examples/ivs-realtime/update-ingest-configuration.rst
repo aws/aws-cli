@@ -1,6 +1,6 @@
 **To update an ingest configuration**
 
-The following ``update-inegst-configuration`` example updates an ingest configuration to attach it to a stage. ::
+The following ``update-ingest-configuration`` example updates an ingest configuration to attach it to a stage. ::
 
     aws ivs-realtime update-ingest-configuration \
         --arn arn:aws:ivs:us-west-2:123456789012:ingest-configuration/AbCdEfGh1234 \

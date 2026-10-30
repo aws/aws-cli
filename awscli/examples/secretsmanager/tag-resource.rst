@@ -1,6 +1,6 @@
 **Example 1: To add a tag to a secret**
 
-The following example shows how to attach a tag with shorthand syntax. ::
+The following ``tag-resource`` example attaches a tag to a secret by using shorthand syntax. ::
 
     aws secretsmanager tag-resource \
         --secret-id MyTestSecret \

@@ -1,7 +1,7 @@
 
 **To copy package versions from one repository to another**
 
-The following ``copy-package-versions`` moves versions 4.0.0 and 5.0.0 of a package named test-package from my-repo to test-repo. ::
+The following ``copy-package-versions`` example copies versions 4.0.0 and 5.0.0 of a package named test-package from my-repo to test-repo. ::
 
     aws codeartifact copy-package-versions \
         --domain test-domain \

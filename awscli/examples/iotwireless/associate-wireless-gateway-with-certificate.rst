@@ -1,6 +1,6 @@
 **To associate the certificate with the wireless gateway**
 
-The following ``associate-wireless-gateway-with-certificate`` associates a wireless gateway with a certificate. ::
+The following ``associate-wireless-gateway-with-certificate`` example associates a wireless gateway with a certificate. ::
 
     aws iotwireless associate-wireless-gateway-with-certificate \
         --id "12345678-a1b2-3c45-67d8-e90fa1b2c34d" \

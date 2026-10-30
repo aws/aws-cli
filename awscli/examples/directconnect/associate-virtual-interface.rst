@@ -1,8 +1,6 @@
 **To associate a virtual interface with a connection**
 
-The following example associates the specified virtual interface with the specified LAG. Alternatively, to associate the virtual interface with a connection, specify the ID of an AWS Direct Connect connection for ``--connection-id``; for example, ``dxcon-ffnikghc``.
-
-Command::
+The following ``associate-virtual-interface`` example associates the specified virtual interface with the specified LAG. Alternatively, to associate the virtual interface with a connection, specify the ID of an AWS Direct Connect connection for ``--connection-id``; for example, ``dxcon-ffnikghc``. ::
 
     aws directconnect associate-virtual-interface --connection-id dxlag-ffjhj9lx --virtual-interface-id dxvif-fgputw0j
 

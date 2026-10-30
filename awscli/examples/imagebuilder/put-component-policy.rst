@@ -1,6 +1,6 @@
 **To apply a resource policy to a component**
 
-The following ``put-component-policy`` command applies a resource policy to a build component to enable cross-account sharing of build components. We recommend you use the RAM CLI command ``create-resource-share``. If you use the EC2 Image Builder CLI command ``put-component-policy``, you must also use the RAM CLI command ``promote-resource-share-create-from-policy`` in order for the resource to be visible to all principals with whom the resource is shared. ::
+The following ``put-component-policy`` example applies a resource policy to a build component to enable cross-account sharing of build components. We recommend you use the RAM CLI command ``create-resource-share``. If you use the EC2 Image Builder CLI command ``put-component-policy``, you must also use the RAM CLI command ``promote-resource-share-create-from-policy`` in order for the resource to be visible to all principals with whom the resource is shared. ::
 
     aws imagebuilder put-component-policy \
         --component-arn arn:aws:imagebuilder:us-west-2:123456789012:component/examplecomponent/2019.12.02/1 \

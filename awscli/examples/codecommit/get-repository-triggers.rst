@@ -1,6 +1,6 @@
 **To get information about triggers in a repository**
 
-This example shows details about triggers configured for an AWS CodeCommit repository named ``MyDemoRepo``. ::
+The following ``get-repository-triggers`` example displays details about triggers configured for an AWS CodeCommit repository named ``MyDemoRepo``. ::
 
     aws codecommit get-repository-triggers \
         --repository-name MyDemoRepo

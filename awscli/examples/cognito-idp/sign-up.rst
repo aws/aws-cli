@@ -1,8 +1,6 @@
 **To sign up a user**
 
-This example signs up jane@example.com.
-
-Command::
+The following ``sign-up`` example signs up jane@example.com. ::
 
     aws cognito-idp sign-up --client-id 3n4b5urk1ft4fl3mg5e62d9ado --username jane@example.com --password PASSWORD --user-attributes Name="email",Value="jane@example.com" Name="name",Value="Jane"
 

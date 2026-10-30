@@ -98,12 +98,14 @@ Output::
 
 **Example 4: To create an EC2 Fleet that launches Spot Instances using the lowest-price allocation strategy**
 
-If the allocation strategy for Spot Instances is not specified, the default allocation strategy, which is ``lowest-price``, is used. The following ``create-fleet`` example creates an EC2 Fleet using the ``lowest-price`` allocation strategy. The three launch specifications, which override the launch template, have different instance types but the same weighted capacity and subnet. The total target capacity is 2 instances and the default purchasing model is ``spot``. The EC2 Fleet launches 2 Spot Instances using the instance type of the launch specification with the lowest price.
+The following ``create-fleet`` example creates an EC2 Fleet using the ``lowest-price`` allocation strategy. If the allocation strategy for Spot Instances is not specified, the default allocation strategy, which is ``lowest-price``, is used. The three launch specifications, which override the launch template, have different instance types but the same weighted capacity and subnet. The total target capacity is 2 instances and the default purchasing model is ``spot``. The EC2 Fleet launches 2 Spot Instances using the instance type of the launch specification with the lowest price.
 
 When you create an EC2 Fleet, use a JSON file to specify information about the instances to launch. ::
 
     aws ec2 create-fleet \
-        --cli-input-json file://file_name.jsonContents of file_name.json::
+        --cli-input-json file://file_name.json
+
+Contents of file_name.json::
 
     {
         "LaunchTemplateConfigs": [

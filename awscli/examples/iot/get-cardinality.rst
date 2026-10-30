@@ -1,6 +1,6 @@
 **To return the approximate count of unique values that match the query**
 
-You can use the following setup script to create 10 things representing 10 temperature sensors. Each new thing has 3 attributes. ::
+The following ``get-cardinality`` example returns the number of racks that have temperature sensors reporting abnormal temperature values. To set up the example, you can use the following setup script to create 10 things representing 10 temperature sensors. Each new thing has 3 attributes. ::
 
     # Bash script. If in other shells, type `bash` before running
     Temperatures=(70 71 72 73 74 75 47 97 98 99)

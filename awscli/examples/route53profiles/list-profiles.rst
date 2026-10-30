@@ -1,6 +1,6 @@
 **To list Profiles**
 
-The following ``list-profiles`` lists the Profiles in your AWS account and displays additional information about them. ::
+The following ``list-profiles`` example lists the Profiles in your AWS account and displays additional information about them. ::
 
     aws route53profiles list-profiles
 

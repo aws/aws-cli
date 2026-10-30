@@ -1,6 +1,6 @@
 **To change the password for your IAM user**
 
-To change the password for your IAM user, we recommend using the ``--cli-input-json`` parameter to pass a JSON file that contains your old and new passwords. Using this method, you can use strong passwords with non-alphanumeric characters. It can be difficult to use passwords with non-alphanumeric characters when you pass them as command line parameters. To use the ``--cli-input-json`` parameter, start by using the ``change-password`` command with the ``--generate-cli-skeleton`` parameter, as in the following example. ::
+The following ``change-password`` example changes the password for your IAM user. To change the password, we recommend using the ``--cli-input-json`` parameter to pass a JSON file that contains your old and new passwords. Using this method, you can use strong passwords with non-alphanumeric characters. It can be difficult to use passwords with non-alphanumeric characters when you pass them as command line parameters. To use the ``--cli-input-json`` parameter, start by using the ``change-password`` command with the ``--generate-cli-skeleton`` parameter, as in the following example. ::
 
     aws iam change-password \
         --generate-cli-skeleton > change-password.json

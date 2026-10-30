@@ -1,6 +1,6 @@
 **Example 1: To get the current state of a change calendar**
 
-This ``get-calendar-state`` example returns the state of a calendar at the current time. Because the example doesn't specify a time, the current state of the calendar is reported. ::
+The following ``get-calendar-state`` example returns the state of a calendar at the current time. Because the example doesn't specify a time, the current state of the calendar is reported. ::
 
     aws ssm get-calendar-state \
         --calendar-names "MyCalendar"
@@ -15,7 +15,7 @@ Output::
 
 **Example 2: To get the state of a change calendar at a specified time**
 
-This ``get-calendar-state`` example returns the state of a calendar at the specified time. ::
+The following ``get-calendar-state`` example returns the state of a calendar at the specified time. ::
 
     aws ssm get-calendar-state \
         --calendar-names "MyCalendar" \

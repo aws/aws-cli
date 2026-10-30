@@ -1,8 +1,6 @@
 **To describe your LAGs**
 
-The following command describes all of your LAGs for the current region.
-
-Command::
+The following ``describe-lags`` example describes all of your LAGs for the current region. ::
 
     aws directconnect describe-lags
 

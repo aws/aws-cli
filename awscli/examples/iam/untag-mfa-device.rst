@@ -1,6 +1,6 @@
 **To remove a tag from an MFA device**
 
-The following ``untag-mfa-device`` command removes any tag with the key name 'Department' from the specified MFA device. ::
+The following ``untag-mfa-device`` example removes any tag with the key name 'Department' from the specified MFA device. ::
 
     aws iam untag-mfa-device \
         --serial-number arn:aws:iam::123456789012:mfa/alice \

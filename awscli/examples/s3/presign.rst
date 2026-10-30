@@ -1,6 +1,6 @@
 **Example 1: To create a pre-signed URL with the default one hour lifetime that links to an object in an S3 bucket**
 
-The following ``presign`` command generates a pre-signed URL for a specified bucket and key that is valid for one hour. ::
+The following ``presign`` example generates a pre-signed URL for a specified bucket and key that is valid for one hour. ::
 
     aws s3 presign s3://amzn-s3-demo-bucket/test2.txt
 
@@ -10,7 +10,7 @@ Output::
 
 **Example 2: To create a pre-signed URL with a custom lifetime that links to an object in an S3 bucket**
 
-The following ``presign`` command generates a pre-signed URL for a specified bucket and key that is valid for one week. ::
+The following ``presign`` example generates a pre-signed URL for a specified bucket and key that is valid for one week. ::
 
     aws s3 presign s3://amzn-s3-demo-bucket/test2.txt \
         --expires-in 604800

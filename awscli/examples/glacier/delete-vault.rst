@@ -1,6 +1,6 @@
 **To delete a vault**
 
-The following command deletes a vault named ``my-vault``::
+The following ``delete-vault`` example deletes a vault named ``my-vault``. ::
 
     aws glacier delete-vault --vault-name my-vault --account-id -
 

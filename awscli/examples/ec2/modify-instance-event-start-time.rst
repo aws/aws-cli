@@ -1,6 +1,6 @@
 **To modify the event start time for an instance**
 
-The following ``modify-instance-event-start-time`` command shows how to modify the event start time for the specified instance. Specify the event ID by using the ``--instance-event-id`` parameter. Specify the new date and time by using the ``--not-before`` parameter. ::
+The following ``modify-instance-event-start-time`` example modifies the event start time for the specified instance. Specify the event ID by using the ``--instance-event-id`` parameter. Specify the new date and time by using the ``--not-before`` parameter. ::
 
     aws ec2 modify-instance-event-start-time --instance-id i-1234567890abcdef0 --instance-event-id instance-event-0abcdef1234567890 --not-before 2019-03-25T10:00:00.000
 

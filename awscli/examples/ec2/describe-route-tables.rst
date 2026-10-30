@@ -1,6 +1,6 @@
 **To describe your route tables**
 
-The following ``describe-route-tables`` example retrieves the details about your route tables ::
+The following ``describe-route-tables`` example retrieves the details about your route tables. ::
 
     aws ec2 describe-route-tables
 

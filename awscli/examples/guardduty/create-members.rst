@@ -1,6 +1,6 @@
 **To associate a new member with your GuardDuty master account in the current region.**
 
-This example shows how to associate member accounts to be managed by the current account as the GuardDuty master. ::
+The following ``create-members`` example associates member accounts to be managed by the current account as the GuardDuty master. ::
 
     aws guardduty create-members
         --detector-id b6b992d6d2f48e64bc59180bfexample \

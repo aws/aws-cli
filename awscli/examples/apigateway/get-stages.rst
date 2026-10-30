@@ -1,6 +1,6 @@
 **To get the list of stages for a REST API**
 
-Command::
+The following ``get-stages`` example gets the list of stages for the specified REST API. ::
 
     aws apigateway get-stages --rest-api-id 1234123412
 

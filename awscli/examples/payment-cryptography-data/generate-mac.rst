@@ -1,6 +1,6 @@
 **To generate a MAC**
 
-The following ``generate-card-validation-data`` example generates a Hash-Based Message Authentication Code (HMAC) for card data authentication using the algorithm HMAC_SHA256 and an HMAC encryption key. The key must have ``KeyUsage`` set to ``TR31_M7_HMAC_KEY`` and ``KeyModesOfUse`` to ``Generate``. ::
+The following ``generate-mac`` example generates a Hash-Based Message Authentication Code (HMAC) for card data authentication using the algorithm HMAC_SHA256 and an HMAC encryption key. The key must have ``KeyUsage`` set to ``TR31_M7_HMAC_KEY`` and ``KeyModesOfUse`` to ``Generate``. ::
 
     aws payment-cryptography-data generate-mac \
         --key-identifier arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h \

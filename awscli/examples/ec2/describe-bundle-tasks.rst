@@ -1,8 +1,6 @@
 **To describe your bundle tasks**
 
-This example describes all of your bundle tasks.
-
-Command::
+The following ``describe-bundle-tasks`` example describes all of your bundle tasks. ::
 
     aws ec2 describe-bundle-tasks
 

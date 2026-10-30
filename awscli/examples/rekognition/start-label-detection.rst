@@ -1,6 +1,6 @@
 **To detect objects and scenes in a video**
 
-The following ``start-label-detection`` command starts a job to detect objects and scenes in the specified video file stored in an Amazon S3 bucket. ::
+The following ``start-label-detection`` example starts a job to detect objects and scenes in the specified video file stored in an Amazon S3 bucket. ::
 
     aws rekognition start-label-detection \
         --video "S3Object={Bucket=MyVideoS3Bucket,Name=MyVideoFile.mpg}"

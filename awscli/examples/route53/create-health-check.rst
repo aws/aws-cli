@@ -1,6 +1,6 @@
 **To create a health check**
 
-The following ``create-health-check`` command creates a health check using the caller reference ``2014-04-01-18:47`` and the JSON-formatted configuration in the file ``C:\awscli\route53\create-health-check.json``::
+The following ``create-health-check`` example creates a health check using the caller reference ``2014-04-01-18:47`` and the JSON-formatted configuration in the file ``C:\awscli\route53\create-health-check.json``. ::
 
     aws route53 create-health-check --caller-reference 2014-04-01-18:47 --health-check-config file://C:\awscli\route53\create-health-check.json
 

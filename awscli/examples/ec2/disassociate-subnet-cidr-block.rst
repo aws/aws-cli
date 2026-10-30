@@ -1,8 +1,6 @@
 **To disassociate an IPv6 CIDR block from a subnet**
 
-This example disassociates an IPv6 CIDR block from a subnet using the association ID for the CIDR block.
-
-Command::
+The following ``disassociate-subnet-cidr-block`` example disassociates an IPv6 CIDR block from a subnet using the association ID for the CIDR block. ::
 
     aws ec2 disassociate-subnet-cidr-block --association-id subnet-cidr-assoc-3aa54053
 

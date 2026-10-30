@@ -1,6 +1,6 @@
 **To generate a credential report**
 
-The following example attempts to generate a credential report for the AWS account. ::
+The following ``generate-credential-report`` example attempts to generate a credential report for the AWS account. ::
 
     aws iam generate-credential-report
 

@@ -1,6 +1,6 @@
 **To describe the available notification types**
 
-This example describes the available notification types. ::
+The following ``describe-auto-scaling-notification-types`` example describes the available notification types. ::
 
     aws autoscaling describe-auto-scaling-notification-types
 

@@ -1,6 +1,6 @@
 **To create a key pair**
 
-The following ``create-key-pair`` example creates a key pair that you can use to authenticate and connect to an instance.  ::
+The following ``create-key-pair`` example creates a key pair that you can use to authenticate and connect to an instance. ::
 
     aws lightsail create-key-pair \
         --key-pair-name MyPersonalKeyPair

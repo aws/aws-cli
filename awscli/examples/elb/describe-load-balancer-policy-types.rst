@@ -1,8 +1,6 @@
 **To describe the load balancer policy types defined by Elastic Load Balancing**
 
-This example describes the load balancer policy types that you can use to create policy configurations for your load balancer.
-
-Command::
+The following ``describe-load-balancer-policy-types`` example describes the load balancer policy types that you can use to create policy configurations for your load balancer. ::
 
     aws elb describe-load-balancer-policy-types
 

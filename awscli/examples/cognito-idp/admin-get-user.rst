@@ -1,8 +1,6 @@
 **To get a user**
 
-This example gets information about username jane@example.com.
-
-Command::
+The following ``admin-get-user`` example gets information about username jane@example.com. ::
 
     aws cognito-idp admin-get-user --user-pool-id us-west-2_aaaaaaaaa --username jane@example.com
 

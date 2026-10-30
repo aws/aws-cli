@@ -1,6 +1,6 @@
 **To get a list of models for a REST API**
 
-Command::
+The following ``get-models`` example gets a list of models for the specified REST API. ::
 
     aws apigateway get-models --rest-api-id 1234123412
 

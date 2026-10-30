@@ -1,6 +1,6 @@
 **To get a credential report**
 
-This example opens the returned report and outputs it to the pipeline as an array of text lines. ::
+The following ``get-credential-report`` example opens the returned report and outputs it to the pipeline as an array of text lines. ::
 
     aws iam get-credential-report
 

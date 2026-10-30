@@ -1,6 +1,6 @@
 **To retrieve all sampling rules**
 
-The following ``get-sampling-rules`` example displays details for all available sampling rules.::
+The following ``get-sampling-rules`` example displays details for all available sampling rules. ::
 
     aws xray get-sampling-rules
 	

@@ -1,6 +1,6 @@
 **To retrieve a specific regex pattern set**
 
-The following ``get-regex-pattern-set`` retrieves the regex pattern set with the specified name, scope, region, and ID. You can get the ID for a regex pattern set from the commands ``create-regex-pattern-set`` and ``list-regex-pattern-sets``. ::
+The following ``get-regex-pattern-set`` example retrieves the regex pattern set with the specified name, scope, region, and ID. You can get the ID for a regex pattern set from the commands ``create-regex-pattern-set`` and ``list-regex-pattern-sets``. ::
 
     aws wafv2 get-regex-pattern-set \
         --name regexPatterSet01 \

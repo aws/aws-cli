@@ -1,6 +1,6 @@
 **To change an IAM role's description or session duration**
 
-The following ``update-role`` command changes the description of the IAM role ``production-role`` to ``Main production role`` and sets the maximum session duration to 12 hours. ::
+The following ``update-role`` example changes the description of the IAM role ``production-role`` to ``Main production role`` and sets the maximum session duration to 12 hours. ::
 
     aws iam update-role \
         --role-name production-role \

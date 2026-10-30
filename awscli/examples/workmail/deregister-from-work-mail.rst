@@ -1,6 +1,6 @@
 **To disable an existing entity**
 
-The following ``deregister-from-work-mail`` command disables an existing entity (user, group, or resource) from using Amazon WorkMail. ::
+The following ``deregister-from-work-mail`` example disables an existing entity (user, group, or resource) from using Amazon WorkMail. ::
 
     aws workmail deregister-from-work-mail \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

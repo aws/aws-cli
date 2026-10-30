@@ -1,6 +1,6 @@
 **To pause running until an instance is deregistered**
 
-The following ``wait instance-deregistered`` command pauses and continues only after it can confirm that the specified instance is deregistered.
+The following ``wait instance-deregistered`` example pauses and continues only after it can confirm that the specified instance is deregistered. ::
 
     aws elb wait instance-deregistered \
         --load-balancer-name my-loadbalancer \

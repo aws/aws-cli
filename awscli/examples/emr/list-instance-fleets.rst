@@ -1,8 +1,6 @@
 **To get configuration details of instance fleets in a cluster**
 
-This example lists the details of instance fleets in the cluster specified.
-
-Command::
+The following ``list-instance-fleets`` example lists the details of instance fleets in the cluster specified. ::
 
     list-instance-fleets --cluster-id 'j-12ABCDEFGHI34JK'
 

@@ -1,8 +1,8 @@
 **To add tags to a resource**
 
-The following example adds two tags (key names and values) to a resource. ::
+The following ``tag-resource`` example adds two tags (key names and values) to a resource. ::
 
-    aws pinpoint list-tags-for-resource \
+    aws pinpoint tag-resource \
         --resource-arn arn:aws:mobiletargeting:us-east-1:AIDACKCEVSQ6C2EXAMPLE:apps/810c7aab86d42fb2b56c8c966example \
         --tags-model tags={Stack=Production,Year=2019}
 

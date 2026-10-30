@@ -1,6 +1,6 @@
 **To enable automatic renewal of a domain**
 
-The following ``enable-domain-auto-renew`` command configures Route 53 to automatically renew the domain ``example.com`` before registration for the domain expires. 
+The following ``enable-domain-auto-renew`` example configures Route 53 to automatically renew the domain ``example.com`` before registration for the domain expires. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 

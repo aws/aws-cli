@@ -1,6 +1,6 @@
 **To describe a cluster**
 
-- Command::
+The following ``describe-cluster`` example describes the specified cluster. ::
 
     aws emr describe-cluster --cluster-id j-XXXXXXXX
 

@@ -79,9 +79,9 @@ For more information, see `Getting started with Amazon Security Lake <https://do
 
 **Example 2: To configure your data lake in a single Region**
 
-The following ``create-data-lake`` example enables Amazon Security Lake in a single AWS Region and configures your data lake. ::
+The following ``update-data-lake`` example configures your Amazon Security Lake data lake in a single AWS Region. ::
 
-    aws securitylake create-data-lake \
+    aws securitylake update-data-lake \
         --configurations '[{"encryptionConfiguration": {"kmsKeyId":"1234abcd-12ab-34cd-56ef-1234567890ab"},"region":"us-east-2","lifecycleConfiguration": {"expiration":{"days":500},"transitions":[{"days":30,"storageClass":"GLACIER"}]}}]' \
         --meta-store-manager-role-arn "arn:aws:iam:us-east-1:123456789012:role/service-role/AmazonSecurityLakeMetaStoreManager"
 

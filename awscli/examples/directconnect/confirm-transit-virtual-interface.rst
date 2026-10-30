@@ -1,6 +1,6 @@
 **To accept ownership of a transit virtual interface**
 
-The following ``confirm-transit-virtual-interface`` accepts ownership of a transit virtual interface created by another customer. ::
+The following ``confirm-transit-virtual-interface`` example accepts ownership of a transit virtual interface created by another customer. ::
 
     aws directconnect confirm-transit-virtual-interface \
         --virtual-interface-id dxvif-fEXAMPLE \

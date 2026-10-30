@@ -1,6 +1,6 @@
 **To list the replication set**
 
-The following ``list-replication-set`` example lists the replication set Incident Manager uses to replicate and encrypt data in your AWS account. ::
+The following ``list-replication-sets`` example lists the replication set Incident Manager uses to replicate and encrypt data in your AWS account. ::
 
     aws ssm-incidents list-replication-sets 
 

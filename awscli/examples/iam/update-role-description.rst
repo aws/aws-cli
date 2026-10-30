@@ -1,6 +1,6 @@
 **To change an IAM role's description**
 
-The following ``update-role`` command changes the description of the IAM role ``production-role`` to ``Main production role``. ::
+The following ``update-role-description`` example changes the description of the IAM role ``production-role`` to ``Main production role``. ::
 
     aws iam update-role-description \
         --role-name production-role \

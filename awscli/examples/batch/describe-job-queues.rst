@@ -1,8 +1,6 @@
 **To describe a job queue**
 
-This example describes the `HighPriority` job queue.
-
-Command::
+The following ``describe-job-queues`` example describes the `HighPriority` job queue. ::
 
     aws batch describe-job-queues --job-queues HighPriority
 

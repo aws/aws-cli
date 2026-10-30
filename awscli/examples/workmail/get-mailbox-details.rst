@@ -1,6 +1,6 @@
 **To get a user's mailbox details**
 
-The following ``get-mailbox-details`` command retrieves details about the specified user's mailbox. ::
+The following ``get-mailbox-details`` example retrieves details about the specified user's mailbox. ::
 
     aws workmail get-mailbox-details \
         --organization-id m-n1pq2345678r901st2u3vx45x6789yza \

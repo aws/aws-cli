@@ -1,6 +1,6 @@
 **To enable all actions for an alarm**
 
-The following example uses the ``enable-alarm-actions`` command to enable all actions for the alarm named myalarm.::
+The following ``enable-alarm-actions`` example enables all actions for the alarm named myalarm. ::
 
     aws cloudwatch enable-alarm-actions --alarm-names myalarm
 

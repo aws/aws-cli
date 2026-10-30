@@ -1,6 +1,6 @@
 **To start an inventory retrieval job**
 
-The following command initiates a job to get an inventory of the vault ``my-vault``::
+The following ``initiate-job`` example initiates a job to get an inventory of the vault ``my-vault``. ::
 
     aws glacier initiate-job --account-id - --vault-name my-vault --job-parameters '{"Type": "inventory-retrieval"}'
 
@@ -13,7 +13,7 @@ Output::
 
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
 
-The following command initiates a job to retrieve an archive from the vault ``my-vault``::
+The following ``initiate-job`` example initiates a job to retrieve an archive from the vault ``my-vault``. ::
 
     aws glacier initiate-job --account-id - --vault-name my-vault --job-parameters file://job-archive-retrieval.json
 

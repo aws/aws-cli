@@ -2,13 +2,13 @@
 
 The following ``provision-ipam-pool-cidr`` example provisions a CIDR to an IPAM pool.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 provision-ipam-pool-cidr \
         --ipam-pool-id ipam-pool-0533048da7d823723 \
         --cidr 10.0.0.0/24
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 provision-ipam-pool-cidr ^
         --ipam-pool-id ipam-pool-0533048da7d823723 ^

@@ -1,11 +1,11 @@
 **Example 1: To create an integration response as the default response with a mapping template defined**
 
-Command::
+The following ``put-integration-response`` example creates an integration response as the default response with a mapping template defined. ::
 
     aws apigateway put-integration-response --rest-api-id 1234123412 --resource-id a1b2c3 --http-method GET --status-code 200 --selection-pattern "" --response-templates '{"application/json": "{\"json\": \"template\"}"}'
 
 **Example 2: To create an integration response with a regex of 400 and a statically defined header value**
 
-Command::
+The following ``put-integration-response`` example creates an integration response with a regex of 400 and a statically defined header value. ::
 
     aws apigateway put-integration-response --rest-api-id 1234123412 --resource-id a1b2c3 --http-method GET --status-code 400 --selection-pattern 400 --response-parameters '{"method.response.header.custom-header": "'"'"'custom-value'"'"'"}'

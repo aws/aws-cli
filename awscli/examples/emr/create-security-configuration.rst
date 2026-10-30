@@ -1,6 +1,6 @@
 **Example 1: To create a security configuration with in-transit encryption enabled with PEM for certificate provider, and at-rest encryption enabled with SSE-S3 for S3 encryption and AWS-KMS for local disk key provider**
 
-- Command::
+The following ``create-security-configuration`` example creates a security configuration named ``MySecurityConfig`` with in-transit encryption enabled with PEM for certificate provider, and at-rest encryption enabled with SSE-S3 for S3 encryption and AWS-KMS for local disk key provider. ::
 
     aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
         "EncryptionConfiguration": {
@@ -55,7 +55,7 @@
         }
     }
 
-- Command (using security_configuration.json)::
+The following ``create-security-configuration`` example creates the same security configuration by using the ``security_configuration.json`` file. ::
 
     aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
 
@@ -68,7 +68,7 @@
 
 **Example 2: To create a security configuration with Kerberos enabled using cluster-dedicated KDC and cross-realm trust**
 
-- Command::
+The following ``create-security-configuration`` example creates a security configuration named ``MySecurityConfig`` with Kerberos enabled using cluster-dedicated KDC and cross-realm trust. ::
 
     aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
         "AuthenticationConfiguration": {
@@ -113,7 +113,7 @@
         }
     }
 
-- Command (using security_configuration.json)::
+The following ``create-security-configuration`` example creates the same security configuration by using the ``security_configuration.json`` file. ::
 
     aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
 

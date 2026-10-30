@@ -1,6 +1,6 @@
 **Example 1: To find a reserved DB instance to purchase**
 
-The following ``describe-reserved-db-instances-offerings`` example lists the available reserved MySQL DB instances with the db.t2.micro instance class and a duration of one year. The offering ID is required for purchasing a reserved DB instance. ::
+The following ``purchase-reserved-db-instances-offering`` example starts by using the ``describe-reserved-db-instances-offerings`` command to list the available reserved MySQL DB instances with the db.t2.micro instance class and a duration of one year. The offering ID is required for purchasing a reserved DB instance. ::
 
     aws rds describe-reserved-db-instances-offerings \
         --product-description mysql \

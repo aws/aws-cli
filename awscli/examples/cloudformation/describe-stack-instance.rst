@@ -1,6 +1,6 @@
 **To describe a stack instance**
 
-The following command describes an instance of the specified stack set in the specified account and Region. The stack set is in the current region and account, and the instance is in the ``us-west-2`` region in account ``123456789012``.::
+The following ``describe-stack-instance`` example describes an instance of the specified stack set in the specified account and Region. The stack set is in the current region and account, and the instance is in the ``us-west-2`` region in account ``123456789012``. ::
 
     aws cloudformation describe-stack-instance \
         --stack-set-name my-stack-set \

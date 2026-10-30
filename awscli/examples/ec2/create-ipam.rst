@@ -2,14 +2,14 @@
 
 The following ``create-ipam`` example creates an IPAM.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 create-ipam \
         --description "Example description" \
         --operating-regions "RegionName=us-east-2" "RegionName=us-west-1" \
         --tag-specifications 'ResourceType=ipam,Tags=[{Key=Name,Value=ExampleIPAM}]'
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 create-ipam ^
         --description "Example description" ^

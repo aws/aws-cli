@@ -1,6 +1,6 @@
 **To list an AWS account's IAM users, groups, roles, and policies**
 
-The following ``get-account-authorization-details`` command returns information about all IAM users, groups, roles, and policies in the AWS account. ::
+The following ``get-account-authorization-details`` example returns information about all IAM users, groups, roles, and policies in the AWS account. ::
 
     aws iam get-account-authorization-details
 

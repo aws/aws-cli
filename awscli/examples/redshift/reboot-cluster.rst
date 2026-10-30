@@ -1,8 +1,6 @@
 **To reboot a cluster**
 
-This example reboots a cluster. By default, the output is in JSON format.
-
-Command::
+The following ``reboot-cluster`` example reboots a cluster. By default, the output is in JSON format. ::
 
     aws redshift reboot-cluster --cluster-identifier mycluster
 

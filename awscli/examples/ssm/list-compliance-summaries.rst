@@ -1,8 +1,6 @@
 **Example 1: To list compliance summaries for all compliance types**
 
-This example lists compliance summaries for all compliance types in your account.
-
-Command::
+The following ``list-compliance-summaries`` example lists compliance summaries for all compliance types in your account. ::
 
     aws ssm list-compliance-summaries
 
@@ -67,9 +65,7 @@ Output::
 
 **Example 2: To list compliance summaries for a specific compliance type**
 
-This example lists the compliance summary for the Patch compliance type.
-
-Command::
+The following ``list-compliance-summaries`` example lists the compliance summary for the Patch compliance type. ::
 
     aws ssm list-compliance-summaries --filters "Key=ComplianceType,Values=Patch,Type=EQUAL"
 

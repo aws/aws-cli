@@ -1,6 +1,6 @@
 **To retrieve the service setting for Parameter Store throughput**
 
-The following ``get-service-setting`` This example retrieves the current service setting for Parameter Store throughput in the specified region. ::
+The following ``get-service-setting`` example retrieves the current service setting for Parameter Store throughput in the specified region. ::
 
     aws ssm get-service-setting \
         --setting-id arn:aws:ssm:us-east-1:123456789012:servicesetting/ssm/parameter-store/high-throughput-enabled

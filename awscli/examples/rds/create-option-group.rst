@@ -1,6 +1,6 @@
 **To Create an Amazon RDS option group**
 
-The following ``create-option-group`` command creates a new Amazon RDS option group for ``Oracle Enterprise Edition`` version ``11.2`, is named ``MyOptionGroup`` and includes a description. ::
+The following ``create-option-group`` example creates a new Amazon RDS option group named ``MyOptionGroup`` with a description for ``Oracle Enterprise Edition`` version ``11.2``. ::
 
     aws rds create-option-group \
         --option-group-name MyOptionGroup \

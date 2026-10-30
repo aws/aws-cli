@@ -1,8 +1,6 @@
 **To describe prefix lists**
 
-This example lists all available prefix lists for the region.
-
-Command::
+The following ``describe-prefix-lists`` example lists all available prefix lists for the region. ::
 
     aws ec2 describe-prefix-lists
 

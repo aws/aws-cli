@@ -1,6 +1,6 @@
 **To list all tasks associated with a maintenance window execution**
 
-The following ``ssm describe-maintenance-window-execution-tasks`` example lists the tasks associated with the specified maintenance window execution. ::
+The following ``describe-maintenance-window-execution-tasks`` example lists the tasks associated with the specified maintenance window execution. ::
 
     aws ssm describe-maintenance-window-execution-tasks \
         --window-execution-id "518d5565-5969-4cca-8f0e-da3b2EXAMPLE"

@@ -1,6 +1,6 @@
 **To get information about resources that drifted from the stack definition**
 
-The following command displays information about drifted resources for the specified stack. To initiate drift detection, use the ``detect-stack-drift`` command.::
+The following ``describe-stack-resource-drifts`` example displays information about drifted resources for the specified stack. To initiate drift detection, use the ``detect-stack-drift`` command. ::
 
     aws cloudformation describe-stack-resource-drifts \
         --stack-name my-stack

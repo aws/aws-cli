@@ -1,8 +1,6 @@
 **To delete a launch template version**
 
-This example deletes the specified launch template version.
-
-Command::
+The following ``delete-launch-template-versions`` example deletes the specified launch template version. ::
 
     aws ec2 delete-launch-template-versions --launch-template-id lt-0abcd290751193123 --versions 1
 

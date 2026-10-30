@@ -1,9 +1,7 @@
 **To get a description of all cluster snapshots**
 
-This example returns a description of all cluster snapshots for the
-account.  By default, the output is in JSON format.
-
-Command::
+The following ``describe-cluster-snapshots`` example returns a description of all cluster snapshots for the
+account.  By default, the output is in JSON format. ::
 
     aws redshift describe-cluster-snapshots
 

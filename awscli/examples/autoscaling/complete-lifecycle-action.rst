@@ -1,6 +1,6 @@
 **To complete the lifecycle action**
 
-This example notifies Amazon EC2 Auto Scaling that the specified lifecycle action is complete so that it can finish launching or terminating the instance. ::
+The following ``complete-lifecycle-action`` example notifies Amazon EC2 Auto Scaling that the specified lifecycle action is complete so that it can finish launching or terminating the instance. ::
 
     aws autoscaling complete-lifecycle-action \
         --lifecycle-hook-name my-launch-hook \

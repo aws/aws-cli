@@ -1,6 +1,6 @@
 **To count open workflow executions**
 
-You can use ``swf count-open-workflow-executions`` to retrieve the number of open workflow executions for a given domain. You can specify filters to count specific classes of executions.
+The following ``count-open-workflow-executions`` example retrieves the number of open workflow executions for a given domain. You can specify filters to count specific classes of executions.
 
 The ``--domain`` and ``--start-time-filter`` arguments are required. All other arguments are optional. ::
 

@@ -1,6 +1,6 @@
 **To get your Amazon SES sending limits**
 
-The following example uses the ``get-send-quota`` command to return your Amazon SES sending limits::
+The following ``get-send-quota`` example returns your Amazon SES sending limits. ::
 
     aws ses get-send-quota
 

@@ -1,6 +1,6 @@
 **To search for faces in a collection that match the largest face in an image.**
 
-The following ``search-faces-by-image`` command searches for faces in a collection that match the largest face in the specified image.::
+The following ``search-faces-by-image`` example searches for faces in a collection that match the largest face in the specified image. ::
 
     aws rekognition search-faces-by-image \
         --image '{"S3Object":{"Bucket":"MyImageS3Bucket","Name":"ExamplePerson.jpg"}}' \

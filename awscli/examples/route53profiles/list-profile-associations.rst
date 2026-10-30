@@ -1,6 +1,6 @@
 **To list Profile associations**
 
-The following ``list-profile-associations`` lists the Profile associations in your AWS account. ::
+The following ``list-profile-associations`` example lists the Profile associations in your AWS account. ::
 
     aws route53profiles list-profile-associations
 

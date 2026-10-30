@@ -1,6 +1,6 @@
 **To get information about a repository**
 
-This example shows details about an AWS CodeCommit repository. ::
+The following ``get-repository`` example displays details about an AWS CodeCommit repository. ::
 
     aws codecommit get-repository \
         --repository-name MyDemoRepo

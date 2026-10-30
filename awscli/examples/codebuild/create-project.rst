@@ -1,6 +1,6 @@
 **Example 1: To create an AWS CodeBuild build project**
 
-The following ``create-project`` example creates a CodeBuild build project using source files from an S3 bucket ::
+The following ``create-project`` example creates a CodeBuild build project using source files from an S3 bucket. ::
 
     aws codebuild create-project \
         --name "my-demo-project" \

@@ -1,6 +1,6 @@
 **To view details of a pull request**
 
-This example demonstrates how to view information about a pull request with the ID of ``27``. ::
+The following ``get-pull-request`` example displays information about a pull request with the ID of ``27``. ::
 
     aws codecommit get-pull-request \
         --pull-request-id 27

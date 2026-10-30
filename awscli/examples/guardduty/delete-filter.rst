@@ -1,6 +1,6 @@
 **To delete an existing filter in the current region**
 
-This example shows how to create delete a filter. ::
+The following ``delete-filter`` example deletes a filter. ::
 
     aws guardduty delete-filter \
         --detector-id b6b992d6d2f48e64bc59180bfexample \

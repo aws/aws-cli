@@ -1,6 +1,6 @@
 **To create a configuration**
 
-The following ``put-playback-configuration`` creates a configuration named ``campaign_short``. ::
+The following ``put-playback-configuration`` example creates a configuration named ``campaign_short``. ::
 
     aws mediatailor put-playback-configuration \
         --name campaign_short \

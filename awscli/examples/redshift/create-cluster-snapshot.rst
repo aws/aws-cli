@@ -1,8 +1,6 @@
 **To create a cluster snapshot**
 
-This example creates a new cluster snapshot.  By default, the output is in JSON format.
-
-Command::
+The following ``create-cluster-snapshot`` example creates a new cluster snapshot.  By default, the output is in JSON format. ::
 
     aws redshift create-cluster-snapshot --cluster-identifier mycluster --snapshot-identifier my-snapshot-id
 

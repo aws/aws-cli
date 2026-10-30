@@ -1,8 +1,6 @@
 **To describe all orderable cluster options**
 
-This example returns descriptions of all orderable cluster options.  By default, the output is in JSON format.
-
-Command::
+The following ``describe-orderable-cluster-options`` example returns descriptions of all orderable cluster options. By default, the output is in JSON format. ::
 
     aws redshift describe-orderable-cluster-options
 
@@ -42,9 +40,7 @@ Result::
         }
     }
 
-You can also obtain the same information in text format using the ``--output text`` option.
-
-Command::
+You can also obtain the same information in text format using the ``--output text`` option. ::
 
     aws redshift describe-orderable-cluster-options --output text
 

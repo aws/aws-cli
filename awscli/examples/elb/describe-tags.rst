@@ -1,8 +1,6 @@
 **To describe the tags assigned to a load balancer**
 
-This example describes the tags assigned to the specified load balancer.
-
-Command::
+The following ``describe-tags`` example describes the tags assigned to the specified load balancer. ::
 
     aws elb describe-tags --load-balancer-name my-load-balancer
 

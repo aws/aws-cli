@@ -1,6 +1,6 @@
 **To associate a web ACL with a resource**
 
-The following ``associate-web-acl`` command  associates a web ACL, specified by the web-acl-id, with a resource, specified by the resource-arn. The resource ARN can refer to either a application load balancer or an API Gateway::
+The following ``associate-web-acl`` example associates a web ACL, specified by the web-acl-id, with a resource, specified by the resource-arn. The resource ARN can refer to either an application load balancer or an API Gateway. ::
 
     aws waf-regional associate-web-acl \
         --web-acl-id a123fae4-b567-8e90-1234-5ab67ac8ca90 \

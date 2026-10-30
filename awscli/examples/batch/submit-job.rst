@@ -1,8 +1,6 @@
 **To submit a job**
 
-This example submits a simple container job called `example` to the `HighPriority` job queue.
-
-Command::
+The following ``submit-job`` example submits a simple container job called `example` to the `HighPriority` job queue. ::
 
     aws batch submit-job --job-name example --job-queue HighPriority  --job-definition sleep60
 

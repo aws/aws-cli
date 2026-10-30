@@ -132,6 +132,10 @@ class Block:
         return self.start + 1
 
     @property
+    def text(self):
+        return ' '.join(line.strip() for line in self.lines)
+
+    @property
     def is_command(self):
         return self.kind == 'literal' and self.lines[0].strip().startswith(
             'aws '
@@ -164,6 +168,10 @@ class Example:
         if name == '_examples':
             return parts[:-1]
         return parts[:-1] + [name]
+
+    @property
+    def commands(self):
+        return [b for b in self.blocks if b.is_command]
 
 
 def _indent(line):
@@ -356,6 +364,32 @@ def check_title(example):
                 'found {}'.format(
                     len(titles), ', '.join(n or '(none)' for n in numbers)
                 )
+            )
+    return errors
+
+
+def check_description(example):
+    # For waiter examples the command is "wait <waiter-name>", and for a
+    # top-level command such as "login" it is the group itself.
+    path = example.command_path
+    command = ' '.join(path[1:]) or path[0]
+    expected = f'The following ``{command}`` example'
+    errors = []
+    for section in example.sections:
+        if section.title is None:
+            continue
+        paras = [b for b in section.blocks if b.kind == 'para']
+        if not paras or not paras[0].text.startswith(expected):
+            lineno = paras[0].lineno if paras else section.title.lineno
+            errors.append(
+                f'Line {lineno}: description must start with "{expected}"'
+            )
+    for block in example.commands:
+        if not block.intro.lines[-1].rstrip().endswith('. ::'):
+            lineno = block.intro.lineno + len(block.intro.lines) - 1
+            errors.append(
+                f"Line {lineno}: the paragraph before a command must end "
+                "with '. ::'"
             )
     return errors
 
@@ -742,6 +776,13 @@ def test_example_title(example_file):
     example = Example(example_file)
     errors = check_title(example)
     _assert_follows_rule('title', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_description(example_file):
+    example = Example(example_file)
+    errors = check_description(example)
+    _assert_follows_rule('description', example, errors)
 
 
 def test_example_style_exceptions_exist():

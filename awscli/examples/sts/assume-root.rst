@@ -1,6 +1,6 @@
 **To launch a privileged session**
 
-The following ``assume-root`` command retrieves a set of short-term credentials you can use to remove a misconfigured Amazon S3 bucket policy for a member account in your organization. ::
+The following ``assume-root`` example retrieves a set of short-term credentials you can use to remove a misconfigured Amazon S3 bucket policy for a member account in your organization. ::
 
     aws sts assume-root \
         --duration-seconds 900 \

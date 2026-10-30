@@ -1,10 +1,8 @@
 **To view all resource discovery associations with your IPAM**
 
-In this example, you're a IPAM delegated admin who has associated resource discoveries with your IPAM to integrate other accounts with your IPAM. You've noticed that your IPAM is not discovering the resources in the operating Regions of the resource discovery as expected. You want to check the status and state of the resource discovery to ensure that the account that created it is still active and the resource discovery is still being shared.
+The following ``describe-ipam-resource-discovery-associations`` example lists the resource discovery associations in your AWS account. In this example, you're a IPAM delegated admin who has associated resource discoveries with your IPAM to integrate other accounts with your IPAM. You've noticed that your IPAM is not discovering the resources in the operating Regions of the resource discovery as expected. You want to check the status and state of the resource discovery to ensure that the account that created it is still active and the resource discovery is still being shared.
 
-The ``--region`` must be the home Region of your IPAM.
-
-The following ``describe-ipam-resource-discovery-associations`` example lists the resource discovery associations in your AWS account. ::
+The ``--region`` must be the home Region of your IPAM. ::
 
     aws ec2 describe-ipam-resource-discovery-associations \
         --region us-east-1

@@ -25,7 +25,7 @@ The output shows the new name and description. ::
 
 **Example 2: To replace a policy's JSON text content**
 
-The following example shows you how to replace the JSON text of the SCP in the previous example with a new JSON policy text string that allows S3 instead of EC2: ::
+The following ``update-policy`` example replaces the JSON text of the SCP in the previous example with a new JSON policy text string that allows S3 instead of EC2. ::
 
     aws organizations update-policy \
         --policy-id p-examplepolicyid111 \

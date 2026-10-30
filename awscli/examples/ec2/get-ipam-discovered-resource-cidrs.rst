@@ -1,13 +1,8 @@
 **To view the IP address CIDRs discovered by an IPAM**
 
-In this example, you're a IPAM delegated admin who wants to view details related to the IP address CIDRs for resources that the IPAM is discovering.
+The following ``get-ipam-discovered-resource-cidrs`` example lists the IP addresses for resources that the IPAM is discovering. In this example, you're an IPAM delegated admin who wants to view details related to these IP address CIDRs.
 
-To complete this request:
-
-* The resource discovery you choose must be associated with the IPAM.
-* The ``--resource-region`` is the AWS Region where resource was created.
-
-The following ``get-ipam-discovered-resource-cidrs`` example lists the IP addresses for resources that the IPAM is discovering. ::
+To complete this request, the resource discovery you choose must be associated with the IPAM, and the ``--resource-region`` is the AWS Region where the resource was created. ::
 
     aws ec2 get-ipam-discovered-resource-cidrs \
         --ipam-resource-discovery-id ipam-res-disco-0365d2977fc1672fe \

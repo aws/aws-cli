@@ -1,6 +1,6 @@
 **To update an XSSMatchSet**
 
-The following ``update-xss-match-set`` command  deletes an ``XssMatchTuple`` object (filters) in an ``XssMatchSet``. Because the ``updates`` value contains embedded double quotes, you must surround the entire value with single quotes. ::
+The following ``update-xss-match-set`` example deletes an ``XssMatchTuple`` object (filters) in an ``XssMatchSet``. Because the ``updates`` value contains embedded double quotes, you must surround the entire value with single quotes. ::
 
     aws waf-regional update-xss-match-set \
         --xss-match-set-id a123fae4-b567-8e90-1234-5ab67ac8ca90 \

@@ -1,8 +1,6 @@
 **To describe launch templates**
 
-This example describes your launch templates.
-
-Command::
+The following ``describe-launch-templates`` example describes your launch templates. ::
 
     aws ec2 describe-launch-templates
 

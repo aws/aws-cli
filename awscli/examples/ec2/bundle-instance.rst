@@ -1,8 +1,6 @@
 **To bundle an instance**
 
-This example bundles instance ``i-1234567890abcdef0`` to a bucket called ``bundletasks``. Before you specify values for your access key IDs, review and follow the guidance in `Best Practices for Managing AWS Access Keys`_.
-
-Command::
+The following ``bundle-instance`` example bundles instance ``i-1234567890abcdef0`` to a bucket called ``bundletasks``. Before you specify values for your access key IDs, review and follow the guidance in `Best Practices for Managing AWS Access Keys`_. ::
 
     aws ec2 bundle-instance --instance-id i-1234567890abcdef0 --bucket bundletasks --prefix winami --owner-akid AK12AJEXAMPLE --owner-sak example123example
 

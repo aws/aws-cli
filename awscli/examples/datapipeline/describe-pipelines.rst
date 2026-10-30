@@ -1,6 +1,6 @@
 **To describe your pipelines**
 
-This example describes the specified pipeline::
+The following ``describe-pipelines`` example describes the specified pipeline. ::
 
     aws datapipeline describe-pipelines --pipeline-ids df-00627471SOVYZEXAMPLE
 

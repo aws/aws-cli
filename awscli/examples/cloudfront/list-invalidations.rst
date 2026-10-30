@@ -1,7 +1,7 @@
 **To list CloudFront invalidations**
 
-The following example gets a list of the invalidations for the CloudFront
-distribution with the ID ``EDFDVBD6EXAMPLE``::
+The following ``list-invalidations`` example gets a list of the invalidations for the CloudFront
+distribution with the ID ``EDFDVBD6EXAMPLE``. ::
 
     aws cloudfront list-invalidations --distribution-id EDFDVBD6EXAMPLE
 

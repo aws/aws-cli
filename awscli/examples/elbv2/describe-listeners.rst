@@ -1,8 +1,6 @@
 **Example 1: To describe a listener**
 
-This example describes the specified listener.
-
-Command::
+The following ``describe-listeners`` example describes the specified listener. ::
 
     aws elbv2 describe-listeners --listener-arns arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2
 
@@ -27,9 +25,7 @@ Output::
 
 **Example 2: To describe the listeners for a load balancer**
 
-This example describe the listeners for the specified load balancer.
-
-Command::
+The following ``describe-listeners`` example describes the listeners for the specified load balancer. ::
 
     aws elbv2 describe-listeners --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188
 

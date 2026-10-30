@@ -1,6 +1,6 @@
 **To verify a domain with Amazon SES**
 
-The following example uses the ``verify-domain-identity`` command to verify a domain::
+The following ``verify-domain-identity`` example verifies a domain. ::
 
     aws ses verify-domain-identity --domain example.com
 

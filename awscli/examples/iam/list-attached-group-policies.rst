@@ -1,6 +1,6 @@
 **To list all managed policies that are attached to the specified group**
 
-This example returns the names and ARNs of the managed policies that are attached to the IAM group named ``Admins`` in the AWS account. ::
+The following ``list-attached-group-policies`` example returns the names and ARNs of the managed policies that are attached to the IAM group named ``Admins`` in the AWS account. ::
 
     aws iam list-attached-group-policies \
         --group-name Admins

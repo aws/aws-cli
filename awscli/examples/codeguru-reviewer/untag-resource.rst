@@ -1,6 +1,6 @@
 **To untag an associated repository**
 
-The following ``untag-resource`` removes two tags with keys "Secret" and "Team" from an associated repository. ::
+The following ``untag-resource`` example removes two tags with keys "Secret" and "Team" from an associated repository. ::
 
     aws codeguru-reviewer untag-resource \
         --resource-arn arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \

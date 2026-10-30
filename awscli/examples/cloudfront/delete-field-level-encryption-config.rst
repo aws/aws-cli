@@ -1,6 +1,6 @@
 **To delete a CloudFront field-level encryption configuration**
 
-The following example deletes the CloudFront field-level encryption
+The following ``delete-field-level-encryption-config`` example deletes the CloudFront field-level encryption
 configuration with the ID ``C3KM2WVD605UAY``. To delete a field-level
 encryption configuration, you must have its ID and ``ETag``. The ID is returned
 in the output of the
@@ -13,9 +13,7 @@ To get the ``ETag``, use the
 <get-field-level-encryption.html>`_ or
 `get-field-level-encryption-config
 <get-field-level-encryption-config.html>`_ command.
-Use the ``--if-match`` option to provide the configuration's ``ETag``.
-
-::
+Use the ``--if-match`` option to provide the configuration's ``ETag``. ::
 
     aws cloudfront delete-field-level-encryption-config \
         --id C3KM2WVD605UAY \

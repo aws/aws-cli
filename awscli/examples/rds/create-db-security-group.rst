@@ -1,6 +1,6 @@
 **To create an Amazon RDS DB security group**
 
-The following ``create-db-security-group`` command creates a new Amazon RDS DB security group::
+The following ``create-db-security-group`` example creates a new Amazon RDS DB security group. ::
 
     aws rds create-db-security-group --db-security-group-name mysecgroup --db-security-group-description "My Test Security Group"
 

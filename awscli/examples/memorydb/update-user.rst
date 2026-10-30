@@ -1,6 +1,6 @@
 **To update a user**
 
-The following ``update-user`` modifies a user's access string. ::
+The following ``update-user`` example modifies a user's access string. ::
 
     aws memorydb update-user \
         --user-name my-user \

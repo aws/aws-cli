@@ -1,6 +1,6 @@
 **To return a list of allowed node type updates**
 
-The following ``list-allowed-node-type-updates`` returns a list of available node type updates. ::
+The following ``list-allowed-node-type-updates`` example returns a list of available node type updates. ::
 
     aws memorydb list-allowed-node-type-updates \
         --cluster-name my-cluster

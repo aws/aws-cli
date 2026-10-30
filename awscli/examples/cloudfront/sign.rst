@@ -1,14 +1,12 @@
 **Example 1: To sign a CloudFront URL**
 
-The following example signs a CloudFront URL. To sign a URL, you need the key
+The following ``sign`` example signs a CloudFront URL. To sign a URL, you need the key
 pair ID (called the **Access Key ID** in the AWS Management Console) and the
 private key of the trusted signer's CloudFront key pair. For more information
 about signed URLs, see `Serving Private Content with Signed URLs and Signed
 Cookies
 <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html>`_
-in the *Amazon CloudFront Developer Guide*.
-
-::
+in the *Amazon CloudFront Developer Guide*. ::
 
     aws cloudfront sign \
         --url https://d111111abcdef8.cloudfront.net/private-content/private-file.html \
@@ -22,7 +20,7 @@ Output::
 
 **Example 2: To sign a CloudFront URL using SHA-256**
 
-The following example signs a CloudFront URL using the SHA-256 hash
+The following ``sign`` example signs a CloudFront URL using the SHA-256 hash
 algorithm, which is recommended for its stronger security posture. The signed
 URL includes the ``Hash-Algorithm`` query parameter so that CloudFront verifies
 the signature with SHA-256. ::
@@ -40,7 +38,7 @@ Output::
 
 **Example 3: To sign a CloudFront URL using an ECDSA key**
 
-The following example signs a CloudFront URL with an ECDSA (P-256) private
+The following ``sign`` example signs a CloudFront URL with an ECDSA (P-256) private
 key. ECDSA keys always sign with SHA-256, so the signed URL includes the
 ``Hash-Algorithm=SHA256`` query parameter without specifying
 ``--hash-algorithm``. The key pair ID is the ID of the public key in the
@@ -58,7 +56,7 @@ Output::
 
 **Example 4: To sign a CloudFront URL with a wildcard policy resource**
 
-The following example signs a policy for every object under ``/videos/`` and
+The following ``sign`` example signs a policy for every object under ``/videos/`` and
 applies the signature to a specific URL. Because the policy resource contains a
 wildcard, a custom policy is used and included in the signed URL. The same
 ``Policy``, ``Signature`` and ``Key-Pair-Id`` query parameters can be reused

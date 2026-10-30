@@ -1,8 +1,6 @@
 **To describe VPC endpoint connections**
 
-This example describes the interface endpoint connections to your endpoint service and filters the results to display endpoints that are ``PendingAcceptance``.
-
-Command::
+The following ``describe-vpc-endpoint-connections`` example describes the interface endpoint connections to your endpoint service and filters the results to display endpoints that are ``PendingAcceptance``. ::
 
     aws ec2 describe-vpc-endpoint-connections --filters Name=vpc-endpoint-state,Values=pendingAcceptance
 

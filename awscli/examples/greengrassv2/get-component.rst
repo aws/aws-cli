@@ -8,7 +8,7 @@ The following ``get-component`` example downloads a Hello World component's reci
 
 #. Saves the decoded text to a file. The final section of the command (``> com.example.HelloWorld-1.0.0.json``) saves the decoded text to a file.
 
-::
+The following command downloads the recipe. ::
 
     aws greengrassv2 get-component \
         --arn arn:aws:greengrass:us-west-2:123456789012:components:com.example.HelloWorld:versions:1.0.0 \

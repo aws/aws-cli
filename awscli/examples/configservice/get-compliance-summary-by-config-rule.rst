@@ -1,6 +1,6 @@
 **To get the compliance summary for your AWS Config rules**
 
-The following command returns the number of rules that are compliant and the number that are noncompliant::
+The following ``get-compliance-summary-by-config-rule`` example returns the number of rules that are compliant and the number that are noncompliant. ::
 
     aws configservice get-compliance-summary-by-config-rule
 

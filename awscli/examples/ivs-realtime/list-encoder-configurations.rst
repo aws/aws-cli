@@ -1,6 +1,6 @@
 **To list composition encoder configurations**
 
-The following ``list-encoder-configurations`` lists all composition encoder configurations for your AWS account, in the AWS region where the API request is processed. ::
+The following ``list-encoder-configurations`` example lists all composition encoder configurations for your AWS account, in the AWS region where the API request is processed. ::
 
     aws ivs-realtime list-encoder-configurations
 

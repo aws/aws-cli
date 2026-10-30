@@ -1,6 +1,6 @@
 **To modify the settings for an existing IP set**
 
-The following ``update-ip-set`` updates the settings for the specified IP set. This call requires an ID, which you can obtain from the call, ``list-ip-sets``, and a lock token which you can obtain from the calls, ``list-ip-sets`` and ``get-ip-set``. This call also returns a lock token that you can use for a subsequent update. ::
+The following ``update-ip-set`` example updates the settings for the specified IP set. This call requires an ID, which you can obtain from the call, ``list-ip-sets``, and a lock token which you can obtain from the calls, ``list-ip-sets`` and ``get-ip-set``. This call also returns a lock token that you can use for a subsequent update. ::
 
     aws wafv2 update-ip-set \
         --name testip \

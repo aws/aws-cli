@@ -1,6 +1,6 @@
 **To get a CloudFront distribution configuration**
 
-The following example gets metadata about the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``, including its ``ETag``. The distribution ID is returned in the `create-distribution <create-distribution.html>`__ and `list-distributions <list-distributions.html>`__ commands. ::
+The following ``get-distribution-config`` example gets metadata about the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``, including its ``ETag``. The distribution ID is returned in the `create-distribution <create-distribution.html>`__ and `list-distributions <list-distributions.html>`__ commands. ::
 
     aws cloudfront get-distribution-config \
         --id EDFDVBD6EXAMPLE

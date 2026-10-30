@@ -1,6 +1,6 @@
 **To stop a task**
 
-The following ``stop-task`` stops the specified task from running in the default cluster. ::
+The following ``stop-task`` example stops the specified task from running in the default cluster. ::
 
     aws ecs stop-task \
         --task 666fdccc2e2d4b6894dd422f4eeee8f8

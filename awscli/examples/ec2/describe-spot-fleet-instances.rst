@@ -1,8 +1,6 @@
 **To describe the Spot Instances associated with a Spot fleet**
 
-This example command lists the Spot instances associated with the specified Spot fleet.
-
-Command::
+The following ``describe-spot-fleet-instances`` example lists the Spot instances associated with the specified Spot fleet. ::
 
     aws ec2 describe-spot-fleet-instances --spot-fleet-request-id sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE
 

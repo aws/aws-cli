@@ -2,7 +2,7 @@
 
 The following ``create-ipam-pool`` example creates an IPAM pool.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 create-ipam-pool \
         --ipam-scope-id ipam-scope-02fc38cd4c48e7d38 \
@@ -14,7 +14,7 @@ The following ``create-ipam-pool`` example creates an IPAM pool.
         --allocation-resource-tags "Key=Environment,Value=Preprod" \
         --tag-specifications 'ResourceType=ipam-pool,Tags=[{Key=Name,Value="Preprod pool"}]'
 
-(Windows)::
+For Windows, use the following command. ::
     
     aws ec2 create-ipam-pool ^
         --ipam-scope-id ipam-scope-02fc38cd4c48e7d38 ^

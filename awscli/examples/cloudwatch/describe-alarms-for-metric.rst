@@ -1,7 +1,7 @@
 **To display information about alarms associated with a metric**
 
-The following example uses the ``describe-alarms-for-metric`` command to display information about
-any alarms associated with the Amazon EC2 CPUUtilization metric and the instance with the ID i-0c986c72.::
+The following ``describe-alarms-for-metric`` example displays information about
+any alarms associated with the Amazon EC2 CPUUtilization metric and the instance with the ID i-0c986c72. ::
 
     aws cloudwatch describe-alarms-for-metric --metric-name CPUUtilization --namespace AWS/EC2 --dimensions Name=InstanceId,Value=i-0c986c72
 

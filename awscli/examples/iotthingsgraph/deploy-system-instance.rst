@@ -1,6 +1,6 @@
 **To deploy a system instance**
 
-The following ``delete-system-template`` example deploys a system instance. ::
+The following ``deploy-system-instance`` example deploys a system instance. ::
 
     aws iotthingsgraph deploy-system-instance \
         --id "urn:tdm:us-west-2/123456789012/default:Deployment:Room218"

@@ -1,6 +1,6 @@
 **To create a project**
 
-The following command creates a new project named ``my-project``::
+The following ``create-project`` example creates a new project named ``my-project``. ::
 
     aws devicefarm create-project --name my-project
 

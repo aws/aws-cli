@@ -1,6 +1,6 @@
 **To list page receipts**
 
-The following ``command-name`` example lists whether a page was received or not by a contact. ::
+The following ``list-page-receipts`` example lists whether a page was received or not by a contact. ::
 
     aws ssm-contacts list-page-receipts \
         --page-id "arn:aws:ssm-contacts:us-east-2:111122223333:page/akuam/94ea0c7b-56d9-46c3-b84a-a37c8b067ad3"

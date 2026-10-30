@@ -1,6 +1,6 @@
 **To create a channel**
 
-The following ``create-channel`` command creates a channel named ``sportschannel`` in the current account. ::
+The following ``create-channel`` example creates a channel named ``sportschannel`` in the current account. ::
 
     aws mediapackage create-channel --id sportschannel
 

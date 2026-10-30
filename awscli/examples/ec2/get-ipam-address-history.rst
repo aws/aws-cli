@@ -2,7 +2,7 @@
 
 The following ``get-ipam-address-history`` example gets the history of a CIDR.
 
-(Linux)::
+Linux command. ::
 
     aws ec2 get-ipam-address-history \
         --cidr 10.0.0.0/16 \
@@ -10,7 +10,7 @@ The following ``get-ipam-address-history`` example gets the history of a CIDR.
         --start-time 2021-12-08T01:00:00.000Z \
         --end-time 2021-12-10T01:00:00.000Z
 
-(Windows)::
+Windows command. ::
 
     aws ec2 get-ipam-address-history ^
         --cidr 10.0.0.0/16 ^

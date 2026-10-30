@@ -1,7 +1,7 @@
 **To create a new version of a managed policy**
 
 
-This example creates a new ``v2`` version of the IAM policy whose ARN is ``arn:aws:iam::123456789012:policy/MyPolicy`` and makes it the default version. ::
+The following ``create-policy-version`` example creates a new ``v2`` version of the IAM policy whose ARN is ``arn:aws:iam::123456789012:policy/MyPolicy`` and makes it the default version. ::
 
     aws iam create-policy-version \
         --policy-arn arn:aws:iam::123456789012:policy/MyPolicy \

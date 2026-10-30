@@ -1,6 +1,6 @@
 **To retrieve information for an organization**
 
-The following ``describe-organization`` command retrieves information for the specified Amazon WorkMail organization. ::
+The following ``describe-organization`` example retrieves information for the specified Amazon WorkMail organization. ::
 
     aws workmail describe-organization \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27

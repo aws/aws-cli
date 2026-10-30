@@ -1,8 +1,6 @@
 **To update a user**
 
-This example updates the time zone for the specified user.
-
-Command::
+The following ``update-user`` example updates the time zone for the specified user. ::
 
     aws workdocs update-user --user-id "S-1-1-11-1111111111-2222222222-3333333333-3333&d-926726012c" --time-zone-id "America/Los_Angeles"
 

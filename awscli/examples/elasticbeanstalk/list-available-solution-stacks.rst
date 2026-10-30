@@ -1,6 +1,6 @@
 **To view solution stacks**
 
-The following command lists solution stacks for all currently available platform configurations and any that you have used in the past::
+The following ``list-available-solution-stacks`` example lists solution stacks for all currently available platform configurations and any that you have used in the past. ::
 
     aws elasticbeanstalk list-available-solution-stacks
 

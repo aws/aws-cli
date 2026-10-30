@@ -1,6 +1,6 @@
 **To create a comment on a commit**
 
-This example demonstrates how to add the comment ``"Can you add a test case for this?"`` on the change to the ``cl_sample.js`` file in the comparison between two commits in a repository named ``MyDemoRepo``. ::
+The following ``post-comment-for-compared-commit`` example adds the comment ``"Can you add a test case for this?"`` on the change to the ``cl_sample.js`` file in the comparison between two commits in a repository named ``MyDemoRepo``. ::
 
     aws codecommit post-comment-for-compared-commit \
         --repository-name MyDemoRepo \

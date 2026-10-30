@@ -1,6 +1,6 @@
 **To list all origin-endpoints on a channel**
 
-The following ``list-origin-endpoints`` command lists all of the origin endpoints that are configured on the channel named ``test``. ::
+The following ``list-origin-endpoints`` example lists all of the origin endpoints that are configured on the channel named ``test``. ::
 
     aws mediapackage list-origin-endpoints \
         --channel-id test

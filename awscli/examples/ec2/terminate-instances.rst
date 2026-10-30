@@ -1,8 +1,6 @@
 **To terminate an Amazon EC2 instance**
 
-This example terminates the specified instance.
-
-Command::
+The following ``terminate-instances`` example terminates the specified instance. ::
 
     aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
 

@@ -1,6 +1,6 @@
 **To get password information for an IAM user**
 
-The following ``get-login-profile`` command gets information about the password for the IAM user named ``Bob``. ::
+The following ``get-login-profile`` example gets information about the password for the IAM user named ``Bob``. ::
 
     aws iam get-login-profile \
         --user-name Bob

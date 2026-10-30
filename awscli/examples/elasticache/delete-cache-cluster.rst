@@ -8,7 +8,9 @@ This operation is not valid for the following:
 * A cluster that is the last read replica of a replication group
 * A node group (shard) that has Multi-AZ mode enabled
 * A cluster from a Redis (cluster mode enabled) replication group
-* A cluster that is not in the available state ::
+* A cluster that is not in the available state
+
+The following command deletes the cluster ``my-cluster-002``. ::
 
     aws elasticache delete-cache-cluster \
         --cache-cluster-id "my-cluster-002"

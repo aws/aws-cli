@@ -1,6 +1,6 @@
 **To start a query**
 
-The following ``start-query-workload-insights-top-contributors``  example starts the query which returns a query ID to retrieve the top contributors. ::
+The following ``start-query-workload-insights-top-contributors`` example starts the query which returns a query ID to retrieve the top contributors. ::
 
     aws networkflowmonitor start-query-workload-insights-top-contributors \
         --scope-id e21cda79-30a0-4c12-9299-d8629d76d8cf \

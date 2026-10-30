@@ -1,6 +1,6 @@
 **To list the tags attached to an MFA device**
 
-The following ``list-mfa-device-tags`` command retrieves the list of tags associated with the specified MFA device. ::
+The following ``list-mfa-device-tags`` example retrieves the list of tags associated with the specified MFA device. ::
 
     aws iam list-mfa-device-tags \
         --serial-number arn:aws:iam::123456789012:mfa/alice

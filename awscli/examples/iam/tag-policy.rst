@@ -1,6 +1,6 @@
 **To add a tag to a customer managed policy**
 
-The following ``tag-policy`` command adds a tag with a Department name to the specified customer managed policy. ::
+The following ``tag-policy`` example adds a tag with a Department name to the specified customer managed policy. ::
 
     aws iam tag-policy \
         --policy-arn arn:aws:iam::123456789012:policy/billing-access \

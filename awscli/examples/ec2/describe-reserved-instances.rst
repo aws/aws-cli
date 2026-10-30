@@ -1,8 +1,6 @@
 **Example 1: To describe your Reserved Instances**
 
-This example command describes the Reserved Instances that you own.
-
-Command::
+The following ``describe-reserved-instances`` example describes the Reserved Instances that you own. ::
 
     aws ec2 describe-reserved-instances
 
@@ -38,9 +36,7 @@ Output::
 
 **Example 2: To describe your Reserved Instances using filters**
 
-This example filters the response to include only three-year, t2.micro Linux/UNIX Reserved Instances in us-west-1c.
-
-Command::
+The following ``describe-reserved-instances`` example filters the response to include only three-year, t2.micro Linux/UNIX Reserved Instances in us-east-1e. ::
 
     aws ec2 describe-reserved-instances --filters Name=duration,Values=94608000 Name=instance-type,Values=t2.micro Name=product-description,Values=Linux/UNIX Name=availability-zone,Values=us-east-1e
 

@@ -1,6 +1,6 @@
 **Example 1: To describe a blue/green deployment of an RDS DB instance after creation completes**
 
-The following ``describe-blue-green-deployment`` example retrieves the details of a blue/green deployment after creation completes. ::
+The following ``describe-blue-green-deployments`` example retrieves the details of a blue/green deployment after creation completes. ::
 
     aws rds describe-blue-green-deployments \
         --blue-green-deployment-identifier bgd-v53303651eexfake
@@ -64,7 +64,7 @@ For more information, see `Viewing a blue/green deployment <https://docs.aws.ama
 
 **Example 2: To describe a blue/green deployment for an Aurora MySQL DB cluster**
 
-The following ``describe-blue-green-deployment`` example retrieves the details of a blue/green deployment. ::
+The following ``describe-blue-green-deployments`` example retrieves the details of a blue/green deployment. ::
 
     aws rds describe-blue-green-deployments \
         --blue-green-deployment-identifier bgd-wi89nwzglccsfake
@@ -139,7 +139,7 @@ For more information, see `Viewing a blue/green deployment <https://docs.aws.ama
 
 **Example 3: To describe a blue/green deployment for an Aurora MySQL cluster after switchover**
 
-The following ``describe-blue-green-deployment`` example retrieves the details about a blue/green deployment after the green environment is promoted to be the production environment. ::
+The following ``describe-blue-green-deployments`` example retrieves the details about a blue/green deployment after the green environment is promoted to be the production environment. ::
 
     aws rds describe-blue-green-deployments \
         --blue-green-deployment-identifier bgd-wi89nwzglccsfake
@@ -213,7 +213,7 @@ For more information, see `Viewing a blue/green deployment <https://docs.aws.ama
 
 **Example 4: To describe a combined blue/green deployment**
 
-The following ``describe-blue-green-deployment`` example retrieves the details of a combined blue/green deployment. ::
+The following ``describe-blue-green-deployments`` example retrieves the details of a combined blue/green deployment. ::
 
     aws rds describe-blue-green-deployments
 

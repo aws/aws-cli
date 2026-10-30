@@ -1,8 +1,6 @@
 **To retrieve the metadata for a folder**
 
-This example retrieves the metadata for the specified folder.
-
-Command::
+The following ``get-folder`` example retrieves the metadata for the specified folder. ::
 
     aws workdocs get-folder --folder-id 50893c0af679524d1a0e0651130ed6d073e1a05f95bd12c42dcde5d35634ed08
 

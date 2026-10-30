@@ -1,6 +1,6 @@
 **To update a primary email address**
 
-The following ``update-primary-email-address`` command updates the primary email address of the specified entity (user, group, or resource). ::
+The following ``update-primary-email-address`` example updates the primary email address of the specified entity (user, group, or resource). ::
 
     aws workmail update-primary-email-address \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

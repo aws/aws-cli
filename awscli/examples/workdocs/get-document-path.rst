@@ -1,8 +1,6 @@
 **To retrieve a document's path information**
 
-This example retrieves the path information (hierarchy from the root folder) for the specified document, and includes the names of the parent folders.
-
-Command::
+The following ``get-document-path`` example retrieves the path information (hierarchy from the root folder) for the specified document, and includes the names of the parent folders. ::
 
     aws workdocs get-document-path --document-id d90d93c1fe44bad0c8471e973ebaab339090401a95e777cffa58e977d2983b65 --fields NAME
 

@@ -1,6 +1,6 @@
 **To describe event subscriptions**
 
-This example describes all of the Amazon RDS event subscriptions for the current AWS account. ::
+The following ``describe-event-subscriptions`` example describes all of the Amazon RDS event subscriptions for the current AWS account. ::
 
     aws rds describe-event-subscriptions
 

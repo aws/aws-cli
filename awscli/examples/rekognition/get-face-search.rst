@@ -1,6 +1,6 @@
 **To get the results of a face search operation**
 
-The following ``get-face-search`` command displays the results of a face search operation that you started previously by calling ``start-face-search``. ::
+The following ``get-face-search`` example displays the results of a face search operation that you started previously by calling ``start-face-search``. ::
 
     aws rekognition get-face-search  \
         --job-id 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef 

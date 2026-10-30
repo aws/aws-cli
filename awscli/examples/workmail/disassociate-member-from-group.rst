@@ -1,6 +1,6 @@
 **To remove a member from a group**
 
-The following ``disassociate-member-from-group`` command removes the specified member from a group. ::
+The following ``disassociate-member-from-group`` example removes the specified member from a group. ::
 
     aws workmail disassociate-member-from-group \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \

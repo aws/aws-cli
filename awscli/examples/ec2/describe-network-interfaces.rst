@@ -1,8 +1,6 @@
 **To describe your network interfaces**
 
-This example describes all your network interfaces.
-
-Command::
+The following ``describe-network-interfaces`` example describes all your network interfaces. ::
 
     aws ec2 describe-network-interfaces
 
@@ -108,9 +106,7 @@ Output::
     }
 
 
-This example describes network interfaces that have a tag with the key ``Purpose`` and the value ``Prod``.
-
-Command::
+The following ``describe-network-interfaces`` example describes network interfaces that have a tag with the key ``Purpose`` and the value ``Prod``. ::
 
     aws ec2 describe-network-interfaces --filters Name=tag:Purpose,Values=Prod
 

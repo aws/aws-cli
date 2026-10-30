@@ -1,8 +1,6 @@
 **To get information about a branch**
 
-This example gets information about a branch in an AWS CodeCommit repository.
-
-Command::
+The following ``get-branch`` example gets information about a branch in an AWS CodeCommit repository. ::
 
     aws codecommit get-branch --repository-name MyDemoRepo --branch-name MyNewBranch
 

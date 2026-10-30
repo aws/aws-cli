@@ -1,6 +1,6 @@
 **Example 1: To create an Aurora PostgreSQL primary DB cluster**
 
-The following ``create-db-cluster`` example creates an Aurora PostgreSQL SQL primary DB cluster that's compatible with Aurora Serverless v2 and Aurora Limitless Database. ::
+The following ``create-db-shard-group`` example starts by using the ``create-db-cluster`` command to create an Aurora PostgreSQL SQL primary DB cluster that's compatible with Aurora Serverless v2 and Aurora Limitless Database. ::
 
     aws rds create-db-cluster \
         --db-cluster-identifier my-sv2-cluster \
@@ -79,7 +79,7 @@ Output::
 
 **Example 2: To create the primary (writer) DB instance**
 
-The following ``create-db-instance`` example creates an Aurora Serverless v2 primary (writer) DB instance. When you use the console to create a DB cluster, Amazon RDS automatically creates the writer DB instance for your DB cluster. However, when you use the AWS CLI to create a DB cluster, you must explicitly create the writer DB instance for your DB cluster using the ``create-db-instance`` AWS CLI command. ::
+The following ``create-db-shard-group`` example continues by using the ``create-db-instance`` command to create an Aurora Serverless v2 primary (writer) DB instance. When you use the console to create a DB cluster, Amazon RDS automatically creates the writer DB instance for your DB cluster. However, when you use the AWS CLI to create a DB cluster, you must explicitly create the writer DB instance for your DB cluster using the ``create-db-instance`` AWS CLI command. ::
 
     aws rds create-db-instance \
         --db-instance-identifier my-sv2-instance \

@@ -1,7 +1,7 @@
 **To list all identities (email addresses and domains) for a specific AWS account**
 
 
-The following example uses the ``list-identities`` command to list all identities that have been submitted for verification with Amazon SES::
+The following ``list-identities`` example lists all identities that have been submitted for verification with Amazon SES. ::
 
     aws ses list-identities
 

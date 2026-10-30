@@ -1,6 +1,6 @@
 **To rename an OU**
 
-This example shows you how to rename an OU: In this example, the OU is renamed "AccountingOU": ::
+The following ``update-organizational-unit`` example renames an OU to ``AccountingOU``. ::
 
     aws organizations update-organizational-unit --organizational-unit-id ou-examplerootid111-exampleouid111 --name AccountingOU
 

@@ -1,8 +1,6 @@
 **To describe Dedicated Host Reservation offerings**
 
-This example describes the Dedicated Host Reservations for the M4 instance family that are available to purchase.
-
-Command::
+The following ``describe-host-reservation-offerings`` example describes the Dedicated Host Reservations for the M4 instance family that are available to purchase. ::
 
     aws ec2 describe-host-reservation-offerings --filter Name=instance-family,Values=m4
 

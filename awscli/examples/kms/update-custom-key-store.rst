@@ -32,7 +32,7 @@ For more information about updating an AWS CloudHSM key store, see `Editing AWS 
 
 **Example 3: To edit the AWS CloudHSM cluster of an AWS CloudHSM key store**
 
-The following example changes the AWS CloudHSM cluster that is associated with an AWS CloudHSM key store to a related cluster, such as a different backup of the same cluster. 
+The following ``update-custom-key-store`` example changes the AWS CloudHSM cluster that is associated with an AWS CloudHSM key store to a related cluster, such as a different backup of the same cluster. 
 
 **NOTE:** Before updating an AWS CloudHSM key store, you must disconnect it. Use the ``disconnect-custom-key-store`` command. After the command completes, you can reconnect the AWS CloudHSM key store. Use the ``connect-custom-key-store`` command. ::
 
@@ -46,7 +46,7 @@ For more information about updating an AWS CloudHSM key store, see `Editing AWS 
 
 **Example 4: To edit the proxy authentication credential of an external key store**
 
-The following example updates the proxy authentication credential for your external key store. You must specify both the ``raw-secret-access-key`` and the ``access-key-id``, even if you are changing only one of the values. You can use this feature to fix an invalid credential or to change the credential when the external key store proxy rotates it.
+The following ``update-custom-key-store`` example updates the proxy authentication credential for your external key store. You must specify both the ``raw-secret-access-key`` and the ``access-key-id``, even if you are changing only one of the values. You can use this feature to fix an invalid credential or to change the credential when the external key store proxy rotates it.
 
 Establish the proxy authentication credential for AWS KMS on your external key store. Then use this command to provide the credential to AWS KMS. AWS KMS uses this credential to sign its requests to your external key store proxy.
 
@@ -62,7 +62,7 @@ For more information about updating an external key store, see `Editing external
 
 **Example 5: To edit the proxy connectivity of an external key store**
 
-The following example changes the external key store proxy connectivity option from public endpoint connectivity to VPC endpoint service connectivity. In addition to changing the ``xks-proxy-connectivity`` value, you must change the ``xks-proxy-uri-endpoint`` value to reflect the private DNS name associated with the VPC endpoint service. You must also add an ``xks-proxy-vpc-endpoint-service-name`` value.
+The following ``update-custom-key-store`` example changes the external key store proxy connectivity option from public endpoint connectivity to VPC endpoint service connectivity. In addition to changing the ``xks-proxy-connectivity`` value, you must change the ``xks-proxy-uri-endpoint`` value to reflect the private DNS name associated with the VPC endpoint service. You must also add an ``xks-proxy-vpc-endpoint-service-name`` value.
 
 **NOTE:** Before updating the proxy connectivity of an external store, you must disconnect it. Use the ``disconnect-custom-key-store`` command. After the command completes, you can reconnect the external key store by using the ``connect-custom-key-store`` command. ::
 

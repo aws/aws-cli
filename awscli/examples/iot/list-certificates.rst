@@ -1,6 +1,6 @@
 **Example 1: To list the certificates registered in your AWS account**
 
-The following ``list-certificates`` example lists all certificates registered in your account. If you have more than the default paging limit of 25, you can use the ``nextMarker`` response value from this command and supply it to the next command to get the next batch of results. Repeat until ``nextMarker`` returns without a value.  ::
+The following ``list-certificates`` example lists all certificates registered in your account. If you have more than the default paging limit of 25, you can use the ``nextMarker`` response value from this command and supply it to the next command to get the next batch of results. Repeat until ``nextMarker`` returns without a value. ::
 
     aws iot list-certificates
 

@@ -1,6 +1,6 @@
 **To retrieve a specific IP set**
 
-The following ``get-ip-set`` retrieves the IP set with the specified name, scope, and ID. You can get the ID for an IP set from the commands ``create-ip-set`` and ``list-ip-sets``. ::
+The following ``get-ip-set`` example retrieves the IP set with the specified name, scope, and ID. You can get the ID for an IP set from the commands ``create-ip-set`` and ``list-ip-sets``. ::
 
     aws wafv2 get-ip-set \
         --name testip \

@@ -1,6 +1,6 @@
 **To get information about a DynamoDB stream**
 
-The following ``describe-stream`` command displays information about the specific DynamoDB stream. ::
+The following ``describe-stream`` example displays information about the specific DynamoDB stream. ::
 
     aws dynamodbstreams describe-stream \
         --stream-arn arn:aws:dynamodb:us-west-1:123456789012:table/Music/stream/2019-10-22T18:02:01.576

@@ -1,6 +1,6 @@
 **To describe cache parameters**
 
-The following ''describe-cache-parameters'' example returns the detailed parameter list for the specified cache parameter group. ::
+The following ``describe-cache-parameters`` example returns the detailed parameter list for the specified cache parameter group. ::
 
     aws elasticache describe-cache-parameters \
         --cache-parameter-group-name "myparamgroup"

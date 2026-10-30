@@ -1,6 +1,6 @@
 **To list your jobs**
 
-The following command lists the jobs you've created::
+The following ``list-jobs`` example lists the jobs you've created. ::
 
     aws importexport list-jobs
 

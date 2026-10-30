@@ -1,6 +1,6 @@
 **To remove a source identifier from a subscription**
 
-The following ``remove-source-identifier`` example removes the specified source identifier from an existing subscription. ::
+The following ``remove-source-identifier-from-subscription`` example removes the specified source identifier from an existing subscription. ::
 
     aws rds remove-source-identifier-from-subscription \
         --subscription-name my-instance-events \

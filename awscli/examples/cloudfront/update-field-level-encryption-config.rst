@@ -1,6 +1,6 @@
 **To update a CloudFront field-level encryption configuration**
 
-The following example updates the ``Comment`` field of the field-level
+The following ``update-field-level-encryption-config`` example updates the ``Comment`` field of the field-level
 encryption configuration with the ID ``C3KM2WVD605UAY`` by providing the
 parameters in a JSON file.
 
@@ -15,9 +15,7 @@ To get the ``ETag``, use the
 <get-field-level-encryption.html>`_ or
 `get-field-level-encryption-config
 <get-field-level-encryption-config.html>`_ command.
-Use the ``--if-match`` option to provide the configuration's ``ETag``.
-
-::
+Use the ``--if-match`` option to provide the configuration's ``ETag``. ::
 
     aws cloudfront update-field-level-encryption-config \
         --id C3KM2WVD605UAY \

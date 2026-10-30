@@ -1,6 +1,6 @@
 **To validate an AWS CloudFormation template**
 
-The following ``validate-template`` command validates the ``sampletemplate.json`` template::
+The following ``validate-template`` example validates the ``sampletemplate.json`` template. ::
 
     aws cloudformation validate-template --template-body file://sampletemplate.json
 

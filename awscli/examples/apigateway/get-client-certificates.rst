@@ -1,6 +1,6 @@
 **To get a list of client certificates**
 
-Command::
+The following ``get-client-certificates`` example gets a list of client certificates. ::
 
     aws apigateway get-client-certificates
 

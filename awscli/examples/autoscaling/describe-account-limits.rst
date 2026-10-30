@@ -1,6 +1,6 @@
 **To describe your Amazon EC2 Auto Scaling account limits**
 
-This example describes the Amazon EC2 Auto Scaling limits for your AWS account. ::
+The following ``describe-account-limits`` example describes the Amazon EC2 Auto Scaling limits for your AWS account. ::
 
     aws autoscaling describe-account-limits
 

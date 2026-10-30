@@ -16,7 +16,7 @@ Output::
 
 **Example 2: To start a change request using an external JSON file**
 
-The following ``start-automation-execution`` example starts a change request with multiple options specified in a JSON file. ::
+The following ``start-change-request-execution`` example starts a change request with multiple options specified in a JSON file. ::
 
     aws ssm start-change-request-execution \
         --cli-input-json file://MyChangeRequest.json

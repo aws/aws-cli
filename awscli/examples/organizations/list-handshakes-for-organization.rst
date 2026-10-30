@@ -1,6 +1,6 @@
 **To retrieve a list of the handshakes associated with an organization**
 
-The following example shows how to get a list of handshakes that are associated with the current organization: ::
+The following ``list-handshakes-for-organization`` example gets a list of handshakes that are associated with the current organization. ::
 
     aws organizations list-handshakes-for-organization
 

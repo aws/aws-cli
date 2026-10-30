@@ -1,8 +1,6 @@
 **To register a job definition**
 
-This example registers a job definition for a simple container job.
-
-Command::
+The following ``register-job-definition`` example registers a job definition for a simple container job. ::
 
     aws batch register-job-definition --job-definition-name sleep30 --type container --container-properties '{ "image": "busybox", "vcpus": 1, "memory": 128, "command": [ "sleep", "30"]}'
 

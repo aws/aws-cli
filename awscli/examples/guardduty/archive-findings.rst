@@ -1,6 +1,6 @@
 **To archive findings in the current region**
 
-This ``archive-findings`` example shows how to archive findings in the current region. ::
+The following ``archive-findings`` example archives findings in the current region. ::
 
     aws guardduty archive-findings \
         --detector-id 12abc34d567e8fa901bc2d34eexample \

@@ -1,6 +1,6 @@
 **To record a lifecycle action heartbeat**
 
-This example records a lifecycle action heartbeat to keep the instance in a pending state. ::
+The following ``record-lifecycle-action-heartbeat`` example records a lifecycle action heartbeat to keep the instance in a pending state. ::
 
     aws autoscaling record-lifecycle-action-heartbeat \
         --lifecycle-hook-name my-launch-hook \

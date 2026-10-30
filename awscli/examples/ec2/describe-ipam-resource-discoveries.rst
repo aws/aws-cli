@@ -1,5 +1,7 @@
 **Example 1: To view complete details of resource discoveries**
 
+The following ``describe-ipam-resource-discoveries`` example lists the details of the resource discovery in your AWS account. You can have one resource discovery per AWS Region.
+
 In this example, you're a delegated IPAM admin who wants to create and share a resource discovery with the IPAM admin in another AWS Organization so that the admin can manage and monitor the IP addresses of resources in your organization.
 
 This example may be useful if:
@@ -7,7 +9,7 @@ This example may be useful if:
 * You tried to create a resource discovery, but you got an error that you've reached your limit of 1. You realize that you may have already created a resource discovery and you want to view it in your account.
 * You have resources in a Region that are not being discovered by the IPAM. You want to view the ``--operating-regions`` defined for the resource and ensure that you've added the right Region as an operating Region so that the resources there can be discovered.
 
-The following ``describe-ipam-resource-discoveries`` example lists the details of the resource discovery in your AWS account. You can have one resource discovery per AWS Region. ::
+To view the resource discovery in the ``us-east-1`` Region, use the following command. ::
 
     aws ec2 describe-ipam-resource-discoveries \
         --region us-east-1

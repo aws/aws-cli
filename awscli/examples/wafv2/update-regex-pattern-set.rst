@@ -1,6 +1,6 @@
 **To  modify the settings for an existing regex pattern set**
 
-The following ``update-regex-pattern-set`` updates the settings for the specified regex pattern set. This call requires an ID, which you can obtain from the call, ``list-regex-pattern-sets``, and a lock token which you can obtain from the calls, ``list-regex-pattern-sets`` and ``get-regex-pattern-set``. This call also returns a lock token that you can use for a subsequent update. ::
+The following ``update-regex-pattern-set`` example updates the settings for the specified regex pattern set. This call requires an ID, which you can obtain from the call, ``list-regex-pattern-sets``, and a lock token which you can obtain from the calls, ``list-regex-pattern-sets`` and ``get-regex-pattern-set``. This call also returns a lock token that you can use for a subsequent update. ::
 
     aws wafv2 update-regex-pattern-set \
         --name ExampleRegex \

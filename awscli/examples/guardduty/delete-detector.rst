@@ -1,6 +1,6 @@
 **To delete a detector, and disable GuardDuty, in the current region.**
 
-This example shows how to delete a detector, if successful, this will disable GuardDuty in the region associated with that detector. ::
+The following ``delete-detector`` example deletes a detector. If successful, this disables GuardDuty in the region associated with that detector. ::
 
     aws guardduty delete-detector \
         --detector-id b6b992d6d2f48e64bc59180bfexample

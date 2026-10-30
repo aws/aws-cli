@@ -1,6 +1,6 @@
 **To create a wireless gateway task definition**
 
-The following ``create-wireless-gateway-task-definition`` automatically creates tasks using this task definition for all gateways with the specified current version. ::
+The following ``create-wireless-gateway-task-definition`` example automatically creates tasks using this task definition for all gateways with the specified current version. ::
 
     aws iotwireless create-wireless-gateway-task-definition \
         --cli-input-json file://input.json 

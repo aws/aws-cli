@@ -1,6 +1,6 @@
 **To assume a role**
 
-The following ``assume-role`` command retrieves a set of short-term credentials for the IAM role ``s3-access-example``. ::
+The following ``assume-role`` example retrieves a set of short-term credentials for the IAM role ``s3-access-example``. ::
 
     aws sts assume-role \
         --role-arn arn:aws:iam::123456789012:role/xaccounts3access \

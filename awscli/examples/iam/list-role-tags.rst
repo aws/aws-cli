@@ -1,6 +1,6 @@
 **To list the tags attached to a role**
 
-The following ``list-role-tags`` command retrieves the list of tags associated with the specified role. ::
+The following ``list-role-tags`` example retrieves the list of tags associated with the specified role. ::
 
     aws iam list-role-tags \
         --role-name production-role

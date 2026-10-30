@@ -1,8 +1,6 @@
 **To create a launch template version**
 
-This example creates a new launch template version based on version 1 of the launch template and specifies a different AMI ID.
-
-Command::
+The following ``create-launch-template-version`` example creates a new launch template version based on version 1 of the launch template and specifies a different AMI ID. ::
 
     aws ec2 create-launch-template-version --launch-template-id lt-0abcd290751193123 --version-description WebVersion2 --source-version 1 --launch-template-data '{"ImageId":"ami-c998b6b2"}'
 

@@ -24,7 +24,7 @@ Run this command again and provide the ``nextToken`` value from the previous res
     aws codebuild list-projects \
         --sort-by NAME \
         --sort-order ASCENDING \
-        --next-token Ci33ACF6...The full token has been omitted for brevity...U+AkMx8=
+        --next-token "Ci33ACF6...The full token has been omitted for brevity...U+AkMx8="
 
 Output::
 

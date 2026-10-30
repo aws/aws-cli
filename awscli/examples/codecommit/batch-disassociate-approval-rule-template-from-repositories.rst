@@ -3,8 +3,8 @@
 The following ``batch-disassociate-approval-rule-template-from-repositories`` example disassociates the specified approval rule template from repositories named ``MyDemoRepo`` and ``MyOtherDemoRepo``. ::
 
     aws codecommit batch-disassociate-approval-rule-template-from-repositories \
-        --repository-names MyDemoRepo, MyOtherDemoRepo  \
-        --approval-rule-template-name 1-approval-rule-for-all pull requests
+        --repository-names MyDemoRepo MyOtherDemoRepo \
+        --approval-rule-template-name 1-approval-rule-for-all-pull-requests
 
 Output::
 

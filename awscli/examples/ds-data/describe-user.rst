@@ -2,7 +2,7 @@
 
 The following ``describe-user`` example gets information for the specified user in the specified directory. ::
 
-    aws ds-data describe-user command-name \
+    aws ds-data describe-user \
         --directory-id d-1234567890 \
         --sam-account-name 'john.doe'
 

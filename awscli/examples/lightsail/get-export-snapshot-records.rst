@@ -1,6 +1,6 @@
 **To get the records of snapshots exported to Amazon EC2**
 
-The following ``get-export-snapshot-record`` example displays details about Amazon Lightsail instance or disk snapshots exported to Amazon EC2. ::
+The following ``get-export-snapshot-records`` example displays details about Amazon Lightsail instance or disk snapshots exported to Amazon EC2. ::
 
     aws lightsail get-export-snapshot-records
 

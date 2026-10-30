@@ -4,7 +4,7 @@ The following ``deregister-container-instance`` example deregisters a container 
 
     aws ecs deregister-container-instance \
         --cluster arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster \
-        --container-instance arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE \
+        --container-instance arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --force
 
 Output::
@@ -206,7 +206,7 @@ Output::
             ],
             "pendingTasksCount": 0,
             "tags": [],
-            "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "registeredResources": [
                 {
                     "integerValue": 1024,

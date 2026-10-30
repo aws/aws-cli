@@ -11,7 +11,7 @@ Output::
         "ResolverEndpoint": {
             "Id": "rslvr-out-d5e5920e37example",
             "CreatorRequestId": "2020-01-01-18:47",
-            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-endpoint/rslvr-out-d5e5920e37example",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-endpoint/rslvr-out-d5e5920e37example",
             "Name": "my-outbound-endpoint",
             "SecurityGroupIds": [
                 "sg-05cd7b25d6example"

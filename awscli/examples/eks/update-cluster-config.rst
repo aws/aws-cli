@@ -10,7 +10,7 @@ Output::
 
     {
         "update": {
-            "id": "ec883c93-2e9e-407c-a22f-8f6fa6e67d4f",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "InProgress",
             "type": "EndpointAccessUpdate",
             "params": [
@@ -42,7 +42,7 @@ Output::
 
     {
         "update": {
-            "id": "7551c64b-1d27-4b1e-9f8e-c45f056eb6fd",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "status": "InProgress",
             "type": "LoggingUpdate",
             "params": [

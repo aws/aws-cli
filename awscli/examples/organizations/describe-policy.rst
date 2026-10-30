@@ -11,7 +11,7 @@ Output::
         "Policy": {
             "Content": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
             "PolicySummary": {
-                "Arn": "arn:aws:organizations::111111111111:policy/o-exampleorgid/service_control_policy/p-examplepolicyid111",
+                "Arn": "arn:aws:organizations::123456789012:policy/o-exampleorgid/service_control_policy/p-examplepolicyid111",
                 "Type": "SERVICE_CONTROL_POLICY",
                 "Id": "p-examplepolicyid111",
                 "AwsManaged": false,

@@ -10,7 +10,7 @@ Output::
 
     {
         "encoderConfiguration": {
-            "arn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef",
+            "arn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef",
             "name": "test-ec",
             "tags": {},
             "video": {

@@ -45,7 +45,7 @@ Output::
                     }
                 ]
             },
-            "arn": "arn:aws:codepipeline:eu-central-1:123456789012:webhook:my-webhook"
+            "arn": "arn:aws:codepipeline:us-west-2:123456789012:webhook:my-webhook"
         }
     }
 

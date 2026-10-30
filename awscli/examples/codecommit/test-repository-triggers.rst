@@ -5,7 +5,7 @@ from an Amazon Simple Notification Service (Amazon SNS) topic. ::
 
     aws codecommit test-repository-triggers \
         --repository-name MyDemoRepo \
-        --triggers name=MyFirstTrigger,destinationArn=arn:aws:sns:us-east-1:111111111111:MyCodeCommitTopic,branches=mainline,preprod,events=all
+        --triggers name=MyFirstTrigger,destinationArn=arn:aws:sns:us-west-2:123456789012:MyCodeCommitTopic,branches=mainline,preprod,events=all
 
 Output::
 

@@ -16,7 +16,7 @@ To release the allocation, run the following command. ::
         --ipam-pool-id ipam-pool-07bdd12d7c94e4693 \
         --cidr 10.0.0.0/23 \
         --ipam-pool-allocation-id ipam-pool-alloc-0e66a1f730da54791b99465b79e7d1e89 \
-        --region us-west-1
+        --region us-west-2
 
 Output::
 

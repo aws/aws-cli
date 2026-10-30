@@ -9,7 +9,7 @@ Output::
     {
         "TaskDefinitions": [
             {
-                "Id": "b7d3baad-25c7-35e7-a4e1-1683a0d61da9", 
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
                 "LoRaWAN" :
                     {
                     "CurrentVersion" :{

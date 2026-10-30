@@ -9,8 +9,8 @@ Output::
 
     {
         "Account": {
-            "AwsAccountId": "111122223333",
-            "AccountId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "AwsAccountId": "123456789012",
+            "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Name": "MyChimeAccount",
             "AccountType": "Team",
             "CreatedTimestamp": "2019-01-04T17:11:22.003Z",

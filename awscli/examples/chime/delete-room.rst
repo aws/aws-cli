@@ -3,8 +3,8 @@
 The following ``delete-room`` example deletes the specified chat room and removes the chat room memberships. ::
 
     aws chime delete-room \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45 \
-        --room-id abcd1e2d-3e45-6789-01f2-3g45h67i890j
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --room-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 This command produces no output.
 

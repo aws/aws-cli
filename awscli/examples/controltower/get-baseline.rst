@@ -3,12 +3,12 @@
 The following ``get-baseline`` example gets details of an AWS Control Tower baseline. ::
 
     aws controltower get-baseline \
-        --baseline-identifier arn:aws:controltower:us-east-1::baseline/LN25R72TTG6IGPTQ
+        --baseline-identifier arn:aws:controltower:us-west-2::baseline/LN25R72TTG6IGPTQ
 
 Output::
 
     {
-        "arn": "arn:aws:controltower:us-east-1::baseline/LN25R72TTG6IGPTQ",
+        "arn": "arn:aws:controltower:us-west-2::baseline/LN25R72TTG6IGPTQ",
         "description": "Sets up shared resources for AWS Identity Center, which prepares the AWSControlTowerBaseline to set up Identity Center access for accounts.",
         "name": "IdentityCenterBaseline"
     }

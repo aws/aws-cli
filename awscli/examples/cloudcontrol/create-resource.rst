@@ -15,7 +15,7 @@ Output::
             "OperationStatus": "IN_PROGRESS", 
             "Operation": "CREATE", 
             "Identifier": "ResourceExample", 
-            "RequestToken": "20999d87-e304-4725-ad84-832dcbfd7fc5"
+            "RequestToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }
 

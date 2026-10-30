@@ -10,7 +10,7 @@ Output::
     {
         "instance": {
             "name": "MEAN-1",
-            "arn": "arn:aws:lightsail:us-west-2:111122223333:Instance/bd470fc5-a68b-44c5-8dbc-EXAMPLE4bada",
+            "arn": "arn:aws:lightsail:us-west-2:123456789012:Instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "supportCode": "6EXAMPLE3362/i-05EXAMPLE407c97d3",
             "createdAt": 1570635023.124,
             "location": {

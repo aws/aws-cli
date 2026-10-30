@@ -3,7 +3,7 @@
 The following ``delete-asset`` example deletes a wind turbine asset. ::
 
     aws iotsitewise delete-asset \
-        --asset-id a1b2c3d4-5678-90ab-cdef-33333EXAMPLE
+        --asset-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

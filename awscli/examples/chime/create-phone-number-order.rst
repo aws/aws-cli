@@ -10,7 +10,7 @@ Output::
 
     {
         "PhoneNumberOrder": {
-            "PhoneNumberOrderId": "abc12345-de67-89f0-123g-h45i678j9012",
+            "PhoneNumberOrderId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "ProductType": "VoiceConnector",
             "Status": "Processing",
             "OrderedPhoneNumbers": [

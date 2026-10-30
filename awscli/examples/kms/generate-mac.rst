@@ -9,14 +9,14 @@ Before running this command, replace the example key ID with a valid key ID from
     msg=(echo 'Hello World' | base64)
     
     aws kms generate-mac \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --message fileb://Message \
         --mac-algorithm HMAC_SHA_384
 
 Output::
 
     {
-        "KeyId": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Mac": "<HMAC_TAG>",
         "MacAlgorithm": "HMAC_SHA_384"
     }
@@ -38,7 +38,7 @@ First, Base64-encode the message and save it in the ``EncodedMessage`` file. ::
 Then, generate the HMAC for the encoded message. ::
 
     aws kms generate-mac \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --message fileb://EncodedMessage \
         --mac-algorithm HMAC_SHA_384 \
         --output text \

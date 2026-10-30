@@ -11,7 +11,7 @@ Output::
     {
         "containerInstances": [
             {
-                "containerInstanceArn": "arn:aws:ecs:us-west-2:130757420319:container-instance/default/765936fadbdd46b5991a4bd70c2a43d4",
+                "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/default/765936fadbdd46b5991a4bd70c2a43d4",
                 "ec2InstanceId": "i-013d87ffbb4d513bf",
                 "version": 4390,
                 "versionInfo": {

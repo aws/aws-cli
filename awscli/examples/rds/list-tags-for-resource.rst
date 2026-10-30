@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists all tags on a DB instance. ::
 
     aws rds list-tags-for-resource \
-        --resource-name arn:aws:rds:us-east-1:123456789012:db:orcl1
+        --resource-name arn:aws:rds:us-west-2:123456789012:db:orcl1
 
 Output::
 

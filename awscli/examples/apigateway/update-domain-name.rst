@@ -4,14 +4,14 @@ The following ``update-domain-name`` example changes the certificate name for a 
 
     aws apigateway update-domain-name \
         --domain-name api.domain.tld \
-        --patch-operations op='replace',path='/certificateArn',value='arn:aws:acm:us-west-2:111122223333:certificate/CERTEXAMPLE123EXAMPLE'
+        --patch-operations op='replace',path='/certificateArn',value='arn:aws:acm:us-west-2:123456789012:certificate/CERTEXAMPLE123EXAMPLE'
 
 Output::
 
     {
         "domainName": "api.domain.tld",
         "distributionDomainName": "d123456789012.cloudfront.net",
-        "certificateArn": "arn:aws:acm:us-west-2:111122223333:certificate/CERTEXAMPLE123EXAMPLE",
+        "certificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/CERTEXAMPLE123EXAMPLE",
         "certificateUploadDate": 1462565487
     }
 

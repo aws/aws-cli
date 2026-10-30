@@ -11,7 +11,7 @@ Output::
     {
         "thingTypeName": "LightBulb",
         "thingTypeArn": "arn:aws:iot:us-west-2:123456789012:thingtype/LightBulb",
-        "thingTypeId": "ce3573b0-0a3c-45a7-ac93-4e0ce14cd190"
+        "thingTypeId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Thing Types <https://docs.aws.amazon.com/iot/latest/developerguide/thing-types.html>`__ in the *AWS IoT Developers Guide*.

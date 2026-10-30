@@ -32,11 +32,11 @@ Output::
         "items": [
             {
                 "domainName": "my.domain.tld",
-                "domainNameArn": "arn:aws:apigateway:us-east-1::/domainnames/my.private.domain.tld",
+                "domainNameArn": "arn:aws:apigateway:us-west-2::/domainnames/my.private.domain.tld",
                 "certificateUploadDate": "2024-08-15T17:02:55-07:00",
-                "regionalDomainName": "d-abcd1234.execute-api.us-east-1.amazonaws.com",
+                "regionalDomainName": "d-abcd1234.execute-api.us-west-2.amazonaws.com",
                 "regionalHostedZoneId": "Z1UJRXOUMOOFQ8",
-                "regionalCertificateArn": "arn:aws:acm:us-east-1:012345678910:certificate/fb1b9770-a305-495d-aefb-27e5e101ff3",
+                "regionalCertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/fb1b9770-a305-495d-aefb-27e5e101ff3",
                 "endpointConfiguration": {
                     "types": [
                         "REGIONAL"
@@ -48,8 +48,8 @@ Output::
             {
                 "domainName": "my.private.domain.tld",
                 "domainNameId": "abcd1234",
-                "domainNameArn": "arn:aws:apigateway:us-east-1:012345678910:/domainnames/my.private.domain.tld+abcd1234",
-                "certificateArn": "arn:aws:acm:us-east-1:012345678910:certificate/fb1b9770-a305-495d-aefb-27e5e101ff3",
+                "domainNameArn": "arn:aws:apigateway:us-west-2:123456789012:/domainnames/my.private.domain.tld+abcd1234",
+                "certificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/fb1b9770-a305-495d-aefb-27e5e101ff3",
                 "certificateUploadDate": "2024-11-26T11:44:40-08:00",
                 "endpointConfiguration": {
                     "types": [
@@ -78,7 +78,7 @@ Output::
             {
                 "domainName": "my.private.domain.tld",
                 "domainNameId": "abcd1234",
-                "domainNameArn": "arn:aws:apigateway:us-east-1:012345678910:/domainnames/my.private.domain.tld+abcd1234"
+                "domainNameArn": "arn:aws:apigateway:us-west-2:123456789012:/domainnames/my.private.domain.tld+abcd1234"
             }
         ]
     }

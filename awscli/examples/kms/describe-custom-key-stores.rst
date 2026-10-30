@@ -85,7 +85,7 @@ Output::
                     "Connectivity": "VPC_ENDPOINT_SERVICE",
                     "UriEndpoint": "https://myproxy-private.xks.example.com",
                     "UriPath": "/kms/xks/v1",
-                    "VpcEndpointServiceName": "com.amazonaws.vpce.us-east-1.vpce-svc-example1"
+                    "VpcEndpointServiceName": "com.amazonaws.vpce.us-west-2.vpce-svc-example1"
                 }
             }
         ]

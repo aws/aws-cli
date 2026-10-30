@@ -9,7 +9,7 @@ For Linux, use the following command. ::
         --destination-ipam-scope-id ipam-scope-0da34c61fd189a141 \
         --resource-id vpc-010e1791024eb0af9 \
         --resource-cidr 10.0.1.0/24 \
-        --resource-region us-east-1 \
+        --resource-region us-west-2 \
         --monitored
 
 For Windows, use the following command. ::
@@ -19,7 +19,7 @@ For Windows, use the following command. ::
         --destination-ipam-scope-id ipam-scope-0da34c61fd189a141 ^
         --resource-id vpc-010e1791024eb0af9 ^
         --resource-cidr 10.0.1.0/24 ^
-        --resource-region us-east-1 ^
+        --resource-region us-west-2 ^
         --monitored
 
 Output::
@@ -29,7 +29,7 @@ Output::
             "IpamId": "ipam-08440e7a3acde3908",
             "IpamScopeId": "ipam-scope-0da34c61fd189a141",
             "IpamPoolId": "ipam-pool-0533048da7d823723",
-            "ResourceRegion": "us-east-1",
+            "ResourceRegion": "us-west-2",
             "ResourceOwnerId": "123456789012",
             "ResourceId": "vpc-010e1791024eb0af9",
             "ResourceCidr": "10.0.1.0/24",

@@ -76,7 +76,7 @@ Output::
             ],
             "attachments": [
                 {
-                    "id": "0fb0c8f4-6edd-4de1-9b09-17e470ee1918",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "type": "asp",
                     "status": "PRECREATED",
                     "details": [
@@ -91,7 +91,7 @@ Output::
                     ]
                 },
                 {
-                    "id": "ae592060-2382-4663-9476-b015c685593c",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                     "type": "asp",
                     "status": "PRECREATED",
                     "details": [

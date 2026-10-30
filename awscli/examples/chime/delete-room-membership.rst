@@ -3,9 +3,9 @@
 The following ``delete-room-membership`` example removes the specified member from the specified chat room. ::
 
     aws chime delete-room-membership \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45 \
-        --room-id abcd1e2d-3e45-6789-01f2-3g45h67i890j \
-        --member-id 1ab2345c-67de-8901-f23g-45h678901j2k
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --room-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
+        --member-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 This command produces no output.
 

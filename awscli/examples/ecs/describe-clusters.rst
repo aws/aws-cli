@@ -37,7 +37,7 @@ Output::
     {
         "clusters": [
             {
-                "clusterArn": "arn:aws:ecs:af-south-1:123456789222:cluster/sampleCluster",
+                "clusterArn": "arn:aws:ecs:us-west-2:123456789222:cluster/sampleCluster",
                 "clusterName": "sampleCluster",
                 "status": "ACTIVE",
                 "registeredContainerInstancesCount": 0,
@@ -53,7 +53,7 @@ Output::
                 "defaultCapacityProviderStrategy": [],
                 "attachments": [
                     {
-                        "id": "a1b2c3d4-5678-901b-cdef-EXAMPLE22222",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "type": "as_policy",
                         "status": "CREATED",
                         "details": [

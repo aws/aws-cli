@@ -23,14 +23,14 @@ Output::
                             "State": "disabled"
                         },
                         "Placement": {
-                            "AvailabilityZone": "us-east-2a",
+                            "AvailabilityZone": "us-west-2a",
                             "GroupName": "",
                             "Tenancy": "default"
                         },
-                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                         "PrivateIpAddress": "10-0-0-157",
                         "ProductCodes": [],
-                        "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                        "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                         "PublicIpAddress": "34.253.223.13",
                         "State": {
                             "Code": 16,
@@ -51,19 +51,19 @@ Output::
                                 }
                             }
                         ],
-                        "ClientToken": "1234abcd-1234-abcd-1234-d46a8903e9bc",
+                        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "EbsOptimized": true,
                         "EnaSupport": true,
                         "Hypervisor": "xen",
                         "IamInstanceProfile": {
-                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Arn": "arn:aws:iam::123456789012:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
                             "Id": "111111111111111111111"
                         },
                         "NetworkInterfaces": [
                             {
                                 "Association": {
                                     "IpOwnerId": "amazon",
-                                    "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                    "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                                     "PublicIp": "34.253.223.13"
                                 },
                                 "Attachment": {
@@ -84,18 +84,18 @@ Output::
                                 "Ipv6Addresses": [],
                                 "MacAddress": "00:11:22:33:44:55",
                                 "NetworkInterfaceId": "eni-1234567890abcdefg",
-                                "OwnerId": "104024344472",
-                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "OwnerId": "123456789012",
+                                "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10-0-0-157",
                                 "PrivateIpAddresses": [
                                     {
                                         "Association": {
                                             "IpOwnerId": "amazon",
-                                            "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                            "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                                             "PublicIp": "34.253.223.13"
                                         },
                                         "Primary": true,
-                                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                         "PrivateIpAddress": "10-0-0-157"
                                     }
                                 ],
@@ -156,7 +156,7 @@ Output::
                         }
                     }
                 ],
-                "OwnerId": "111111111111",
+                "OwnerId": "123456789012",
                 "ReservationId": "r-1234567890abcdefg"
             }
         ]
@@ -187,14 +187,14 @@ Output::
                             "State": "disabled"
                         },
                         "Placement": {
-                            "AvailabilityZone": "us-east-2a",
+                            "AvailabilityZone": "us-west-2a",
                             "GroupName": "",
                             "Tenancy": "default"
                         },
-                        "PrivateDnsName": "ip-10-0-0-158.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-158.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.0.158",
                         "ProductCodes": [],
-                        "PublicDnsName": "ec2-203-0-113-18.us-east-2.compute.amazonaws.com",
+                        "PublicDnsName": "ec2-203-0-113-18.us-west-2.compute.amazonaws.com",
                         "PublicIpAddress": "203.0.113.18",
                         "State": {
                             "Code": 16,
@@ -220,14 +220,14 @@ Output::
                         "EnaSupport": true,
                         "Hypervisor": "xen",
                         "IamInstanceProfile": {
-                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Arn": "arn:aws:iam::123456789012:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
                             "Id": "111111111111111111111"
                         },
                         "NetworkInterfaces": [
                             {
                                 "Association": {
                                     "IpOwnerId": "amazon",
-                                    "PublicDnsName": "ec2-203-0-113-18.us-east-2.compute.amazonaws.com",
+                                    "PublicDnsName": "ec2-203-0-113-18.us-west-2.compute.amazonaws.com",
                                     "PublicIp": "203.0.113.18"
                                 },
                                 "Attachment": {
@@ -248,18 +248,18 @@ Output::
                                 "Ipv6Addresses": [],
                                 "MacAddress": "00:11:22:33:44:66",
                                 "NetworkInterfaceId": "eni-0a1b2c3d4e5f6a7b8",
-                                "OwnerId": "111111111111",
-                                "PrivateDnsName": "ip-10-0-0-158.us-east-2.compute.internal",
+                                "OwnerId": "123456789012",
+                                "PrivateDnsName": "ip-10-0-0-158.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.0.158",
                                 "PrivateIpAddresses": [
                                     {
                                         "Association": {
                                             "IpOwnerId": "amazon",
-                                            "PublicDnsName": "ec2-203-0-113-18.us-east-2.compute.amazonaws.com",
+                                            "PublicDnsName": "ec2-203-0-113-18.us-west-2.compute.amazonaws.com",
                                             "PublicIp": "203.0.113.18"
                                         },
                                         "Primary": true,
-                                        "PrivateDnsName": "ip-10-0-0-158.us-east-2.compute.internal",
+                                        "PrivateDnsName": "ip-10-0-0-158.us-west-2.compute.internal",
                                         "PrivateIpAddress": "10.0.0.158"
                                     }
                                 ],
@@ -320,7 +320,7 @@ Output::
                         }
                     }
                 ],
-                "OwnerId": "111111111111",
+                "OwnerId": "123456789012",
                 "ReservationId": "r-0abcdef1234567890"
             }
         ]
@@ -333,7 +333,7 @@ For more information, see `List and filter using the CLI <https://docs.aws.amazo
 The following ``describe-instances`` example uses multiple filters to scope the results to instances with the specified type that are also in the specified Availability Zone. ::
 
     aws ec2 describe-instances \
-        --filters Name=instance-type,Values=t2.micro,t3.micro Name=availability-zone,Values=us-east-2c
+        --filters Name=instance-type,Values=t2.micro,t3.micro Name=availability-zone,Values=us-west-2c
 
 Output::
 
@@ -353,14 +353,14 @@ Output::
                             "State": "disabled"
                         },
                         "Placement": {
-                            "AvailabilityZone": "us-east-2c",
+                            "AvailabilityZone": "us-west-2c",
                             "GroupName": "",
                             "Tenancy": "default"
                         },
-                        "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-2-45.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.2.45",
                         "ProductCodes": [],
-                        "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                        "PublicDnsName": "ec2-203-0-113-27.us-west-2.compute.amazonaws.com",
                         "PublicIpAddress": "203.0.113.27",
                         "State": {
                             "Code": 16,
@@ -386,14 +386,14 @@ Output::
                         "EnaSupport": true,
                         "Hypervisor": "xen",
                         "IamInstanceProfile": {
-                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Arn": "arn:aws:iam::123456789012:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
                             "Id": "111111111111111111111"
                         },
                         "NetworkInterfaces": [
                             {
                                 "Association": {
                                     "IpOwnerId": "amazon",
-                                    "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                                    "PublicDnsName": "ec2-203-0-113-27.us-west-2.compute.amazonaws.com",
                                     "PublicIp": "203.0.113.27"
                                 },
                                 "Attachment": {
@@ -414,18 +414,18 @@ Output::
                                 "Ipv6Addresses": [],
                                 "MacAddress": "00:11:22:33:44:77",
                                 "NetworkInterfaceId": "eni-0b2c3d4e5f6a7b8c9",
-                                "OwnerId": "111111111111",
-                                "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                                "OwnerId": "123456789012",
+                                "PrivateDnsName": "ip-10-0-2-45.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.2.45",
                                 "PrivateIpAddresses": [
                                     {
                                         "Association": {
                                             "IpOwnerId": "amazon",
-                                            "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                                            "PublicDnsName": "ec2-203-0-113-27.us-west-2.compute.amazonaws.com",
                                             "PublicIp": "203.0.113.27"
                                         },
                                         "Primary": true,
-                                        "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                                        "PrivateDnsName": "ip-10-0-2-45.us-west-2.compute.internal",
                                         "PrivateIpAddress": "10.0.2.45"
                                     }
                                 ],
@@ -486,7 +486,7 @@ Output::
                         }
                     }
                 ],
-                "OwnerId": "111111111111",
+                "OwnerId": "123456789012",
                 "ReservationId": "r-0598c7d356eba48d7"
             }
         ]
@@ -508,7 +508,7 @@ Contents of ``filters.json``::
         },
         {
             "Name": "availability-zone",
-            "Values": ["us-east-2c"]
+            "Values": ["us-west-2c"]
         }
     ]
 
@@ -530,14 +530,14 @@ Output::
                             "State": "disabled"
                         },
                         "Placement": {
-                            "AvailabilityZone": "us-east-2c",
+                            "AvailabilityZone": "us-west-2c",
                             "GroupName": "",
                             "Tenancy": "default"
                         },
-                        "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-2-45.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.2.45",
                         "ProductCodes": [],
-                        "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                        "PublicDnsName": "ec2-203-0-113-27.us-west-2.compute.amazonaws.com",
                         "PublicIpAddress": "203.0.113.27",
                         "State": {
                             "Code": 16,
@@ -563,14 +563,14 @@ Output::
                         "EnaSupport": true,
                         "Hypervisor": "xen",
                         "IamInstanceProfile": {
-                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Arn": "arn:aws:iam::123456789012:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
                             "Id": "111111111111111111111"
                         },
                         "NetworkInterfaces": [
                             {
                                 "Association": {
                                     "IpOwnerId": "amazon",
-                                    "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                                    "PublicDnsName": "ec2-203-0-113-27.us-west-2.compute.amazonaws.com",
                                     "PublicIp": "203.0.113.27"
                                 },
                                 "Attachment": {
@@ -591,18 +591,18 @@ Output::
                                 "Ipv6Addresses": [],
                                 "MacAddress": "00:11:22:33:44:77",
                                 "NetworkInterfaceId": "eni-0b2c3d4e5f6a7b8c9",
-                                "OwnerId": "111111111111",
-                                "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                                "OwnerId": "123456789012",
+                                "PrivateDnsName": "ip-10-0-2-45.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.2.45",
                                 "PrivateIpAddresses": [
                                     {
                                         "Association": {
                                             "IpOwnerId": "amazon",
-                                            "PublicDnsName": "ec2-203-0-113-27.us-east-2.compute.amazonaws.com",
+                                            "PublicDnsName": "ec2-203-0-113-27.us-west-2.compute.amazonaws.com",
                                             "PublicIp": "203.0.113.27"
                                         },
                                         "Primary": true,
-                                        "PrivateDnsName": "ip-10-0-2-45.us-east-2.compute.internal",
+                                        "PrivateDnsName": "ip-10-0-2-45.us-west-2.compute.internal",
                                         "PrivateIpAddress": "10.0.2.45"
                                     }
                                 ],
@@ -663,7 +663,7 @@ Output::
                         }
                     }
                 ],
-                "OwnerId": "111111111111",
+                "OwnerId": "123456789012",
                 "ReservationId": "r-0598c7d356eba48d7"
             }
         ]
@@ -694,14 +694,14 @@ Output::
                             "State": "disabled"
                         },
                         "Placement": {
-                            "AvailabilityZone": "us-east-2a",
+                            "AvailabilityZone": "us-west-2a",
                             "GroupName": "",
                             "Tenancy": "default"
                         },
-                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                         "PrivateIpAddress": "10-0-0-157",
                         "ProductCodes": [],
-                        "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                        "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                         "PublicIpAddress": "34.253.223.13",
                         "State": {
                             "Code": 16,
@@ -722,19 +722,19 @@ Output::
                                 }
                             }
                         ],
-                        "ClientToken": "1234abcd-1234-abcd-1234-d46a8903e9bc",
+                        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "EbsOptimized": true,
                         "EnaSupport": true,
                         "Hypervisor": "xen",
                         "IamInstanceProfile": {
-                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Arn": "arn:aws:iam::123456789012:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
                             "Id": "111111111111111111111"
                         },
                         "NetworkInterfaces": [
                             {
                                 "Association": {
                                     "IpOwnerId": "amazon",
-                                    "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                    "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                                     "PublicIp": "34.253.223.13"
                                 },
                                 "Attachment": {
@@ -755,18 +755,18 @@ Output::
                                 "Ipv6Addresses": [],
                                 "MacAddress": "00:11:22:33:44:55",
                                 "NetworkInterfaceId": "eni-1234567890abcdefg",
-                                "OwnerId": "104024344472",
-                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "OwnerId": "123456789012",
+                                "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10-0-0-157",
                                 "PrivateIpAddresses": [
                                     {
                                         "Association": {
                                             "IpOwnerId": "amazon",
-                                            "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                            "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                                             "PublicIp": "34.253.223.13"
                                         },
                                         "Primary": true,
-                                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                         "PrivateIpAddress": "10-0-0-157"
                                     }
                                 ],
@@ -831,7 +831,7 @@ Output::
                         }
                     }
                 ],
-                "OwnerId": "111111111111",
+                "OwnerId": "123456789012",
                 "ReservationId": "r-1234567890abcdefg"
             }
         ]
@@ -862,14 +862,14 @@ Output::
                             "State": "disabled"
                         },
                         "Placement": {
-                            "AvailabilityZone": "us-east-2a",
+                            "AvailabilityZone": "us-west-2a",
                             "GroupName": "",
                             "Tenancy": "default"
                         },
-                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                         "PrivateIpAddress": "10-0-0-157",
                         "ProductCodes": [],
-                        "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                        "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                         "PublicIpAddress": "34.253.223.13",
                         "State": {
                             "Code": 16,
@@ -890,19 +890,19 @@ Output::
                                 }
                             }
                         ],
-                        "ClientToken": "1234abcd-1234-abcd-1234-d46a8903e9bc",
+                        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "EbsOptimized": true,
                         "EnaSupport": true,
                         "Hypervisor": "xen",
                         "IamInstanceProfile": {
-                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Arn": "arn:aws:iam::123456789012:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
                             "Id": "111111111111111111111"
                         },
                         "NetworkInterfaces": [
                             {
                                 "Association": {
                                     "IpOwnerId": "amazon",
-                                    "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                    "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                                     "PublicIp": "34.253.223.13"
                                 },
                                 "Attachment": {
@@ -923,18 +923,18 @@ Output::
                                 "Ipv6Addresses": [],
                                 "MacAddress": "00:11:22:33:44:55",
                                 "NetworkInterfaceId": "eni-1234567890abcdefg",
-                                "OwnerId": "104024344472",
-                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "OwnerId": "123456789012",
+                                "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10-0-0-157",
                                 "PrivateIpAddresses": [
                                     {
                                         "Association": {
                                             "IpOwnerId": "amazon",
-                                            "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                            "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                                             "PublicIp": "34.253.223.13"
                                         },
                                         "Primary": true,
-                                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                         "PrivateIpAddress": "10-0-0-157"
                                     }
                                 ],
@@ -999,7 +999,7 @@ Output::
                         }
                     }
                 ],
-                "OwnerId": "111111111111",
+                "OwnerId": "123456789012",
                 "ReservationId": "r-1234567890abcdefg"
             }
         ]
@@ -1030,14 +1030,14 @@ Output::
                             "State": "disabled"
                         },
                         "Placement": {
-                            "AvailabilityZone": "us-east-2a",
+                            "AvailabilityZone": "us-west-2a",
                             "GroupName": "",
                             "Tenancy": "default"
                         },
-                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                         "PrivateIpAddress": "10-0-0-157",
                         "ProductCodes": [],
-                        "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                        "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                         "PublicIpAddress": "34.253.223.13",
                         "State": {
                             "Code": 16,
@@ -1058,19 +1058,19 @@ Output::
                                 }
                             }
                         ],
-                        "ClientToken": "1234abcd-1234-abcd-1234-d46a8903e9bc",
+                        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "EbsOptimized": true,
                         "EnaSupport": true,
                         "Hypervisor": "xen",
                         "IamInstanceProfile": {
-                            "Arn": "arn:aws:iam::111111111111:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
+                            "Arn": "arn:aws:iam::123456789012:instance-profile/AmazonSSMRoleForInstancesQuickSetup",
                             "Id": "111111111111111111111"
                         },
                         "NetworkInterfaces": [
                             {
                                 "Association": {
                                     "IpOwnerId": "amazon",
-                                    "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                    "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                                     "PublicIp": "34.253.223.13"
                                 },
                                 "Attachment": {
@@ -1091,18 +1091,18 @@ Output::
                                 "Ipv6Addresses": [],
                                 "MacAddress": "00:11:22:33:44:55",
                                 "NetworkInterfaceId": "eni-1234567890abcdefg",
-                                "OwnerId": "104024344472",
-                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "OwnerId": "123456789012",
+                                "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10-0-0-157",
                                 "PrivateIpAddresses": [
                                     {
                                         "Association": {
                                             "IpOwnerId": "amazon",
-                                            "PublicDnsName": "ec2-34-253-223-13.us-east-2.compute.amazonaws.com",
+                                            "PublicDnsName": "ec2-34-253-223-13.us-west-2.compute.amazonaws.com",
                                             "PublicIp": "34.253.223.13"
                                         },
                                         "Primary": true,
-                                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                         "PrivateIpAddress": "10-0-0-157"
                                     }
                                 ],
@@ -1167,7 +1167,7 @@ Output::
                         }
                     }
                 ],
-                "OwnerId": "111111111111",
+                "OwnerId": "123456789012",
                 "ReservationId": "r-1234567890abcdefg"
             }
         ]
@@ -1247,9 +1247,9 @@ Output::
     +--------------+-----------------------+--------------------+
     |      AZ      |       Instance        |        Name        |
     +--------------+-----------------------+--------------------+
-    |  us-east-2b  |  i-057750d42936e468a  |  my-prod-server    |
-    |  us-east-2a  |  i-001efd250faaa6ffa  |  test-server-1     |
-    |  us-east-2a  |  i-027552a73f021f3bd  |  test-server-2     |
+    |  us-west-2b  |  i-057750d42936e468a  |  my-prod-server    |
+    |  us-west-2a  |  i-001efd250faaa6ffa  |  test-server-1     |
+    |  us-west-2a  |  i-027552a73f021f3bd  |  test-server-2     |
     +--------------+-----------------------+--------------------+
 
 **Example 11: To describe instances in a partition placement group**
@@ -1257,7 +1257,7 @@ Output::
 The following ``describe-instances`` example describes the specified instance. The output includes the placement information for the instance, which contains the placement group name and the partition number for the instance. ::
 
     aws ec2 describe-instances \
-        --instance-ids i-0123a456700123456 \
+        --instance-ids i-0123a4567abcd1234 \
         --query "Reservations[*].Instances[*].Placement"
 
 Output::
@@ -1265,7 +1265,7 @@ Output::
     [
         [
             {
-                "AvailabilityZone": "us-east-1c",
+                "AvailabilityZone": "us-west-2c",
                 "GroupName": "HDFS-Group-A",
                 "PartitionNumber": 3,
                 "Tenancy": "default"
@@ -1292,20 +1292,20 @@ Output::
             {
                 "Instances": [
                     {
-                        "InstanceId": "i-0123a456700123456",
+                        "InstanceId": "i-0123a4567abcd1234",
                         "InstanceType": "r4.large",
                         "Placement": {
-                            "AvailabilityZone": "us-east-1c",
+                            "AvailabilityZone": "us-west-2c",
                             "GroupName": "HDFS-Group-A",
                             "PartitionNumber": 7,
                             "Tenancy": "default"
                         }
                     },
                     {
-                        "InstanceId": "i-9876a543210987654",
+                        "InstanceId": "i-9876a5432abcd9876",
                         "InstanceType": "r4.large",
                         "Placement": {
-                            "AvailabilityZone": "us-east-1c",
+                            "AvailabilityZone": "us-west-2c",
                             "GroupName": "HDFS-Group-A",
                             "PartitionNumber": 7,
                             "Tenancy": "default"

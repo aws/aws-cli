@@ -4,7 +4,7 @@ The following ``create-blue-green-deployment`` example creates a blue/green depl
 
     aws rds create-blue-green-deployment \
         --blue-green-deployment-name bgd-cli-test-instance \
-        --source arn:aws:rds:us-east-1:123456789012:db:my-db-instance \
+        --source arn:aws:rds:us-west-2:123456789012:db:my-db-instance \
         --target-engine-version 8.0 \
         --target-db-parameter-group-name mysql-80-group
 
@@ -14,19 +14,19 @@ Output::
         "BlueGreenDeployment": {
             "BlueGreenDeploymentIdentifier": "bgd-v53303651eexfake",
             "BlueGreenDeploymentName": "bgd-cli-test-instance",
-            "Source": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance",
+            "Source": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance",
             "SwitchoverDetails": [
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance"
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-1"
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-1"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-2"
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-2"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-db-instance-replica-3"
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-db-instance-replica-3"
                 }
             ],
             "Tasks": [
@@ -60,7 +60,7 @@ The following ``create-blue-green-deployment`` example creates a blue/green depl
 
     aws rds create-blue-green-deployment \
         --blue-green-deployment-name my-blue-green-deployment \
-        --source arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-mysql-cluster \
+        --source arn:aws:rds:us-west-2:123456789012:cluster:my-aurora-mysql-cluster \
         --target-engine-version 8.0 \
         --target-db-cluster-parameter-group-name ams-80-binlog-enabled \
         --target-db-parameter-group-name mysql-80-cluster-group
@@ -71,30 +71,30 @@ Output::
         "BlueGreenDeployment": {
             "BlueGreenDeploymentIdentifier": "bgd-wi89nwzglccsfake",
             "BlueGreenDeploymentName": "my-blue-green-deployment",
-            "Source": "arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-mysql-cluster",
+            "Source": "arn:aws:rds:us-west-2:123456789012:cluster:my-aurora-mysql-cluster",
             "SwitchoverDetails": [
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-mysql-cluster",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:cluster:my-aurora-mysql-cluster",
                     "Status": "PROVISIONING"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-1",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-1",
                     "Status": "PROVISIONING"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-2",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-2",
                     "Status": "PROVISIONING"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:db:my-aurora-mysql-cluster-3",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:db:my-aurora-mysql-cluster-3",
                     "Status": "PROVISIONING"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:cluster-endpoint:my-excluded-member-endpoint",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:cluster-endpoint:my-excluded-member-endpoint",
                     "Status": "PROVISIONING"
                 },
                 {
-                    "SourceMember": "arn:aws:rds:us-east-1:123456789012:cluster-endpoint:my-reader-endpoint",
+                    "SourceMember": "arn:aws:rds:us-west-2:123456789012:cluster-endpoint:my-reader-endpoint",
                     "Status": "PROVISIONING"
                 }
             ],

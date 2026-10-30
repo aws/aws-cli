@@ -12,7 +12,7 @@ Output::
             "TransitGatewayAttachmentId": "tgw-attach-0d2c54bdb3EXAMPLE",
             "TransitGatewayId": "tgw-02f776b1a7EXAMPLE",
             "VpcId": "vpc-0065acced4f61c651",
-            "VpcOwnerId": "111122223333",
+            "VpcOwnerId": "123456789012",
             "State": "deleting",
             "CreationTime": "2019-07-17T16:04:27.000Z"
         }

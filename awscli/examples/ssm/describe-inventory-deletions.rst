@@ -22,7 +22,7 @@ Output::
                 "LastStatusUpdateTime": 1550254911.0
             },
             {
-                "DeletionId": "d72ac9e8-1f60-4d40-b1c6-987654321c4d",
+                "DeletionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "TypeName": "Custom:RackInfo",
                 "DeletionStartTime": 1550254859.0,
                 "LastStatus": "InProgress",
@@ -50,14 +50,14 @@ For more information, see `Working with custom inventory <https://docs.aws.amazo
 The following ``describe-inventory-deletions`` example retrieves details for a specific inventory deletion operation. ::
 
     aws ssm describe-inventory-deletions \
-        --deletion-id "d72ac9e8-1f60-4d40-b1c6-987654321c4d"
+        --deletion-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
         "InventoryDeletions": [
             {
-                "DeletionId": "d72ac9e8-1f60-4d40-b1c6-987654321c4d",
+                "DeletionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "TypeName": "Custom:RackInfo",
                 "DeletionStartTime": 1550254859.0,
                 "LastStatus": "InProgress",

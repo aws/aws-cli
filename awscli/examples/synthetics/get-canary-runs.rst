@@ -10,7 +10,7 @@ Output::
     {
         "CanaryRuns": [
             {
-                "Id": "a1b2c3d4-5678-90ab-cdef-example11111",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Name": "demo_canary",
                 "Status": {
                     "State": "PASSED",
@@ -21,7 +21,7 @@ Output::
                     "Started": "2024-10-16T10:38:57.013000+05:30",
                     "Completed": "2024-10-16T10:39:25.793000+05:30"
                 },
-                "ArtifactS3Location": "cw-syn-results-123456789012-us-east-1/canary/us-east-1/demo_canary-abc-example1234/2024/10/15/13/50-39-690"
+                "ArtifactS3Location": "cw-syn-results-123456789012-us-west-2/canary/us-west-2/demo_canary-abc-example1234/2024/10/15/13/50-39-690"
             }
         ]
     }

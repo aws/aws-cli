@@ -12,8 +12,8 @@ can be new or can identify an existing empty directory. ::
 
 Output::
 
-    https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
 For more information, see `Creating a Lambda Web Function <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-create.html>`__ in the *AWS Lambda Developer Guide*.
 
@@ -31,8 +31,8 @@ the deployment bucket and execution role as needed. ::
 
 Output::
 
-    https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
 For more information, see `Creating a Lambda Web Function <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-create.html>`__ in the *AWS Lambda Developer Guide*.
 
@@ -47,8 +47,8 @@ Function and updates its endpoint. ::
 
 Output::
 
-    https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
 For more information, see `Deploying Web Functions <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-deploying.html>`__ in the *AWS Lambda Developer Guide*.
 
@@ -65,8 +65,8 @@ two application environment variables. ::
 
 Output::
 
-    https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
 For more information, see `Environment variables <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-revisions-env-vars.html>`__ in the *AWS Lambda Developer Guide*.
 
@@ -83,8 +83,8 @@ source code. ::
 
 Output::
 
-    https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
 For more information, see `Configuring Lambda Web Functions <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-configuration.html>`__ in the *AWS Lambda Developer Guide*.
 
@@ -101,8 +101,8 @@ option skips the confirmation prompt. ::
 
 Output::
 
-    https://f6g7h8i9j0.x9y.lambda-web.us-east-1.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    https://f6g7h8i9j0.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
 For more information, see `Lambda Web Function endpoints <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-endpoints.html>`__ in the *AWS Lambda Developer Guide*.
 
@@ -122,7 +122,7 @@ Regions for an existing Web Function and reuses its deployed source code. The
 Output::
 
     https://k1l2m3n4o5.lambda-web.global.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
 For more information, see `Multi-Region deployment <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-endpoint-replication.html>`__ in the *AWS Lambda Developer Guide*.
 
@@ -143,8 +143,8 @@ fields in ``package.json``, then checks common entry files. ::
 
 Output::
 
-    https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
 For more information, see `Web Function deployment package <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-configuration-deployment-package.html>`__ in the *AWS Lambda Developer Guide*.
 
@@ -161,10 +161,10 @@ the runtime loads ``src/server.mjs`` directly. Do not use
 
 Output::
 
-    https://a1b2c3d4e5.x9y.lambda-web.us-east-1.on.aws
-    Console: https://us-east-1.console.aws.amazon.com/lambda/home#/web-functions/my-app
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
-These examples use ``us-east-1`` as the AWS Region for deployment. The command
+These examples use ``us-west-2`` as the AWS Region for deployment. The command
 selects the AWS Region from ``--region``, the ``AWS_DEFAULT_REGION`` environment
 variable, or your AWS CLI configuration. You can use a different AWS Region.
 Endpoint and console URLs reflect the AWS Region used for the deployment. A

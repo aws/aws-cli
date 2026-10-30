@@ -3,7 +3,7 @@
 The following ``purchase-provisioned-capacity`` example purchases a provisioned capacity unit. ::
 
     aws glacier purchase-provisioned-capacity \
-        --account-id 111122223333
+        --account-id 123456789012
 
 Output::
 

@@ -20,7 +20,7 @@ Output::
                 "ApplicationName": "my-app",
                 "EnvironmentName": "my-env",
                 "Severity": "INFO",
-                "RequestId": "b7f3960b-4709-11e5-ba1e-07e16200da41",
+                "RequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Message": "Environment update completed successfully.",
                 "EventDate": "2015-08-20T07:06:02.049Z"
             },
@@ -28,15 +28,15 @@ Output::
                 "ApplicationName": "my-app",
                 "EnvironmentName": "my-env",
                 "Severity": "INFO",
-                "RequestId": "ca8dfbf6-41ef-11e5-988b-651aa638f46b",
-                "Message": "Using elasticbeanstalk-us-west-2-012445113685 as Amazon S3 storage bucket for environment data.",
+                "RequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "Message": "Using elasticbeanstalk-us-west-2-123456789012 as Amazon S3 storage bucket for environment data.",
                 "EventDate": "2015-08-13T19:16:27.561Z"
             },
             {
                 "ApplicationName": "my-app",
                 "EnvironmentName": "my-env",
                 "Severity": "INFO",
-                "RequestId": "cdfba8f6-41ef-11e5-988b-65638f41aa6b",
+                "RequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "Message": "createEnvironment is starting.",
                 "EventDate": "2015-08-13T19:16:26.581Z"
             }

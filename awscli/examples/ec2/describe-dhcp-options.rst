@@ -14,7 +14,7 @@ Output::
                         "Key": "domain-name",
                         "Values": [
                             {
-                                "Value": "us-east-2.compute.internal"
+                                "Value": "us-west-2.compute.internal"
                             }
                         ]
                     },
@@ -28,7 +28,7 @@ Output::
                     }
                 ],
                 "DhcpOptionsId": "dopt-19edf471",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             },
             {
                 "DhcpConfigurations": [
@@ -36,7 +36,7 @@ Output::
                         "Key": "domain-name",
                         "Values": [
                             {
-                                "Value": "us-east-2.compute.internal"
+                                "Value": "us-west-2.compute.internal"
                             }
                         ]
                     },
@@ -50,7 +50,7 @@ Output::
                     }
                 ],
                 "DhcpOptionsId": "dopt-fEXAMPLE",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             }
         ]
     }

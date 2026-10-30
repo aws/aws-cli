@@ -10,7 +10,7 @@ Output::
 
     {
         "Name": "finance-ap",
-        "Bucket": "business-records",
+        "Bucket": "amzn-s3-demo-bucket",
         "NetworkOrigin": "Internet",
         "PublicAccessBlockConfiguration": {
             "BlockPublicAcls": false,

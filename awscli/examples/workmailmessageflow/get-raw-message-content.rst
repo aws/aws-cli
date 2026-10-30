@@ -3,7 +3,7 @@
 The following ``get-raw-message-content`` example gets the raw content of an in-transit email message and sends it to a text file named ``test``. The contents of ``test`` after the command runs are shown below. ::
 
     aws workmailmessageflow get-raw-message-content test \
-        --message-id a1b2cd34-ef5g-6h7j-kl8m-npq9012345rs
+        --message-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Contents of ``test``::
 

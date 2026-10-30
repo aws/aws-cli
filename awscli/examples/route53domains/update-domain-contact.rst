@@ -59,7 +59,7 @@ Contents of ``C:\temp\update-domain-contact.json``::
 Output::
 
     {
-        "OperationId": "b3a219e9-d801-4244-b533-b7256example"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the operation succeeded, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ . 

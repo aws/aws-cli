@@ -6,7 +6,7 @@ The following ``create-event-subscription`` example creates a subscription for b
         --subscription-name my-instance-events \
         --source-type db-instance \
         --event-categories '["backup","recovery"]' \
-        --sns-topic-arn arn:aws:sns:us-east-1:123456789012:interesting-events
+        --sns-topic-arn arn:aws:sns:us-west-2:123456789012:interesting-events
 
 Output::
 
@@ -19,9 +19,9 @@ Output::
                 "backup",
                 "recovery"
             ],
-            "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:interesting-events",
+            "SnsTopicArn": "arn:aws:sns:us-west-2:123456789012:interesting-events",
             "CustomerAwsId": "123456789012",
-            "EventSubscriptionArn": "arn:aws:rds:us-east-1:123456789012:es:my-instance-events",
+            "EventSubscriptionArn": "arn:aws:rds:us-west-2:123456789012:es:my-instance-events",
             "SourceType": "db-instance",
             "Enabled": true
         }

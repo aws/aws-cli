@@ -3,7 +3,7 @@
 The following ``delete-infrastructure-configuration`` example deletes an image pipeline by specifying its ARN. ::
 
     aws imagebuilder delete-infrastructure-configuration \
-        --infrastructure-configuration-arn arn:aws:imagebuilder:us-east-1:123456789012:infrastructure-configuration/myexampleinfrastructure
+        --infrastructure-configuration-arn arn:aws:imagebuilder:us-west-2:123456789012:infrastructure-configuration/myexampleinfrastructure
 
 Output::
 

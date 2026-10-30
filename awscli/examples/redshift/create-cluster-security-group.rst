@@ -27,6 +27,6 @@ You can also obtain the same information in text format using the ``--output tex
 
 Output::
 
-    This is my cluster security group   300454760768    mysecuritygroup
+    This is my cluster security group   123456789012    mysecuritygroup
 
 For more information, see `Infrastructure security in Amazon Redshift <https://docs.aws.amazon.com/redshift/latest/mgmt/security-network-isolation.html>`__ in the *Amazon Redshift Management Guide*.

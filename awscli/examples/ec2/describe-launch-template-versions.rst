@@ -13,7 +13,7 @@ Output::
                 "LaunchTemplateId": "lt-068f72b72934aff71",
                 "LaunchTemplateName": "Webservers",
                 "VersionNumber": 3,
-                "CreatedBy": "arn:aws:iam::123456789102:root",
+                "CreatedBy": "arn:aws:iam::123456789012:root",
                 "LaunchTemplateData": {
                     "KeyName": "kp-us-east",
                     "ImageId": "ami-6057e21a",
@@ -35,7 +35,7 @@ Output::
                 "LaunchTemplateId": "lt-068f72b72934aff71",
                 "LaunchTemplateName": "Webservers",
                 "VersionNumber": 2,
-                "CreatedBy": "arn:aws:iam::123456789102:root",
+                "CreatedBy": "arn:aws:iam::123456789012:root",
                 "LaunchTemplateData": {
                     "KeyName": "kp-us-east",
                     "ImageId": "ami-6057e21a",
@@ -57,7 +57,7 @@ Output::
                 "LaunchTemplateId": "lt-068f72b72934aff71",
                 "LaunchTemplateName": "Webservers",
                 "VersionNumber": 1,
-                "CreatedBy": "arn:aws:iam::123456789102:root",
+                "CreatedBy": "arn:aws:iam::123456789012:root",
                 "LaunchTemplateData": {
                     "UserData": "",
                     "KeyName": "kp-us-east",

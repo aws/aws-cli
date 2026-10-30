@@ -8,7 +8,7 @@ The following ``start-pipe`` example starts a Pipe named ``Demo_Pipe`` in the sp
 Output::
 
     {
-        "Arn": "arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe",
+        "Arn": "arn:aws:pipes:us-west-2:123456789012:pipe/Demo_Pipe",
         "Name": "Demo_Pipe",
         "DesiredState": "RUNNING",
         "CurrentState": "STARTING",

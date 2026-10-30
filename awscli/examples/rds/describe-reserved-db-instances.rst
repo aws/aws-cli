@@ -10,7 +10,7 @@ Output::
         "ReservedDBInstances": [
             {
                 "ReservedDBInstanceId": "myreservedinstance",
-                "ReservedDBInstancesOfferingId": "12ab34cd-59af-4b2c-a660-1abcdef23456",
+                "ReservedDBInstancesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "DBInstanceClass": "db.t3.micro",
                 "StartTime": "2020-06-01T13:44:21.436Z",
                 "Duration": 31536000,
@@ -29,7 +29,7 @@ Output::
                     }
                 ],
                 "ReservedDBInstanceArn": "arn:aws:rds:us-west-2:123456789012:ri:myreservedinstance",
-                "LeaseId": "a1b2c3d4-6b69-4a59-be89-5e11aa446666"
+                "LeaseId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ]
     }

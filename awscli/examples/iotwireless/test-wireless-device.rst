@@ -3,7 +3,7 @@
 The following ``test-wireless-device`` example sends uplink data of ``Hello`` to a device with specified ID. ::
 
     aws iotwireless test-wireless-device \
-        --id "11aa5eae-2f56-4b8e-a023-b28d98494e49"
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 

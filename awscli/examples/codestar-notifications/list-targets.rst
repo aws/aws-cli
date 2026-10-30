@@ -9,12 +9,12 @@ Output::
     {
         "Targets": [
             {
-                "TargetAddress": "arn:aws:sns:us-east-1:123456789012:MySNSTopicForNotificationRules",
+                "TargetAddress": "arn:aws:sns:us-west-2:123456789012:MySNSTopicForNotificationRules",
                 "TargetType": "SNS",
                 "TargetStatus": "ACTIVE"
             },
             {
-                "TargetAddress": "arn:aws:sns:us-east-1:123456789012:MySNSTopicForNotificationsAboutMyDemoRepo",
+                "TargetAddress": "arn:aws:sns:us-west-2:123456789012:MySNSTopicForNotificationsAboutMyDemoRepo",
                 "TargetType": "SNS",
                 "TargetStatus": "ACTIVE"
             }

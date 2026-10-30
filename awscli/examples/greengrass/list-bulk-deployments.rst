@@ -9,8 +9,8 @@ Output::
     {
         "BulkDeployments": [
             {
-                "BulkDeploymentArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/bulk/deployments/870fb41b-6288-4e0c-bc76-a7ba4b4d3267",
-                "BulkDeploymentId": "870fb41b-6288-4e0c-bc76-a7ba4b4d3267",
+                "BulkDeploymentArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/bulk/deployments/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "BulkDeploymentId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "CreatedAt": "2019-06-25T16:11:33.265Z"
             }
         ]

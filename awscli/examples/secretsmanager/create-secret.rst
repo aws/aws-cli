@@ -41,7 +41,7 @@ Output::
     {
         "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
         "Name": "MyTestSecret",
-        "VersionId": "EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE"
+        "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `Create a secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_create-basic-secret.html>`__ in the *Secrets Manager User Guide*.

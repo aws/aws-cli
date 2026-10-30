@@ -3,7 +3,7 @@
 The following ``delete-message-batch`` example deletes the specified messages. ::
 
     aws sqs delete-message-batch \
-        --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue \
+        --queue-url https://sqs.us-west-2.amazonaws.com/80398EXAMPLE/MyQueue \
         --entries file://delete-message-batch.json
 
 Contents of ``delete-message-batch.json``::

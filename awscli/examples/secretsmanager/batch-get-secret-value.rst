@@ -13,7 +13,7 @@ Output::
             {
                 "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MySecret1-a1b2c3",
                 "Name": "MySecret1",
-                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLEaaaaa",
+                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "SecretString": "{\"username\":\"diego_ramirez\",\"password\":\"EXAMPLE-PASSWORD\",\"engine\":\"mysql\",\"host\":\"secretsmanagertutorial.cluster.us-west-2.rds.amazonaws.com\",\"port\":3306,\"dbClusterIdentifier\":\"secretsmanagertutorial\"}",
                 "VersionStages": [
                     "AWSCURRENT"
@@ -23,7 +23,7 @@ Output::
             {
                 "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MySecret2-a1b2c3",
                 "Name": "MySecret2",
-                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLEbbbbb",
+                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "SecretString": "{\"username\":\"akua_mansa\",\"password\":\"EXAMPLE-PASSWORD\"",
                 "VersionStages": [
                     "AWSCURRENT"
@@ -33,7 +33,7 @@ Output::
             {
                 "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MySecret3-a1b2c3",
                 "Name": "MySecret3",
-                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLEccccc",
+                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "SecretString": "{\"username\":\"jie_liu\",\"password\":\"EXAMPLE-PASSWORD\"",
                 "VersionStages": [
                     "AWSCURRENT"
@@ -60,7 +60,7 @@ Output::
             {
                 "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MySecret1-a1b2c3",
                 "Name": "MySecret1",
-                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLEaaaaa",
+                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "SecretString": "{\"username\":\"diego_ramirez\",\"password\":\"EXAMPLE-PASSWORD\",\"engine\":\"mysql\",\"host\":\"secretsmanagertutorial.cluster.us-west-2.rds.amazonaws.com\",\"port\":3306,\"dbClusterIdentifier\":\"secretsmanagertutorial\"}",
                 "VersionStages": [
                     "AWSCURRENT"
@@ -70,7 +70,7 @@ Output::
             {
                 "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MySecret2-a1b2c3",
                 "Name": "MySecret2",
-                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLEbbbbb",
+                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "SecretString": "{\"username\":\"akua_mansa\",\"password\":\"EXAMPLE-PASSWORD\"",
                 "VersionStages": [
                     "AWSCURRENT"
@@ -80,7 +80,7 @@ Output::
             {
                 "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MySecret3-a1b2c3",
                 "Name": "MySecret3",
-                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLEccccc",
+                "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "SecretString": "{\"username\":\"jie_liu\",\"password\":\"EXAMPLE-PASSWORD\"",
                 "VersionStages": [
                     "AWSCURRENT"

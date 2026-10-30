@@ -14,8 +14,8 @@ Output::
                     "RfRegion": "US915", 
                     "GatewayEui": "dac632ebc01d23e4"
                 }, 
-                "Id": "3039b406-5cc9-4307-925b-9948c63da25b", 
-                "Arn": "arn:aws:iotwireless:us-east-1:123456789012:WirelessGateway/3039b406-5cc9-4307-925b-9948c63da25b", 
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+                "Arn": "arn:aws:iotwireless:us-west-2:123456789012:WirelessGateway/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
                 "Name": "myFirstLoRaWANGateway"
             }, 
             {
@@ -24,8 +24,8 @@ Output::
                     "RfRegion": "US915", 
                     "GatewayEui": "cda123fffe92ecd2"
                 }, 
-                "Id": "3285bdc7-5a12-4991-84ed-dadca65e342e", 
-                "Arn": "arn:aws:iotwireless:us-east-1:123456789012:WirelessGateway/3285bdc7-5a12-4991-84ed-dadca65e342e", 
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222", 
+                "Arn": "arn:aws:iotwireless:us-west-2:123456789012:WirelessGateway/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222", 
                 "Name": "mySecondLoRaWANGateway"
             }
         ]

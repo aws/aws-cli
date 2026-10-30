@@ -13,7 +13,7 @@ Output::
         "CoreNetwork": {
             "GlobalNetworkId": "global-network-0d59060f16a73bc41",
             "CoreNetworkId": "core-network-0fab62fe438d94db6",
-            "CoreNetworkArn": "arn:aws:networkmanager::987654321012:core-network/core-network-0fab62fe438d94db6",
+            "CoreNetworkArn": "arn:aws:networkmanager::123456789012:core-network/core-network-0fab62fe438d94db6",
             "Description": "Main headquarters location",
             "CreatedAt": "2022-01-10T19:53:59+00:00",
             "State": "AVAILABLE",

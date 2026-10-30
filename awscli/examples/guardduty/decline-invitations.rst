@@ -3,7 +3,7 @@
 The following ``decline-invitations`` example declines a membership invitation. ::
 
     aws guardduty decline-invitations \
-        --account-ids 111122223333
+        --account-ids 123456789012
 
 Output::
 

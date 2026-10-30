@@ -13,7 +13,7 @@ Output::
                 {
                     "AdditionalTreatments": [],
                     "ApplicationId": "6e0b7591a90841d2b5d93fa11143e5a7",
-                    "Arn": "arn:aws:mobiletargeting:us-east-1:AIDACKCEVSQ6C2EXAMPLE:apps/6e0b7591a90841d2b5d93fa11143e5a7/campaigns/7e1280344c8f4a9aa40a00b006fe44f1",
+                    "Arn": "arn:aws:mobiletargeting:us-west-2:AIDACKCEVSQ6C2EXAMPLE:apps/6e0b7591a90841d2b5d93fa11143e5a7/campaigns/7e1280344c8f4a9aa40a00b006fe44f1",
                     "CreationDate": "2019-10-08T18:40:22.905Z",
                     "Description": " ",
                     "HoldoutPercent": 0,
@@ -47,7 +47,7 @@ Output::
                 {
                     "AdditionalTreatments": [],
                     "ApplicationId": "6e0b7591a90841d2b5d93fa11143e5a7",
-                    "Arn": "arn:aws:mobiletargeting:us-east-1:AIDACKCEVSQ6C2EXAMPLE:apps/6e0b7591a90841d2b5d93fa11143e5a7/campaigns/a1e63c6cc0eb43ed826ffcc3cc90b30d",
+                    "Arn": "arn:aws:mobiletargeting:us-west-2:AIDACKCEVSQ6C2EXAMPLE:apps/6e0b7591a90841d2b5d93fa11143e5a7/campaigns/a1e63c6cc0eb43ed826ffcc3cc90b30d",
                     "CreationDate": "2019-10-08T18:40:16.581Z",
                     "Description": " ",
                     "HoldoutPercent": 0,

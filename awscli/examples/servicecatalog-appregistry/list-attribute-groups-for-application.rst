@@ -11,7 +11,7 @@ Output::
         "attributeGroupsDetails": [
             {
                 "id": "01sj5xdwhbw54kejwnt09fnpcl",
-                "arn": "arn:aws:servicecatalog:us-west-2:813737243517:/attribute-groups/01sj5xdwhbw54kejwnt09fnpcl",
+                "arn": "arn:aws:servicecatalog:us-west-2:123456789012:/attribute-groups/01sj5xdwhbw54kejwnt09fnpcl",
                 "name": "ExampleAttributeGroup"
             }
         ]

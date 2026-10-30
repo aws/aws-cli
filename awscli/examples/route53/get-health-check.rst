@@ -1,15 +1,15 @@
 **To get information about a health check**
 
-The following ``get-health-check`` example gets information about the health check that has a ``health-check-id`` of ``02ec8401-9879-4259-91fa-04e66d094674``. ::
+The following ``get-health-check`` example gets information about the health check that has a ``health-check-id`` of ``a1b2c3d4-5678-90ab-cdef-EXAMPLE11111``. ::
 
     aws route53 get-health-check \
-        --health-check-id 02ec8401-9879-4259-91fa-04e66d094674
+        --health-check-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "HealthCheck": {
-            "Id": "02ec8401-9879-4259-91fa-04e66d094674",
+            "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CallerReference": "2014-04-01-18:47",
             "HealthCheckConfig": {
                 "IPAddress": "192.0.2.44",

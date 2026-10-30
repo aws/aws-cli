@@ -13,7 +13,7 @@ Contents of ``readset-sources.json``::
         {
             "sourceFiles":
             {
-                "source1": "s3://omics-artifacts-01d6xmpl4e72dd32/HG00100.chrom20.ILLUMINA.bwa.GBR.low_coverage.20101123.bam"
+                "source1": "s3://amzn-s3-demo-bucket/HG00100.chrom20.ILLUMINA.bwa.GBR.low_coverage.20101123.bam"
             },
             "sourceFileType": "BAM",
             "subjectId": "bam-subject",

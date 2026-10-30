@@ -72,7 +72,7 @@ For more information, see `Deleting an image in a public repository <https://doc
 The following ``batch-delete-image`` example deletes an image by specifying the image digest in the cross AWS Account. ::
 
     aws ecr-public batch-delete-image \
-        --registry-id 123456789098 \
+        --registry-id 123456789012 \
         --repository-name project-a/nginx-web-app \
         --image-ids imageDigest=sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2 \
         --region us-east-1

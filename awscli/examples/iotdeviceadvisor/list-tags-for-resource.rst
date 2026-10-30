@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags attached to a device advisor resource. The device advisor resource can be a Suitedefinition-Arn or a Suiterun-Arn. ::
 
     aws iotdeviceadvisor list-tags-for-resource \
-        --resource-arn arn:aws:iotdeviceadvisor:us-east-1:123456789012:suitedefinition/ba0uyjpg38ny
+        --resource-arn arn:aws:iotdeviceadvisor:us-west-2:123456789012:suitedefinition/ba0uyjpg38ny
 
 Output::
 

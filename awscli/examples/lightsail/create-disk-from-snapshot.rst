@@ -13,7 +13,7 @@ Output::
     {
         "operations": [
             {
-                "id": "d42b605d-5ef1-4b4a-8791-7a3e8b66b5e7",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Disk-2",
                 "resourceType": "Disk",
                 "createdAt": 1569624941.471,

@@ -34,12 +34,12 @@ The following ``modify-instance-placement`` example moves an instance to a place
 Stop the instance. ::
 
     aws ec2 stop-instances \
-        --instance-ids i-0123a456700123456
+        --instance-ids i-1234567890abcdef0
 
 Modify the placement. ::
 
     aws ec2 modify-instance-placement \
-        --instance-id i-0123a456700123456 \
+        --instance-id i-1234567890abcdef0 \
         --group-name MySpreadGroup
 
 Output::
@@ -51,7 +51,7 @@ Output::
 Restart the instance. ::
 
     aws ec2 start-instances \
-        --instance-ids i-0123a456700123456
+        --instance-ids i-1234567890abcdef0
 
 **Example 4: To remove an instance from a placement group**
 
@@ -60,18 +60,18 @@ The following ``modify-instance-placement`` example removes an instance from a p
 Stop the instance. ::
 
     aws ec2 stop-instances \
-        --instance-ids i-0123a456700123456
+        --instance-ids i-1234567890abcdef0
 
 Modify the placement (Windows Command Prompt). ::
 
     aws ec2 modify-instance-placement \
-        --instance-id i-0123a456700123456 \
+        --instance-id i-1234567890abcdef0 \
         --group-name ""
 
 Modify the placement (Windows PowerShell, Linux, and macOS). ::
 
     aws ec2 modify-instance-placement `
-        --instance-id i-0123a456700123456 `
+        --instance-id i-1234567890abcdef0 `
         --group-name ''
 
 Output::
@@ -83,6 +83,6 @@ Output::
 Restart the instance. ::
 
     aws ec2 start-instances \
-        --instance-ids i-0123a456700123456
+        --instance-ids i-1234567890abcdef0
 
 For more information, see `Modify Dedicated Host tenancy and affinity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/moving-instances-dedicated-hosts.html>`__ in the *Amazon EC2 User Guide*.

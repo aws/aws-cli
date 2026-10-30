@@ -25,7 +25,7 @@ For more information, see `Manage components <https://docs.aws.amazon.com/greeng
 The following ``get-component`` example downloads a Hello World component's recipe to a file in YAML format. This command uses the ``certutil`` utility. ::
 
     aws greengrassv2 get-component ^
-        --arn arn:aws:greengrass:us-west-2:675946970638:components:com.example.HelloWorld:versions:1.0.0 ^
+        --arn arn:aws:greengrass:us-west-2:123456789012:components:com.example.HelloWorld:versions:1.0.0 ^
         --recipe-output-format YAML ^
         --query recipe ^
         --output text > com.example.HelloWorld-1.0.0.yaml.b64
@@ -43,7 +43,7 @@ For more information, see `Manage components <https://docs.aws.amazon.com/greeng
 The following ``get-component`` example downloads a Hello World component's recipe to a file in YAML format. This command uses the ``certutil`` utility. ::
 
     aws greengrassv2 get-component `
-        --arn arn:aws:greengrass:us-west-2:675946970638:components:com.example.HelloWorld:versions:1.0.0 `
+        --arn arn:aws:greengrass:us-west-2:123456789012:components:com.example.HelloWorld:versions:1.0.0 `
         --recipe-output-format YAML `
         --query recipe `
         --output text > com.example.HelloWorld-1.0.0.yaml.b64

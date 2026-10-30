@@ -8,5 +8,5 @@ The following ``get-container-policy`` example displays the resource-based polic
 Output::
 
     {
-        "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadOverHttps\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::111122223333:root\"},\"Action\":[\"mediastore:GetObject\",\"mediastore:DescribeObject\"],\"Resource\":\"arn:aws:mediastore:us-west-2:111122223333:container/ExampleLiveDemo/\",\"Condition\":{\"Bool\":{\"aws:SecureTransport\":\"true\"}}}]}"
+        "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadOverHttps\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::123456789012:root\"},\"Action\":[\"mediastore:GetObject\",\"mediastore:DescribeObject\"],\"Resource\":\"arn:aws:mediastore:us-west-2:123456789012:container/ExampleLiveDemo/\",\"Condition\":{\"Bool\":{\"aws:SecureTransport\":\"true\"}}}]}"
     }

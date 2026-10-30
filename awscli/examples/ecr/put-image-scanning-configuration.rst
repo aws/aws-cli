@@ -9,7 +9,7 @@ The following ``put-image-scanning-configuration`` example updates the image sca
 Output::
 
     {
-        "registryId": "012345678910",
+        "registryId": "123456789012",
         "repositoryName": "sample-repo",
         "imageScanningConfiguration": {
             "scanOnPush": true

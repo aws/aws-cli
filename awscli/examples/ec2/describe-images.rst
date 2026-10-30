@@ -23,7 +23,7 @@ Output::
                     {
                         "DeviceName": "/dev/sda1", 
                         "Ebs": {
-                            "SnapshotId": "snap-111222333444aaabb", 
+                            "SnapshotId": "snap-1234567890abcdef0", 
                             "DeleteOnTermination": true, 
                             "VolumeType": "gp2", 
                             "VolumeSize": 10, 

@@ -4,7 +4,7 @@ The following ``resync-mfa-device`` example synchronizes the MFA device that is 
 
     aws iam resync-mfa-device \
         --user-name Bob \
-        --serial-number arn:aws:iam::210987654321:mfa/BobsMFADevice \
+        --serial-number arn:aws:iam::123456789012:mfa/BobsMFADevice \
         --authentication-code1 123456 \
         --authentication-code2 987654
 

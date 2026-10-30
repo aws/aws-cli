@@ -29,7 +29,7 @@ The following ``create-group`` example creates a group with a description. It al
         --user-pool-id us-west-2_aaaaaaaaa \
         --group-name MyNewGroupWithRole \
         --description "New group with a role." \
-        --role-arn arn:aws:iam::111111111111:role/MyNewGroupRole \
+        --role-arn arn:aws:iam::123456789012:role/MyNewGroupRole \
         --precedence 2
 
 Output::
@@ -39,7 +39,7 @@ Output::
             "GroupName": "MyNewGroupWithRole",
             "UserPoolId": "us-west-2_aaaaaaaaa",
             "Description": "New group with a role.",
-            "RoleArn": "arn:aws:iam::111111111111:role/MyNewGroupRole",
+            "RoleArn": "arn:aws:iam::123456789012:role/MyNewGroupRole",
             "Precedence": 2,
             "LastModifiedDate": 1548270211.761,
             "CreationDate": 1548270211.761

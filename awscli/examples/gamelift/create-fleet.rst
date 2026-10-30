@@ -21,7 +21,7 @@ Output::
             },
             "CreationTime": 1496365885.44,
             "Description": "Hosts for v2 North America",
-            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
+            "FleetArn": "arn:aws:gamelift:us-west-2:123456789012:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetId": "fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetType": "ON_DEMAND",
             "InstanceType": "c4.large",
@@ -59,7 +59,7 @@ Output::
             },
             "CreationTime": 1496365885.44,
             "Description": "Hosts for v2 North America",
-            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
+            "FleetArn": "arn:aws:gamelift:us-west-2:123456789012:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetId": "fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetType": "SPOT",
             "InstanceType": "c4.large",
@@ -89,7 +89,7 @@ The following ``create-fleet`` example creates a fleet of Spot Windows instances
         --new-game-session-protection-policy FullProtection \
         --runtime-configuration file://runtime-config.json \
         --metric-groups default \
-        --instance-role-arn 'arn:aws:iam::444455556666:role/GameLiftS3Access'
+        --instance-role-arn 'arn:aws:iam::123456789012:role/GameLiftS3Access'
 
 Contents of ``runtime-config.json``::
 
@@ -103,10 +103,10 @@ Output::
 
     {
         "FleetAttributes": {
-            "InstanceRoleArn": "arn:aws:iam::444455556666:role/GameLiftS3Access",
+            "InstanceRoleArn": "arn:aws:iam::123456789012:role/GameLiftS3Access",
             "Status": "NEW",
             "InstanceType": "c4.large",
-            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
+            "FleetArn": "arn:aws:gamelift:us-west-2:123456789012:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetId": "fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "Description": "Hosts for v2 North America",
             "FleetType": "SPOT",
@@ -155,7 +155,7 @@ Output::
             },
             "Name": "MegaFrogRace.NA.realtime",
             "ScriptId": "script-1111aaaa-22bb-33cc-44dd-5555eeee66ff",
-            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
+            "FleetArn": "arn:aws:gamelift:us-west-2:123456789012:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetType": "SPOT",
             "MetricGroups": [
                 "default"

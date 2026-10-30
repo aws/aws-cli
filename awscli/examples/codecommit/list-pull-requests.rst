@@ -1,9 +1,9 @@
 **To view a list of pull requests in a repository**
 
-The following ``list-pull-requests`` example lists pull requests created by an IAM user with the ARN ``arn:aws:iam::111111111111:user/Li_Juan`` and the status of ``CLOSED`` in an AWS CodeCommit repository named ``MyDemoRepo``. ::
+The following ``list-pull-requests`` example lists pull requests created by an IAM user with the ARN ``arn:aws:iam::123456789012:user/Li_Juan`` and the status of ``CLOSED`` in an AWS CodeCommit repository named ``MyDemoRepo``. ::
 
     aws codecommit list-pull-requests \
-        --author-arn arn:aws:iam::111111111111:user/Li_Juan \
+        --author-arn arn:aws:iam::123456789012:user/Li_Juan \
         --pull-request-status CLOSED \
         --repository-name MyDemoRepo
 

@@ -12,7 +12,7 @@ Output::
 
     {
         "operation": {
-            "id": "fcef5265-5af1-4a46-a3d7-90b5e18b9b32",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "resourceName": "example.com",
             "resourceType": "Domain",
             "createdAt": 1569873788.13,

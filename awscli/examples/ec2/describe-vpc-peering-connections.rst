@@ -20,7 +20,7 @@ Output::
                     }
                 ],
                 "AccepterVpcInfo": {
-                    "OwnerId": "111122223333",
+                    "OwnerId": "123456789111",
                     "VpcId": "vpc-1a2b3c4d",
                     "CidrBlock": "10.0.1.0/28"
                 },
@@ -30,14 +30,14 @@ Output::
                         "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
-                    "OwnerId": "444455556666",
+                    "OwnerId": "123456789222",
                     "VpcId": "vpc-123abc45",
                     "CidrBlock": "192.168.0.0/16"
                 }
             },
             {
                 "Status": {
-                    "Message": "Pending Acceptance by 444455556666",
+                    "Message": "Pending Acceptance by 123456789222",
                     "Code": "pending-acceptance"
                 },
                 "Tags": [],
@@ -46,14 +46,14 @@ Output::
                         "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
-                    "OwnerId": "444455556666",
+                    "OwnerId": "123456789222",
                     "VpcId": "vpc-11aa22bb",
                     "CidrBlock": "10.0.0.0/28"
                 },
                 "VpcPeeringConnectionId": "pcx-abababab",
                 "ExpirationTime": "2014-04-03T09:12:43.000Z",
                 "AccepterVpcInfo": {
-                    "OwnerId": "444455556666",
+                    "OwnerId": "123456789222",
                     "VpcId": "vpc-33cc44dd"
                 }
             }
@@ -75,7 +75,7 @@ Output::
         "VpcPeeringConnections": [
             {
                 "Status": {
-                    "Message": "Pending Acceptance by 444455556666",
+                    "Message": "Pending Acceptance by 123456789222",
                     "Code": "pending-acceptance"
                 },
                 "Tags": [],
@@ -84,14 +84,14 @@ Output::
                         "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
-                    "OwnerId": "444455556666",
+                    "OwnerId": "123456789222",
                     "VpcId": "vpc-11aa22bb",
                     "CidrBlock": "10.0.0.0/28"
                 },
                 "VpcPeeringConnectionId": "pcx-abababab",
                 "ExpirationTime": "2014-04-03T09:12:43.000Z",
                 "AccepterVpcInfo": {
-                    "OwnerId": "444455556666",
+                    "OwnerId": "123456789222",
                     "VpcId": "vpc-33cc44dd"
                 }
             }
@@ -120,7 +120,7 @@ Output::
                     }
                 ],
                 "AccepterVpcInfo": {
-                    "OwnerId": "444455556666",
+                    "OwnerId": "123456789222",
                     "VpcId": "vpc-44dd55ee",
                     "CidrBlock": "10.1.0.0/16"
                 },
@@ -130,7 +130,7 @@ Output::
                         "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
-                    "OwnerId": "444455556666",
+                    "OwnerId": "123456789222",
                     "VpcId": "vpc-123abc45",
                     "CidrBlock": "192.168.0.0/16"
                 }
@@ -155,7 +155,7 @@ Output::
                 },
                 "Tags": [],
                 "AccepterVpcInfo": {
-                    "OwnerId": "444455556666",
+                    "OwnerId": "123456789222",
                     "VpcId": "vpc-55ee66ff",
                     "CidrBlock": "172.31.0.0/16"
                 },
@@ -165,7 +165,7 @@ Output::
                         "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
-                    "OwnerId": "111122223333",
+                    "OwnerId": "123456789111",
                     "VpcId": "vpc-1a2b3c4d",
                     "CidrBlock": "10.0.1.0/28"
                 }

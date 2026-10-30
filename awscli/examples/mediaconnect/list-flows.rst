@@ -14,7 +14,7 @@ Output::
                 "AvailabilityZone": "us-west-2a",
                 "Description": "NYC awards show",
                 "Name": "AwardsShow",
-                "FlowArn": "arn:aws:mediaconnect:us-east-1:111122223333:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow"
+                "FlowArn": "arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow"
             },
             {
                 "Status": "STANDBY",
@@ -22,7 +22,7 @@ Output::
                 "AvailabilityZone": "us-west-2c",
                 "Description": "LA basketball game",
                 "Name": "BasketballGame",
-                "FlowArn": "arn:aws:mediaconnect:us-east-1:111122223333:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:BasketballGame"
+                "FlowArn": "arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:BasketballGame"
             }
         ]
     }

@@ -10,10 +10,10 @@ Output::
     {
         "assetSummaries": [
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-44444EXAMPLE",
-                "arn": "arn:aws:iotsitewise:us-west-2:123456789012:asset/a1b2c3d4-5678-90ab-cdef-44444EXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+                "arn": "arn:aws:iotsitewise:us-west-2:123456789012:asset/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "name": "Wind Farm 1",
-                "assetModelId": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
+                "assetModelId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "creationDate": 1575672453.0,
                 "lastUpdateDate": 1575672453.0,
                 "status": {
@@ -21,7 +21,7 @@ Output::
                 },
                 "hierarchies": [
                     {
-                        "id": "a1b2c3d4-5678-90ab-cdef-77777EXAMPLE",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE77777",
                         "name": "Wind Turbines"
                     }
                 ]
@@ -36,17 +36,17 @@ For more information, see `Model industrial assets <https://docs.aws.amazon.com/
 The following ``list-assets`` example lists all assets based on an asset model and defined in your AWS account in the current Region. ::
 
     aws iotsitewise list-assets \
-        --asset-model-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+        --asset-model-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "assetSummaries": [
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-33333EXAMPLE",
-                "arn": "arn:aws:iotsitewise:us-west-2:123456789012:asset/a1b2c3d4-5678-90ab-cdef-33333EXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                "arn": "arn:aws:iotsitewise:us-west-2:123456789012:asset/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "name": "Wind Turbine 1",
-                "assetModelId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "assetModelId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "creationDate": 1575671550.0,
                 "lastUpdateDate": 1575686308.0,
                 "status": {

@@ -3,7 +3,7 @@
 The following ``send-automation-signal`` example sends an Approve signal to an Automation execution. ::
 
     aws ssm send-automation-signal \
-        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE \
+        --automation-execution-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --signal-type "Approve"
 
 This command produces no output.

@@ -10,7 +10,7 @@ Output::
 
     {
         "metricName": "batteryPercentage",
-        "metricArn": "arn:aws:iot:us-east-1:1234564789012:custommetric/batteryPercentage",
+        "metricArn": "arn:aws:iot:us-west-2:1234564789012:custommetric/batteryPercentage",
         "metricType": "number",
         "displayName": "remaining battery percentage on device",
         "creationDate": "2020-11-17T23:01:35.110000-08:00",

@@ -3,7 +3,7 @@
 The following ``tag-resource`` example adds to and modifies the existing tags of a device advisor resource with the specified resource arn and tags. The device advisor resource can be a Suitedefinition-Arn or a Suiterun-Arn. ::
 
     aws iotdeviceadvisor tag-resource \
-        --resource-arn arn:aws:iotdeviceadvisor:us-east-1:123456789012:suitedefinition/ba0uyjpg38ny \
+        --resource-arn arn:aws:iotdeviceadvisor:us-west-2:123456789012:suitedefinition/ba0uyjpg38ny \
         --tags '{"TagKey": "TagValue"}'
 
 This command produces no output.

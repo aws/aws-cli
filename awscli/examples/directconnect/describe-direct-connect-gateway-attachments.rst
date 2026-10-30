@@ -12,7 +12,7 @@ Output::
             {
                 "virtualInterfaceOwnerAccount": "123456789012",
                 "directConnectGatewayId": "5f294f92-bafb-4011-916d-9b0bexample",
-                "virtualInterfaceRegion": "us-east-2",
+                "virtualInterfaceRegion": "us-west-2",
                 "attachmentState": "attaching",
                 "virtualInterfaceId": "dxvif-fg9zyabc"
             }

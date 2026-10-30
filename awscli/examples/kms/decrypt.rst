@@ -22,7 +22,7 @@ Before running this command, replace the example key ID with a valid key ID from
 
     aws kms decrypt \
         --ciphertext-blob fileb://ExampleEncryptedFile \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --output text \
         --query Plaintext | base64 --decode > ExamplePlaintextFile
 
@@ -38,7 +38,7 @@ Before running this command, replace the example key ID with a valid key ID from
 
     aws kms decrypt ^
         --ciphertext-blob fileb://ExampleEncryptedFile ^
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab ^
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 ^
         --output text ^
         --query Plaintext > ExamplePlaintextFile.base64
 
@@ -64,7 +64,7 @@ Before running this command, replace the example key ID with a valid key ID from
 
     aws kms decrypt \
         --ciphertext-blob fileb://ExampleEncryptedFile \
-        --key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --encryption-algorithm RSAES_OAEP_SHA_256 \
         --output text \
         --query Plaintext | base64 --decode > ExamplePlaintextFile

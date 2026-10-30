@@ -8,16 +8,16 @@ The second file, ``doc-topics.csv``, lists the documents associated with a topic
     aws comprehend start-topics-detection-job \
         --job-name example_topics_detection_job \
         --language-code en \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role \
         --language-code en
 
 Output::
 
     {
         "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:key-phrases-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:key-phrases-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
         "JobStatus": "SUBMITTED"
     }
 

@@ -1,10 +1,10 @@
 **To run an interactive /bin/sh command**
 
-The following ``execute-command`` example runs an interactive /bin/sh command against a container named MyContainer for a task with an id of ``arn:aws:ecs:us-east-1:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE``. ::
+The following ``execute-command`` example runs an interactive /bin/sh command against a container named MyContainer for a task with an id of ``arn:aws:ecs:us-west-2:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE``. ::
 
     aws ecs execute-command \
         --cluster MyCluster \
-        --task arn:aws:ecs:us-east-1:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE \
+        --task arn:aws:ecs:us-west-2:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE \
         --container MyContainer \
         --interactive \
         --command "/bin/sh"

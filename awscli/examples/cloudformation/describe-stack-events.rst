@@ -11,21 +11,21 @@ Output::
     {
         "StackEvents": [
             {
-                "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/d0a825a0-e4cd-xmpl-b9fb-061c69e99204",
-                "EventId": "4e1516d0-e4d6-xmpl-b94f-0a51958a168c",
+                "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "EventId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "StackName": "my-stack",
                 "LogicalResourceId": "my-stack",
-                "PhysicalResourceId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/d0a825a0-e4cd-xmpl-b9fb-061c69e99204",
+                "PhysicalResourceId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ResourceType": "AWS::CloudFormation::Stack",
                 "Timestamp": "2019-10-02T05:34:29.556Z",
                 "ResourceStatus": "UPDATE_COMPLETE"
             },
             {
-                "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/d0a825a0-e4cd-xmpl-b9fb-061c69e99204",
-                "EventId": "4dd3c810-e4d6-xmpl-bade-0aaf8b31ab7a",
+                "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "EventId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "StackName": "my-stack",
                 "LogicalResourceId": "my-stack",
-                "PhysicalResourceId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/d0a825a0-e4cd-xmpl-b9fb-061c69e99204",
+                "PhysicalResourceId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ResourceType": "AWS::CloudFormation::Stack",
                 "Timestamp": "2019-10-02T05:34:29.127Z",
                 "ResourceStatus": "UPDATE_COMPLETE_CLEANUP_IN_PROGRESS"

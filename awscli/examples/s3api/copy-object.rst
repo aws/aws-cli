@@ -1,11 +1,11 @@
 **To copy an object**
 
-The following ``copy-object`` example copies an object from ``bucket-1`` to ``bucket-2``. ::
+The following ``copy-object`` example copies an object from ``bucket-1`` to ``amzn-s3-demo-bucket2``. ::
 
     aws s3api copy-object \
         --copy-source bucket-1/test.txt \
         --key test.txt \
-        --bucket bucket-2
+        --bucket amzn-s3-demo-bucket2
 
 Output::
 

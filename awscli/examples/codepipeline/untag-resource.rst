@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes a tag from the specified resource. ::
 
     aws codepipeline untag-resource \
-        --resource-arn arn:aws:codepipeline:us-east-1:123456789012:MyPipeline \
+        --resource-arn arn:aws:codepipeline:us-west-2:123456789012:MyPipeline \
         --tag-keys Project IscontainerBased
 
 This command produces no output.

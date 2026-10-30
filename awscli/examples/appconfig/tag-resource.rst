@@ -3,7 +3,7 @@
 The following ``tag-resource`` example tags an application resource. ::
 
     aws appconfig tag-resource \
-        --resource-arn arn:aws:appconfig:us-east-1:682428703967:application/339ohji \
+        --resource-arn arn:aws:appconfig:us-west-2:123456789012:application/339ohji \
         --tags '{"group1" : "1"}'
 
 This command produces no output.

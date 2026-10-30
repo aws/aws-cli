@@ -3,13 +3,13 @@
 The following ``get-device-profile`` example gets information about the device profile with the specified ID that you created. ::
 
     aws iotwireless get-device-profile \
-        --id "12345678-a1b2-3c45-67d8-e90fa1b2c34d" 
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" 
 
 Output::
 
     {
-        "Arn": "arn:aws:iotwireless:us-east-1:123456789012:DeviceProfile/12345678-a1b2-3c45-67d8-e90fa1b2c34d", 
-        "Id": "12345678-a1b2-3c45-67d8-e90fa1b2c34d", 
+        "Arn": "arn:aws:iotwireless:us-west-2:123456789012:DeviceProfile/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
         "LoRaWAN": {
         "MacVersion": "1.0.3", 
         "MaxDutyCycle": 10, 

@@ -11,7 +11,7 @@ Output::
     {
         "DestinationPortMappings": [
             {
-                "AcceleratorArn": "arn:aws:globalaccelerator::402092451327:accelerator/24ea29b8-d750-4489-8919-3095f3c4b0a7",
+                "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "AcceleratorSocketAddresses": [
                         {
                             "IpAddress": "192.0.2.250",
@@ -22,7 +22,7 @@ Output::
                             "Port": 65514
                         }
                     ],
-                    "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/ab88888example",
+                    "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/0123vxyz/endpoint-group/ab88888example",
                     "EndpointId": "subnet-abcd123example",
                     "EndpointGroupRegion": "us-west-2",
                     "DestinationSocketAddress": {

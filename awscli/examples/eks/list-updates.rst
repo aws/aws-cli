@@ -9,7 +9,7 @@ Output::
 
     {
         "updateIds": [
-            "10bddb13-a71b-425a-b0a6-71cd03e59161"
+            "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         ]
     }
 
@@ -25,7 +25,7 @@ Output::
 
     {
         "updateIds": [
-            "8c6c1bef-61fe-42ac-a242-89412387b8e7"
+            "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
         ]
     }
 
@@ -41,7 +41,7 @@ Output::
 
     {
         "updateIds": [
-            "9cdba8d4-79fb-3c83-afe8-00b508d33268"
+            "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
         ]
     }
 

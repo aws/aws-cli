@@ -3,7 +3,7 @@
 The following ``reset-service-setting`` example resets the service setting for Parameter Store throughput in the specified region to no longer use increased throughput. ::
 
     aws ssm reset-service-setting \
-        --setting-id arn:aws:ssm:us-east-1:123456789012:servicesetting/ssm/parameter-store/high-throughput-enabled
+        --setting-id arn:aws:ssm:us-west-2:123456789012:servicesetting/ssm/parameter-store/high-throughput-enabled
 
 Output::
 
@@ -13,7 +13,7 @@ Output::
             "SettingValue": "false",
             "LastModifiedDate": 1555532818.578,
             "LastModifiedUser": "System",
-            "ARN": "arn:aws:ssm:us-east-1:123456789012:servicesetting/ssm/parameter-store/high-throughput-enabled",
+            "ARN": "arn:aws:ssm:us-west-2:123456789012:servicesetting/ssm/parameter-store/high-throughput-enabled",
             "Status": "Default"
         }
     }

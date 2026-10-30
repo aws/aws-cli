@@ -3,7 +3,7 @@
 The following ``update-topic-rule-destination`` example enables traffic to a topic rule destination. ::
 
     aws iot update-topic-rule-destination \
-        --arn "arn:aws:iot:us-west-2:123456789012:ruledestination/http/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE" \
+        --arn "arn:aws:iot:us-west-2:123456789012:ruledestination/http/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --status ENABLED
 
 This command produces no output.
@@ -15,7 +15,7 @@ For more information, see `Confirming HTTP action destinations <https://docs.aws
 The following ``update-topic-rule-destination`` example disables traffic to a topic rule destination. ::
 
     aws iot update-topic-rule-destination \
-        --arn "arn:aws:iot:us-west-2:123456789012:ruledestination/http/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE" \
+        --arn "arn:aws:iot:us-west-2:123456789012:ruledestination/http/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --status DISABLED
 
 This command produces no output.
@@ -27,7 +27,7 @@ For more information, see `Disabling and deleting an HTTP action destination <ht
 The following ``update-topic-rule-destination`` example sends a new confirmation message for a topic rule destination. ::
 
     aws iot update-topic-rule-destination \
-        --arn "arn:aws:iot:us-west-2:123456789012:ruledestination/http/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE" \
+        --arn "arn:aws:iot:us-west-2:123456789012:ruledestination/http/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --status IN_PROGRESS
 
 This command produces no output.

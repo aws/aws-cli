@@ -14,7 +14,7 @@ Output::
         "ResolverEndpoint": {
             "Id": "rslvr-in-f9ab8a03f1example",
             "CreatorRequestId": "2020-01-01-18:47",
-            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-endpoint/rslvr-in-f9ab8a03f1example",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-endpoint/rslvr-in-f9ab8a03f1example",
             "Name": "my-inbound-endpoint",
             "SecurityGroupIds": [
                 "sg-f62bexam"

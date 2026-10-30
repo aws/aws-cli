@@ -10,7 +10,6 @@ Contents of ``LandingZoneManifest.json``::
 
     {
         "governedRegions": [
-            "us-east-1",
             "us-west-2"
         ],
         "organizationStructure": {
@@ -22,7 +21,7 @@ Contents of ``LandingZoneManifest.json``::
             }
         },
         "centralizedLogging": {
-            "accountId": "111122223333",
+            "accountId": "123456789222",
             "configurations": {
                 "loggingBucket": {
                     "retentionDays": 365
@@ -34,7 +33,7 @@ Contents of ``LandingZoneManifest.json``::
             "enabled": true
         },
         "securityRoles": {
-            "accountId": "444455556666"
+            "accountId": "123456789111"
         },
         "accessManagement": {
             "enabled": true
@@ -44,8 +43,8 @@ Contents of ``LandingZoneManifest.json``::
 Output::
 
     {
-        "arn": "arn:aws:controltower:us-east-1:123456789012:landingzone/13CJG46WZKXXX4X5",
-        "operationIdentifier": "55XXXXXX-e2XX-41XX-a7XX-446XXXXXXXXX"
+        "arn": "arn:aws:controltower:us-west-2:123456789012:landingzone/13CJG46WZKXXX4X5",
+        "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Getting started with AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.

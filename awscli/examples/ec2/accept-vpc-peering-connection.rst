@@ -15,13 +15,13 @@ Output::
             },
             "Tags": [],
             "AccepterVpcInfo": {
-                "OwnerId": "444455556666",
+                "OwnerId": "123456789012",
                 "VpcId": "vpc-44455566",
                 "CidrBlock": "10.0.1.0/28"
             },
             "VpcPeeringConnectionId": "pcx-1a2b3c4d",
             "RequesterVpcInfo": {
-                "OwnerId": "444455556666",
+                "OwnerId": "123456789012",
                 "VpcId": "vpc-111abc45",
                 "CidrBlock": "10.0.0.0/28"
             }

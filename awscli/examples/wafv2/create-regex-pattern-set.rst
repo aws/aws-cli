@@ -15,7 +15,7 @@ Output::
             "ARN":"arn:aws:wafv2:us-west-2:123456789012:regional/regexpatternset/regexPatterSet01/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Description":"Test web-acl",
             "Name":"regexPatterSet01",
-            "LockToken":"0bc01e21-03c9-4b98-9433-6229cbf1ef1c",
+            "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }

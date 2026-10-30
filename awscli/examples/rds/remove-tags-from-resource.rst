@@ -3,7 +3,7 @@
 The following ``remove-tags-from-resource`` example removes tags from a resource. ::
 
     aws rds remove-tags-from-resource \
-        --resource-name arn:aws:rds:us-east-1:123456789012:db:mydbinstance \
+        --resource-name arn:aws:rds:us-west-2:123456789012:db:mydbinstance \
         --tag-keys Name Environment
 
 This command produces no output.

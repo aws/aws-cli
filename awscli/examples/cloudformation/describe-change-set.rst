@@ -9,7 +9,7 @@ The following ``describe-change-set`` example displays the details of the change
 The following ``describe-change-set`` example displays the details of the change set specified by the full ARN of the change set. ::
 
     aws cloudformation describe-change-set \
-        --change-set-name arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/bc9555ba-a949-xmpl-bfb8-f41d04ec5784
+        --change-set-name arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -41,8 +41,8 @@ Output::
             }
         ],
         "ChangeSetName": "my-change-set",
-        "ChangeSetId": "arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/4eca1a01-e285-xmpl-8026-9a1967bfb4b0",
-        "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/d0a825a0-e4cd-xmpl-b9fb-061c69e99204",
+        "ChangeSetId": "arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "StackName": "my-stack",
         "Description": null,
         "Parameters": null,

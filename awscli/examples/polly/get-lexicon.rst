@@ -16,7 +16,7 @@ Output::
             "Alphabet": "ipa",
             "LanguageCode": "en-US",
             "LastModified": 1603908910.99,
-            "LexiconArn": "arn:aws:polly:us-west-2:880185128111:lexicon/w3c",
+            "LexiconArn": "arn:aws:polly:us-west-2:123456789012:lexicon/w3c",
             "LexemesCount": 1,
             "Size": 492
         }

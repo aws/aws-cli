@@ -9,7 +9,7 @@ This example may be useful if:
 * You tried to create a resource discovery, but you got an error that you've reached your limit of 1. You realize that you may have already created a resource discovery and you want to view it in your account.
 * You have resources in a Region that are not being discovered by the IPAM. You want to view the ``--operating-regions`` defined for the resource and ensure that you've added the right Region as an operating Region so that the resources there can be discovered.
 
-To view the resource discovery in the ``us-east-1`` Region, use the following command. ::
+To view the resource discovery in the ``us-west-2`` Region, use the following command. ::
 
     aws ec2 describe-ipam-resource-discoveries
 
@@ -18,13 +18,13 @@ Output::
     {
         "IpamResourceDiscoveries": [
             {
-                "OwnerId": "149977607591",
+                "OwnerId": "123456789012",
                 "IpamResourceDiscoveryId": "ipam-res-disco-0f8bdee9067137c0d",
-                "IpamResourceDiscoveryArn": "arn:aws:ec2::149977607591:ipam-resource-discovery/ipam-res-disco-0f8bdee9067137c0d",
-                "IpamResourceDiscoveryRegion": "us-east-1",
+                "IpamResourceDiscoveryArn": "arn:aws:ec2::123456789012:ipam-resource-discovery/ipam-res-disco-0f8bdee9067137c0d",
+                "IpamResourceDiscoveryRegion": "us-west-2",
                 "OperatingRegions": [
                     {
-                        "RegionName": "us-east-1"
+                        "RegionName": "us-west-2"
                     }
                 ],
                 "IsDefault": false,

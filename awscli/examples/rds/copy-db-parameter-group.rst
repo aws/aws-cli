@@ -12,7 +12,7 @@ Output::
     {
         "DBParameterGroup": {
             "DBParameterGroupName": "mydbpgcopy",
-            "DBParameterGroupArn": "arn:aws:rds:us-east-1:814387698303:pg:mydbpgcopy",
+            "DBParameterGroupArn": "arn:aws:rds:us-west-2:123456789012:pg:mydbpgcopy",
             "DBParameterGroupFamily": "mysql5.7",
             "Description": "Copy of mydbpg parameter group"
         }

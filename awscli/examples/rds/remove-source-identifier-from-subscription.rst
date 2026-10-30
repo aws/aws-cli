@@ -10,13 +10,13 @@ Output::
 
     {
         "EventSubscription": {
-            "EventSubscriptionArn": "arn:aws:rds:us-east-1:123456789012:es:my-instance-events",
+            "EventSubscriptionArn": "arn:aws:rds:us-west-2:123456789012:es:my-instance-events",
             "SubscriptionCreationTime": "Tue Jul 31 23:22:01 UTC 2018",
             "EventCategoriesList": [
                 "backup",
                 "recovery"
             ],
-            "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:interesting-events",
+            "SnsTopicArn": "arn:aws:sns:us-west-2:123456789012:interesting-events",
             "Status": "modifying",
             "CustSubscriptionId": "my-instance-events",
             "CustomerAwsId": "123456789012",

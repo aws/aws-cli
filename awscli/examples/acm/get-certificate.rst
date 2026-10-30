@@ -3,7 +3,7 @@
 The following ``get-certificate`` example retrieves the certificate for the specified ARN and the certificate chain. ::
 
     aws acm get-certificate \
-        --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012
+        --certificate-arn arn:aws:acm:region:account:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

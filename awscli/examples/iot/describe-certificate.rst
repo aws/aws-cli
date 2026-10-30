@@ -18,7 +18,7 @@ Output::
             "lastModifiedDate": 1541022751.983,
             "customerVersion": 1,
             "transferData": {},
-            "generationId": "6974fbed-2e61-4114-bc5e-4204cc79b045",
+            "generationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "validity": {
                 "notBefore": 1541022631.0,
                 "notAfter": 2524607999.0

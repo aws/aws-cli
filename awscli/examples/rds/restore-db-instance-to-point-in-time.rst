@@ -12,7 +12,7 @@ Output::
     {
         "DBInstance": {
             "AllocatedStorage": 20,
-            "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:restored-test-instance",
+            "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:restored-test-instance",
             "DBInstanceStatus": "creating",
             "DBInstanceIdentifier": "restored-test-instance"
         }

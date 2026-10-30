@@ -27,7 +27,7 @@ Output::
                     "ruleContentSha256": "4711b576EXAMPLE"
                 }
             ],
-            "authorArn": "arn:aws:iam::111111111111:user/Jane_Doe",
+            "authorArn": "arn:aws:iam::123456789111:user/Jane_Doe",
             "description": "Please review these changes by Tuesday",
             "title": "Pronunciation difficulty analyzer",
             "pullRequestTargets": [

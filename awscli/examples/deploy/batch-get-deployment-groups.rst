@@ -41,7 +41,7 @@ Output::
                         ]
                     ]
                 },
-                "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-11111example",
+                "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "triggerConfigurations": [],
                 "applicationName": "my-codedeploy-application",
                 "computePlatform": "Server",
@@ -72,7 +72,7 @@ Output::
                         ]
                     ]
                 },
-                "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-22222example",
+                "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "triggerConfigurations": [],
                 "applicationName": "my-codedeploy-application",
                 "computePlatform": "Server",

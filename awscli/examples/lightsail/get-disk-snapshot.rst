@@ -10,7 +10,7 @@ Output::
     {
         "diskSnapshot": {
             "name": "Disk-1-1566839161",
-            "arn": "arn:aws:lightsail:us-west-2:111122223333:DiskSnapshot/e2d0fa53-8ee0-41a0-8e56-0EXAMPLE1051",
+            "arn": "arn:aws:lightsail:us-west-2:123456789012:DiskSnapshot/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "supportCode": "6EXAMPLE3362/snap-0EXAMPLE06100d09",
             "createdAt": 1566839163.749,
             "location": {
@@ -23,7 +23,7 @@ Output::
             "state": "completed",
             "progress": "100%",
             "fromDiskName": "Disk-1",
-            "fromDiskArn": "arn:aws:lightsail:us-west-2:111122223333:Disk/c21cfb0a-07f2-44ae-9a23-bEXAMPLE8096",
+            "fromDiskArn": "arn:aws:lightsail:us-west-2:123456789012:Disk/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "isFromAutoSnapshot": false
         }
     }

@@ -8,19 +8,19 @@ The following ``describe-pipe`` example displays information about the Pipe ``De
 Output::
 
     {
-        "Arn": "arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe",
+        "Arn": "arn:aws:pipes:us-west-2:123456789012:pipe/Demo_Pipe",
         "Name": "Demo_Pipe",
         "DesiredState": "RUNNING",
         "CurrentState": "RUNNING",
         "StateReason": "User initiated",
-        "Source": "arn:aws:sqs:us-east-1:123456789012:Demo_Queue",
+        "Source": "arn:aws:sqs:us-west-2:123456789012:Demo_Queue",
         "SourceParameters": {
             "SqsQueueParameters": {
                 "BatchSize": 1
             }
         },
         "EnrichmentParameters": {},
-        "Target": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/pipes/Demo_LogGroup",
+        "Target": "arn:aws:logs:us-west-2:123456789012:log-group:/aws/pipes/Demo_LogGroup",
         "TargetParameters": {},
         "RoleArn": "arn:aws:iam::123456789012:role/service-role/Amazon_EventBridge_Pipe_Demo_Pipe_28b3aa4f",
         "Tags": {},
@@ -28,7 +28,7 @@ Output::
         "LastModifiedTime": "2024-10-08T10:23:47-05:00",
         "LogConfiguration": {
             "CloudwatchLogsLogDestination": {
-                "LogGroupArn": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/vendedlogs/pipes/Demo_Pipe"
+                "LogGroupArn": "arn:aws:logs:us-west-2:123456789012:log-group:/aws/vendedlogs/pipes/Demo_Pipe"
             },
             "Level": "ERROR"
         }

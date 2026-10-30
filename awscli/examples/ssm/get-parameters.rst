@@ -15,7 +15,7 @@ Output::
                 "Value": "alpha,beta,gamma",
                 "Version": 1,
                 "LastModifiedDate": 1582154764.222,
-                "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MyStringListParameter",
+                "ARN": "arn:aws:ssm:us-west-2:123456789012:parameter/MyStringListParameter",
                 "DataType": "text"
             },
             {
@@ -24,7 +24,7 @@ Output::
                 "Value": "Vici",
                 "Version": 3,
                 "LastModifiedDate": 1582156117.545,
-                "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MyStringParameter",
+                "ARN": "arn:aws:ssm:us-west-2:123456789012:parameter/MyStringParameter",
                 "DataType": "text"
             }
         ],
@@ -76,7 +76,7 @@ Output::
                 "Version": 1,
                 "Selector": ":label",
                 "LastModifiedDate": "2021-07-12T09:49:15.865000-07:00",
-                "ARN": "arn:aws:ssm:us-west-2:786973925828:parameter/MyLabelParameter",
+                "ARN": "arn:aws:ssm:us-west-2:123456789111:parameter/MyLabelParameter",
                 "DataType": "text"
             },
             {
@@ -86,7 +86,7 @@ Output::
                 "Version": 2,
                 "Selector": ":2",
                 "LastModifiedDate": "2021-03-24T16:20:28.236000-07:00",
-                "ARN": "arn:aws:ssm:us-west-2:786973925828:parameter/MyVersionParameter",
+                "ARN": "arn:aws:ssm:us-west-2:123456789111:parameter/MyVersionParameter",
                 "DataType": "text"
             }
         ],

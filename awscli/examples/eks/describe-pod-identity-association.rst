@@ -13,8 +13,8 @@ Output::
             "clusterName": "eks-customer",
             "namespace": "default",
             "serviceAccount": "default",
-            "roleArn": "arn:aws:iam::111122223333:role/my-role",
-            "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-9njjin9gfghecgocd",
+            "roleArn": "arn:aws:iam::123456789012:role/my-role",
+            "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-9njjin9gfghecgocd",
             "associationId": "a-9njjin9gfghecgocd",
             "tags": {
                 "Key2": "value2",

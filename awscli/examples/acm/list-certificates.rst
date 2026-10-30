@@ -9,11 +9,11 @@ Output::
     {
         "CertificateSummaryList": [
             {
-                "CertificateArn": "arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012",
+                "CertificateArn": "arn:aws:acm:region:account:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "DomainName": "www.example.com"
             },
             {
-                "CertificateArn": "arn:aws:acm:region:account:certificate/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                "CertificateArn": "arn:aws:acm:region:account:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "DomainName": "www.example.net"
             }
         ]
@@ -31,22 +31,22 @@ Output::
     {
         "CertificateSummaryList": [
             {
-                "CertificateArn": "arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012",
+                "CertificateArn": "arn:aws:acm:region:account:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "DomainName": "www.example.com"
             },
             {
-                "CertificateArn": "arn:aws:acm:region:account:certificate/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                "CertificateArn": "arn:aws:acm:region:account:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "DomainName": "www.example.net"
             }
         ],
-        "NextToken": "9f4d9f69-275a-41fe-b58e-2b837bd9ba48"
+        "NextToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
     }
 
 To display the next two certificates in your account, set this ``NextToken`` value in your next call. ::
 
     aws acm list-certificates \
         --max-items 2 \
-        --next-token 9f4d9f69-275a-41fe-b58e-2b837bd9ba48
+        --next-token a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 
 You can filter your output by using the ``certificate-statuses`` argument. The following command displays certificates that have a PENDING_VALIDATION status. ::

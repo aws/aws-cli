@@ -3,7 +3,7 @@
 The following ``put-application-policy`` example shares an application publicly, so anyone can find and deploy your application in the AWS Serverless Application Repository. ::
 
     aws serverlessrepo put-application-policy \
-        --application-id arn:aws:serverlessrepo:us-east-1:123456789012:applications/my-test-application \
+        --application-id arn:aws:serverlessrepo:us-west-2:123456789012:applications/my-test-application \
         --statements Principals='*',Actions=Deploy
 
 Output::
@@ -17,7 +17,7 @@ Output::
                 "Principals": [
                     ""
                 ],
-                "StatementId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"
+                "StatementId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ]
     }  
@@ -27,8 +27,8 @@ Output::
 The following ``put-application-policy`` example shares an application privately, so only specific AWS accounts can find and deploy your application in the AWS Serverless Application Repository. ::
 
     aws serverlessrepo put-application-policy \
-        --application-id arn:aws:serverlessrepo:us-east-1:123456789012:applications/my-test-application \
-        --statements Principals=111111111111,222222222222,Actions=Deploy
+        --application-id arn:aws:serverlessrepo:us-west-2:123456789012:applications/my-test-application \
+        --statements Principals=123456789111,123456789222,Actions=Deploy
 
 Output::
 
@@ -39,10 +39,10 @@ Output::
                     "Deploy"
                 ],
                 "Principals": [
-                    "111111111111",
-                    "222222222222"
+                    "123456789111",
+                    "123456789222"
                 ],
-                "StatementId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"
+                "StatementId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ]
     }

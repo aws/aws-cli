@@ -176,7 +176,7 @@ The following ``add-steps`` example adds an Impala step to the specified cluster
 
     aws emr add-steps \
         --cluster-id j-XXXXXXXX \
-        --steps Type=IMPALA,Name='Impala program',ActionOnFailure=CONTINUE,Args=--impala-script,s3://myimpala/input,--console-output-path,s3://myimpala/output
+        --steps Type=IMPALA,Name='Impala program',ActionOnFailure=CONTINUE,Args=--impala-script,s3://amzn-s3-demo-bucket/input,--console-output-path,s3://amzn-s3-demo-bucket/output
 
 - Required parameters::
 

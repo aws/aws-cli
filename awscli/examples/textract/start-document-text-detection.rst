@@ -5,13 +5,13 @@ The following ``start-document-text-detection`` example shows how to start async
 For Linux and macOS, use the following command. ::
 
     aws textract start-document-text-detection \
-        --document-location '{"S3Object":{"Bucket":"bucket","Name":"document"}}' \
+        --document-location '{"S3Object":{"Bucket":"amzn-s3-demo-bucket","Name":"document"}}' \
         --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleARN"
 
 For Windows, use the following command. ::
 
     aws textract start-document-text-detection \
-        --document-location "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
+        --document-location "{\"S3Object\":{\"Bucket\":\"amzn-s3-demo-bucket\",\"Name\":\"document\"}}" \
         --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
 
 Output::

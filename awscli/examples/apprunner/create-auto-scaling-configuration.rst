@@ -20,7 +20,7 @@ Output::
 
     {
         "AutoScalingConfiguration": {
-            "AutoScalingConfigurationArn": "arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability/1/2f50e7656d7819fead0f59672e68042e",
+            "AutoScalingConfigurationArn": "arn:aws:apprunner:us-west-2:123456789012:autoscalingconfiguration/high-availability/1/2f50e7656d7819fead0f59672e68042e",
             "AutoScalingConfigurationName": "high-availability",
             "AutoScalingConfigurationRevision": 1,
             "CreatedAt": "2020-11-03T00:29:17Z",

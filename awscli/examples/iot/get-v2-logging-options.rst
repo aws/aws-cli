@@ -7,7 +7,7 @@ The following ``get-v2-logging-options`` example lists the current logging optio
 Output::
 
     {
-        "roleArn": "arn:aws:iam::094249569039:role/service-role/iotLoggingRole",
+        "roleArn": "arn:aws:iam::123456789012:role/service-role/iotLoggingRole",
         "defaultLogLevel": "WARN",
         "disableAllLogs": false
     }

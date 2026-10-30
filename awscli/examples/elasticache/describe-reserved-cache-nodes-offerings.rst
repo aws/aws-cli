@@ -9,7 +9,7 @@ Output::
     {
         "ReservedCacheNodesOfferings": [
             {
-                "ReservedCacheNodesOfferingId": "01ce0a19-a476-41cb-8aee-48eacbcdc8e5",
+                "ReservedCacheNodesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "CacheNodeType": "cache.t3.small",
                 "Duration": 31536000,
                 "FixedPrice": 97.0,
@@ -24,7 +24,7 @@ Output::
                 ]
             },
             {
-                "ReservedCacheNodesOfferingId": "0443a27b-4da5-4b90-b92d-929fbd7abed2",
+                "ReservedCacheNodesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "CacheNodeType": "cache.m3.2xlarge",
                 "Duration": 31536000,
                 "FixedPrice": 1772.0,

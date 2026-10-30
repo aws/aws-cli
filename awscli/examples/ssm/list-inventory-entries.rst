@@ -17,7 +17,7 @@ Output::
             {
                 "Architecture": "i386",
                 "Name": "Amazon SSM Agent",
-                "PackageId": "{88a60be2-89a1-4df8-812a-80863c2a2b68}",
+                "PackageId": "{a1b2c3d4-5678-90ab-cdef-EXAMPLE11111}",
                 "Publisher": "Amazon Web Services",
                 "Version": "2.3.274.0"
             },

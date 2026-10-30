@@ -3,15 +3,15 @@
 The following ``reset-personal-pin`` example resets the specified user's personal meeting PIN. ::
 
     aws chime reset-personal-pin \
-        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE \
-        --user-id a1b2c3d4-5678-90ab-cdef-22222EXAMPLE
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --user-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "User": {
-            "UserId": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
-            "AccountId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "PrimaryEmail": "mateo@example.com",
             "DisplayName": "Mateo Jackson",
             "LicenseType": "Pro",

@@ -3,7 +3,7 @@
 The following ``modify-instance-profile`` example updates the description and network type of an instance profile. ::
 
     aws dms modify-instance-profile \
-        --instance-profile-identifier arn:aws:dms:us-east-1:123456789012:instance-profile:EXAMPLEABCDEFGHIJKLMNOPQRS \
+        --instance-profile-identifier arn:aws:dms:us-west-2:123456789012:instance-profile:EXAMPLEABCDEFGHIJKLMNOPQRS \
         --description "Updated instance profile description" \
         --network-type DUAL
 
@@ -11,8 +11,8 @@ Output::
 
     {
         "InstanceProfile": {
-            "InstanceProfileArn": "arn:aws:dms:us-east-1:123456789012:instance-profile:EXAMPLEABCDEFGHIJKLMNOPQRS",
-            "KmsKeyArn": "arn:aws:kms:us-east-1:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "InstanceProfileArn": "arn:aws:dms:us-west-2:123456789012:instance-profile:EXAMPLEABCDEFGHIJKLMNOPQRS",
+            "KmsKeyArn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "PubliclyAccessible": false,
             "NetworkType": "DUAL",
             "InstanceProfileName": "example-instance-profile",

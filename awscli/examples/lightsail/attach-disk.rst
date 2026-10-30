@@ -12,7 +12,7 @@ Output::
     {
         "operations": [
             {
-                "id": "10a08267-19ce-43be-b913-6EXAMPLE7e80",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Disk-1",
                 "resourceType": "Disk",
                 "createdAt": 1571071465.472,
@@ -27,7 +27,7 @@ Output::
                 "statusChangedAt": 1571071465.472
             },
             {
-                "id": "2912c477-5295-4539-88c9-bEXAMPLEd1f0",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "WordPress_Multisite-1",
                 "resourceType": "Instance",
                 "createdAt": 1571071465.474,

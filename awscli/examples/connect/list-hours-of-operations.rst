@@ -3,15 +3,15 @@
 The following ``list-hours-of-operations`` example lists the hours of operations for the specified Amazon Connect instance. ::
 
     aws connect list-hours-of-operations \
-        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e 
+        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
 
 Output::
 
     {
         "HoursOfOperationSummaryList": [
             {
-                "Id": "d69f1f84-7457-4924-8fbe-e64875546259",
-                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/40c83b68-ea62-414c-97bb-d018e39e158e/operating-hours/d69f1f84-7457-4924-8fbe-e64875546259",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/operating-hours/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Name": "Basic Hours"
             }
         ]

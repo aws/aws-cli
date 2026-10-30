@@ -9,10 +9,10 @@ Output::
     {
         "DBRecommendations": [
             {
-                "RecommendationId": "12ab3cde-f456-7g8h-9012-i3j45678k9lm",
+                "RecommendationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "TypeId": "config_recommendation::old_minor_version",
                 "Severity": "informational",
-                "ResourceArn": "arn:aws:rds:us-west-2:111122223333:db:database-1",
+                "ResourceArn": "arn:aws:rds:us-west-2:123456789012:db:database-1",
                 "Status": "active",
                 "CreatedTime": "2024-02-21T23:14:19.292000+00:00",
                 "UpdatedTime": "2024-02-21T23:14:19+00:00",
@@ -88,10 +88,10 @@ Output::
     {
         "DBRecommendations": [
             {
-                "RecommendationId": "12ab3cde-f456-7g8h-9012-i3j45678k9lm",
+                "RecommendationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "TypeId": "config_recommendation::rds_extended_support",
                 "Severity": "high",
-                "ResourceArn": "arn:aws:rds:us-west-2:111122223333:db:database-1",
+                "ResourceArn": "arn:aws:rds:us-west-2:123456789012:db:database-1",
                 "Status": "active",
                 "CreatedTime": "2024-02-21T23:14:19.392000+00:00",
                 "UpdatedTime": "2024-02-21T23:14:19+00:00",
@@ -155,10 +155,10 @@ Output::
     {
         "DBRecommendations": [
             {
-                "RecommendationId": "12ab3cde-f456-7g8h-9012-i3j45678k9lm",
+                "RecommendationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "TypeId": "config_recommendation::old_minor_version",
                 "Severity": "informational",
-                "ResourceArn": "arn:aws:rds:us-west-2:111122223333:db:database-1",
+                "ResourceArn": "arn:aws:rds:us-west-2:123456789012:db:database-1",
                 "Status": "active",
                 "CreatedTime": "2024-02-21T23:14:19.292000+00:00",
                 "UpdatedTime": "2024-02-21T23:14:19+00:00",
@@ -234,10 +234,10 @@ Output::
     {
         "DBRecommendations": [
             {
-                "RecommendationId": "12ab3cde-f456-7g8h-9012-i3j45678k9lm",
+                "RecommendationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "TypeId": "config_recommendation::old_minor_version",
                 "Severity": "informational",
-                "ResourceArn": "arn:aws:rds:us-west-2:111122223333:db:database-1",
+                "ResourceArn": "arn:aws:rds:us-west-2:123456789012:db:database-1",
                 "Status": "active",
                 "CreatedTime": "2024-02-21T23:14:19.292000+00:00",
                 "UpdatedTime": "2024-02-21T23:14:19+00:00",

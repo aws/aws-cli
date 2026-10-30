@@ -10,7 +10,7 @@ Output::
         "ReservedInstancesOfferings": [
             {
                 "OfferingType": "Partial Upfront",
-                "AvailabilityZone": "us-east-1b",
+                "AvailabilityZone": "us-west-2b",
                 "InstanceTenancy": "default",
                 "PricingDetails": [],
                 "ProductDescription": "Red Hat Enterprise Linux",
@@ -25,12 +25,12 @@ Output::
                 "CurrencyCode": "USD",
                 "FixedPrice": 631.0,
                 "Duration": 94608000,
-                "ReservedInstancesOfferingId": "9a06095a-bdc6-47fe-a94a-2a382f016040",
+                "ReservedInstancesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "InstanceType": "c1.medium"
             },
             {
                 "OfferingType": "PartialUpfront",
-                "AvailabilityZone": "us-east-1b",
+                "AvailabilityZone": "us-west-2b",
                 "InstanceTenancy": "default",
                 "PricingDetails": [],
                 "ProductDescription": "Linux/UNIX",
@@ -45,7 +45,7 @@ Output::
                 "CurrencyCode": "USD",
                 "FixedPrice": 631.0,
                 "Duration": 94608000,
-                "ReservedInstancesOfferingId": "bfbefc6c-0d10-418d-b144-7258578d329d",
+                "ReservedInstancesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "InstanceType": "c1.medium"
             }
         ]
@@ -69,7 +69,7 @@ Output::
         "ReservedInstancesOfferings": [
             {
                 "OfferingType": "No Upfront",
-                "AvailabilityZone": "us-east-1b",
+                "AvailabilityZone": "us-west-2b",
                 "InstanceTenancy": "default",
                 "PricingDetails": [],
                 "ProductDescription": "Windows",
@@ -84,12 +84,12 @@ Output::
                 "CurrencyCode": "USD",
                 "FixedPrice": 0.0,
                 "Duration": 31536000,
-                "ReservedInstancesOfferingId": "c48ab04c-fe69-4f94-8e39-a23842292823",
+                "ReservedInstancesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "InstanceType": "t1.micro"
             },
             {
                 "OfferingType": "No Upfront",
-                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZone": "us-west-2d",
                 "InstanceTenancy": "default",
                 "PricingDetails": [],
                 "ProductDescription": "Windows (Amazon VPC)",
@@ -104,7 +104,7 @@ Output::
                 "CurrencyCode": "USD",
                 "FixedPrice": 0.0,
                 "Duration": 31536000,
-                "ReservedInstancesOfferingId": "3a98bf7d-2123-42d4-b4f5-8dbec4b06dc6",
+                "ReservedInstancesOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "InstanceType": "t1.micro"
             }
         ]

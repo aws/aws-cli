@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes a tag from the canary named ``demo_canary``. ::
 
     aws synthetics untag-resource \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary \
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:canary:demo_canary \
         --tag-keys blueprint
 
 This command produces no output.
@@ -13,7 +13,7 @@ This command produces no output.
 The following ``untag-resource`` example assigns a removes a tag from the group named ``demo_group``. ::
 
     aws synthetics untag-resource \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:group:example123 \
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:group:example123 \
         --tag-keys team
 
 This command produces no output.

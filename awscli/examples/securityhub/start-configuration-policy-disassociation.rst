@@ -3,7 +3,7 @@
 The following ``start-configuration-policy-disassociation`` example disassociates a configuration policy from the specified organizational unit. A configuration may be disassociated from a target account, organizational unit, or the root. ::
 
     aws securityhub start-configuration-policy-disassociation \
-        --configuration-policy-identifier "arn:aws:securityhub:eu-central-1:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333" \
+        --configuration-policy-identifier "arn:aws:securityhub:us-west-2:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333" \
         --target '{"OrganizationalUnitId": "ou-6hi7-8j91kl2m"}'
 
 This command produces no output.

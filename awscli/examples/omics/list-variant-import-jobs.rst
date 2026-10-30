@@ -11,7 +11,7 @@ Output::
             {
                 "creationTime": "2022-11-23T22:47:02.514002Z",
                 "destinationName": "my_var_store",
-                "id": "69cb65d6-xmpl-4a4a-9025-4565794b684e",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "roleArn": "arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ",
                 "runLeftNormalization": false,
                 "status": "COMPLETED",
@@ -20,7 +20,7 @@ Output::
             {
                 "creationTime": "2022-11-23T22:42:50.037812Z",
                 "destinationName": "my_var_store",
-                "id": "edd7b8ce-xmpl-47e2-bc99-258cac95a508",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "roleArn": "arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ",
                 "runLeftNormalization": false,
                 "status": "COMPLETED",

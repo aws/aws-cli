@@ -11,7 +11,7 @@ This command runs only in the ``us-east-1`` Region. If your default region is se
 Output::
 
     {
-        "OperationId": "3f28e0ac-126a-4113-9048-cc930example"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the transfer lock has been changed, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ . When the transfer lock is disabled, the value of ``StatusList`` does *not* include ``clientTransferProhibited``.

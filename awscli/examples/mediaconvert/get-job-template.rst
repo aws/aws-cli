@@ -4,7 +4,7 @@ The following ``get-job-template`` example displays the JSON definition of the s
 
     aws mediaconvert get-job-template \
         --name "DASH Streaming" \
-        --endpoint-url https://abcd1234.mediaconvert.us-east-1.amazonaws.com
+        --endpoint-url https://abcd1234.mediaconvert.us-west-2.amazonaws.com
 
 Output::
 

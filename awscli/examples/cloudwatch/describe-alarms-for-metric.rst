@@ -14,12 +14,12 @@ Output::
         "MetricAlarms": [
             {
                 "EvaluationPeriods": 10,
-                "AlarmArn": "arn:aws:cloudwatch:us-east-1:111122223333:alarm:myHighCpuAlarm2",
+                "AlarmArn": "arn:aws:cloudwatch:us-west-2:123456789012:alarm:myHighCpuAlarm2",
                 "StateUpdatedTimestamp": "2013-10-30T03:03:51.479Z",
                 "AlarmConfigurationUpdatedTimestamp": "2013-10-30T03:03:50.865Z",
                 "ComparisonOperator": "GreaterThanOrEqualToThreshold",
                 "AlarmActions": [
-                    "arn:aws:sns:us-east-1:111122223333:NotifyMe"
+                    "arn:aws:sns:us-west-2:123456789012:NotifyMe"
                 ],
                 "Namespace": "AWS/EC2",
                 "AlarmDescription": "CPU usage exceeds 70 percent",
@@ -43,12 +43,12 @@ Output::
             },
             {
                 "EvaluationPeriods": 2,
-                "AlarmArn": "arn:aws:cloudwatch:us-east-1:111122223333:alarm:myHighCpuAlarm",
+                "AlarmArn": "arn:aws:cloudwatch:us-west-2:123456789012:alarm:myHighCpuAlarm",
                 "StateUpdatedTimestamp": "2014-04-09T18:59:06.442Z",
                 "AlarmConfigurationUpdatedTimestamp": "2014-04-09T22:26:05.958Z",
                 "ComparisonOperator": "GreaterThanThreshold",
                 "AlarmActions": [
-                    "arn:aws:sns:us-east-1:111122223333:HighCPUAlarm"
+                    "arn:aws:sns:us-west-2:123456789012:HighCPUAlarm"
                 ],
                 "Namespace": "AWS/EC2",
                 "AlarmDescription": "CPU usage exceeds 70 percent",

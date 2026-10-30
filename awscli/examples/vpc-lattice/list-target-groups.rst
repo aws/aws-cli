@@ -10,13 +10,13 @@ Output::
     {
         "items": [
             {
-                "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:targetgroup/tg-045c1b7d9dEXAMPLE",
+                "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:targetgroup/tg-045c1b7d9dEXAMPLE",
                 "createdAt": "2023-05-06T05:22:16.637Z",
                 "id": "tg-045c1b7d9dEXAMPLE",
                 "lastUpdatedAt": "2023-05-06T05:22:16.637Z",
                 "name": "my-target-group-lam",
                 "serviceArns": [
-                    "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE"
+                    "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE"
                 ],
                 "status": "ACTIVE",
                 "type": "LAMBDA"

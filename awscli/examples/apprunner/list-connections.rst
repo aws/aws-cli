@@ -9,14 +9,14 @@ Output::
     {
         "ConnectionSummaryList": [
             {
-                "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection",
+                "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection",
                 "ConnectionName": "my-github-connection",
                 "Status": "AVAILABLE",
                 "CreatedAt": "2020-11-03T00:32:51Z",
                 "ProviderType": "GITHUB"
             },
             {
-                "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-org-connection",
+                "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-org-connection",
                 "ConnectionName": "my-github-org-connection",
                 "Status": "AVAILABLE",
                 "CreatedAt": "2020-11-03T02:54:17Z",
@@ -45,7 +45,7 @@ Output::
     {
         "ConnectionSummaryList": [
             {
-                "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-org-connection",
+                "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-org-connection",
                 "ConnectionName": "my-github-org-connection",
                 "Status": "AVAILABLE",
                 "CreatedAt": "2020-11-03T02:54:17Z",

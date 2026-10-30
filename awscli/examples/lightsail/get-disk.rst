@@ -10,7 +10,7 @@ Output::
     {
         "disk": {
             "name": "Disk-1",
-            "arn": "arn:aws:lightsail:us-west-2:111122223333:Disk/c21cfb0a-07f2-44ae-9a23-bEXAMPLE8096",
+            "arn": "arn:aws:lightsail:us-west-2:123456789012:Disk/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "supportCode": "6EXAMPLE3362/vol-0EXAMPLEf2f88b32f",
             "createdAt": 1566585439.587,
             "location": {

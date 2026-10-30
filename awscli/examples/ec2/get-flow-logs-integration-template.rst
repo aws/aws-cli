@@ -19,7 +19,7 @@ Windows command. ::
 Output::
 
     {
-        "Result": "https://amzn-s3-demo-bucket.s3.us-east-2.amazonaws.com/VPCFlowLogsIntegrationTemplate_fl-1234567890abcdef0_Wed%20Jul%2021%2000%3A57%3A56%20UTC%202021.yml"
+        "Result": "https://amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com/VPCFlowLogsIntegrationTemplate_fl-1234567890abcdef0_Wed%20Jul%2021%2000%3A57%3A56%20UTC%202021.yml"
     }
 
 For information on using CloudFormation templates, see `Working with AWS CloudFormation templates  <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html>`__ in the *AWS CloudFormation User Guide*.

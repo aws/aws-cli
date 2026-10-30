@@ -6,7 +6,7 @@ The following ``enable-key-rotation`` example enables automatic rotation of a cu
 * The ``--rotation-period-in-days`` parameter specifies the number of days between each rotation date. Specify a value between 90 and 2560 days. If no value is specified, the default value is 365 days. ::
 
     aws kms enable-key-rotation \
-        --key-id arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --rotation-period-in-days 180
 
 This command produces no output. To verify that the KMS key is enabled, use the ``get-key-rotation-status`` command.

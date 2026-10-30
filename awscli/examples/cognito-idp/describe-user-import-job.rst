@@ -16,7 +16,7 @@ Output::
             "PreSignedUrl": "PRE_SIGNED URL",
             "CreationDate": 1548271708.512,
             "Status": "Created",
-            "CloudWatchLogsRoleArn": "arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole",
+            "CloudWatchLogsRoleArn": "arn:aws:iam::123456789012:role/CognitoCloudWatchLogsRole",
             "ImportedUsers": 0,
             "SkippedUsers": 0,
             "FailedUsers": 0

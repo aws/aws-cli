@@ -8,7 +8,7 @@ The following ``stop-pipe`` example stops a Pipe named ``Demo_Pipe`` in the spec
 Output::
 
     {
-        "Arn": "arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe",
+        "Arn": "arn:aws:pipes:us-west-2:123456789012:pipe/Demo_Pipe",
         "Name": "Demo_Pipe",
         "DesiredState": "STOPPED",
         "CurrentState": "STOPPING",

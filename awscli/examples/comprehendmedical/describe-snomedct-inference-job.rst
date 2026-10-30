@@ -23,7 +23,7 @@ Output::
                 "S3Key": "AKIAIOSFODNN7EXAMPLE"
             },
             "LanguageCode": "en",
-            "DataAccessRoleArn": "arn:aws:iam::867139942017:role/ComprehendMedicalBatchProcessingRole",
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/ComprehendMedicalBatchProcessingRole",
             "ModelVersion":  "0.1.0"
         }
     }

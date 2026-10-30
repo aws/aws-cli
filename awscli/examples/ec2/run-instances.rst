@@ -22,11 +22,11 @@ Output::
                     "State": "disabled"
                 },
                 "Placement": {
-                    "AvailabilityZone": "us-east-2a",
+                    "AvailabilityZone": "us-west-2a",
                     "GroupName": "",
                     "Tenancy": "default"
                 },
-                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                 "PrivateIpAddress": "10.0.0.157",
                 "ProductCodes": [],
                 "PublicDnsName": "",
@@ -62,12 +62,12 @@ Output::
                         "MacAddress": "0a:ab:58:e0:67:e2",
                         "NetworkInterfaceId": "eni-0c0a29997760baee7",
                         "OwnerId": "123456789012",
-                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.0.157",
                         "PrivateIpAddresses": [
                             {
                                 "Primary": true,
-                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "PrivateDnsName": "ip-10-0-0-157.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.0.157"
                             }
                         ],
@@ -139,11 +139,11 @@ Output::
                     "State": "disabled"
                 },
                 "Placement": {
-                    "AvailabilityZone": "us-east-2a",
+                    "AvailabilityZone": "us-west-2a",
                     "GroupName": "",
                     "Tenancy": "default"
                 },
-                "PrivateDnsName": "ip-10-0-0-162.us-east-2.compute.internal",
+                "PrivateDnsName": "ip-10-0-0-162.us-west-2.compute.internal",
                 "PrivateIpAddress": "10.0.0.162",
                 "ProductCodes": [],
                 "PublicDnsName": "",
@@ -179,12 +179,12 @@ Output::
                         "MacAddress": "0a:ab:58:e0:67:e3",
                         "NetworkInterfaceId": "eni-0c0a29997760baee2",
                         "OwnerId": "123456789012",
-                        "PrivateDnsName": "ip-10-0-0-162.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-162.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.0.162",
                         "PrivateIpAddresses": [
                             {
                                 "Primary": true,
-                                "PrivateDnsName": "ip-10-0-0-162.us-east-2.compute.internal",
+                                "PrivateDnsName": "ip-10-0-0-162.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.0.162"
                             }
                         ],
@@ -280,11 +280,11 @@ Output::
                     "State": "disabled"
                 },
                 "Placement": {
-                    "AvailabilityZone": "us-east-2a",
+                    "AvailabilityZone": "us-west-2a",
                     "GroupName": "",
                     "Tenancy": "default"
                 },
-                "PrivateDnsName": "ip-10-0-0-163.us-east-2.compute.internal",
+                "PrivateDnsName": "ip-10-0-0-163.us-west-2.compute.internal",
                 "PrivateIpAddress": "10.0.0.163",
                 "ProductCodes": [],
                 "PublicDnsName": "",
@@ -320,12 +320,12 @@ Output::
                         "MacAddress": "0a:ab:58:e0:67:e4",
                         "NetworkInterfaceId": "eni-0c0a29997760baee3",
                         "OwnerId": "123456789012",
-                        "PrivateDnsName": "ip-10-0-0-163.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-163.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.0.163",
                         "PrivateIpAddresses": [
                             {
                                 "Primary": true,
-                                "PrivateDnsName": "ip-10-0-0-163.us-east-2.compute.internal",
+                                "PrivateDnsName": "ip-10-0-0-163.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.0.163"
                             }
                         ],
@@ -400,11 +400,11 @@ Output::
                     "State": "disabled"
                 },
                 "Placement": {
-                    "AvailabilityZone": "us-east-2a",
+                    "AvailabilityZone": "us-west-2a",
                     "GroupName": "",
                     "Tenancy": "default"
                 },
-                "PrivateDnsName": "ip-10-0-0-164.us-east-2.compute.internal",
+                "PrivateDnsName": "ip-10-0-0-164.us-west-2.compute.internal",
                 "PrivateIpAddress": "10.0.0.164",
                 "ProductCodes": [],
                 "PublicDnsName": "",
@@ -440,12 +440,12 @@ Output::
                         "MacAddress": "0a:ab:58:e0:67:e5",
                         "NetworkInterfaceId": "eni-0c0a29997760baee4",
                         "OwnerId": "123456789012",
-                        "PrivateDnsName": "ip-10-0-0-164.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-164.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.0.164",
                         "PrivateIpAddresses": [
                             {
                                 "Primary": true,
-                                "PrivateDnsName": "ip-10-0-0-164.us-east-2.compute.internal",
+                                "PrivateDnsName": "ip-10-0-0-164.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.0.164"
                             }
                         ],
@@ -531,11 +531,11 @@ Output::
                     "State": "disabled"
                 },
                 "Placement": {
-                    "AvailabilityZone": "us-east-2a",
+                    "AvailabilityZone": "us-west-2a",
                     "GroupName": "",
                     "Tenancy": "default"
                 },
-                "PrivateDnsName": "ip-10-0-0-165.us-east-2.compute.internal",
+                "PrivateDnsName": "ip-10-0-0-165.us-west-2.compute.internal",
                 "PrivateIpAddress": "10.0.0.165",
                 "ProductCodes": [],
                 "PublicDnsName": "",
@@ -571,12 +571,12 @@ Output::
                         "MacAddress": "0a:ab:58:e0:67:e6",
                         "NetworkInterfaceId": "eni-0c0a29997760baee5",
                         "OwnerId": "123456789012",
-                        "PrivateDnsName": "ip-10-0-0-165.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-165.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.0.165",
                         "PrivateIpAddresses": [
                             {
                                 "Primary": true,
-                                "PrivateDnsName": "ip-10-0-0-165.us-east-2.compute.internal",
+                                "PrivateDnsName": "ip-10-0-0-165.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.0.165"
                             }
                         ],
@@ -651,11 +651,11 @@ Output::
                     "State": "disabled"
                 },
                 "Placement": {
-                    "AvailabilityZone": "us-east-2a",
+                    "AvailabilityZone": "us-west-2a",
                     "GroupName": "",
                     "Tenancy": "default"
                 },
-                "PrivateDnsName": "ip-10-0-0-166.us-east-2.compute.internal",
+                "PrivateDnsName": "ip-10-0-0-166.us-west-2.compute.internal",
                 "PrivateIpAddress": "10.0.0.166",
                 "ProductCodes": [],
                 "PublicDnsName": "",
@@ -691,12 +691,12 @@ Output::
                         "MacAddress": "0a:ab:58:e0:67:e7",
                         "NetworkInterfaceId": "eni-0c0a29997760baee6",
                         "OwnerId": "123456789012",
-                        "PrivateDnsName": "ip-10-0-0-166.us-east-2.compute.internal",
+                        "PrivateDnsName": "ip-10-0-0-166.us-west-2.compute.internal",
                         "PrivateIpAddress": "10.0.0.166",
                         "PrivateIpAddresses": [
                             {
                                 "Primary": true,
-                                "PrivateDnsName": "ip-10-0-0-166.us-east-2.compute.internal",
+                                "PrivateDnsName": "ip-10-0-0-166.us-west-2.compute.internal",
                                 "PrivateIpAddress": "10.0.0.166"
                             }
                         ],

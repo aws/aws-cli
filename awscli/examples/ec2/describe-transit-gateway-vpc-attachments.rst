@@ -12,7 +12,7 @@ Output::
                 "TransitGatewayAttachmentId": "tgw-attach-0a08e88308EXAMPLE",
                 "TransitGatewayId": "tgw-0043d72bb4EXAMPLE",
                 "VpcId": "vpc-0f501f7ee8EXAMPLE",
-                "VpcOwnerId": "111122223333",
+                "VpcOwnerId": "123456789012",
                 "State": "available",
                 "SubnetIds": [
                     "subnet-045d586432EXAMPLE",

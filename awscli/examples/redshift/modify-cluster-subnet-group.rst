@@ -16,13 +16,13 @@ Output::
                     "SubnetStatus": "Active",
                     "SubnetIdentifier": "subnet-763fdd1c",
                     "SubnetAvailabilityZone":
-                        { "Name": "us-east-1a" }
+                        { "Name": "us-west-2a" }
                 },
                 {
                     "SubnetStatus": "Active",
                     "SubnetIdentifier": "subnet-ac830e9",
                     "SubnetAvailabilityZone":
-                        { "Name": "us-east-1b" }
+                        { "Name": "us-west-2b" }
                 } ],
             "VpcId": "vpc-7e3fdd14",
             "SubnetGroupStatus": "Complete",

@@ -90,10 +90,10 @@ Output::
                     "Enabled": true,
                     "ViewerCertificate": {
                         "CloudFrontDefaultCertificate": false,
-                        "ACMCertificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/ec53f564-ea5a-4e4a-a0a2-e3c989449abc",
+                        "ACMCertificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "SSLSupportMethod": "sni-only",
                         "MinimumProtocolVersion": "TLSv1.2_2021",
-                        "Certificate": "arn:aws:acm:us-east-1:123456789012:certificate/ec53f564-ea5a-4e4a-a0a2-e3c989449abc",
+                        "Certificate": "arn:aws:acm:us-east-1:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "CertificateSource": "acm"
                     },
                     "Restrictions": {
@@ -102,7 +102,7 @@ Output::
                             "Quantity": 0
                         }
                     },
-                    "WebACLId": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/web-global-example/626900da-5f64-418b-ba9b-743f3746cabc",
+                    "WebACLId": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/web-global-example/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                     "HttpVersion": "http2",
                     "IsIPV6Enabled": false,
                     "Staging": false,

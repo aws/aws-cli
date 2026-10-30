@@ -17,7 +17,7 @@ Output::
                 "MajorEngineVersion": "19",
                 "Options": [],
                 "AllowsVpcAndNonVpcInstanceMemberships": true,
-                "OptionGroupArn": "arn:aws:rds:us-west-1:111122223333:og:default:oracle-ee-19"
+                "OptionGroupArn": "arn:aws:rds:us-west-2:123456789012:og:default:oracle-ee-19"
             }
         ]
     }

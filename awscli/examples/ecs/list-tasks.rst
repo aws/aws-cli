@@ -9,8 +9,8 @@ Output::
 
     {
         "taskArns": [
-            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
-            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-22222EXAMPLE"
+            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
         ]
     }
 
@@ -22,13 +22,13 @@ The following ``list-tasks`` example lists the tasks on a container instance, us
 
     aws ecs list-tasks \
         --cluster default \
-        --container-instance a1b2c3d4-5678-90ab-cdef-33333EXAMPLE
+        --container-instance a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 Output::
 
     {
         "taskArns": [
-            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-44444EXAMPLE"
+            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
         ]
     }
 

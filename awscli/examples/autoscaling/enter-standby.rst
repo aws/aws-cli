@@ -12,7 +12,7 @@ Output::
     {
         "Activities": [
             {
-                "ActivityId": "ffa056b4-6ed3-41ba-ae7c-249dfae6eba1",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AutoScalingGroupName": "my-asg",
                 "Description": "Moving EC2 instance to Standby: i-061c63c5eb45f0416",
                 "Cause": "At 2020-10-31T20:31:00Z instance i-061c63c5eb45f0416 was moved to standby in response to a user request, shrinking the capacity from 1 to 0.",

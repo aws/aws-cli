@@ -88,10 +88,10 @@ Output::
                 "LastChangedDate": 1673477781.275, 
                 "LastRotatedDate": 1673477781.26, 
                 "SecretVersionsToStages": {
-                    "a1b2c3d4-5678-90ab-cdef-EXAMPLEaaaaa": [
+                    "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333": [
                         "AWSPREVIOUS"
                     ], 
-                    "a1b2c3d4-5678-90ab-cdef-EXAMPLEbbbbb": [
+                    "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444": [
                         "AWSCURRENT", 
                         "AWSPENDING"
                     ]

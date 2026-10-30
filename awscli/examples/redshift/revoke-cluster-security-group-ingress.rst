@@ -5,7 +5,7 @@ The following ``revoke-cluster-security-group-ingress`` example revokes access t
     aws redshift revoke-cluster-security-group-ingress \
         --cluster-security-group-name mysecuritygroup \
         --ec2-security-group-name myec2securitygroup \
-        --ec2-security-group-owner-id 123445677890
+        --ec2-security-group-owner-id 123456789012
 
 Output::
 

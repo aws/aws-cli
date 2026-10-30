@@ -3,8 +3,8 @@
 The following ``create-endpoint-group`` example creates an endpoint group with one endpoint. ::
 
     aws globalaccelerator create-endpoint-group \
-        --listener-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz \
-        --endpoint-group-region us-east-1 \
+        --listener-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/0123vxyz \
+        --endpoint-group-region us-west-2 \
         --endpoint-configurations EndpointId=i-1234567890abcdef0,Weight=128
 
 Output::
@@ -18,8 +18,8 @@ Output::
                     "EndpointId": "i-1234567890abcdef0"
                 }
             ], 
-            "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu", 
-            "EndpointGroupRegion": "us-east-1"
+            "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/0123vxyz/endpoint-group/098765zyxwvu", 
+            "EndpointGroupRegion": "us-west-2"
         }
     }
 

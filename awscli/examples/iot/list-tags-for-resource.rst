@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example displays the tags and values associated with the thing group ``LightBulbs``. ::
 
     aws iot list-tags-for-resource \
-        --resource-arn "arn:aws:iot:us-west-2:094249569039:thinggroup/LightBulbs"
+        --resource-arn "arn:aws:iot:us-west-2:123456789012:thinggroup/LightBulbs"
 
 Output::
 

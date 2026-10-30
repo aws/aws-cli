@@ -3,14 +3,14 @@
 The following ``describe-client-vpn-routes`` example displays details about the routes for the specified Client VPN endpoint. ::
 
     aws ec2 describe-client-vpn-routes \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde
+        --client-vpn-endpoint-id cvpn-endpoint-123456789abcabcde
 
 Output::
 
     {
         "Routes": [
             {
-                "ClientVpnEndpointId": "cvpn-endpoint-123456789123abcde",
+                "ClientVpnEndpointId": "cvpn-endpoint-123456789abcabcde",
                 "DestinationCidr": "10.0.0.0/16",
                 "TargetSubnet": "subnet-0123456789abcabca",
                 "Type": "Nat",
@@ -21,7 +21,7 @@ Output::
                 "Description": "Default Route"
             },
             {
-                "ClientVpnEndpointId": "cvpn-endpoint-123456789123abcde",
+                "ClientVpnEndpointId": "cvpn-endpoint-123456789abcabcde",
                 "DestinationCidr": "0.0.0.0/0",
                 "TargetSubnet": "subnet-0123456789abcabca",
                 "Type": "Nat",

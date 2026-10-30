@@ -26,7 +26,7 @@ The following ``update-group-query`` example updates the query attached to the s
 
     aws resource-groups update-group-query \
         --group-name cbq-CFNstackgroup \
-        --resource-query '{"Type": "CLOUDFORMATION_STACK_1_0", "Query": "{\"ResourceTypeFilters\":[\"AWS::AllSupported\"],\"StackIdentifier\":\"arn:aws:cloudformation:us-west-2:123456789012:stack/MyCFNStack/1415z9z0-z39z-11z8-97z5-500z212zz6fz\"}"}'
+        --resource-query '{"Type": "CLOUDFORMATION_STACK_1_0", "Query": "{\"ResourceTypeFilters\":[\"AWS::AllSupported\"],\"StackIdentifier\":\"arn:aws:cloudformation:us-west-2:123456789012:stack/MyCFNStack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111\"}"}'
 
 Output::
 
@@ -35,7 +35,7 @@ Output::
             "GroupName": "cbq-CFNstackgroup",
             "ResourceQuery": {
                 "Type": "CLOUDFORMATION_STACK_1_0",
-                "Query": "{\"ResourceTypeFilters\":[\"AWS::AllSupported\"],\"StackIdentifier\":\"arn:aws:cloudformation:us-west-2:123456789012:stack/MyCFNStack/1415z9z0-z39z-11z8-97z5-500z212zz6fz\"}"
+                "Query": "{\"ResourceTypeFilters\":[\"AWS::AllSupported\"],\"StackIdentifier\":\"arn:aws:cloudformation:us-west-2:123456789012:stack/MyCFNStack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111\"}"
             }
         }
     }

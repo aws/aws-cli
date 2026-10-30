@@ -8,7 +8,7 @@ The following ``get-service-network`` example gets information about the specifi
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
         "authType": "AWS_IAM",
         "createdAt": "2023-05-05T15:26:08.417Z",
         "id": "sn-080ec7dc93EXAMPLE",

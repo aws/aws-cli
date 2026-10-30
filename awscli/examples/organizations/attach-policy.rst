@@ -16,7 +16,7 @@ The following ``attach-policy`` example attaches a service control policy direct
 
     aws organizations attach-policy \
         --policy-id p-examplepolicyid111 \
-        --target-id 333333333333
+        --target-id 123456789222
 
 This command produces no output.
 

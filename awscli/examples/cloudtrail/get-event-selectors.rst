@@ -15,7 +15,7 @@ Output::
                 "ReadWriteType": "All"
             }
         ],
-        "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1"
+        "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/Trail1"
     }
 
 For more information, see `Logging management events <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html>`__ in the *AWS CloudTrail User Guide*.

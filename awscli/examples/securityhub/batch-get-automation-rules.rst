@@ -3,14 +3,14 @@
 The following ``batch-get-automation-rules`` example gets details for the specified automation rule. You can get details for one or more automation rules with a single command. ::
 
     aws securityhub batch-get-automation-rules \
-        --automation-rules-arns '["arn:aws:securityhub:us-east-1:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"]'
+        --automation-rules-arns '["arn:aws:securityhub:us-west-2:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"]'
 
 Output::
 
     {
         "Rules": [
             {
-                "RuleArn": "arn:aws:securityhub:us-east-1:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "RuleArn": "arn:aws:securityhub:us-west-2:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "RuleStatus": "ENABLED",
                 "RuleOrder": 1,
                 "RuleName": "Suppress informational findings",

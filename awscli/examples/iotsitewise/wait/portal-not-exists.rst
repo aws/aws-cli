@@ -3,7 +3,7 @@
 The following ``wait portal-not-exists`` example pauses and resumes only after it can confirm that the specified portal doesn't exist. ::
 
     aws iotsitewise wait portal-not-exists \
-        --portal-id a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE
+        --portal-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

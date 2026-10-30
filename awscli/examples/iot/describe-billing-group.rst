@@ -9,7 +9,7 @@ Output::
 
     {
         "billingGroupName": "GroupOne",
-        "billingGroupId": "103de383-114b-4f51-8266-18f209ef5562",
+        "billingGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "billingGroupArn": "arn:aws:iot:us-west-2:123456789012:billinggroup/GroupOne",
         "version": 1,
         "billingGroupProperties": {},

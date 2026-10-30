@@ -70,7 +70,7 @@ The following ``update-custom-key-store`` example changes the external key store
         --custom-key-store-id cks-1234567890abcdef0 \
         --xks-proxy-connectivity VPC_ENDPOINT_SERVICE \
         --xks-proxy-uri-endpoint "https://myproxy-private.xks.example.com" \
-        --xks-proxy-vpc-endpoint-service-name "com.amazonaws.vpce.us-east-1.vpce-svc-example"
+        --xks-proxy-vpc-endpoint-service-name "com.amazonaws.vpce.us-west-2.vpce-svc-example"
 
 This command produces no output. To verify that the change was effective, use a ``describe-custom-key-stores`` command. 
 

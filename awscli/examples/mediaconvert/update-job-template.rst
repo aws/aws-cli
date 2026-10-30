@@ -11,7 +11,7 @@ Contents of ``job-template-update.json``::
 
     {
         "Description": "A simple job template that generates a single file output.",
-        "Queue": "arn:aws:mediaconvert:us-east-1:012345678998:queues/Default",
+        "Queue": "arn:aws:mediaconvert:us-west-2:123456789012:queues/Default",
         "Name": "SimpleFile",
         "Settings": {
             "OutputGroups": [

@@ -24,7 +24,7 @@ Output::
                 "Tags": []
             }
         ],
-        "NextToken": "9d624e0c-388b-4862-a31e-a85c64fc1d4a"
+        "NextToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 **Example 2: To describe a specific event window**

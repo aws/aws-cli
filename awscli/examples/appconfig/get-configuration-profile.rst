@@ -13,7 +13,7 @@ Output::
         "Id": "ur8hx2f",
         "Name": "Example-Configuration-Profile",
         "LocationUri": "ssm-parameter://Example-Parameter",
-        "RetrievalRoleArn": "arn:aws:iam::111122223333:role/Example-App-Config-Role"
+        "RetrievalRoleArn": "arn:aws:iam::123456789012:role/Example-App-Config-Role"
     }
 
 For more information, see `Step 3: Creating a configuration and a configuration profile <https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile.html>`__ in the *AWS AppConfig User Guide*.

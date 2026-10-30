@@ -9,7 +9,7 @@ The following ``start-instance-refresh`` example starts an instance refresh usin
 Output::
 
     {
-        "InstanceRefreshId": "08b91cf7-8fa6-48af-b6a6-d227f40f1b9b"
+        "InstanceRefreshId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Start an instance refresh <https://docs.aws.amazon.com/en_us/autoscaling/ec2/userguide/start-instance-refresh.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
@@ -43,7 +43,7 @@ Contents of ``config.json``::
 Output::
 
     {
-        "InstanceRefreshId": "08b91cf7-8fa6-48af-b6a6-d227f40f1b9b"
+        "InstanceRefreshId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Start an instance refresh <https://docs.aws.amazon.com/en_us/autoscaling/ec2/userguide/start-instance-refresh.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

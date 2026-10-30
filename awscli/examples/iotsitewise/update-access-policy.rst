@@ -3,7 +3,7 @@
 The following ``update-access-policy`` example updates an access policy that grants a project viewer ownership of a project. ::
 
     aws iotsitewise update-access-policy \
-        --access-policy-id a1b2c3d4-5678-90ab-cdef-dddddEXAMPLE \
+        --access-policy-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --cli-input-json file://update-project-viewer-access-policy.json
 
 Contents of ``update-project-viewer-access-policy.json``::
@@ -17,7 +17,7 @@ Contents of ``update-project-viewer-access-policy.json``::
         "accessPolicyPermission": "ADMINISTRATOR",
         "accessPolicyResource": { 
             "project": { 
-                "id": "a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE"
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         }
     }

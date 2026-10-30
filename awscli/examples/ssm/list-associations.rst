@@ -12,7 +12,7 @@ Output::
             {
                 "Name": "AWS-UpdateSSMAgent",
                 "InstanceId": "i-1234567890abcdef0",
-                "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AssociationVersion": "1",
                 "Targets": [
                     {
@@ -51,7 +51,7 @@ Output::
             {
                 "Name": "AWS-UpdateSSMAgent",
                 "InstanceId": "i-1234567890abcdef0",
-                "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AssociationVersion": "1",
                 "Targets": [
                     {
@@ -75,7 +75,7 @@ Output::
         {
                 "Name": "AWS-UpdateSSMAgent",
                 "InstanceId": "i-9876543210abcdef0",
-                "AssociationId": "fbc07ef7-b985-4684-b82b-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "AssociationVersion": "1",
                 "Targets": [
                     {

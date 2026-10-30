@@ -11,19 +11,19 @@ To delete the resource discovery, use the following command. ::
 
     aws ec2 delete-ipam-resource-discovery \
         --ipam-resource-discovery-id ipam-res-disco-0e39761475298ee0f \
-        --region us-east-1
+        --region us-west-2
 
 Output::
 
     {
         "IpamResourceDiscovery": {
-            "OwnerId": "149977607591",
+            "OwnerId": "123456789012",
             "IpamResourceDiscoveryId": "ipam-res-disco-0e39761475298ee0f",
-            "IpamResourceDiscoveryArn": "arn:aws:ec2::149977607591:ipam-resource-discovery/ipam-res-disco-0e39761475298ee0f",
-            "IpamResourceDiscoveryRegion": "us-east-1",
+            "IpamResourceDiscoveryArn": "arn:aws:ec2::123456789012:ipam-resource-discovery/ipam-res-disco-0e39761475298ee0f",
+            "IpamResourceDiscoveryRegion": "us-west-2",
             "OperatingRegions": [
                 {
-                    "RegionName": "us-east-1"
+                    "RegionName": "us-west-2"
                 }
             ],
             "IsDefault": false,

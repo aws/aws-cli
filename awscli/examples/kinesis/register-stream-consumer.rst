@@ -3,7 +3,7 @@
 The following ``register-stream-consumer`` example registers a consumer called ``KinesisConsumerApplication`` with the specified data stream. ::
 
     aws kinesis register-stream-consumer \
-        --stream-arn arn:aws:kinesis:us-west-2:012345678912:stream/samplestream \
+        --stream-arn arn:aws:kinesis:us-west-2:123456789012:stream/samplestream \
         --consumer-name KinesisConsumerApplication
 
 Output::

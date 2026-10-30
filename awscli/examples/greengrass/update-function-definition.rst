@@ -3,7 +3,7 @@
 The following ``update-function-definition`` example updates the name for the specified function definition. If you want to update the details for the function, use the ``create-function-definition-version`` command to create a new version. ::
 
     aws greengrass update-function-definition \
-        --function-definition-id "e47952bd-dea9-4e2c-a7e1-37bbe8807f46" \
+        --function-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --name ObsoleteFunction
 
 This command produces no output.

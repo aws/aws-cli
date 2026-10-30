@@ -3,8 +3,8 @@
 The following ``get-asset-property-value`` example retrieves a wind turbine asset's current total power. ::
 
     aws iotsitewise get-asset-property-value \
-        --asset-id a1b2c3d4-5678-90ab-cdef-33333EXAMPLE \
-        --property-id a1b2c3d4-5678-90ab-cdef-66666EXAMPLE
+        --asset-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333 \
+        --property-id a1b2c3d4-5678-90ab-cdef-EXAMPLE66666
 
 Output::
 

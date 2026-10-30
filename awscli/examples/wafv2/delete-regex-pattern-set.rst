@@ -6,7 +6,7 @@ The following ``delete-regex-pattern-set`` example deletes the specified regex p
         --name regexPatterSet01 \
         --scope REGIONAL \
         --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
-        --lock-token 0bc01e21-03c9-4b98-9433-6229cbf1ef1c
+        --lock-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 This command produces no output.
 

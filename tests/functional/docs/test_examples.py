@@ -92,6 +92,31 @@ GUIDE_LINK_RE = re.compile(
     r'in the \*[^*]*Guide\*\.'
 )
 API_REFERENCE_URL = '/apireference/'
+# Placeholders from the "Sanitizing sensitive information" section.
+# 123456789012, or 123456789111, 123456789222, ... for multiple accounts.
+APPROVED_ACCOUNT_ID_RE = re.compile(r'^123456789(?:012|([1-9])\1\1)$')
+# Not digits inside a longer ID, such as ami-066877671789bd71b.
+ACCOUNT_ID_RE = re.compile(r'(?<![\w.])\d{12}(?![\w.])')
+GUID_RE = re.compile(
+    r'(?<![\w-])[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-'
+    r'[0-9A-Za-z]{4}-[0-9A-Za-z]{12}(?![\w-])'
+)
+# a1b2c3d4-5678-90ab-cdef-EXAMPLE11111, ...-EXAMPLE22222, ...
+APPROVED_GUID_RE = re.compile(r'^a1b2c3d4-5678-90ab-cdef-EXAMPLE([1-9])\1{4}$')
+BUCKET_NAME_RES = [
+    # Not an access point ARN, such as s3://arn:aws:s3:...
+    re.compile(r's3://(?!arn:)(?P<name>[a-z0-9][a-z0-9.-]*)'),
+    re.compile(r'arn:aws:s3:::(?P<name>[a-z0-9][a-z0-9.-]*)'),
+    re.compile(r'--bucket(?:-name)?[ =]+["\']?(?P<name>[a-z0-9][a-z0-9.-]*)'),
+    re.compile(r'"Bucket(?:Name)?"\s*:\s*"(?P<name>[a-z0-9][a-z0-9.-]*)"'),
+]
+# amzn-s3-demo-bucket, or amzn-s3-demo-bucket1, amzn-s3-demo-bucket2, ...
+APPROVED_BUCKET_RE = re.compile(r'^amzn-s3-demo-bucket[1-9]?[0-9]*$')
+APPROVED_REGION = 'us-west-2'
+REGION_RE = re.compile(
+    r'(?<![\w-])(?:us-gov|us-iso[bef]?|eusc|af|ap|ca|cn|eu|il|me|mx|sa|us)'
+    r'-(?:north|south|east|west|central)(?:east|west)?-\d+(?!\d)'
+)
 # Examples that are known to break a style rule, keyed by the rule's name,
 # then the file, then the example's title, with the reason for each example.
 EXCEPTIONS_PATH = os.path.join(
@@ -819,6 +844,54 @@ def check_link(example):
     return errors
 
 
+def check_sanitization(example):
+    found = {}
+
+    def report(kind, value, lineno):
+        found.setdefault((kind, value), lineno)
+
+    # An example that needs several regions, such as a cross-region copy,
+    # can't use the single placeholder region.
+    titles = [b.lineno for b in example.blocks if b.kind == 'title']
+    regions = {}
+    for i, line in enumerate(example.lines, 1):
+        part = sum(lineno <= i for lineno in titles)
+        regions.setdefault(part, set()).update(REGION_RE.findall(line))
+
+    for i, line in enumerate(example.lines, 1):
+        part = sum(lineno <= i for lineno in titles)
+        for value in ACCOUNT_ID_RE.findall(line):
+            if not APPROVED_ACCOUNT_ID_RE.match(value):
+                report('account ID', value, i)
+        for value in GUID_RE.findall(line):
+            if not APPROVED_GUID_RE.match(value):
+                report('GUID', value, i)
+        for regex in BUCKET_NAME_RES:
+            for match in regex.finditer(line):
+                if not APPROVED_BUCKET_RE.match(match.group('name')):
+                    report('bucket name', match.group('name'), i)
+        for value in REGION_RE.findall(line):
+            if value != APPROVED_REGION and len(regions[part]) < 2:
+                report('region', value, i)
+    hints = {
+        'account ID': 'use 123456789012, or 123456789111, 123456789222, '
+        '... for multiple accounts',
+        'GUID': 'use a1b2c3d4-5678-90ab-cdef-EXAMPLE11111, or '
+        'a1b2c3d4-5678-90ab-cdef-EXAMPLE22222, ... for multiple GUIDs',
+        'bucket name': 'use amzn-s3-demo-bucket, or amzn-s3-demo-bucket1, '
+        'amzn-s3-demo-bucket2, ... for multiple buckets',
+        'region': f'use {APPROVED_REGION}, unless the resource can only '
+        'exist in a different region',
+    }
+    return [
+        f'Line {lineno}: {kind} "{value}" is not an approved placeholder; '
+        f'{hints[kind]}'
+        for (kind, value), lineno in sorted(
+            found.items(), key=lambda item: item[1]
+        )
+    ]
+
+
 def _is_description(filename):
     if filename == '_examples.rst':
         return False
@@ -1236,6 +1309,13 @@ def test_example_link(example_file):
     example = Example(example_file)
     errors = check_link(example)
     _assert_follows_rule('link', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_sanitization(example_file):
+    example = Example(example_file)
+    errors = check_sanitization(example)
+    _assert_follows_rule('sanitization', example, errors)
 
 
 def test_example_style_exceptions_exist():

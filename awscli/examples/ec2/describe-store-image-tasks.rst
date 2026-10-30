@@ -10,7 +10,7 @@ Output::
         "StoreImageTaskResults": [
             {
                 "AmiId": "ami-1234567890abcdef0",
-                "Bucket": "my-ami-bucket",
+                "Bucket": "amzn-s3-demo-bucket",
                 "ProgressPercentage": 17,
                 "S3objectKey": "ami-1234567890abcdef0.bin",
                 "StoreTaskState": "InProgress",

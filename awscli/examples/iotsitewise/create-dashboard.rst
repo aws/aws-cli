@@ -3,7 +3,7 @@
 The following ``create-dashboard`` example creates a dashboard with a line chart that displays total generated power for a wind farm. ::
 
     aws iotsitewise create-dashboard \
-        --project-id a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE \
+        --project-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --dashboard-name "Wind Farm" \
         --dashboard-definition file://create-wind-farm-dashboard.json
 
@@ -22,8 +22,8 @@ Contents of ``create-wind-farm-dashboard.json``::
                     {
                         "label": "Power",
                         "type": "iotsitewise",
-                        "assetId": "a1b2c3d4-5678-90ab-cdef-44444EXAMPLE",
-                        "propertyId": "a1b2c3d4-5678-90ab-cdef-99999EXAMPLE"
+                        "assetId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                        "propertyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
                     }
                 ]
             }
@@ -33,8 +33,8 @@ Contents of ``create-wind-farm-dashboard.json``::
 Output::
 
     {
-        "dashboardId": "a1b2c3d4-5678-90ab-cdef-fffffEXAMPLE",
-        "dashboardArn": "arn:aws:iotsitewise:us-west-2:123456789012:dashboard/a1b2c3d4-5678-90ab-cdef-fffffEXAMPLE"
+        "dashboardId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+        "dashboardArn": "arn:aws:iotsitewise:us-west-2:123456789012:dashboard/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
     }
 
 For more information, see `Creating dashboards (CLI) <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html>`__ in the *AWS IoT SiteWise User Guide*.

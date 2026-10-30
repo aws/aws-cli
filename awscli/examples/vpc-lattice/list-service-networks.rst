@@ -8,8 +8,8 @@ The following ``list-service-networks`` example lists the service networks owned
 Output::
 
     [
-        "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
-        "arn:aws:vpc-lattice:us-east-2:111122223333:servicenetwork/sn-0ec4d436cfEXAMPLE"
+        "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
+        "arn:aws:vpc-lattice:us-west-2:123456789111:servicenetwork/sn-0ec4d436cfEXAMPLE"
     ]
 
 For more information, see `Service networks <https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html>`__ in the *Amazon VPC Lattice User Guide*.

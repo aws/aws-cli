@@ -16,17 +16,17 @@ Output::
                     {
                         "Identifier": "subnet-faxx84a6",
                         "AvailabilityZone": {
-                            "Name": "us-east-1b"
+                            "Name": "us-west-2b"
                         }
                     },
                     {
                         "Identifier": "subnet-56xxf61b",
                         "AvailabilityZone": {
-                            "Name": "us-east-1a"
+                            "Name": "us-west-2a"
                         }
                     }
                 ],
-                "ARN": "arn:aws:memorydb:us-east-1:49165xxxxxx:subnetgroup/my-sg"
+                "ARN": "arn:aws:memorydb:us-west-2:49165xxxxxx:subnetgroup/my-sg"
             }
         ]
     }

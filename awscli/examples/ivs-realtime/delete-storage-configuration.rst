@@ -3,7 +3,7 @@
 The following ``delete-storage-configuration`` example deletes the composition storage configuration specified by the given ARN (Amazon Resource Name). ::
 
     aws ivs-realtime delete-storage-configuration \
-        --arn "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/ABabCDcdEFef"
+        --arn "arn:aws:ivs:us-west-2:123456789012:storage-configuration/ABabCDcdEFef"
 
 This command produces no output.
 

@@ -11,7 +11,7 @@ Output::
 
     {
         "update": {
-            "id": "a94ebfc3-6bf8-307a-89e6-7dbaa36421f7",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "InProgress",
             "type": "VersionUpdate",
             "params": [
@@ -46,7 +46,7 @@ Output::
 
     {
         "update": {
-            "id": "4db06fe1-088d-336b-bdcd-3fdb94995fb7",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "status": "InProgress",
             "type": "VersionUpdate",
             "params": [

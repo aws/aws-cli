@@ -83,7 +83,7 @@ The following ``create-launch-configuration`` example creates a launch configura
 
     aws autoscaling create-launch-configuration \
         --launch-configuration-name my-lc-from-instance \
-        --instance-id i-0123a456700123456 \
+        --instance-id i-1234567890abcdef0 \
         --instance-type m5.large \
         --no-associate-public-ip-address \
         --placement-tenancy dedicated 

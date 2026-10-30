@@ -72,7 +72,7 @@ Otherwise, AWS CLI version 1.0 replaces the parameter value with the content fou
         --xks-proxy-connectivity VPC_ENDPOINT_SERVICE \
         --xks-proxy-uri-endpoint "https://myproxy-private.xks.example.com" \
         --xks-proxy-uri-path "/kms/xks/v1" \
-        --xks-proxy-vpc-endpoint-service-name "com.amazonaws.vpce.us-east-1.vpce-svc-example1" \
+        --xks-proxy-vpc-endpoint-service-name "com.amazonaws.vpce.us-west-2.vpce-svc-example1" \
         --xks-proxy-authentication-credential "AccessKeyId=ABCDE12345670EXAMPLE, RawSecretAccessKey=DXjSUawnel2fr6SKC7G25CNxTyWKE5PF9XX6H/u9pSo="
 
 Output::

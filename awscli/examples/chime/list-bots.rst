@@ -3,15 +3,15 @@
 The following ``list-bots`` example lists the bots associated with the specified Amazon Chime Enterprise account. ::
 
     aws chime list-bots \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "Bots": [
             {
-                "BotId": "123abcd4-5ef6-789g-0h12-34j56789012k",
-                "UserId": "123abcd4-5ef6-789g-0h12-34j56789012k",
+                "BotId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "DisplayName": "myBot (Bot)",
                 "BotType": "ChatBot",
                 "Disabled": false,

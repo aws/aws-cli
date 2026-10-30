@@ -3,7 +3,7 @@
 The following ``delete-endpoint`` example deletes a model-specific endpoint. All endpoints must be deleted in order for the model to be deleted. ::
 
     aws comprehend delete-endpoint \
-        --endpoint-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier-endpoint/example-classifier-endpoint-1
+        --endpoint-arn arn:aws:comprehend:us-west-2:123456789012:document-classifier-endpoint/example-classifier-endpoint-1
 
 This command produces no output.
 

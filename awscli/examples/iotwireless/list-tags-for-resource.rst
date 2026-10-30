@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags assigned to a wireless destination resource. ::
 
     aws iotwireless list-tags-for-resource \
-        --resource-arn "arn:aws:iotwireless:us-east-1:123456789012:Destination/IoTWirelessDestination"
+        --resource-arn "arn:aws:iotwireless:us-west-2:123456789012:Destination/IoTWirelessDestination"
 
 Output::
 

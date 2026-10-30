@@ -3,7 +3,7 @@
 The following ``update-group`` example updates the name of the specified Greengrass group. If you want to update the details for the group, use the ``create-group-version`` command to create a new version. ::
 
     aws greengrass update-group \
-        --group-id "1402daf9-71cf-4cfe-8be0-d5e80526d0d8" \
+        --group-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --name TestGroup4of6
 
 This command produces no output.

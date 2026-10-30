@@ -243,10 +243,10 @@ Output::
         "ClusterArn": "arn:aws:elasticmapreduce:us-west-2:123456789012:cluster/j-1K48XXXXXXHCB"
     }
 
-The following example creates a cluster in the ``us-east-1b`` availability zone. ::
+The following example creates a cluster in the ``us-west-2b`` availability zone. ::
 
     aws emr create-cluster \
-        --ec2-attributes AvailabilityZone=us-east-1b \
+        --ec2-attributes AvailabilityZone=us-west-2b \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
@@ -777,7 +777,7 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
     aws emr create-cluster \
         --release-label emr-5.30.0 \
         --log-uri s3://amzn-s3-demo-bucket/myLog \
-        --log-encryption-kms-key-id arn:aws:kms:us-east-1:110302272565:key/dd559181-283e-45d7-99d1-66da348c4d33 \
+        --log-encryption-kms-key-id arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
 Output::

@@ -3,7 +3,7 @@
 The following ``create-aws-log-source`` example adds VPC Flow Logs as a Security Lake source in the designated accounts and Regions. ::
 
     aws securitylake create-aws-log-source \
-        --sources '[{"regions": ["us-east-1"], "accounts": ["123456789012"], "sourceName": "SH_FINDINGS", "sourceVersion": "2.0"}]'
+        --sources '[{"regions": ["us-west-2"], "accounts": ["123456789012"], "sourceName": "SH_FINDINGS", "sourceVersion": "2.0"}]'
 
 Output::
 

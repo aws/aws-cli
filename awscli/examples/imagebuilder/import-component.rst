@@ -15,7 +15,7 @@ Contents of ``import-component.json``::
         "format": "SHELL",
         "platform": "Windows",
         "type": "BUILD",
-        "uri": "s3://s3-bucket-name/s3-bucket-path/component.yaml"
+        "uri": "s3://amzn-s3-demo-bucket/s3-bucket-path/component.yaml"
     }
 
 Output::

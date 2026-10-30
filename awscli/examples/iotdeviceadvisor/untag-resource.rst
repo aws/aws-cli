@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the existing tags from a device advisor resource with the specified resource arn and tag key. The device advisor resource can be a Suitedefinition-Arn or a Suiterun-Arn. ::
 
     aws iotdeviceadvisor untag-resource \
-        --resource-arn arn:aws:iotdeviceadvisor:us-east-1:123456789012:suitedefinition/ba0uyjpg38ny \
+        --resource-arn arn:aws:iotdeviceadvisor:us-west-2:123456789012:suitedefinition/ba0uyjpg38ny \
         --tag-keys "TagKey"
 
 This command produces no output.

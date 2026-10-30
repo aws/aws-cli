@@ -11,9 +11,9 @@ Output::
     {
         "TransitGateway": {
             "TransitGatewayId": "tgw-0262a0e521EXAMPLE",
-            "TransitGatewayArn": "arn:aws:ec2:us-east-2:111122223333:transit-gateway/tgw-0262a0e521EXAMPLE",
+            "TransitGatewayArn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway/tgw-0262a0e521EXAMPLE",
             "State": "pending",
-            "OwnerId": "111122223333",
+            "OwnerId": "123456789012",
             "Description": "MyTGW",
             "CreationTime": "2019-07-10T14:02:12.000Z",
             "Options": {

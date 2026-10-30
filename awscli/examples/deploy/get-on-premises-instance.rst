@@ -18,7 +18,7 @@ Output::
             ],
             "instanceName": "AssetTag12010298EX",
             "registerTime": 1425579465.228,
-            "instanceArn": "arn:aws:codedeploy:us-east-1:123456789012:instance/AssetTag12010298EX_4IwLNI2Alh"
+            "instanceArn": "arn:aws:codedeploy:us-west-2:123456789012:instance/AssetTag12010298EX_4IwLNI2Alh"
         }
     }
 

@@ -14,7 +14,7 @@ Output::
             "virtualGatewayOwnerAccount": "123456789012",
             "directConnectGatewayId": "5f294f92-bafb-4011-916d-9b0bexample",
             "virtualGatewayId": "vgw-6efe725e",
-            "virtualGatewayRegion": "us-east-2"
+            "virtualGatewayRegion": "us-west-2"
         }
     }
 

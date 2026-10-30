@@ -3,7 +3,7 @@
 The following ``export-client-vpn-client-certificate-revocation-list`` example exports the client certificate revocation list for the specified Client VPN endpoint. In this example, the output is returned in text format to make it easier to read. ::
 
     aws ec2 export-client-vpn-client-certificate-revocation-list \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde \
+        --client-vpn-endpoint-id cvpn-endpoint-123456789012abcde \
         --output text
 
 Output::

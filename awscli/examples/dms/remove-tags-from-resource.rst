@@ -3,7 +3,7 @@
 The following ``remove-tags-from-resource`` example removes tags from a replication instance. ::
 
     aws dms remove-tags-from-resource \
-        --resource-arn arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE \
+        --resource-arn arn:aws:dms:us-west-2:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE \
         --tag-keys Environment Project
 
 This command produces no output.

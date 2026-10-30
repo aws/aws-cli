@@ -3,15 +3,15 @@
 The following ``describe-project`` example describes a wind farm project. ::
 
     aws iotsitewise describe-project \
-        --project-id a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE
+        --project-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "projectId": "a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE",
-        "projectArn": "arn:aws:iotsitewise:us-west-2:123456789012:project/a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE",
+        "projectId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "projectArn": "arn:aws:iotsitewise:us-west-2:123456789012:project/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "projectName": "Wind Farm 1",
-        "portalId": "a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE",
+        "portalId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "projectDescription": "Contains asset visualizations for Wind Farm #1 for Example Corp.",
         "projectCreationDate": "2020-02-20T21:58:43.362246001Z",
         "projectLastUpdateDate": "2020-02-20T21:58:43.362246095Z"

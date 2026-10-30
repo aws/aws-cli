@@ -9,8 +9,8 @@ Output::
 
     {
         "Profile": {
-            "Arn": "arn:aws:route53profiles:us-east-1:123456789012:profile/rp-4987774726example",
-            "ClientToken": "0cbc5ae7-4921-4204-bea9-EXAMPLE11111",
+            "Arn": "arn:aws:route53profiles:us-west-2:123456789012:profile/rp-4987774726example",
+            "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CreationTime": 1710851044.288,
             "Id": "rp-4987774726example",
             "ModificationTime": 1710851044.288,

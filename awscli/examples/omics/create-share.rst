@@ -3,7 +3,7 @@
 The following ``create-share`` example shows how to create a share of a HealthOmics analytics store that can be accepted by a subscriber outside the account. ::
 
     aws omics create-share \
-        --resource-arn "arn:aws:omics:us-west-2:555555555555:variantStore/omics_dev_var_store" \
+        --resource-arn "arn:aws:omics:us-west-2:123456789111:variantStore/omics_dev_var_store" \
         --principal-subscriber "123456789012" \
         --name "my_Share-123"
 

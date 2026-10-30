@@ -13,7 +13,7 @@ Output::
             "Name": "my-cluster-snapshot-copy",
             "Status": "creating",
             "Source": "manual",
-            "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:snapshot/my-cluster-snapshot-copy",
+            "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:snapshot/my-cluster-snapshot-copy",
             "ClusterConfiguration": {
                 "Name": "my-cluster",
                 "Description": " ",

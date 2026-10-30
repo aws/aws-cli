@@ -9,7 +9,7 @@ Output::
 
     {
         "Resources": [
-            "arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary"
+            "arn:aws:synthetics:us-west-2:123456789012:canary:demo_canary"
         ]
     }
 

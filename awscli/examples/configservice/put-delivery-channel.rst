@@ -11,8 +11,8 @@ Contents of ``deliveryChannel.json``::
 
     {
         "name": "default",
-        "s3BucketName": "config-bucket-123456789012",
-        "snsTopicARN": "arn:aws:sns:us-east-1:123456789012:config-topic",
+        "s3BucketName": "amzn-s3-demo-bucket",
+        "snsTopicARN": "arn:aws:sns:us-west-2:123456789012:config-topic",
         "configSnapshotDeliveryProperties": {
             "deliveryFrequency": "Twelve_Hours"
         }

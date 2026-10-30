@@ -17,7 +17,7 @@ Output::
                 "VolumeSize": 8,
                 "StartTime": "2019-02-28T21:28:32.000Z",
                 "Progress": "100%",
-                "OwnerId": "012345678910",
+                "OwnerId": "123456789012",
                 "SnapshotId": "snap-01234567890abcdef",
                 "Tags": [
                     {
@@ -48,7 +48,7 @@ Output::
             "Time": "2019-08-04T12:48:18.000Z"
         },
         {
-            "ID": "snap-066877671789bd71b",
+            "ID": "snap-0a1b2c3d4e5f6a7b8",
             "Time": "2019-08-04T02:45:16.000Z"
         }
     ]
@@ -112,7 +112,7 @@ For additional examples using tag filters, see `Working with tags <https://docs.
 The following ``describe-snapshots`` example uses JMESPath expressions to describe all snapshots created by your AWS account before the specified date. It displays only the snapshot IDs. ::
 
     aws ec2 describe-snapshots \
-        --owner-ids 012345678910 \
+        --owner-ids 123456789012 \
         --query "Snapshots[?(StartTime<='2020-03-31')].[SnapshotId]"
 
 Output::

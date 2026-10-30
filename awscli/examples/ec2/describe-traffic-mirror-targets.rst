@@ -11,10 +11,10 @@ Output::
         "TrafficMirrorTargets": [
             {
                 "TrafficMirrorTargetId": "tmt-0dabe9b0a6EXAMPLE",
-                "NetworkLoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:111122223333:loadbalancer/net/NLB/7cdec873fEXAMPLE",
+                "NetworkLoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/NLB/7cdec873fEXAMPLE",
                 "Type": "network-load-balancer",
                 "Description": "Example Network Load Balancer target",
-                "OwnerId": "111122223333",
+                "OwnerId": "123456789012",
                 "Tags": []
             }
         ]

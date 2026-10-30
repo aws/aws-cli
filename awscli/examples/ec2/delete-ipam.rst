@@ -12,19 +12,13 @@ Output::
             "OwnerId": "123456789012",
             "IpamId": "ipam-036486dfa6af58ee0",
             "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-036486dfa6af58ee0",
-            "IpamRegion": "us-east-1",
+            "IpamRegion": "us-west-2",
             "PublicDefaultScopeId": "ipam-scope-071b8042b0195c183",
             "PrivateDefaultScopeId": "ipam-scope-0807405dece705a30",
             "ScopeCount": 2,
             "OperatingRegions": [
                 {
-                    "RegionName": "us-east-1"
-                },
-                {
-                    "RegionName": "us-east-2"
-                },
-                {
-                    "RegionName": "us-west-1"
+                    "RegionName": "us-west-2"
                 }
             ],
             "State": "delete-in-progress"

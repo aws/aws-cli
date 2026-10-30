@@ -3,7 +3,7 @@
 The following ``get-account-settings`` example retrieves the account settings for the specified account. ::
 
     aws chime get-account-settings \
-        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

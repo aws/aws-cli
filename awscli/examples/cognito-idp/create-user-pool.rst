@@ -258,7 +258,7 @@ validated address using Amazon Simple Email Service. ::
     aws cognito-idp create-user-pool \
         --pool-name MyUserPool \
         --username-attributes "email" \
-        --email-configuration SourceArn="arn:aws:ses:us-east-1:111111111111:identity/jane@example.com",ReplyToEmailAddress="jane@example.com"
+        --email-configuration SourceArn="arn:aws:ses:us-west-2:123456789012:identity/jane@example.com",ReplyToEmailAddress="jane@example.com"
 
 Output::
 
@@ -486,7 +486,7 @@ Output::
             },
             "EmailConfiguration": {
                 "ReplyToEmailAddress": "jane@example.com",
-                "SourceArn": "arn:aws:ses:us-east-1:111111111111:identity/jane@example.com"
+                "SourceArn": "arn:aws:ses:us-west-2:123456789012:identity/jane@example.com"
             },
             "Policies": {
                 "PasswordPolicy": {

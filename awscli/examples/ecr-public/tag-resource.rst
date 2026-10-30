@@ -5,7 +5,7 @@ The following ``tag-resource`` example tags a repository named ``project-a/nginx
     aws ecr-public tag-resource \
         --resource-arn arn:aws:ecr-public::123456789012:repository/project-a/nginx-web-app \
         --tags Key=stack,Value=dev \
-        --region us-east-1
+        --region us-west-2
 
 This command produces no output.
 
@@ -16,9 +16,9 @@ For more information, see `Tag an Amazon ECR Public repository <https://docs.aws
 The following ``tag-resource`` example tags an existing repository with multiple tags. ::
 
     aws ecr-public tag-resource \
-        --resource-arn arn:aws:ecr-public::890517186334:repository/project-a/nginx-web-app  \
+        --resource-arn arn:aws:ecr-public::123456789012:repository/project-a/nginx-web-app  \
         --tags Key=key1,Value=value1 Key=key2,Value=value2 Key=key3,Value=value3 \
-        --region us-east-1
+        --region us-west-2
 
 This command produces no output.
 

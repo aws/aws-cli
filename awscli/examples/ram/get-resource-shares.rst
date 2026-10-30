@@ -10,7 +10,7 @@ Output::
     {
         "resourceShares": [
             {
-                "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/3ab63985-99d9-1cd2-7d24-75e93EXAMPLE",
+                "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "name": "my-resource-share",
                 "owningAccountId": "123456789012",
                 "allowExternalPrincipals": false,
@@ -25,7 +25,7 @@ Output::
                 "lastUpdatedTime": 1565295733.282
             },
             {
-                "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/7ab63972-b505-7e2a-420d-6f5d3EXAMPLE",
+                "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "name": "my-resource-share",
                 "owningAccountId": "123456789012",
                 "allowExternalPrincipals": true,

@@ -10,18 +10,18 @@ Output::
     {
         "DominantLanguageDetectionJobProperties": {
             "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-            "JobArn": "arn:aws:comprehend:us-west-2:111122223333:dominant-language-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+            "JobArn": "arn:aws:comprehend:us-west-2:123456789012:dominant-language-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
             "JobName": "languageanalysis1",
             "JobStatus": "IN_PROGRESS",
             "SubmitTime": "2023-06-09T18:10:38.037000+00:00",
             "InputDataConfig": {
-                "S3Uri": "s3://amzn-s3-demo-bucket",
+                "S3Uri": "s3://amzn-s3-demo-bucket1",
                 "InputFormat": "ONE_DOC_PER_LINE"
             },
             "OutputDataConfig": {
-                "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/111122223333-LANGUAGE-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
+                "S3Uri": "s3://amzn-s3-demo-bucket2/testfolder/123456789012-LANGUAGE-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
             },
-            "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role"
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role"
         }
     }
 

@@ -11,7 +11,7 @@ Unauthenticated identities are not allowed. ::
 Output::
 
     {
-        "IdentityPoolId": "us-west-2:11111111-1111-1111-1111-111111111111",
+        "IdentityPoolId": "us-west-2:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "IdentityPoolName": "MyIdentityPool",
         "AllowUnauthenticatedIdentities": false,
         "CognitoIdentityProviders": [

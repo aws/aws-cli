@@ -3,14 +3,14 @@
 The following ``list-projects`` example lists all projects that are defined in a portal. ::
 
     aws iotsitewise list-projects \
-        --portal-id a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE
+        --portal-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "projectSummaries": [
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "name": "Wind Farm 1",
                 "description": "Contains asset visualizations for Wind Farm #1 for Example Corp.",
                 "creationDate": "2020-02-20T21:58:43.362246001Z",

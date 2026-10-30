@@ -17,7 +17,7 @@ Contents of ``report-definition.json``::
         ],
         "S3Bucket": "example-s3-bucket",
         "S3Prefix": "exampleprefix",
-        "S3Region": "us-east-1",
+        "S3Region": "us-west-2",
         "AdditionalArtifacts": [ 
             "REDSHIFT",
             "QUICKSIGHT"

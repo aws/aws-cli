@@ -20,7 +20,7 @@ Output::
                     "CIDRIP": "192.0.2.0/24"
                 }
             ],
-            "DBSecurityGroupArn": "arn:aws:rds:us-east-1:111122223333:secgrp:default"
+            "DBSecurityGroupArn": "arn:aws:rds:us-west-2:123456789012:secgrp:default"
         }
     }
 

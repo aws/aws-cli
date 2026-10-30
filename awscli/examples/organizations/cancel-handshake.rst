@@ -12,7 +12,7 @@ Output::
             "Id": "h-examplehandshakeid111",
             "State":"CANCELED",
             "Action": "INVITE",
-            "Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111",
+            "Arn": "arn:aws:organizations::123456789012:handshake/o-exampleorgid/invite/h-examplehandshakeid111",
             "Parties": [
                 {
                     "Id": "o-exampleorgid",

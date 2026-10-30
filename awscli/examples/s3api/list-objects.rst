@@ -3,7 +3,7 @@
 The following ``list-objects`` example displays the names of all the objects in the specified bucket. ::
 
     aws s3api list-objects \
-        --bucket text-content \
+        --bucket amzn-s3-demo-bucket \
         --query 'Contents[].{Key: Key, Size: Size}'
 
 Output::

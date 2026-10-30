@@ -3,7 +3,7 @@
 The following ``delete-association`` example deletes the association for the specified association ID. There is no output if the command succeeds. ::
 
     aws ssm delete-association \
-        --association-id "8dfe3659-4309-493a-8755-0123456789ab"
+        --association-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
 

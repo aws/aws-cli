@@ -15,7 +15,7 @@ Output::
     {
         "operations": [
             {
-                "id": "ad6d9193-9d5c-4ea1-97ae-8fe6de600b4c",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Database-1",
                 "resourceType": "RelationalDatabase",
                 "createdAt": 1569867916.938,

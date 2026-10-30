@@ -32,7 +32,7 @@ Output::
             },
             {
                 "LastModified": "2019-11-05T23:11:50.000Z",
-                "ETag": "\"d1852dd683f404306569471af106988e\"",
+                "ETag": "\"d1852dd683f4043065a9471af106988e\"",
                 "StorageClass": "STANDARD",
                 "Key": "doc4.rtf",
                 "Size": 6225

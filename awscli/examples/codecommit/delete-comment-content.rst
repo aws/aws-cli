@@ -14,7 +14,7 @@ Output::
             "lastModifiedDate": 1508369842.278,
             "clientRequestToken": "123Example",
             "commentId": "ff30b348EXAMPLEb9aa670f",
-            "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+            "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
             "callerReactions": [],
             "reactionCounts": 
             {

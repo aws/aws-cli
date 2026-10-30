@@ -3,7 +3,7 @@
 The following ``add-tags-to-certificate`` example adds two tags to the specified certificate. Use a space to separate multiple tags. ::
 
     aws acm add-tags-to-certificate \
-        --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012 \
+        --certificate-arn arn:aws:acm:region:account:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --tags Key=Admin,Value=Alice Key=Purpose,Value=Website
 
 This command produces no output.

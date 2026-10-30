@@ -6,15 +6,15 @@ The ``--discovery-region`` is the IPAM operating Region you want to view the mon
 
     aws ec2 get-ipam-discovered-accounts \
         --ipam-resource-discovery-id ipam-res-disco-0365d2977fc1672fe \
-        --discovery-region us-east-1
+        --discovery-region us-west-2
 
 Output::
 
     {
         "IpamDiscoveredAccounts": [
             {
-                "AccountId": "149977607591",
-                "DiscoveryRegion": "us-east-1",
+                "AccountId": "123456789012",
+                "DiscoveryRegion": "us-west-2",
                 "LastAttemptedDiscoveryTime": "2024-02-09T19:04:31.379000+00:00",
                 "LastSuccessfulDiscoveryTime": "2024-02-09T19:04:31.379000+00:00"
             }

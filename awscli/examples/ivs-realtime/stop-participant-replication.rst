@@ -4,7 +4,7 @@ The following ``stop-participant-replication`` example stops replicating a parti
 
     aws ivs-realtime stop-participant-replication \
         --source-stage-arn arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh \
-        --destination-stage-arn arn:aws:ivs:us-west-2:234567890123:stage/bcdABCDefghi \
+        --destination-stage-arn arn:aws:ivs:us-west-2:123456789111:stage/bcdABCDefghi \
         --participant-id abCDEf12GHIj
 
 Output::

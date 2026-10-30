@@ -9,7 +9,7 @@ Output::
     {
         "Summaries": [
             {
-                "GeneratedTemplateId": "arn:aws:cloudformation:us-east-1:123456789012:generatedtemplate/7fc8512c-d8cb-4e02-b266-d39c48344e48",
+                "GeneratedTemplateId": "arn:aws:cloudformation:us-west-2:123456789012:generatedtemplate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "GeneratedTemplateName": "MyTemplate",
                 "Status": "COMPLETE",
                 "StatusReason": "All resources complete",
@@ -18,7 +18,7 @@ Output::
                 "NumberOfResources": 4
             },
             {
-                "GeneratedTemplateId": "arn:aws:cloudformation:us-east-1:123456789012:generatedTemplate/f10dd1c4-edc6-4823-8153-ab6112b8d051",
+                "GeneratedTemplateId": "arn:aws:cloudformation:us-west-2:123456789012:generatedTemplate/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "GeneratedTemplateName": "MyEC2InstanceTemplate",
                 "Status": "COMPLETE",
                 "StatusReason": "All resources complete",
@@ -27,7 +27,7 @@ Output::
                 "NumberOfResources": 3
             },
             {
-                "GeneratedTemplateId": "arn:aws:cloudformation:us-east-1:123456789012:generatedTemplate/e5a1c89f-7ce2-41bd-9bdf-75b7c852e3ca",
+                "GeneratedTemplateId": "arn:aws:cloudformation:us-west-2:123456789012:generatedTemplate/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "GeneratedTemplateName": "MyEKSNodeGroupTemplate",
                 "Status": "COMPLETE",
                 "StatusReason": "All resources complete",

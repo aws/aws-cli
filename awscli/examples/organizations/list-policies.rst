@@ -16,7 +16,7 @@ Output::
                 "Name": "AllowAllS3Actions",
                 "AwsManaged": false,
                 "Id": "p-examplepolicyid111",
-                "Arn": "arn:aws:organizations::111111111111:policy/service_control_policy/p-examplepolicyid111",
+                "Arn": "arn:aws:organizations::123456789012:policy/service_control_policy/p-examplepolicyid111",
                 "Description": "Enables account admins to delegate permissions for any S3 actions to users and roles in their accounts."
             },
             {
@@ -24,7 +24,7 @@ Output::
                 "Name": "AllowAllEC2Actions",
                 "AwsManaged": false,
                 "Id": "p-examplepolicyid222",
-                "Arn": "arn:aws:organizations::111111111111:policy/service_control_policy/p-examplepolicyid222",
+                "Arn": "arn:aws:organizations::123456789012:policy/service_control_policy/p-examplepolicyid222",
                 "Description": "Enables account admins to delegate permissions for any EC2 actions to users and roles in their accounts."
             },
             {

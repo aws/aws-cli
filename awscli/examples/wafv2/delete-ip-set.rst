@@ -6,7 +6,7 @@ The following ``delete-ip-set`` example deletes the specified IP set. This call 
         --name test1 \
         --scope REGIONAL \
         --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
-        --lock-token 46851772-db6f-459d-9385-49428812e357
+        --lock-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 This command produces no output.
 

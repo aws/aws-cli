@@ -13,7 +13,7 @@ Output::
 
     {
         "VirtualMFADevice": {
-            "SerialNumber": "arn:aws:iam::210987654321:mfa/BobsMFADevice"
+            "SerialNumber": "arn:aws:iam::123456789012:mfa/BobsMFADevice"
         }
     }
 

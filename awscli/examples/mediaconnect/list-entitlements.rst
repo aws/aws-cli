@@ -9,7 +9,7 @@ Output::
     {
         "Entitlements": [
             {
-                "EntitlementArn": "arn:aws:mediaconnect:us-west-2:111122223333:entitlement:1-11aa22bb11aa22bb-3333cccc4444:MyEntitlement",
+                "EntitlementArn": "arn:aws:mediaconnect:us-west-2:123456789012:entitlement:1-11aa22bb11aa22bb-3333cccc4444:MyEntitlement",
                 "EntitlementName": "MyEntitlement"
             }
         ]

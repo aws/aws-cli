@@ -10,7 +10,7 @@ Output::
     {
         "insights": [
             {
-                "id": "38ea7a64-a14f-4e0e-95c7-8dbcab3c3616",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "name": "Kubelet version skew",
                 "category": "UPGRADE_READINESS",
                 "kubernetesVersion": "1.33",
@@ -23,7 +23,7 @@ Output::
                 }
             },
             {
-                "id": "9cd91472-f99c-45a9-b7d7-54d4900dee23",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "name": "EKS add-on version compatibility",
                 "category": "UPGRADE_READINESS",
                 "kubernetesVersion": "1.33",
@@ -36,7 +36,7 @@ Output::
                 }
             },
             {
-                "id": "0deb269d-b1e1-458c-a2b4-7a57f940c875",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "name": "Cluster health issues",
                 "category": "UPGRADE_READINESS",
                 "kubernetesVersion": "1.33",
@@ -49,7 +49,7 @@ Output::
                 }
             },
             {
-                "id": "214fa274-344f-420b-812a-5049ce72c9ww",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "name": "kube-proxy version skew",
                 "category": "UPGRADE_READINESS",
                 "kubernetesVersion": "1.33",

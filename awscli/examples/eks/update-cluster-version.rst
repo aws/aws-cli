@@ -10,7 +10,7 @@ Output::
 
     {
         "update": {
-            "id": "e4091a28-ea14-48fd-a8c7-975aeb469e8a",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "InProgress",
             "type": "VersionUpdate",
             "params": [

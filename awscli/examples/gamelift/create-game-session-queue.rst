@@ -63,7 +63,7 @@ Output::
     {
         "GameSessionQueue": {
             "Name": "MegaFrogRaceServer-NA",
-            "GameSessionQueueArn": "arn:aws:gamelift:us-west-2:111122223333:gamesessionqueue/MegaFrogRaceServer-NA",
+            "GameSessionQueueArn": "arn:aws:gamelift:us-west-2:123456789012:gamesessionqueue/MegaFrogRaceServer-NA",
             "TimeoutInSeconds": 180,
             "PlayerLatencyPolicies": [
                 {

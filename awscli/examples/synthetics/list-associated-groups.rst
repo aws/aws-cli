@@ -3,7 +3,7 @@
 The following ``list-associated-groups`` example returns a list of the groups associated with the canary named ``demo_canary``. ::
 
     aws synthetics list-associated-groups \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:canary:demo_canary
 
 Output::
 
@@ -12,7 +12,7 @@ Output::
             {
                 "Id": "example123",
                 "Name": "demo_group",
-                "Arn": "arn:aws:synthetics:us-east-1:123456789012:group:example123"
+                "Arn": "arn:aws:synthetics:us-west-2:123456789012:group:example123"
             }
         ]
     }

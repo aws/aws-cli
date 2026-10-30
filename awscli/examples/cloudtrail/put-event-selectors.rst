@@ -6,12 +6,12 @@ You can add advanced event selectors, and conditions for your advanced event sel
 
     aws cloudtrail put-event-selectors \
         --trail-name myTrail \
-        --advanced-event-selectors '[{"Name": "Log all management events", "FieldSelectors": [{ "Field": "eventCategory", "Equals": ["Management"] }] },{"Name": "Log PutObject and DeleteObject events for all but one bucket","FieldSelectors": [{ "Field": "eventCategory", "Equals": ["Data"] },{ "Field": "resources.type", "Equals": ["AWS::S3::Object"] },{ "Field": "eventName", "Equals": ["PutObject","DeleteObject"] },{ "Field": "resources.ARN", "NotStartsWith": ["arn:aws:s3:::amzn-s3-demo-bucket/"] }]},{"Name": "Log data events for a specific Lambda function","FieldSelectors": [{ "Field": "eventCategory", "Equals": ["Data"] },{ "Field": "resources.type", "Equals": ["AWS::Lambda::Function"] },{ "Field": "resources.ARN", "Equals": ["arn:aws:lambda:us-east-1:123456789012:function:myFunction"] }]},{"Name": "Log all Publish API calls on a specific SNS topic","FieldSelectors": [{ "Field": "eventCategory", "Equals": ["Data"] },{ "Field": "resources.type", "Equals": ["AWS::SNS::Topic"] },{ "Field": "eventName", "Equals": ["Publish"] },{ "Field": "resources.ARN", "Equals": ["arn:aws:sns:us-east-1:123456789012:myTopic.fifo"] }]}]'
+        --advanced-event-selectors '[{"Name": "Log all management events", "FieldSelectors": [{ "Field": "eventCategory", "Equals": ["Management"] }] },{"Name": "Log PutObject and DeleteObject events for all but one bucket","FieldSelectors": [{ "Field": "eventCategory", "Equals": ["Data"] },{ "Field": "resources.type", "Equals": ["AWS::S3::Object"] },{ "Field": "eventName", "Equals": ["PutObject","DeleteObject"] },{ "Field": "resources.ARN", "NotStartsWith": ["arn:aws:s3:::amzn-s3-demo-bucket/"] }]},{"Name": "Log data events for a specific Lambda function","FieldSelectors": [{ "Field": "eventCategory", "Equals": ["Data"] },{ "Field": "resources.type", "Equals": ["AWS::Lambda::Function"] },{ "Field": "resources.ARN", "Equals": ["arn:aws:lambda:us-west-2:123456789012:function:myFunction"] }]},{"Name": "Log all Publish API calls on a specific SNS topic","FieldSelectors": [{ "Field": "eventCategory", "Equals": ["Data"] },{ "Field": "resources.type", "Equals": ["AWS::SNS::Topic"] },{ "Field": "eventName", "Equals": ["Publish"] },{ "Field": "resources.ARN", "Equals": ["arn:aws:sns:us-west-2:123456789012:myTopic.fifo"] }]}]'
 
 Output::
 
     {
-        "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/myTrail",
+        "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/myTrail",
         "AdvancedEventSelectors": [
             {
                 "Name": "Log all management events",
@@ -72,7 +72,7 @@ Output::
                     {
                         "Field": "resources.ARN",
                         "Equals": [
-                            "arn:aws:lambda:us-east-1:123456789012:function:myFunction"
+                            "arn:aws:lambda:us-west-2:123456789012:function:myFunction"
                         ]
                     }
                 ]
@@ -101,7 +101,7 @@ Output::
                     {
                         "Field": "resources.ARN",
                         "Equals": [
-                            "arn:aws:sns:us-east-1:123456789012:myTopic.fifo"
+                            "arn:aws:sns:us-west-2:123456789012:myTopic.fifo"
                         ]
                     }
                 ]
@@ -119,7 +119,7 @@ You can configure up to 5 event selectors for a trail and up to 250 data resourc
 
     aws cloudtrail put-event-selectors \
         --trail-name TrailName \
-        --event-selectors '[{"ReadWriteType": "All","IncludeManagementEvents": true,"DataResources": [{"Type":"AWS::S3::Object", "Values": ["arn:aws:s3:::amzn-s3-demo-bucket/prefix","arn:aws:s3:::amzn-s3-demo-bucket2/prefix2"]},{"Type": "AWS::Lambda::Function","Values": ["arn:aws:lambda:us-west-2:999999999999:function:hello-world-python-function"]}]}]'
+        --event-selectors '[{"ReadWriteType": "All","IncludeManagementEvents": true,"DataResources": [{"Type":"AWS::S3::Object", "Values": ["arn:aws:s3:::amzn-s3-demo-bucket/prefix","arn:aws:s3:::amzn-s3-demo-bucket2/prefix2"]},{"Type": "AWS::Lambda::Function","Values": ["arn:aws:lambda:us-west-2:123456789012:function:hello-world-python-function"]}]}]'
 
 Output::
 
@@ -145,7 +145,7 @@ Output::
                 "ReadWriteType": "All"
             }
         ],
-        "TrailARN": "arn:aws:cloudtrail:us-east-2:123456789012:trail/TrailName"
+        "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/TrailName"
     }
 
 For more information, see `Log events by using basic event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-basic>`__ in the *AWS CloudTrail User Guide*. 
@@ -181,7 +181,7 @@ Output::
                 "ReadWriteType": "All"
             }
         ],
-        "TrailARN": "arn:aws:cloudtrail:us-east-2:123456789012:trail/TrailName2"
+        "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/TrailName2"
     }
 
 For more information, see `Log events by using basic event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-basic>`__ in the *AWS CloudTrail User Guide*.

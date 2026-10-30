@@ -3,20 +3,20 @@
 The following ``get-recommendation`` example gets a recommendation by its identifier. ::
 
     aws trustedadvisor get-recommendation \
-        --recommendation-identifier arn:aws:trustedadvisor::000000000000:recommendation/55fa4d2e-bbb7-491a-833b-5773e9589578
+        --recommendation-identifier arn:aws:trustedadvisor::123456789012:recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "recommendation": {
-            "arn": "arn:aws:trustedadvisor::000000000000:recommendation/55fa4d2e-bbb7-491a-833b-5773e9589578",
+            "arn": "arn:aws:trustedadvisor::123456789012:recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "name": "MFA Recommendation",
             "description": "Enable multi-factor authentication",
             "awsServices": [
                 "iam"
             ],
             "checkArn": "arn:aws:trustedadvisor:::check/7DAFEmoDos",
-            "id": "55fa4d2e-bbb7-491a-833b-5773e9589578",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "lastUpdatedAt": "2023-11-01T15:57:58.673Z",
             "pillarSpecificAggregates": {
                 "costOptimizing": {

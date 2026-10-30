@@ -3,7 +3,7 @@
 The following ``create-user`` example creates a shared device profile for the specified email address. ::
 
     aws chime create-user \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45 \
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --email roomdevice@example.com \
         --user-type SharedDevice
 
@@ -11,8 +11,8 @@ Output::
 
     {
         "User": {
-            "UserId": "1ab2345c-67de-8901-f23g-45h678901j2k",
-            "AccountId": "12a3456b-7c89-012d-3456-78901e23fg45",
+            "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "PrimaryEmail": "roomdevice@example.com",
             "DisplayName": "Room Device",
             "LicenseType": "Pro",

@@ -14,7 +14,7 @@ Output::
     {
         "operations": [
             {
-                "id": "cc7b920a-83d8-4762-a74e-9174fe1540be",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "LoadBalancer-1",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1569867169.406,
@@ -28,7 +28,7 @@ Output::
                 "statusChangedAt": 1569867169.406
             },
             {
-                "id": "658ed43b-f729-42f3-a8e4-3f8024d3c98d",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "LoadBalancer-1",
                 "resourceType": "LoadBalancerTlsCertificate",
                 "createdAt": 1569867170.193,
@@ -43,7 +43,7 @@ Output::
                 "statusChangedAt": 1569867170.54
             },
             {
-                "id": "4757a342-5181-4870-b1e0-227eebc35ab5",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "LoadBalancer-1",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1569867170.193,

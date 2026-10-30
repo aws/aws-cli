@@ -27,7 +27,7 @@ Output::
         "mtu": 1500,
         "jumboFrameCapable": true,
         "virtualGatewayId": "",
-        "directConnectGatewayId": "879b76a1-403d-4700-8b53-4a56ed85436e",
+        "directConnectGatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "routeFilterPrefixes": [],
         "bgpPeers": [
             {
@@ -42,7 +42,7 @@ Output::
                 "awsDeviceV2": "loc1-26wz6vEXAMPLE"
             }
         ],
-        "region": "sa-east-1",
+        "region": "us-west-2",
         "awsDeviceV2": "loc1-26wz6vEXAMPLE",
         "tags": []
     }

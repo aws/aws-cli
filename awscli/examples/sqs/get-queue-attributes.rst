@@ -3,7 +3,7 @@
 The following ``get-queue-attributes`` example gets all of the specified queue's attributes. ::
 
     aws sqs get-queue-attributes \
-        --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue \
+        --queue-url https://sqs.us-west-2.amazonaws.com/80398EXAMPLE/MyQueue \
         --attribute-names All
 
 Output::
@@ -11,7 +11,7 @@ Output::
     {
         "Attributes": {
             "ApproximateNumberOfMessagesNotVisible": "0",
-            "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":1000}",
+            "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-west-2:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":1000}",
             "MessageRetentionPeriod": "345600",
             "ApproximateNumberOfMessagesDelayed": "0",
             "MaximumMessageSize": "262144",
@@ -21,7 +21,7 @@ Output::
             "DelaySeconds": "0",
             "VisibilityTimeout": "30",
             "LastModifiedTimestamp": "1442426968",
-            "QueueArn": "arn:aws:sqs:us-east-1:80398EXAMPLE:MyNewQueue"
+            "QueueArn": "arn:aws:sqs:us-west-2:80398EXAMPLE:MyNewQueue"
         }
     }
 
@@ -30,7 +30,7 @@ For more information, see `Configuring queue parameters using the Amazon SQS con
 The following ``get-queue-attributes`` example gets only the specified queue's maximum message size and visibility timeout attributes. ::
 
     aws sqs get-queue-attributes \
-        --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyNewQueue \
+        --queue-url https://sqs.us-west-2.amazonaws.com/80398EXAMPLE/MyNewQueue \
         --attribute-names MaximumMessageSize VisibilityTimeout
 
 Output::

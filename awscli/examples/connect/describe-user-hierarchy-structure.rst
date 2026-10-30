@@ -15,12 +15,12 @@ Output::
                 "Name": "Corporation"
             },
             "LevelTwo": {
-                "Id": "87654321-2222-3333-ac99-123456789102",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/agent-group-level/2",
                 "Name": "Services Division"
             },
             "LevelThree": {
-                "Id": "abcdefgh-3333-4444-8af3-201123456789",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/agent-group-level/3",
                 "Name": "EU Site"
             }

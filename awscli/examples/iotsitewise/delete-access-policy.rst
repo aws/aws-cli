@@ -3,7 +3,7 @@
 The following ``delete-access-policy`` example deletes an access policy that grants a user administrative access to a portal. ::
 
     aws iotsitewise delete-access-policy \
-        --access-policy-id a1b2c3d4-5678-90ab-cdef-cccccEXAMPLE
+        --access-policy-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

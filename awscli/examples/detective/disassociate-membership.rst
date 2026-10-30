@@ -1,9 +1,9 @@
 **To resign membership from a behavior graph**
 
-The following ``disassociate-membership`` example removes the AWS account that runs the command from the behavior graph arn:aws:detective:us-east-1:111122223333:graph:123412341234. ::
+The following ``disassociate-membership`` example removes the AWS account that runs the command from the behavior graph arn:aws:detective:us-west-2:123456789012:graph:123412341234. ::
 
     aws detective disassociate-membership \
-        --graph-arn arn:aws:detective:us-east-1:111122223333:graph:123412341234
+        --graph-arn arn:aws:detective:us-west-2:123456789012:graph:027c7c4610ea4aacaf0b883093cab899
 
 This command produces no output.
 

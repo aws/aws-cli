@@ -23,8 +23,8 @@ Example output of the setup script::
             "stateNormal": "true", 
             "temperature": "70"
         }, 
-        "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/TempSensor0", 
-        "thingId": "example1-90ab-cdef-fedc-ba987example"
+        "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/TempSensor0", 
+        "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 The following ``get-cardinality`` example queries the 10 sensors created by the setup script and returns the number of racks that have temperature sensors reporting abnormal temperature values. If the temperature value is below 60 or above 80, the temperature sensor is in an abnormal state. ::

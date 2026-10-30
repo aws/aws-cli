@@ -17,7 +17,7 @@ Output::
                 "AllocatedStorage": 20,
                 "Status": "available",
                 "Port": 3306,
-                "AvailabilityZone": "us-east-1f",
+                "AvailabilityZone": "us-west-2d",
                 "VpcId": "vpc-6594f31c",
                 "InstanceCreateTime": "2018-02-08T22:24:55.973Z",
                 "MasterUsername": "mysqladmin",
@@ -28,7 +28,7 @@ Output::
                 "PercentProgress": 100,
                 "StorageType": "gp2",
                 "Encrypted": false,
-                "DBSnapshotArn": "arn:aws:rds:us-east-1:123456789012:snapshot:mydbsnapshot",
+                "DBSnapshotArn": "arn:aws:rds:us-west-2:123456789012:snapshot:mydbsnapshot",
                 "IAMDatabaseAuthenticationEnabled": false,
                 "ProcessorFeatures": [],
                 "DbiResourceId": "db-AKIAIOSFODNN7EXAMPLE"

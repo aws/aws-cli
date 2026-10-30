@@ -11,7 +11,7 @@ Output::
         "jobSummaryList": [
             {
                 "jobName": "example",
-                "jobId": "e66ff5fd-a1ff-4640-b1a2-0b0a142f49bb"
+                "jobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ]
     }
@@ -32,7 +32,7 @@ Output::
         "jobSummaryList": [
             {
                 "jobName": "example",
-                "jobId": "68f0c163-fbd4-44e6-9fd1-25b14a434786"
+                "jobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ]
     }

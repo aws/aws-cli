@@ -14,7 +14,7 @@ Output::
             "TransitGatewayAttachmentId": "tgw-attach-0a34fe6b4fEXAMPLE",
             "TransitGatewayId": "tgw-0262a0e521EXAMPLE",
             "VpcId": "vpc-07e8ffd50fEXAMPLE",
-            "VpcOwnerId": "111122223333",
+            "VpcOwnerId": "123456789012",
             "State": "pending",
             "SubnetIds": [
                 "subnet-0752213d59EXAMPLE"
@@ -45,7 +45,7 @@ Output::
             "TransitGatewayAttachmentId": "tgw-attach-0e141e0bebEXAMPLE",
             "TransitGatewayId": "tgw-02f776b1a7EXAMPLE",
             "VpcId": "vpc-3EXAMPLE",
-            "VpcOwnerId": "111122223333",
+            "VpcOwnerId": "123456789012",
             "State": "pending",
             "SubnetIds": [
                 "subnet-6EXAMPLE",

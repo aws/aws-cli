@@ -3,7 +3,7 @@
 The following ``delete-launch-template-versions`` example deletes the specified launch template version. ::
 
     aws ec2 delete-launch-template-versions \
-        --launch-template-id lt-0abcd290751193123 \
+        --launch-template-id lt-0abcd1234567890ab \
         --versions 1
 
 Output::
@@ -14,7 +14,7 @@ Output::
             {
                 "LaunchTemplateName": "TestVersion",
                 "VersionNumber": 1,
-                "LaunchTemplateId": "lt-0abcd290751193123"
+                "LaunchTemplateId": "lt-0abcd1234567890ab"
             }
         ]
     }

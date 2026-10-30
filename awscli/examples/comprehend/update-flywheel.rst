@@ -3,16 +3,16 @@
 The following ``update-flywheel`` example updates a flywheel configuration. In this example, the active model for the flywheel is updated. ::
 
     aws comprehend update-flywheel \
-        --flywheel-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel-1 \
-        --active-model-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier/version/new-example-classifier-model
+        --flywheel-arn arn:aws:comprehend:us-west-2:123456789012:flywheel/example-flywheel-1 \
+        --active-model-arn arn:aws:comprehend:us-west-2:123456789012:document-classifier/example-classifier/version/new-example-classifier-model
 
 Output::
 
     {
         "FlywheelProperties": {
-            "FlywheelArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity",
-            "ActiveModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier/version/new-example-classifier-model",
-            "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role",
+            "FlywheelArn": "arn:aws:comprehend:us-west-2:123456789012:flywheel/flywheel-entity",
+            "ActiveModelArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier/example-classifier/version/new-example-classifier-model",
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role",
             "TaskConfig": {
                 "LanguageCode": "en",
                 "DocumentClassificationConfig": {

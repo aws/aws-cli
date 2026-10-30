@@ -5,19 +5,19 @@ The following ``update-addon`` example command updates an Amazon EKS add-on with
     aws eks update-addon \
         --cluster-name my-eks-cluster \
         --addon-name vpc-cni \
-        --service-account-role-arn arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm
+        --service-account-role-arn arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm
 
 Output::
 
     {
         "update": {
-            "id": "c00d2de2-c2e4-3d30-929e-46b8edec2ce4",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "InProgress",
             "type": "AddonUpdate",
             "params": [
                 {
                     "type": "ServiceAccountRoleArn",
-                    "value": "arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
+                    "value": "arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
                 }
             ],
             "createdAt": "2024-04-12T16:04:55.614000-04:00",
@@ -34,14 +34,14 @@ The following ``update-addon`` example command updates an Amazon EKS add-on with
     aws eks update-addon \
         --cluster-name my-eks-cluster \
         --addon-name vpc-cni \
-        --service-account-role-arn arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm \
+        --service-account-role-arn arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm \
         --addon-version v1.16.4-eksbuild.2
 
 Output::
 
     {
         "update": {
-            "id": "f58dc0b0-2b18-34bd-bc6a-e4abc0011f36",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "status": "InProgress",
             "type": "AddonUpdate",
             "params": [
@@ -51,7 +51,7 @@ Output::
                 },
                 {
                     "type": "ServiceAccountRoleArn",
-                    "value": "arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
+                    "value": "arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
                 }
             ],
             "createdAt": "2024-04-12T16:07:16.550000-04:00",
@@ -68,7 +68,7 @@ The following ``update-addon`` example command updates an Amazon EKS add-on with
     aws eks update-addon \
         --cluster-name my-eks-cluster \
         --addon-name vpc-cni \
-        --service-account-role-arn arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm \
+        --service-account-role-arn arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm \
         --addon-version v1.16.4-eksbuild.2 \
         --configuration-values '{"resources": {"limits":{"cpu":"100m"}, "requests":{"cpu":"50m"}}}' \
         --resolve-conflicts PRESERVE
@@ -77,7 +77,7 @@ Output::
 
     {
         "update": {
-            "id": "cd9f2173-a8d8-3004-a90f-032f14326520",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
             "status": "InProgress",
             "type": "AddonUpdate",
             "params": [
@@ -87,7 +87,7 @@ Output::
                 },
                 {
                     "type": "ServiceAccountRoleArn",
-                    "value": "arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
+                    "value": "arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
                 },
                 {
                     "type": "ResolveConflicts",
@@ -112,7 +112,7 @@ The following ``update-addon`` example command updates an Amazon EKS add-on with
     aws eks update-addon \
         --cluster-name my-eks-cluster \
         --addon-name vpc-cni \
-        --service-account-role-arn arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm \
+        --service-account-role-arn arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm \
         --addon-version v1.17.1-eksbuild.1 \
         --configuration-values 'file://configuration-values.json' \
         --resolve-conflicts PRESERVE
@@ -137,7 +137,7 @@ Output::
 
     {
         "update": {
-            "id": "6881a437-174f-346b-9a63-6e91763507cc",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
             "status": "InProgress",
             "type": "AddonUpdate",
             "params": [
@@ -147,7 +147,7 @@ Output::
                 },
                 {
                     "type": "ServiceAccountRoleArn",
-                    "value": "arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
+                    "value": "arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
                 },
                 {
                     "type": "ResolveConflicts",
@@ -172,7 +172,7 @@ The following ``update-addon`` example command updates an Amazon EKS add-on with
     aws eks update-addon \
         --cluster-name my-eks-cluster \
         --addon-name vpc-cni \
-        --service-account-role-arn arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm \
+        --service-account-role-arn arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm \
         --addon-version v1.18.0-eksbuild.1 \
         --configuration-values 'file://configuration-values.yaml' \
         --resolve-conflicts PRESERVE
@@ -191,7 +191,7 @@ Output::
 
     {
         "update": {
-            "id": "a067a4c9-69d0-3769-ace9-d235c5b16701",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
             "status": "InProgress",
             "type": "AddonUpdate",
             "params": [
@@ -201,7 +201,7 @@ Output::
                 },
                 {
                     "type": "ServiceAccountRoleArn",
-                    "value": "arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
+                    "value": "arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm"
                 },
                 {
                     "type": "ResolveConflicts",

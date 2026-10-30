@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes a tag from a resource. ::
 
     aws memorydb untag-resource \
-        --resource-arn arn:aws:memorydb:us-east-1:491658xxxxx:cluster/my-cluster \
+        --resource-arn arn:aws:memorydb:us-west-2:491658xxxxx:cluster/my-cluster \
         --tag-keys mykey
 
 Output::

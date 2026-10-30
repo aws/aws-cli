@@ -11,7 +11,7 @@ Output::
         {
             "Enabled": false,
             "Exportable": true,
-            "KeyArn": "arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h",
+            "KeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h",
             "KeyAttributes": {
                 "KeyAlgorithm": "TDES_3KEY",
                 "KeyClass": "SYMMETRIC_KEY",

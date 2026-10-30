@@ -11,7 +11,7 @@ This command produces no output.
 The following ``execute-change-set`` example executes a change set specified by the full ARN of the change set. ::
 
     aws cloudformation execute-change-set \
-        --change-set-name arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/bc9555ba-a949-xmpl-bfb8-f41d04ec5784
+        --change-set-name arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

@@ -61,14 +61,14 @@ The following ``put-integration`` example creates an AWS integration request wit
         --http-method GET \
         --type AWS \
         --integration-http-method POST \
-        --uri 'arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:function_name/invocations'
+        --uri 'arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789012:function:function_name/invocations'
 
 Output::
 
     {
         "type": "AWS",
         "httpMethod": "POST",
-        "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:function_name/invocations",
+        "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789012:function:function_name/invocations",
         "passthroughBehavior": "WHEN_NO_MATCH",
         "timeoutInMillis": 29000,
         "cacheNamespace": "a1b2c3",

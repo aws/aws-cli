@@ -3,7 +3,7 @@
 The following ``delete-client-vpn-endpoint`` example deletes the specified Client VPN endpoint. ::
 
     aws ec2 delete-client-vpn-endpoint \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde
+        --client-vpn-endpoint-id cvpn-endpoint-0123456789abcdef0
 
 Output::
 

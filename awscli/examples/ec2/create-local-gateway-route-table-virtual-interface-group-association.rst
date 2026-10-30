@@ -14,8 +14,8 @@ Output::
             "LocalGatewayVirtualInterfaceGroupId": "lgw-vif-grp-exampleid0123abcd",
             "LocalGatewayId": "lgw-exampleid11223344",
             "LocalGatewayRouteTableId": "lgw-rtb-exampleidabcd1234",
-            "LocalGatewayRouteTableArn": "arn:aws:ec2:us-west-2:111122223333:local-gateway-route-table/lgw-rtb-exampleidabcd1234",
-            "OwnerId": "111122223333",
+            "LocalGatewayRouteTableArn": "arn:aws:ec2:us-west-2:123456789012:local-gateway-route-table/lgw-rtb-exampleidabcd1234",
+            "OwnerId": "123456789012",
             "State": "pending",
             "Tags": []
         }

@@ -10,7 +10,7 @@ The following ``create-resource-gateway`` example creates a resource gateway for
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourcegateway/rgw-0bba03f3d56060135",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourcegateway/rgw-0bba03f3d56060135",
         "id": "rgw-0bba03f3d56060135",
         "ipAddressType": "IPV4",
         "name": "my-resource-gateway",

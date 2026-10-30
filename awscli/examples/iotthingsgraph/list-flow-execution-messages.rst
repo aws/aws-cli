@@ -11,7 +11,7 @@ Output::
         "messages": [
             {
                 "eventType": "EXECUTION_STARTED",
-                "messageId": "f6294f1e-b109-4bbe-9073-f451a2dda2da",
+                "messageId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "payload": "Flow execution started",
                 "timestamp": 1559247540.656
             }

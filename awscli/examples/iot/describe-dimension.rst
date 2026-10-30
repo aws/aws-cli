@@ -9,7 +9,7 @@ Output::
 
     {
         "name": "TopicFilterForAuthMessages",
-        "arn": "arn:aws:iot:eu-west-2:123456789012:dimension/TopicFilterForAuthMessages",
+        "arn": "arn:aws:iot:us-west-2:123456789012:dimension/TopicFilterForAuthMessages",
         "type": "TOPIC_FILTER",
         "stringValues": [
             "device/+/auth"

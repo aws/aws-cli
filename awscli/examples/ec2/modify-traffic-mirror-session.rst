@@ -15,7 +15,7 @@ Output::
             "TrafficMirrorTargetId": "tmt-07f75d8feeEXAMPLE",
             "TrafficMirrorFilterId": "tmf-04812ff784EXAMPLE",
             "NetworkInterfaceId": "eni-070203f901EXAMPLE",
-            "OwnerId": "111122223333",
+            "OwnerId": "123456789012",
             "SessionNumber": 1,
             "VirtualNetworkId": 7159709,
             "Description": "Change packet length",

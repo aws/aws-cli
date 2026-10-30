@@ -53,11 +53,6 @@ Output::
             "NumberOfNodes": 4,
             "PubliclyAccessible": false,
             "Encrypted": false,
-            "ClusterSnapshotCopyStatus": {
-                "DestinationRegion": "us-west-1",
-                "RetentionPeriod": 15,
-                "ManualSnapshotRetentionPeriod": -1
-            },
             "Tags": [
                 {
                     "Key": "mytags",

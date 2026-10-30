@@ -14,19 +14,19 @@ To associate the resource discovery with the IPAM, run the following command. ::
         --ipam-id ipam-005f921c17ebd5107 \
         --ipam-resource-discovery-id ipam-res-disco-03e0406de76a044ee \
         --tag-specifications 'ResourceType=ipam-resource-discovery,Tags=[{Key=cost-center,Value=cc123}]' \
-        --region us-east-1
+        --region us-west-2
 
 Output::
 
     {
         "IpamResourceDiscoveryAssociation": {
-            "OwnerId": "320805250157",
+            "OwnerId": "123456789012",
             "IpamResourceDiscoveryAssociationId": "ipam-res-disco-assoc-04382a6346357cf82",
-            "IpamResourceDiscoveryAssociationArn": "arn:aws:ec2::320805250157:ipam-resource-discovery-association/ipam-res-disco-assoc-04382a6346357cf82",
+            "IpamResourceDiscoveryAssociationArn": "arn:aws:ec2::123456789012:ipam-resource-discovery-association/ipam-res-disco-assoc-04382a6346357cf82",
             "IpamResourceDiscoveryId": "ipam-res-disco-0365d2977fc1672fe",
             "IpamId": "ipam-005f921c17ebd5107",
-            "IpamArn": "arn:aws:ec2::320805250157:ipam/ipam-005f921c17ebd5107",
-            "IpamRegion": "us-east-1",
+            "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-005f921c17ebd5107",
+            "IpamRegion": "us-west-2",
             "IsDefault": false,
             "ResourceDiscoveryStatus": "active",
             "State": "associate-in-progress",

@@ -10,7 +10,7 @@ Output::
     {
         "Subscriptions": [
             {
-                "SubscriptionId": "123ab4c5-678d-901e-f23g-45h6789j0123",
+                "SubscriptionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "EndPoint": "https://example.com/example",
                 "Protocol": "HTTPS"
             }

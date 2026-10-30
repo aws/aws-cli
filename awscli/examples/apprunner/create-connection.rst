@@ -16,7 +16,7 @@ Output::
 
     {
         "Connection": {
-            "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection",
+            "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection",
             "ConnectionName": "my-github-connection",
             "Status": "PENDING_HANDSHAKE",
             "CreatedAt": "2020-11-03T00:32:51Z",

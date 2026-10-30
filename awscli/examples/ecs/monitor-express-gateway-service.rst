@@ -3,7 +3,7 @@
 The following ``monitor-express-gateway-service`` example monitors an Express Gateway Service deployment, showing all resources associated with the service. ::
 
     aws ecs monitor-express-gateway-service \
-        --service-arn arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-express-gateway-service
+        --service-arn arn:aws:ecs:us-west-2:123456789012:service/my-cluster/my-express-gateway-service
 
 This command produces no output. It displays an interactive monitoring interface.
 
@@ -14,7 +14,7 @@ For more information, see `Express Gateway Service <https://docs.aws.amazon.com/
 The following ``monitor-express-gateway-service`` example monitors an Express Gateway Service but only shows resources that have changed in the most recent deployment. ::
 
     aws ecs monitor-express-gateway-service \
-        --service-arn arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-express-gateway-service \
+        --service-arn arn:aws:ecs:us-west-2:123456789012:service/my-cluster/my-express-gateway-service \
         --resource-view DEPLOYMENT
 
 This command produces no output. It displays an interactive monitoring interface.

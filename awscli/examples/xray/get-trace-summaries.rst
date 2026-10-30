@@ -12,22 +12,22 @@ Output::
         "TraceSummaries": [
             {
                 "Http": {
-                    "HttpURL": "http://scorekeep-env-1.123456789.us-east-2.elasticbeanstalk.com/api/move/VSAE93HF/GSSD2NTB/DP0PCC09"
+                    "HttpURL": "http://scorekeep-env-1.123456789.us-west-2.elasticbeanstalk.com/api/move/VSAE93HF/GSSD2NTB/DP0PCC09"
                 }
             },
             {
                 "Http": {
-                    "HttpURL": "http://scorekeep-env-1.123456789.us-east-2.elasticbeanstalk.com/api/move/GCQ2B35P/FREELDFT/4LRE643M"
+                    "HttpURL": "http://scorekeep-env-1.123456789.us-west-2.elasticbeanstalk.com/api/move/GCQ2B35P/FREELDFT/4LRE643M"
                 }
             },
             {
                 "Http": {
-                    "HttpURL": "http://scorekeep-env-1.123456789.us-east-2.elasticbeanstalk.com/api/game/VSAE93HF/GSSD2NTB/starttime/1568835513"
+                    "HttpURL": "http://scorekeep-env-1.123456789.us-west-2.elasticbeanstalk.com/api/game/VSAE93HF/GSSD2NTB/starttime/1568835513"
                 }
             },
             {
                 "Http": {
-                    "HttpURL": "http://scorekeep-env-1.123456789.us-east-2.elasticbeanstalk.com/api/move/4MQNA5NN/L99KK2RF/null"
+                    "HttpURL": "http://scorekeep-env-1.123456789.us-west-2.elasticbeanstalk.com/api/move/4MQNA5NN/L99KK2RF/null"
                 }
             }
         ]

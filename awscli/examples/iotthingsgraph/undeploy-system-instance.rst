@@ -16,7 +16,7 @@ Output::
             "greengrassGroupName": "ThingsGraphGrnGr",
             "createdAt": 1553189694.255,
             "updatedAt": 1559344549.601,
-            "greengrassGroupId": "01d04b07-2a51-467f-9d03-0c90b3cdcaaf",
-            "greengrassGroupVersionId": "731b371d-d644-4b67-ac64-3934e99b75d7"
+            "greengrassGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "greengrassGroupVersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
         }
     }

@@ -3,7 +3,7 @@
 The following ``delete-group`` example deletes the specified Greengrass group. ::
 
     aws greengrass delete-group \
-        --group-id "4e22bd92-898c-436b-ade5-434d883ff749"
+        --group-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
 

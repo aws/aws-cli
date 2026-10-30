@@ -3,14 +3,14 @@
 The following ``describe-client-vpn-connections`` example displays details about the client connections to the specified Client VPN endpoint. ::
 
     aws ec2 describe-client-vpn-connections \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde
+        --client-vpn-endpoint-id cvpn-endpoint-123456789abcabcde
 
 Output::
 
     {
         "Connections": [
             {
-                "ClientVpnEndpointId": "cvpn-endpoint-123456789123abcde",
+                "ClientVpnEndpointId": "cvpn-endpoint-123456789abcabcde",
                 "Timestamp": "2019-08-12 07:58:34",
                 "ConnectionId": "cvpn-connection-0e03eb24267165acd",
                 "ConnectionEstablishedTime": "2019-08-12 07:57:14",
@@ -26,7 +26,7 @@ Output::
                 "ConnectionEndTime": "2019-08-12 07:58:34"
             },
             {
-                "ClientVpnEndpointId": "cvpn-endpoint-123456789123abcde",
+                "ClientVpnEndpointId": "cvpn-endpoint-123456789abcabcde",
                 "Timestamp": "2019-08-12 08:02:54",
                 "ConnectionId": "cvpn-connection-00668867a40f18253",
                 "ConnectionEstablishedTime": "2019-08-12 08:02:53",

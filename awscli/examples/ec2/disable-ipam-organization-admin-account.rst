@@ -9,7 +9,7 @@ In this example, you are the AWS Organizations management account that delegated
 You can use any AWS Region when making this request. You don't have to use the Region where you originally delegated the admin, where the IPAM was created, or an IPAM operating Region. If you disable the delegated admin account, you can re-enable it at any time or delegate a new account as IPAM admin.
 
     aws ec2 disable-ipam-organization-admin-account \
-        --delegated-admin-account-id 320805250157
+        --delegated-admin-account-id 123456789012
 
 Output::
 

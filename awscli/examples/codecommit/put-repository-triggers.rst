@@ -12,7 +12,7 @@ Contents of ``MyTriggers.json``::
         "repositoryName": "MyDemoRepo", 
         "triggers": [
             {
-                "destinationArn": "arn:aws:sns:us-east-1:80398EXAMPLE:MyCodeCommitTopic", 
+                "destinationArn": "arn:aws:sns:us-west-2:80398EXAMPLE:MyCodeCommitTopic", 
                 "branches": [
                     "main", 
                     "preprod"
@@ -24,7 +24,7 @@ Contents of ``MyTriggers.json``::
                 ]
             },
             {
-                "destinationArn": "arn:aws:lambda:us-east-1:111111111111:function:MyCodeCommitPythonFunction", 
+                "destinationArn": "arn:aws:lambda:us-west-2:123456789012:function:MyCodeCommitPythonFunction", 
                 "branches": [], 
                 "name": "MySecondTrigger", 
                 "customData": "EXAMPLE", 

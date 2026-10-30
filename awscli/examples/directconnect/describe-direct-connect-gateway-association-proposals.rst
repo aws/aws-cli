@@ -9,15 +9,15 @@ Output::
     {
         "directConnectGatewayAssociationProposals": [
             {
-                "proposalId": "c2ede9b4-bbc6-4d33-923c-bc4feEXAMPLE",
-                "directConnectGatewayId": "11460968-4ac1-4fd3-bdb2-00599EXAMPLE",
-                "directConnectGatewayOwnerAccount": "111122223333",
+                "proposalId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "directConnectGatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "directConnectGatewayOwnerAccount": "123456789012",
                 "proposalState": "requested",
                 "associatedGateway": {
                     "id": "tgw-02f776b1a7EXAMPLE",
                     "type": "transitGateway",
-                    "ownerAccount": "111122223333",
-                    "region": "us-east-1"
+                    "ownerAccount": "123456789012",
+                    "region": "us-west-2"
                 },
                 "existingAllowedPrefixesToDirectConnectGateway": [
                     {
@@ -34,15 +34,15 @@ Output::
                 ]
             },
             {
-                "proposalId": "cb7f41cb-8128-43a5-93b1-dcaedEXAMPLE",
-                "directConnectGatewayId": "11560968-4ac1-4fd3-bcb2-00599EXAMPLE",
-                "directConnectGatewayOwnerAccount": "111122223333",
+                "proposalId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                "directConnectGatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+                "directConnectGatewayOwnerAccount": "123456789012",
                 "proposalState": "accepted",
                 "associatedGateway": {
                     "id": "tgw-045776b1a7EXAMPLE",
                     "type": "transitGateway",
-                    "ownerAccount": "111122223333",
-                    "region": "us-east-1"
+                    "ownerAccount": "123456789012",
+                    "region": "us-west-2"
                 },
                 "existingAllowedPrefixesToDirectConnectGateway": [
                     {

@@ -37,7 +37,7 @@ Output::
                 "RequesterManaged": false,
                 "Ipv6Addresses": [],
                 "PrivateDnsName": "ip-10-0-1-17.ec2.internal",
-                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZone": "us-west-2d",
                 "Attachment": {
                     "Status": "attached",
                     "DeviceIndex": 1,
@@ -81,7 +81,7 @@ Output::
                 ],
                 "RequesterManaged": false,
                 "Ipv6Addresses": [],
-                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZone": "us-west-2d",
                 "Attachment": {
                     "Status": "attached",
                     "DeviceIndex": 0,
@@ -136,7 +136,7 @@ Output::
                 ],
                 "RequesterManaged": false,
                 "PrivateDnsName": "ip-10-0-1-55.ec2.internal",
-                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZone": "us-west-2d",
                 "Ipv6Addresses": [],
                 "Groups": [
                     {

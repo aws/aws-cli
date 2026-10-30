@@ -12,7 +12,7 @@ Output::
         "Roots": [
             {
                 "Name": "Root",
-                "Arn": "arn:aws:organizations::111111111111:root/o-exampleorgid/r-examplerootid111",
+                "Arn": "arn:aws:organizations::123456789012:root/o-exampleorgid/r-examplerootid111",
                 "Id": "r-examplerootid111",
                 "PolicyTypes": [
                     {

@@ -3,18 +3,18 @@
 The following ``get-annotation-import-job`` example gets details about an annotation import job. ::
 
     aws omics get-annotation-import-job \
-        --job-id 984162c7-xmpl-4d23-ab47-286f7950bfbf
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "creationTime": "2022-11-30T01:40:11.017746Z",
         "destinationName": "tsv_ann_store",
-        "id": "984162c7-xmpl-4d23-ab47-286f7950bfbf",
+        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "items": [
             {
                 "jobStatus": "COMPLETED",
-                "source": "s3://omics-artifacts-01d6xmpl4e72dd32/targetedregions.bed.gz"
+                "source": "s3://amzn-s3-demo-bucket/targetedregions.bed.gz"
             }
         ],
         "roleArn": "arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ",

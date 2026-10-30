@@ -4,20 +4,20 @@ The following ``create-access-entry`` example creates an access entry that allow
 
     aws eks create-access-entry \
         --cluster-name eks-customer \
-        --principal-arn arn:aws:iam::111122223333:user/eks-user
+        --principal-arn arn:aws:iam::123456789012:user/eks-user
 
 Output::
 
     {
         "accessEntry": {
             "clusterName": "eks-customer",
-            "principalArn": "arn:aws:iam::111122223333:user/eks-user",
+            "principalArn": "arn:aws:iam::123456789012:user/eks-user",
             "kubernetesGroups": [],
-            "accessEntryArn": "arn:aws:eks:us-west-2:111122223333:access-entry/eks-customer/user/111122223333/eks-user/a1b2c3d4-5678-90ab-cdef-a6506e3d36p0",
+            "accessEntryArn": "arn:aws:eks:us-west-2:123456789012:access-entry/eks-customer/user/123456789012/eks-user/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "createdAt": "2025-04-14T22:45:48.097000-05:00",
             "modifiedAt": "2025-04-14T22:45:48.097000-05:00",
             "tags": {},
-            "username": "arn:aws:iam::111122223333:user/eks-user",
+            "username": "arn:aws:iam::123456789012:user/eks-user",
             "type": "STANDARD"
         }
     }
@@ -30,7 +30,7 @@ The following ``create-access-entry`` example creates an access entry of type ``
 
     aws eks create-access-entry \
         --cluster-name eks-customer \
-        --principal-arn arn:aws:iam::111122223333:role/admin-test-ip \
+        --principal-arn arn:aws:iam::123456789012:role/admin-test-ip \
         --type EC2_LINUX
 
 Output::
@@ -38,11 +38,11 @@ Output::
     {
         "accessEntry": {
             "clusterName": "eks-customer",
-            "principalArn": "arn:aws:iam::111122223333:role/admin-test-ip",
+            "principalArn": "arn:aws:iam::123456789012:role/admin-test-ip",
             "kubernetesGroups": [
                 "system:nodes"
             ],
-            "accessEntryArn": "arn:aws:eks:us-west-2:111122223333:access-entry/eks-customer/role/111122223333/admin-test-ip/accb5418-f493-f390-3e6e-c3f19f725fcp",
+            "accessEntryArn": "arn:aws:eks:us-west-2:123456789012:access-entry/eks-customer/role/123456789012/admin-test-ip/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "createdAt": "2025-05-06T19:42:45.453000-05:00",
             "modifiedAt": "2025-05-06T19:42:45.453000-05:00",
             "tags": {},

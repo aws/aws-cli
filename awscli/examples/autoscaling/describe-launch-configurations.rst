@@ -11,7 +11,7 @@ Output::
         "LaunchConfigurations": [
             {
                 "LaunchConfigurationName": "my-launch-config",
-                "LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:123456789012:launchConfiguration:98d3b196-4cf9-4e88-8ca1-8547c24ced8b:launchConfigurationName/my-launch-config",
+                "LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:123456789012:launchConfiguration:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:launchConfigurationName/my-launch-config",
                 "ImageId": "ami-0528a5175983e7f28",
                 "KeyName": "my-key-pair-uswest2",
                 "SecurityGroups": [
@@ -62,7 +62,7 @@ Output::
         "LaunchConfigurations": [
             {
                 "LaunchConfigurationName": "my-launch-config",
-                "LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:123456789012:launchConfiguration:98d3b196-4cf9-4e88-8ca1-8547c24ced8b:launchConfigurationName/my-launch-config",
+                "LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:123456789012:launchConfiguration:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:launchConfigurationName/my-launch-config",
                 "ImageId": "ami-0528a5175983e7f28",
                 "KeyName": "my-key-pair-uswest2",
                 "SecurityGroups": [

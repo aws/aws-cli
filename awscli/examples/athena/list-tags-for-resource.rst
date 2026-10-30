@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags for the ``Data_Analyst_Group`` workgroup. ::
 
     aws athena list-tags-for-resource \
-        --resource-arn arn:aws:athena:us-west-2:111122223333:workgroup/Data_Analyst_Group
+        --resource-arn arn:aws:athena:us-west-2:123456789012:workgroup/Data_Analyst_Group
 
 Output::
 
@@ -29,7 +29,7 @@ Output::
 The following ``list-tags-for-resource`` example lists the tags for the ``dynamo_db_catalog`` data catalog. ::
 
     aws athena list-tags-for-resource \
-        --resource-arn arn:aws:athena:us-west-2:111122223333:datacatalog/dynamo_db_catalog
+        --resource-arn arn:aws:athena:us-west-2:123456789012:datacatalog/dynamo_db_catalog
 
 Output::
 

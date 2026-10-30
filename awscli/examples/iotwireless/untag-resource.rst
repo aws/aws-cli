@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the tag ``MyTag`` and its value from the wireless destination ``IoTWirelessDestination``. ::
 
     aws iotwireless untag-resource \
-        --resource-arn "arn:aws:iotwireless:us-east-1:123456789012:Destination/IoTWirelessDestination" \
+        --resource-arn "arn:aws:iotwireless:us-west-2:123456789012:Destination/IoTWirelessDestination" \
         --tag-keys "MyTag"
 
 This command produces no output.

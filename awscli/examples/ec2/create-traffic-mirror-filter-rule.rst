@@ -26,7 +26,7 @@ Output::
             "RuleAction": "accept",
             "Protocol": 6
         },
-        "ClientToken": "4752b573-40a6-4eac-a8a4-a72058761219"
+        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Create a traffic mirror filter <https://docs.aws.amazon.com/vpc/latest/mirroring/create-traffic-mirroring-filter.html>`__ in the *Traffic Mirroring Guide*.

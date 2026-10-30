@@ -3,7 +3,7 @@
 The following ``remove-account-from-organization`` example removes an account from an organization. ::
 
     aws organizations remove-account-from-organization \
-        --account-id 333333333333
+        --account-id 123456789222
 
 This command produces no output.
 

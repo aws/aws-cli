@@ -8,11 +8,11 @@ The following ``describe-asset`` example displays all of the details of the asse
 Output::
 
     { 
-        "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:assets/30sec_chicken",
+        "Arn":"arn:aws:mediapackage-vod:us-west-2:123456789012:assets/30sec_chicken",
         "Id":"30sec_chicken",
         "PackagingGroupId":"Packaging_group_1",
-        "SourceArn":"arn:aws:s3::111122223333:video-bucket/A/30sec_chicken.smil",
-        "SourceRoleArn":"arn:aws:iam::111122223333:role/EMP_Vod",
+        "SourceArn":"arn:aws:s3::123456789012:video-bucket/A/30sec_chicken.smil",
+        "SourceRoleArn":"arn:aws:iam::123456789012:role/EMP_Vod",
         "EgressEndpoints":[ 
             { 
                 "PackagingConfigurationId":"DASH",
@@ -24,7 +24,7 @@ Output::
             },
             { 
                 "PackagingConfigurationId":"CMAF",
-                "Url":"https://a5f46a44118ba3e3724ef39ef532e701.egress.mediapackage-vod.us-west-2.amazonaws.com/out/v1/aad7962c569946119c2d5a691be5663c/628fb5d8d89e4702958b020af27fde0e/05eb062214064238ad6330a443aff7f7/index.m3u8"
+                "Url":"https://a5f46a44118ba3e3724ef39ef532e701.egress.mediapackage-vod.us-west-2.amazonaws.com/out/v1/aad7962c569946119c2d5a691be5663c/628fb5d8d89e4702958b020af27fde0e/05eb0622a4064238ad6330a443aff7f7/index.m3u8"
             }
         ]
     }

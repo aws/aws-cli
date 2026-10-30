@@ -3,7 +3,7 @@
 The following ``tag-resource`` example assigns a tag to the canary named ``demo_canary``. ::
 
     aws synthetics tag-resource \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary \
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:canary:demo_canary \
         --tags blueprint=heartbeat
 
 This command produces no output.
@@ -13,7 +13,7 @@ This command produces no output.
 The following ``tag-resource`` example assigns a tag to the group named ``demo_group``. ::
 
     aws synthetics tag-resource \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:group:example123 \
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:group:example123 \
         --tags team=Devops
 
 This command produces no output.

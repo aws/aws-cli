@@ -4,7 +4,7 @@ The following ``disassociate-resource`` example removes a canary from the group 
 
     aws synthetics disassociate-resource \
         --group-identifier demo_group \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:canary:demo_canary
 
 This command produces no output.
 

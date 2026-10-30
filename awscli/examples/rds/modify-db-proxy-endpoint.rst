@@ -12,7 +12,7 @@ Output::
         "DBProxyEndpoint":
         {
             "DBProxyEndpointName": "proxyEndpoint",
-            "DBProxyEndpointArn": "arn:aws:rds:us-east-1:123456789012:db-proxy-endpoint:prx-endpoint-0123a01b12345c0ab",
+            "DBProxyEndpointArn": "arn:aws:rds:us-west-2:123456789012:db-proxy-endpoint:prx-endpoint-0123a01b12345c0ab",
             "DBProxyName": "proxyExample",
             "Status": "available",
             "VpcId": "vpc-1234567",
@@ -23,7 +23,7 @@ Output::
                 "subnetgroup1",
                 "subnetgroup2"
             ],
-            "Endpoint": "proxyEndpoint.endpoint.proxyExample-ab0cd1efghij.us-east-1.rds.amazonaws.com",
+            "Endpoint": "proxyEndpoint.endpoint.proxyExample-ab0cd1efghij.us-west-2.rds.amazonaws.com",
             "CreatedDate": "2023-04-05T16:09:33.452000+00:00",
             "TargetRole": "READ_WRITE",
             "IsDefault": false

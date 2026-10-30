@@ -12,7 +12,7 @@ Output::
     {
         "Activities": [
             {
-                "ActivityId": "5091cb52-547a-47ce-a236-c9ccbc2cb2c9",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AutoScalingGroupName": "my-asg",
                 "Description": "Detaching EC2 instance: i-030017cfa84b20135",
                 "Cause": "At 2020-10-31T17:35:04Z instance i-030017cfa84b20135 was detached in response to a user request, shrinking the capacity from 2 to 1.",

@@ -18,7 +18,7 @@ Contents of ``template.yaml``::
 Output::
 
     {
-        "StackSetId": "my-stack-set:8d0f160b-d157-xmpl-a8e6-c0ce8e5d8cc1"
+        "StackSetId": "my-stack-set:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To add stack instances to the stack set, use the ``create-stack-instances`` command.

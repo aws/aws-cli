@@ -36,7 +36,7 @@ Output::
                 "EC2"
             ],
             "volumes": [],
-            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/sleep360:1",
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:1",
             "containerDefinitions": [
                 {
                     "environment": [],
@@ -80,7 +80,7 @@ Output::
                 "EC2"
             ],
             "volumes": [],
-            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/sleep360:1",
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:1",
             "containerDefinitions": [
                 {
                     "environment": [],

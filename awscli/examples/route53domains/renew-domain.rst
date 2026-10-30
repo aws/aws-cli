@@ -13,7 +13,7 @@ This command runs only in the ``us-east-1`` Region. If your default region is se
 Output::
 
     {
-        "OperationId": "3f28e0ac-126a-4113-9048-cc930example"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the operation succeeded, you can run ``get-operation-detail``. For more information, see `get-operation-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-operation-detail.html>`__. 

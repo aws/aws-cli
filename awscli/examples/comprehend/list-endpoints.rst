@@ -9,20 +9,20 @@ Output::
     {
         "EndpointPropertiesList": [
             {
-                "EndpointArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier-endpoint/ExampleClassifierEndpoint",
+                "EndpointArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier-endpoint/ExampleClassifierEndpoint",
                 "Status": "IN_SERVICE",
-                "ModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifier1",
-                "DesiredModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifier1",
+                "ModelArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier/exampleclassifier1",
+                "DesiredModelArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier/exampleclassifier1",
                 "DesiredInferenceUnits": 1,
                 "CurrentInferenceUnits": 1,
                 "CreationTime": "2023-06-13T20:32:54.526000+00:00",
                 "LastModifiedTime": "2023-06-13T20:32:54.526000+00:00"
             },
             {
-                "EndpointArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier-endpoint/ExampleClassifierEndpoint2",
+                "EndpointArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier-endpoint/ExampleClassifierEndpoint2",
                 "Status": "IN_SERVICE",
-                "ModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifier2",
-                "DesiredModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifier2",
+                "ModelArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier/exampleclassifier2",
+                "DesiredModelArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier/exampleclassifier2",
                 "DesiredInferenceUnits": 1,
                 "CurrentInferenceUnits": 1,
                 "CreationTime": "2023-06-13T20:32:54.526000+00:00",

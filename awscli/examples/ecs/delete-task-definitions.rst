@@ -10,7 +10,7 @@ Output::
     {
     "taskDefinitions": [
         {
-            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/curltest:1",
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/curltest:1",
             "containerDefinitions": [
                 {
                     "name": "ctest",
@@ -33,7 +33,7 @@ Output::
                         "options": {
                             "awslogs-create-group": "true",
                             "awslogs-group": "/ecs/curltest",
-                            "awslogs-region": "us-east-1",
+                            "awslogs-region": "us-west-2",
                             "awslogs-stream-prefix": "ecs"
                         }
                     }

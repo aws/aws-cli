@@ -9,7 +9,7 @@ Output::
     {  
         "storageConfigurations": [
             {
-                "arn": "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/abcdABCDefgh",
+                "arn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh",
                 "name": "test-sc-1",
                 "s3": {
                     "bucketName": "amzn-s3-demo-bucket-1"
@@ -17,7 +17,7 @@ Output::
                 "tags": {}
             },
             {
-                "arn": "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/ABCefgEFGabc",
+                "arn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/ABCefgEFGabc",
                 "name": "test-sc-2",
                 "s3": {
                     "bucketName": "amzn-s3-demo-bucket-2"

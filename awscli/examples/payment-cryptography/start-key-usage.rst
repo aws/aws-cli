@@ -3,7 +3,7 @@
 The following ``start-key-usage`` example enables a key to be used. ::
 
     aws payment-cryptography start-key-usage \
-        --key-identifier arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h
+        --key-identifier arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h
 
 Output::
 
@@ -12,7 +12,7 @@ Output::
             "CreateTimestamp": "1686800690",
             "Enabled": true,
             "Exportable": true,
-            "KeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/alsuwfxug3pgy6xh",
+            "KeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/alsuwfxug3pgy6xh",
             "KeyAttributes": {
                 "KeyAlgorithm": "TDES_3KEY",
                 "KeyClass": "SYMMETRIC_KEY",

@@ -9,10 +9,10 @@ Output::
 
     {
         "accessEntries": [
-            "arn:aws:iam::111122223333:role/Admin",
-            "arn:aws:iam::111122223333:role/admin-test-ip",
-            "arn:aws:iam::111122223333:role/assume-worker-node-role",
-            "arn:aws:iam::111122223333:user/eks-admin-user"
+            "arn:aws:iam::123456789012:role/Admin",
+            "arn:aws:iam::123456789012:role/admin-test-ip",
+            "arn:aws:iam::123456789012:role/assume-worker-node-role",
+            "arn:aws:iam::123456789012:user/eks-admin-user"
         ]
     }
 

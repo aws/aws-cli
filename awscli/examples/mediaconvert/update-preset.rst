@@ -11,7 +11,7 @@ Output::
 
     {
         "Preset": {
-            "Arn": "arn:aws:mediaconvert:us-east-1:003235472598:presets/SimpleMP4",
+            "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:presets/SimpleMP4",
             "Settings": {
                 "ContainerSettings": {
                     "Container": "MP4",

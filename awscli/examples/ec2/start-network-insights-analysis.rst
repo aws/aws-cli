@@ -10,7 +10,7 @@ Output::
     {
         "NetworkInsightsAnalysis": {
             "NetworkInsightsAnalysisId": "nia-02207aa13eb480c7a",
-            "NetworkInsightsAnalysisArn": "arn:aws:ec2:us-east-1:123456789012:network-insights-analysis/nia-02207aa13eb480c7a",
+            "NetworkInsightsAnalysisArn": "arn:aws:ec2:us-west-2:123456789012:network-insights-analysis/nia-02207aa13eb480c7a",
             "NetworkInsightsPathId": "nip-0b26f224f1d131fa8",
             "StartDate": "2021-01-20T22:58:37.495Z",
             "Status": "running"

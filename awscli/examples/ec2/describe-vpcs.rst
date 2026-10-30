@@ -13,7 +13,7 @@ Output::
                 "DhcpOptionsId": "dopt-19edf471",
                 "State": "available",
                 "VpcId": "vpc-0e9801d129EXAMPLE",
-                "OwnerId": "111122223333",
+                "OwnerId": "123456789012",
                 "InstanceTenancy": "default",
                 "CidrBlockAssociationSet": [
                     {
@@ -37,7 +37,7 @@ Output::
                 "DhcpOptionsId": "dopt-19edf471",
                 "State": "available",
                 "VpcId": "vpc-06e4ab6c6cEXAMPLE",
-                "OwnerId": "222222222222",
+                "OwnerId": "123456789111",
                 "InstanceTenancy": "default",
                 "CidrBlockAssociationSet": [
                     {
@@ -77,7 +77,7 @@ Output::
                 "DhcpOptionsId": "dopt-19edf471",
                 "State": "available",
                 "VpcId": "vpc-06e4ab6c6cEXAMPLE",
-                "OwnerId": "111122223333",
+                "OwnerId": "123456789012",
                 "InstanceTenancy": "default",
                 "CidrBlockAssociationSet": [
                     {

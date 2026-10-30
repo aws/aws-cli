@@ -3,12 +3,12 @@
 The following ``enable-http-endpoint`` example enables the RDS Data API for the specified Aurora DB cluster. ::
 
     aws rds enable-http-endpoint \
-        --resource-arn arn:aws:rds:us-east-1:123456789012:cluster:test-aurora-pg-cluster
+        --resource-arn arn:aws:rds:us-west-2:123456789012:cluster:test-aurora-pg-cluster
 
 Output::
 
     {
-        "ResourceArn": "arn:aws:rds:us-east-1:123456789012:cluster:test-aurora-pg-cluster",
+        "ResourceArn": "arn:aws:rds:us-west-2:123456789012:cluster:test-aurora-pg-cluster",
         "HttpEndpointEnabled": true
     }
 

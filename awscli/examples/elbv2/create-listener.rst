@@ -48,7 +48,7 @@ The following ``create-listener`` example creates an HTTPS listener for the spec
         --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
         --protocol HTTPS \
         --port 443 \
-        --certificates CertificateArn=arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557 \
+        --certificates CertificateArn=arn:aws:acm:us-west-2:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --ssl-policy ELBSecurityPolicy-2016-08 \
         --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
@@ -63,7 +63,7 @@ Output::
                 "Protocol": "HTTPS",
                 "Certificates": [
                     {
-                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557"
+                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                     }
                 ],
                 "SslPolicy": "ELBSecurityPolicy-2016-08",
@@ -140,7 +140,7 @@ The following ``create-listener`` example creates a TLS listener for the specifi
         --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
         --protocol TLS \
         --port 443 \
-        --certificates CertificateArn=arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557 \
+        --certificates CertificateArn=arn:aws:acm:us-west-2:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --ssl-policy ELBSecurityPolicy-2016-08 \
         --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
@@ -155,7 +155,7 @@ Output::
                 "Protocol": "TLS",
                 "Certificates": [
                     {
-                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557"
+                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                     }
                 ],
                 "SslPolicy": "ELBSecurityPolicy-2016-08",
@@ -229,24 +229,24 @@ For more information, see `Create a listener for your Network Load Balancer <htt
 The following ``create-listener`` example creates a listener for the specified Gateway Load Balancer that forwards requests to the specified target group. ::
 
     aws elbv2 create-listener \
-        --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:850631746142:loadbalancer/gwy/my-gateway-load-balancer/e0f9b3d5c7f7d3d6 \
-        --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:850631746142:targetgroup/my-glb-targets/007ca469fae3bb1615
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/gwy/my-gateway-load-balancer/e0f9b3d5c7f7d3d6 \
+        --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-glb-targets/007ca469fae3bb1615
 
 Output::
 
     {
         "Listeners": [
             {
-                "ListenerArn": "arn:aws:elasticloadbalancing:us-east-1:850631746142:listener/gwy/my-agw-lb-example2/e0f9b3d5c7f7d3d6/afc127db15f925de",
-                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:850631746142:loadbalancer/gwy/my-agw-lb-example2/e0f9b3d5c7f7d3d6",
+                "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/gwy/my-agw-lb-example2/e0f9b3d5c7f7d3d6/afc127db15f925de",
+                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/gwy/my-agw-lb-example2/e0f9b3d5c7f7d3d6",
                 "DefaultActions": [
                     {
                         "Type": "forward",
-                        "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:850631746142:targetgroup/test-tg-agw-2/007ca469fae3bb1615",
+                        "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/test-tg-agw-2/007ca469fae3bb1615",
                         "ForwardConfig": {
                             "TargetGroups": [
                                 {
-                                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:850631746142:targetgroup/test-tg-agw-2/007ca469fae3bb1615"
+                                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/test-tg-agw-2/007ca469fae3bb1615"
                                 }
                             ]
                         }

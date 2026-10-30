@@ -12,7 +12,7 @@ Output::
                 "Name": "default.memorydb-redis6",
                 "Family": "memorydb_redis6",
                 "Description": "Default parameter group for memorydb_redis6",
-                "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:parametergroup/default.memorydb-redis6"
+                "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:parametergroup/default.memorydb-redis6"
             }
         ]
     }

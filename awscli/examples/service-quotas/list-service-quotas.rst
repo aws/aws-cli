@@ -12,7 +12,7 @@ Output::
             {
                 "ServiceCode": "cloudformation",
                 "ServiceName": "AWS CloudFormation",
-                "QuotaArn": "arn:aws:servicequotas:us-east-2:123456789012:cloudformation/L-87D14FB7",
+                "QuotaArn": "arn:aws:servicequotas:us-west-2:123456789012:cloudformation/L-87D14FB7",
                 "QuotaCode": "L-87D14FB7",
                 "QuotaName": "Output count in CloudFormation template",
                 "Value": 60.0,
@@ -23,7 +23,7 @@ Output::
             {
                 "ServiceCode": "cloudformation",
                 "ServiceName": "AWS CloudFormation",
-                "QuotaArn": "arn:aws:servicequotas:us-east-2:123456789012:cloudformation/L-0485CB21",
+                "QuotaArn": "arn:aws:servicequotas:us-west-2:123456789012:cloudformation/L-0485CB21",
                 "QuotaCode": "L-0485CB21",
                 "QuotaName": "Stack count",
                 "Value": 200.0,

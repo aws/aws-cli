@@ -19,7 +19,7 @@ Output::
             "SnapshotName": "my-snapshot-copy", 
             "CacheClusterCreateTime": "2016-12-21T22:24:04.955Z", 
             "AutoMinorVersionUpgrade": true, 
-            "PreferredAvailabilityZone": "us-east-1c", 
+            "PreferredAvailabilityZone": "us-west-2c", 
             "SnapshotStatus": "creating", 
             "SnapshotSource": "manual", 
             "SnapshotWindow": "07:00-08:00", 

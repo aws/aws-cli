@@ -12,11 +12,11 @@ Output::
         "suiteDefinitionId": "qqcsmtyyjabl",
         "suiteDefinitionVersion": "v1",
         "suiteRunId": "nzlfyhaa18oa",
-        "suiteRunArn": "arn:aws:iotdeviceadvisor:us-east-1:123456789012:suiterun/qqcsmtyyjabl/nzlfyhaa18oa",
+        "suiteRunArn": "arn:aws:iotdeviceadvisor:us-west-2:123456789012:suiterun/qqcsmtyyjabl/nzlfyhaa18oa",
         "suiteRunConfiguration": {
             "primaryDevice": {
-                "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/MyIotThing",
-                "certificateArn": "arn:aws:iot:us-east-1:123456789012:cert/certFile"
+                "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/MyIotThing",
+                "certificateArn": "arn:aws:iot:us-west-2:123456789012:cert/certFile"
             },
             "parallelRun": false
         },
@@ -33,7 +33,7 @@ Output::
                             "status": "PASS",
                             "startTime": "2022-11-12T00:01:53.693000-05:00",
                             "endTime": "2022-11-12T00:02:15.443000-05:00",
-                            "logUrl": "https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logEventViewer:group=/aws/iot/deviceadvisor/qqcsmtyyjabl;stream=nzlfyhaa18oa_2ve2twrqyr0s",
+                            "logUrl": "https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEventViewer:group=/aws/iot/deviceadvisor/qqcsmtyyjabl;stream=nzlfyhaa18oa_2ve2twrqyr0s",
                             "warnings": "null",
                             "failure": "null"
                         }

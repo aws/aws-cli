@@ -14,7 +14,7 @@ Output::
             "DBClusterParameterGroupName": "mydbclusterparametergroup",
             "DBParameterGroupFamily": "aurora5.6",
             "Description": "My new cluster parameter group",
-            "DBClusterParameterGroupArn": "arn:aws:rds:us-east-1:123456789012:cluster-pg:mydbclusterparametergroup"
+            "DBClusterParameterGroupArn": "arn:aws:rds:us-west-2:123456789012:cluster-pg:mydbclusterparametergroup"
         }
     }
 

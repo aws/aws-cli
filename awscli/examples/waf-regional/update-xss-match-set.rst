@@ -3,7 +3,7 @@
 The following ``update-xss-match-set`` example deletes an ``XssMatchTuple`` object (filters) in an ``XssMatchSet``. Because the ``updates`` value contains embedded double quotes, you must surround the entire value with single quotes. ::
 
     aws waf-regional update-xss-match-set \
-        --xss-match-set-id a123fae4-b567-8e90-1234-5ab67ac8ca90 \
+        --xss-match-set-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1 \
         --updates 'Action="DELETE",XssMatchTuple={FieldToMatch={Type="QUERY_STRING"},TextTransformation="URL_DECODE"}'
 

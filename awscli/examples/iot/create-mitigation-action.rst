@@ -24,7 +24,7 @@ Output::
 
     {
         "actionArn": "arn:aws:iot:us-west-2:123456789012:mitigationaction/AddThingsToQuarantineGroup1Action",
-        "actionId": "992e9a63-a899-439a-aa50-4e20c52367e1"
+        "actionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `CreateMitigationAction (Mitigation Action Commands) <https://docs.aws.amazon.com/iot-device-defender/latest/devguide/mitigation-action-commands.html>`__ in the *AWS IoT Developer Guide*.

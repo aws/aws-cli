@@ -10,15 +10,15 @@ Output::
         "domains": [
             {
                 "name": "my-domain",
-                "owner": "111122223333",
+                "owner": "123456789012",
                 "status": "Active",
-                "encryptionKey": "arn:aws:kms:us-west-2:111122223333:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+                "encryptionKey": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             },
             {
                 "name": "test-domain",
-                "owner": "111122223333",
+                "owner": "123456789012",
                 "status": "Active",
-                "encryptionKey": "arn:aws:kms:us-west-2:111122223333:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
+                "encryptionKey": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ]
     }

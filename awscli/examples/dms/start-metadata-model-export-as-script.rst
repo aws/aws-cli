@@ -3,8 +3,8 @@
 The following ``start-metadata-model-export-as-script`` example queues an export of converted metadata models for all objects in the ``ExampleSchema`` schema as data definition language (DDL) scripts to the Amazon S3 bucket associated with the migration project. ::
 
     aws dms start-metadata-model-export-as-script \
-        --migration-project-identifier arn:aws:dms:us-east-1:123456789012:migration-project:EXAMPLEABCDEFGHIJKLMNOPQRS \
-        --selection-rules '{"rules": [{"rule-type": "selection","rule-id": "1","rule-name": "1","object-locator": {"server-name": "example-target-server.us-east-1.rds.amazonaws.com", "schema-name": "ExampleSchema"},"rule-action": "explicit"}]}' \
+        --migration-project-identifier arn:aws:dms:us-west-2:123456789012:migration-project:EXAMPLEABCDEFGHIJKLMNOPQRS \
+        --selection-rules '{"rules": [{"rule-type": "selection","rule-id": "1","rule-name": "1","object-locator": {"server-name": "example-target-server.us-west-2.rds.amazonaws.com", "schema-name": "ExampleSchema"},"rule-action": "explicit"}]}' \
         --origin TARGET \
         --file-name ExampleScript
 

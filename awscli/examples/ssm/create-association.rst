@@ -21,7 +21,7 @@ Output::
                 "Status": "Pending",
                 "DetailedStatus": "Creating"
             },
-            "AssociationId": "b7c3266e-a544-44db-877e-b20d3a108189",
+            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DocumentVersion": "$DEFAULT",
             "LastUpdateAssociationDate": 1487875500.33,
             "Date": 1487875500.33,
@@ -61,7 +61,7 @@ Output::
                 "Status": "Pending",
                 "DetailedStatus": "Creating"
             },
-            "AssociationId": "b7c3266e-a544-44db-877e-b20d3a108189",
+            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DocumentVersion": "$DEFAULT",
             "LastUpdateAssociationDate": 1487875500.33,
             "Date": 1487875500.33,
@@ -103,7 +103,7 @@ Output::
                 "Status": "Pending",
                 "DetailedStatus": "Creating"
             },
-            "AssociationId": "b7c3266e-a544-44db-877e-b20d3a108189",
+            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DocumentVersion": "$DEFAULT",
             "LastUpdateAssociationDate": 1487875500.33,
             "Date": 1487875500.33,

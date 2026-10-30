@@ -52,7 +52,7 @@ Output::
             "DhcpOptionsId": "dopt-19edf471",
             "State": "pending",
             "VpcId": "vpc-0a53287fa4EXAMPLE",
-            "OwnerId": "111122223333",
+            "OwnerId": "123456789012",
             "InstanceTenancy": "dedicated",
             "Ipv6CidrBlockAssociationSet": [],
             "CidrBlockAssociationSet": [

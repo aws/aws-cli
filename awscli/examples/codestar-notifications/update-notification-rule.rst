@@ -13,11 +13,11 @@ Contents of ``update.json``::
         "EventTypeIds": [
             "codecommit-repository-branches-and-tags-created"
         ],
-        "Resource": "arn:aws:codecommit:us-east-1:123456789012:MyDemoRepo",
+        "Resource": "arn:aws:codecommit:us-west-2:123456789012:MyDemoRepo",
         "Targets": [
             {
                 "TargetType": "SNS",
-                "TargetAddress": "arn:aws:sns:us-east-1:123456789012:MyNotificationTopic"
+                "TargetAddress": "arn:aws:sns:us-west-2:123456789012:MyNotificationTopic"
             }
         ],
         "Status": "ENABLED",

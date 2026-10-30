@@ -8,7 +8,7 @@ The following ``delete-lifecycle-policy`` example deletes the lifecycle policy f
 Output::
 
     {
-        "registryId": "012345678910",
+        "registryId": "123456789012",
         "repositoryName": "hello-world",
         "lifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"description\":\"Remove untagged images.\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"sinceImagePushed\",\"countUnit\":\"days\",\"countNumber\":10},\"action\":{\"type\":\"expire\"}}]}",
         "lastEvaluatedAt": 0.0

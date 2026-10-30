@@ -13,7 +13,7 @@ Output::
     {
         "Handshake": {
             "Action": "INVITE",
-            "Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111",
+            "Arn": "arn:aws:organizations::123456789012:handshake/o-exampleorgid/invite/h-examplehandshakeid111",
             "ExpirationTimestamp": 1482952459.257,
             "Id": "h-examplehandshakeid111",
             "Parties": [

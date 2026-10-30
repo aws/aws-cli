@@ -4,7 +4,7 @@ The following ``create-portfolio-share`` example shares the specified portfolio 
 
     aws servicecatalog create-portfolio-share \
         --portfolio-id port-2s6abcdef5wdh4 \
-        --account-id 794123456789
+        --account-id 123456789012
 
 This command produces no output.
 

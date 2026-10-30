@@ -8,7 +8,7 @@ Output::
 
     {
         "replicationSetArns": [
-            "arn:aws:ssm-incidents::111122223333:replication-set/c4bcb603-4bf9-bb3f-413c-08df53673b57"
+            "arn:aws:ssm-incidents::123456789012:replication-set/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         ]
     }
 

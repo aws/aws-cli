@@ -10,7 +10,7 @@ Output::
 
     {
         "update": {
-            "id": "5f78d14e-c57b-4857-a3e4-cf664ae20949",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "InProgress",
             "type": "DisassociateIdentityProviderConfig",
             "params": [

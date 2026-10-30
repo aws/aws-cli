@@ -117,7 +117,7 @@ Contents of ``config.json``::
                     }
                 ],
                 "IamInstanceProfile": {
-                    "Arn": "arn:aws:iam::880185128111:instance-profile/my-iam-role"
+                    "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
                 }
             }
         ]

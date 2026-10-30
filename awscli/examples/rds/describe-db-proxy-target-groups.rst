@@ -12,7 +12,7 @@ Output::
             {
                 "DBProxyName": "proxyExample",
                 "TargetGroupName": "default",
-                "TargetGroupArn": "arn:aws:rds:us-east-1:123456789012:target-group:prx-tg-0123a01b12345c0ab",
+                "TargetGroupArn": "arn:aws:rds:us-west-2:123456789012:target-group:prx-tg-0123a01b12345c0ab",
                 "IsDefault": true,
                 "Status": "available",
                 "ConnectionPoolConfig": {

@@ -3,7 +3,7 @@
 The following ``get-associated-role`` example gets the IAM role that's associated with the specified Greengrass group. The group role is used by local Lambda functions and connectors to access AWS services. ::
 
     aws greengrass get-associated-role \
-        --group-id 2494ee3f-7f8a-4e92-a78b-d205f808b84b
+        --group-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

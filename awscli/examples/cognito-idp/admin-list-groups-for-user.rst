@@ -14,7 +14,7 @@ Output::
                 "Description": "Sample group",
                 "Precedence": 1,
                 "LastModifiedDate": 1548097827.125,
-                "RoleArn": "arn:aws:iam::111111111111:role/SampleRole",
+                "RoleArn": "arn:aws:iam::123456789012:role/SampleRole",
                 "GroupName": "SampleGroup",
                 "UserPoolId": "us-west-2_aaaaaaaaa",
                 "CreationDate": 1548097827.125

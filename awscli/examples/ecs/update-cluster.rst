@@ -37,7 +37,7 @@ Output::
             ],
             "attachments": [
                 {
-                    "id": "069d002b-7634-42e4-b1d4-544f4c8f6380",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "type": "as_policy",
                     "status": "CREATED",
                     "details": [
@@ -52,7 +52,7 @@ Output::
                     ]
                 },
                 {
-                    "id": "08b5b6ca-45e9-4209-a65d-e962a27c490a",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                     "type": "managed_draining",
                     "status": "CREATED",
                     "details": [
@@ -67,7 +67,7 @@ Output::
                     ]
                 },
                 {
-                    "id": "45d0b36f-8cff-46b6-9380-1288744802ab",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "type": "sc",
                     "status": "ATTACHED",
                     "details": []
@@ -119,7 +119,7 @@ Output::
             ],
             "attachments": [
                 {
-                    "id": "069d002b-7634-42e4-b1d4-544f4c8f6380",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "type": "as_policy",
                     "status": "CREATED",
                     "details": [
@@ -134,7 +134,7 @@ Output::
                     ]
                 },
                 {
-                    "id": "08b5b6ca-45e9-4209-a65d-e962a27c490a",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                     "type": "managed_draining",
                     "status": "CREATED",
                     "details": [
@@ -149,19 +149,19 @@ Output::
                     ]
                 },
                 {
-                    "id": "45d0b36f-8cff-46b6-9380-1288744802ab",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "type": "sc",
                     "status": "DELETED",
                     "details": []
                 },
                 {
-                    "id": "3e6890c3-609c-4832-91de-d6ca891b3ef1",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                     "type": "sc",
                     "status": "ATTACHED",
                     "details": []
                 },
                 {
-                    "id": "961b8ec1-c2f1-4070-8495-e669b7668e90",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                     "type": "sc",
                     "status": "DELETED",
                     "details": []

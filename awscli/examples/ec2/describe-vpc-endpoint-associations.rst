@@ -13,10 +13,10 @@ Output::
                 "VpcEndpointId": "vpce-019b90d6f16d4f958",
                 "AssociatedResourceAccessibility": "Accessible",
                 "DnsEntry": {
-                    "DnsName": "vpce-019b90d6f16d4f958.rcfg-07129f3acded87625.4232ccc.vpc-lattice-rsc.us-east-2.on.aws",
+                    "DnsName": "vpce-019b90d6f16d4f958.rcfg-07129f3acded87625.4232ccc.vpc-lattice-rsc.us-west-2.on.aws",
                     "HostedZoneId": "Z03265862FOUNWMZOKUF4"
                 },
-                "AssociatedResourceArn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourceconfiguration/rcfg-07129f3acded87625"
+                "AssociatedResourceArn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourceconfiguration/rcfg-07129f3acded87625"
             }
         ]
     }

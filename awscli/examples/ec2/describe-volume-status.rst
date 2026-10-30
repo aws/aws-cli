@@ -23,7 +23,7 @@ Output::
                         }
                     ]
                 },
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "VolumeId": "vol-1234567890abcdef0",
                 "Actions": [],
                 "Events": []

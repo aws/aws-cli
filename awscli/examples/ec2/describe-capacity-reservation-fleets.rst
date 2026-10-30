@@ -19,7 +19,7 @@ Output::
                 "InstanceTypeSpecifications": [
                     {
                         "CapacityReservationId": "cr-1234567890abcdef0", 
-                        "AvailabilityZone": "us-east-1a", 
+                        "AvailabilityZone": "us-west-2a", 
                         "FulfilledCapacity": 5.0, 
                         "Weight": 1.0, 
                         "CreateDate": "2022-07-02T08:34:33.398Z", 

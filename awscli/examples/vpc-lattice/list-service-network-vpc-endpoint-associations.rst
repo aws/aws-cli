@@ -11,7 +11,7 @@ Output::
         "items": [
             {
                 "createdAt": "2025-02-01T01:21:36.667000+00:00",
-                "serviceNetworkArn": "arn:aws:vpc-lattice:us-east-1:123456789012:servicenetwork/sn-0808d1748faee0c1e",
+                "serviceNetworkArn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetwork/sn-0808d1748faee0c1e",
                 "state": "ACTIVE",
                 "vpcEndpointId": "vpce-0cc199f605eaeace7",
                 "vpcEndpointOwnerId": "123456789012"

@@ -12,7 +12,7 @@ Output::
 
     {
         "Command": {
-            "CommandId": "92853adf-ba41-4cd6-9a88-142d1EXAMPLE",
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DocumentName": "AWS-RunShellScript",
             "DocumentVersion": "",
             "Comment": "echo HelloWorld",
@@ -174,7 +174,7 @@ The following ``send-command`` example runs a command that sends SNS notificatio
         --comment "IP config" \
         --parameters "commands=ifconfig" \
         --service-role-arn "arn:aws:iam::123456789012:role/SNS_Role" \
-        --notification-config "NotificationArn=arn:aws:sns:us-east-1:123456789012:SNSTopicName,NotificationEvents=All,NotificationType=Command"
+        --notification-config "NotificationArn=arn:aws:sns:us-west-2:123456789012:SNSTopicName,NotificationEvents=All,NotificationType=Command"
 
 Output::
 
@@ -207,7 +207,7 @@ Output::
             "DeliveryTimedOutCount": 0,
             "ServiceRole": "arn:aws:iam::123456789012:role/SNS_Role",
             "NotificationConfig": {
-                "NotificationArn": "arn:aws:sns:us-east-1:123456789012:SNSTopicName",
+                "NotificationArn": "arn:aws:sns:us-west-2:123456789012:SNSTopicName",
                 "NotificationEvents": [
                     "All"
                 ],
@@ -407,7 +407,7 @@ For more information, see `Running Commands Using Systems Manager Run Command <h
 The following ``send-command`` example runs a shared document on a target instance. ::
 
     aws ssm send-command \
-        --document-name "arn:aws:ssm:us-east-1:123456789012:document/ExampleDocument" \
+        --document-name "arn:aws:ssm:us-west-2:123456789012:document/ExampleDocument" \
         --targets "Key=instanceids,Values=i-1234567890abcdef0"
 
 Output::
@@ -415,7 +415,7 @@ Output::
     {
         "Command": {
             "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE88888",
-            "DocumentName": "arn:aws:ssm:us-east-1:123456789012:document/ExampleDocument",
+            "DocumentName": "arn:aws:ssm:us-west-2:123456789012:document/ExampleDocument",
             "DocumentVersion": "",
             "Comment": "",
             "ExpiresAfter": 1550181014.717,

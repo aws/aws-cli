@@ -59,7 +59,7 @@ Output::
             "DocumentVersion": "2",
             "HashType": "Sha256",
             "CreatedDate": 1487899655.152,
-            "Owner": "809632081692",
+            "Owner": "123456789012",
             "SchemaVersion": "2.0",
             "DefaultVersion": "1",
             "LatestVersion": "2",

@@ -11,7 +11,7 @@ Output::
         "ResolverRule": {
             "Id": "rslvr-rr-42b60677c0example",
             "CreatorRequestId": "2020-01-01-18:47",
-            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-rule/rslvr-rr-42b60677c0example",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-rule/rslvr-rr-42b60677c0example",
             "DomainName": "example.com.",
             "Status": "COMPLETE",
             "StatusMessage": "[Trace id: 1-5dc4b177-ff1d9d001a0f80005example] Successfully created Resolver Rule.",
@@ -24,7 +24,7 @@ Output::
                 }
             ],
             "ResolverEndpointId": "rslvr-out-d5e5920e37example",
-            "OwnerId": "111122223333",
+            "OwnerId": "123456789012",
             "ShareStatus": "NOT_SHARED"
         }
     }

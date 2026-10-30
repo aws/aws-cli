@@ -11,7 +11,7 @@ Output::
     {
         "operations": [
             {
-                "id": "fa74c6d2-03a3-4f42-a7c7-792f124d534b",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "DiskSnapshot-1",
                 "resourceType": "DiskSnapshot",
                 "createdAt": 1569625129.739,
@@ -26,7 +26,7 @@ Output::
                 "statusChangedAt": 1569625129.739
             },
             {
-                "id": "920a25df-185c-4528-87cd-7b85f5488c06",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "Disk-1",
                 "resourceType": "Disk",
                 "createdAt": 1569625129.739,
@@ -56,7 +56,7 @@ Output::
     {
         "operations": [
             {
-                "id": "f508cf1c-6597-42a6-a4c3-4aebd75af0d9",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "SystemDiskSnapshot-1",
                 "resourceType": "DiskSnapshot",
                 "createdAt": 1569625294.685,
@@ -71,7 +71,7 @@ Output::
                 "statusChangedAt": 1569625294.685
             },
             {
-                "id": "0bb9f712-da3b-4d99-b508-3bf871d989e5",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "resourceName": "WordPress-1",
                 "resourceType": "Instance",
                 "createdAt": 1569625294.685,

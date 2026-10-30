@@ -34,7 +34,7 @@ Output::
                 ],
                 "Tags": [],
                 "VpcId": "vpc-0065acced4EXAMPLE",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             },
             {
                 "Associations": [
@@ -62,7 +62,7 @@ Output::
                 ],
                 "Tags": [],
                 "VpcId": "vpc-3EXAMPLE",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             },
             {
                 "Associations": [
@@ -91,7 +91,7 @@ Output::
                 ],
                 "Tags": [],
                 "VpcId": "vpc-0065acced4EXAMPLE",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             }
         ]
     }

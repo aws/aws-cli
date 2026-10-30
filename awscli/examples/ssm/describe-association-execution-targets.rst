@@ -3,24 +3,24 @@
 The following ``describe-association-execution-targets`` example describes the specified association execution. ::
 
     aws ssm describe-association-execution-targets \
-        --association-id "8dfe3659-4309-493a-8755-0123456789ab" \
-        --execution-id "7abb6378-a4a5-4f10-8312-0123456789ab"
+        --association-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --execution-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
 
 Output::
 
     {
         "AssociationExecutionTargets": [
             {
-                "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AssociationVersion": "1",
-                "ExecutionId": "7abb6378-a4a5-4f10-8312-0123456789ab",
+                "ExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "ResourceId": "i-1234567890abcdef0",
                 "ResourceType": "ManagedInstance",
                 "Status": "Success",
                 "DetailedStatus": "Success",
                 "LastExecutionDate": 1550505538.497,
                 "OutputSource": {
-                    "OutputSourceId": "97fff367-fc5a-4299-aed8-0123456789ab",
+                    "OutputSourceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "OutputSourceType": "RunCommand"
                 }
             }

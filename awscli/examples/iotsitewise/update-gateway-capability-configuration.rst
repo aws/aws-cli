@@ -10,7 +10,7 @@ The following ``update-gateway-capability-configuration`` example configures an 
 The capability configuration is in the ``opc-ua-capability-configuration.json`` file. ::
 
     aws iotsitewise update-gateway-capability-configuration \
-        --gateway-id a1b2c3d4-5678-90ab-cdef-1a1a1EXAMPLE \
+        --gateway-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --capability-namespace "iotsitewise:opcuacollector:1" \
         --capability-configuration file://opc-ua-capability-configuration.json
 

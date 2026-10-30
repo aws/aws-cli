@@ -12,7 +12,7 @@ Output::
         "Association": {
             "TransitGatewayRouteTableId": "tgw-rtb-002573ed1eEXAMPLE",
             "TransitGatewayAttachmentId": "tgw-attach-08e0bc912cEXAMPLE",
-            "ResourceId": "11460968-4ac1-4fd3-bdb2-00599EXAMPLE",
+            "ResourceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "ResourceType": "direct-connect-gateway",
             "State": "disassociating"
         }

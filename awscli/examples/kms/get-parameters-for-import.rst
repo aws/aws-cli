@@ -5,14 +5,14 @@ The following ``get-parameters-for-import`` example gets the public key and impo
 To specify the KMS key, use the ``key-id`` parameter. This example uses an key ID, but you can use a key ID or key ARN in this command. ::
 
     aws kms get-parameters-for-import \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --wrapping-algorithm RSAES_OAEP_SHA_256 \
         --wrapping-key-spec RSA_2048
 
 Output::
 
     {
-        "KeyId": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "PublicKey": "<public key base64 encoded data>",
         "ImportToken": "<import token base64 encoded data>",
         "ParametersValidTo": 1593893322.32

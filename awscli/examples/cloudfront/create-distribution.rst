@@ -366,8 +366,8 @@ Contents of ``dist-config.json``::
             "Quantity": 1,
             "Items": [
                 {
-                    "Id": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
-                    "DomainName": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+                    "Id": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
+                    "DomainName": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
                     "OriginPath": "/{{tenantName}}",
                     "CustomHeaders": {
                         "Quantity": 0
@@ -379,7 +379,7 @@ Contents of ``dist-config.json``::
             ]
         },
         "DefaultCacheBehavior": {
-            "TargetOriginId": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+            "TargetOriginId": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e5ABC",
             "ViewerProtocolPolicy": "allow-all",
             "AllowedMethods": {
@@ -393,7 +393,7 @@ Contents of ``dist-config.json``::
         },
         "Enabled": true,
         "ViewerCertificate": {
-            "ACMCertificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/191306a1-db01-49ca-90ef-fc414ee5dabc",
+            "ACMCertificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "SSLSupportMethod": "sni-only"
         },
         "HttpVersion": "http2",
@@ -441,8 +441,8 @@ Output::
                     "Quantity": 1,
                     "Items": [
                         {
-                            "Id": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
-                            "DomainName": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+                            "Id": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
+                            "DomainName": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
                             "OriginPath": "/{{tenantName}}",
                             "CustomHeaders": {
                                 "Quantity": 0
@@ -463,7 +463,7 @@ Output::
                     "Quantity": 0
                 },
                 "DefaultCacheBehavior": {
-                    "TargetOriginId": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+                    "TargetOriginId": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
                     "TrustedKeyGroups": {
                         "Enabled": false,
                         "Quantity": 0
@@ -558,8 +558,8 @@ Contents of ``dist-config.json``::
             "Quantity": 1,
             "Items": [
                 {
-                    "Id": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
-                    "DomainName": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+                    "Id": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
+                    "DomainName": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
                     "OriginPath": "/{{tenantName}}",
                     "CustomHeaders": {
                         "Quantity": 0
@@ -571,7 +571,7 @@ Contents of ``dist-config.json``::
             ]
         },
         "DefaultCacheBehavior": {
-            "TargetOriginId": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+            "TargetOriginId": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e5ABC",
             "ViewerProtocolPolicy": "allow-all",
             "AllowedMethods": {
@@ -635,8 +635,8 @@ Output::
                     "Quantity": 1,
                     "Items": [
                         {
-                            "Id": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
-                            "DomainName": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+                            "Id": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
+                            "DomainName": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
                             "OriginPath": "/{{tenantName}}",
                             "CustomHeaders": {
                                 "Quantity": 0
@@ -657,7 +657,7 @@ Output::
                     "Quantity": 0
                 },
                 "DefaultCacheBehavior": {
-                    "TargetOriginId": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+                    "TargetOriginId": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
                     "TrustedKeyGroups": {
                         "Enabled": false,
                         "Quantity": 0

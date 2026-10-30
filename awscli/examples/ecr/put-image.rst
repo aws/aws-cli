@@ -80,7 +80,7 @@ Output::
 
     {
         "image": {
-            "registryId": "130757420319",
+            "registryId": "123456789012",
             "repositoryName": "hello-world",
             "imageId": {
                 "imageDigest": "sha256:8ece96b74f87652876199d83bd107d0435a196133af383ac54cb82b6cc5283ae",

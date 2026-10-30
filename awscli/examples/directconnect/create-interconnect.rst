@@ -10,7 +10,7 @@ The following ``create-interconnect`` example creates an interconnect between an
 Output::
 
     {
-        "region": "sa-east-1",
+        "region": "us-west-2",
         "bandwidth": "1Gbps",
         "location": "TIVIT",
         "interconnectName": "1G Interconnect to AWS",

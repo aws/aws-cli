@@ -6,7 +6,7 @@ Because the ``--policy`` parameter of ``put-key-policy`` requires a string, you 
 
     aws kms get-key-policy \
         --policy-name default \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --query Policy \
         --output text > policy.txt
 
@@ -14,7 +14,7 @@ The following ``put-key-policy`` example uses the ``policy.txt`` file to replace
 
     aws kms put-key-policy \
         --policy-name default \
-        --key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --policy file://policy.txt
 
 Contents of ``policy.txt``::

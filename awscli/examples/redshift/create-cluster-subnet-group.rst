@@ -16,7 +16,7 @@ Output::
                     "SubnetStatus": "Active",
                     "SubnetIdentifier": "subnet-763fdd1c",
                     "SubnetAvailabilityZone": {
-                        "Name": "us-east-1a"
+                        "Name": "us-west-2a"
                     }
                 } ],
             "VpcId": "vpc-7e3fdd14",

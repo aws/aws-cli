@@ -24,12 +24,12 @@ Output::
                     ],
                     "AdjustmentType": "PercentChangeInCapacity"
                 },
-                "PolicyARN": "arn:aws:autoscaling:us-west-2:012345678910:scalingPolicy:6d8972f3-efc8-437c-92d1-6270f29a66e7:resource/ecs/service/default/web-app:policyName/web-app-cpu-gt-75",
+                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:resource/ecs/service/default/web-app:policyName/web-app-cpu-gt-75",
                 "PolicyType": "StepScaling",
                 "Alarms": [
                     {
                         "AlarmName": "web-app-cpu-gt-75",
-                        "AlarmARN": "arn:aws:cloudwatch:us-west-2:012345678910:alarm:web-app-cpu-gt-75"
+                        "AlarmARN": "arn:aws:cloudwatch:us-west-2:123456789012:alarm:web-app-cpu-gt-75"
                     }
                 ],
                 "ServiceNamespace": "ecs"
@@ -49,12 +49,12 @@ Output::
                     ],
                     "AdjustmentType": "PercentChangeInCapacity"
                 },
-                "PolicyARN": "arn:aws:autoscaling:us-west-2:012345678910:scalingPolicy:6d8972f3-efc8-437c-92d1-6270f29a66e7:resource/ecs/service/default/web-app:policyName/web-app-cpu-lt-25",
+                "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:resource/ecs/service/default/web-app:policyName/web-app-cpu-lt-25",
                 "PolicyType": "StepScaling",
                 "Alarms": [
                     {
                         "AlarmName": "web-app-cpu-lt-25",
-                        "AlarmARN": "arn:aws:cloudwatch:us-west-2:012345678910:alarm:web-app-cpu-lt-25"
+                        "AlarmARN": "arn:aws:cloudwatch:us-west-2:123456789012:alarm:web-app-cpu-lt-25"
                     }
                 ],
                 "ServiceNamespace": "ecs"

@@ -10,19 +10,19 @@ Output::
     {
         "Targets": [
             {
-                "Arn": "arn:aws:organizations::111111111111:root/o-exampleorgid/r-examplerootid111",
+                "Arn": "arn:aws:organizations::123456789012:root/o-exampleorgid/r-examplerootid111",
                 "Name": "Root",
                 "TargetId": "r-examplerootid111",
                 "Type": "ROOT"
             },
             {
-                "Arn": "arn:aws:organizations::111111111111:account/o-exampleorgid/333333333333",
+                "Arn": "arn:aws:organizations::123456789012:account/o-exampleorgid/123456789222",
                 "Name": "Developer Test Account",
-                "TargetId": "333333333333",
+                "TargetId": "123456789222",
                 "Type": "ACCOUNT"
             },
             {
-                "Arn": "arn:aws:organizations::111111111111:ou/o-exampleorgid/ou-examplerootid111-exampleouid111",
+                "Arn": "arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-examplerootid111-exampleouid111",
                 "Name": "Accounting",
                 "TargetId": "ou-examplerootid111-exampleouid111",
                 "Type": "ORGANIZATIONAL_UNIT"

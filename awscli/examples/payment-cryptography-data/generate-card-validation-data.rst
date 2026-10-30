@@ -3,14 +3,14 @@
 The following ``generate-card-validation-data`` example generates a CVV/CVV2. ::
 
     aws payment-cryptography-data generate-card-validation-data \
-        --key-identifier arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h \
+        --key-identifier arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h \
         --primary-account-number=171234567890123 \
         --generation-attributes CardVerificationValue2={CardExpiryDate=0123}
         
 Output::
 
     {
-        "KeyArn": "arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h",
+        "KeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h",
         "KeyCheckValue": "CADDA1",
         "ValidationData": "801"
     }

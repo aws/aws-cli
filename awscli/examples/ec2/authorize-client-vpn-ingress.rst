@@ -3,7 +3,7 @@
 The following ``authorize-client-vpn-ingress`` example adds an ingress authorization rule that permits all clients to access the internet (``0.0.0.0/0``). ::
 
     aws ec2 authorize-client-vpn-ingress \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde \
+        --client-vpn-endpoint-id cvpn-endpoint-123456789012abcde \
         --target-network-cidr 0.0.0.0/0 \
         --authorize-all-groups
 

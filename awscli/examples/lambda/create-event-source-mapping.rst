@@ -10,7 +10,7 @@ The following ``create-event-source-mapping`` example creates a mapping between 
 Output::
 
     {
-        "UUID": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+        "UUID": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "StateTransitionReason": "USER_INITIATED",
         "LastModified": 1569284520.333,
         "BatchSize": 5,

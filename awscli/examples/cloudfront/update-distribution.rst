@@ -22,7 +22,7 @@ Output::
                 "Quantity": 0
             },
             "DistributionConfig": {
-                "CallerReference": "6b10378d-49be-4c4b-a642-419ccaf8f3b5",
+                "CallerReference": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Aliases": {
                     "Quantity": 0
                 },

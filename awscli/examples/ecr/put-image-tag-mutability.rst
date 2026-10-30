@@ -9,7 +9,7 @@ The following ``put-image-tag-mutability`` example configures the specified repo
 Output::
 
     {
-        "registryId": "012345678910",
+        "registryId": "123456789012",
         "repositoryName": "sample-repo",
         "imageTagMutability": "IMMUTABLE"
     }

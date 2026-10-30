@@ -33,9 +33,9 @@ Output::
         "DBCluster": {
             "AllocatedStorage": 20,
             "AvailabilityZones": [
-                "eu-central-1b",
-                "eu-central-1c",
-                "eu-central-1a"
+                "us-west-2b",
+                "us-west-2c",
+                "us-west-2a"
             ],
             "BackupRetentionPeriod": 7,
             "DBClusterIdentifier": "mycluster",

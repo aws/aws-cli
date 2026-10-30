@@ -4,7 +4,7 @@ The following ``tag-resource`` example adds a tag key ``project`` and associated
 
     aws ram tag-resource \
         --tags key=project,value=lima \
-        --resource-share-arn arn:aws:ram:us-west-2:123456789012:resource-share/7ab63972-b505-7e2a-420d-6f5d3EXAMPLE
+        --resource-share-arn arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

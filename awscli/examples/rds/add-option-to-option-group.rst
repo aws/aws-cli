@@ -54,7 +54,7 @@ Output::
                 }
             ],
             "AllowsVpcAndNonVpcInstanceMemberships": false,
-            "OptionGroupArn": "arn:aws:rds:us-east-1:123456789012:og:myoptiongroup"
+            "OptionGroupArn": "arn:aws:rds:us-west-2:123456789012:og:myoptiongroup"
         }
     }
 

@@ -3,7 +3,7 @@
 The following ``get-public-key-certificate`` example returns the public key portion of a key pair. ::
 
     aws payment-cryptography get-public-key-certificate \
-        --key-identifier arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h
+        --key-identifier arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h
 
 Output::
 

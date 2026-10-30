@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the Department tag from the specified hub resource. ::
 
     aws securityhub untag-resource \
-        --resource-arn "arn:aws:securityhub:us-west-1:123456789012:hub/default" \
+        --resource-arn "arn:aws:securityhub:us-west-2:123456789012:hub/default" \
         --tag-keys "Department"
 
 This command produces no output.

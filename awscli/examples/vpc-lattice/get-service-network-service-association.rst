@@ -8,18 +8,18 @@ The following ``get-service-network-service-association`` example gets informati
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetworkserviceassociation/snsa-031fabb4d8EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetworkserviceassociation/snsa-031fabb4d8EXAMPLE",
         "createdAt": "2023-05-05T21:48:16.076Z",
         "createdBy": "123456789012",
         "dnsEntry": {
-            "domainName": "my-lattice-service-0285b53b2eEXAMPLE.7d67968.vpc-lattice-svcs.us-east-2.on.aws",
+            "domainName": "my-lattice-service-0285b53b2eEXAMPLE.7d67968.vpc-lattice-svcs.us-west-2.on.aws",
             "hostedZoneId": "Z09127221KTH2CEXAMPLE"
         },
         "id": "snsa-031fabb4d8EXAMPLE",
-        "serviceArn": "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE",
+        "serviceArn": "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE",
         "serviceId": "svc-0285b53b2eEXAMPLE",
         "serviceName": "my-lattice-service",
-        "serviceNetworkArn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
+        "serviceNetworkArn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
         "serviceNetworkId": "sn-080ec7dc93EXAMPLE",
         "serviceNetworkName": "my-service-network",
         "status": "ACTIVE"

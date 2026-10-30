@@ -11,7 +11,7 @@ Output::
         "Group": {
             "Id": "example123",
             "Name": "demo_group",
-            "Arn": "arn:aws:synthetics:us-east-1:123456789012:group:example123",
+            "Arn": "arn:aws:synthetics:us-west-2:123456789012:group:example123",
             "Tags": {},
             "CreatedTime": "2024-10-15T14:47:23.811000+05:30",
             "LastModifiedTime": "2024-10-15T14:47:23.811000+05:30"

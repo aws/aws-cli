@@ -10,6 +10,6 @@ Output::
     {
         "namespaceName": "us-west-2/123456789012/default",
         "namespaceVersion": 5,
-        "uploadId": "f6294f1e-b109-4bbe-9073-f451a2dda2da",
+        "uploadId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "uploadStatus": "SUCCEEDED"
     }

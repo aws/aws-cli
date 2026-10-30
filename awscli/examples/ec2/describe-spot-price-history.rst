@@ -16,21 +16,21 @@ Output::
                 "ProductDescription": "SUSE Linux",
                 "InstanceType": "m1.xlarge",
                 "SpotPrice": "0.087000",
-                "AvailabilityZone": "us-west-1b"
+                "AvailabilityZone": "us-west-2b"
             },
             {
                 "Timestamp": "2014-01-06T07:10:55.000Z",
                 "ProductDescription": "SUSE Linux",
                 "InstanceType": "m1.xlarge",
                 "SpotPrice": "0.087000",
-                "AvailabilityZone": "us-west-1c"
+                "AvailabilityZone": "us-west-2c"
             },
             {
                 "Timestamp": "2014-01-06T05:42:36.000Z",
                 "ProductDescription": "SUSE Linux (Amazon VPC)",
                 "InstanceType": "m1.xlarge",
                 "SpotPrice": "0.087000",
-                "AvailabilityZone": "us-west-1a"
+                "AvailabilityZone": "us-west-2a"
             }
         ]
     }
@@ -56,14 +56,14 @@ Output::
                 "ProductDescription": "Linux/UNIX (Amazon VPC)",
                 "InstanceType": "m1.xlarge",
                 "SpotPrice": "0.080000",
-                "AvailabilityZone": "us-west-1a"
+                "AvailabilityZone": "us-west-2a"
             },
             {
                 "Timestamp": "2014-01-05T11:28:26.000Z",
                 "ProductDescription": "Linux/UNIX (Amazon VPC)",
                 "InstanceType": "m1.xlarge",
                 "SpotPrice": "0.080000",
-                "AvailabilityZone": "us-west-1c"
+                "AvailabilityZone": "us-west-2c"
             }
         ]
     }

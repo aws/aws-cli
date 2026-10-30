@@ -15,7 +15,7 @@ Output::
             "GroupName": "MyGroup",
             "UserPoolId": "us-west-2_aaaaaaaaa",
             "Description": "New description",
-            "RoleArn": "arn:aws:iam::111111111111:role/MyRole",
+            "RoleArn": "arn:aws:iam::123456789012:role/MyRole",
             "Precedence": 2,
             "LastModifiedDate": 1548800862.812,
             "CreationDate": 1548097827.125

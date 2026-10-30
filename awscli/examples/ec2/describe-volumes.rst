@@ -10,7 +10,7 @@ Output::
     {
         "Volumes": [
             {
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "Attachments": [
                     {
                         "AttachTime": "2013-12-18T22:35:00.000Z",
@@ -22,7 +22,7 @@ Output::
                     }
                 ],
                 "Encrypted": true,
-                "KmsKeyId": "arn:aws:kms:us-east-2a:123456789012:key/8c5b2c63-b9bc-45a3-a87a-5513eEXAMPLE",
+                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "VolumeType": "gp2",
                 "VolumeId": "vol-049df61146c4d7901",
                 "State": "in-use",
@@ -32,7 +32,7 @@ Output::
                 "Size": 8
             },
             {
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "Attachments": [],
                 "Encrypted": false,
                 "VolumeType": "gp2",
@@ -58,7 +58,7 @@ Output::
     {
         "Volumes": [
             {
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "Attachments": [
                     {
                         "AttachTime": "2013-12-18T22:35:00.000Z",
@@ -70,7 +70,7 @@ Output::
                     }
                 ],
                 "Encrypted": true,
-                "KmsKeyId": "arn:aws:kms:us-east-2a:123456789012:key/8c5b2c63-b9bc-45a3-a87a-5513eEXAMPLE",
+                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "VolumeType": "gp2",
                 "VolumeId": "vol-049df61146c4d7901",
                 "State": "in-use",
@@ -87,14 +87,14 @@ Output::
 The following ``describe-volumes`` example describes all volumes that have a status of ``available`` and are in the specified Availability Zone. ::
 
     aws ec2 describe-volumes \
-        --filters Name=status,Values=available Name=availability-zone,Values=us-east-1a
+        --filters Name=status,Values=available Name=availability-zone,Values=us-west-2a
 
 Output::
 
     {
         "Volumes": [
             {
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "Attachments": [],
                 "Encrypted": false,
                 "VolumeType": "gp2",

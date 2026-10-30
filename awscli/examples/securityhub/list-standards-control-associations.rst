@@ -10,9 +10,9 @@ Output::
     {
         "StandardsControlAssociationSummaries": [
             {
-                "StandardsArn": "arn:aws:securityhub:us-east-2::standards/nist-800-53/v/5.0.0",
+                "StandardsArn": "arn:aws:securityhub:us-west-2::standards/nist-800-53/v/5.0.0",
                 "SecurityControlId": "CloudTrail.1",
-                "SecurityControlArn": "arn:aws:securityhub:us-east-2:123456789012:security-control/CloudTrail.1",
+                "SecurityControlArn": "arn:aws:securityhub:us-west-2:123456789012:security-control/CloudTrail.1",
                 "AssociationStatus": "ENABLED",
                 "RelatedRequirements": [
                     "NIST.800-53.r5 AC-2(4)",
@@ -39,7 +39,7 @@ Output::
             {
                 "StandardsArn": "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0",
                 "SecurityControlId": "CloudTrail.1",
-                "SecurityControlArn": "arn:aws:securityhub:us-east-2:123456789012:security-control/CloudTrail.1",
+                "SecurityControlArn": "arn:aws:securityhub:us-west-2:123456789012:security-control/CloudTrail.1",
                 "AssociationStatus": "ENABLED",
                 "RelatedRequirements": [
                     "CIS AWS Foundations 2.1"
@@ -49,9 +49,9 @@ Output::
                 "StandardsControlDescription": "AWS CloudTrail is a web service that records AWS API calls for your account and delivers log files to you. The recorded information includes the identity of the API caller, the time of the API call, the source IP address of the API caller, the request parameters, and the response elements returned by the AWS service."
             },
             {
-                "StandardsArn": "arn:aws:securityhub:us-east-2::standards/aws-foundational-security-best-practices/v/1.0.0",
+                "StandardsArn": "arn:aws:securityhub:us-west-2::standards/aws-foundational-security-best-practices/v/1.0.0",
                 "SecurityControlId": "CloudTrail.1",
-                "SecurityControlArn": "arn:aws:securityhub:us-east-2:123456789012:security-control/CloudTrail.1",
+                "SecurityControlArn": "arn:aws:securityhub:us-west-2:123456789012:security-control/CloudTrail.1",
                 "AssociationStatus": "DISABLED",
                 "RelatedRequirements": [],
                 "UpdatedAt": "2023-05-15T19:31:52.671000+00:00",
@@ -60,9 +60,9 @@ Output::
                 "StandardsControlDescription": "This AWS control checks that there is at least one multi-region AWS CloudTrail trail includes read and write management events."
             },
             {
-                "StandardsArn": "arn:aws:securityhub:us-east-2::standards/cis-aws-foundations-benchmark/v/1.4.0",
+                "StandardsArn": "arn:aws:securityhub:us-west-2::standards/cis-aws-foundations-benchmark/v/1.4.0",
                 "SecurityControlId": "CloudTrail.1",
-                "SecurityControlArn": "arn:aws:securityhub:us-east-2:123456789012:security-control/CloudTrail.1",
+                "SecurityControlArn": "arn:aws:securityhub:us-west-2:123456789012:security-control/CloudTrail.1",
                 "AssociationStatus": "ENABLED",
                 "RelatedRequirements": [
                     "CIS AWS Foundations Benchmark v1.4.0/3.1"

@@ -11,17 +11,17 @@ Output::
         "DBCluster": {
             "AllocatedStorage": 20,
             "AvailabilityZones": [
-                "us-east-1b",
-                "us-east-1c",
-                "us-east-1f"
+                "us-west-2b",
+                "us-west-2c",
+                "us-west-2d"
             ],
             "BackupRetentionPeriod": 7,
             "DBClusterIdentifier": "test-pg-multiaz-cluster",
             "DBClusterParameterGroup": "default.postgres17",
             "DBSubnetGroup": "default",
             "Status": "available",
-            "Endpoint": "test-pg-multiaz-cluster.cluster-cnpexample.us-east-1.rds.amazonaws.com",
-            "ReaderEndpoint": "test-pg-multiaz-cluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "Endpoint": "test-pg-multiaz-cluster.cluster-cnpexample.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "test-pg-multiaz-cluster.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
             "MultiAZ": true,
             "Engine": "postgres",
             "EngineVersion": "17.5"

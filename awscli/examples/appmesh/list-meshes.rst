@@ -9,7 +9,7 @@ Output::
     {
         "meshes": [
             {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1",
                 "meshName": "app1"
             }
         ]

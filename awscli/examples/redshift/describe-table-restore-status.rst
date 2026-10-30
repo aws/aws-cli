@@ -10,7 +10,7 @@ Output::
     {
         "TableRestoreStatusDetails": [
             {
-                "TableRestoreRequestId": "z1116630-0e80-46f4-ba86-bd9670411ebd",
+                "TableRestoreRequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Status": "IN_PROGRESS",
                 "RequestTime": "2019-12-27T18:22:12.257Z",
                 "ClusterIdentifier": "mycluster",

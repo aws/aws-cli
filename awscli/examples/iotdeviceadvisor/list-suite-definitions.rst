@@ -13,7 +13,7 @@ Output::
                 "suiteDefinitionName": "TestSuite1",
                 "defaultDevices": [
                     {
-                        "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/MyIotThing"
+                        "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"
                     }
                 ],
                 "intendedForQualification": false,

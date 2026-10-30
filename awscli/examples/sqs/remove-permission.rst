@@ -3,7 +3,7 @@
 The following ``remove-permission`` example removes the permission with the specified label from the specified queue. ::
 
     aws sqs remove-permission \
-        --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue \
+        --queue-url https://sqs.us-west-2.amazonaws.com/80398EXAMPLE/MyQueue \
         --label SendMessagesFromMyQueue
 
 This command produces no output.

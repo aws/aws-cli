@@ -18,11 +18,11 @@ Output::
                 {
                     "Identifier": "subnet-5623xxxx",
                     "AvailabilityZone": {
-                        "Name": "us-east-1a"
+                        "Name": "us-west-2a"
                     }
                 }
             ],
-            "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:subnetgroup/mysubnetgroup"
+            "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:subnetgroup/mysubnetgroup"
         }
     }
 

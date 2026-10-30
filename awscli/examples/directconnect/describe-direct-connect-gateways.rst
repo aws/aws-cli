@@ -10,14 +10,14 @@ Output::
         "directConnectGateways": [
             {
                 "amazonSideAsn": 64512,
-                "directConnectGatewayId": "cf68415c-f4ae-48f2-87a7-3b52cexample",
+                "directConnectGatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ownerAccount": "123456789012",
                 "directConnectGatewayName": "DxGateway2",
                 "directConnectGatewayState": "available"
             },
             {
                 "amazonSideAsn": 64512,
-                "directConnectGatewayId": "5f294f92-bafb-4011-916d-9b0bdexample",
+                "directConnectGatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "ownerAccount": "123456789012",
                 "directConnectGatewayName": "DxGateway1",
                 "directConnectGatewayState": "available"

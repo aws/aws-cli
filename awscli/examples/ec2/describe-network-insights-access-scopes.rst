@@ -10,7 +10,7 @@ Output::
         "NetworkInsightsAccessScopes": [
             {
                 "NetworkInsightsAccessScopeId": "nis-123456789111",
-                "NetworkInsightsAccessScopeArn": "arn:aws:ec2:us-east-1:123456789012:network-insights-access-scope/nis-123456789111",
+                "NetworkInsightsAccessScopeArn": "arn:aws:ec2:us-west-2:123456789012:network-insights-access-scope/nis-123456789111",
                 "CreatedDate": "2021-11-29T21:12:41.416000+00:00",
                 "UpdatedDate": "2021-11-29T21:12:41.416000+00:00",
                 "Tags": []

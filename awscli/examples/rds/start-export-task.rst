@@ -7,7 +7,7 @@ The following ``start-export-task`` example exports a DB snapshot named ``db5-sn
         --source-arn arn:aws:rds:us-west-2:123456789012:snapshot:db5-snapshot-test \
         --s3-bucket-name amzn-s3-demo-bucket \
         --iam-role-arn arn:aws:iam::123456789012:role/service-role/ExportRole \
-        --kms-key-id arn:aws:kms:us-west-2:123456789012:key/abcd0000-7fca-4128-82f2-aabbccddeeff
+        --kms-key-id arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -17,7 +17,7 @@ Output::
         "SnapshotTime": "2020-03-27T20:48:42.023Z",
         "S3Bucket": "amzn-s3-demo-bucket",
         "IamRoleArn": "arn:aws:iam::123456789012:role/service-role/ExportRole",
-        "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/abcd0000-7fca-4128-82f2-aabbccddeeff",
+        "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Status": "STARTING",
         "PercentProgress": 0,
         "TotalExtractedDataInGB": 0

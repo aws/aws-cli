@@ -4,13 +4,13 @@ The following ``describe-insight`` example returns the details about the insight
 
     aws eks describe-insight \
         --cluster-name eks-customer \
-        --id 38ea7a64-a14f-4e0e-95c7-8dbcab3c3623
+        --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "insight": {
-            "id": "38ea7a64-a14f-4e0e-95c7-8dbcab3c3623",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "name": "Kubelet version skew",
             "category": "UPGRADE_READINESS",
             "kubernetesVersion": "1.33",

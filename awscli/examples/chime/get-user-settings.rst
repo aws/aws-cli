@@ -3,8 +3,8 @@
 The following ``get-user-settings`` example displays the specified user settings. ::
 
     aws chime get-user-settings \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45 \
-        --user-id 1ab2345c-67de-8901-f23g-45h678901j2k
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --user-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 

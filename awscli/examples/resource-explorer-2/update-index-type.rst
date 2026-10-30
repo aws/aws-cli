@@ -3,14 +3,14 @@
 The following ``update-index-type`` example converts the specified index from type ``local`` to type ``aggregator`` to turn on the ability to search for resources across all AWS Regions in the account. You must send the request to the AWS Region that contains the index you want to update. ::
 
     aws resource-explorer-2 update-index-type \
-        --arn arn:aws:resource-explorer-2:us-east-1:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111 \
+        --arn arn:aws:resource-explorer-2:us-west-2:123456789012:index/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --type aggregator \
-        --region us-east-1
+        --region us-west-2
 
 Output::
 
     {
-        "Arn":"arn:aws:resource-explorer-2:us-east-1:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111",
+        "Arn":"arn:aws:resource-explorer-2:us-west-2:123456789012:index/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LastUpdatedAt":"2022-07-13T18:41:58.799Z",
         "State":"updating",
         "Type":"aggregator"

@@ -3,7 +3,7 @@
 The following ``tag-resource`` example assigns a value for the Department tag to the specified behavior graph. ::
 
     aws detective tag-resource \
-        --resource-arn arn:aws:detective:us-east-1:111122223333:graph:123412341234 \
+        --resource-arn arn:aws:detective:us-west-2:123456789012:graph:027c7c4610ea4aacaf0b883093cab899 \
         --tags '{"Department":"Finance"}'
 
 This command produces no output.

@@ -3,7 +3,7 @@
 The following ``apply-pending-maintenance-action`` example applies the pending maintenance actions for a DB cluster. ::
 
     aws rds apply-pending-maintenance-action \
-        --resource-identifier arn:aws:rds:us-east-1:123456789012:cluster:my-db-cluster \
+        --resource-identifier arn:aws:rds:us-west-2:123456789012:cluster:my-db-cluster \
         --apply-action system-update \
         --opt-in-type immediate
 
@@ -11,7 +11,7 @@ Output::
 
     {
         "ResourcePendingMaintenanceActions": {
-            "ResourceIdentifier": "arn:aws:rds:us-east-1:123456789012:cluster:my-db-cluster",
+            "ResourceIdentifier": "arn:aws:rds:us-west-2:123456789012:cluster:my-db-cluster",
             "PendingMaintenanceActionDetails": [
                 {
                     "Action": "system-update",

@@ -3,8 +3,8 @@
 The following ``associate-wireless-gateway-with-thing`` example associates a thing to a wireless gateway. ::
 
     aws iotwireless associate-wireless-gateway-with-thing \
-        --id "12345678-a1b2-3c45-67d8-e90fa1b2c34d" \
-        --thing-arn "arn:aws:iot:us-east-1:123456789012:thing/MyIoTWirelessThing"
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --thing-arn "arn:aws:iot:us-west-2:123456789012:thing/MyIoTWirelessThing"
 
 This command produces no output.
 

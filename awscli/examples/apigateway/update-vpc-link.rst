@@ -12,7 +12,7 @@ Output::
         "id": "ab3de6",
         "name": "my-vpc-link",
         "targetArns": [
-            "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/net/my-lb/12a456s89aaa12345"
+            "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-lb/12a456s89aaa12345"
         ],
         "status": "AVAILABLE",
         "statusMessage": "Your vpc link is ready for use",
@@ -37,7 +37,7 @@ Output::
         "name": "my-vpc-link",
         "description": "My custom description",
         "targetArns": [
-            "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/net/my-lb/12a456s89aaa12345"
+            "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-lb/12a456s89aaa12345"
         ],
         "status": "AVAILABLE",
         "statusMessage": "Your vpc link is ready for use",

@@ -14,8 +14,8 @@ Output::
             "Type": "LAMBDA",
             "Parameters": {
                 "catalog": "dynamo_db_catalog",
-                "metadata-function": "arn:aws:lambda:us-west-2:111122223333:function:dynamo_db_lambda",
-                "record-function": "arn:aws:lambda:us-west-2:111122223333:function:dynamo_db_lambda"
+                "metadata-function": "arn:aws:lambda:us-west-2:123456789012:function:dynamo_db_lambda",
+                "record-function": "arn:aws:lambda:us-west-2:123456789012:function:dynamo_db_lambda"
             }
         }
     }

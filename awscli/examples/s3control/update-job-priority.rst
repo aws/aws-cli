@@ -4,13 +4,13 @@ The following ``update-job-priority`` example updates the specified job to a new
 
     aws s3control update-job-priority \
         --account-id 123456789012 \
-        --job-id 8d9a18fe-c303-4d39-8ccc-860d372da386 \
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --priority 52
 
 Output::
 
     {
-        "JobId": "8d9a18fe-c303-4d39-8ccc-860d372da386",
+        "JobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Priority": 52
     }
 

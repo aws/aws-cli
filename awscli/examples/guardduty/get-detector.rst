@@ -9,7 +9,7 @@ Output::
 
     {
         "Status": "ENABLED",
-        "ServiceRole": "arn:aws:iam::111122223333:role/aws-service-role/guardduty.amazonaws.com/AWSServiceRoleForAmazonGuardDuty",
+        "ServiceRole": "arn:aws:iam::123456789012:role/aws-service-role/guardduty.amazonaws.com/AWSServiceRoleForAmazonGuardDuty",
         "Tags": {},
         "FindingPublishingFrequency": "SIX_HOURS",
         "UpdatedAt": "2018-11-07T03:24:22.938Z",

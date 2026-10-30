@@ -8,9 +8,9 @@ which contains the dominant language of each of the text files as well as the pr
     aws comprehend start-dominant-language-detection-job \
         --job-name example_language_analysis_job \
         --language-code en \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role \
         --language-code en
 
 Contents of ``Sampletext1.txt``::
@@ -21,7 +21,7 @@ Output::
 
     {
         "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:dominant-language-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:dominant-language-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
         "JobStatus": "SUBMITTED"
     }
 

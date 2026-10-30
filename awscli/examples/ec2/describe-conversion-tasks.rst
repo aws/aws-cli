@@ -22,11 +22,11 @@ Output::
                             "Status": "completed",
                             "Image": {
                                 "Size": 1300687360,
-                                "ImportManifestUrl": "https://s3.amazonaws.com/myimportbucket/411443cd-d620-4f1c-9d66-13144EXAMPLE/RHEL5.vmdkmanifest.xml?AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Expires=140EXAMPLE&Signature=XYNhznHNgCqsjDxL9wRL%2FJvEXAMPLE",
+                                "ImportManifestUrl": "https://s3.amazonaws.com/myimportbucket/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/RHEL5.vmdkmanifest.xml?AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Expires=140EXAMPLE&Signature=XYNhznHNgCqsjDxL9wRL%2FJvEXAMPLE",
                                 "Format": "VMDK"
                             },
                             "BytesConverted": 1300682960,
-                            "AvailabilityZone": "us-east-1d"
+                            "AvailabilityZone": "us-west-2d"
                         }
                     ]
                 },

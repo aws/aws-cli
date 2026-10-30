@@ -8,7 +8,7 @@ The following ``create-service-network`` example creates a service network with 
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
         "authType": "NONE",
         "id": "sn-080ec7dc93EXAMPLE",
         "name": "my-service-network"

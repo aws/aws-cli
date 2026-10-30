@@ -10,14 +10,14 @@ Output::
     {
         "domain": {
             "name": "test-domain",
-            "owner": "111122223333",
-            "arn": "arn:aws:codeartifact:us-west-2:111122223333:domain/test-domain",
+            "owner": "123456789012",
+            "arn": "arn:aws:codeartifact:us-west-2:123456789012:domain/test-domain",
             "status": "Active",
             "createdTime": "2020-10-20T13:16:48.559000-04:00",
-            "encryptionKey": "arn:aws:kms:us-west-2:111122223333:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "encryptionKey": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "repositoryCount": 2,
             "assetSizeBytes": 0,
-            "s3BucketArn": "arn:aws:s3:::assets-111122223333-us-west-2"
+            "s3BucketArn": "arn:aws:s3:::amzn-s3-demo-bucket"
         }
     }
 

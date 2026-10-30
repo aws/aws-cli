@@ -16,7 +16,7 @@ Contents of ``MyFirstPipeline.json``::
 
     {
         "pipeline": {
-            "roleArn": "arn:aws:iam::111111111111:role/AWS-CodePipeline-Service",
+            "roleArn": "arn:aws:iam::123456789012:role/AWS-CodePipeline-Service",
             "stages": [
                 {
                     "name": "Source",
@@ -88,7 +88,7 @@ Output::
                 "type": "S3"
             },
             "name": "MyFirstPipeline",
-            "roleArn": "arn:aws:iam::111111111111:role/AWS-CodePipeline-Service",
+            "roleArn": "arn:aws:iam::123456789012:role/AWS-CodePipeline-Service",
             "stages": [
                 {
                     "actions": [

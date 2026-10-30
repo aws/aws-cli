@@ -21,7 +21,7 @@ Contents of ``config.json``::
 Output::
 
     {
-        "PolicyARN": "arn:aws:autoscaling:region:account-id:scalingPolicy:228f02c2-c665-4bfd-aaac-8b04080bea3c:autoScalingGroupName/my-asg:policyName/alb1000-target-tracking-scaling-policy",
+        "PolicyARN": "arn:aws:autoscaling:region:account-id:scalingPolicy:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/my-asg:policyName/alb1000-target-tracking-scaling-policy",
         "Alarms": [
             {
                 "AlarmARN": "arn:aws:cloudwatch:region:account-id:alarm:TargetTracking-my-asg-AlarmHigh-fc0e4183-23ac-497e-9992-691c9980c38e",

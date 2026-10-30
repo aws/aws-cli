@@ -14,14 +14,14 @@ Output::
 
     {
         "KeyMetadata": {
-            "AWSAccountId": "111122223333",
-            "Arn": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "123456789012",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CreationDate": "2017-07-05T14:04:55-07:00",
             "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "Description": "",
             "Enabled": true,
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "SYMMETRIC_DEFAULT",
             "KeyState": "Enabled",
@@ -51,8 +51,8 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2021-04-05T14:04:55-07:00",
             "CustomerMasterKeySpec": "RSA_4096",
             "Description": "",
@@ -61,7 +61,7 @@ Output::
                 "RSAES_OAEP_SHA_1",
                 "RSAES_OAEP_SHA_256"
             ],
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "RSA_4096",
             "KeyState": "Enabled",
@@ -86,13 +86,13 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2019-12-02T07:48:55-07:00",
             "CustomerMasterKeySpec": "ECC_NIST_P521",
             "Description": "",
             "Enabled": true,
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "ECC_NIST_P521",
             "KeyState": "Enabled",
@@ -120,12 +120,12 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2019-12-02T07:48:55-07:00",
             "Description": "",
             "Enabled": true,
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "ML_DSA_65",
             "KeyState": "Enabled",
@@ -154,13 +154,13 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2022-04-05T14:04:55-07:00",
             "CustomerMasterKeySpec": "HMAC_384",
             "Description": "",
             "Enabled": true,
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "HMAC_384",
             "KeyState": "Enabled",
@@ -187,8 +187,8 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef12345678990ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/mrk-1234abcd12ab34cd56ef12345678990ab",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2021-09-02T016:15:21-09:00",
             "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
@@ -206,7 +206,7 @@ Output::
             "MultiRegionConfiguration": {
                 "MultiRegionKeyType": "PRIMARY",
                 "PrimaryKey": {
-                    "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef12345678990ab",
+                    "Arn": "arn:aws:kms:us-west-2:123456789012:key/mrk-1234abcd12ab34cd56ef12345678990ab",
                     "Region": "us-west-2"
                 },
                 "ReplicaKeys": []
@@ -229,8 +229,8 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2019-12-02T07:48:55-07:00",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "Description": "",
@@ -238,7 +238,7 @@ Output::
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
             ],
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "SYMMETRIC_DEFAULT",
             "KeyState": "PendingImport",
@@ -263,8 +263,8 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CloudHsmClusterId": "cluster-1a23b4cdefg",
             "CreationDate": "2019-12-02T07:48:55-07:00",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
@@ -274,7 +274,7 @@ Output::
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
             ],
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "SYMMETRIC_DEFAULT",
             "KeyState": "Enabled",
@@ -307,8 +307,8 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2022-12-02T07:48:55-07:00",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "CustomKeyStoreId": "cks-9876543210fedcba9",
@@ -317,7 +317,7 @@ Output::
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
             ],
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "SYMMETRIC_DEFAULT",
             "KeyState": "Enabled",

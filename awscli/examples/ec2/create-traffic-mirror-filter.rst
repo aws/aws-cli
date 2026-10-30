@@ -8,7 +8,7 @@ The following ``create-traffic-mirror-filter`` example creates a traffic mirror 
 Output::
 
     {
-        "ClientToken": "28908518-100b-4987-8233-8c744EXAMPLE",
+        "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "TrafficMirrorFilter": {
             "TrafficMirrorFilterId": "tmf-04812ff784EXAMPLE",
             "Description": "TCP Filter",

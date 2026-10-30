@@ -34,7 +34,7 @@ Output::
                 "events": [
                     {
                         "message": "(service my-http-service) has reached a steady state.",
-                        "id": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "createdAt": 1466801812.435
                     }
                 ],

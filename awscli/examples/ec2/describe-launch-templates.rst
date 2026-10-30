@@ -10,7 +10,7 @@ Output::
         "LaunchTemplates": [
             {
                 "LatestVersionNumber": 2,
-                "LaunchTemplateId": "lt-0e06d290751193123",
+                "LaunchTemplateId": "lt-0e06d29075EXAMPLE",
                 "LaunchTemplateName": "TemplateForWebServer",
                 "DefaultVersionNumber": 2,
                 "CreatedBy": "arn:aws:iam::123456789012:root",

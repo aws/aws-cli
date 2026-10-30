@@ -10,11 +10,11 @@ Output::
 
     {
         "ids": [
-            "codebuild-demo-project:1a2b3c4d-5678-90ab-cdef-11111example",
-            "codebuild-demo-project:1a2b3c4d-5678-90ab-cdef-22222example",
-            "codebuild-demo-project:1a2b3c4d-5678-90ab-cdef-33333example",
-            "codebuild-demo-project:1a2b3c4d-5678-90ab-cdef-44444example",
-            "codebuild-demo-project:1a2b3c4d-5678-90ab-cdef-55555example"
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+            "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE55555"
         ]
     }
 

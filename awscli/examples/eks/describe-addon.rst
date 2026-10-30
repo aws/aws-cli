@@ -17,10 +17,10 @@ Output::
             "health": {
                 "issues": []
             },
-            "addonArn": "arn:aws:eks:us-east-2:111122223333:addon/my-eks-cluster/vpc-cni/0ec71efc-98dd-3203-60b0-4b939b2a5e5f",
+            "addonArn": "arn:aws:eks:us-west-2:123456789012:addon/my-eks-cluster/vpc-cni/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "createdAt": "2024-03-14T13:18:45.417000-04:00",
             "modifiedAt": "2024-03-14T13:18:49.557000-04:00",
-            "serviceAccountRoleArn": "arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm",
+            "serviceAccountRoleArn": "arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-addon-vpc-cni-Role1-YfakrqOC1UTm",
             "tags": {
                 "eks-addon-key-3": "value-3",
                 "eks-addon-key-4": "value-4"

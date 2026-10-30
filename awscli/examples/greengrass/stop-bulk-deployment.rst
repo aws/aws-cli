@@ -3,7 +3,7 @@
 The following ``stop-bulk-deployment`` example stops the specified bulk deployment. If you try to stop a bulk deployment that is complete, you receive the ``InvalidInputException: Cannot change state of finished execution.`` error. ::
 
     aws greengrass stop-bulk-deployment \
-        --bulk-deployment-id "870fb41b-6288-4e0c-bc76-a7ba4b4d3267"
+        --bulk-deployment-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
 

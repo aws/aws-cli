@@ -3,17 +3,17 @@
 The following ``reject-resource-share-invitation`` example rejects the specified resource share invitation. ::
 
     aws ram reject-resource-share-invitation \
-        --resource-share-invitation-arn arn:aws:ram:us-west-2:111111111111:resource-share-invitation/32b639f0-14b8-7e8f-55ea-e6117EXAMPLE
+        --resource-share-invitation-arn arn:aws:ram:us-west-2:123456789111:resource-share-invitation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "resourceShareInvitation": {
-            "resourceShareInvitationArn": "arn:aws:ram:us-west-2:111111111111:resource-share-invitation/32b639f0-14b8-7e8f-55ea-e6117EXAMPLE",
+            "resourceShareInvitationArn": "arn:aws:ram:us-west-2:123456789111:resource-share-invitation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "resourceShareName": "project-resource-share",
-            "resourceShareArn": "arn:aws:ram:us-west-2:111111111111:resource-share/fcb639f0-1449-4744-35bc-a983fEXAMPLE",
-            "senderAccountId": "111111111111",
-            "receiverAccountId": "222222222222",
+            "resourceShareArn": "arn:aws:ram:us-west-2:123456789111:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "senderAccountId": "123456789111",
+            "receiverAccountId": "123456789222",
             "invitationTimestamp": 1565319592.463,
             "status": "REJECTED"
         }

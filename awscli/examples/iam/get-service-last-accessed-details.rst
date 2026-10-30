@@ -3,7 +3,7 @@
 The following ``get-service-last-accessed-details`` example retrieves a previously generated report that lists the services accessed by IAM entities. To generate a report, use the ``generate-service-last-accessed-details`` command. ::
 
     aws iam get-service-last-accessed-details \
-        --job-id 2eb6c2b8-7b4c-3xmp-3c13-03b72c8cdfdc
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

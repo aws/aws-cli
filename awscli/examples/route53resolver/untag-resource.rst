@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes two tags from the specified Resolver rule. ::
 
     aws route53resolver untag-resource \
-        --resource-arn "arn:aws:route53resolver:us-west-2:111122223333:resolver-rule/rslvr-rr-42b60677c0example" \
+        --resource-arn "arn:aws:route53resolver:us-west-2:123456789012:resolver-rule/rslvr-rr-42b60677c0example" \
         --tag-keys my-key-1 my-key-2
 
 This command produces no output. To confirm that the tags were removed, you can use `list-tags-for-resource <https://docs.aws.amazon.com/cli/latest/reference/route53resolver/list-tags-for-resource.html>`__.

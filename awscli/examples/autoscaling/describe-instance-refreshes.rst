@@ -10,7 +10,7 @@ Output::
     {
         "InstanceRefreshes": [
             {
-                "InstanceRefreshId": "08b91cf7-8fa6-48af-b6a6-d227f40f1b9b",
+                "InstanceRefreshId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AutoScalingGroupName": "my-asg",
                 "Status": "InProgress",
                 "StatusReason": "Waiting for instances to warm up before continuing. For example: 0e69cc3f05f825f4f is warming up.",
@@ -31,7 +31,7 @@ Output::
                 }
             },
             {
-                "InstanceRefreshId": "dd7728d0-5bc4-4575-96a3-1b2c52bf8bb1",
+                "InstanceRefreshId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "AutoScalingGroupName": "my-asg",
                 "Status": "Successful",
                 "EndTime": "2022-06-02T16:53:37Z",

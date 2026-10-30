@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists tags for a resource. ::
 
     aws elasticache list-tags-for-resource \
-        --resource-name "arn:aws:elasticache:us-east-1:123456789012:cluster:my-cluster"
+        --resource-name "arn:aws:elasticache:us-west-2:123456789012:cluster:my-cluster"
 
 Output::
 

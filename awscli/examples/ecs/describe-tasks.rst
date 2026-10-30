@@ -4,7 +4,7 @@ The following ``describe-tasks`` example retrieves the details of a task in a cl
 
     aws ecs describe-tasks \
         --cluster MyCluster \
-        --tasks arn:aws:ecs:us-east-1:123456789012:task/MyCluster/4d590253bb114126b7afa7b58EXAMPLE
+        --tasks arn:aws:ecs:us-west-2:123456789012:task/MyCluster/4d590253bb114126b7afa7b58EXAMPLE
 
 Output::
 
@@ -18,15 +18,15 @@ Output::
                         "value": "x86_64"
                     }
                 ],
-                "availabilityZone": "us-east-1b",
-                "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/MyCluster",
+                "availabilityZone": "us-west-2b",
+                "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
                 "connectivity": "CONNECTED",
                 "connectivityAt": "2021-08-11T12:21:26.681000-04:00",
-                "containerInstanceArn": "arn:aws:ecs:us-east-1:123456789012:container-instance/test/025c7e2c5e054a6790a29fc1fEXAMPLE",
+                "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/test/025c7e2c5e054a6790a29fc1fEXAMPLE",
                 "containers": [
                     {
-                        "containerArn": "arn:aws:ecs:us-east-1:123456789012:container/MyCluster/4d590253bb114126b7afa7b58eea9221/a992d1cc-ea46-474a-b6e8-24688EXAMPLE",
-                        "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/4d590253bb114126b7afa7b58EXAMPLE",
+                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/MyCluster/4d590253bb114126b7afa7b58eea9221/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                        "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/MyCluster/4d590253bb114126b7afa7b58EXAMPLE",
                         "name": "simple-app",
                         "image": "httpd:2.4",
                         "runtimeId": "91251eed27db90006ad67b1a08187290869f216557717dd5c39b37c94EXAMPLE",
@@ -65,10 +65,10 @@ Output::
                 "pullStartedAt": "2021-08-11T12:21:28.234000-04:00",
                 "pullStoppedAt": "2021-08-11T12:21:33.793000-04:00",
                 "startedAt": "2021-08-11T12:21:34.945000-04:00",
-                "startedBy": "ecs-svc/968695068243EXAMPLE",
+                "startedBy": "ecs-svc/1234567890123456789",
                 "tags": [],
-                "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/4d590253bb114126b7afa7b58eea9221",
-                "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/console-sample-app-static2:1",
+                "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/MyCluster/4d590253bb114126b7afa7b58eea9221",
+                "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/console-sample-app-static2:1",
                 "version": 2
             }
         ],
@@ -92,7 +92,7 @@ Output::
             {
                 "attachments": [
                     {
-                        "id": "d9e7735a-16aa-4128-bc7a-b2d51EXAMPLE",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                         "type": "ElasticNetworkInterface",
                         "status": "ATTACHED",
                         "details": [
@@ -125,14 +125,14 @@ Output::
                         "value": "x86_64"
                     }
                 ],
-                "availabilityZone": "us-east-1b",
-                "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/MyCluster",
+                "availabilityZone": "us-west-2b",
+                "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
                 "connectivity": "CONNECTED",
                 "connectivityAt": "2021-12-20T12:13:37.875000-05:00",
                 "containers": [
                     {
-                        "containerArn": "arn:aws:ecs:us-east-1:123456789012:container/MyCluster/74de0355a10a4f979ac495c14EXAMPLE/aad3ba00-83b3-4dac-84d4-11f8cEXAMPLE",
-                        "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/74de0355a10a4f979ac495c14EXAMPLE",
+                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/MyCluster/74de0355a10a4f979ac495c14EXAMPLE/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                        "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/MyCluster/74de0355a10a4f979ac495c14EXAMPLE",
                         "name": "web",
                         "image": "nginx",
                         "runtimeId": "74de0355a10a4f979ac495c14EXAMPLE-265927825",
@@ -140,7 +140,7 @@ Output::
                         "networkBindings": [],
                         "networkInterfaces": [
                             {
-                                "attachmentId": "d9e7735a-16aa-4128-bc7a-b2d51EXAMPLE",
+                                "attachmentId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                                 "privateIpv4Address": "10.0.1.184"
                             }
                         ],
@@ -171,10 +171,10 @@ Output::
                 "pullStartedAt": "2021-12-20T12:13:42.665000-05:00",
                 "pullStoppedAt": "2021-12-20T12:13:46.543000-05:00",
                 "startedAt": "2021-12-20T12:13:48.086000-05:00",
-                "startedBy": "ecs-svc/988401040018EXAMPLE",
+                "startedBy": "ecs-svc/9876543210987654321",
                 "tags": [],
-                "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/74de0355a10a4f979ac495c14EXAMPLE",
-                "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/webserver:2",
+                "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/MyCluster/74de0355a10a4f979ac495c14EXAMPLE",
+                "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/webserver:2",
                 "version": 3,
                 "ephemeralStorage": {
                 "sizeInGiB": 20
@@ -183,7 +183,7 @@ Output::
             {
                 "attachments": [
                     {
-                        "id": "214eb5a9-45cd-4bf8-87bc-57fefEXAMPLE",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                         "type": "ElasticNetworkInterface",
                         "status": "ATTACHED",
                         "details": [
@@ -216,14 +216,14 @@ Output::
                         "value": "x86_64"
                     }
                 ],
-                "availabilityZone": "us-east-1b",
-                "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/MyCluster",
+                "availabilityZone": "us-west-2b",
+                "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
                 "connectivity": "CONNECTED",
                 "connectivityAt": "2021-12-20T12:13:35.243000-05:00",
                 "containers": [
                     {
-                        "containerArn": "arn:aws:ecs:us-east-1:123456789012:container/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE/9afef792-609b-43a5-bb6a-3efdbEXAMPLE",
-                        "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE",
+                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE/a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
+                        "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE",
                         "name": "web",
                         "image": "nginx",
                         "runtimeId": "d789e94343414c25b9f6bd59eEXAMPLE-265927825",
@@ -231,7 +231,7 @@ Output::
                         "networkBindings": [],
                         "networkInterfaces": [
                             {
-                                "attachmentId": "214eb5a9-45cd-4bf8-87bc-57fefEXAMPLE",
+                                "attachmentId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                                 "privateIpv4Address": "10.0.1.41"
                             }
                         ],
@@ -262,10 +262,10 @@ Output::
                 "pullStartedAt": "2021-12-20T12:13:44.611000-05:00",
                 "pullStoppedAt": "2021-12-20T12:13:48.251000-05:00",
                 "startedAt": "2021-12-20T12:13:49.326000-05:00",
-                "startedBy": "ecs-svc/988401040018EXAMPLE",
+                "startedBy": "ecs-svc/9876543210987654321",
                 "tags": [],
-                "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE",
-                "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/webserver:2",
+                "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE",
+                "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/webserver:2",
                 "version": 3,
                 "ephemeralStorage": {
                     "sizeInGiB": 20

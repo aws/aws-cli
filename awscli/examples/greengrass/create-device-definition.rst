@@ -13,7 +13,7 @@ Output::
     {
         "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/InteriorTherm",
         "thingName": "InteriorTherm",
-        "thingId": "01d4763c-78a6-46c6-92be-7add080394bf"
+        "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 * Create public and private keys and the device certificate for the thing. This example uses the ``create-keys-and-certificate`` command and requires write permissions to the current directory. Alternatively, you can use the ``create-certificate-from-csr`` command. ::
@@ -72,13 +72,13 @@ After you create and configure the IoT thing as shown above, use the ``ThingArn`
 Output::
 
     {
-        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/f9ba083d-5ad4-4534-9f86-026a45df1ccd/versions/3b5cc510-58c1-44b5-9d98-4ad858ffa795",
+        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
         "Name": "Sensors",
         "LastUpdatedTimestamp": "2019-09-11T00:11:06.197Z",
-        "LatestVersion": "3b5cc510-58c1-44b5-9d98-4ad858ffa795",
+        "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
         "CreationTimestamp": "2019-09-11T00:11:06.197Z",
-        "Id": "f9ba083d-5ad4-4534-9f86-026a45df1ccd",
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/f9ba083d-5ad4-4534-9f86-026a45df1ccd"
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `Overview of the AWS IoT Greengrass group object model <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.

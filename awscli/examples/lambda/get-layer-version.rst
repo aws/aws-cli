@@ -10,12 +10,12 @@ Output::
 
     {
         "Content": {
-            "Location": "https://awslambda-us-east-2-layers.s3.us-east-2.amazonaws.com/snapshots/123456789012/my-layer-4aaa2fbb-ff77-4b0a-ad92-5b78a716a96a?versionId=27iWyA73cCAYqyH...",
+            "Location": "https://awslambda-us-west-2-layers.s3.us-west-2.amazonaws.com/snapshots/123456789012/my-layer-4aaa2fbb-ff77-4b0a-ad92-5b78a716a96a?versionId=27iWyA73cCAYqyH...",
             "CodeSha256": "tv9jJO+rPbXUUXuRKi7CwHzKtLDkDRJLB3cC3Z/ouXo=",
             "CodeSize": 169
         },
-        "LayerArn": "arn:aws:lambda:us-east-2:123456789012:layer:my-layer",
-        "LayerVersionArn": "arn:aws:lambda:us-east-2:123456789012:layer:my-layer:1",
+        "LayerArn": "arn:aws:lambda:us-west-2:123456789012:layer:my-layer",
+        "LayerVersionArn": "arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1",
         "Description": "My Python layer",
         "CreatedDate": "2018-11-14T23:03:52.894+0000",
         "Version": 1,

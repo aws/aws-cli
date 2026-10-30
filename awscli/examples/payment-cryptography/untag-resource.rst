@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes a tag from a key. ::
 
     aws payment-cryptography untag-resource \
-        --resource-arn arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h \
+        --resource-arn arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h \
         --tag-keys sampleTag 
 
 This command produces no output.

@@ -4,7 +4,7 @@ The following ``delete-access-entry`` example deletes an access entry associated
 
     aws eks delete-access-entry \
         --cluster-name eks-customer \
-        --principal-arn arn:aws:iam::111122223333:role/Admin
+        --principal-arn arn:aws:iam::123456789012:role/Admin
 
 This command produces no output.
 

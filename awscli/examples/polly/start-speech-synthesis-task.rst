@@ -33,9 +33,9 @@ Output::
 
     {
         "SynthesisTask": {
-            "TaskId": "70b61c0f-57ce-4715-a247-cae8729dcce9",
+            "TaskId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "TaskStatus": "scheduled",
-            "OutputUri": "https://s3.us-east-2.amazonaws.com/amzn-s3-demo-bucket/70b61c0f-57ce-4715-a247-cae8729dcce9.mp3",
+            "OutputUri": "https://s3.us-west-2.amazonaws.com/amzn-s3-demo-bucket/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.mp3",
             "CreationTime": 1603911042.689,
             "RequestCharacters": 1311,
             "OutputFormat": "mp3",

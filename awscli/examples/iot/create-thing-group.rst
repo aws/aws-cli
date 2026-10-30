@@ -11,7 +11,7 @@ Output::
     {
         "thingGroupName": "LightBulbs",
         "thingGroupArn": "arn:aws:iot:us-west-2:123456789012:thinggroup/LightBulbs",
-        "thingGroupId": "9198bf9f-1e76-4a88-8e8c-e7140142c331"
+        "thingGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 **Example 2: To create a thing group that's part of a parent group**
@@ -27,7 +27,7 @@ Output::
     {
         "thingGroupName": "HalogenBulbs",
         "thingGroupArn": "arn:aws:iot:us-west-2:123456789012:thinggroup/HalogenBulbs",
-        "thingGroupId": "f4ec6b84-b42b-499d-9ce1-4dbd4d4f6f6e"
+        "thingGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `Thing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/thing-groups.html>`__ in the *AWS IoT Developers Guide*.

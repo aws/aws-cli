@@ -14,7 +14,7 @@ Output::
             "Status": "available",
             "NumberOfShards": 2,
             "ClusterEndpoint": {
-                "Address": "clustercfg.my-cluster.xxxxxx.memorydb.us-east-1.amazonaws.com",
+                "Address": "clustercfg.my-cluster.xxxxxx.memorydb.us-west-2.amazonaws.com",
                 "Port": 6379
             },
             "NodeType": "db.r6g.large",
@@ -30,7 +30,7 @@ Output::
             ],
             "SubnetGroupName": "my-sg",
             "TLSEnabled": true,
-            "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:cluster/my-cluster",
+            "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:cluster/my-cluster",
             "SnapshotRetentionLimit": 0,
             "MaintenanceWindow": "wed:03:00-wed:04:00",
             "SnapshotWindow": "04:30-05:30",

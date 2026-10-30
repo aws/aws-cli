@@ -3,8 +3,8 @@
 The following ``set-identity-pool-roles`` example sets an identity pool role. ::
 
     aws cognito-identity set-identity-pool-roles \
-        --identity-pool-id "us-west-2:11111111-1111-1111-1111-111111111111" \
-        --roles authenticated="arn:aws:iam::111111111111:role/Cognito_MyIdentityPoolAuth_Role"
+        --identity-pool-id "us-west-2:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --roles authenticated="arn:aws:iam::123456789012:role/Cognito_MyIdentityPoolAuth_Role"
 
 This command produces no output.
 

@@ -9,37 +9,37 @@ Output::
     {
         "baselines": [
             {
-                "arn": "arn:aws:controltower:us-east-1::baseline/4T4HA1KMO10S6311",
+                "arn": "arn:aws:controltower:us-west-2::baseline/4T4HA1KMO10S6311",
                 "description": "Sets up resources to monitor security and compliance of accounts in your organization.",
                 "name": "AuditBaseline"
             },
             {
-                "arn": "arn:aws:controltower:us-east-1::baseline/J8HX46AHS5MIKQPD",
+                "arn": "arn:aws:controltower:us-west-2::baseline/J8HX46AHS5MIKQPD",
                 "description": "Sets up a central repository for logs of API activities and resource configurations from accounts in your organization.",
                 "name": "LogArchiveBaseline"
             },
             {
-                "arn": "arn:aws:controltower:us-east-1::baseline/LN25R72TTG6IGPTQ",
+                "arn": "arn:aws:controltower:us-west-2::baseline/LN25R72TTG6IGPTQ",
                 "description": "Sets up shared resources for AWS Identity Center, which prepares the AWSControlTowerBaseline to set up Identity Center access for accounts.",
                 "name": "IdentityCenterBaseline"
             },
             {
-                "arn": "arn:aws:controltower:us-east-1::baseline/17BSJV3IGJ2QSGA2",
+                "arn": "arn:aws:controltower:us-west-2::baseline/17BSJV3IGJ2QSGA2",
                 "description": "Sets up resources and mandatory controls for member accounts within the target OU, required for AWS Control Tower governance.",
                 "name": "AWSControlTowerBaseline"
             },
             {
-                "arn": "arn:aws:controltower:us-east-1::baseline/3WPD0NA6TJ9AOMU2",
+                "arn": "arn:aws:controltower:us-west-2::baseline/3WPD0NA6TJ9AOMU2",
                 "description": "Sets up a central AWS Backup vault in your organization.",
                 "name": "BackupCentralVaultBaseline"
             },
             {
-                "arn": "arn:aws:controltower:us-east-1::baseline/H6C5JFCJJ3CPU3J5",
+                "arn": "arn:aws:controltower:us-west-2::baseline/H6C5JFCJJ3CPU3J5",
                 "description": "Sets up AWS Backup Audit Manager.",
                 "name": "BackupAdminBaseline"
             },
             {
-                "arn": "arn:aws:controltower:us-east-1::baseline/APO9ATVPBKFRRGLK",
+                "arn": "arn:aws:controltower:us-west-2::baseline/APO9ATVPBKFRRGLK",
                 "description": "Sets up a local AWS Backup vault and attaches multiple AWS Backup plans.",
                 "name": "BackupBaseline"
             }

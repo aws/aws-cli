@@ -14,7 +14,7 @@ Output::
                 "DBSecurityGroupDescription": "default",
                 "EC2SecurityGroups": [],
                 "IPRanges": [],
-                "DBSecurityGroupArn": "arn:aws:rds:us-west-1:111122223333:secgrp:default"
+                "DBSecurityGroupArn": "arn:aws:rds:us-west-2:123456789012:secgrp:default"
             },
             {
                 "OwnerId": "123456789012",
@@ -23,7 +23,7 @@ Output::
                 "VpcId": "vpc-1234567f",
                 "EC2SecurityGroups": [],
                 "IPRanges": [],
-                "DBSecurityGroupArn": "arn:aws:rds:us-west-1:111122223333:secgrp:mysecgroup"
+                "DBSecurityGroupArn": "arn:aws:rds:us-west-2:123456789012:secgrp:mysecgroup"
             }
         ]
     }

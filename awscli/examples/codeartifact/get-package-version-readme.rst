@@ -4,7 +4,7 @@ The following ``get-package-version-readme`` example retrieves the readme file f
 
     aws codeartifact get-package-version-readme \
         --domain test-domain \
-        --repo test-repo \
+        --repository test-repo \
         --format npm \
         --package test-package \
         --package-version 4.0.0

@@ -596,6 +596,43 @@ def check_command(example):
     return errors
 
 
+def _command_object(command_table, line):
+    """The command or operation that the first line of a command runs."""
+    command = None
+    for word in line.split()[1:]:
+        if word not in command_table:
+            break
+        command = command_table[word]
+        command_table = command.subcommand_table
+    return command
+
+
+def check_option_names(example, command_table, global_options):
+    # The CLI accepts an abbreviated option such as "--max-it" for
+    # "--max-items", but the example must use the full name.
+    errors = []
+    for block in example.commands:
+        for command in _split_commands(block):
+            command, _ = _aws_part(command)
+            command_obj = _command_object(command_table, command[0][1][0])
+            if command_obj is None:
+                continue
+            names = set(command_obj.arg_table) | global_options
+            for lineno, scanned in command:
+                for match in OPTION_RE.finditer(scanned[3]):
+                    name = match.group('name')
+                    if name in names:
+                        continue
+                    full = sorted(n for n in names if n.startswith(name))
+                    if full:
+                        found = ' or '.join('--' + n for n in full)
+                        errors.append(
+                            f'Line {lineno}: use the full option name '
+                            f'{found} instead of --{name}'
+                        )
+    return errors
+
+
 def check_file_contents(example):
     shown = set()
     errors = []
@@ -1001,6 +1038,11 @@ def command_table():
     return create_clidriver().subcommand_table
 
 
+@pytest.fixture(scope="module")
+def global_options():
+    return set(create_clidriver().create_help_command().arg_table)
+
+
 @pytest.mark.parametrize("command, subcommand", EXAMPLE_COMMAND_TESTS)
 def test_examples(command, subcommand):
     t = _ExampleTests(methodName='noop_test')
@@ -1318,6 +1360,13 @@ def test_example_command(example_file):
     example = Example(example_file)
     errors = check_command(example)
     _assert_follows_rule('command', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_option_names(command_table, global_options, example_file):
+    example = Example(example_file)
+    errors = check_option_names(example, command_table, global_options)
+    _assert_follows_rule('option-names', example, errors)
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)

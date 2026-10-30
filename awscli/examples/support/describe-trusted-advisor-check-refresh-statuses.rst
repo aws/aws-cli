@@ -3,7 +3,7 @@
 The following ``describe-trusted-advisor-check-refresh-statuses`` example lists the refresh statuses for two Trusted Advisor checks: Amazon S3 Bucket Permissions and IAM Use. ::
 
     aws support describe-trusted-advisor-check-refresh-statuses \
-        --check-id "Pfx0RwqBli" "zXCkfM1nI3"
+        --check-ids "Pfx0RwqBli" "zXCkfM1nI3"
 
 Output::
 

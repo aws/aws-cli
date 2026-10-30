@@ -5,7 +5,7 @@ The following ``create-transit-gateway-vpc-attachment`` example creates a transi
     aws ec2 create-transit-gateway-vpc-attachment \
         --transit-gateway-id tgw-0262a0e521EXAMPLE \
         --vpc-id vpc-07e8ffd50f49335df \
-        --subnet-id subnet-0752213d59EXAMPLE
+        --subnet-ids subnet-0752213d59EXAMPLE
 
 Output::
 

@@ -4,7 +4,7 @@ The following ``list-package-version-assets`` example retrieves the assets for v
 
     aws codeartifact list-package-version-assets \
         --domain test-domain \
-        --repo test-repo \
+        --repository test-repo \
         --format npm \
         --package test-package \
         --package-version 4.0.0

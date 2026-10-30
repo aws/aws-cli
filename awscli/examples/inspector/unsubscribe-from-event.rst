@@ -5,7 +5,7 @@ The following ``unsubscribe-from-event`` example disables the process of sending
     aws inspector unsubscribe-from-event \
         --event ASSESSMENT_RUN_COMPLETED \
         --resource-arn arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-7sbz2Kz0 \
-        --topic arn:aws:sns:us-west-2:123456789012:exampletopic
+        --topic-arn arn:aws:sns:us-west-2:123456789012:exampletopic
 
 This command produces no output.
 

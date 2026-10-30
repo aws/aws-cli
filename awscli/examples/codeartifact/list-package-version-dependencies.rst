@@ -4,7 +4,7 @@ The following ``list-package-version-dependencies`` example retrieves the depend
 
     aws codeartifact list-package-version-dependencies \
         --domain test-domain \
-        --repo test-repo \
+        --repository test-repo \
         --format npm \
         --package test-package \
         --package-version 4.0.0

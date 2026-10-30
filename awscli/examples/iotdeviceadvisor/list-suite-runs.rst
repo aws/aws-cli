@@ -30,7 +30,7 @@ The following ``list-suite-runs`` example lists information about a device advis
 
     aws iotdeviceadvisor list-suite-runs \
         --suite-definition-id qqcsmtyyjaml \
-        --max-result 1 \
+        --max-results 1 \
         --next-token "nextTokenValue"
 
 Output::

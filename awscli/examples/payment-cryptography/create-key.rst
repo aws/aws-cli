@@ -4,7 +4,7 @@ The following ``create-key`` example generates a 2KEY TDES key you can use to ge
 
     aws payment-cryptography create-key \
         --exportable \
-        --key-attributes KeyAlgorithm=TDES_2KEY, KeyUsage=TR31_C0_CARD_VERIFICATION_KEY,KeyClass=SYMMETRIC_KEY, KeyModesOfUse={Generate=true,Verify=true}
+        --key-attributes KeyAlgorithm=TDES_2KEY,KeyUsage=TR31_C0_CARD_VERIFICATION_KEY,KeyClass=SYMMETRIC_KEY,KeyModesOfUse={Generate=true,Verify=true}
 
 Output::
 

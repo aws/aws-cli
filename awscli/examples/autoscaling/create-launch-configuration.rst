@@ -132,7 +132,7 @@ The following ``create-launch-configuration`` example creates a launch configura
         --launch-configuration-name my-lc \
         --image-id ami-04d5cc9b88example \
         --instance-type m5.large \
-        --block-device-mappings '[{"DeviceName":"/dev/sdf","NoDevice":""}]'
+        --block-device-mappings '[{"DeviceName":"/dev/sdf","NoDevice":true}]'
 
 This command produces no output.
 

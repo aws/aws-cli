@@ -3,7 +3,7 @@
 The following ``create-distribution-configuration`` example creates a distribution configuration using a JSON file. ::
 
     aws imagebuilder create-distribution-configuration \
-        --cli-input-json file:/create-distribution-configuration.json
+        --cli-input-json file://create-distribution-configuration.json
 
 Contents of ``create-distribution-configuration.json``::
 

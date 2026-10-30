@@ -3,12 +3,12 @@
 The following ``create-certificate-authority`` example creates a private certificate authority in your AWS account. ::
 
     aws acm-pca create-certificate-authority \
-        --certificate-authority-configuration file://C:\ca_config.txt \
-        --revocation-configuration file://C:\revoke_config.txt \
+        --certificate-authority-configuration file://ca_config.txt \
+        --revocation-configuration file://revoke_config.txt \
         --certificate-authority-type "SUBORDINATE" \
         --idempotency-token 98256344
 
-Contents of ``C:\ca_config.txt``::
+Contents of ``ca_config.txt``::
 
     {
         "KeyAlgorithm": "RSA_2048",
@@ -23,7 +23,7 @@ Contents of ``C:\ca_config.txt``::
         }
     }
 
-Contents of ``C:\revoke_config.txt``::
+Contents of ``revoke_config.txt``::
 
     {
         "CrlConfiguration": {

@@ -35,8 +35,8 @@ Contents of ``config.json``::
             "InstanceWarmup": 60,
             "MinHealthyPercentage": 50,
             "AutoRollback": true,
-            "ScaleInProtectedInstances": Ignore,
-            "StandbyInstances": Terminate
+            "ScaleInProtectedInstances": "Ignore",
+            "StandbyInstances": "Terminate"
         }
     }
 

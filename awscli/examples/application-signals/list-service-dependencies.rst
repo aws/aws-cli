@@ -5,7 +5,7 @@ The following ``list-service-dependencies`` example returns a list of service de
     aws application-signals list-service-dependencies \
         --start-time 1732021200 \
         --end-time 1732107600 \
-        --key-attributes Environment=api-gateway:prod, Name=PetAdoptionStatusUpdater,Type=Service
+        --key-attributes Environment=api-gateway:prod,Name=PetAdoptionStatusUpdater,Type=Service
 
 Output::
 

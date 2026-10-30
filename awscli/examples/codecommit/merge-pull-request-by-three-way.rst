@@ -6,7 +6,7 @@ The following ``merge-pull-request-by-three-way`` example merges and closes the 
         --pull-request-id 47 \
         --source-commit-id 99132ab0EXAMPLE \
         --repository-name MyDemoRepo \
-        --name "Maria Garcia" \
+        --author-name "Maria Garcia" \
         --email "maria_garcia@example.com" \
         --commit-message "Merging pull request 47 by three-way with default options"
 

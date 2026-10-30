@@ -27,7 +27,10 @@ import json
 import os
 import re
 import shlex
+import tempfile
 import textwrap
+import zipfile
+from unittest import mock
 
 import docutils.nodes
 import docutils.parsers.rst
@@ -35,9 +38,19 @@ import docutils.utils
 import pytest
 from botocore.validate import ParamValidator
 
-from awscli.argparser import ArgTableArgParser, MainArgParser, ServiceArgParser
+from awscli.argparser import (
+    ArgTableArgParser,
+    MainArgParser,
+    ServiceArgParser,
+    SubCommandArgParser,
+)
 from awscli.clidriver import ServiceOperation
-from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
+from awscli.customizations.waiters import WaitCommand
+from awscli.testutils import (
+    BaseAWSHelpOutputTest,
+    capture_output,
+    create_clidriver,
+)
 
 # Mapping of command names to subcommands that have examples in their help
 # output.  This isn't mean to be an exhaustive list, but should help catch
@@ -126,6 +139,24 @@ REGION_RE = re.compile(
 # then the file, then the example's title, with the reason for each example.
 EXCEPTIONS_PATH = os.path.join(
     _dname(os.path.abspath(__file__)), 'example_style_exceptions.json'
+)
+RUN_ENVIRONMENT = {
+    'AWS_ACCESS_KEY_ID': 'AKIAIOSFODNN7EXAMPLE',
+    'AWS_SECRET_ACCESS_KEY': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+    'AWS_DEFAULT_REGION': APPROVED_REGION,
+    'AWS_CONFIG_FILE': os.devnull,
+    'AWS_SHARED_CREDENTIALS_FILE': os.devnull,
+    'AWS_EC2_METADATA_DISABLED': 'true',
+    'AWS_PAGER': '',
+}
+LOCAL_FILE_RE = re.compile(r'(?P<scheme>fileb?)://(?P<path>[^\s,\'"]+)')
+# Errors from the machine that runs the example, such as a local file that
+# the example uses but doesn't show.
+ENVIRONMENT_ERRORS = (
+    'Unable to load paramfile',
+    'Blob values must be a path to a file',
+    'priv-launch-key should be a path to the local SSH private key file',
+    'SessionManagerPlugin is not found',
 )
 
 
@@ -1168,6 +1199,143 @@ def find_all_cli_commands(filename):
     return visitor.cli_commands
 
 
+def _command_args(command):
+    lines = [line.rstrip() for line in command.splitlines()]
+    marker = _continuation_marker(lines[0])
+    if marker != '\\':
+        # Windows examples continue lines with ^ or `, which are not
+        # arguments.
+        command = '\n'.join(
+            line[:-1] if line.endswith(marker) else line for line in lines
+        )
+    args = shlex.split(command)[1:]
+    # Strip newlines from arguments that may have been included due to
+    # backslash line continuations in the RST examples, and drop the
+    # arguments that are only a line continuation
+    args = [part.lstrip('\n') for part in args if not part or part.strip('\n')]
+    # Only the arguments before a redirect or pipe, such as
+    # "> skeleton.json", are passed to the CLI.
+    for i, part in enumerate(args):
+        if part in SHELL_OPERATORS or part.startswith(SHELL_OPERATOR_PREFIXES):
+            return args[:i]
+    return args
+
+
+class _RequestReady(Exception):
+    pass
+
+
+def _runs_api_operation(command_table, args):
+    command = None
+    for arg in args:
+        if arg not in command_table:
+            break
+        command = command_table[arg]
+        command_table = command.subcommand_table
+    return isinstance(command, ServiceOperation)
+
+
+def _write_files(blocks, directory):
+    for block in blocks:
+        if block.kind != 'literal' or block.intro is None:
+            continue
+        match = CONTENTS_HEADER_RE.match(block.intro.lines[-1].strip())
+        if match:
+            name = os.path.basename(match.group('name'))
+            path = os.path.join(directory, name)
+            text = textwrap.dedent('\n'.join(block.lines)) + '\n'
+            if name.endswith('.zip'):
+                # The example shows the code in the .zip file.
+                with zipfile.ZipFile(path, 'w') as f:
+                    f.writestr('index', text)
+            else:
+                with open(path, 'w') as f:
+                    f.write(text)
+
+
+def _local_files(directory):
+    def local_file(match):
+        name = os.path.basename(match.group('path').replace('\\', '/'))
+        path = os.path.join(directory, name)
+        # A binary file that isn't shown, such as an image, is created empty.
+        if match.group('scheme') == 'fileb' and not os.path.exists(path):
+            if name.endswith('.zip'):
+                with zipfile.ZipFile(path, 'w') as f:
+                    f.writestr('index.py', '')
+            else:
+                open(path, 'wb').close()
+        if not os.path.exists(path):
+            return match.group(0)
+        return f'{match.group("scheme")}://{path}'
+
+    return lambda arg: LOCAL_FILE_RE.sub(local_file, arg)
+
+
+def _run_command(args):
+    """Run a command until its request would be sent, and return the error
+    it prints, or None if it got that far or succeeded without a request.
+    """
+    ready = []
+
+    def stop(**kwargs):
+        ready.append(True)
+        raise _RequestReady()
+
+    with mock.patch.dict(os.environ):
+        for name in list(os.environ):
+            if name.startswith('AWS_') and name != 'AWS_DATA_PATH':
+                del os.environ[name]
+        os.environ.update(RUN_ENVIRONMENT)
+        driver = create_clidriver()
+        driver.session.register('before-call', stop)
+        with capture_output() as output:
+            rc = driver.main(args)
+    if ready or rc == 0:
+        return None
+    return ' '.join(output.stderr.getvalue().split())
+
+
+def check_commands_run(example, command_table):
+    errors = []
+    with tempfile.TemporaryDirectory() as directory:
+        local_files = _local_files(directory)
+        for section in example.sections:
+            # Several examples in a file can show different files with the
+            # same name, so each example uses the files it shows, or else
+            # the ones shown before it.
+            _write_files(section.blocks, directory)
+            commands = [
+                command
+                for block in section.commands
+                if not _is_os_specific(block)
+                for command in _split_commands(block)
+            ]
+            for command in commands:
+                command, _ = _aws_part(command)
+                lineno = command[0][0]
+                text = '\n'.join(scanned[0] for _, scanned in command)
+                try:
+                    args = _command_args(text)
+                except ValueError:
+                    # Reported by test_rst_doc_examples.
+                    continue
+                if not _runs_api_operation(command_table, args):
+                    continue
+                # The profile only changes where the CLI finds credentials.
+                while '--profile' in args[:-1]:
+                    i = args.index('--profile')
+                    del args[i : i + 2]
+                error = _run_command([local_files(arg) for arg in args])
+                if error is None:
+                    continue
+                environment = any(e in error for e in ENVIRONMENT_ERRORS)
+                if environment and directory not in error:
+                    continue
+                error = error.replace('aws: [ERROR]: ', '')
+                errors.append(f'Line {lineno}: the command fails: {error}')
+    return errors
+
+
 class CommandValidator:
     def __init__(self, driver):
         self.driver = driver
@@ -1190,20 +1358,11 @@ class CommandValidator:
         - Missing required arguments
         - Invalid argument names
         - Malformed argument syntax
+        - Invalid sub-commands, such as waiters of "wait", and their
+          arguments
         """
         try:
-            command_parts = shlex.split(command)[1:]
-            # Strip newlines from arguments that may have been included due to
-            # backslash line continuations in the RST examples
-            command_parts = [part.lstrip('\n') for part in command_parts]
-            # Only the arguments before a redirect or pipe, such as
-            # "> skeleton.json", are passed to the CLI.
-            for i, part in enumerate(command_parts):
-                if part in SHELL_OPERATORS or part.startswith(
-                    SHELL_OPERATOR_PREFIXES
-                ):
-                    command_parts = command_parts[:i]
-                    break
+            command_parts = _command_args(command)
         except Exception as e:
             raise AssertionError(
                 "Failed to parse this example as shell command: %s\n\n"
@@ -1238,21 +1397,47 @@ class CommandValidator:
                 # Not a standard operation (might be help, wait, etc.)
                 return
 
-            operation_name = parsed_operation.operation
-            operation_cmd = cmd_table[operation_name]
-
-            # Validate all arguments using the operation's argument parser
-            arg_table = operation_cmd.arg_table
+            # Validate all arguments using the argument parser of the
+            # command, after following any sub-commands such as
+            # "wait instance-running".
+            command_obj = cmd_table[parsed_operation.operation]
+            args = remaining_args
             errors = []
+
+            def record_message(message, file=None):
+                errors.append(message)
+
             try:
-                with self._cli_required_args(
-                    service_name, operation_name, arg_table, remaining_args
-                ):
-                    operation_parser = ArgTableArgParser(arg_table)
-                    operation_parser._print_message = (
-                        lambda message, file: errors.append(message)
+                while True:
+                    with self._cli_required_args(command_obj, args):
+                        subcommand = None
+                        if command_obj.subcommand_table:
+                            subcommand_parser = SubCommandArgParser(
+                                command_obj.arg_table,
+                                command_obj.subcommand_table,
+                            )
+                            subcommand_parser._print_message = record_message
+                            subcommand = subcommand_parser.parse_known_args(
+                                args
+                            )
+                        if subcommand is None:
+                            parser = ArgTableArgParser(
+                                command_obj.arg_table,
+                                command_obj.subcommand_table,
+                            )
+                            parser._print_message = record_message
+                            _, unknown_args = parser.parse_known_args(args)
+                    if subcommand is None:
+                        break
+                    args, subcommand_name = subcommand
+                    command_obj = command_obj.subcommand_table[subcommand_name]
+                if isinstance(command_obj, WaitCommand):
+                    # The CLI shows a usage error for "wait" on its own.
+                    raise ValueError('Missing the waiter to wait for')
+                if unknown_args:
+                    raise ValueError(
+                        'Unknown options: ' + ', '.join(unknown_args)
                     )
-                    operation_parser.parse_known_args(remaining_args)
             except (SystemExit, Exception) as e:
                 error_msg = [
                     f'Invalid CLI command: {command}\n\n',
@@ -1272,9 +1457,7 @@ class CommandValidator:
             )
 
     @contextlib.contextmanager
-    def _cli_required_args(
-        self, service_name, operation_name, arg_table, args
-    ):
+    def _cli_required_args(self, command_obj, args):
         """Apply the CLI's rules for which arguments are required.
 
         Arguments such as ``--cli-input-json`` and ``--generate-cli-skeleton``
@@ -1283,11 +1466,18 @@ class CommandValidator:
         argument table in place, so the original values are restored
         afterwards for the other examples that use the same operation.
         """
+        arg_table = command_obj.arg_table
+        # Operations name the event after their parent and themselves, such
+        # as "wait.instance-running", and custom commands after their whole
+        # lineage, as the CLI does when it runs them.
+        lineage_names = command_obj.lineage_names
+        if isinstance(command_obj, ServiceOperation):
+            lineage_names = lineage_names[-2:]
         required = {name: arg.required for name, arg in arg_table.items()}
         try:
             self.driver.session.emit(
                 'before-building-argument-table-parser.'
-                f'{service_name}.{operation_name}',
+                + '.'.join(lineage_names),
                 argument_table=arg_table,
                 args=args,
                 session=self.driver.session,
@@ -1305,8 +1495,19 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
 
     def visit_literal_block(self, node):
         contents = node.rawsource.strip()
-        if contents.startswith('aws '):
-            self.cli_commands.append(contents)
+        if not contents.startswith('aws '):
+            return
+        # A block can hold several commands, one after another.
+        commands = []
+        for line in contents.splitlines():
+            continued = commands and commands[-1][-1].rstrip().endswith(
+                ('\\', '^', '`')
+            )
+            if line.startswith('aws ') and not continued:
+                commands.append([line])
+            else:
+                commands[-1].append(line)
+        self.cli_commands.extend('\n'.join(lines) for lines in commands)
 
     def default_visit(self, node):
         pass
@@ -1395,6 +1596,13 @@ def test_example_sanitization(example_file):
     example = Example(example_file)
     errors = check_sanitization(example)
     _assert_follows_rule('sanitization', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_commands_run(command_table, example_file):
+    example = Example(example_file)
+    errors = check_commands_run(example, command_table)
+    _assert_follows_rule('commands-run', example, errors)
 
 
 def test_example_style_exceptions_exist():

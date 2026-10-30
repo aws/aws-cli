@@ -12,7 +12,7 @@ This command produces no output.
 
 The following ``add-thing-to-billing-group`` example adds a thing with a specified ARN to a billing group with the specified ARN. Specifying an ARN is helpful if you work with multiple AWS Regions or accounts. It can help ensure that you are adding to the right Region and account. ::
 
-    aws iot add-thing-to-thing-group \
+    aws iot add-thing-to-billing-group \
         --billing-group-arn "arn:aws:iot:us-west-2:123456789012:billinggroup/GroupOne" \
         --thing-arn "arn:aws:iot:us-west-2:123456789012:thing/MyOtherLightBulb"
 

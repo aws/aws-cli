@@ -43,7 +43,7 @@ Contents of ``MyChangeRequest.json``::
                 "IamUser"
             ],
             "ApproverSnsTopicArn": [
-                "arn:aws:sns:us-west-2:123456789012;:MyNotificationTopic
+                "arn:aws:sns:us-west-2:123456789012:MyNotificationTopic"
             ]
         },
         "Runbooks": [

@@ -6,22 +6,22 @@ The following ``put-routing-rule`` example updates the priority of a routing rul
         --routing-rule-id 'aaa111' \
         --domain-name 'regional.example.com' \
         --priority 150 \
-        --conditions '[ \
-            { \
-                "MatchBasePaths": { \
-                    "AnyOf": [ \
-                        "PetStoreShopper" \
-                    ] \
-                } \
-            } \
+        --conditions '[
+            {
+                "MatchBasePaths": {
+                    "AnyOf": [
+                        "PetStoreShopper"
+                    ]
+                }
+            }
         ]' \
-        --actions '[ \
-            { \
-                "InvokeApi": { \
-                    "ApiId": "abcd1234", \
-                    "Stage": "prod" \
-                } \
-            } \
+        --actions '[
+            {
+                "InvokeApi": {
+                    "ApiId": "abcd1234",
+                    "Stage": "prod"
+                }
+            }
         ]'
 
 Output::

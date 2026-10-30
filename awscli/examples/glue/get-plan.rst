@@ -3,39 +3,39 @@
 The following ``get-plan`` example retrieves the generated code for mapping columns from the data source to the data target. ::
 
     aws glue get-plan \
-        --mapping '[ \
-            { \
-                "SourcePath":"sensorid", \
-                "SourceTable":"anything", \
-                "SourceType":"int", \
-                "TargetPath":"sensorid", \
-                "TargetTable":"anything", \
-                "TargetType":"int" \
-            }, \
-            { \
-                "SourcePath":"currenttemperature", \
-                "SourceTable":"anything", \
-                "SourceType":"int", \
-                "TargetPath":"currenttemperature", \
-                "TargetTable":"anything", \
-                "TargetType":"int" \
-            }, \
-            { \
-                "SourcePath":"status", \
-                "SourceTable":"anything", \
-                "SourceType":"string", \
-                "TargetPath":"status", \
-                "TargetTable":"anything", \
-                "TargetType":"string" \
+        --mapping '[
+            {
+                "SourcePath":"sensorid",
+                "SourceTable":"anything",
+                "SourceType":"int",
+                "TargetPath":"sensorid",
+                "TargetTable":"anything",
+                "TargetType":"int"
+            },
+            {
+                "SourcePath":"currenttemperature",
+                "SourceTable":"anything",
+                "SourceType":"int",
+                "TargetPath":"currenttemperature",
+                "TargetTable":"anything",
+                "TargetType":"int"
+            },
+            {
+                "SourcePath":"status",
+                "SourceTable":"anything",
+                "SourceType":"string",
+                "TargetPath":"status",
+                "TargetTable":"anything",
+                "TargetType":"string"
             }]' \
-        --source '{ \
-            "DatabaseName":"tempdb", \
-            "TableName":"s3-source" \
+        --source '{
+            "DatabaseName":"tempdb",
+            "TableName":"s3-source"
         }' \
-        --sinks '[ \
-            { \
-                "DatabaseName":"tempdb", \
-                "TableName":"my-s3-sink" \
+        --sinks '[
+            {
+                "DatabaseName":"tempdb",
+                "TableName":"my-s3-sink"
             }]' \
         --language "scala" \
         --output "text"

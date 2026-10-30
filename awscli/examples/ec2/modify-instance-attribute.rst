@@ -65,12 +65,16 @@ The ``certutil`` command displays output similar to the following::
     Output Length = 152
     CertUtil: -encode command completed successfully.
 
+Contents of ``UserData.base64.txt``::
+
+    IyEvYmluL2Jhc2gKeXVtIHVwZGF0ZSAteQpzZXJ2aWNlIGh0dHBkIHN0YXJ0CmNoa2NvbmZpZyBodHRwZCBvbgo=
+
 Now you can reference that file in the following CLI command. ::
 
     aws ec2 modify-instance-attribute \
         --instance-id=i-09b5a14dbca622e76 \
         --attribute userData \
-        --value fileb://UserData.base64.txt
+        --value file://UserData.base64.txt
 
 This command produces no output.
 

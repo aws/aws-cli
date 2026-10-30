@@ -4,22 +4,22 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
 
     aws glue create-table \
         --database-name tempdb \
-        --table-input  '{"Name":"test-kinesis-input", "StorageDescriptor":{ \
-                "Columns":[ \
-                    {"Name":"sensorid", "Type":"int"}, \
-                    {"Name":"currenttemperature", "Type":"int"}, \
+        --table-input  '{"Name":"test-kinesis-input", "StorageDescriptor":{
+                "Columns":[
+                    {"Name":"sensorid", "Type":"int"},
+                    {"Name":"currenttemperature", "Type":"int"},
                     {"Name":"status", "Type":"string"}
-                ], \
-                "Location":"my-testing-stream", \
-                "Parameters":{ \
-                    "typeOfData":"kinesis","streamName":"my-testing-stream", \
-                    "kinesisUrl":"https://kinesis.us-west-2.amazonaws.com" \
-                }, \
-                "SerdeInfo":{ \
-                    "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"} \
-            }, \
-            "Parameters":{ \
-                "classification":"json"} \
+                ],
+                "Location":"my-testing-stream",
+                "Parameters":{
+                    "typeOfData":"kinesis","streamName":"my-testing-stream",
+                    "kinesisUrl":"https://kinesis.us-west-2.amazonaws.com"
+                },
+                "SerdeInfo":{
+                    "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"}
+            },
+            "Parameters":{
+                "classification":"json"}
             }' \
         --profile my-profile \
         --endpoint-url https://glue.us-west-2.amazonaws.com
@@ -34,22 +34,22 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
 
     aws glue create-table \
         --database-name tempdb \
-        --table-input  '{"Name":"test-kafka-input", "StorageDescriptor":{ \
-                "Columns":[ \
-                    {"Name":"sensorid", "Type":"int"}, \
-                    {"Name":"currenttemperature", "Type":"int"}, \
+        --table-input  '{"Name":"test-kafka-input", "StorageDescriptor":{
+                "Columns":[
+                    {"Name":"sensorid", "Type":"int"},
+                    {"Name":"currenttemperature", "Type":"int"},
                     {"Name":"status", "Type":"string"}
-                ], \
-                "Location":"glue-topic", \
-                "Parameters":{ \
-                    "typeOfData":"kafka","topicName":"glue-topic", \
+                ],
+                "Location":"glue-topic",
+                "Parameters":{
+                    "typeOfData":"kafka","topicName":"glue-topic",
                     "connectionName":"my-kafka-connection"
-                }, \
-                "SerdeInfo":{ \
-                    "SerializationLibrary":"org.apache.hadoop.hive.serde2.OpenCSVSerde"} \
-            }, \
-            "Parameters":{ \
-                "separatorChar":","} \
+                },
+                "SerdeInfo":{
+                    "SerializationLibrary":"org.apache.hadoop.hive.serde2.OpenCSVSerde"}
+            },
+            "Parameters":{
+                "separatorChar":","}
             }' \
         --profile my-profile \
         --endpoint-url https://glue.us-west-2.amazonaws.com
@@ -65,18 +65,18 @@ describes a AWS Simple Storage Service (AWS S3) data store. ::
 
     aws glue create-table \
         --database-name tempdb \
-        --table-input  '{"Name":"s3-output", "StorageDescriptor":{ \
-                "Columns":[ \
-                    {"Name":"s1", "Type":"string"}, \
-                    {"Name":"s2", "Type":"int"}, \
+        --table-input  '{"Name":"s3-output", "StorageDescriptor":{
+                "Columns":[
+                    {"Name":"s1", "Type":"string"},
+                    {"Name":"s2", "Type":"int"},
                     {"Name":"s3", "Type":"string"}
-                ], \
-                "Location":"s3://amzn-s3-demo-bucket/", \
-                "SerdeInfo":{ \
-                    "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"} \
-            }, \
-            "Parameters":{ \
-                "classification":"json"} \
+                ],
+                "Location":"s3://amzn-s3-demo-bucket/",
+                "SerdeInfo":{
+                    "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"}
+            },
+            "Parameters":{
+                "classification":"json"}
             }' \
         --profile my-profile \
         --endpoint-url https://glue.us-west-2.amazonaws.com

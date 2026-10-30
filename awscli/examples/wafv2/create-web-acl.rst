@@ -1,6 +1,6 @@
 **To create a web ACL**
 
-The following ``create-web-acl`` example creates a web ACL for regional use. The rule statements for the web ACL are provided in a JSON-formatted file. ::
+The following ``create-web-acl`` example creates a web ACL for regional use. The rule statements for the web ACL are provided in a JSON-formatted file. The ``SearchString`` value is the base64-encoded text ``example.com``. ::
 
     aws wafv2 create-web-acl \
         --name TestWebAcl \
@@ -20,7 +20,7 @@ Contents of ``waf-rule.json``::
                     "Statements":[
                         {
                             "ByteMatchStatement":{
-                                "SearchString":"example.com",
+                                "SearchString":"ZXhhbXBsZS5jb20=",
                                 "FieldToMatch":{
                                     "SingleHeader":{
                                         "Name":"host"

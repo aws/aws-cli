@@ -35,7 +35,7 @@ The following ``describe-ssl-policies`` example displays the names of the police
 
     aws elbv2 describe-ssl-policies \
         --load-balancer-type application \
-        --query SslPolicies[?contains(SslProtocols,'TLSv1.3')].Name
+        --query "SslPolicies[?contains(SslProtocols,'TLSv1.3')].Name"
 
 Output::
 

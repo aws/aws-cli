@@ -4,10 +4,10 @@ The following ``start-composition`` example starts a composition for the specifi
 
     aws ivs-realtime start-composition \
         --stage-arn arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd \
-        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg", \
-            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
-            {"s3":{"encoderConfigurationArns":["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
-            "recordingConfiguration": {"hlsConfiguration": {"targetSegmentDurationSeconds": 5}}, \
+        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg",
+            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}},
+            {"s3":{"encoderConfigurationArns":["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"],
+            "recordingConfiguration": {"hlsConfiguration": {"targetSegmentDurationSeconds": 5}},
             "storageConfigurationArn":"arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE"}}]'
 
 Output::
@@ -77,9 +77,9 @@ The following ``start-composition`` example starts a composition for the specifi
 
     aws ivs-realtime start-composition \
         --stage-arn arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd \
-        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg", \
-            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
-            {"s3":{"encoderConfigurationArns":["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"], \
+        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg",
+            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}},
+            {"s3":{"encoderConfigurationArns":["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"],
             "storageConfigurationArn":"arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE"}}]' \
         --layout pip='{featuredParticipantAttribute="abcdefg"}'
 
@@ -153,10 +153,10 @@ The following ``start-composition`` example starts a composition for the specifi
 
     aws ivs-realtime start-composition \
         --stage-arn arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd \
-        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg", \
-            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
-            {"s3": {"encoderConfigurationArns": ["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
-            "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE", \
+        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg",
+            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}},
+            {"s3": {"encoderConfigurationArns": ["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"],
+            "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE",
             "thumbnailConfigurations": [{"storage": ["SEQUENTIAL"],"targetIntervalSeconds": 60}]}}]'
 
 Output::
@@ -234,10 +234,10 @@ The following ``start-composition`` example starts a composition for the specifi
 
     aws ivs-realtime start-composition \
         --stage-arn arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd \
-        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg", \
-            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
-            {"s3": {"encoderConfigurationArns": ["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
-            "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE", \
+        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg",
+            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}},
+            {"s3": {"encoderConfigurationArns": ["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"],
+            "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE",
             "thumbnailConfigurations": [{"storage": ["SEQUENTIAL"],"targetIntervalSeconds": 60}]}}]' \
         --layout grid='{participantOrderAttribute="abcdefg"}'
 

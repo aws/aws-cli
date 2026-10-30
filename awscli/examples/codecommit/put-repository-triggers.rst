@@ -3,8 +3,7 @@
 The following ``put-repository-triggers`` example updates triggers named ``MyFirstTrigger`` and ``MySecondTrigger`` using an already-created JSON file (here named ``MyTriggers.json``) that contains the structure of all the triggers for a repository named ``MyDemoRepo``. To learn how to get the JSON for existing triggers, see the ``get-repository-triggers`` command. ::
 
     aws codecommit put-repository-triggers \
-        --repository-name MyDemoRepo \
-        --triggers file://MyTriggers.json
+        --cli-input-json file://MyTriggers.json
 
 Contents of ``MyTriggers.json``::
 

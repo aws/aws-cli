@@ -3,7 +3,7 @@
 The following ``start-transaction`` example starts a new transaction and returns its transaction ID. ::
 
     aws lakeformation start-transaction \
-        --transaction-type = 'READ_AND_WRITE'
+        --transaction-type 'READ_AND_WRITE'
 
 Output::
 

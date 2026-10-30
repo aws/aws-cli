@@ -31,7 +31,7 @@ The following ``modify-listener`` example changes the default action to a ``redi
 
     aws elbv2 modify-listener \
         --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2 \
-        --default-actions Type=redirect, RedirectConfig='{Protocol=HTTPS,StatusCode=HTTP_302}'
+        --default-actions 'Type=redirect,RedirectConfig={Protocol=HTTPS,StatusCode=HTTP_302}'
 
 Output::
 

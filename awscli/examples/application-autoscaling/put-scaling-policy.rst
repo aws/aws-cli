@@ -10,7 +10,7 @@ The following ``put-scaling-policy`` example applies a target tracking scaling p
         --policy-type TargetTrackingScaling \
         --target-tracking-scaling-policy-configuration file://config.json
 
-This example assumes that you have a `config.json` file in the current directory with the following contents::
+Contents of ``config.json``::
 
     {
         "TargetValue": 75.0,
@@ -51,7 +51,7 @@ The following ``put-scaling-policy`` example applies a target tracking scaling p
         --policy-type TargetTrackingScaling \
         --target-tracking-scaling-policy-configuration file://config.json
 
-This example assumes that you have a `config.json` file in the current directory with the following contents::
+Contents of ``config.json``::
 
     {
         "TargetValue":75.0,

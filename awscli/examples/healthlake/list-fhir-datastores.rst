@@ -20,12 +20,12 @@ Output::
                 }
             },
             "DatastoreName": "Demo",
-            "DatastoreArn": "arn:aws:healthlake:us-west-2:<AWS Account ID>:datastore/<Data store ID>",
-            "DatastoreEndpoint": "https://healthlake.us-west-2.amazonaws.com/datastore/<Data store ID>/r4/",
+            "DatastoreArn": "arn:aws:healthlake:us-west-2:123456789012:datastore/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+            "DatastoreEndpoint": "https://healthlake.us-west-2.amazonaws.com/datastore/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6/r4/",
             "DatastoreStatus": "ACTIVE",
             "DatastoreTypeVersion": "R4",
             "CreatedAt": 1603761064.881,
-            "DatastoreId": "<Data store ID>",
+            "DatastoreId": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
             "IdentityProviderConfiguration": {
                 "AuthorizationStrategy": "AWS_AUTH",
                 "FineGrainedAuthorizationEnabled": false

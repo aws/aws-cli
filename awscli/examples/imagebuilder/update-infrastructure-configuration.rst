@@ -3,7 +3,7 @@
 The following ``update-infrastructure-configuration`` example updates an infrastructure configuration using a JSON file. ::
 
     aws imagebuilder update-infrastructure-configuration \
-        --cli-input-json file:/update-infrastructure-configuration.json
+        --cli-input-json file://update-infrastructure-configuration.json
 
 Contents of ``update-infrastructure-configuration.json``::
 

@@ -35,9 +35,9 @@ Output::
 The following ``create-resolver-endpoint`` example creates an outbound resolver endpoint using the values in the JSON-formatted document ``create-outbound-resolver-endpoint.json``. ::
 
     aws route53resolver create-resolver-endpoint \
-        --cli-input-json file://c:\temp\create-outbound-resolver-endpoint.json
+        --cli-input-json file://create-outbound-resolver-endpoint.json
 
-Contents of ``c:\temp\create-outbound-resolver-endpoint.json``::
+Contents of ``create-outbound-resolver-endpoint.json``::
 
     {
         "CreatorRequestId": "2020-01-01-18:47",

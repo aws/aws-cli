@@ -328,3 +328,4 @@ More Resources
    :target: https://travis-ci.org/aws/aws-cli
 .. |Gitter| image:: https://badges.gitter.im/aws/aws-cli.svg
    :target: https://gitter.im/aws/aws-cli
+

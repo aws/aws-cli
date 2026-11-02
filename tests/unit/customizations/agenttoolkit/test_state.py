@@ -61,13 +61,10 @@ def test_update_state_preserves_other_keys(state_file):
 
 
 @pytest.mark.parametrize('contents', ['{ not valid json', '[1, 2]'])
-def test_update_state_does_not_overwrite_unparseable_file(
-    state_file, contents
-):
+def test_update_state_replaces_unparseable_file(state_file, contents):
     _write(state_file, contents)
-    with pytest.raises(state.StateFileError):
-        state.update_state(lambda s: s.update({'a': 1}))
-    assert state_file.read_text() == contents
+    state.update_state(lambda s: s.update({'a': 1}))
+    assert _read(state_file) == {'a': 1}
 
 
 def test_update_state_leaves_no_temp_file(state_file):
@@ -85,9 +82,9 @@ def test_update_state_failed_write_keeps_old_file(state_file):
 
 
 def test_update_state_error_message_names_the_file(state_file):
-    _write(state_file, '{ not valid json')
-    with pytest.raises(state.StateFileError) as e:
-        state.update_state(lambda s: s.update({'a': 1}))
+    with patch.object(state.os, 'replace', side_effect=OSError('boom')):
+        with pytest.raises(state.StateFileError) as e:
+            state.update_state(lambda s: s.update({'a': 1}))
     assert str(e.value).startswith(f'{state_file}: ')
     assert 'Could not' not in str(e.value)
 

@@ -74,7 +74,8 @@ def update_state(mutate):
     :param mutate: Called with the current state dict, which it changes in
         place.
     :raises StateFileError: if the state can't be read, locked or written.
-        An existing file that can't be parsed is left untouched.
+        An existing file that can't be parsed is replaced, matching
+        ``load_state``, which already treats it as empty.
     """
     path = _state_file()
     try:
@@ -83,6 +84,11 @@ def update_state(mutate):
             try:
                 state = _read_state(path)
             except FileNotFoundError:
+                state = {}
+            except ValueError as e:
+                LOG.debug(
+                    'Replacing unparseable agent toolkit state %s: %s', path, e
+                )
                 state = {}
             mutate(state)
             _write_state(path, state)

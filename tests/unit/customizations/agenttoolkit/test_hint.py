@@ -132,14 +132,12 @@ def test_skipped_when_already_dismissed(state_file, wizard_cls):
     assert not wizard_cls.called
 
 
-def test_never_does_not_overwrite_corrupt_state_file(
-    state_file, wizard_cls, capsys
-):
+def test_never_replaces_corrupt_state_file(state_file, wizard_cls, capsys):
     state_file.parent.mkdir(parents=True, exist_ok=True)
     state_file.write_text('{ not valid json')
     _run(choice='never')
-    assert state_file.read_text() == '{ not valid json'
-    assert 'Could not save your choice' in capsys.readouterr().out
+    assert json.loads(state_file.read_text()) == {'hint_dismissed': True}
+    assert 'Could not save your choice' not in capsys.readouterr().out
 
 
 def test_never_preserves_other_state_keys(state_file, wizard_cls):

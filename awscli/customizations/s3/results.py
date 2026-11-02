@@ -149,11 +149,13 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
             )
 
     def _is_precondition_failed(self, exception):
-        return (
-            hasattr(exception, 'response')
-            and exception.response.get('Error', {}).get('Code')
-            == 'PreconditionFailed'
-        )
+        response = getattr(exception, 'response', None)
+        if not isinstance(response, dict):
+            return False
+        error = response.get('Error', {})
+        if not isinstance(error, dict):
+            return False
+        return error.get('Code') == 'PreconditionFailed'
 
 
 class BaseResultHandler:

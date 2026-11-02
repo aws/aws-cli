@@ -13,7 +13,7 @@
 
 import time
 
-from botocore.exceptions import HTTPClientError
+from botocore.exceptions import HTTPClientError, ReadTimeoutError
 from s3transfer.exceptions import CancelledError, FatalError
 
 from awscli.compat import StringIO, queue
@@ -184,6 +184,44 @@ class TestResultSubscribers(unittest.TestCase):
             SkipFileResult(transfer_type=mock.ANY, src=mock.ANY, dest=mock.ANY)
         )
 
+
+    def test_on_done_failure_with_none_response(self):
+        subscriber = self.get_result_subscriber(DoneResultSubscriber)
+        read_timeout_error = ReadTimeoutError(endpoint_url='https://s3.amazonaws.com')
+        failure_future = self.get_failed_transfer_future(read_timeout_error)
+        subscriber.on_done(failure_future)
+        result = self.get_queued_result()
+        self.assert_result_queue_is_empty()
+        self.assertEqual(
+            result,
+            FailureResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                exception=read_timeout_error,
+            ),
+        )
+
+    def test_on_done_failure_with_malformed_error_field(self):
+        subscriber = self.get_result_subscriber(DoneResultSubscriber)
+        malformed_error = HTTPClientError(
+            request=mock.Mock(),
+            response={'Error': 'not-a-dict'},
+            error='not-a-dict',
+        )
+        failure_future = self.get_failed_transfer_future(malformed_error)
+        subscriber.on_done(failure_future)
+        result = self.get_queued_result()
+        self.assert_result_queue_is_empty()
+        self.assertEqual(
+            result,
+            FailureResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                exception=malformed_error,
+            ),
+        )
 
     def test_on_done_unexpected_cancelled(self):
         subscriber = self.get_result_subscriber(DoneResultSubscriber)

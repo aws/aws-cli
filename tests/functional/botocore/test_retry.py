@@ -15,8 +15,10 @@ import datetime
 import json
 
 import botocore.endpoint
+from botocore.awsrequest import AWSRequest
 from botocore.config import Config
 from botocore.exceptions import ClientError
+from botocore.retries import standard
 
 from tests import BaseSessionTest, ClientHTTPStubber, mock
 from tests.functional.botocore.test_useragent import (
@@ -296,12 +298,12 @@ class TestRetryHeader(BaseRetryTest):
         ]
         expected_headers = [
             [
-                b'attempt=1',
+                b'attempt=1; max=3',
                 b'ttl=20190601T000011Z; attempt=2; max=3',
                 b'ttl=20190601T000012Z; attempt=3; max=3',
             ],
             [
-                b'attempt=1',
+                b'attempt=1; max=3',
                 b'ttl=20190601T001014Z; attempt=2; max=3',
                 b'ttl=20190601T001020Z; attempt=3; max=3',
             ],
@@ -397,3 +399,63 @@ class TestRetryHeader(BaseRetryTest):
                 amz_sdk_invocation_id_headers[0],
                 amz_sdk_invocation_id_headers[2],
             )
+
+
+class TestMaxAttemptsInRequestHeader(BaseSessionTest):
+    """The resolved max attempts must appear on the initial attempt.
+
+    ``max`` is seeded into the request context at creation time, so the
+    very first ``amz-sdk-request`` header carries it. Previously it only
+    showed up from the second attempt onward.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.region = 'us-west-2'
+        self.sleep_patch = mock.patch('time.sleep')
+        self.sleep_patch.start()
+
+    def tearDown(self):
+        super().tearDown()
+        self.sleep_patch.stop()
+
+    def _sdk_request_headers(self, client_config, responses):
+        client = self.session.create_client(
+            'dynamodb', self.region, config=client_config
+        )
+        with ClientHTTPStubber(client) as http_stubber:
+            for status in responses:
+                http_stubber.add_response(status=status, body=b'{}')
+            client.list_tables()
+            return [
+                r.headers['amz-sdk-request'] for r in http_stubber.requests
+            ]
+
+    def test_max_present_on_initial_attempt(self):
+        for retry_mode in RETRY_MODES:
+            config = Config(
+                retries={'mode': retry_mode, 'max_attempts': 3}
+            )
+            headers = self._sdk_request_headers(config, [200])
+            self.assertEqual(headers, [b'attempt=1; max=3'])
+
+    def test_max_consistent_across_retries(self):
+        for retry_mode in RETRY_MODES:
+            config = Config(
+                retries={'mode': retry_mode, 'max_attempts': 3}
+            )
+            headers = self._sdk_request_headers(config, [500, 500, 200])
+            self.assertEqual(len(headers), 3)
+            for header in headers:
+                self.assertIn(b'max=3', header)
+
+    def test_service_specific_max_attempts(self):
+        # DynamoDB overrides the default of 3.
+        config = Config(retries={'mode': 'standard'})
+        headers = self._sdk_request_headers(config, [200])
+        self.assertEqual(headers, [b'attempt=1; max=4'])
+
+    def test_seeder_adds_max_to_empty_context(self):
+        request = AWSRequest()
+        standard.MaxAttemptsSeeder(3).seed_max_attempts(request)
+        self.assertEqual(request.context['retries'], {'max': 3})

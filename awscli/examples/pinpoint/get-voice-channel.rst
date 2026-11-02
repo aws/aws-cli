@@ -3,8 +3,7 @@
 The following ``get-voice-channel`` example retrieves status and settings of the voice channel for an application. ::
 
     aws pinpoint get-voice-channel \
-        --application-id 6e0b7591a90841d2b5d93fa11143e5a7 \
-        --region us-east-1
+        --application-id 6e0b7591a90841d2b5d93fa11143e5a7
 
 Output::
 
@@ -21,3 +20,4 @@ Output::
         }
     }
 
+For more information, see `Managing the Amazon Pinpoint voice channel <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-manage.html>`__ in the *Amazon Pinpoint User Guide*.

@@ -1,22 +1,22 @@
 **To create a device definition**
 
-The following ``create-device-definition`` example creates a device definition that contains an initial device definition version. The initial version defines two devices. 
+The following ``create-device-definition`` example creates a device definition that contains an initial device definition version. The initial version defines two devices.
 Before you can create a Greengrass device, you must first create and provision the corresponding AWS IoT thing. This process includes the following ``iot`` commands that you must run to get the required information for the Greengrass command:
- 
-* Create the AWS IoT thing that corresponds to the device::
+
+* Create the AWS IoT thing that corresponds to the device. ::
 
     aws iot create-thing \
         --thing-name "InteriorTherm"
 
 Output::
 
-   {
-       "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/InteriorTherm",
-       "thingName": "InteriorTherm",
-       "thingId": "01d4763c-78a6-46c6-92be-7add080394bf"
-   }
-    
-* Create public and private keys and the device certificate for the thing. This example uses the ``create-keys-and-certificate`` command and requires write permissions to the current directory. Alternatively, you can use the ``create-certificate-from-csr`` command::
+    {
+        "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/InteriorTherm",
+        "thingName": "InteriorTherm",
+        "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+    }
+
+* Create public and private keys and the device certificate for the thing. This example uses the ``create-keys-and-certificate`` command and requires write permissions to the current directory. Alternatively, you can use the ``create-certificate-from-csr`` command. ::
 
     aws iot create-keys-and-certificate \
         --set-as-active \
@@ -36,7 +36,7 @@ Output::
         "certificateId": "66a415ec415668c2349a76170b64ac0878231c1e21ec83c10e92a18bd568eb92"
     }
 
-* Create an AWS IoT policy that allows ``iot`` and ``greengrass`` actions. For simplicity, the following policy allows actions on all resources, but your policy can be more restrictive::
+* Create an AWS IoT policy that allows ``iot`` and ``greengrass`` actions. For simplicity, the following policy allows actions on all resources, but your policy can be more restrictive. ::
 
     aws iot create-policy \
         --policy-name "GG_Devices" \
@@ -51,13 +51,13 @@ Output::
         "policyVersionId": "1"
     }
 
-* Attach the policy to the certificate::
+* Attach the policy to the certificate. ::
 
     aws iot attach-policy \
         --policy-name "GG_Devices" \
         --target "arn:aws:iot:us-west-2:123456789012:cert/66a415ec415668c2349a76170b64ac0878231c1e21ec83c10e92a18bd568eb92"
 
-* Attach the thing to the certificate ::
+* Attach the thing to the certificate. ::
 
     aws iot attach-thing-principal \
         --thing-name "InteriorTherm" \
@@ -72,11 +72,13 @@ After you create and configure the IoT thing as shown above, use the ``ThingArn`
 Output::
 
     {
-        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/f9ba083d-5ad4-4534-9f86-026a45df1ccd/versions/3b5cc510-58c1-44b5-9d98-4ad858ffa795",
+        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
         "Name": "Sensors",
         "LastUpdatedTimestamp": "2019-09-11T00:11:06.197Z",
-        "LatestVersion": "3b5cc510-58c1-44b5-9d98-4ad858ffa795",
+        "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
         "CreationTimestamp": "2019-09-11T00:11:06.197Z",
-        "Id": "f9ba083d-5ad4-4534-9f86-026a45df1ccd",
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/f9ba083d-5ad4-4534-9f86-026a45df1ccd"
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
+
+For more information, see `Overview of the AWS IoT Greengrass group object model <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.

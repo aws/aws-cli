@@ -6,7 +6,8 @@ The following ``register-scalable-target`` example registers an Amazon ECS servi
         --service-namespace ecs \
         --scalable-dimension ecs:service:DesiredCount \
         --resource-id service/default/web-app \
-        --min-capacity 1 --max-capacity 10 \
+        --min-capacity 1 \
+        --max-capacity 10 \
         --tags environment=production
 
 Output::

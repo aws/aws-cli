@@ -19,16 +19,16 @@ Output::
                 "ApproximateNumberOfMessagesMoved": 203,
                 "ApproximateNumberOfMessagesToMove": 30,
                 "StartedTimestamp": 1442428276921
-             },
-             
-             {
+            },
+
+            {
                 "Status": "COMPLETED",
                 "SourceArn": "arn:aws:sqs:us-west-2:80398EXAMPLE:MyQueue1",
                 "DestinationArn": "arn:aws:sqs:us-west-2:80398EXAMPLE:MyQueue2",
                 "ApproximateNumberOfMessagesMoved": 29,
                 "ApproximateNumberOfMessagesToMove": 0,
                 "StartedTimestamp": 1342428272093
-             }
+            }
         ]
     }
 

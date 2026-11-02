@@ -2,7 +2,7 @@
 
 The following ``create-provisioning-artifact`` example creates a provisioning artifact, using a JSON file to pass parameters. ::
 
-     aws servicecatalog create-provisioning-artifact \
+    aws servicecatalog create-provisioning-artifact \
         --cli-input-json file://create-provisioning-artifact-input.json
 
 Contents of ``create-provisioning-artifact-input.json``::
@@ -35,3 +35,5 @@ Output::
             "CreatedTime": 1576022545.0
         }
     }
+
+For more information, see `Managing Versions <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/managing-versions.html>`__ in the *AWS Service Catalog Administrator Guide*.

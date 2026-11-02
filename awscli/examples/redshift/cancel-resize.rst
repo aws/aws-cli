@@ -16,4 +16,4 @@ Output::
         "TargetEncryptionType": "NONE"
     }
 
-For more information, see `Resizing Clusters in Amazon Redshift <https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html>`__ in the *Amazon Redshift Cluster Management Guide*.
+For more information, see `Resizing a cluster <https://docs.aws.amazon.com/redshift/latest/mgmt/resizing-cluster.html>`__ in the *Amazon Redshift Cluster Management Guide*.

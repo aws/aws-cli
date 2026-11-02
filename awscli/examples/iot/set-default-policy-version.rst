@@ -7,3 +7,5 @@ The following ``set-default-policy-version`` example sets the default version to
         --policy-version-id 2
 
 This command produces no output.
+
+For more information, see `AWS IoT Core policies <https://docs.aws.amazon.com/iot/latest/developerguide/iot-policies.html>`__ in the *AWS IoT Core Developer Guide*.

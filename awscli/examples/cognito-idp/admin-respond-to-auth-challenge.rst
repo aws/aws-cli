@@ -1,6 +1,6 @@
 **To respond to an authentication challenge**
 
-There are many ways to respond to different authentication challenges, depending on your authentication flow, user pool configuration, and user settings. The following ``admin-respond-to-auth-challenge`` example provides a TOTP MFA code for diego@example.com and completes sign-in. This user pool has device remembering turned on, so the authentication result also returns a new device key. ::
+The following ``admin-respond-to-auth-challenge`` example provides a TOTP MFA code for diego@example.com and completes sign-in. This user pool has device remembering turned on, so the authentication result also returns a new device key. There are many ways to respond to different authentication challenges, depending on your authentication flow, user pool configuration, and user settings. ::
 
     aws cognito-idp admin-respond-to-auth-challenge \
         --user-pool-id us-west-2_EXAMPLE \
@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `Admin authentication flow <https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#amazon-cognito-user-pools-admin-authentication-flow>`__ in the *Amazon Cognito Developer Guide*.
+For more information, see `Admin authentication flow <https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html>`__ in the *Amazon Cognito Developer Guide*.

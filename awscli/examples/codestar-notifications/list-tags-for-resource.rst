@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example retrieves a list of all tags attached to the specified notification rule. In this example, the notification rule currently has no tags associated with it. ::
 
     aws codestar-notifications list-tags-for-resource \
-        --arn arn:aws:codestar-notifications:us-east-1:123456789012:notificationrule/fe1efd35-EXAMPLE
+        --arn arn:aws:codestar-notifications:us-west-2:123456789012:notificationrule/fe1efd35-EXAMPLE
 
 Output::
 

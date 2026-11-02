@@ -1,4 +1,4 @@
-**Modify a parameter in a parameter group**
+**To modify a parameter in a parameter group**
 
 The following ``modify-cluster-parameter-group`` example modifies the *wlm_json_configuration* parameter for workload management. It accepts the parameters from a file that contains the JSON contents shown below. ::
 
@@ -18,9 +18,8 @@ Contents of ``modify_pg.json``::
 Output::
 
     {
-       "ParameterGroupStatus": "Your parameter group has been updated but changes won't get applied until you reboot the associated Clusters.",
-       "ParameterGroupName": "myclusterparametergroup",
-       "ResponseMetadata": {
-          "RequestId": "09974cc0-64cd-11e2-bea9-49e0ce183f07"
-       }
+        "ParameterGroupStatus": "Your parameter group has been updated but changes won't get applied until you reboot the associated Clusters.",
+        "ParameterGroupName": "myclusterparametergroup"
     }
+
+For more information, see `Modifying a parameter group <https://docs.aws.amazon.com/redshift/latest/mgmt/parameter-group-modify.html>`__ in the *Amazon Redshift Management Guide*.

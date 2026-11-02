@@ -1,40 +1,32 @@
-Creating a Cluster Security Group
----------------------------------
+**To create a cluster security group**
 
-This example creates a new cluster security group. By default, the output is in JSON format.
+The following ``create-cluster-security-group`` example creates a new cluster security group. By default, the output is in JSON format. ::
 
-Command::
+    aws redshift create-cluster-security-group \
+        --cluster-security-group-name mysecuritygroup \
+        --description "This is my cluster security group"
 
-   aws redshift create-cluster-security-group --cluster-security-group-name mysecuritygroup --description "This is my cluster security group"
-
-Result::
+Output::
 
     {
-       "create_cluster_security_group_response": {
-          "create_cluster_security_group_result": {
-             "cluster_security_group": {
-                "description": "This is my cluster security group",
-                "owner_id": "300454760768",
-                "cluster_security_group_name": "mysecuritygroup",
-                "ec2_security_groups": \[],
-                "ip_ranges": \[]
-             }
-          },
-          "response_metadata": {
-             "request_id": "5df486a0-343a-11e2-b0d8-d15d0ef48549"
-          }
-       }
+        "ClusterSecurityGroup": {
+            "ClusterSecurityGroupName": "mysecuritygroup",
+            "Description": "This is my cluster security group",
+            "EC2SecurityGroups": [],
+            "IPRanges": [],
+            "Tags": []
+        }
     }
 
-You can also obtain the same information in text format using the ``--output text`` option.
+You can also obtain the same information in text format using the ``--output text`` option. ::
 
-Command::
+    aws redshift create-cluster-security-group \
+        --cluster-security-group-name mysecuritygroup \
+        --description "This is my cluster security group" \
+        --output text
 
-   aws redshift create-cluster-security-group --cluster-security-group-name mysecuritygroup --description "This is my cluster security group" --output text
+Output::
 
-Result::
+    This is my cluster security group   123456789012    mysecuritygroup
 
-    This is my cluster security group	300454760768	mysecuritygroup
-    a0c0bfab-343a-11e2-95d2-c3dc9fe8ab57
-
-
+For more information, see `Infrastructure security in Amazon Redshift <https://docs.aws.amazon.com/redshift/latest/mgmt/security-network-isolation.html>`__ in the *Amazon Redshift Management Guide*.

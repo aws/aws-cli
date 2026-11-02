@@ -8,7 +8,7 @@ The following ``generate-organizations-access-report`` example starts a backgrou
 Output::
 
     {
-        "JobId": "a8b6c06f-aaa4-8xmp-28bc-81da71836359"
+        "JobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 **Example 2: To generate an access report for an account in an organization**
@@ -21,20 +21,20 @@ The following ``generate-organizations-access-report`` example starts a backgrou
 Output::
 
     {
-        "JobId": "14b6c071-75f6-2xmp-fb77-faf6fb4201d2"
+        "JobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 **Example 3: To generate an access report for an account in an organizational unit in an organization**
 
-The following ``generate-organizations-access-report`` example starts a background job to create an access report for account ID ``234567890123`` in organizational unit ``ou-c3xb-lmu7j2yg`` in the organization ``o-4fxmplt198``. You can display the report after it's created by running the ``get-organizations-access-report`` command. ::
+The following ``generate-organizations-access-report`` example starts a background job to create an access report for account ID ``123456789111`` in organizational unit ``ou-c3xb-lmu7j2yg`` in the organization ``o-4fxmplt198``. You can display the report after it's created by running the ``get-organizations-access-report`` command. ::
 
     aws iam generate-organizations-access-report \
-        --entity-path o-4fxmplt198/r-c3xb/ou-c3xb-lmu7j2yg/234567890123
+        --entity-path o-4fxmplt198/r-c3xb/ou-c3xb-lmu7j2yg/123456789111
 
 Output::
 
     {
-        "JobId": "2eb6c2e6-0xmp-ec04-1425-c937916a64af"
+        "JobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
     }
 
 To get details about roots and organizational units in your organization, use the ``organizations list-roots`` and ``organizations list-organizational-units-for-parent`` commands.

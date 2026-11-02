@@ -3,8 +3,7 @@
 The following ``put-webhook`` example creates a webhook for a GitHub version 1 source action. After you create the webhook, you must use the register-webhook-with-third-party command to register it. ::
 
     aws codepipeline put-webhook \
-        --cli-input-json file://webhook_json.json \
-        --region "eu-central-1"
+        --cli-input-json file://webhook_json.json
 
 Contents of ``webhook_json.json``::
 
@@ -46,14 +45,8 @@ Output::
                     }
                 ]
             },
-            "arn": "arn:aws:codepipeline:eu-central-1:123456789012:webhook:my-webhook"
-        },
-        "tags": [
-            {
-                "key": "Project",
-                "value": "ProjectA"
-            }
-        ]
+            "arn": "arn:aws:codepipeline:us-west-2:123456789012:webhook:my-webhook"
+        }
     }
 
-For more information, see `Create a webhook for a GitHub source <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html#pipelines-webhooks-create>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `Create a webhook for a GitHub source <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html>`__ in the *AWS CodePipeline User Guide*.

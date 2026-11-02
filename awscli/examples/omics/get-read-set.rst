@@ -7,4 +7,6 @@ The following ``get-read-set`` example downloads part 3 of a read set as ``12345
         --id 1234567890 \
         --part-number 3  1234567890.3.bam
 
+This command produces no output.
+
 For more information, see `Omics Storage <https://docs.aws.amazon.com/omics/latest/dev/sequence-stores.html>`__ in the *Amazon Omics Developer Guide*.

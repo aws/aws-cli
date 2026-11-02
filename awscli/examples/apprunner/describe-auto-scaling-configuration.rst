@@ -10,14 +10,14 @@ In the example, two revisions exist. Therefore, revision ``2`` (the latest) is d
 Contents of ``input.json``::
 
     {
-        "AutoScalingConfigurationArn": "arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability"
+        "AutoScalingConfigurationArn": "arn:aws:apprunner:us-west-2:123456789012:autoscalingconfiguration/high-availability"
     }
 
 Output::
 
     {
         "AutoScalingConfiguration": {
-            "AutoScalingConfigurationArn": "arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability/2/e76562f50d78042e819fead0f59672e6",
+            "AutoScalingConfigurationArn": "arn:aws:apprunner:us-west-2:123456789012:autoscalingconfiguration/high-availability/2/e76562f50d78042e819fead0f59672e6",
             "AutoScalingConfigurationName": "high-availability",
             "AutoScalingConfigurationRevision": 2,
             "CreatedAt": "2021-02-25T17:42:59Z",
@@ -28,6 +28,8 @@ Output::
             "MinSize": 5
         }
     }
+
+For more information, see `Managing App Runner automatic scaling <https://docs.aws.amazon.com/apprunner/latest/dg/manage-autoscaling.html>`__ in the *AWS App Runner Developer Guide*.
 
 **Example 2: To describe a specific revision of an auto scaling configuration**
 
@@ -41,14 +43,14 @@ In the example, several revisions exist and revision ``1`` is queried. The resul
 Contents of ``input.json``::
 
     {
-        "AutoScalingConfigurationArn": "arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability/1"
+        "AutoScalingConfigurationArn": "arn:aws:apprunner:us-west-2:123456789012:autoscalingconfiguration/high-availability/1"
     }
 
 Output::
 
     {
         "AutoScalingConfiguration": {
-            "AutoScalingConfigurationArn": "arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability/1/2f50e7656d7819fead0f59672e68042e",
+            "AutoScalingConfigurationArn": "arn:aws:apprunner:us-west-2:123456789012:autoscalingconfiguration/high-availability/1/2f50e7656d7819fead0f59672e68042e",
             "AutoScalingConfigurationName": "high-availability",
             "AutoScalingConfigurationRevision": 1,
             "CreatedAt": "2020-11-03T00:29:17Z",
@@ -59,3 +61,5 @@ Output::
             "MinSize": 5
         }
     }
+
+For more information, see `Managing App Runner automatic scaling <https://docs.aws.amazon.com/apprunner/latest/dg/manage-autoscaling.html>`__ in the *AWS App Runner Developer Guide*.

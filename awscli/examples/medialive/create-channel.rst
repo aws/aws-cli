@@ -26,7 +26,7 @@ Contents of ``channel-in-hls-out-hls-akamai.json``::
 
     {
         "Name": "News_West",
-        "RoleArn": "arn:aws:iam::111122223333:role/MediaLiveAccessRole",
+        "RoleArn": "arn:aws:iam::123456789012:role/MediaLiveAccessRole",
         "InputAttachments": [
             {
                 "InputAttachmentName": "local_news",
@@ -150,15 +150,156 @@ Contents of ``channel-in-hls-out-hls-akamai.json``::
         }
     }
 
-**Output:**
-
 The output repeats back the contents of the JSON file, plus the following values. All parameters are ordered alphabetically.
 
 * ``ARN`` for the channel. The last part of the ARN is the unique channel ID.
 * ``EgressEndpoints`` is blank in this example channel because it used only for PUSH inputs. When it applies it  shows the addresses on MediaLive that content is pushed to.
 * ``OutputGroups``, ``Outputs``. These show all the parameters for the output group and outputs, including those that you didn't include but that are relevant to this channel. The parameters might be empty (perhaps indicating the parameter or feature is disabled in this channel configuration) or might show the default value that will apply.
 * ``LogLevel`` is set to the default (DISABLED).
-* ``Tags`` is set to the default (null).
+* ``Tags`` is empty (the default for this parameter).
 * ``PipelinesRunningCount`` and ``State`` show the current status of the channel.
+
+Output::
+
+    {
+        "Channel": {
+            "Arn": "arn:aws:medialive:us-west-2:123456789012:channel/8765432",
+            "ChannelClass": "STANDARD",
+            "Destinations": [
+                {
+                    "Id": "akamai-server-west",
+                    "Settings": [
+                        {
+                            "PasswordParam": "/medialive/examplecorp1",
+                            "Url": "http://203.0.113.55/news/news_west",
+                            "Username": "examplecorp"
+                        },
+                        {
+                            "PasswordParam": "/medialive/examplecorp2",
+                            "Url": "http://203.0.113.82/news/news_west",
+                            "Username": "examplecorp"
+                        }
+                    ]
+                }
+            ],
+            "EgressEndpoints": [],
+            "EncoderSettings": {
+                "AudioDescriptions": [
+                    {
+                        "AudioSelectorName": "English-Audio",
+                        "CodecSettings": {
+                            "AacSettings": {}
+                        },
+                        "Name": "Audio_EN"
+                    }
+                ],
+                "CaptionDescriptions": [
+                    {
+                        "CaptionSelectorName": "English_embedded",
+                        "DestinationSettings": {
+                            "WebvttDestinationSettings": {}
+                        },
+                        "Name": "WebVTT_EN"
+                    }
+                ],
+                "OutputGroups": [
+                    {
+                        "Name": "Akamai",
+                        "OutputGroupSettings": {
+                            "HlsGroupSettings": {
+                                "Destination": {
+                                    "DestinationRefId": "akamai-server-west"
+                                },
+                                "HlsCdnSettings": {
+                                    "HlsBasicPutSettings": {}
+                                }
+                            }
+                        },
+                        "Outputs": [
+                            {
+                                "AudioDescriptionNames": [
+                                    "Audio_EN"
+                                ],
+                                "OutputName": "Video_and_audio",
+                                "OutputSettings": {
+                                    "HlsOutputSettings": {
+                                        "HlsSettings": {
+                                            "StandardHlsSettings": {
+                                                "M3u8Settings": {}
+                                            }
+                                        },
+                                        "NameModifier": "_1"
+                                    }
+                                },
+                                "VideoDescriptionName": "Video_high"
+                            },
+                            {
+                                "CaptionDescriptionNames": [
+                                    "WebVTT_EN"
+                                ],
+                                "OutputName": "Captions-WebVTT",
+                                "OutputSettings": {
+                                    "HlsOutputSettings": {
+                                        "HlsSettings": {
+                                            "StandardHlsSettings": {
+                                                "M3u8Settings": {}
+                                            }
+                                        },
+                                        "NameModifier": "_2"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "TimecodeConfig": {
+                    "Source": "EMBEDDED"
+                },
+                "VideoDescriptions": [
+                    {
+                        "Height": 720,
+                        "Name": "Video_high",
+                        "Width": 1280
+                    }
+                ]
+            },
+            "Id": "8765432",
+            "InputAttachments": [
+                {
+                    "InputAttachmentName": "local_news",
+                    "InputId": "1234567",
+                    "InputSettings": {
+                        "AudioSelectors": [
+                            {
+                                "Name": "English-Audio",
+                                "SelectorSettings": {
+                                    "AudioLanguageSelection": {
+                                        "LanguageCode": "EN"
+                                    }
+                                }
+                            }
+                        ],
+                        "CaptionSelectors": [
+                            {
+                                "LanguageCode": "ENE",
+                                "Name": "English_embedded"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "InputSpecification": {
+                "Codec": "AVC",
+                "MaximumBitrate": "MAX_20_MBPS",
+                "Resolution": "HD"
+            },
+            "LogLevel": "DISABLED",
+            "Name": "News_West",
+            "PipelinesRunningCount": 0,
+            "RoleArn": "arn:aws:iam::123456789012:role/MediaLiveAccessRole",
+            "State": "CREATING",
+            "Tags": {}
+        }
+    }
 
 For more information, see `Creating a Channel from Scratch <https://docs.aws.amazon.com/medialive/latest/ug/creating-channel-scratch.html>`__ in the *AWS Elemental MediaLive User Guide*.

@@ -11,7 +11,7 @@ Output::
             {
                 "Tags": [],
                 "VirtualNetworkId": 42,
-                "OwnerId": "111122223333",
+                "OwnerId": "123456789012",
                 "Description": "TCP Session",
                 "NetworkInterfaceId": "eni-0a471a5cf3EXAMPLE",
                 "TrafficMirrorTargetId": "tmt-0dabe9b0a6EXAMPLE",
@@ -28,7 +28,7 @@ Output::
                     }
                 ],
                 "VirtualNetworkId": 13314501,
-                "OwnerId": "111122223333",
+                "OwnerId": "123456789012",
                 "Description": "TCP Session",
                 "NetworkInterfaceId": "eni-0a471a5cf3EXAMPLE",
                 "TrafficMirrorTargetId": "tmt-03665551cbEXAMPLE",
@@ -39,4 +39,4 @@ Output::
         ]
     }
 
-For more information, see `View Traffic Mirror Session Details <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-session.html#view-traffic-mirroring-session>`__ in the *AWS Traffic Mirroring Guide*.
+For more information, see `Create, modify, or delete a traffic mirror session <https://docs.aws.amazon.com/vpc/latest/mirroring/create-traffic-mirroring-session.html>`__ in the *AWS Traffic Mirroring Guide*.

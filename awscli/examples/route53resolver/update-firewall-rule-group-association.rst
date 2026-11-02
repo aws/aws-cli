@@ -19,7 +19,7 @@ Output::
             "MutationProtection": "DISABLED",
             "Status": "UPDATING",
             "StatusMessage": "Updating the Firewall Rule Group Association Attributes",
-            "CreatorRequestId": "2ca1a304-32b3-4f5f-bc4c-EXAMPLE11111",
+            "CreatorRequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CreationTime": "2021-05-25T21:47:48.755768Z",
             "ModificationTime": "2021-05-25T21:50:09.272569Z"
         }

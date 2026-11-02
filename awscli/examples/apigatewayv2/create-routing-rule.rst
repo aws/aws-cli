@@ -45,7 +45,7 @@ Output::
             }
         ],
         "Priority": 50,
-        "RoutingRuleArn": "arn:aws:apigateway:us-east-2:123456789012:/domainnames/regional.example.com/routingrules/aaa111",
+        "RoutingRuleArn": "arn:aws:apigateway:us-west-2:123456789012:/domainnames/regional.example.com/routingrules/aaa111",
         "RoutingRuleId": "aaa111"
     }
 

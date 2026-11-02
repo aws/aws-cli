@@ -2,13 +2,13 @@
 
 The following ``modify-ipam`` example modifies an IPAM by adding an Operating Region.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 modify-ipam \
         --ipam-id ipam-08440e7a3acde3908 \
         --add-operating-regions RegionName=us-west-2
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 modify-ipam ^
         --ipam-id ipam-08440e7a3acde3908 ^
@@ -42,3 +42,5 @@ Output::
             "State": "modify-in-progress"
         }
     }
+
+For more information, see `Modify IPAM operating Regions <https://docs.aws.amazon.com/vpc/latest/ipam/mod-ipam-region.html>`__ in the *Amazon VPC IPAM User Guide*.

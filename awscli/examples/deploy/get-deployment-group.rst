@@ -12,7 +12,9 @@ Output::
         "deploymentGroupInfo": {
             "applicationName": "WordPress_App",
             "autoScalingGroups": [
-                "CodeDeployDemo-ASG"
+                {
+                    "name": "CodeDeployDemo-ASG"
+                }
             ],
             "deploymentConfigName": "CodeDeployDefault.OneAtATime",
             "ec2TagFilters": [
@@ -22,8 +24,10 @@ Output::
                     "Key": "Name"
                 }
             ],
-            "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "serviceRoleArn": "arn:aws:iam::123456789012:role/CodeDeployDemoRole",
             "deploymentGroupName": "WordPress_DG"
         }
     }
+
+For more information, see `View deployment group details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-groups-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

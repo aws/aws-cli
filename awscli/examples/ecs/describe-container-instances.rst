@@ -4,7 +4,7 @@ The following ``describe-container-instances`` example retrieves details for a c
 
     aws ecs describe-container-instances \
         --cluster update \
-        --container-instances a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+        --container-instances a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -44,7 +44,7 @@ Output::
                 ],
                 "ec2InstanceId": "i-A1B2C3D4",
                 "agentConnected": true,
-                "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "pendingTasksCount": 0,
                 "remainingResources": [
                     {
@@ -85,4 +85,4 @@ Output::
         ]
     }
 
-For more information, see `Amazon ECS Container Instances <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon EC2 container instances for Amazon ECS <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-capacity.html>`__ in the *Amazon ECS Developer Guide*.

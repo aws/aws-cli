@@ -16,7 +16,73 @@ Output::
                 "LastUpdated": 1568653007,
                 "Priority": 0,
                 "Settings": {
-                    ...<truncatedforbrevity>...
+                    "OutputGroups": [
+                        {
+                            "Name": "DASH ISO",
+                            "OutputGroupSettings": {
+                                "Type": "DASH_ISO_GROUP_SETTINGS",
+                                "DashIsoGroupSettings": {
+                                    "FragmentLength": 2,
+                                    "SegmentControl": "SEGMENTED_FILES",
+                                    "SegmentLength": 30
+                                }
+                            },
+                            "Outputs": [
+                                {
+                                    "NameModifier": "_1080p",
+                                    "ContainerSettings": {
+                                        "Container": "MPD"
+                                    },
+                                    "VideoDescription": {
+                                        "Width": 1920,
+                                        "Height": 1080,
+                                        "CodecSettings": {
+                                            "Codec": "H_264",
+                                            "H264Settings": {
+                                                "MaxBitrate": 6000000,
+                                                "RateControlMode": "QVBR"
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "NameModifier": "_720p",
+                                    "ContainerSettings": {
+                                        "Container": "MPD"
+                                    },
+                                    "VideoDescription": {
+                                        "Width": 1280,
+                                        "Height": 720,
+                                        "CodecSettings": {
+                                            "Codec": "H_264",
+                                            "H264Settings": {
+                                                "MaxBitrate": 3500000,
+                                                "RateControlMode": "QVBR"
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "NameModifier": "_audio",
+                                    "ContainerSettings": {
+                                        "Container": "MPD"
+                                    },
+                                    "AudioDescriptions": [
+                                        {
+                                            "CodecSettings": {
+                                                "Codec": "AAC",
+                                                "AacSettings": {
+                                                    "Bitrate": 96000,
+                                                    "CodingMode": "CODING_MODE_2_0",
+                                                    "SampleRate": 48000
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "Type": "CUSTOM",
                 "StatusUpdateInterval": "SECONDS_60",
@@ -29,7 +95,50 @@ Output::
                 "LastUpdated": 1568653007,
                 "Priority": 0,
                 "Settings": {
-                    ...<truncatedforbrevity>...
+                    "OutputGroups": [
+                        {
+                            "Name": "File Group",
+                            "OutputGroupSettings": {
+                                "Type": "FILE_GROUP_SETTINGS",
+                                "FileGroupSettings": {}
+                            },
+                            "Outputs": [
+                                {
+                                    "ContainerSettings": {
+                                        "Container": "MP4",
+                                        "Mp4Settings": {
+                                            "CslgAtom": "INCLUDE",
+                                            "FreeSpaceBox": "EXCLUDE",
+                                            "MoovPlacement": "PROGRESSIVE_DOWNLOAD"
+                                        }
+                                    },
+                                    "VideoDescription": {
+                                        "Width": 1920,
+                                        "Height": 1080,
+                                        "CodecSettings": {
+                                            "Codec": "H_264",
+                                            "H264Settings": {
+                                                "MaxBitrate": 10000000,
+                                                "RateControlMode": "QVBR"
+                                            }
+                                        }
+                                    },
+                                    "AudioDescriptions": [
+                                        {
+                                            "CodecSettings": {
+                                                "Codec": "AAC",
+                                                "AacSettings": {
+                                                    "Bitrate": 96000,
+                                                    "CodingMode": "CODING_MODE_2_0",
+                                                    "SampleRate": 48000
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "Type": "CUSTOM",
                 "StatusUpdateInterval": "SECONDS_60",
@@ -43,7 +152,7 @@ Output::
 The following ``list-job-templates`` example lists all system job templates. ::
 
     aws mediaconvert list-job-templates \
-        --endpoint-url https://abcd1234.mediaconvert.us-east-1.amazonaws.com \
+        --endpoint-url https://abcd1234.mediaconvert.us-west-2.amazonaws.com \
         --list-by SYSTEM
 
 Output::
@@ -52,7 +161,7 @@ Output::
         "JobTemplates": [
             {
                 "CreatedAt": 1568321779,
-                "Arn": "arn:aws:mediaconvert:us-east-1:123456789012:jobTemplates/System-Generic_Mp4_Hev1_Avc_Aac_Sdr_Qvbr",
+                "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:jobTemplates/System-Generic_Mp4_Hev1_Avc_Aac_Sdr_Qvbr",
                 "Name": "System-Generic_Mp4_Hev1_Avc_Aac_Sdr_Qvbr",
                 "Description": "GENERIC, MP4, AVC + HEV1(HEVC,SDR), AAC, SDR, QVBR",
                 "Category": "GENERIC",
@@ -93,9 +202,7 @@ Output::
                                 }
                             ],
                             "OutputGroupSettings": {
-                                "FileGroupSettings": {
-                                    
-                                },
+                                "FileGroupSettings": {},
                                 "Type": "FILE_GROUP_SETTINGS"
                             },
                             "Name": "File Group"
@@ -104,8 +211,7 @@ Output::
                 },
                 "Type": "SYSTEM",
                 "LastUpdated": 1568321779
-            },
-            ...<truncatedforbrevity>...
+            }
         ]
     }
 

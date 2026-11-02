@@ -11,15 +11,14 @@ Output::
         "DBCluster": {
             "AllocatedStorage": 1,
             "AvailabilityZones": [
-                "us-east-1a",
-                "us-east-1b",
-                "us-east-1c"
+                "us-west-2a",
+                "us-west-2b",
+                "us-west-2c"
             ],
             "BackupRetentionPeriod": 1,
             "DatabaseName": "",
-            "DBClusterIdentifier": "mydbcluster-1",
-            ...some output truncated...
+            "DBClusterIdentifier": "mydbcluster-1"
         }
     }
 
-For more information, see `Promoting a read replica to be a DB cluster <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Replication.CrossRegion.html#AuroraMySQL.Replication.CrossRegion.Promote>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Promoting a read replica to be a DB cluster <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Replication.CrossRegion.Promote.html>`__ in the *Amazon Aurora User Guide*.

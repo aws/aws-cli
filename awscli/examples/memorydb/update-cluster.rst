@@ -1,6 +1,6 @@
 **To update a cluster**
 
-The following update-cluster`` updates the parameter group of a cluster to my-parameter-group. ::
+The following ``update-cluster`` example updates the parameter group of a cluster to my-parameter-group. ::
 
     aws memorydb update-cluster \
         --cluster-name my-cluster \
@@ -15,7 +15,7 @@ Output::
             "NumberOfShards": 2,
             "AvailabilityMode": "MultiAZ",
             "ClusterEndpoint": {
-                "Address": "clustercfg.my-cluster.llru6f.memorydb.us-east-1.amazonaws.com",
+                "Address": "clustercfg.my-cluster.llru6f.memorydb.us-west-2.amazonaws.com",
                 "Port": 6379
             },
             "NodeType": "db.r6g.large",
@@ -31,7 +31,7 @@ Output::
             ],
             "SubnetGroupName": "pat-sg",
             "TLSEnabled": true,
-            "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:cluster/my-cluster",
+            "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:cluster/my-cluster",
             "SnapshotRetentionLimit": 0,
             "MaintenanceWindow": "wed:03:00-wed:04:00",
             "SnapshotWindow": "04:30-05:30",

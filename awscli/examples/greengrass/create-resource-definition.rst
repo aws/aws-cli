@@ -9,13 +9,13 @@ The following ``create-resource-definition`` example creates a resource definiti
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/c8bb9ebc-c3fd-40a4-9c6a-568d75569d38",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreationTimestamp": "2019-06-19T21:51:28.212Z",
-        "Id": "c8bb9ebc-c3fd-40a4-9c6a-568d75569d38",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LastUpdatedTimestamp": "2019-06-19T21:51:28.212Z",
-        "LatestVersion": "a5f94d0b-f6bc-40f4-bb78-7a1c5fe13ba1",
-        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/c8bb9ebc-c3fd-40a4-9c6a-568d75569d38/versions/a5f94d0b-f6bc-40f4-bb78-7a1c5fe13ba1",
+        "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "Name": "MyGreengrassResources"
     }
 
-For more information, see `How to Configure Local Resource Access Using the AWS Command Line Interface <https://docs.aws.amazon.com/greengrass/latest/developerguide/lra-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `How to configure local resource access using the AWS command line interface <https://docs.aws.amazon.com/greengrass/v1/developerguide/lra-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.

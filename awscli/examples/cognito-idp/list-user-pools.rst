@@ -14,11 +14,11 @@ Output::
                 "CreationDate": 1681502497.741,
                 "Id": "us-west-2_EXAMPLE1",
                 "LambdaConfig": {
-                    "CustomMessage": "arn:aws:lambda:us-east-1:123456789012:function:MyFunction",
-                    "PreSignUp": "arn:aws:lambda:us-east-1:123456789012:function:MyFunction",
-                    "PreTokenGeneration": "arn:aws:lambda:us-east-1:123456789012:function:MyFunction",
+                    "CustomMessage": "arn:aws:lambda:us-west-2:123456789012:function:MyFunction",
+                    "PreSignUp": "arn:aws:lambda:us-west-2:123456789012:function:MyFunction",
+                    "PreTokenGeneration": "arn:aws:lambda:us-west-2:123456789012:function:MyFunction",
                     "PreTokenGenerationConfig": {
-                        "LambdaArn": "arn:aws:lambda:us-east-1:123456789012:function:MyFunction",
+                        "LambdaArn": "arn:aws:lambda:us-west-2:123456789012:function:MyFunction",
                         "LambdaVersion": "V1_0"
                     }
                 },
@@ -37,7 +37,7 @@ Output::
                 "CreationDate": 1627681712.237,
                 "Id": "us-west-2_EXAMPLE3",
                 "LambdaConfig": {
-                    "UserMigration": "arn:aws:lambda:us-east-1:123456789012:function:MyFunction"
+                    "UserMigration": "arn:aws:lambda:us-west-2:123456789012:function:MyFunction"
                 },
                 "LastModifiedDate": 1678486942.479,
                 "Name": "user pool 3"

@@ -1,6 +1,6 @@
-us-west-2**To restore a prefix list version**
+**To restore a prefix list version**
 
-The following ``restore-managed-prefix-list-version`` restores the entries from version 1 of the specified prefix list. ::
+The following ``restore-managed-prefix-list-version`` example restores the entries from version 1 of the specified prefix list. ::
 
     aws ec2 restore-managed-prefix-list-version \
         --prefix-list-id pl-0123456abcabcabc1 \

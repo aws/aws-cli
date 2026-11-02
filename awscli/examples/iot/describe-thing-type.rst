@@ -9,7 +9,7 @@ Output::
 
     {
         "thingTypeName": "LightBulb",
-        "thingTypeId": "ce3573b0-0a3c-45a7-ac93-4e0ce14cd190",
+        "thingTypeId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "thingTypeArn": "arn:aws:iot:us-west-2:123456789012:thingtype/LightBulb",
         "thingTypeProperties": {
             "thingTypeDescription": "light bulb type",

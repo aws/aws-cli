@@ -3,23 +3,23 @@
 The following ``get-maintenance-window-execution-task-invocation`` example lists information about the specified task invocation that is part of the specified maintenance window execution. ::
 
     aws ssm get-maintenance-window-execution-task-invocation \
-        --window-execution-id "bc494bfa-e63b-49f6-8ad1-aa9f2EXAMPLE" \
-        --task-id "96f2ad59-97e3-461d-a63d-40c8aEXAMPLE" \
-        --invocation-id "a5273e2c-d2c6-4880-b3e1-5e550EXAMPLE"
+        --window-execution-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --task-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222" \
+        --invocation-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
 
 Output::
 
     {
         "Status": "SUCCESS",
         "Parameters": "{\"comment\":\"\",\"documentName\":\"AWS-RunPowerShellScript\",\"instanceIds\":[\"i-1234567890EXAMPLE\"],\"maxConcurrency\":\"1\",\"maxErrors\":\"1\",\"parameters\":{\"executionTimeout\":[\"3600\"],\"workingDirectory\":[\"\"],\"commands\":[\"echo Hello\"]},\"timeoutSeconds\":600}",
-        "ExecutionId": "03b6baa0-5460-4e15-83f2-ea685EXAMPLE",
-        "InvocationId": "a5273e2c-d2c6-4880-b3e1-5e550EXAMPLE",
+        "ExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+        "InvocationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
         "StartTime": 1549998326.421,
         "TaskType": "RUN_COMMAND",
         "EndTime": 1550001931.784,
-        "WindowExecutionId": "bc494bfa-e63b-49f6-8ad1-aa9f2EXAMPLE",
+        "WindowExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "StatusDetails": "Failed",
-        "TaskExecutionId": "96f2ad59-97e3-461d-a63d-40c8aEXAMPLE"
+        "TaskExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `View Information About Tasks and Task Executions (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/mw-cli-tutorial-task-info.html>`__ in the *AWS Systems Manager User Guide*.

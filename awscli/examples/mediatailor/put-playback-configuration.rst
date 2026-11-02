@@ -1,6 +1,6 @@
 **To create a configuration**
 
-The following ``put-playback-configuration`` creates a configuration named ``campaign_short``. ::
+The following ``put-playback-configuration`` example creates a configuration named ``campaign_short``. ::
 
     aws mediatailor put-playback-configuration \
         --name campaign_short \
@@ -13,9 +13,9 @@ Output::
         "AdDecisionServerUrl": "http://your.ads.url",
         "CdnConfiguration": {},
         "DashConfiguration": {
-             "ManifestEndpointPrefix": "https://13484114d38f4383bc0d6a7cb879bd00.mediatailor.us-west-2.amazonaws.com/v1/dash/1cbfeaaecb69778e0c167d0505a2bc57da2b1754/campaign_short/",
-             "MpdLocation": "EMT_DEFAULT",
-             "OriginManifestType": "MULTI_PERIOD"
+            "ManifestEndpointPrefix": "https://13484114d38f4383bc0d6a7cb879bd00.mediatailor.us-west-2.amazonaws.com/v1/dash/1cbfeaaecb69778e0c167d0505a2bc57da2b1754/campaign_short/",
+            "MpdLocation": "EMT_DEFAULT",
+            "OriginManifestType": "MULTI_PERIOD"
         },
         "HlsConfiguration": {
             "ManifestEndpointPrefix": "https://13484114d38f4383bc0d6a7cb879bd00.mediatailor.us-west-2.amazonaws.com/v1/master/1cbfeaaecb69778e0c167d0505a2bc57da2b1754/campaign_short/"

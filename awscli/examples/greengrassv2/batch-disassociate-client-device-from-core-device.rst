@@ -3,8 +3,8 @@
 The following ``batch-disassociate-client-device-from-core-device`` example disassociates two client devices from a core device. ::
 
     aws greengrassv2 batch-disassociate-client-device-from-core-device \
-      --core-device-thing-name MyGreengrassCore \
-      --entries thingName=MyClientDevice1 thingName=MyClientDevice2
+        --core-device-thing-name MyGreengrassCore \
+        --entries thingName=MyClientDevice1 thingName=MyClientDevice2
 
 Output::
 

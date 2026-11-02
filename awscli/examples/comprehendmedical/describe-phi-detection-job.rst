@@ -20,10 +20,10 @@ Output::
             },
             "OutputDataConfig": {
                 "S3Bucket": "comp-med-output",
-                "S3Key": "867139942017-PHIDetection-4750034166536cdb52ffa3295a1b00a3/"
+                "S3Key": "123456789012-PHIDetection-4750034166536cdb52ffa3295a1b00a3/"
             },
             "LanguageCode": "en",
-            "DataAccessRoleArn": "arn:aws:iam::867139942017:role/ComprehendMedicalBatchProcessingRole",
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/ComprehendMedicalBatchProcessingRole",
             "ModelVersion": "PHIModelV20190903"
         }
     }

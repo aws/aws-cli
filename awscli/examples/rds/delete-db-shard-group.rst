@@ -5,7 +5,7 @@ The following ``delete-db-shard-group`` example shows the error that occurs when
     aws rds delete-db-shard-group \
         --db-shard-group-identifier limitless-test-shard-grp
 
-Output::
+This command produces no output. Instead, the command fails and returns the following error message. ::
 
     An error occurred (InvalidDBShardGroupState) when calling the DeleteDBShardGroup operation: Unable to delete the DB shard group limitless-test-db-shard-group.
     Delete all of your Limitless Database databases and schemas, then try again.
@@ -27,7 +27,7 @@ Output::
         "ComputeRedundancy": 0,
         "Status": "deleting",
         "PubliclyAccessible": true,
-        "Endpoint": "limitless-test-cluster.limitless-cekycexample.us-east-2.rds.amazonaws.com"
+        "Endpoint": "limitless-test-cluster.limitless-cekycexample.us-west-2.rds.amazonaws.com"
     }
 
 For more information, see `Deleting Aurora DB clusters and DB instances <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DeleteCluster.html>`__ in the *Amazon Aurora User Guide*.

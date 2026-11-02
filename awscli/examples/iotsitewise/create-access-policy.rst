@@ -16,7 +16,7 @@ Contents of ``create-portal-administrator-access-policy.json``::
         "accessPolicyPermission": "ADMINISTRATOR",
         "accessPolicyResource": { 
             "portal": { 
-                "id": "a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE"
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         }
     }
@@ -24,11 +24,11 @@ Contents of ``create-portal-administrator-access-policy.json``::
 Output::
 
     {
-        "accessPolicyId": "a1b2c3d4-5678-90ab-cdef-cccccEXAMPLE",
-        "accessPolicyArn": "arn:aws:iotsitewise:us-west-2:123456789012:access-policy/a1b2c3d4-5678-90ab-cdef-cccccEXAMPLE"
+        "accessPolicyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "accessPolicyArn": "arn:aws:iotsitewise:us-west-2:123456789012:access-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
-For more information, see `Adding or removing portal administrators <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Adding or removing portal administrators <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/portal-change-admins.html>`__ in the *AWS IoT SiteWise User Guide*.
 
 **Example 2: To grant a user read-only access to a project**
 
@@ -48,7 +48,7 @@ Contents of ``create-project-viewer-access-policy.json``::
         "accessPolicyPermission": "VIEWER",
         "accessPolicyResource": { 
             "project": { 
-                "id": "a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE"
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
             }
         }
     }
@@ -56,8 +56,8 @@ Contents of ``create-project-viewer-access-policy.json``::
 Output::
 
     {
-        "accessPolicyId": "a1b2c3d4-5678-90ab-cdef-dddddEXAMPLE",
-        "accessPolicyArn": "arn:aws:iotsitewise:us-west-2:123456789012:access-policy/a1b2c3d4-5678-90ab-cdef-dddddEXAMPLE"
+        "accessPolicyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+        "accessPolicyArn": "arn:aws:iotsitewise:us-west-2:123456789012:access-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
     }
 
 For more information, see `Assigning project viewers <https://docs.aws.amazon.com/iot-sitewise/latest/appguide/assign-project-viewers.html>`__ in the *AWS IoT SiteWise Monitor Application Guide*.

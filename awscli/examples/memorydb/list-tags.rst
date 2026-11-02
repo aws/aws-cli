@@ -1,9 +1,9 @@
 **To return a list of tags**
 
-The following `list-tags` returns a list of tags. ::
+The following ``list-tags`` example returns a list of tags. ::
 
     aws memorydb list-tags \
-        --resource-arn arn:aws:memorydb:us-east-1:491658xxxxxx:cluster/my-cluster
+        --resource-arn arn:aws:memorydb:us-west-2:491658xxxxxx:cluster/my-cluster
 
 Output::
 

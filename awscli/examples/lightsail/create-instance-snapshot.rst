@@ -11,7 +11,7 @@ Output::
     {
         "operations": [
             {
-                "id": "4c3db559-9dd0-41e7-89c0-2cb88c19786f",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "WordPress-Snapshot-1",
                 "resourceType": "InstanceSnapshot",
                 "createdAt": 1569866438.48,
@@ -26,7 +26,7 @@ Output::
                 "statusChangedAt": 1569866438.48
             },
             {
-                "id": "c04fdc45-2981-488c-88b5-d6d2fd759a6a",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "WordPress-1",
                 "resourceType": "Instance",
                 "createdAt": 1569866438.48,
@@ -42,3 +42,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Back up Linux/Unix Lightsail instances with snapshots <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-create-a-snapshot-of-your-instance.html>`__ in the *Amazon Lightsail User Guide*.

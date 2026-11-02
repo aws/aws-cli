@@ -1,4 +1,4 @@
-**Describe a managed node group for an Amazon EKS cluster**
+**To describe a managed node group for an Amazon EKS cluster**
 
 The following ``describe-nodegroup`` example describes a managed node group for an Amazon EKS cluster. ::
 
@@ -11,7 +11,7 @@ Output::
     {
         "nodegroup": {
             "nodegroupName": "my-eks-nodegroup",
-            "nodegroupArn": "arn:aws:eks:us-east-2:111122223333:nodegroup/my-eks-cluster/my-eks-nodegroup/a8c75f2f-df78-a72f-4063-4b69af3de5b1",
+            "nodegroupArn": "arn:aws:eks:us-west-2:123456789012:nodegroup/my-eks-cluster/my-eks-nodegroup/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "clusterName": "my-eks-cluster",
             "version": "1.26",
             "releaseVersion": "1.26.12-20240329",
@@ -33,7 +33,7 @@ Output::
                 "subnet-09d912bb63ef21b9a"
             ],
             "amiType": "AL2_x86_64",
-            "nodeRole": "arn:aws:iam::111122223333:role/role-name",
+            "nodeRole": "arn:aws:iam::123456789012:role/role-name",
             "labels": {},
             "resources": {
                 "autoScalingGroups": [
@@ -52,3 +52,5 @@ Output::
             "tags": {}
         }
     }
+
+For more information, see `Simplify node lifecycle with managed node groups <https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html>`__ in the *Amazon EKS User Guide*.

@@ -1,6 +1,6 @@
 **Example 1: To list all active Session Manager sessions**
 
-This ``describe-sessions`` example retrieves a list of the active sessions created most recently (both connected and disconnected sessions) over the past 30 days that were started by the specified user. This command returns only results for connections to targets initiated using Session Manager. It does not list connections made through other means, such as Remote Desktop Connections or SSH. ::
+The following ``describe-sessions`` example retrieves a list of the active sessions created most recently (both connected and disconnected sessions) over the past 30 days that were started by the specified user. This command returns only results for connections to targets initiated using Session Manager. It does not list connections made through other means, such as Remote Desktop Connections or SSH. ::
 
     aws ssm describe-sessions \
         --state "Active" \
@@ -31,7 +31,7 @@ Output::
 
 **Example 2: To list all terminated Session Manager sessions**
 
-This ``describe-sessions`` example retrieves a list of the most recently terminated sessions from the past 30 days for all users. ::
+The following ``describe-sessions`` example retrieves a list of the most recently terminated sessions from the past 30 days for all users. ::
 
     aws ssm describe-sessions \
         --state "History"
@@ -55,8 +55,7 @@ Output::
                 "StartDate": 1550161369.149,
                 "EndDate": 1550162580.329,
                 "Owner": "arn:aws:sts::123456789012:assumed-role/Administrator/Jane-Roe"
-            },
-            ...
+            }
         ],
         "NextToken": "--token string truncated--"
     }

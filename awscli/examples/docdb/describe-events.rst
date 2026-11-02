@@ -148,4 +148,4 @@ Output::
         ]
     }
 
-For more information, see `Viewing Amazon DocumentDB Events <https://docs.aws.amazon.com/ documentdb/latest/developerguide/managing-events.html#viewing-events>`__ in the *Amazon DocumentDB Developer Guide*.
+For more information, see `Viewing Amazon DocumentDB events <https://docs.aws.amazon.com/documentdb/latest/devguide/managing-events.html#viewing-events>`__ in the *Amazon DocumentDB Developer Guide*.

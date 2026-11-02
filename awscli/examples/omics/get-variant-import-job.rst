@@ -3,18 +3,18 @@
 The following ``get-variant-import-job`` example gets details about a variant import job. ::
 
     aws omics get-variant-import-job \
-        --job-id edd7b8ce-xmpl-47e2-bc99-258cac95a508
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "creationTime": "2022-11-23T22:42:50.037812Z",
         "destinationName": "my_var_store",
-        "id": "edd7b8ce-xmpl-47e2-bc99-258cac95a508",
+        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "items": [
             {
                 "jobStatus": "IN_PROGRESS",
-                "source": "s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.known_indels.vcf.gz"
+                "source": "s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.known_indels.vcf.gz"
             }
         ],
         "roleArn": "arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ",

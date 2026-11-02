@@ -3,7 +3,8 @@
 The following ``disable-enhanced-monitoring`` example disables enhanced Kinesis data stream monitoring for shard-level metrics. ::
 
     aws kinesis disable-enhanced-monitoring \
-        --stream-name samplestream --shard-level-metrics ALL
+        --stream-name samplestream \
+        --shard-level-metrics ALL
 
 Output::
 

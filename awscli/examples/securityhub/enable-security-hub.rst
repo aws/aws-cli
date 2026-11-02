@@ -8,4 +8,4 @@ The following ``enable-security-hub`` example enables AWS Security Hub for the r
 
 This command produces no output.
 
-For more information, see `Enabling Security Hub <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-settingup.html#securityhub-enable>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Enabling Security Hub <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-settingup.html>`__ in the *AWS Security Hub User Guide*.

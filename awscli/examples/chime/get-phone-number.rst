@@ -22,7 +22,7 @@ Output::
                 "InboundMMS": true,
                 "OutboundMMS": true
             },
-           "Associations": [
+            "Associations": [
                 {
                     "Value": "abcdef1ghij2klmno3pqr4",
                     "Name": "VoiceConnectorId",

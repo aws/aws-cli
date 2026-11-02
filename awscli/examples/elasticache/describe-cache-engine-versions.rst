@@ -116,3 +116,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Engine versions and upgrading in ElastiCache <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/engine-versions.html>`__ in the *Amazon ElastiCache User Guide*.

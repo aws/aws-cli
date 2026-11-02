@@ -13,9 +13,38 @@ Output::
                 "Name": "SimpleMP4",
                 "CreatedAt": 1568841521,
                 "Settings": {
-                    ......
+                    "ContainerSettings": {
+                        "Container": "MP4",
+                        "Mp4Settings": {
+                            "CslgAtom": "INCLUDE",
+                            "FreeSpaceBox": "EXCLUDE",
+                            "MoovPlacement": "PROGRESSIVE_DOWNLOAD"
+                        }
+                    },
+                    "VideoDescription": {
+                        "CodecSettings": {
+                            "Codec": "H_264",
+                            "H264Settings": {
+                                "Bitrate": 400000,
+                                "CodecProfile": "MAIN",
+                                "RateControlMode": "CBR"
+                            }
+                        }
+                    },
+                    "AudioDescriptions": [
+                        {
+                            "CodecSettings": {
+                                "Codec": "AAC",
+                                "AacSettings": {
+                                    "Bitrate": 96000,
+                                    "CodingMode": "CODING_MODE_2_0",
+                                    "SampleRate": 48000
+                                }
+                            }
+                        }
+                    ]
                 },
-                "Arn": "arn:aws:mediaconvert:us-east-1:003235472598:presets/SimpleMP4",
+                "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:presets/SimpleMP4",
                 "Type": "CUSTOM",
                 "LastUpdated": 1568843141,
                 "Description": "Creates basic MP4 file. No filtering or preproccessing."
@@ -24,9 +53,36 @@ Output::
                 "Name": "SimpleTS",
                 "CreatedAt": 1568843113,
                 "Settings": {
-                    ... truncated for brevity ...
+                    "ContainerSettings": {
+                        "Container": "M2TS",
+                        "M2tsSettings": {
+                            "RateMode": "CBR"
+                        }
+                    },
+                    "VideoDescription": {
+                        "CodecSettings": {
+                            "Codec": "H_264",
+                            "H264Settings": {
+                                "Bitrate": 400000,
+                                "CodecProfile": "MAIN",
+                                "RateControlMode": "CBR"
+                            }
+                        }
+                    },
+                    "AudioDescriptions": [
+                        {
+                            "CodecSettings": {
+                                "Codec": "AAC",
+                                "AacSettings": {
+                                    "Bitrate": 96000,
+                                    "CodingMode": "CODING_MODE_2_0",
+                                    "SampleRate": 48000
+                                }
+                            }
+                        }
+                    ]
                 },
-                "Arn": "arn:aws:mediaconvert:us-east-1:003235472598:presets/SimpleTS",
+                "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:presets/SimpleTS",
                 "Type": "CUSTOM",
                 "LastUpdated": 1568843113,
                 "Description": "Create a basic transport stream."
@@ -55,14 +111,40 @@ Output::
                 "Type": "SYSTEM",
                 "Category": "HLS",
                 "Settings": {
-                ...<output settings removed for brevity>... 
+                    "ContainerSettings": {
+                        "Container": "M3U8"
+                    },
+                    "VideoDescription": {
+                        "Width": 1920,
+                        "Height": 1080,
+                        "CodecSettings": {
+                            "Codec": "H_264",
+                            "H264Settings": {
+                                "Bitrate": 8500000,
+                                "CodecProfile": "MAIN",
+                                "RateControlMode": "CBR",
+                                "FramerateControl": "SPECIFIED",
+                                "FramerateNumerator": 30000,
+                                "FramerateDenominator": 1001
+                            }
+                        }
+                    },
+                    "AudioDescriptions": [
+                        {
+                            "CodecSettings": {
+                                "Codec": "AAC",
+                                "AacSettings": {
+                                    "Bitrate": 96000,
+                                    "CodingMode": "CODING_MODE_2_0",
+                                    "SampleRate": 48000
+                                }
+                            }
+                        }
+                    ]
                 }
             },
-            
-            ...<list of presets shortened for brevity>...
-            
             {
-                "Arn": "arn:aws:mediaconvert:us-east-1:123456789012:presets/System-Xdcam_HD_1080i_29_97fps_35mpbs",
+                "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:presets/System-Xdcam_HD_1080i_29_97fps_35mpbs",
                 "Name": "System-Xdcam_HD_1080i_29_97fps_35mpbs",
                 "CreatedAt": 1568321790,
                 "Description": "XDCAM MPEG HD, 1920x1080i, 29.97fps, 35mbps",
@@ -70,7 +152,39 @@ Output::
                 "Type": "SYSTEM",
                 "Category": "MXF",
                 "Settings": {
-                ...<output settings removed for brevity>... 
+                    "ContainerSettings": {
+                        "Container": "MXF"
+                    },
+                    "VideoDescription": {
+                        "Width": 1920,
+                        "Height": 1080,
+                        "CodecSettings": {
+                            "Codec": "MPEG2",
+                            "Mpeg2Settings": {
+                                "Bitrate": 35000000,
+                                "CodecLevel": "HIGH",
+                                "CodecProfile": "MAIN",
+                                "InterlaceMode": "TOP_FIELD",
+                                "RateControlMode": "VBR",
+                                "MaxBitrate": 35000000,
+                                "FramerateControl": "SPECIFIED",
+                                "FramerateNumerator": 30000,
+                                "FramerateDenominator": 1001
+                            }
+                        }
+                    },
+                    "AudioDescriptions": [
+                        {
+                            "CodecSettings": {
+                                "Codec": "WAV",
+                                "WavSettings": {
+                                    "BitDepth": 24,
+                                    "Channels": 2,
+                                    "SampleRate": 48000
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         ]

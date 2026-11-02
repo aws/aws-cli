@@ -3,15 +3,15 @@
 The following ``batch-get-service-level-objective-budget-report`` example retrieves one or more service level objective (SLO) budget reports. ::
 
     aws application-signals batch-get-service-level-objective-budget-report \
-    --timestamp 1735059869 \
-    --slo-ids "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName1" "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName2"
+        --timestamp 1735059869 \
+        --slo-ids "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName1" "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName2"
 
 Output::
 
     {
         "Timestamp": "2024-12-24T22:34:29+05:30",
         "Reports": [{
-                "Arn": "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName1",
+                "Arn": "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName1",
                 "Name": "Your SLO Name",
                 "EvaluationType": "PeriodBased",
                 "BudgetStatus": "OK",
@@ -28,7 +28,7 @@ Output::
                                     "MetricName": "CPUUtilization",
                                     "Dimensions": [{
                                         "Name": "InstanceId",
-                                        "Value": "i-0e098765432522"
+                                        "Value": "i-1234567890abcdef0"
                                     }]
                                 },
                                 "Period": 60,
@@ -52,7 +52,7 @@ Output::
                 }
             },
             {
-                "Arn": "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName2",
+                "Arn": "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName2",
                 "Name": "test",
                 "EvaluationType": "PeriodBased",
                 "BudgetStatus": "BREACHED",

@@ -1,6 +1,6 @@
 **To disable logging for a web ACL**
 
-The following ``delete-logging-configuration`` removes any logging configuration from the specified web ACL. ::
+The following ``delete-logging-configuration`` example removes any logging configuration from the specified web ACL. ::
 
     aws wafv2 delete-logging-configuration \
         --resource-arn arn:aws:wafv2:us-west-2:123456789012:regional/webacl/test/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222

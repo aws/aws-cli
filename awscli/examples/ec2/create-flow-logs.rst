@@ -7,7 +7,7 @@ The following ``create-flow-logs`` example creates a flow log that captures all 
         --resource-ids eni-11223344556677889 \
         --traffic-type REJECT \
         --log-group-name my-flow-logs \
-        --deliver-logs-permission-arn arn:aws:iam::123456789101:role/publishFlowLogs
+        --deliver-logs-permission-arn arn:aws:iam::123456789012:role/publishFlowLogs
 
 Output::
 
@@ -30,8 +30,18 @@ The following ``create-flow-logs`` example creates a flow log that captures all 
         --resource-ids vpc-00112233344556677 \
         --traffic-type ALL \
         --log-destination-type s3 \
-        --log-destination arn:aws:s3:::flow-log-bucket/my-custom-flow-logs/ \
+        --log-destination arn:aws:s3:::amzn-s3-demo-bucket/my-custom-flow-logs/ \
         --log-format '${version} ${vpc-id} ${subnet-id} ${instance-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${tcp-flags} ${type} ${pkt-srcaddr} ${pkt-dstaddr}'
+
+Output::
+
+    {
+        "ClientToken": "so0eNA2uSHUNlHI0S2cJ305GuIX1CezaRdGtexample",
+        "FlowLogIds": [
+            "fl-1a2b3c4d5e6f7a8b9"
+        ],
+        "Unsuccessful": []
+    }
 
 For more information, see `VPC Flow Logs <https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html>`__ in the *Amazon VPC User Guide*.
 
@@ -44,7 +54,17 @@ The following ``create-flow-logs`` example creates a flow log that captures all 
         --resource-ids vpc-00112233344556677 \
         --traffic-type ALL \
         --log-destination-type s3 \
-        --log-destination arn:aws:s3:::flow-log-bucket/my-custom-flow-logs/ \
+        --log-destination arn:aws:s3:::amzn-s3-demo-bucket/my-custom-flow-logs/ \
         --max-aggregation-interval 60
+
+Output::
+
+    {
+        "ClientToken": "so0eNA2uSHUNlHI0S2cJ305GuIX1CezaRdGtexample",
+        "FlowLogIds": [
+            "fl-0a1b2c3d4e5f6a7b8"
+        ],
+        "Unsuccessful": []
+    }
 
 For more information, see `VPC Flow Logs <https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html>`__ in the *Amazon VPC User Guide*.

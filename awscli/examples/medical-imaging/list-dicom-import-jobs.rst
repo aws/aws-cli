@@ -1,6 +1,6 @@
 **To list dicom import jobs**
 
-The following ``list-dicom-import-jobs`` code example lists dicom import jobs. ::
+The following ``list-dicom-import-jobs`` example lists dicom import jobs. ::
 
     aws medical-imaging list-dicom-import-jobs \
         --datastore-id "12345678901234567890123456789012"

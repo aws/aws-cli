@@ -1050,6 +1050,10 @@
     "AgenticRetrieveAction":{
       "type":"structure",
       "members":{
+        "codeExecution":{
+          "shape":"AgenticRetrieveCodeExecutionDetails",
+          "documentation":"<p>The details of code that the agent chose to run.</p>"
+        },
         "fullDocumentExpansion":{
           "shape":"AgenticRetrieveFullDocExpansionDetails",
           "documentation":"<p>Details of a full document expansion action.</p>"
@@ -1201,6 +1205,38 @@
       "type":"list",
       "member":{"shape":"AgenticRetrieveCitationReference"},
       "documentation":"<p>List of citation references.</p>"
+    },
+    "AgenticRetrieveCodeExecutionDetails":{
+      "type":"structure",
+      "members":{
+        "documents":{
+          "shape":"AgenticRetrieveCodeExecutionDocumentList",
+          "documentation":"<p>The documents that the code reads. This field is present when the code reads documents.</p>"
+        }
+      },
+      "documentation":"<p>The details of code that the agent chose to run in an isolated sandbox. The record includes the documents that the code reads. The corresponding CodeExecution step reports the outcome.</p>"
+    },
+    "AgenticRetrieveCodeExecutionDocument":{
+      "type":"structure",
+      "members":{
+        "documentId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the document.</p>"
+        },
+        "sourceRetriever":{
+          "shape":"AgenticRetrieveSourceRetriever",
+          "documentation":"<p>The source retriever associated with the document.</p>"
+        }
+      },
+      "documentation":"<p>A document that a code execution action reads.</p>"
+    },
+    "AgenticRetrieveCodeExecutionDocumentList":{
+      "type":"list",
+      "member":{
+        "shape":"AgenticRetrieveCodeExecutionDocument",
+        "documentation":"<p>A document read by the code.</p>"
+      },
+      "documentation":"<p>The documents read by a code execution action.</p>"
     },
     "AgenticRetrieveConfiguration":{
       "type":"structure",
@@ -1753,7 +1789,8 @@
         "Retrieval",
         "SpeculativeRetrieval",
         "FullDocumentExpansion",
-        "SessionHistoryLoad"
+        "SessionHistoryLoad",
+        "CodeExecution"
       ]
     },
     "AgenticRetrieveStreamRequest":{

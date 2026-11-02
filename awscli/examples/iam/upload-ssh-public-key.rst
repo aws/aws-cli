@@ -1,10 +1,14 @@
 **To upload an SSH public key and associate it with a user**
 
-The following ``upload-ssh-public-key`` command uploads the public key found in the file ``sshkey.pub`` and attaches it to the user ``sofia``. ::
+The following ``upload-ssh-public-key`` example uploads the public key found in the file ``sshkey.pub`` and attaches it to the user ``sofia``. ::
 
     aws iam upload-ssh-public-key \
         --user-name sofia \
         --ssh-public-key-body file://sshkey.pub
+
+Contents of ``sshkey.pub``::
+
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQEXAMPLE... sofia@example.com
 
 Output::
 

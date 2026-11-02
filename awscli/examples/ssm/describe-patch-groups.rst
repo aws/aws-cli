@@ -2,7 +2,7 @@
 
 The following ``describe-patch-groups`` example lists the patch group registrations. ::
 
-  aws ssm describe-patch-groups
+    aws ssm describe-patch-groups
 
 Output::
 
@@ -27,8 +27,7 @@ Output::
                     "BaselineDescription": "Patches for Development",
                     "DefaultBaseline": true
                 }
-            },
-            ...
+            }
         ]
     }
 

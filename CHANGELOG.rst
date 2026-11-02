@@ -2,6 +2,66 @@
 CHANGELOG
 =========
 
+2.39.3
+======
+
+* api-change:``bedrock-agent-runtime``: Adds the CodeExecution step and codeExecution action to AgenticRetrieveStream trace events, showing when the agent runs code and which documents it reads.
+* api-change:``docdb``: Amazon DocumentDB now returns ServerlessV2PlatformVersion in DBCluster API responses and adds the DescribeServerlessV2PlatformVersions API to discover available platform versions and their capabilities.
+* api-change:``omics``: Adds the outputUriPrefixMode parameter to StartRun and GetRun. You can now write run outputs directly under outputUri, without the prefixes the service adds by default. When you opt in, outputs overwrite existing objects at the same keys.
+* api-change:``amp``: Managed Prometheus collectors now support Amazon MSK consumer-group metrics for Amazon Managed Service for Prometheus and CloudWatch.
+* api-change:``timestream-influxdb``: Add DeploymentConfiguration field to CreateDbCluster and UpdateDbCluster APIs to support creation of heterogenous InfluxDB v3 Enterprise clusters.
+* api-change:``sagemaker``: Create endpoints with AcceleratorPartitionLayouts on ProductionVariant and deploy inference components with AcceleratorPartitionType in ComputeResourceRequirements to divide accelerators into hardware-isolated NVIDIA MIG partitions, running multiple models per GPU. P4d, P5, G7, G7e.
+* api-change:``logs``: Adds support for account-level retention policies in Amazon CloudWatch Logs. Customers can now use PutAccountPolicy with the new RETENTION POLICY type to set default log retention across all log groups in an account. Includes dry-run mode to preview the impact of policy changes before applying them.
+* api-change:``lambda``: Adds ConsumptionMode to SelfManagedKafkaEventSourceConfig, letting Lambda event source mappings consume self-managed Apache Kafka topics as a queue. Set ConsumptionMode to Queue when creating an event source mapping.
+* api-change:``connect``: Amazon Connect adds tag-based access control for Contact Lens rules. ListRealtimeContactAnalysisSegmentsV2 adds a ListFilter to return only category segments whose rules match given tags. PreEvaluationFilter now supports contact evaluation resources for OnContactEvaluationSubmit rules.
+* api-change:``customer-profiles``: Adds support for template ingestion controls in the GetProfileObjectTypeTemplate API response.
+
+
+2.39.2
+======
+
+* api-change:``cleanrooms``: Adds support for the PySpark 2.0 analysis template format and for choosing the file format (CSV or Parquet) of protected job results written to Amazon S3, including in a membership's default job result configuration.
+* api-change:``bedrock-agentcore-control``: Adds Session Endpoint Feature on AgentCore Runtime
+* api-change:``wafv2``: AWS WAF customers using Targeted Bot Control, ATP, or ACFP managed rule groups can now enable automatic Challenge JavaScript SDK injection. When enabled, Amazon CloudFront injects the script tag into HTML responses on your behalf, removing the need for manual integration.
+* api-change:``lightsail``: This release adds support for instance health status checks and system status checks.
+* bugfix:alias: Pass Windows external alias args to cmd.exe as literals
+* api-change:``imagebuilder``: This release adds support for on-demand AMI scanning with Amazon Inspector.
+* api-change:``bedrock-agentcore``: Adds AgentCore Runtime session endpoint support, including sessionEndpointUrl on the InvokeAgentRuntime response
+
+
+2.39.1
+======
+
+* api-change:``neptunedata``: Get Storage API analyzes storage usage to identify database bloat and your storage footprint. Index Rebuild API triggers on-demand index reconstruction to eliminate bloat and restore query performance.
+* api-change:``connectparticipant``: Amazon Connect Participant Service now supports the optional UrlContentDisposition parameter on GetAttachment, which returns a pre-signed URL that renders a chat attachment inline in the browser instead of forcing a download.
+* api-change:``connect``: Amazon Connect APIs - CreateTaskTemplate and UpdateTaskTemplate accept a new ContactHooks parameter called WrapUpFlowId to identify the flow module that runs when an agent attempts to disconnect from a task created with the template. Use this to verify an agent's work or update external case repos.
+* api-change:``securityagent``: Adds support for attaching client certificates for mutual TLS (mTLS) authentication to penetration test target endpoints via the new ClientCertificates field on Assets, enabling pentesting of endpoints that require client certificate authentication.
+* api-change:``artifact``: Update support mode for Assurance Assistance
+* api-change:``kafkaconnect``: Amazon MSK Connect now supports updating a connector's custom plugin and worker configuration via the UpdateConnector API. MSK Connect checks connector and task health after the update and rolls back on failure. Each call returns an operation ARN to track with DescribeConnectorOperation.
+* api-change:``ivs``: InsertAdBreak now allows setting a customized adBreakId on a request and also adds a new field targetStartAt for a delayed ad insertion
+* bugfix:``update``: On Windows, no longer resolve PowerShell, cmd.exe, or ping.exe from the current working directory. PowerShell is located only in absolute PATH entries and must be an .exe.
+* api-change:``opensearch``: This release adds APIs to simplify setting up a replication relationship between OpenSearch clusters. The APIs include new Switchover and Failover actions for planned switchovers and unplanned failovers to ensure high availability for OpenSearch in the event of disaster in a single region.
+* api-change:``ec2``: Amazon EC2 Capacity Manager adds supportability checks and capacity fulfillment metrics. Use GetCapacityManagerSupportabilityScores to score how well instance types and Availability Zones can support a capacity request, and GetCapacityManagerMetricData to retrieve fulfillment metrics.
+* api-change:``medialive``: AWS Elemental MediaLive now supports SMPTE 2022-7 seamless protection switching for multicast inputs on MediaLive Anywhere. Support for MulticastSettings sources to add a redundant copy of the stream received on a second network interface.
+* api-change:``acm``: AWS Certificate Manager now supports the Automatic Certificate Management Environment (ACME) protocol in the AWS GovCloud (US-East) and AWS GovCloud (US-West) Regions.
+
+
+2.39.0
+======
+
+* feature:``cloudfront``: Add ``aws cloudfront sign-cookies`` command to generate CloudFront signed cookies.
+* api-change:``license-manager``: AWS License Manager now supports delegate grants for read-only visibility into license distributions. CreateGrant accepts a new GrantType (BuyerGrant or DelegateGrant) and a desired status at distribution time.
+* api-change:``inspector2``: Adding support for Machine Image scan
+* api-change:``ec2``: EC2 AMIs can now show vulnerability data and be targeted directly for scanning.
+* api-change:``lightsail``: Added the attributeUpdates parameter to the Lightsail StartInstance API, which allows customers to update the attributes of a stopped instance when starting it.
+* enhancement:``cloudfront``: ``aws cloudfront sign`` now supports ECDSA (P-256) private keys, SHA-256 signing with ``--hash-algorithm``, and wildcard policies with ``--policy-resource``, and rejects input that would produce a URL CloudFront rejects.
+* api-change:``bedrock-agentcore-control``: Adds the ResetTokenVaultKeyMaterial API, which restores a token vault whose customer managed key was deleted by moving it to an AWS owned key. The reset permanently deletes the stored OAuth 2.0 tokens, users must consent again. Adds on-behalf-of token exchange client authentication override option.
+* enhancement:login: Record the sign-in region in the cached login token and send refresh requests to that region, so a refresh is redeemed in the region the session was created in.
+* enhancement:``logging``: Redact PEM private keys from ``--debug`` output and the CLI history database when passed as a single argument value or as a ``fileb://`` blob parameter.
+* bugfix:``cloudfront``: Fix ``aws cloudfront sign`` to support ``fileb://`` private keys and PEM files that contain other blocks, such as a certificate.
+* api-change:``ecs``: ECS now supports GPU sharing via NVIDIA Multi-Process Service (MPS) on ECS Managed Instances and ECS EC2, allowing multiple ECS tasks to share a single Nvidia GPU for improved utilization.
+
+
 2.38.6
 ======
 

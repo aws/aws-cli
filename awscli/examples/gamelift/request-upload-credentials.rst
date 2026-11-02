@@ -1,6 +1,6 @@
 **To refresh access credentials for uploading a build**
 
-The following ``create-build`` example obtains new, valid access credentials for uploading a GameLift build file to an Amazon S3 location. Credentials have a limited life span. You get the build ID from the response to the original ``CreateBuild`` request. ::
+The following ``request-upload-credentials`` example obtains new, valid access credentials for uploading a GameLift build file to an Amazon S3 location. Credentials have a limited life span. You get the build ID from the response to the original ``CreateBuild`` request. ::
 
     aws gamelift request-upload-credentials \
         --build-id build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111

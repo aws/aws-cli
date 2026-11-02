@@ -4,13 +4,13 @@ The following ``get-multi-region-access-point-routes`` example returns the curre
 
     aws s3control get-multi-region-access-point-routes \
         --region Region \
-        --account-id 111122223333 \
+        --account-id 123456789012 \
         --mrap MultiRegionAccessPoint_ARN
 
 Output::
 
     {
-        "Mrap": "arn:aws:s3::111122223333:accesspoint/0000000000000.mrap",
+        "Mrap": "arn:aws:s3::123456789012:accesspoint/0000000000000.mrap",
         "Routes": [
             {
                 "Bucket": "amzn-s3-demo-bucket1",
@@ -24,3 +24,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Using Amazon S3 Multi-Region Access Point failover controls <https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingFailover.html>`__ in the *Amazon S3 User Guide*.

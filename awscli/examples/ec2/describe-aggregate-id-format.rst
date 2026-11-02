@@ -23,7 +23,8 @@ Output::
                 "Deadline": "2018-08-13T02:00:00.000Z",
                 "Resource": "elastic-ip-association",
                 "UseLongIds": true
-            },
-            ...
+            }
         ]
     }
+
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.

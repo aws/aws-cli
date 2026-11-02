@@ -4,7 +4,7 @@ The following ``create-event-subscription`` example creates an event subscriptio
 
     aws dms create-event-subscription \
         --subscription-name my-dms-events \
-        --sns-topic-arn arn:aws:sns:us-east-1:123456789012:my-sns-topic
+        --sns-topic-arn arn:aws:sns:us-west-2:123456789012:my-sns-topic
 
 Output::
 
@@ -12,7 +12,7 @@ Output::
         "EventSubscription": {
             "CustomerAwsId": "123456789012",
             "CustSubscriptionId": "my-dms-events",
-            "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:my-sns-topic",
+            "SnsTopicArn": "arn:aws:sns:us-west-2:123456789012:my-sns-topic",
             "Status": "creating",
             "SubscriptionCreationTime": "2020-05-21 21:58:38.598",
             "Enabled": true

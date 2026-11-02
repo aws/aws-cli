@@ -33,12 +33,14 @@ To apply the logging policy, use ``put-bucket-logging``. ::
 
 Contents of ``logging.json``::
 
-   {
+    {
         "LoggingEnabled": {
             "TargetBucket": "amzn-s3-demo-bucket",
             "TargetPrefix": "Logs/"
         }
     }
+
+This command produces no output.
 
 .. Note:: The ``put-bucket-policy`` command is required to grant ``s3:PutObject`` permissions to the logging service principal.
 
@@ -77,6 +79,8 @@ Contents of ``logging.json``::
             ]
         }
     }
+
+This command produces no output.
 
 .. Note:: the ``put-bucket-acl`` command is required to grant S3's log delivery system the necessary permissions (write and read-acp permissions).
 

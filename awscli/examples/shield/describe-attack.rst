@@ -2,7 +2,8 @@
 
 The following ``describe-attack`` example displays details about the DDoS attack with the specified attack ID. You can obtain attack IDs by running the ``list-attacks`` command. ::
 
-    aws shield describe-attack --attack-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
+    aws shield describe-attack \
+        --attack-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 

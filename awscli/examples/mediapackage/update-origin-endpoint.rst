@@ -1,6 +1,6 @@
 **To update an origin endpoint**
 
-The following ``update-origin-endpoint`` command updates the origin endpoint named ``cmaf_sports``. It changes the time delay to ``0`` seconds. ::
+The following ``update-origin-endpoint`` example updates the origin endpoint named ``cmaf_sports``. It changes the time delay to ``0`` seconds. ::
 
     aws mediapackage update-origin-endpoint \
         --id cmaf_sports \

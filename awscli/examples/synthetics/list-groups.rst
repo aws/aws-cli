@@ -11,7 +11,7 @@ Output::
             {
                 "Id": "example123",
                 "Name": "demo_group",
-                "Arn": "arn:aws:synthetics:us-east-1:123456789012:group:example123"
+                "Arn": "arn:aws:synthetics:us-west-2:123456789012:group:example123"
             }
         ]
     }

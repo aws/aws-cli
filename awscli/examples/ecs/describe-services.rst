@@ -2,7 +2,8 @@
 
 The following ``describe-services`` example retrieves details for the ``my-http-service`` service in the default cluster. ::
 
-    aws ecs describe-services --services my-http-service
+    aws ecs describe-services \
+        --services my-http-service
 
 Output::
 
@@ -33,7 +34,7 @@ Output::
                 "events": [
                     {
                         "message": "(service my-http-service) has reached a steady state.",
-                        "id": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "createdAt": 1466801812.435
                     }
                 ],
@@ -43,4 +44,4 @@ Output::
         "failures": []
     }
 
-For more information, see `Services <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS services <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html>`__ in the *Amazon ECS Developer Guide*.

@@ -1,6 +1,6 @@
 **To get information about a stream processor**
 
-The following ``describe-stream-processor`` command displays details about the specified stream processor. ::
+The following ``describe-stream-processor`` example displays details about the specified stream processor. ::
 
     aws rekognition describe-stream-processor \
         --name my-stream-processor 

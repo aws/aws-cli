@@ -3,19 +3,19 @@
 The following ``list-key-rotations`` example lists information about all completed key material rotations for the specified KMS key. ::
 
     aws kms list-key-rotations \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "Rotations": [
             {
-                "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+                "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "RotationDate": "2024-03-02T10:11:36.564000+00:00",
                 "RotationType": "AUTOMATIC"
             },
             {
-                "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+                "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "RotationDate": "2024-04-05T15:14:47.757000+00:00",
                 "RotationType": "ON_DEMAND"
             }

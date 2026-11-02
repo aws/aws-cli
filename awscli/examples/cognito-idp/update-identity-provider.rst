@@ -8,10 +8,10 @@ The following ``update-identity-provider`` example updates the OIDC provider "My
 Contents of ``update-identity-provider.json``::
 
     {
-       "AttributeMapping": {
-                "email": "idp_email",
-                "email_verified": "idp_email_verified",
-                "username": "sub"
+        "AttributeMapping": {
+            "email": "idp_email",
+            "email_verified": "idp_email_verified",
+            "username": "sub"
         },
         "CreationDate": 1.701129701653E9,
         "IdpIdentifiers": [

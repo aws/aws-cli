@@ -3,7 +3,7 @@
 The following ``delete-host`` example shows how to delete a host. Before you can delete a host, you must delete all connections associated with the host. ::
 
     aws codestar-connections delete-host \
-        --host-arn "arn:aws:codestar-connections:us-east-1 :123456789012:host/My-Host-28aef605"
+        --host-arn "arn:aws:codestar-connections:us-west-2 :123456789012:host/My-Host-28aef605"
 
 This command produces no output.
 

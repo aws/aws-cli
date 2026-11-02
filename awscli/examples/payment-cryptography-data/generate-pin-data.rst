@@ -1,10 +1,10 @@
 **To generate a PIN**
 
-The following ``generate-card-validation-data`` example generate a new random PIN using the Visa PIN scheme. ::
+The following ``generate-pin-data`` example generates a new random PIN using the Visa PIN scheme. ::
 
     aws payment-cryptography-data generate-pin-data \
-        --generation-key-identifier arn:aws:payment-cryptography:us-east-2:111122223333:key/37y2tsl45p5zjbh2 \
-        --encryption-key-identifier arn:aws:payment-cryptography:us-east-2:111122223333:key/ivi5ksfsuplneuyt \
+        --generation-key-identifier arn:aws:payment-cryptography:us-west-2:123456789012:key/37y2tsl45p5zjbh2 \
+        --encryption-key-identifier arn:aws:payment-cryptography:us-west-2:123456789012:key/ivi5ksfsuplneuyt \
         --primary-account-number 171234567890123 \
         --pin-block-format ISO_FORMAT_0 \
         --generation-attributes VisaPin={PinVerificationKeyIndex=1}
@@ -12,9 +12,9 @@ The following ``generate-card-validation-data`` example generate a new random PI
 Output::
 
     {
-        "GenerationKeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/37y2tsl45p5zjbh2",
+        "GenerationKeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/37y2tsl45p5zjbh2",
         "GenerationKeyCheckValue": "7F2363",
-        "EncryptionKeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/ivi5ksfsuplneuyt",
+        "EncryptionKeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/ivi5ksfsuplneuyt",
         "EncryptionKeyCheckValue": "7CC9E2",
         "EncryptedPinBlock": "AC17DC148BDA645E",
         "PinData": {

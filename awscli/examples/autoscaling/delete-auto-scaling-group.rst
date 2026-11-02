@@ -1,6 +1,6 @@
 **Example 1: To delete the specified Auto Scaling group**
 
-This example deletes the specified Auto Scaling group. ::
+The following ``delete-auto-scaling-group`` example deletes the specified Auto Scaling group. ::
 
     aws autoscaling delete-auto-scaling-group \
         --auto-scaling-group-name my-asg
@@ -11,7 +11,7 @@ For more information, see `Deleting your Auto Scaling infrastructure <https://do
 
 **Example 2: To force delete the specified Auto Scaling group**
 
-To delete the Auto Scaling group without waiting for the instances in the group to terminate, use the ``--force-delete`` option. ::
+The following ``delete-auto-scaling-group`` example deletes the specified Auto Scaling group without waiting for the instances in the group to terminate by using the ``--force-delete`` option. ::
 
     aws autoscaling delete-auto-scaling-group \
         --auto-scaling-group-name my-asg \

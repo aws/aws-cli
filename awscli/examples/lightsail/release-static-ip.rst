@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "e374c002-dc6d-4c7f-919f-2EXAMPLE13ce",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "StaticIp-1",
                 "resourceType": "StaticIp",
                 "createdAt": 1571694962.003,
@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Static IP addresses in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-static-ip-addresses-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

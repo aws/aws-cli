@@ -1,5 +1,12 @@
 {%- extends "!layout.html" %}
 
+{%- block extrahead %}
+{{ super() }}
+{%- if markdown_url %}
+<link rel="alternate" type="text/markdown" href="{{ markdown_url|e }}" title="Markdown version" />
+{%- endif %}
+{%- endblock %}
+
 {%- block nav_links %}
 <li><a class="nav-link" href="{{ pathto(master_doc) }}">Home</a></li>
 <li><a class="nav-link" href="https://docs.aws.amazon.com/cli/latest/userguide/">User Guide</a></li>

@@ -11,7 +11,7 @@ The following ``create-destination`` example creates a destination for mapping a
 Output::
 
     {
-        "Arn": "arn:aws:iotwireless:us-east-1:123456789012:Destination/IoTWirelessDestination",
+        "Arn": "arn:aws:iotwireless:us-west-2:123456789012:Destination/IoTWirelessDestination",
         "Name": "IoTWirelessDestination"
     }
 

@@ -3,17 +3,17 @@
 The following ``describe-portal`` example describes a web portal for a wind farm company. ::
 
     aws iotsitewise describe-portal \
-        --portal-id a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE
+        --portal-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "portalId": "a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE",
-        "portalArn": "arn:aws:iotsitewise:us-west-2:123456789012:portal/a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE",
+        "portalId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "portalArn": "arn:aws:iotsitewise:us-west-2:123456789012:portal/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "portalName": "WindFarmPortal",
         "portalDescription": "A portal that contains wind farm projects for Example Corp.",
         "portalClientId": "E-a1b2c3d4e5f6_a1b2c3d4e5f6EXAMPLE",
-        "portalStartUrl": "https://a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE.app.iotsitewise.aws",
+        "portalStartUrl": "https://a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.app.iotsitewise.aws",
         "portalContactEmail": "support@example.com",
         "portalStatus": {
             "state": "ACTIVE"

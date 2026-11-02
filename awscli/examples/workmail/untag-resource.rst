@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the specified tag from the specified Amazon WorkMail organization. ::
 
     aws workmail untag-resource \
-        --resource-arn arn:aws:workmail:us-west-2:111122223333:organization/m-n1pq2345678r901st2u3vx45x6789yza \
+        --resource-arn arn:aws:workmail:us-west-2:123456789012:organization/m-n1pq2345678r901st2u3vx45x6789yza \
         --tag-keys "priority"
 
 This command produces no output.

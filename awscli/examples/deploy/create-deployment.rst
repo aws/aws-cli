@@ -15,11 +15,16 @@ Output::
         "deploymentId": "d-A1B2C3111"
     }
 
+For more information, see `Create an EC2/On-Premises Compute Platform deployment (CLI) <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-create-cli.html>`__ in the *AWS CodeDeploy User Guide*.
+
 **Example 2: To create a CodeDeploy deployment using the Amazon ECS compute platform**
 
-The following ``create-deployment`` example uses the following two files to deploy an Amazon ECS service.
+The following ``create-deployment`` example deploys an Amazon ECS service by using the settings in the file ``create-deployment.json``. ::
 
-Contents of ``create-deployment.json`` file::
+    aws deploy create-deployment \
+        --cli-input-json file://create-deployment.json
+
+Contents of ``create-deployment.json``::
 
     {
         "applicationName": "ecs-deployment",
@@ -47,16 +52,10 @@ That file, in turn, retrieves the following file ``appspec.yaml`` from an S3 buc
               ContainerPort: 80
             PlatformVersion: "LATEST"
 
-Command::
-
-    aws deploy create-deployment \
-        --cli-input-json file://create-deployment.json \
-        --region us-east-1
-
 Output::
 
     {
         "deploymentId": "d-1234ABCDE"
     }
 
-For more information, see `CreateDeployment <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html>`__ in the *AWS CodeDeploy API Reference*.
+For more information, see `Create an Amazon ECS Compute Platform deployment (CLI) <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-create-ecs-cli.html>`__ in the *AWS CodeDeploy User Guide*.

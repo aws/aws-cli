@@ -9,7 +9,7 @@ Output::
     {
         "autoEnableNewAccount": [
             {
-                "region": "us-east-1",
+                "region": "us-west-2",
                 "sources": [
                     {
                         "sourceName": "VPC_FLOW",

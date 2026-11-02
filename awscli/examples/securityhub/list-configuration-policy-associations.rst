@@ -39,12 +39,13 @@ Output::
             },
             {
                 "ConfigurationPolicyId": "SELF_MANAGED_SECURITY_HUB",
-                "TargetId": "111122223333",
+                "TargetId": "123456789012",
                 "TargetType": "ACCOUNT",
                 "AssociationType": "APPLIED",
                 "UpdatedAt": "2023-11-28T22:01:26.409000+00:00",
                 "AssociationStatus": "SUCCESS"
-        }
+            }
+        ]
     }
 
 For more information, see `Viewing configuration policy status and details <https://docs.aws.amazon.com/securityhub/latest/userguide/view-policy.html>`__ in the *AWS Security Hub User Guide*.

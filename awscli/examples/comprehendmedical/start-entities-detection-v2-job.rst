@@ -5,7 +5,7 @@ The following ``start-entities-detection-v2-job`` example starts an asynchronous
     aws comprehendmedical start-entities-detection-v2-job \
         --input-data-config "S3Bucket=comp-med-input" \
         --output-data-config "S3Bucket=comp-med-output" \
-        --data-access-role-arn arn:aws:iam::867139942017:role/ComprehendMedicalBatchProcessingRole \
+        --data-access-role-arn arn:aws:iam::123456789012:role/ComprehendMedicalBatchProcessingRole \
         --language-code en
 
 Output::

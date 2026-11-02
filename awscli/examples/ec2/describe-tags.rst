@@ -24,6 +24,8 @@ Output::
         ]
     }
 
+For more information, see `Tag your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe all tags for a resource type**
 
 The following ``describe-tags`` example describes the tags for your volumes. ::
@@ -50,11 +52,40 @@ Output::
         ]
     }
 
+For more information, see `Tag your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 3: To describe all your tags**
 
 The following ``describe-tags`` example describes the tags for all your resources. ::
 
     aws ec2 describe-tags
+
+Output::
+
+    {
+        "Tags": [
+            {
+                "ResourceType": "instance",
+                "ResourceId": "i-1234567890abcdef8",
+                "Value": "Test",
+                "Key": "Stack"
+            },
+            {
+                "ResourceType": "instance",
+                "ResourceId": "i-1234567890abcdef8",
+                "Value": "Beta Server",
+                "Key": "Name"
+            },
+            {
+                "ResourceType": "volume",
+                "ResourceId": "vol-049df61146c4d7901",
+                "Value": "Logs",
+                "Key": "Purpose"
+            }
+        ]
+    }
+
+For more information, see `Tag your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 4: To describe the tags for your resources based on a tag key**
 
@@ -82,6 +113,8 @@ Output::
         ]
     }
 
+For more information, see `Tag your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 5: To describe the tags for your resources based on a tag key and tag value**
 
 The following ``describe-tags`` example describes the tags for your resources that have the tag ``Stack=Test``. ::
@@ -91,22 +124,22 @@ The following ``describe-tags`` example describes the tags for your resources th
 
 Output::
 
-  {
-      "Tags": [
-          {
-              "ResourceType": "image",
-              "ResourceId": "ami-3ac336533f021f3bd",
-              "Value": "Test",
-              "Key": "Stack"
-          },
-          {
-              "ResourceType": "instance",
-              "ResourceId": "i-1234567890abcdef8",
-              "Value": "Test",
-              "Key": "Stack"
-          }
-      ]
-  }
+    {
+        "Tags": [
+            {
+                "ResourceType": "image",
+                "ResourceId": "ami-3ac336533f021f3bd",
+                "Value": "Test",
+                "Key": "Stack"
+            },
+            {
+                "ResourceType": "instance",
+                "ResourceId": "i-1234567890abcdef8",
+                "Value": "Test",
+                "Key": "Stack"
+            }
+        ]
+    }
 
 The following ``describe-tags`` example uses alternate syntax to describe resources with the tag ``Stack=Test``. ::
 
@@ -120,13 +153,15 @@ The following ``describe-tags`` example describes the tags for all your instance
 
 Output::
 
-  {
-      "Tags": [
-          {
-              "ResourceType": "instance", 
-              "ResourceId": "i-1234567890abcdef5", 
-              "Value": null, 
-              "Key": "Purpose"
-          }
-      ]
-  }
+    {
+        "Tags": [
+            {
+                "ResourceType": "instance",
+                "ResourceId": "i-1234567890abcdef5",
+                "Value": "",
+                "Key": "Purpose"
+            }
+        ]
+    }
+
+For more information, see `Tag your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.

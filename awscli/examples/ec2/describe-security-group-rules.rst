@@ -12,21 +12,21 @@ Output::
             {
                 "SecurityGroupRuleId": "sgr-abcdef01234567890",
                 "GroupId": "sg-1234567890abcdef0",
-                "GroupOwnerId": "111122223333",
+                "GroupOwnerId": "123456789012",
                 "IsEgress": false,
                 "IpProtocol": "-1",
                 "FromPort": -1,
                 "ToPort": -1,
                 "ReferencedGroupInfo": {
                     "GroupId": "sg-1234567890abcdef0",
-                    "UserId": "111122223333"
+                    "UserId": "123456789012"
                 },
                 "Tags": []
             },
             {
                 "SecurityGroupRuleId": "sgr-bcdef01234567890a",
                 "GroupId": "sg-1234567890abcdef0",
-                "GroupOwnerId": "111122223333",
+                "GroupOwnerId": "123456789012",
                 "IsEgress": true,
                 "IpProtocol": "-1",
                 "FromPort": -1,
@@ -37,7 +37,7 @@ Output::
             {
                 "SecurityGroupRuleId": "sgr-cdef01234567890ab",
                 "GroupId": "sg-1234567890abcdef0",
-                "GroupOwnerId": "111122223333",
+                "GroupOwnerId": "123456789012",
                 "IsEgress": true,
                 "IpProtocol": "-1",
                 "FromPort": -1,
@@ -62,7 +62,7 @@ Output::
             {
                 "SecurityGroupRuleId": "sgr-cdef01234567890ab",
                 "GroupId": "sg-1234567890abcdef0",
-                "GroupOwnerId": "111122223333",
+                "GroupOwnerId": "123456789012",
                 "IsEgress": true,
                 "IpProtocol": "-1",
                 "FromPort": -1,

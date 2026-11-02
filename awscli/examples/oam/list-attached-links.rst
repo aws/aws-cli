@@ -3,14 +3,14 @@
 The following ``list-attached-links`` example returns a list of source account links that are linked to this monitoring account sink. ::
 
     aws oam list-attached-links \
-        --sink-identifier arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345
+        --sink-identifier arn:aws:oam:us-west-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "Items": [{
             "Label": "Monitoring account",
-            "LinkArn": "arn:aws:oam:us-east-2:123456789111:link/a1b2c3d4-5678-90ab-cdef-example11111",
+            "LinkArn": "arn:aws:oam:us-west-2:123456789111:link/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "ResourceTypes": [
                 "AWS::ApplicationInsights::Application",
                 "AWS::Logs::LogGroup",

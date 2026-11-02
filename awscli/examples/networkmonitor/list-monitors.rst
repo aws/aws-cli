@@ -8,7 +8,7 @@ Output::
 
     {
         "monitors": [{
-                "monitorArn": "arn:aws:networkmonitor:region:012345678910:monitor/Example_NetworkMonitor",
+                "monitorArn": "arn:aws:networkmonitor:region:123456789012:monitor/Example_NetworkMonitor",
                 "monitorName": "Example_NetworkMonitor",
                 "state": "ACTIVE",
                 "aggregationPeriod": 60,
@@ -32,14 +32,14 @@ Output::
     {
         "monitors": [
             {
-                "monitorArn": "arn:aws:networkmonitor:us-east-1:111122223333:monitor/Example_NetworkMonitor",
+                "monitorArn": "arn:aws:networkmonitor:us-west-2:123456789012:monitor/Example_NetworkMonitor",
                 "monitorName": "Example_NetworkMonitor",
                 "state": "INACTIVE",
                 "aggregationPeriod": 60,
                 "tags": {}
             },
             {
-                "monitorArn": "arn:aws:networkmonitor:us-east-1:111122223333:monitor/Example_NetworkMonitor2",
+                "monitorArn": "arn:aws:networkmonitor:us-west-2:123456789012:monitor/Example_NetworkMonitor2",
                 "monitorName": "Example_NetworkMonitor2",
                 "state": "ACTIVE",
                 "aggregationPeriod": 60,
@@ -48,7 +48,7 @@ Output::
                 }
             },
             {
-                "monitorArn": "arn:aws:networkmonitor:us-east-1:111122223333:monitor/TestNetworkMonitor_CLI",
+                "monitorArn": "arn:aws:networkmonitor:us-west-2:123456789012:monitor/TestNetworkMonitor_CLI",
                 "monitorName": "TestNetworkMonitor_CLI",
                 "state": "INACTIVE",
                 "aggregationPeriod": 60,

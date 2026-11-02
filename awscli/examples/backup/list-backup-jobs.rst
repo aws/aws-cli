@@ -38,7 +38,7 @@ Output::
         ]
     }
 
-For more information, see `Creating a Backup <https://https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup.html>`__ in the *AWS Backup Developer Guide*.
+For more information, see `Monitoring AWS Backup <https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html>`__ in the *AWS Backup Developer Guide*.
 
 **Example 2: To list completed backup jobs**
 
@@ -69,4 +69,4 @@ Output::
         ]
     }
 
-For more information, see `Creating a Backup <https://https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup.html>`__ in the *AWS Backup Developer Guide*.
+For more information, see `Monitoring AWS Backup <https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html>`__ in the *AWS Backup Developer Guide*.

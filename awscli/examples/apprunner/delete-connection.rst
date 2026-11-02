@@ -10,17 +10,19 @@ This is because the connection is no longer available. ::
 Contents of ``input.json``::
 
     {
-        "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection"
+        "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection"
     }
 
 Output::
 
     {
         "Connection": {
-            "ConnectionArn": "arn:aws:apprunner:us-east-1:123456789012:connection/my-github-connection",
+            "ConnectionArn": "arn:aws:apprunner:us-west-2:123456789012:connection/my-github-connection",
             "ConnectionName": "my-github-connection",
             "Status": "DELETED",
             "CreatedAt": "2020-11-03T00:32:51Z",
             "ProviderType": "GITHUB"
         }
     }
+
+For more information, see `Managing App Runner connections <https://docs.aws.amazon.com/apprunner/latest/dg/manage-connections.html>`__ in the *AWS App Runner Developer Guide*.

@@ -1,6 +1,6 @@
 **To update your transfer location with a new agent**
 
-The following ``update-location-object-storage`` example updates your DataSync location for Microsoft Azure Blob Storage with a new agent. ::
+The following ``update-location-azure-blob`` example updates your DataSync location for Microsoft Azure Blob Storage with a new agent. ::
 
     aws datasync update-location-azure-blob \
         --location-arn arn:aws:datasync:us-west-2:123456789012:location/loc-abcdef01234567890 \

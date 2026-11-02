@@ -1,35 +1,36 @@
 **To list queues**
 
-This example lists all queues.
+The following ``list-queues`` example lists all queues. ::
 
-Command::
-
-  aws sqs list-queues
+    aws sqs list-queues
 
 Output::
 
-  {
-    "QueueUrls": [
-      "https://queue.amazonaws.com/80398EXAMPLE/MyDeadLetterQueue",
-      "https://queue.amazonaws.com/80398EXAMPLE/MyQueue",
-      "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue",        
-      "https://queue.amazonaws.com/80398EXAMPLE/TestQueue1",
-	  "https://queue.amazonaws.com/80398EXAMPLE/TestQueue2"		
-    ]
-  }
+    {
+        "QueueUrls": [
+            "https://queue.amazonaws.com/80398EXAMPLE/MyDeadLetterQueue",
+            "https://queue.amazonaws.com/80398EXAMPLE/MyQueue",
+            "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue",
+            "https://queue.amazonaws.com/80398EXAMPLE/TestQueue1",
+            "https://queue.amazonaws.com/80398EXAMPLE/TestQueue2"
+        ]
+    }
 
-This example lists only queues that start with "My".
+For more information, see `Amazon SQS list queue pagination <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/list-all-queues-pagination.html>`__ in the *Amazon Simple Queue Service Developer Guide*.
 
-Command::
+The following ``list-queues`` example lists only queues that start with "My". ::
 
-  aws sqs list-queues --queue-name-prefix My
+    aws sqs list-queues \
+        --queue-name-prefix My
 
 Output::
 
-  {
-    "QueueUrls": [
-      "https://queue.amazonaws.com/80398EXAMPLE/MyDeadLetterQueue",
-      "https://queue.amazonaws.com/80398EXAMPLE/MyQueue",
-      "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue"	
-    ]
-  }
+    {
+        "QueueUrls": [
+            "https://queue.amazonaws.com/80398EXAMPLE/MyDeadLetterQueue",
+            "https://queue.amazonaws.com/80398EXAMPLE/MyQueue",
+            "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue"
+        ]
+    }
+
+For more information, see `Amazon SQS list queue pagination <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/list-all-queues-pagination.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

@@ -7,8 +7,8 @@ The following ``update-alias`` example associates the alias ``alias/test-key`` w
 
     aws kms update-alias \
         --alias-name alias/test-key \
-        --target-key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --target-key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output. To find the alias, use the ``list-aliases`` command.
 
-For more information, see `Updating aliases <https://docs.aws.amazon.com/kms/latest/developerguide/alias-manage.html#alias-update>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Updating aliases <https://docs.aws.amazon.com/kms/latest/developerguide/alias-update.html>`__ in the *AWS Key Management Service Developer Guide*.

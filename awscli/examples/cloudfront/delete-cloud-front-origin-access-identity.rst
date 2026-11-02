@@ -1,6 +1,6 @@
 **To delete a CloudFront origin access identity**
 
-The following example deletes the origin access identity (OAI) with the ID
+The following ``delete-cloud-front-origin-access-identity`` example deletes the origin access identity (OAI) with the ID
 ``E74FTE3AEXAMPLE``. To delete an OAI, you must have the OAI's ID and ``ETag``.
 The OAI ID is returned in the output of the
 `create-cloud-front-origin-access-identity
@@ -12,12 +12,14 @@ To get the ``ETag``, use the
 <get-cloud-front-origin-access-identity.html>`_ or
 `get-cloud-front-origin-access-identity-config
 <get-cloud-front-origin-access-identity-config.html>`_ command.
-Use the ``--if-match`` option to provide the OAI's ``ETag``.
-
-::
+Use the ``--if-match`` option to provide the OAI's ``ETag``. ::
 
     aws cloudfront delete-cloud-front-origin-access-identity \
         --id E74FTE3AEXAMPLE \
         --if-match E2QWRUHEXAMPLE
 
+This command produces no output.
+
 When successful, this command has no output.
+
+For more information, see `Restrict access to an Amazon S3 origin <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html>`__ in the *Amazon CloudFront Developer Guide*.

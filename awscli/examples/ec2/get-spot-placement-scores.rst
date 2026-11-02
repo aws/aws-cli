@@ -5,7 +5,6 @@ The following ``get-spot-placement-scores`` example first generates a list of al
 To generate all possible parameters that can be specified for the Spot placement score configuration, and save the output directly to a JSON file. ::
 
     aws ec2 get-spot-placement-scores \
-        --region us-east-1 \
         --generate-cli-skeleton input > attributes.json
 
 Output::
@@ -99,8 +98,35 @@ Configure the JSON file. You must provide a value for ``TargetCapacity``. For a 
 Calculate the Spot placement score for the requirements specified in ``attributes.json``. Specify the name and path to your JSON file by using the ``--cli-input-json`` parameter. ::
 
     aws ec2 get-spot-placement-scores \
-        --region us-east-1 \
         --cli-input-json file://attributes.json
+
+Contents of ``attributes.json``::
+
+    {
+        "TargetCapacity": 500,
+        "TargetCapacityUnitType": "vcpu",
+        "RegionNames": [
+            "us-east-1",
+            "us-west-1"
+        ],
+        "InstanceRequirementsWithMetadata": {
+            "ArchitectureTypes": [
+                "x86_64"
+            ],
+            "VirtualizationTypes": [
+                "hvm"
+            ],
+            "InstanceRequirements": {
+                "VCpuCount": {
+                    "Min": 4,
+                    "Max": 6
+                },
+                "MemoryMiB": {
+                    "Min": 2048
+                }
+            }
+        }
+    }
 
 Output if ``SingleAvailabilityZone`` is set to ``false`` or omitted (if omitted, it defaults to ``false``). A scored list of Regions is returned. ::
 
@@ -130,4 +156,4 @@ Output if ``SingleAvailabilityZone`` is set to ``true``. A scored list of Single
         },
        ...
 
-For more information about calculating a Spot placement score, and for example configurations, see `Calculate a Spot placement score <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html#work-with-spot-placement-score>`__ in the *Amazon EC2 User Guide*.
+For more information about calculating a Spot placement score, and for example configurations, see `Calculate a Spot placement score <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-spot-placement-score.html>`__ in the *Amazon EC2 User Guide*.

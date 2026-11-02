@@ -17,7 +17,7 @@ Output::
                 "S3Bucket": "amzn-s3-demo-bucket",
                 "S3Prefix": "",
                 "IamRoleArn": "arn:aws:iam::123456789012:role/service-role/ExportRole",
-                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/abcd0000-7fca-4128-82f2-aabbccddeeff",
+                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Status": "COMPLETE",
                 "PercentProgress": 100,
                 "TotalExtractedDataInGB": 0
@@ -29,7 +29,7 @@ Output::
                 "S3Bucket": "amzn-s3-demo-bucket",
                 "S3Prefix": "",
                 "IamRoleArn": "arn:aws:iam::123456789012:role/service-role/ExportRole",
-                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/abcd0000-7fca-4128-82f2-aabbccddeeff",
+                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Status": "STARTING",
                 "PercentProgress": 0,
                 "TotalExtractedDataInGB": 0
@@ -37,4 +37,4 @@ Output::
         ]
     }
 
-For more information, see `Monitoring Snapshot Exports <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.html#USER_ExportSnapshot.Monitoring>`__ in the *Amazon RDS User Guide*.
+For more information, see `Monitoring Snapshot Exports <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.Monitoring.html>`__ in the *Amazon RDS User Guide*.

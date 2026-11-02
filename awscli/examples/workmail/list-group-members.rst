@@ -1,6 +1,6 @@
 **To list group members**
 
-The following ``list-group-members`` command lists the members of the specified group. ::
+The following ``list-group-members`` example lists the members of the specified group. ::
 
     aws workmail list-group-members \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \
@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with groups <https://docs.aws.amazon.com/workmail/latest/adminguide/groups_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

@@ -8,4 +8,4 @@ The following ``continue-deployment`` example starts rerouting traffic from inst
 
 This command produces no output.
 
-For more information, see `ContinueDeployment <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ContinueDeployment.html>`__ in the *AWS CodeDeploy API Reference*.
+For more information, see `Create a deployment group for an EC2/On-Premises blue/green deployment (console) <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-groups-create-blue-green.html>`__ in the *AWS CodeDeploy User Guide*.

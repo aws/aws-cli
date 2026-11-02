@@ -13,4 +13,4 @@ Output::
         ]
     }
 
-For more information, see `ListRoleAliases <https://docs.aws.amazon.com/iot/latest/apireference/API_ListRoleAliases.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Authorizing direct calls to AWS services using AWS IoT Core credential provider <https://docs.aws.amazon.com/iot/latest/developerguide/authorizing-direct-aws.html>`__ in the *AWS IoT Core Developer Guide*.

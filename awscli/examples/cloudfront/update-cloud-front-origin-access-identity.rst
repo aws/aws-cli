@@ -1,6 +1,6 @@
 **To update a CloudFront origin access identity**
 
-The following example updates the origin access identity (OAI) with the ID
+The following ``update-cloud-front-origin-access-identity`` example updates the origin access identity (OAI) with the ID
 ``E74FTE3AEXAMPLE``. The only field that you can update is the OAI's
 ``Comment``.
 
@@ -14,26 +14,22 @@ To get the ``ETag``, use the
 <get-cloud-front-origin-access-identity.html>`_ or
 `get-cloud-front-origin-access-identity-config
 <get-cloud-front-origin-access-identity-config.html>`_ command.
-Use the ``--if-match`` option to provide the OAI's ``ETag``.
-
-::
+Use the ``--if-match`` option to provide the OAI's ``ETag``. ::
 
     aws cloudfront update-cloud-front-origin-access-identity \
         --id E74FTE3AEXAMPLE \
         --if-match E2QWRUHEXAMPLE \
-        --cloud-front-origin-access-identity-config \
-            CallerReference=cli-example,Comment="Example OAI Updated"
+        --cloud-front-origin-access-identity-config CallerReference=cli-example,Comment="Example OAI Updated"
 
 You can accomplish the same thing by providing the OAI configuration in a JSON
-file, as shown in the following example::
+file, as shown in the following example. ::
 
     aws cloudfront update-cloud-front-origin-access-identity \
         --id E74FTE3AEXAMPLE \
         --if-match E2QWRUHEXAMPLE \
         --cloud-front-origin-access-identity-config file://OAI-config.json
 
-The file ``OAI-config.json`` is a JSON document in the current directory that
-contains the following::
+Contents of ``OAI-config.json``::
 
     {
         "CallerReference": "cli-example",
@@ -41,7 +37,9 @@ contains the following::
     }
 
 Whether you provide the OAI configuration with a command line argument or a
-JSON file, the output is the same::
+JSON file, the output is the same.
+
+Output::
 
     {
         "ETag": "E9LHASXEXAMPLE",
@@ -54,3 +52,5 @@ JSON file, the output is the same::
             }
         }
     }
+
+For more information, see `Restrict access to an Amazon S3 origin <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html>`__ in the *Amazon CloudFront Developer Guide*.

@@ -1,6 +1,6 @@
 **To add a tag to a server certificate**
 
-The following ``tag-saml-provider`` command adds a tag with a Department name to the specified sever certificate. ::
+The following ``tag-server-certificate`` example adds a tag with a Department name to the specified server certificate. ::
 
     aws iam tag-server-certificate \
         --server-certificate-name ExampleCertificate \

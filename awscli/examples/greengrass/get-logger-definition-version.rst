@@ -3,17 +3,19 @@
 The following ``get-logger-definition-version`` example retrieves information about the specified version of the specified logger definition. To retrieve the IDs of all versions of the logger definition, use the ``list-logger-definition-versions`` command. To retrieve the ID of the last version added to the logger definition, use the ``get-logger-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-logger-definition-version \
-        --logger-definition-id "49eeeb66-f1d3-4e34-86e3-3617262abf23" \
-        --logger-definition-version-id "5e3f6f64-a565-491e-8de0-3c0d8e0f2073"
+        --logger-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --logger-definition-version-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/loggers/49eeeb66-f1d3-4e34-86e3-3617262abf23/versions/5e3f6f64-a565-491e-8de0-3c0d8e0f2073",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/loggers/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "CreationTimestamp": "2019-05-08T16:10:13.866Z",
         "Definition": {
             "Loggers": []
         },
-        "Id": "49eeeb66-f1d3-4e34-86e3-3617262abf23",
-        "Version": "5e3f6f64-a565-491e-8de0-3c0d8e0f2073"
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "Version": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
+
+For more information, see `Monitoring with AWS IoT Greengrass logs <https://docs.aws.amazon.com/greengrass/v1/developerguide/greengrass-logs-overview.html>`__ in the *AWS IoT Greengrass Developer Guide*.

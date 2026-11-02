@@ -3,7 +3,7 @@
 The following ``tag-resource`` example adds a tag to the specified resource in your AWS account. ::
 
     aws accessanalyzer tag-resource \
-        --resource-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account \
+        --resource-arn arn:aws:access-analyzer:us-west-2:123456789012:analyzer/ConsoleAnalyzer-account \
         --tags Environment=dev,Purpose=testing
 
 This command produces no output.

@@ -4,7 +4,7 @@ The following ``update-view`` example updates the specified view by adding ```ta
 
     aws resource-explorer-2 update-view \
         --included-properties Name=tags \
-        --view-arn arn:aws:resource-explorer-2:us-east-1:123456789012:view/My-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222
+        --view-arn arn:aws:resource-explorer-2:us-west-2:123456789012:view/My-View/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
@@ -21,7 +21,7 @@ Output::
             "LastUpdatedAt": "2022-07-19T17:41:21.710000+00:00",
             "Owner": "123456789012",
             "Scope": "arn:aws:iam::123456789012:root",
-            "ViewArn": "arn:aws:resource-explorer-2:us-east-1:123456789012:view/My-EC2-Only-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111"
+            "ViewArn": "arn:aws:resource-explorer-2:us-west-2:123456789012:view/My-EC2-Only-View/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }
 
@@ -31,7 +31,7 @@ The following ``update-view`` example updates the specified view to use a filter
 
     aws resource-explorer-2 update-view \
         --filters FilterString="service:ec2" \
-        --view-arn arn:aws:resource-explorer-2:us-east-1:123456789012:view/My-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222
+        --view-arn arn:aws:resource-explorer-2:us-west-2:123456789012:view/My-View/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
@@ -44,8 +44,8 @@ Output::
         "LastUpdatedAt": "2022-07-19T17:41:21.710000+00:00",
             "Owner": "123456789012",
             "Scope": "arn:aws:iam::123456789012:root",
-            "ViewArn": "arn:aws:resource-explorer-2:us-east-1:123456789012:view/My-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222"
+            "ViewArn": "arn:aws:resource-explorer-2:us-west-2:123456789012:view/My-View/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
         }
     }
 
-For more information about views, see `About Resource Explorer views <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-views-about.html>`__ in the *AWS Resource Explorer Users Guide*.
+For more information about views, see `Working with views <https://docs.aws.amazon.com/resource-explorer/latest/userguide/views.html>`__ in the *AWS Resource Explorer Users Guide*.

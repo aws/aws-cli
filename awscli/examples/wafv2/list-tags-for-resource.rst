@@ -1,6 +1,6 @@
 **To retrieve all tags for an AWS WAF resource**
 
-The following ``list-tags-for-resource`` retrieves the list of all tag key, value pairs for the specified web ACL. ::
+The following ``list-tags-for-resource`` example retrieves the list of all tag key, value pairs for the specified web ACL. ::
 
     aws wafv2 list-tags-for-resource \
         --resource-arn arn:aws:wafv2:us-west-2:123456789012:regional/webacl/testwebacl2/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111

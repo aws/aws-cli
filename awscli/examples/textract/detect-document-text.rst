@@ -1,17 +1,16 @@
 **To detect text in a document**
 
-The following ``detect-document-text`` The following example shows how to detect text in a document. 
+The following ``detect-document-text`` example shows how to detect text in a document.
 
-Linux/macOS::
-
-    aws textract detect-document-text \
-        --document '{"S3Object":{"Bucket":"bucket","Name":"document"}}'
-
-Windows::
+For Linux and macOS, use the following command. ::
 
     aws textract detect-document-text \
-        --document "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
-        --region region-name
+        --document '{"S3Object":{"Bucket":"amzn-s3-demo-bucket","Name":"document"}}'
+
+For Windows, use the following command. ::
+
+    aws textract detect-document-text \
+        --document "{\"S3Object\":{\"Bucket\":\"amzn-s3-demo-bucket\",\"Name\":\"document\"}}"
 
 Output::
 
@@ -48,22 +47,22 @@ Output::
                     {
                         "Type": "CHILD", 
                         "Ids": [
-                            "896a9f10-9e70-4412-81ce-49ead73ed881", 
-                            "0da18623-dc4c-463d-a3d1-9ac050e9e720", 
-                            "167338d7-d38c-4760-91f1-79a8ec457bb2"
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222", 
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
                         ]
                     } 
                 ], 
                 "BlockType": "PAGE", 
-                "Id": "21f0535e-60d5-4bc7-adf2-c05dd851fa25"
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
             }, 
             {
                 "Relationships": [
                     {
                         "Type": "CHILD", 
                         "Ids": [
-                            "62490c26-37ea-49fa-8034-7a9ff9369c9c", 
-                            "1e4f3f21-05bd-4da9-ba10-15d01e66604c"
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555", 
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE66666"
                         ]
                     }
                 ], 
@@ -96,14 +95,14 @@ Output::
                 }, 
                 "Text": "He llo,", 
                 "BlockType": "LINE", 
-                "Id": "896a9f10-9e70-4412-81ce-49ead73ed881"
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }, 
             {
                 "Relationships": [
                     {
                         "Type": "CHILD", 
                         "Ids": [
-                            "19b28058-9516-4352-b929-64d7cef29daf"
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE77777"
                         ]
                     }
                 ], 
@@ -136,7 +135,7 @@ Output::
                 }, 
                 "Text": "worlc", 
                 "BlockType": "LINE", 
-                "Id": "0da18623-dc4c-463d-a3d1-9ac050e9e720"
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ], 
         "DocumentMetadata": {
@@ -144,6 +143,4 @@ Output::
         }
     }
 
-For more information, see `Detecting Document Text with Amazon Textract`_ in the *Amazon Textract Developers Guide*
-
-.. _`Detecting Document Text with Amazon Textract`: https://docs.aws.amazon.com/textract/latest/dg/detecting-document-text.html
+For more information, see `Detecting Document Text with Amazon Textract <https://docs.aws.amazon.com/textract/latest/dg/detecting-document-text.html>`__ in the *Amazon Textract Developer Guide*.

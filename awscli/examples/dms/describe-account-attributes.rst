@@ -17,10 +17,9 @@ Output::
                 "AccountQuotaName": "AllocatedStorage",
                 "Used": 5,
                 "Max": 10000
-            },
-
-            ...remaining output omitted...
-    
+            }
         ],
         "UniqueAccountIdentifier": "cqahfbfy5xee"
     }
+
+For more information, see `Quotas for AWS Database Migration Service <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Limits.html>`__ in the *AWS Database Migration Service User Guide*.

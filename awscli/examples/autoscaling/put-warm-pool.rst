@@ -1,6 +1,6 @@
 **To create a warm pool**
 
-The following example creates a warm pool for the specified Auto Scaling group. ::
+The following ``put-warm-pool`` example creates a warm pool for the specified Auto Scaling group. ::
 
     aws autoscaling put-warm-pool \
         --auto-scaling-group-name my-asg \

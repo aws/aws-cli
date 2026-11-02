@@ -1,8 +1,8 @@
 **Example 1: To list your associations for a specific instance**
 
-The following `list-associations` example lists all associations with the AssociationName, UpdateSSMAgent. ::
+The following ``list-associations`` example lists all associations with the AssociationName, UpdateSSMAgent. ::
 
-    aws ssm list-associations /
+    aws ssm list-associations \
         --association-filter-list "key=AssociationName,value=UpdateSSMAgent"
 
 Output::
@@ -12,7 +12,7 @@ Output::
             {
                 "Name": "AWS-UpdateSSMAgent",
                 "InstanceId": "i-1234567890abcdef0",
-                "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AssociationVersion": "1",
                 "Targets": [
                     {
@@ -35,13 +35,13 @@ Output::
         ]
     }
 
-For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-associations.html>`__ in the *Systems Manager User Guide*.
+For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations.html>`__ in the *Systems Manager User Guide*.
 
 **Example 2: To list your associations for a specific document**
 
-The following `list-associations` example lists all associations for the specified document. ::
+The following ``list-associations`` example lists all associations for the specified document. ::
 
-    aws ssm list-associations /
+    aws ssm list-associations \
         --association-filter-list "key=Name,value=AWS-UpdateSSMAgent"
 
 Output::
@@ -51,7 +51,7 @@ Output::
             {
                 "Name": "AWS-UpdateSSMAgent",
                 "InstanceId": "i-1234567890abcdef0",
-                "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AssociationVersion": "1",
                 "Targets": [
                     {
@@ -75,7 +75,7 @@ Output::
         {
                 "Name": "AWS-UpdateSSMAgent",
                 "InstanceId": "i-9876543210abcdef0",
-                "AssociationId": "fbc07ef7-b985-4684-b82b-0123456789ab",
+                "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "AssociationVersion": "1",
                 "Targets": [
                     {
@@ -96,4 +96,4 @@ Output::
         ]
     }
 
-For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-associations.html>`__ in the *Systems Manager User Guide*.
+For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations.html>`__ in the *Systems Manager User Guide*.

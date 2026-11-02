@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags that are assigned to the specified Resolver rule. ::
 
     aws route53resolver list-tags-for-resource \
-        --resource-arn "arn:aws:route53resolver:us-west-2:111122223333:resolver-rule/rslvr-rr-42b60677c0example"
+        --resource-arn "arn:aws:route53resolver:us-west-2:123456789012:resolver-rule/rslvr-rr-42b60677c0example"
 
 Output::
 

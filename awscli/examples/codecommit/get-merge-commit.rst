@@ -13,7 +13,7 @@ Output::
         "sourceCommitId": "c5709475EXAMPLE", 
         "destinationCommitId": "317f8570EXAMPLE", 
         "baseCommitId": "fb12a539EXAMPLE",
-        "mergeCommitId": "ffc4d608eEXAMPLE"
+        "mergedCommitId": "ffc4d608eEXAMPLE"
     }
 
 For more information, see `View Commit Details <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-view-commit-details.html#how-to-view-commit-details-cli-merge-commit>`__ in the *AWS CodeCommit User Guide*.

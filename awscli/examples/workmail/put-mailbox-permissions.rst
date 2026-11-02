@@ -1,6 +1,6 @@
 **To set mailbox permissions**
 
-The following ``put-mailbox-permissions`` command sets full access permissions for the specified grantee (user or group). The entity represents the owner of the mailbox. ::
+The following ``put-mailbox-permissions`` example sets full access permissions for the specified grantee (user or group). The entity represents the owner of the mailbox. ::
 
     aws workmail put-mailbox-permissions \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \
@@ -9,3 +9,5 @@ The following ``put-mailbox-permissions`` command sets full access permissions f
         --permission-values FULL_ACCESS
 
 This command produces no output.
+
+For more information, see `Managing mailbox permissions for users <https://docs.aws.amazon.com/workmail/latest/adminguide/enable_mail_perms.html>`__ in the *Amazon WorkMail Administrator Guide*.

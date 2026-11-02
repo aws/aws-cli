@@ -18,7 +18,7 @@ Output::
             "MasterUsername": "tenantadmin",
             "DbiResourceId": "db-ABCD1234EFGH5678IJKEXAMPLE",
             "TenantDatabaseResourceId": "tdb-ABCD1234EFGH5678IJKL90MNOPQRST1234UVWX5678YZAEXAMPLE",
-            "TenantDatabaseARN": "arn:aws:rds:us-east-1:123456789012:tenant-database:tdb-abcd1234efgh5678ijkl90mnopqrst1234uvwx5678yzaexample",
+            "TenantDatabaseARN": "arn:aws:rds:us-west-2:123456789012:tenant-database:tdb-abcd1234efgh5678ijkl90mnopqrst1234uvwx5678yzaexample",
             "CharacterSetName": "AL32UTF8",
             "NcharCharacterSetName": "AL16UTF16",
             "DeletionProtection": false,

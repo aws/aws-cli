@@ -3,12 +3,12 @@
 The following ``get-event-source-mapping`` example displays the details for the mapping between an SQS queue and the ``my-function`` Lambda function. ::
 
     aws lambda get-event-source-mapping \
-        --uuid "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"
+        --uuid "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
-        "UUID": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+        "UUID": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "StateTransitionReason": "USER_INITIATED",
         "LastModified": 1569284520.333,
         "BatchSize": 5,

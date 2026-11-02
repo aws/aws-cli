@@ -6,14 +6,16 @@ The following ``schedule-key-deletion`` example schedules the specified customer
 * The ``--pending-window-in-days`` parameter specifies the length of the 7-30 day waiting period. By default, the waiting period is 30 days. This example specifies a value of 15, which tells AWS to permanently delete the KMS key 15 days after the command completes. ::
 
     aws kms schedule-key-deletion \
-        --key-id arn:aws:kms:us-west-2:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --pending-window-in-days 15
 
 The response includes the key ARN, key state, waiting period (``PendingWindowInDays``), and the deletion date in Unix time. To view the deletion date in local time, use the AWS KMS console. 
-KMS keys in the ``PendingDeletion`` key state cannot be used in cryptographic operations. ::
+KMS keys in the ``PendingDeletion`` key state cannot be used in cryptographic operations.
+
+Output::
 
     {
-        "KeyId": "arn:aws:kms:us-west-2:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "DeletionDate": "2022-06-18T23:43:51.272000+00:00",
         "KeyState": "PendingDeletion",
         "PendingWindowInDays": 15

@@ -10,7 +10,7 @@ Output::
 
     {
         "operation": {
-            "id": "719744f0-a022-46f2-9f11-6EXAMPLE4642",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "resourceName": "MEAN-2",
             "resourceType": "Instance",
             "createdAt": 1571072906.849,
@@ -25,3 +25,5 @@ Output::
             "statusChangedAt": 1571072906.849
         }
     }
+
+For more information, see `Control instance traffic with firewalls in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-firewall-and-port-mappings-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

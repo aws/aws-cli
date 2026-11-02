@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example returns the tags assigned to the specified hub resource. ::
 
     aws securityhub list-tags-for-resource \
-        --resource-arn "arn:aws:securityhub:us-west-1:123456789012:hub/default"
+        --resource-arn "arn:aws:securityhub:us-west-2:123456789012:hub/default"
 
 Output::
 

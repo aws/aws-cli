@@ -9,25 +9,25 @@ Output::
     {
         "Contacts": [
             {
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
                 "Alias": "akuam",
                 "DisplayName": "Akua Mansa",
                 "Type": "PERSONAL"
             },
             {
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/alejr",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/alejr",
                 "Alias": "alejr",
                 "DisplayName": "Alejandro Rosalez",
                 "Type": "PERSONAL"
             },
             {
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/anasi",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/anasi",
                 "Alias": "anasi",
                 "DisplayName": "Ana Carolina Silva",
                 "Type": "PERSONAL"
             },
             {
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/example_escalation",
                 "Alias": "example_escalation",
                 "DisplayName": "Example Escalation",
                 "Type": "ESCALATION"

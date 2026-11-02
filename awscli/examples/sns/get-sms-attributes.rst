@@ -11,3 +11,5 @@ Output::
             "DefaultSenderID": "MyName"
         }
     }
+
+For more information, see `Setting SMS messaging preferences in Amazon SNS <https://docs.aws.amazon.com/sns/latest/dg/sms_preferences.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

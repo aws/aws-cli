@@ -1,6 +1,6 @@
 **To delete the current account password policy**
 
-The following ``delete-account-password-policy`` command removes the password policy for the current account. ::
+The following ``delete-account-password-policy`` example removes the password policy for the current account. ::
 
     aws iam delete-account-password-policy
 

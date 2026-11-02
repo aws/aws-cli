@@ -3,15 +3,15 @@
 The following ``update-account`` example updates the specified account name. ::
 
     aws chime update-account \
-        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE \
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --name MyAccountName
 
 Output::
 
     {
         "Account": {
-            "AwsAccountId": "111122223333",
-            "AccountId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "AwsAccountId": "123456789012",
+            "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Name": "MyAccountName",
             "AccountType": "Team",
             "CreatedTimestamp": "2018-09-04T21:44:22.292Z",
@@ -23,7 +23,7 @@ Output::
             "SigninDelegateGroups": [
                 {
                     "GroupName": "myGroup"
-                },
+                }
             ]
         }
     }

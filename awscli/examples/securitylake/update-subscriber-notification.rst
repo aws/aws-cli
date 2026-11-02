@@ -9,9 +9,7 @@ The following ``update-subscriber-notification`` example shows how you can updat
 Output::
 
     {
-        "subscriberEndpoint": [
-            "https://account-management.$3.$2.securitylake.aws.dev/v1/datalake"
-        ]
+        "subscriberEndpoint": "https://account-management.$3.$2.securitylake.aws.dev/v1/datalake"
     }
 
 For more information, see `Subscriber management <https://docs.aws.amazon.com/security-lake/latest/userguide/subscriber-management.html>`__ in the *Amazon Security Lake User Guide*.

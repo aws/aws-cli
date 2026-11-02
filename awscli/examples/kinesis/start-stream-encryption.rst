@@ -4,7 +4,7 @@ The following ``start-stream-encryption`` example enables server-side encryption
 
     aws kinesis start-stream-encryption \
         --encryption-type KMS \
-        --key-id arn:aws:kms:us-west-2:012345678912:key/a3c4a7cd-728b-45dd-b334-4d3eb496e452 \
+        --key-id arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --stream-name samplestream
 
 This command produces no output.

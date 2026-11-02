@@ -2,7 +2,7 @@
 
 The following ``create-resource-gateway`` example creates a resource gateway for the specified subnet. ::
 
-    aws vpc-lattice create-resource-gateway \ 
+    aws vpc-lattice create-resource-gateway \
         --name my-resource-gateway \
         --vpc-identifier vpc-0bf4c2739bc05a69 \
         --subnet-ids subnet-08e8943905b63a683
@@ -10,7 +10,7 @@ The following ``create-resource-gateway`` example creates a resource gateway for
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourcegateway/rgw-0bba03f3d56060135",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourcegateway/rgw-0bba03f3d56060135",
         "id": "rgw-0bba03f3d56060135",
         "ipAddressType": "IPV4",
         "name": "my-resource-gateway",

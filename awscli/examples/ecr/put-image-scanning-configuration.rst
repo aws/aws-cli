@@ -9,11 +9,11 @@ The following ``put-image-scanning-configuration`` example updates the image sca
 Output::
 
     {
-       "registryId": "012345678910",
-       "repositoryName": "sample-repo",
-       "imageScanningConfiguration": {
-         "scanOnPush": true
-       }
+        "registryId": "123456789012",
+        "repositoryName": "sample-repo",
+        "imageScanningConfiguration": {
+            "scanOnPush": true
+        }
     }
 
 For more information, see `Image Scanning <https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html>`__ in the *Amazon ECR User Guide*.

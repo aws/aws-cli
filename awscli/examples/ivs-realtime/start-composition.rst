@@ -3,24 +3,24 @@
 The following ``start-composition`` example starts a composition for the specified stage to be streamed to the specified locations. ::
 
     aws ivs-realtime start-composition \
-        --stage-arn arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd \
-        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg", \
-            "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
-            {"s3":{"encoderConfigurationArns":["arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
+        --stage-arn arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd \
+        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg", \
+            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
+            {"s3":{"encoderConfigurationArns":["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
             "recordingConfiguration": {"hlsConfiguration": {"targetSegmentDurationSeconds": 5}}, \
-            "storageConfigurationArn":"arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"}}]'
+            "storageConfigurationArn":"arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE"}}]'
 
 Output::
 
     {
         "composition": {
-            "arn": "arn:aws:ivs:ap-northeast-1:123456789012:composition/abcdABCDefgh",
+            "arn": "arn:aws:ivs:us-west-2:123456789012:composition/abcdABCDefgh",
             "destinations": [
                 {
                     "configuration": {
                         "channel": {
-                            "channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg",
-                            "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+                            "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg",
+                            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
                         },
                         "name": ""
                     },
@@ -32,7 +32,7 @@ Output::
                         "name": "",
                         "s3": {
                             "encoderConfigurationArns": [
-                                "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+                                "arn:aws:ivs:arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
                                 "format": "HLS",
@@ -40,7 +40,7 @@ Output::
                                     "targetSegmentDurationSeconds": 5
                                 }
                             },
-                            "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"
+                            "storageConfigurationArn": "arn:arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE"
                         }
                     },
                     "detail": {
@@ -54,7 +54,7 @@ Output::
             ],
             "layout": {
                 "grid": {
-                    "featuredParticipantAttribute": ""
+                    "featuredParticipantAttribute": "",
                     "gridGap": 2,
                     "omitStoppedVideo": false,
                     "participantOrderAttribute": "",
@@ -62,7 +62,7 @@ Output::
                     "videoFillMode": ""
                 }
             },
-            "stageArn": "arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd",
+            "stageArn": "arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd",
             "startTime": "2023-10-16T23:24:00+00:00",
             "state": "STARTING",
             "tags": {}
@@ -76,24 +76,24 @@ For more information, see `IVS Composite Recording | Real-Time Streaming <https:
 The following ``start-composition`` example starts a composition for the specified stage to be streamed to the specified locations using PiP layout. ::
 
     aws ivs-realtime start-composition \
-        --stage-arn arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd \
-        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg", \
-            "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
-            {"s3":{"encoderConfigurationArns":["arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"], \
-            "storageConfigurationArn":"arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"}}]' \
+        --stage-arn arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd \
+        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg", \
+            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
+            {"s3":{"encoderConfigurationArns":["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"], \
+            "storageConfigurationArn":"arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE"}}]' \
         --layout pip='{featuredParticipantAttribute="abcdefg"}'
 
 Output::
 
     {
         "composition": {
-            "arn": "arn:aws:ivs:ap-northeast-1:123456789012:composition/wxyzWXYZpqrs",
+            "arn": "arn:aws:ivs:us-west-2:123456789012:composition/wxyzWXYZpqrs",
             "destinations": [
                 {
                     "configuration": {
                         "channel": {
-                            "channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg",
-                            "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+                            "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg",
+                            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
                         },
                         "name": ""
                     },
@@ -105,7 +105,7 @@ Output::
                         "name": "",
                         "s3": {
                             "encoderConfigurationArns": [
-                                "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+                                "arn:aws:ivs:arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
                                 "format": "HLS",
@@ -113,7 +113,7 @@ Output::
                                     "targetSegmentDurationSeconds": 2
                                 }
                             },
-                            "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"
+                            "storageConfigurationArn": "arn:arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE"
                         }
                     },
                     "detail": {
@@ -138,7 +138,7 @@ Output::
                     "videoFillMode": "COVER"
                 }
             },
-            "stageArn": "arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd",
+            "stageArn": "arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd",
             "startTime": "2023-10-16T23:24:00+00:00",
             "state": "STARTING",
             "tags": {}
@@ -152,24 +152,24 @@ For more information, see `IVS Composite Recording | Real-Time Streaming <https:
 The following ``start-composition`` example starts a composition for the specified stage to be streamed to the specified locations with thumbnail recording enabled. ::
 
     aws ivs-realtime start-composition \
-        --stage-arn arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd \
-        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg", \
-            "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
-            {"s3": {"encoderConfigurationArns": ["arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
-            "storageConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE", \
+        --stage-arn arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd \
+        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg", \
+            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
+            {"s3": {"encoderConfigurationArns": ["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
+            "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE", \
             "thumbnailConfigurations": [{"storage": ["SEQUENTIAL"],"targetIntervalSeconds": 60}]}}]'
 
 Output::
 
     {
         "composition": {
-            "arn": "arn:aws:ivs:ap-northeast-1:123456789012:composition/abcdABCDefgh",
+            "arn": "arn:aws:ivs:us-west-2:123456789012:composition/abcdABCDefgh",
             "destinations": [
                 {
                     "configuration": {
                         "channel": {
-                            "channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg",
-                            "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+                            "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg",
+                            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
                         },
                         "name": ""
                     },
@@ -181,7 +181,7 @@ Output::
                         "name": "",
                         "s3": {
                             "encoderConfigurationArns": [
-                                "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+                                "arn:aws:ivs:arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
                                 "format": "HLS",
@@ -189,14 +189,14 @@ Output::
                                     "targetSegmentDurationSeconds": 2
                                 }
                             },
-                            "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
+                            "storageConfigurationArn": "arn:arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE",
                             "thumbnailConfigurations": [
-                               {
-                                  "targetIntervalSeconds": 60,
-                                  "storage": [
-                                      "SEQUENTIAL"
-                                  ]
-                               }
+                                {
+                                    "targetIntervalSeconds": 60,
+                                    "storage": [
+                                        "SEQUENTIAL"
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -211,7 +211,7 @@ Output::
             ],
             "layout": {
                 "grid": {
-                    "featuredParticipantAttribute": ""
+                    "featuredParticipantAttribute": "",
                     "gridGap": 2,
                     "omitStoppedVideo": false,
                     "participantOrderAttribute": "",
@@ -219,7 +219,7 @@ Output::
                     "videoFillMode": ""
                 }
             },
-            "stageArn": "arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd",
+            "stageArn": "arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd",
             "startTime": "2023-10-16T23:24:00+00:00",
             "state": "STARTING",
             "tags": {}
@@ -233,11 +233,11 @@ For more information, see `Composite Recording (Real-Time Streaming) <https://do
 The following ``start-composition`` example starts a composition for the specified stage to be streamed to the specified locations using grid layout with custom participant ordering. ::
 
     aws ivs-realtime start-composition \
-        --stage-arn arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd \
-        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg", \
-            "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
-            {"s3": {"encoderConfigurationArns": ["arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
-            "storageConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE", \
+        --stage-arn arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd \
+        --destinations '[{"channel": {"channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg", \
+            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
+            {"s3": {"encoderConfigurationArns": ["arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
+            "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE", \
             "thumbnailConfigurations": [{"storage": ["SEQUENTIAL"],"targetIntervalSeconds": 60}]}}]' \
         --layout grid='{participantOrderAttribute="abcdefg"}'
 
@@ -245,13 +245,13 @@ Output::
 
     {
         "composition": {
-            "arn": "arn:aws:ivs:ap-northeast-1:123456789012:composition/abcdABCDefgh",
+            "arn": "arn:aws:ivs:us-west-2:123456789012:composition/abcdABCDefgh",
             "destinations": [
                 {
                     "configuration": {
                         "channel": {
-                            "channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg",
-                            "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+                            "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcABCdefDEg",
+                            "encoderConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
                         },
                         "name": ""
                     },
@@ -263,7 +263,7 @@ Output::
                         "name": "",
                         "s3": {
                             "encoderConfigurationArns": [
-                                "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+                                "arn:aws:ivs:arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
                                 "format": "HLS",
@@ -271,14 +271,14 @@ Output::
                                     "targetSegmentDurationSeconds": 2
                                 }
                             },
-                            "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
+                            "storageConfigurationArn": "arn:arn:aws:ivs:us-west-2:123456789012:storage-configuration/FefABabCDcdE",
                             "thumbnailConfigurations": [
-                               {
-                                  "targetIntervalSeconds": 60,
-                                  "storage": [
-                                      "SEQUENTIAL"
-                                  ]
-                               }
+                                {
+                                    "targetIntervalSeconds": 60,
+                                    "storage": [
+                                        "SEQUENTIAL"
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -293,7 +293,7 @@ Output::
             ],
             "layout": {
                 "grid": {
-                    "featuredParticipantAttribute": ""
+                    "featuredParticipantAttribute": "",
                     "gridGap": 2,
                     "omitStoppedVideo": false,
                     "participantOrderAttribute": "abcdefg",
@@ -301,7 +301,7 @@ Output::
                     "videoFillMode": ""
                 }
             },
-            "stageArn": "arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd",
+            "stageArn": "arn:aws:ivs:us-west-2:123456789012:stage/defgABCDabcd",
             "startTime": "2023-10-16T23:24:00+00:00",
             "state": "STARTING",
             "tags": {}

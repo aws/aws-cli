@@ -3,13 +3,13 @@
 The following ``refresh-cache`` example refreshes the cache for the specified file share. ::
 
     aws storagegateway refresh-cache \
-        --file-share-arn arn:aws:storagegateway:us-east-1:111122223333:share/share-2FA12345
+        --file-share-arn arn:aws:storagegateway:us-west-2:123456789012:share/share-2FA12345
 
 Output::
 
     {
-        "FileShareARN": "arn:aws:storagegateway:us-east-1:111122223333:share/share-2FA12345",
-        "NotificationId": "4954d4b1-abcd-ef01-1234-97950a7d3483"
+        "FileShareARN": "arn:aws:storagegateway:us-west-2:123456789012:share/share-2FA12345",
+        "NotificationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
-For more information, see `ListFileShares <https://docs.aws.amazon.com/storagegateway/latest/APIReference/API_RefreshCache.html>`__ in the *AWS Storage Gateway Service API Reference*.
+For more information, see `Refreshing Amazon S3 bucket object cache <https://docs.aws.amazon.com/filegateway/latest/files3/refresh-cache.html>`__ in the *Amazon S3 File Gateway User Guide*.

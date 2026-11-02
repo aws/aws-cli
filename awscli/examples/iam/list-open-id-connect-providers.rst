@@ -1,6 +1,6 @@
 **To list information about the OpenID Connect providers in the AWS account**
 
-This example returns a list of ARNS of all the OpenID Connect providers that are defined in the current AWS account. ::
+The following ``list-open-id-connect-providers`` example returns a list of ARNs of all the OpenID Connect providers that are defined in the current AWS account. ::
 
     aws iam list-open-id-connect-providers
 

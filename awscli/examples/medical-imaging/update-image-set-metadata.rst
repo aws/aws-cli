@@ -9,7 +9,7 @@ The following ``update-image-set-metadata`` example inserts or updates an attrib
         --cli-binary-format raw-in-base64-out \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -40,7 +40,7 @@ The following ``update-image-set-metadata`` example removes an attribute from im
         --cli-binary-format raw-in-base64-out \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -72,7 +72,7 @@ The following ``update-image-set-metadata`` example removes an instance from ima
         --update-image-set-metadata-updates file://metadata-updates.json \
         --force
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -129,7 +129,7 @@ UpdateImageSetMetadata action. ::
         --force \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -161,7 +161,7 @@ The following ``update-image-set-metadata`` example shows how to update the valu
         --force \
         --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {
@@ -186,14 +186,14 @@ Output::
 The following ``update-image-set-metadata`` example shows how to update a SOPInstanceUID, using the force parameter to override the DICOM metadata constraints. ::
 
     aws medical-imaging update-image-set-metadata \
-            --datastore-id 12345678901234567890123456789012 \
-            --image-set-id 53d5fdb05ca4d46ac7ca64b06545c66e \
-            --latest-version-id 1 \
-            --cli-binary-format raw-in-base64-out \
-            --force \
-            --update-image-set-metadata-updates file://metadata-updates.json
+        --datastore-id 12345678901234567890123456789012 \
+        --image-set-id 53d5fdb05ca4d46ac7ca64b06545c66e \
+        --latest-version-id 1 \
+        --cli-binary-format raw-in-base64-out \
+        --force \
+        --update-image-set-metadata-updates file://metadata-updates.json
 
-Contents of ``metadata-updates.json`` ::
+Contents of ``metadata-updates.json``::
 
     {
         "DICOMUpdates": {

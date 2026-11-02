@@ -10,7 +10,7 @@ Output::
     {
         "application": {
             "id": "055gw7aynr1i5mbv7kjwzx5945",
-            "arn": "arn:aws:servicecatalog:us-west-2:813737243517:/applications/055gw7aynr1i5mbv7kjwzx5945",
+            "arn": "arn:aws:servicecatalog:us-west-2:123456789012:/applications/055gw7aynr1i5mbv7kjwzx5945",
             "name": "ExampleApplication3",
             "creationTime": "2023-02-28T22:06:28.228000+00:00",
             "lastUpdateTime": "2023-02-28T22:06:28.228000+00:00"

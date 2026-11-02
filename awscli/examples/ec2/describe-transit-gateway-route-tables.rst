@@ -29,4 +29,4 @@ Output::
         ]
     }
 
-For more information, see `View transit gateway route tables <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#view-tgw-route-tables>`__ in the *Transit Gateways Guide*.
+For more information, see `View transit gateway route tables <https://docs.aws.amazon.com/vpc/latest/tgw/view-tgw-route-tables.html>`__ in the *Transit Gateways Guide*.

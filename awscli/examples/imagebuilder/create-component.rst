@@ -13,7 +13,7 @@ Contents of ``create-component.json``::
         "description": "An example component that builds, validates and tests an image",
         "changeDescription": "Initial version.",
         "platform": "Windows",
-        "uri": "s3://s3-bucket-name/s3-bucket-path/component.yaml"
+        "uri": "s3://amzn-s3-demo-bucket/s3-bucket-path/component.yaml"
     }
 
 Output::
@@ -24,4 +24,4 @@ Output::
         "componentBuildVersionArn": "arn:aws:imagebuilder:us-west-2:123456789012:component/examplecomponent/2019.12.02/1"
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Manage custom image creation in Image Builder through a repeatable pipeline process <https://docs.aws.amazon.com/imagebuilder/latest/userguide/manage-pipelines.html>`__ in the *EC2 Image Builder Users Guide*.

@@ -3,7 +3,7 @@
 The following ``add-tags-to-resource`` example adds up to 10 tags, key-value pairs, to a cluster or snapshot resource. ::
 
     aws elasticache add-tags-to-resource \
-        --resource-name "arn:aws:elasticache:us-east-1:1234567890:cluster:my-mem-cluster" \
+        --resource-name "arn:aws:elasticache:us-west-2:1234567890:cluster:my-mem-cluster" \
         --tags Key="APIVersion",Value="20150202" Key="Service",Value="ElastiCache"
 
 Output::

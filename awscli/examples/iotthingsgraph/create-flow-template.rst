@@ -14,5 +14,3 @@ Output::
             "revisionNumber": 1
         }
     }
-
-For more information, see `Working with Flows <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-workflows.html>`__ in the *AWS IoT Things Graph User Guide*.

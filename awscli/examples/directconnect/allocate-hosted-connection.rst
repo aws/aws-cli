@@ -20,5 +20,7 @@ Output::
         "bandwidth": "500Mbps", 
         "location": "TIVIT", 
         "connectionName": "mydcinterconnect", 
-        "region": "sa-east-1"
+        "region": "us-west-2"
     }
+
+For more information, see `Hosted Direct Connect connections <https://docs.aws.amazon.com/directconnect/latest/UserGuide/hosted_connection.html>`__ in the *AWS Direct Connect User Guide*.

@@ -4,7 +4,7 @@ The following ``create-dataset`` example creates a dataset for a flywheel. This 
 ``--dataset-type`` tag. ::
 
     aws comprehend create-dataset \
-        --flywheel-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity \
+        --flywheel-arn arn:aws:comprehend:us-west-2:123456789012:flywheel/flywheel-entity \
         --dataset-name example-dataset \
         --dataset-type "TRAIN" \
         --input-data-config file://inputConfig.json
@@ -21,7 +21,7 @@ Contents of ``file://inputConfig.json``::
 Output::
 
     {
-        "DatasetArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity/dataset/example-dataset"
+        "DatasetArn": "arn:aws:comprehend:us-west-2:123456789012:flywheel/flywheel-entity/dataset/example-dataset"
     }
 
-For more information, see `Flywheel Overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in *Amazon Comprehend Developer Guide*.
+For more information, see `Flywheel overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in the *Amazon Comprehend Developer Guide*.

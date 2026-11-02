@@ -16,7 +16,7 @@ Output::
             "OperationStatus": "IN_PROGRESS", 
             "Operation": "UPDATE", 
             "Identifier": "ExampleLogGroup", 
-            "RequestToken": "5f40c577-3534-4b20-9599-0b0123456789"
+            "RequestToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }
 

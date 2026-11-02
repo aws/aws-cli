@@ -1,13 +1,12 @@
 **To get a CloudFront public key**
 
-The following example gets the CloudFront public key with the ID
+The following ``get-public-key`` example gets the CloudFront public key with the ID
 ``KDFB19YGCR002``, including its ``ETag``. The public key ID is returned in the
 `create-public-key <create-public-key.html>`_ and `list-public-keys
-<list-public-keys.html>`_ commands.
+<list-public-keys.html>`_ commands. ::
 
-::
-
-    aws cloudfront get-public-key --id KDFB19YGCR002
+    aws cloudfront get-public-key \
+        --id KDFB19YGCR002
 
 Output::
 
@@ -24,3 +23,5 @@ Output::
             }
         }
     }
+
+For more information, see `Specify signers that can create signed URLs and signed cookies <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-trusted-signers.html>`__ in the *Amazon CloudFront Developer Guide*.

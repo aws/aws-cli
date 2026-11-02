@@ -20,7 +20,7 @@ Contents of ``create-product-input.json``::
         "Tags": [
             {
                 "Key": "region",
-                "Value": "us-east-1"
+                "Value": "us-west-2"
             }
         ],
         "ProvisioningArtifactParameters": {
@@ -39,7 +39,7 @@ Output::
         "Tags": [
             {
                 "Key": "region",
-                "Value": "us-east-1"
+                "Value": "us-west-2"
             }
         ],
         "ProductViewDetail": {
@@ -69,3 +69,5 @@ Output::
             "Type": "CLOUD_FORMATION_TEMPLATE"
         }
     }
+
+For more information, see `Creating Products <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/productmgmt-cloudresource.html>`__ in the *AWS Service Catalog Administrator Guide*.

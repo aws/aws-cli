@@ -1,62 +1,77 @@
-**To retrieve the reservation coverage for EC2 t2.nano instances in the us-east-1 region**
+**To retrieve the reservation coverage for EC2 t2.nano instances in the us-west-2 region**
 
-This example retrieves the reservation coverage for EC2 t2.nano instances in the us-east-1 region for July-September of 2017.
+The following ``get-reservation-coverage`` example retrieves the reservation coverage for EC2 t2.nano instances in the us-west-2 region for July-September of 2017. ::
 
-Command::
+    aws ce get-reservation-coverage \
+        --time-period Start=2017-07-01,End=2017-10-01 \
+        --group-by Type=Dimension,Key=REGION \
+        --filter file://filters.json
 
-  aws ce get-reservation-coverage --time-period Start=2017-07-01,End=2017-10-01 --group-by Type=Dimension,Key=REGION --filter file://filters.json
+Contents of ``filters.json``::
 
-filters.json::
-
- {
-    "And": [
-      {
-        "Dimensions": {
-          "Key": "INSTANCE_TYPE",
-          "Values": [
-            "t2.nano"
-          ]
-        },
-        "Dimensions": {
-          "Key": "REGION",
-          "Values": [
-            "us-east-1"
-          ]
-        }
-      }
-    ]
-  }
+    {
+        "And": [
+            {
+                "Dimensions": {
+                    "Key": "INSTANCE_TYPE",
+                    "Values": [
+                        "t2.nano"
+                    ]
+                }
+            },
+            {
+                "Dimensions": {
+                    "Key": "REGION",
+                    "Values": [
+                        "us-west-2"
+                    ]
+                }
+            }
+        ]
+    }
   
 Output::
 
- {
-    "TotalSize": 6,
-    "DimensionValues": [
-        {
-            "Attributes": {},
-            "Value": "Amazon ElastiCache"
-        },
-        {
-            "Attributes": {},
-            "Value": "EC2 - Other"
-        },
-        {
-            "Attributes": {},
-            "Value": "Amazon Elastic Compute Cloud - Compute"
-        },
-        {
-            "Attributes": {},
-            "Value": "Amazon Elastic Load Balancing"
-        },
-        {
-            "Attributes": {},
-            "Value": "Amazon Elastic MapReduce"
-        },
-        {
-            "Attributes": {},
-            "Value": "Amazon Elasticsearch Service"
+    {
+        "CoveragesByTime": [
+            {
+                "TimePeriod": {
+                    "Start": "2017-07-01",
+                    "End": "2017-10-01"
+                },
+                "Groups": [
+                    {
+                        "Attributes": {
+                            "region": "us-west-2"
+                        },
+                        "Coverage": {
+                            "CoverageHours": {
+                                "OnDemandHours": "3000",
+                                "ReservedHours": "1000",
+                                "TotalRunningHours": "4000",
+                                "CoverageHoursPercentage": "25"
+                            }
+                        }
+                    }
+                ],
+                "Total": {
+                    "CoverageHours": {
+                        "OnDemandHours": "3000",
+                        "ReservedHours": "1000",
+                        "TotalRunningHours": "4000",
+                        "CoverageHoursPercentage": "25"
+                    }
+                }
+            }
+        ],
+        "Total": {
+            "CoverageHours": {
+                "OnDemandHours": "3000",
+                "ReservedHours": "1000",
+                "TotalRunningHours": "4000",
+                "CoverageHoursPercentage": "25"
+            }
         }
-    ],
-    "ReturnSize": 6
- }	
+    }
 
+For more information, see `Understanding reservations in Cost Explorer <https://docs.aws.amazon.com/cost-management/latest/userguide/ce-ris.html>`__ in the *AWS Cost Management User Guide*.

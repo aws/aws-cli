@@ -1,16 +1,15 @@
 **To create a web ACL**
 
-The following ``create-web-acl`` command creates a web ACL for regional use. The rule statements for the web ACL are provided in a JSON-formatted file. ::
+The following ``create-web-acl`` example creates a web ACL for regional use. The rule statements for the web ACL are provided in a JSON-formatted file. ::
 
     aws wafv2 create-web-acl \
         --name TestWebAcl \
         --scope REGIONAL \
         --default-action Allow={} \
         --visibility-config SampledRequestsEnabled=true,CloudWatchMetricsEnabled=true,MetricName=TestWebAclMetrics \
-        --rules file://waf-rule.json \
-        --region us-west-2
+        --rules file://waf-rule.json
 
-Contents of `file://waf-rule.json`::
+Contents of ``waf-rule.json``::
 
     [
         {
@@ -67,7 +66,7 @@ Output::
             "ARN":"arn:aws:wafv2:us-west-2:123456789012:regional/webacl/TestWebAcl/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Description":"",
             "Name":"TestWebAcl",
-            "LockToken":"2294b3a1-eb60-4aa0-a86f-a3ae04329de9",
+            "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     } 

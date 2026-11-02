@@ -1,6 +1,6 @@
 **To add faces to a collection**
 
-The following ``index-faces`` command adds the faces found in an image to the specified collection. ::
+The following ``index-faces`` example adds the faces found in an image to the specified collection. ::
 
     aws rekognition index-faces \
         --image '{"S3Object":{"Bucket":"MyVideoS3Bucket","Name":"MyPicture.jpg"}}' \
@@ -217,10 +217,10 @@ Output::
                         "Left": 0.5575000047683716, 
                         "Height": 0.24770642817020416
                     }, 
-                    "FaceId": "ce7ed422-2132-4a11-ab14-06c5c410f29f", 
+                    "FaceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
                     "ExternalImageId": "example-image.jpg", 
                     "Confidence": 99.993408203125, 
-                    "ImageId": "8d67061e-90d2-598f-9fbd-29c8497039c0"
+                    "ImageId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                 }
             }
         ], 

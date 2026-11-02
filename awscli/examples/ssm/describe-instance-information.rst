@@ -4,12 +4,92 @@ The following ``describe-instance-information`` example retrieves details of eac
 
     aws ssm describe-instance-information
 
+Output::
+
+    {
+        "InstanceInformationList": [
+            {
+                "InstanceId": "i-028ea792daEXAMPLE",
+                "PingStatus": "Online",
+                "LastPingDateTime": 1582221233.421,
+                "AgentVersion": "2.3.842.0",
+                "IsLatestVersion": true,
+                "PlatformType": "Linux",
+                "PlatformName": "SLES",
+                "PlatformVersion": "15.1",
+                "ResourceType": "EC2Instance",
+                "IPAddress": "192.0.2.0",
+                "ComputerName": "ip-198.51.100.0.us-west-2.compute.internal",
+                "AssociationStatus": "Success",
+                "LastAssociationExecutionDate": 1582220806.0,
+                "LastSuccessfulAssociationExecutionDate": 1582220806.0,
+                "AssociationOverview": {
+                    "DetailedStatus": "Success",
+                    "InstanceAssociationStatusAggregatedCount": {
+                        "Success": 2
+                    }
+                }
+            },
+            {
+                "InstanceId": "i-0cb99161f6EXAMPLE",
+                "PingStatus": "Online",
+                "LastPingDateTime": 1582221158.297,
+                "AgentVersion": "2.3.842.0",
+                "IsLatestVersion": true,
+                "PlatformType": "Windows",
+                "PlatformName": "Microsoft Windows Server 2019 Datacenter",
+                "PlatformVersion": "10.0.17763",
+                "ResourceType": "EC2Instance",
+                "IPAddress": "192.0.2.1",
+                "ComputerName": "EC2AMAZ-EXAMPLE.WORKGROUP",
+                "AssociationStatus": "Success",
+                "LastAssociationExecutionDate": 1582220806.0,
+                "LastSuccessfulAssociationExecutionDate": 1582220806.0,
+                "AssociationOverview": {
+                    "DetailedStatus": "Success",
+                    "InstanceAssociationStatusAggregatedCount": {
+                        "Success": 1
+                    }
+                }
+            }
+        ]
+    }
+
 **Example 2: To describe information about a specific managed instance**
 
 The following ``describe-instance-information`` example shows details of the managed instance ``i-028ea792daEXAMPLE``. ::
 
     aws ssm describe-instance-information \
         --filters "Key=InstanceIds,Values=i-028ea792daEXAMPLE"
+
+Output::
+
+    {
+        "InstanceInformationList": [
+            {
+                "InstanceId": "i-028ea792daEXAMPLE",
+                "PingStatus": "Online",
+                "LastPingDateTime": 1582221233.421,
+                "AgentVersion": "2.3.842.0",
+                "IsLatestVersion": true,
+                "PlatformType": "Linux",
+                "PlatformName": "SLES",
+                "PlatformVersion": "15.1",
+                "ResourceType": "EC2Instance",
+                "IPAddress": "192.0.2.0",
+                "ComputerName": "ip-198.51.100.0.us-west-2.compute.internal",
+                "AssociationStatus": "Success",
+                "LastAssociationExecutionDate": 1582220806.0,
+                "LastSuccessfulAssociationExecutionDate": 1582220806.0,
+                "AssociationOverview": {
+                    "DetailedStatus": "Success",
+                    "InstanceAssociationStatusAggregatedCount": {
+                        "Success": 2
+                    }
+                }
+            }
+        ]
+    }
 
 **Example 3: To describe information about managed instances with a specific tag key**
 
@@ -33,7 +113,7 @@ Output::
                 "PlatformVersion": "15.1",
                 "ResourceType": "EC2Instance",
                 "IPAddress": "192.0.2.0",
-                "ComputerName": "ip-198.51.100.0.us-east-2.compute.internal",
+                "ComputerName": "ip-198.51.100.0.us-west-2.compute.internal",
                 "AssociationStatus": "Success",
                 "LastAssociationExecutionDate": 1582220806.0,
                 "LastSuccessfulAssociationExecutionDate": 1582220806.0,

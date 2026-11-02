@@ -7,10 +7,10 @@ The following ``update-gateway-capability-configuration`` example configures an 
 - Uses the SignAndEncrypt mode to secure connections.
 - Uses authentication credentials stored in an AWS Secrets Manager secret.
 
-::
+The capability configuration is in the ``opc-ua-capability-configuration.json`` file. ::
 
     aws iotsitewise update-gateway-capability-configuration \
-        --gateway-id a1b2c3d4-5678-90ab-cdef-1a1a1EXAMPLE \
+        --gateway-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --capability-namespace "iotsitewise:opcuacollector:1" \
         --capability-configuration file://opc-ua-capability-configuration.json
 
@@ -45,4 +45,4 @@ Output::
         "capabilitySyncStatus": "OUT_OF_SYNC"
     }
 
-For more information, see `Configuring data sources <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/configure-sources.html>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `OPC UA data sources for AWS IoT SiteWise Edge gateways <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/configure-sources-opcua.html>`__ in the *AWS IoT SiteWise User Guide*.

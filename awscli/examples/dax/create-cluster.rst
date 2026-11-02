@@ -42,4 +42,4 @@ Output::
         }
     }
 
-For more information, see `Step 3: Create a DAX Cluster <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.create-cluster.cli.create-cluster.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Creating a DAX cluster using the AWS CLI <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.create-cluster.cli.html>`__ in the *Amazon DynamoDB Developer Guide*.

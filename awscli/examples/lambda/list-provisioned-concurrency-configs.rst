@@ -10,7 +10,7 @@ Output::
     {
         "ProvisionedConcurrencyConfigs": [
             {
-                "FunctionArn": "arn:aws:lambda:us-east-2:123456789012:function:my-function:GREEN",
+                "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:GREEN",
                 "RequestedProvisionedConcurrentExecutions": 100,
                 "AvailableProvisionedConcurrentExecutions": 100,
                 "AllocatedProvisionedConcurrentExecutions": 100,
@@ -18,7 +18,7 @@ Output::
                 "LastModified": "2019-12-31T20:29:00+0000"
             },
             {
-                "FunctionArn": "arn:aws:lambda:us-east-2:123456789012:function:my-function:BLUE",
+                "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:BLUE",
                 "RequestedProvisionedConcurrentExecutions": 100,
                 "AvailableProvisionedConcurrentExecutions": 100,
                 "AllocatedProvisionedConcurrentExecutions": 100,
@@ -27,3 +27,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Configuring provisioned concurrency for an Event Function <https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html>`__ in the *AWS Lambda Developer Guide*.

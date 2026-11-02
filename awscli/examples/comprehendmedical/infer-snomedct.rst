@@ -1,4 +1,4 @@
-**Example: To detect entities and link to the SNOMED CT Ontology directly from text**
+**To detect entities and link to the SNOMED CT Ontology directly from text**
 
 The following ``infer-snomedct`` example shows how to detect medical entities and link them to concepts from the 2021-03 version of the Systematized Nomenclature of Medicine, Clinical Terms (SNOMED CT). ::
 
@@ -64,7 +64,6 @@ Output::
                 ]
             }
         ],
-        "UnmappedAttributes": [],
         "ModelVersion": "1.0.0"
     }
 

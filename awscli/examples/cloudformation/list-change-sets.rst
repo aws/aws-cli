@@ -2,17 +2,17 @@
 
 The following ``list-change-sets`` example displays a list of the pending change sets for the specified stack. ::
 
-	aws cloudformation list-change-sets \
-	   --stack-name my-stack
+    aws cloudformation list-change-sets \
+        --stack-name my-stack
 
 Output::
 
     {
         "Summaries": [
             {
-                "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/d0a825a0-e4cd-xmpl-b9fb-061c69e99204",
+                "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "StackName": "my-stack",
-                "ChangeSetId": "arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/70160340-7914-xmpl-bcbf-128a1fa78b5d",
+                "ChangeSetId": "arn:aws:cloudformation:us-west-2:123456789012:changeSet/my-change-set/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "ChangeSetName": "my-change-set",
                 "ExecutionStatus": "AVAILABLE",
                 "Status": "CREATE_COMPLETE",
@@ -20,3 +20,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Update CloudFormation stacks using change sets <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html>`__ in the *AWS CloudFormation User Guide*.

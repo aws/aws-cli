@@ -35,7 +35,7 @@ Output::
                 "imageTag": "prod"
             },
             {
-                "imageDigest": "sha256:567890121234",
+                "imageDigest": "sha256:123456789111",
                 "imageTag": "team1"
             }
         ],

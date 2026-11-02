@@ -1,15 +1,15 @@
 **To get information about a DynamoDB stream**
 
-The following ``describe-stream`` command displays information about the specific DynamoDB stream. ::
+The following ``describe-stream`` example displays information about the specific DynamoDB stream. ::
 
     aws dynamodbstreams describe-stream \
-        --stream-arn arn:aws:dynamodb:us-west-1:123456789012:table/Music/stream/2019-10-22T18:02:01.576
+        --stream-arn arn:aws:dynamodb:us-west-2:123456789012:table/Music/stream/2019-10-22T18:02:01.576
 
 Output::
 
     {
         "StreamDescription": {
-            "StreamArn": "arn:aws:dynamodb:us-west-1:123456789012:table/Music/stream/2019-10-22T18:02:01.576",
+            "StreamArn": "arn:aws:dynamodb:us-west-2:123456789012:table/Music/stream/2019-10-22T18:02:01.576",
             "StreamLabel": "2019-10-22T18:02:01.576",
             "StreamStatus": "ENABLED",
             "StreamViewType": "NEW_AND_OLD_IMAGES",

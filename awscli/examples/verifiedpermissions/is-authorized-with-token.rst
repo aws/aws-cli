@@ -11,7 +11,7 @@ The following ``is-authorized-with-token`` example requests an authorization dec
 The policy store contains a policy with the following statement that accepts identities from the specified Cognito user pool and application Id. ::
 
     permit(
-        principal == CognitoUser::"us-east-1_1a2b3c4d5|a1b2c3d4e5f6g7h8i9j0kalbmc",
+        principal == CognitoUser::"us-west-2_1a2b3c4d5|a1b2c3d4e5f6g7h8i9j0kalbmc",
         action,
         resource == Photo::"VacationPhoto94.jpg"
     );
@@ -22,7 +22,7 @@ Output::
         "decision":"Allow",
         "determiningPolicies":[
             {
-            "determiningPolicyId":"SPEXAMPLEabcdefg111111"
+                "policyId":"SPEXAMPLEabcdefg111111"
             }
         ],
         "errors":[]

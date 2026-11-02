@@ -4,7 +4,7 @@ The following ``set-repository-policy`` example applies an ECR public repository
 
     aws ecr-public set-repository-policy \
         --repository-name project-a/nginx-web-app \
-        --policy-text file://my-repository-policy.json 
+        --policy-text file://my-repository-policy.json
 
 Contents of ``my-repository-policy.json``::
 
@@ -40,7 +40,7 @@ The following ``set-repository-policy`` example allows an IAM user within your a
 
     aws ecr-public set-repository-policy \
         --repository-name project-a/nginx-web-app \
-        --policy-text file://my-repository-policy.json 
+        --policy-text file://my-repository-policy.json
 
 Contents of ``my-repository-policy.json``::
 
@@ -105,7 +105,7 @@ Contents of ``my-repository-policy.json``::
                 ]
             }
         ]
-   }
+    }
 
 Output::
 

@@ -1,6 +1,6 @@
 **To list customer recommendation feedback for a recommendation on an associated repository**
 
-The following ``list-recommendation-feedback`` Lists customer feedback on all recommendations on a code review. This code review has one piece of feedback, a "ThumbsUp", from a customer. ::
+The following ``list-recommendation-feedback`` example lists customer feedback on all recommendations on a code review. This code review has one piece of feedback, a "ThumbsUp", from a customer. ::
 
     aws codeguru-reviewer list-recommendation-feedback \
         --code-review-arn arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:code-review:RepositoryAnalysis-my-repository-name-branch-abcdefgh12345678

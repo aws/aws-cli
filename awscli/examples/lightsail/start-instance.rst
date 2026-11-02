@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "f88d2a93-7cea-4165-afce-2d688cb18f23",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "WordPress-1",
                 "resourceType": "Instance",
                 "createdAt": 1571695583.463,
@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Start, stop, or reboot your Lightsail instance <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-start-stop-or-restart-your-instance-virtual-private-server.html>`__ in the *Amazon Lightsail User Guide*.

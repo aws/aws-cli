@@ -8,3 +8,5 @@ The following ``update-service-settings`` example enables cross-account resource
         --s3-bucket-arn arn:aws:s3:::aws-license-manager-service-abcd1234EXAMPLE
 
 This command produces no output.
+
+For more information, see `Settings in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/settings.html>`__ in the *AWS License Manager User Guide*.

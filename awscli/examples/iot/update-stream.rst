@@ -15,7 +15,7 @@ Contents of ``update-stream.json``::
                 "fileId": 123,
                 "s3Location": {
                     "bucket":"codesign-ota-bucket",
-                    "key":"48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"
+                    "key":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 }
             }
         ]
@@ -31,4 +31,4 @@ Output::
         "streamVersion": 2
     }
 
-For more information, see `UpdateStream <https://docs.aws.amazon.com/iot/latest/apireference/API_UpdateStream.html>`__ in the *AWS IoT API Reference*.
+For more information, see `MQTT-based file delivery <https://docs.aws.amazon.com/iot/latest/developerguide/mqtt-based-file-delivery.html>`__ in the *AWS IoT Core Developer Guide*.

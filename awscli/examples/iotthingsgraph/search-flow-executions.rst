@@ -8,16 +8,14 @@ The following ``search-flow-executions`` example search for all executions of a 
 Output::
 
     {
-       "summaries": [ 
-          { 
-             "createdAt": 1559247540.656,
-             "flowExecutionId": "f6294f1e-b109-4bbe-9073-f451a2dda2da",
-             "flowTemplateId": "urn:tdm:us-west-2/123456789012/default:Workflow:MyFlow",
-             "status": "RUNNING ",
-             "systemInstanceId": "urn:tdm:us-west-2/123456789012/default:System:MySystem",
-             "updatedAt": 1559247540.656
-          }
-       ]
+        "summaries": [
+            {
+                "createdAt": 1559247540.656,
+                "flowExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "flowTemplateId": "urn:tdm:us-west-2/123456789012/default:Workflow:MyFlow",
+                "status": "RUNNING ",
+                "systemInstanceId": "urn:tdm:us-west-2/123456789012/default:System:MySystem",
+                "updatedAt": 1559247540.656
+            }
+        ]
     }
-
-For more information, see `Working with Systems and Flow Configurations <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-sysdeploy.html>`__ in the *AWS IoT Things Graph User Guide*.

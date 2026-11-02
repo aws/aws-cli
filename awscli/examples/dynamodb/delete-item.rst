@@ -51,7 +51,7 @@ For more information, see `Writing an Item <https://docs.aws.amazon.com/amazondy
 
 **Example 2: To delete an item conditionally**
 
-The following example deletes an item from the ``ProductCatalog`` table only if its ``ProductCategory`` is either ``Sporting Goods`` or ``Gardening Supplies`` and its price is between 500 and 600. It returns details about the item that was deleted. ::
+The following ``delete-item`` example deletes an item from the ``ProductCatalog`` table only if its ``ProductCategory`` is either ``Sporting Goods`` or ``Gardening Supplies`` and its price is between 500 and 600. It returns details about the item that was deleted. ::
 
     aws dynamodb delete-item \
         --table-name ProductCatalog \

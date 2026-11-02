@@ -1,4 +1,4 @@
-**Example1: To view attributes for a list of fleets**
+**Example 1: To view attributes for a list of fleets**
 
 The following ``describe-fleet-attributes`` example retrieves fleet attributes for two specified fleets. As shown, the requested fleets are deployed with the same build, one for On-Demand instances and one for Spot instances, with some minor configuration differences. ::
 
@@ -45,7 +45,7 @@ Output::
                 "ServerLaunchPath": "C:\\game\\MegaFrogRace_Server.exe",
                 "NewGameSessionProtectionPolicy": "NoProtection",
                 "OperatingSystem": "WINDOWS_2012",
-                    "MetricGroups": [
+                "MetricGroups": [
                     "default"
                 ],
                 "CertificateConfiguration": {
@@ -55,12 +55,12 @@ Output::
         ]
     }
 
-**Example2: To request attributes for all fleets**
+**Example 2: To request attributes for all fleets**
 
-The following ``describe-fleet-attributes`` returns fleet attributes for all fleets with any status. This example illustrates the use of pagination parameters to return one fleet at a time. ::
+The following ``describe-fleet-attributes`` example returns fleet attributes for all fleets with any status. This example illustrates the use of pagination parameters to return one fleet at a time. ::
 
     aws gamelift describe-fleet-attributes \
-        --limit 1 
+        --limit 1
 
 Output::
 
@@ -92,7 +92,7 @@ Output::
     }
 
 The output includes a ``NextToken`` value that you can use when you call the command a second time. Pass the value to the ``--next-token`` parameter to specify where to pick up the output. The following command returns the second result in the output. ::
- 
+
     aws gamelift describe-fleet-attributes \
         --limit 1 \
         --next-token eyJhd3NBY2NvdW50SWQiOnsicyI6IjMwMjc3NjAxNjM5OCJ9LCJidWlsZElkIjp7InMiOiJidWlsZC01NWYxZTZmMS1jY2FlLTQ3YTctOWI5ZS1iYjFkYTQwMjEXAMPLE1

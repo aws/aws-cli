@@ -5,12 +5,14 @@ The following ``describe-export-image-tasks`` example checks the status of the s
     aws ec2 describe-export-image-tasks \
         --export-image-task-ids export-ami-1234567890abcdef0
 
-Output for an export image task that is in progress. ::
+The following example output is for an export image task that is in progress.
+
+Output::
 
     {
         "ExportImageTasks": [
             {
-                "ExportImageTaskId": "export-ami-1234567890abcdef0"
+                "ExportImageTaskId": "export-ami-1234567890abcdef0",
                 "Progress": "21",
                 "S3ExportLocation": {
                     "S3Bucket": "my-export-bucket",
@@ -22,12 +24,14 @@ Output for an export image task that is in progress. ::
         ]
     }
 
-Output for an export image task that is completed. ::
+The following example output is for an export image task that is completed.
+
+Output::
 
     {
         "ExportImageTasks": [
             {
-                "ExportImageTaskId": "export-ami-1234567890abcdef0"
+                "ExportImageTaskId": "export-ami-1234567890abcdef0",
                 "S3ExportLocation": {
                     "S3Bucket": "my-export-bucket",
                     "S3Prefix": "exports/"

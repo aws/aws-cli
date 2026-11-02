@@ -9,5 +9,7 @@ The following ``update-connectivity-info`` example changes the endpoints that de
 Output::
 
     {
-        "Version": "312de337-59af-4cf9-a278-2a23bd39c300"
+        "Version": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
+
+For more information, see `Configure the MQTT port for local messaging <https://docs.aws.amazon.com/greengrass/v1/developerguide/gg-core.html#config-local-mqtt-port>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

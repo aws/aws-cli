@@ -11,7 +11,7 @@ Output::
     {
         "operations": [
             {
-                "id": "50bec274-e45e-4caa-8a69-b763ef636583",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "MyFirstCertificate",
                 "resourceType": "LoadBalancerTlsCertificate",
                 "createdAt": 1569874989.48,
@@ -25,7 +25,7 @@ Output::
                 "statusChangedAt": 1569874989.48
             },
             {
-                "id": "78c58cdc-a59a-4b27-8213-500638634a8f",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "MyFirstLoadBalancer",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1569874989.48,
@@ -40,3 +40,5 @@ Output::
             }
         ]
     }
+
+For more information, see `SSL/TLS certificates in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-tls-ssl-certificates-in-lightsail-https.html>`__ in the *Amazon Lightsail User Guide*.

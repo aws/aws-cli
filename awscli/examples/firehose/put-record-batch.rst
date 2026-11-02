@@ -6,7 +6,7 @@ The following ``put-record-batch`` example writes three records to a stream. The
         --delivery-stream-name my-stream \
         --records file://records.json
 
-Contents of ``myfile.json``::
+Contents of ``records.json``::
 
     [
         {"Data": "Rmlyc3QgdGhpbmc="},

@@ -16,7 +16,7 @@ Output::
                 "CodeSha256": "dBG9m8SGdmlEjw/JYXlhhvCrAv5TxvXsbL/RMr0fT/I=",
                 "FunctionName": "helloworld",
                 "MemorySize": 128,
-                "RevisionId": "1718e831-badf-4253-9518-d0644210af7b",
+                "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "CodeSize": 294,
                 "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:helloworld",
                 "Handler": "helloworld.handler",
@@ -39,7 +39,7 @@ Output::
                     "SecurityGroupIds": []
                 },
                 "MemorySize": 256,
-                "RevisionId": "93017fc9-59cb-41dc-901b-4845ce4bf668",
+                "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "CodeSize": 266,
                 "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function",
                 "Handler": "index.handler",
@@ -72,7 +72,7 @@ Output::
                     "SecurityGroupIds": []
                 },
                 "MemorySize": 128,
-                "RevisionId": "80b4eabc-acf7-4ea8-919a-e874c213707d",
+                "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "CodeSize": 299,
                 "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-python-function",
                 "Handler": "lambda_function.lambda_handler",

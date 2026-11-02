@@ -20,8 +20,8 @@ Output::
                     "CIDRIP": "192.0.2.0/24"
                 }
             ],
-            "DBSecurityGroupArn": "arn:aws:rds:us-east-1:111122223333:secgrp:default"
+            "DBSecurityGroupArn": "arn:aws:rds:us-west-2:123456789012:secgrp:default"
         }
     }
 
-For more information, see `Authorizing Network Access to a DB Security Group from an IP Range <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithSecurityGroups.html#USER_WorkingWithSecurityGroups.Authorizing>`__ in the *Amazon RDS User Guide*.
+For more information, see `Authorizing Network Access to a DB Security Group from an IP Range <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.RDSSecurityGroups.html>`__ in the *Amazon RDS User Guide*.

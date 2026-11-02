@@ -4,7 +4,7 @@ The following ``associate-client-vpn-target-network`` example associates a subne
 
     aws ec2 associate-client-vpn-target-network \
         --subnet-id subnet-0123456789abcabca \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde
+        --client-vpn-endpoint-id cvpn-endpoint-123456789012abcde
 
 Output::
 

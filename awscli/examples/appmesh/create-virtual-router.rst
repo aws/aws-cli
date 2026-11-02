@@ -28,10 +28,10 @@ Output::
         "virtualRouter": {
             "meshName": "app1",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualRouter/vrServiceB",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualRouter/vrServiceB",
                 "createdAt": 1563810546.59,
                 "lastUpdatedAt": 1563810546.59,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "spec": {

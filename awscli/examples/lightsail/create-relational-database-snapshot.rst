@@ -11,7 +11,7 @@ Output::
     {
         "operations": [
             {
-                "id": "853667fb-ea91-4c02-8d20-8fc5fd43b9eb",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "RelationalDatabaseSnapshot1",
                 "resourceType": "RelationalDatabaseSnapshot",
                 "createdAt": 1569868074.645,
@@ -26,7 +26,7 @@ Output::
                 "statusChangedAt": 1569868074.645
             },
             {
-                "id": "fbafa521-3cac-4be8-9773-1c143780b239",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "Database1",
                 "resourceType": "RelationalDatabase",
                 "createdAt": 1569868074.645,
@@ -42,3 +42,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Back up your Lightsail database with snapshots <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-a-database-snapshot.html>`__ in the *Amazon Lightsail User Guide*.

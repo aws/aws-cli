@@ -3,14 +3,15 @@
 The following ``list-contact-channels`` example lists the available contact channels of the specified contact. ::
 
     aws ssm-contacts list-contact-channels \
-        --contact-id "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam"
+        --contact-id "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam"
 
 Output::
 
     {
-        [
+        "ContactChannels": [
             {
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+                "ContactChannelArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact-channel/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
                 "Name": "akuas email",
                 "Type": "EMAIL",
                 "DeliveryAddress": {
@@ -19,8 +20,8 @@ Output::
                 "ActivationStatus": "NOT_ACTIVATED"
             },
             {
-                "ContactChannelArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact-channel/akuam/fc7405c4-46b2-48b7-87b2-93e2f225b90d",
-                "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+                "ContactChannelArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact-channel/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
                 "Name": "akuas sms",
                 "Type": "SMS",
                 "DeliveryAddress": {

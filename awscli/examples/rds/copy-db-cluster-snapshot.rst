@@ -3,7 +3,7 @@
 The following ``copy-db-cluster-snapshot`` example creates a copy of a DB cluster snapshot, including its tags. :: 
 
     aws rds copy-db-cluster-snapshot \
-        --source-db-cluster-snapshot-identifier arn:aws:rds:us-east-1:123456789012:cluster-snapshot:rds:myaurora-2019-06-04-09-16 
+        --source-db-cluster-snapshot-identifier arn:aws:rds:us-west-2:123456789012:cluster-snapshot:rds:myaurora-2019-06-04-09-16 \
         --target-db-cluster-snapshot-identifier myclustersnapshotcopy \
         --copy-tags
 
@@ -12,9 +12,9 @@ Output::
     {
         "DBClusterSnapshot": {
             "AvailabilityZones": [
-                "us-east-1a",
-                "us-east-1b",
-                "us-east-1e"
+                "us-west-2a",
+                "us-west-2b",
+                "us-west-2c"
             ],
             "DBClusterSnapshotIdentifier": "myclustersnapshotcopy",
             "DBClusterIdentifier": "myaurora",
@@ -31,8 +31,8 @@ Output::
             "SnapshotType": "manual",
             "PercentProgress": 100,
             "StorageEncrypted": true,
-            "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/AKIAIOSFODNN7EXAMPLE",
-            "DBClusterSnapshotArn": "arn:aws:rds:us-east-1:123456789012:cluster-snapshot:myclustersnapshotcopy",
+            "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/AKIAIOSFODNN7EXAMPLE",
+            "DBClusterSnapshotArn": "arn:aws:rds:us-west-2:123456789012:cluster-snapshot:myclustersnapshotcopy",
             "IAMDatabaseAuthenticationEnabled": false
         }
     }

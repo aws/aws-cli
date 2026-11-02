@@ -8,7 +8,7 @@ The following ``describe-packaging-group`` example displays all of the details o
 Output::
 
     { 
-        "Arn": "arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-groups/Packaging_group_1", 
+        "Arn": "arn:aws:mediapackage-vod:us-west-2:123456789012:packaging-groups/Packaging_group_1", 
         "Id": "Packaging_group_1" 
     }
 

@@ -40,7 +40,7 @@ Output::
     }
 
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS capacity providers for EC2 workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/asg-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 2: To describe a specific capacity providers**
 
@@ -78,4 +78,4 @@ Output::
         ]
     }
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS capacity providers for EC2 workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/asg-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.

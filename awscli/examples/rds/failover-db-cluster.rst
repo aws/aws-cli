@@ -12,23 +12,22 @@ Output::
         "DBCluster": {
             "AllocatedStorage": 1,
             "AvailabilityZones": [
-                "us-east-1d",
-                "us-east-1c",
-                "us-east-1a"
+                "us-west-2d",
+                "us-west-2c",
+                "us-west-2a"
             ],
             "BackupRetentionPeriod": 7,
             "DBClusterIdentifier": "test-aurora-cluster-failover",
             "DBClusterParameterGroup": "default.aurora-postgresql17",
             "DBSubnetGroup": "default",
             "Status": "available",
-            "Endpoint": "test-aurora-cluster-failover.cluster-cnpexample.us-east-1.rds.amazonaws.com",
-            "ReaderEndpoint": "test-aurora-cluster-failover.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "Endpoint": "test-aurora-cluster-failover.cluster-cnpexample.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "test-aurora-cluster-failover.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
             "MultiAZ": true,
             "Engine": "aurora-postgresql",
             "EngineVersion": "17.7",
             "Port": 5432,
-            "MasterUsername": "postgres",
-            ...some output truncated...
+            "MasterUsername": "postgres"
         }
     }
 

@@ -1,6 +1,6 @@
 **To add a tag to an MFA device**
 
-The following ``tag-mfa-device`` command adds a tag with a Department name to the specified MFA device. ::
+The following ``tag-mfa-device`` example adds a tag with a Department name to the specified MFA device. ::
 
     aws iam tag-mfa-device \
         --serial-number arn:aws:iam::123456789012:mfa/alice \

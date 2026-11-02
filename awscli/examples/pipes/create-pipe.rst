@@ -6,13 +6,13 @@ The following ``create-pipe`` example creates a Pipe named ``Demo_Pipe`` with SQ
         --name Demo_Pipe \
         --desired-state RUNNING \
         --role-arn arn:aws:iam::123456789012:role/service-role/Amazon_EventBridge_Pipe_Demo_Pipe_28b3aa4f \
-        --source arn:aws:sqs:us-east-1:123456789012:Demo_Queue \
-        --target arn:aws:logs:us-east-1:123456789012:log-group:/aws/pipes/Demo_LogGroup
+        --source arn:aws:sqs:us-west-2:123456789012:Demo_Queue \
+        --target arn:aws:logs:us-west-2:123456789012:log-group:/aws/pipes/Demo_LogGroup
 
 Output::
 
     {
-        "Arn": "arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe",
+        "Arn": "arn:aws:pipes:us-west-2:123456789012:pipe/Demo_Pipe",
         "Name": "Demo_Pipe",
         "DesiredState": "RUNNING",
         "CurrentState": "CREATING",

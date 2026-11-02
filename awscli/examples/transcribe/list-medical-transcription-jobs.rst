@@ -68,4 +68,4 @@ Output::
         ]
     }
 
-For more information, see `https://docs.aws.amazon.com/transcribe/latest/dg/batch-med-transcription.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Amazon Transcribe Medical <https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-medical.html>`__ in the *Amazon Transcribe Developer Guide*.

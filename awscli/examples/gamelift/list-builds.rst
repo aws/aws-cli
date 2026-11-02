@@ -1,4 +1,4 @@
-**Example1: To get a list of custom game builds**
+**Example 1: To get a list of custom game builds**
 
 The following ``list-builds`` example retrieves properties for all game server builds in the current Region. The sample request illustrates how to use the pagination parameters, ``Limit`` and ``NextToken``, to retrieve the results in sequential sets. The first command retrieves the first two builds. Because there are more than two available, the response includes a ``NextToken`` to indicate that more results are available. ::
 
@@ -36,12 +36,14 @@ Output::
 You can then call the command again with the ``--next-token`` parameter as follows to see the next two builds. ::
 
     aws gamelift list-builds \
-        --limit 2
+        --limit 2 \
         --next-token eyJhd3NBY2NvdW50SWQiOnsicyI6IjMwMjc3NjAxNjM5OCJ9LCJidWlsZElkIjp7InMiOiJidWlsZC01NWYxZTZmMS1jY2FlLTQ3YTctOWI5ZS1iYjFkYTQwMjJEXAMPLE=
 
 Repeat until the response doesn't include a ``NextToken`` value.
 
-**Example2: To get a list of custom game builds in failure status**
+For more information, see `Create a game server build for Amazon GameLift Servers <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-build-cli-uploading.html>`__ in the *Amazon GameLift Servers Developer Guide*.
+
+**Example 2: To get a list of custom game builds in failure status**
 
 The following ``list-builds`` example retrieves properties for all game server builds in the current region that currently have status FAILED. ::
 
@@ -65,3 +67,4 @@ Output::
         ]
     }
 
+For more information, see `Create a game server build for Amazon GameLift Servers <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-build-cli-uploading.html>`__ in the *Amazon GameLift Servers Developer Guide*.

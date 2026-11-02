@@ -14,7 +14,7 @@ Output::
                 "DBSecurityGroupDescription": "default",
                 "EC2SecurityGroups": [],
                 "IPRanges": [],
-                "DBSecurityGroupArn": "arn:aws:rds:us-west-1:111122223333:secgrp:default"
+                "DBSecurityGroupArn": "arn:aws:rds:us-west-2:123456789012:secgrp:default"
             },
             {
                 "OwnerId": "123456789012",
@@ -23,9 +23,9 @@ Output::
                 "VpcId": "vpc-1234567f",
                 "EC2SecurityGroups": [],
                 "IPRanges": [],
-                "DBSecurityGroupArn": "arn:aws:rds:us-west-1:111122223333:secgrp:mysecgroup"
+                "DBSecurityGroupArn": "arn:aws:rds:us-west-2:123456789012:secgrp:mysecgroup"
             }
         ]
     }
 
-For more information, see `Listing Available DB Security Groups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithSecurityGroups.html#USER_WorkingWithSecurityGroups.Listing>`__ in the *Amazon RDS User Guide*.
+For more information, see `Listing Available DB Security Groups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.RDSSecurityGroups.html>`__ in the *Amazon RDS User Guide*.

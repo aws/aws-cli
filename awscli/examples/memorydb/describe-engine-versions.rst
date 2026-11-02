@@ -1,6 +1,6 @@
 **To return a list of engine versions**
 
-The following `describe-engine-versions`` returns a list of engine versions. ::
+The following ``describe-engine-versions`` example returns a list of engine versions. ::
 
     aws memorydb describe-engine-versions
 
@@ -16,4 +16,4 @@ Output::
         ]
     }
 
-For more information, see `Engine versions and upgrading <https://docs.aws.amazon.com/memorydb/latest/devguide/engine-versions.htmll>`__ in the *MemoryDB User Guide*.
+For more information, see `Engine versions <https://docs.aws.amazon.com/memorydb/latest/devguide/engine-versions.html>`__ in the *MemoryDB User Guide*.

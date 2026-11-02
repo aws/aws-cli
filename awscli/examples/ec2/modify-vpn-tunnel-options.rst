@@ -81,3 +81,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Modify AWS Site-to-Site VPN tunnel options <https://docs.aws.amazon.com/vpn/latest/s2svpn/modify-vpn-tunnel-options.html>`__ in the *AWS Site-to-Site VPN User Guide*.

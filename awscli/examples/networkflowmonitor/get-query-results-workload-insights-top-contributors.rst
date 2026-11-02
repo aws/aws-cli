@@ -3,8 +3,8 @@
 The following ``get-query-results-workload-insights-top-contributors`` example returns the data for the specified query. ::
 
     aws networkflowmonitor get-query-results-workload-insights-top-contributors \
-        --scope-id e21cda79-30a0-4c12-9299-d8629d76d8cf \
-        --query-id 1fc423d3-b144-37a6-80e6-e2c7d26eea0c
+        --scope-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --query-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
@@ -15,11 +15,11 @@ Output::
                 "localSubnetId": "subnet-0a5b30fb95dca2c14",
                 "localAz": "use1-az6",
                 "localVpcId": "vpc-03ea55eeda25adbb0",
-                "localRegion": "us-east-1",
+                "localRegion": "us-west-2",
                 "remoteIdentifier": "",
                 "value": 908443,
-                "localSubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0a5b30fb95dca2c14",
-                "localVpcArn": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-03ea55eeda25adbb0"
+                "localSubnetArn": "arn:aws:ec2:us-west-2:123456789012:subnet/subnet-0a5b30fb95dca2c14",
+                "localVpcArn": "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-03ea55eeda25adbb0"
             }
         ]
     }

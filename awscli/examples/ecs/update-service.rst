@@ -84,7 +84,7 @@ Output::
                                 "subnet-12344321"
                             ],
                             "securityGroups": [
-                                 "sg-12344321"
+                                "sg-12344321"
                             ],
                             "assignPublicIp": "ENABLED"
                         }
@@ -96,17 +96,17 @@ Output::
             "roleArn": "arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
             "events": [
                 {
-                    "id": "e40b4d1c-80d9-4834-aaf3-6a268e530e17",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "createdAt": "2025-02-21T10:31:26.037000-06:00",
                     "message": "(my-http-service) has reached a steady state."
                 },
                 {
-                    "id": "6ac069ad-fc8b-4e49-a35d-b5574a964c8e",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                     "createdAt": "2025-02-21T04:31:22.703000-06:00",
                     "message": "(my-http-service) has reached a steady state."
                 },
                 {
-                    "id": "265f7d37-dfd1-4880-a846-ec486f341919",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "createdAt": "2025-02-20T22:31:22.514000-06:00",
                     "message": "(my-http-service) has reached a steady state."
                 }
@@ -117,7 +117,7 @@ Output::
             "networkConfiguration": {
                 "awsvpcConfiguration": {
                     "subnets": [
-                        "subnet-12344321",
+                        "subnet-12344321"
                     ],
                     "securityGroups": [
                         "sg-12344321"
@@ -153,9 +153,9 @@ Output::
 
     {
         "service": {
-            "serviceArn": "arn:aws:ecs:us-east-1:123456789012:service/MyCluster/my-http-service",
+            "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/MyCluster/my-http-service",
             "serviceName": "my-http-service",
-            "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/MyCluster",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
             "loadBalancers": [],
             "serviceRegistries": [],
             "status": "ACTIVE",
@@ -171,7 +171,7 @@ Output::
             ],
             "platformVersion": "LATEST",
             "platformFamily": "Linux",
-            "taskDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/MyTaskDefinition",
+            "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/MyTaskDefinition",
             "deploymentConfiguration": {
                 "deploymentCircuitBreaker": {
                     "enable": true,
@@ -189,7 +189,7 @@ Output::
                 {
                     "id": "ecs-svc/1976744184940610707",
                     "status": "PRIMARY",
-                    "taskkDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/MyTaskDefinition",
+                    "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/MyTaskDefinition",
                     "desiredCount": 1,
                     "pendingCount": 0,
                     "runningCount": 1,
@@ -224,17 +224,17 @@ Output::
             "roleArn": "arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
             "events": [
                 {
-                    "id": "f27350b9-4b2a-4e2e-b72e-a4b68380de45",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "createdAt": "2024-12-30T13:24:07.345000-05:00",
                     "message": "(service my-http-service) has reached a steady state."
                 },
                 {
-                    "id": "e764ec63-f53f-45e3-9af2-d99f922d2957",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                     "createdAt": "2024-12-30T12:32:21.600000-05:00",
                     "message": "(service my-http-service) has reached a steady state."
-                },          
+                },
                 {
-                    "id": "28444756-c2fa-47f8-bd60-93a8e05f3991",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "createdAt": "2024-12-08T19:26:10.367000-05:00",
                     "message": "(service my-http-service) has reached a steady state."
                 }
@@ -279,26 +279,26 @@ The following ``update-service`` example updates the service ``my-http-service``
 Contents of ``ebs.json``::
 
     {
-       "cluster": "mycluster",
-       "taskDefinition": "mytaskdef",
-       "service": "my-http-service",
-       "desiredCount": 2,
-       "volumeConfigurations": [
+        "cluster": "mycluster",
+        "taskDefinition": "mytaskdef",
+        "service": "my-http-service",
+        "desiredCount": 2,
+        "volumeConfigurations": [
             {
                 "name": "myEbsVolume",
                 "managedEBSVolume": {
                     "roleArn":"arn:aws:iam::123456789012:role/ecsInfrastructureRole",
                     "volumeType": "gp3",
                     "sizeInGiB": 100,
-                    "iops": 3000, 
-                    "throughput": 125, 
+                    "iops": 3000,
+                    "throughput": 125,
                     "filesystemType": "ext4"
                 }
             }
-       ]
+        ]
     }
 
-Output:: 
+Output::
 
     {
         "service": {
@@ -345,7 +345,7 @@ Output::
                     "networkConfiguration": {
                         "awsvpcConfiguration": {
                             "subnets": [
-                                "subnet-12344321",
+                                "subnet-12344321"
                             ],
                             "securityGroups": [
                                 "sg-12344321"
@@ -366,7 +366,7 @@ Output::
                                 "roleArn": "arn:aws:iam::123456789012:role/ecsInfrastructureRole",
                                 "filesystemType": "ext4"
                             }
-                        }  
+                        }
                     ]
                 },
                 {
@@ -400,20 +400,20 @@ Output::
             "roleArn": "arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
             "events": [
                 {
-                    "id": "b5823113-c2c5-458e-9649-8c2ed38f23a5",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE77777",
                     "createdAt": "2025-02-21T14:57:22.508000-06:00",
                     "message": "(service my-http-service) has reached a steady state."
                 },
                 {
-                    "id": "b05a48e8-da35-4074-80aa-37ceb3167357",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE88888",
                     "createdAt": "2025-02-21T14:57:22.507000-06:00",
                     "message": "(service my-http-service) (deployment ecs-svc/5191625155316533644) deployment completed."
                 },
                 {
-                    "id": "a10cd55d-4ba6-4cea-a655-5a5d32ada8a0",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE99999",
                     "createdAt": "2025-02-21T14:55:32.833000-06:00",
                     "message": "(service my-http-service) has started 1 tasks: (task fb9c8df512684aec92f3c57dc3f22361)."
-                },
+                }
             ],
             "createdAt": "2025-02-21T14:54:48.862000-06:00",
             "placementConstraints": [],
@@ -444,11 +444,11 @@ Output::
 
 
 For more information, see `Use Amazon EBS volumes with Amazon ECS <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html>`__ in the *Amazon ECS Developer Guide*.
-   
+
 **Example 4: To update a service to no longer use Amazon EBS volumes**
 
 The following ``update-service`` example updates the service ``my-http-service`` to no longer use Amazon EBS volumes. You must specify a task definition revision with ``configuredAtLaunch`` set to ``false``. ::
-    
+
     aws ecs update-service \
         --cluster mycluster \
         --task-definition mytaskdef \
@@ -497,7 +497,7 @@ Output::
                     "failedTasks": 0,
                     "createdAt": "2025-02-21T15:25:38.598000-06:00",
                     "updatedAt": "2025-02-21T15:25:38.598000-06:00",
-                        "launchType": "FARGATE",
+                    "launchType": "FARGATE",
                     "platformVersion": "1.4.0",
                     "platformFamily": "Linux",
                     "networkConfiguration": {
@@ -558,54 +558,49 @@ Output::
             "roleArn": "arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
             "events": [
                 {
-                    "id": "4f2c3ca1-7800-4048-ba57-bba210ada2ad",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "createdAt": "2025-02-21T15:10:59.959000-06:00",
                     "message": "(service my-http-service) has reached a steady state."
                 },
                 {
-                    "id": "4b36a593-2d40-4ed6-8be8-b9b699eb6198",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                     "createdAt": "2025-02-21T15:10:59.958000-06:00",
                     "message": "(service my-http-service) (deployment ecs-svc/2420458347226626275) deployment completed."
                 },
                 {
-                    "id": "88380089-14e2-4ef0-8dbb-a33991683371",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "createdAt": "2025-02-21T15:09:39.055000-06:00",
                     "message": "(service my-http-service) has stopped 1 running tasks: (task fb9c8df512684aec92f3c57dc3f22361)."
                 },
                 {
-                    "id": "97d84243-d52f-4255-89bb-9311391c61f6",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                     "createdAt": "2025-02-21T15:08:57.653000-06:00",
                     "message": "(service my-http-service) has stopped 1 running tasks: (task 33eff090ad2c40539daa837e6503a9bc)."
                 },
                 {
-                    "id": "672ece6c-e2d0-4021-b5da-eefb14001687",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                     "createdAt": "2025-02-21T15:08:15.631000-06:00",
                     "message": "(service my-http-service) has started 1 tasks: (task 996c02a66ff24f3190a4a8e0c841740f)."
                 },
                 {
-                    "id": "a3cf9bea-9be6-4175-ac28-4c68360986eb",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE66666",
                     "createdAt": "2025-02-21T15:07:36.931000-06:00",
                     "message": "(service my-http-service) has started 1 tasks: (task d5d23c39f89e46cf9a647b9cc6572feb)."
                 },
                 {
-                    "id": "b5823113-c2c5-458e-9649-8c2ed38f23a5",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE77777",
                     "createdAt": "2025-02-21T14:57:22.508000-06:00",
                     "message": "(service my-http-service) has reached a steady state."
                 },
                 {
-                    "id": "b05a48e8-da35-4074-80aa-37ceb3167357",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE88888",
                     "createdAt": "2025-02-21T14:57:22.507000-06:00",
                     "message": "(service my-http-service) (deployment ecs-svc/5191625155316533644) deployment completed."
                 },
                 {
-                    "id": "a10cd55d-4ba6-4cea-a655-5a5d32ada8a0",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE99999",
                     "createdAt": "2025-02-21T14:55:32.833000-06:00",
                     "message": "(service my-http-service) has started 1 tasks: (task fb9c8df512684aec92f3c57dc3f22361)."
-                },
-                {
-                    "id": "42da91fa-e26d-42ef-88c3-bb5965c56b2f",
-                    "createdAt": "2025-02-21T14:55:02.703000-06:00",
-                    "message": "(service my-http-service) has started 1 tasks: (task 33eff090ad2c40539daa837e6503a9bc)."
                 }
             ],
             "createdAt": "2025-02-21T14:54:48.862000-06:00",
@@ -650,9 +645,9 @@ Output::
 
     {
         "service": {
-            "serviceArn": "arn:aws:ecs:us-east-1:123456789012:service/MyCluster/my-http-service",
+            "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/MyCluster/my-http-service",
             "serviceName": "my-http-service",
-            "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/MyCluster",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
             "loadBalancers": [],
             "serviceRegistries": [],
             "status": "ACTIVE",
@@ -668,7 +663,7 @@ Output::
             ],
             "platformVersion": "LATEST",
             "platformFamily": "Linux",
-            "taskDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/MyTaskDefinition",
+            "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/MyTaskDefinition",
             "deploymentConfiguration": {
                 "deploymentCircuitBreaker": {
                     "enable": true,
@@ -686,7 +681,7 @@ Output::
                 {
                     "id": "ecs-svc/1976744184940610707",
                     "status": "PRIMARY",
-                    "taskkDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/MyTaskDefinition",
+                    "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/MyTaskDefinition",
                     "desiredCount": 1,
                     "pendingCount": 0,
                     "runningCount": 1,

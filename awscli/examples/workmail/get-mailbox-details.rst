@@ -1,6 +1,6 @@
 **To get a user's mailbox details**
 
-The following ``get-mailbox-details`` command retrieves details about the specified user's mailbox. ::
+The following ``get-mailbox-details`` example retrieves details about the specified user's mailbox. ::
 
     aws workmail get-mailbox-details \
         --organization-id m-n1pq2345678r901st2u3vx45x6789yza \
@@ -13,4 +13,4 @@ Output::
         "MailboxSize": 0.03890800476074219
     }
 
-For more information, see `Managing User Accounts <https://docs.aws.amazon.com/workmail/latest/adminguide/manage-users.html>`__ in the *Amazon WorkMail Administrator Guide*.
+For more information, see `Working with users <https://docs.aws.amazon.com/workmail/latest/adminguide/users_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

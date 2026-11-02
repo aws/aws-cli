@@ -1,9 +1,9 @@
-**Example1: To create a game build from files in an S3 bucket**
+**Example 1: To create a game build from files in an S3 bucket**
 
 The following ``create-build`` example creates a custom game build resource. It uses zipped files that are stored in an S3 location in an AWS account that you control. This example assumes that you've already created an IAM role that gives Amazon GameLift permission to access the S3 location. Since the request does not specify an operating system, the new build resource defaults to WINDOWS_2012. ::
 
     aws gamelift create-build \
-        --storage-location file://storage-loc.json \ 
+        --storage-location file://storage-loc.json \
         --name MegaFrogRaceServer.NA \
         --build-version 12345.678
 
@@ -34,7 +34,7 @@ Output::
         }
     }
 
-**Example2: To create a game build resource for manually uploading files to GameLift**
+**Example 2: To create a game build resource for manually uploading files to GameLift**
 
 The following ``create-build`` example creates a new build resource. It also gets a storage location and temporary credentials that allow you to manually upload your game build to the GameLift location in Amazon S3. Once you've successfully uploaded your build, the GameLift service validates the build and updates the new build's status. ::
 

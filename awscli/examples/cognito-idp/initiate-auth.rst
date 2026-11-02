@@ -6,7 +6,9 @@ The following ``initiate-auth`` example signs in a user with the basic username-
         --auth-flow USER_PASSWORD_AUTH \
         --client-id 1example23456789 \
         --analytics-metadata AnalyticsEndpointId=d70b2ba36a8c4dc5a04a0451aEXAMPLE \
-        --auth-parameters USERNAME=testuser,PASSWORD=[Password] --user-context-data EncodedData=mycontextdata --client-metadata MyTestKey=MyTestValue
+        --auth-parameters USERNAME=testuser,PASSWORD=[Password] \
+        --user-context-data EncodedData=mycontextdata \
+        --client-metadata MyTestKey=MyTestValue
 
 Output::
 

@@ -4,12 +4,12 @@ The following ``deregister-task-from-maintenance-window`` example removes the sp
 
     aws ssm deregister-task-from-maintenance-window \
         --window-id "mw-ab12cd34ef56gh78" \
-        --window-task-id "1a2b3c4d-1a2b-1a2b-1a2b-1a2b3c4d5e6c"
+        --window-task-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
-        "WindowTaskId":"1a2b3c4d-1a2b-1a2b-1a2b-1a2b3c4d5e6c",
+        "WindowTaskId":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "WindowId":"mw-ab12cd34ef56gh78"
     }
 

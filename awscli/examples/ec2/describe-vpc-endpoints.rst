@@ -15,7 +15,7 @@ Output::
                 "SubnetIds": [],
                 "PrivateDnsEnabled": true,
                 "State": "available",
-                "ServiceName": "com.amazonaws.us-east-1.dynamodb",
+                "ServiceName": "com.amazonaws.us-west-2.dynamodb",
                 "RouteTableIds": [
                     "rtb-3d560345"
                 ],
@@ -39,7 +39,7 @@ Output::
                 ],
                 "PrivateDnsEnabled": false,
                 "State": "available",
-                "ServiceName": "com.amazonaws.us-east-1.elasticloadbalancing",
+                "ServiceName": "com.amazonaws.us-west-2.elasticloadbalancing",
                 "RouteTableIds": [],
                 "Groups": [
                     {
@@ -53,15 +53,15 @@ Output::
                 "DnsEntries": [
                     {
                         "HostedZoneId": "Z7HUB22UULQXV",
-                        "DnsName": "vpce-0f89a33420c1931d7-bluzidnv.elasticloadbalancing.us-east-1.vpce.amazonaws.com"
+                        "DnsName": "vpce-0f89a33420c1931d7-bluzidnv.elasticloadbalancing.us-west-2.vpce.amazonaws.com"
                     },
                     {
                         "HostedZoneId": "Z7HUB22UULQXV",
-                        "DnsName": "vpce-0f89a33420c1931d7-bluzidnv-us-east-1b.elasticloadbalancing.us-east-1.vpce.amazonaws.com"
+                        "DnsName": "vpce-0f89a33420c1931d7-bluzidnv-us-west-2b.elasticloadbalancing.us-west-2.vpce.amazonaws.com"
                     },
                     {
                         "HostedZoneId": "Z7HUB22UULQXV",
-                        "DnsName": "vpce-0f89a33420c1931d7-bluzidnv-us-east-1a.elasticloadbalancing.us-east-1.vpce.amazonaws.com"
+                        "DnsName": "vpce-0f89a33420c1931d7-bluzidnv-us-west-2a.elasticloadbalancing.us-west-2.vpce.amazonaws.com"
                     }
                 ],
                 "OwnerId": "123456789012"
@@ -69,8 +69,8 @@ Output::
             {
                 "VpcEndpointId": "vpce-aabbaabbaabbaabba",
                 "VpcEndpointType": "GatewayLoadBalancer",
-                "VpcId": "vpc-111122223333aabbc",
-                "ServiceName": "com.amazonaws.vpce.us-east-1.vpce-svc-123123a1c43abc123",
+                "VpcId": "vpc-1a2b3c4d5e6f7a8b9",
+                "ServiceName": "com.amazonaws.vpce.us-west-2.vpce-svc-123123a1c43abc123",
                 "State": "available",
                 "SubnetIds": [
                     "subnet-0011aabbcc2233445"

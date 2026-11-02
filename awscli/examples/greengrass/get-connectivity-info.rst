@@ -35,3 +35,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Activate automatic IP detection <https://docs.aws.amazon.com/greengrass/v1/developerguide/gg-core.html#ip-auto-detect>`__ in the *AWS IoT Greengrass Developer Guide*.

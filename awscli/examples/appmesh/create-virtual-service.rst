@@ -7,43 +7,43 @@ The following ``create-virtual-service`` example uses a JSON input file to creat
 
 Contents of ``create-virtual-service-virtual-node.json``::
 
-   {
-       "meshName": "app1",
-       "spec": {
-           "provider": {
-               "virtualNode": {
-                   "virtualNodeName": "vnServiceA"
-               }
-           }
-       },
-       "virtualServiceName": "serviceA.svc.cluster.local"
-   }
+    {
+        "meshName": "app1",
+        "spec": {
+            "provider": {
+                "virtualNode": {
+                    "virtualNodeName": "vnServiceA"
+                }
+            }
+        },
+        "virtualServiceName": "serviceA.svc.cluster.local"
+    }
 
 Output::
 
-   {
-       "virtualService": {
-           "meshName": "app1",
-           "metadata": {
-               "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualService/serviceA.svc.cluster.local",
-               "createdAt": 1563810859.474,
-               "lastUpdatedAt": 1563810967.179,
-               "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
-               "version": 2
-           },
-           "spec": {
-               "provider": {
-                   "virtualNode": {
-                       "virtualNodeName": "vnServiceA"
-                   }
-               }
-           },
-           "status": {
-               "status": "ACTIVE"
-           },
-           "virtualServiceName": "serviceA.svc.cluster.local"
-       }
-   }
+    {
+        "virtualService": {
+            "meshName": "app1",
+            "metadata": {
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualService/serviceA.svc.cluster.local",
+                "createdAt": 1563810859.474,
+                "lastUpdatedAt": 1563810967.179,
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "version": 2
+            },
+            "spec": {
+                "provider": {
+                    "virtualNode": {
+                        "virtualNodeName": "vnServiceA"
+                    }
+                }
+            },
+            "status": {
+                "status": "ACTIVE"
+            },
+            "virtualServiceName": "serviceA.svc.cluster.local"
+        }
+    }
 
 For more information, see `Virtual Node <https://docs.aws.amazon.com/app-mesh/latest/userguide/virtual_nodes.html>`__ in the *AWS App Mesh User Guide*.
 
@@ -74,10 +74,10 @@ Output::
         "virtualService": {
             "meshName": "app1",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualService/serviceB.svc.cluster.local",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualService/serviceB.svc.cluster.local",
                 "createdAt": 1563908363.999,
                 "lastUpdatedAt": 1563908363.999,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "spec": {

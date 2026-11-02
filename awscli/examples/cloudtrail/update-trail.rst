@@ -16,3 +16,5 @@ Output::
         "IsMultiRegionTrail": true, 
         "S3BucketName": "amzn-s3-demo-bucket"
     }
+
+For more information, see `Using the update-trail command to update a trail <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-create-and-update-a-trail-by-using-the-aws-cli-update-trail.html>`__ in the *AWS CloudTrail User Guide*.

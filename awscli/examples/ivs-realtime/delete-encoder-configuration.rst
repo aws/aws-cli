@@ -1,9 +1,9 @@
 **To delete a composition encoder configuration**
 
-The following ``delete-encoder-configuration`` deletes the composition encoder configuration specified by the given ARN (Amazon Resource Name). ::
+The following ``delete-encoder-configuration`` example deletes the composition encoder configuration specified by the given ARN (Amazon Resource Name). ::
 
     aws ivs-realtime delete-encoder-configuration \
-        --arn "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
+        --arn "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef"
 
 This command produces no output.
 

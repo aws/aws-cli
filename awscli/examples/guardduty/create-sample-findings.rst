@@ -1,6 +1,6 @@
 **To create sample GuardDuty findings in the current region.**
 
-This example shows how to create a sample finding of the provided types. ::
+The following ``create-sample-findings`` example creates a sample finding of the provided types. ::
 
     aws guardduty create-sample-findings \
         --detector-id b6b992d6d2f48e64bc59180bfexample \

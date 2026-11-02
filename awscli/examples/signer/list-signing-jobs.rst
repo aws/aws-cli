@@ -1,10 +1,10 @@
 **To list all signing jobs**
 
-The following ``list-signing-jobs`` example displays details about all signing jobs for the account. ::
+The following ``list-signing-jobs`` example displays details about all signing jobs for the account. In this example, two jobs are returned, one successful, and one failed. ::
 
     aws signer list-signing-jobs
 
-In this example, two jobs are returned, one successful, and one failed. ::
+Output::
 
     {
         "jobs": [
@@ -46,3 +46,5 @@ In this example, two jobs are returned, one successful, and one failed. ::
             }
         ]
     }
+
+For more information, see `Create a signing job for IoT in AWS Signer <https://docs.aws.amazon.com/signer/latest/developerguide/signing-jobs-iot.html>`__ in the *AWS Signer Developer Guide*.

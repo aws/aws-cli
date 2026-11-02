@@ -3,7 +3,7 @@
 The following ``describe-client-vpn-target-networks`` example displays details about the target networks for the specified Client VPN endpoint. ::
 
     aws ec2 describe-client-vpn-target-networks \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde
+        --client-vpn-endpoint-id cvpn-endpoint-123456789abcabcde
 
 Output::
 
@@ -13,12 +13,12 @@ Output::
                 "AssociationId": "cvpn-assoc-012e837060753dc3d",
                 "VpcId": "vpc-11111222222333333",
                 "TargetNetworkId": "subnet-0123456789abcabca",
-                "ClientVpnEndpointId": "cvpn-endpoint-123456789123abcde",
+                "ClientVpnEndpointId": "cvpn-endpoint-123456789abcabcde",
                 "Status": {
                     "Code": "associating"
                 },
                 "SecurityGroups": [
-                    "sg-012345678910abcab"
+                    "sg-0123456789aabcabc"
                 ]
             }
         ]

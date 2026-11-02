@@ -7,7 +7,6 @@ The following ``delete-hosted-configuration-version`` example deletes a configur
         --configuration-profile-id ur8hx2f \
         --version-number 1
 
-Output::
 This command produces no output.
 
 For more information, see `Step 3: Creating a configuration and a configuration profile <https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile.html>`__ in the *AWS AppConfig User Guide*.

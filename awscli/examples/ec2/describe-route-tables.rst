@@ -1,6 +1,6 @@
 **To describe your route tables**
 
-The following ``describe-route-tables`` example retrieves the details about your route tables ::
+The following ``describe-route-tables`` example retrieves the details about your route tables. ::
 
     aws ec2 describe-route-tables
 
@@ -34,7 +34,7 @@ Output::
                 ],
                 "Tags": [],
                 "VpcId": "vpc-0065acced4EXAMPLE",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             },
             {
                 "Associations": [
@@ -62,7 +62,7 @@ Output::
                 ],
                 "Tags": [],
                 "VpcId": "vpc-3EXAMPLE",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             },
             {
                 "Associations": [
@@ -91,9 +91,9 @@ Output::
                 ],
                 "Tags": [],
                 "VpcId": "vpc-0065acced4EXAMPLE",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             }
         ]
     }
 
-For more information, see `Working with Route Tables <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html#WorkWithRouteTables>`__ in the *AWS VPC User Guide*.
+For more information, see `Working with Route Tables <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithRouteTables.html>`__ in the *AWS VPC User Guide*.

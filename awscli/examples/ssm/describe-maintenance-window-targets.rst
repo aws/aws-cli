@@ -21,7 +21,7 @@ Output::
                         "Key": "InstanceIds"
                     }
                 ],
-                "WindowTargetId": "350d44e6-28cc-44e2-951f-4b2c9EXAMPLE"
+                "WindowTargetId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             },
             {
                 "ResourceType": "INSTANCE",
@@ -36,14 +36,14 @@ Output::
                         "Key": "InstanceIds"
                     }
                 ],
-                "WindowTargetId": "e078a987-2866-47be-bedd-d9cf4EXAMPLE"
+                "WindowTargetId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ]
     }
 
 **Example 2: To list all targets for a maintenance window matching a specific owner information value**
 
-This ``describe-maintenance-window-targets`` example lists all of the targets for a maintenance window with a specific value. ::
+The following ``describe-maintenance-window-targets`` example lists all of the targets for a maintenance window with a specific value. ::
 
     aws ssm describe-maintenance-window-targets \
         --window-id "mw-0ecb1226ddEXAMPLE" \
@@ -55,7 +55,7 @@ Output::
         "Targets": [
             {
                 "WindowId": "mw-0ecb1226ddEXAMPLE",
-                "WindowTargetId": "da89dcc3-7f9c-481d-ba2b-edcb7d0057f9",
+                "WindowTargetId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "ResourceType": "INSTANCE",
                 "Targets": [
                     {

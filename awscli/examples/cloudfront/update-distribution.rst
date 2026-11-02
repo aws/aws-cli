@@ -1,6 +1,6 @@
 **Example 1: To update a CloudFront distribution's default root object**
 
-The following example updates the default root object to ``index.html`` for the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``. ::
+The following ``update-distribution`` example updates the default root object to ``index.html`` for the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``. ::
 
     aws cloudfront update-distribution \
         --id EDFDVBD6EXAMPLE \
@@ -22,7 +22,7 @@ Output::
                 "Quantity": 0
             },
             "DistributionConfig": {
-                "CallerReference": "6b10378d-49be-4c4b-a642-419ccaf8f3b5",
+                "CallerReference": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Aliases": {
                     "Quantity": 0
                 },
@@ -136,9 +136,11 @@ Output::
         }
     }
 
+For more information, see `Update a distribution <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToUpdateDistribution.html>`__ in the *Amazon CloudFront Developer Guide*.
+
 **Example 2: To update a CloudFront distribution**
 
-The following example disables the CloudFront distribution with the ID ``EMLARXS9EXAMPLE`` by providing the distribution configuration in a JSON file named ``dist-config-disable.json``. To update a distribution, you must use the ``--if-match`` option to provide the distribution's ``ETag``. To get the
+The following ``update-distribution`` example disables the CloudFront distribution with the ID ``EMLARXS9EXAMPLE`` by providing the distribution configuration in a JSON file named ``dist-config-disable.json``. To update a distribution, you must use the ``--if-match`` option to provide the distribution's ``ETag``. To get the
 ``ETag``, use the `get-distribution <get-distribution.html>`_ or `get-distribution-config <get-distribution-config.html>`_ command. Note that the ``Enabled`` field is set to
 ``false`` in the JSON file.
 
@@ -365,3 +367,5 @@ Output::
             }
         }
     }
+
+For more information, see `Update a distribution <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToUpdateDistribution.html>`__ in the *Amazon CloudFront Developer Guide*.

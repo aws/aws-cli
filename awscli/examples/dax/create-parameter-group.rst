@@ -1,6 +1,6 @@
 **To create a parameter group**
 
-The following `` create-parameter-group`` example creates a parameter group with the specified settings. ::
+The following ``create-parameter-group`` example creates a parameter group with the specified settings. ::
 
     aws dax create-parameter-group \
         --parameter-group-name daxparametergroup \

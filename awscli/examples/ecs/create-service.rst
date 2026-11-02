@@ -18,7 +18,7 @@ Output::
         "service": {
             "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/MyCluster/MyService",
             "serviceName": "MyService",
-              "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
             "loadBalancers": [],
             "serviceRegistries": [],
             "status": "ACTIVE",
@@ -206,7 +206,7 @@ The following ``create-service`` example shows how to create a service that is b
 
 Contents of ``ecs-simple-service-elb.json``::
 
-     {
+    {
         "serviceName": "ecs-simple-service-elb",
         "taskDefinition": "ecs-demo",
         "loadBalancers": [
@@ -287,12 +287,12 @@ Contents of ``ecs-simple-service-ebs.json``::
                     "roleArn":"arn:aws:iam::123456789012:role/ecsInfrastructureRole",
                     "volumeType": "gp3",
                     "sizeInGiB": 100,
-                    "iops": 3000, 
-                    "throughput": 125, 
+                    "iops": 3000,
+                    "throughput": 125,
                     "filesystemType": "ext4"
                 }
             }
-       ]
+        ]
     }
 
 Output::

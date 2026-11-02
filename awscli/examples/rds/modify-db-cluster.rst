@@ -14,9 +14,9 @@ Output::
         "DBCluster": {
             "AllocatedStorage": 1,
             "AvailabilityZones": [
-                "eu-central-1b",
-                "eu-central-1c",
-                "eu-central-1a"
+                "us-west-2b",
+                "us-west-2c",
+                "us-west-2a"
             ],
             "BackupRetentionPeriod": 14,
             "DatabaseName": "",
@@ -25,8 +25,8 @@ Output::
             "DBSubnetGroup": "default-vpc-2305ca49",
             "Status": "available",
             "EarliestRestorableTime": "2020-06-03T02:07:29.637Z",
-            "Endpoint": "cluster-2.cluster-############.eu-central-1.rds.amazonaws.com",
-            "ReaderEndpoint": "cluster-2.cluster-ro-############.eu-central-1.rds.amazonaws.com",
+            "Endpoint": "cluster-2.cluster-############.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "cluster-2.cluster-ro-############.us-west-2.rds.amazonaws.com",
             "MultiAZ": false,
             "Engine": "aurora",
             "EngineVersion": "5.6.10a",
@@ -52,9 +52,9 @@ Output::
             ],
             "HostedZoneId": "Z1RLNU0EXAMPLE",
             "StorageEncrypted": true,
-            "KmsKeyId": "arn:aws:kms:eu-central-1:123456789012:key/d1bd7c8f-5cdb-49ca-8a62-a1b2c3d4e5f6",
+            "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DbClusterResourceId": "cluster-AGJ7XI77XVIS6FUXHU1EXAMPLE",
-            "DBClusterArn": "arn:aws:rds:eu-central-1:123456789012:cluster:cluster-2",
+            "DBClusterArn": "arn:aws:rds:us-west-2:123456789012:cluster:cluster-2",
             "AssociatedRoles": [],
             "IAMDatabaseAuthenticationEnabled": false,
             "ClusterCreateTime": "2020-04-03T14:44:02.764Z",
@@ -71,7 +71,7 @@ For more information, see `Modifying an Amazon Aurora DB Cluster <https://docs.a
 
 **Example 2: To associate VPC security group with a DB cluster**
 
-The following ``modify-db-instance`` example associates a specific VPC security group and removes DB security groups from a DB cluster. ::
+The following ``modify-db-cluster`` example associates a specific VPC security group and removes DB security groups from a DB cluster. ::
 
     aws rds modify-db-cluster \
         --db-cluster-identifier dbName \
@@ -117,8 +117,7 @@ Output::
                     "VpcSecurityGroupId": "sg-ID",
                     "Status": "active"
                 }
-            ],
-            ...output omitted...
+            ]
         }
     }
 

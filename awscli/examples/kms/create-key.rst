@@ -4,30 +4,30 @@ The following ``create-key`` example creates a symmetric encryption KMS key.
 
 To create the basic KMS key, a symmetric encryption key, you do not need to specify any parameters. The default values for those parameters create a symmetric encryption key.
 
-Because this command doesn't specify a key policy, the KMS key gets the `default key policy <https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default>`__ for programmatically created KMS keys. To view the key policy, use the ``get-key-policy`` command. To change the key policy, use the ``put-key-policy`` command. ::
+Because this command doesn't specify a key policy, the KMS key gets the `default key policy <https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html>`__ for programmatically created KMS keys. To view the key policy, use the ``get-key-policy`` command. To change the key policy, use the ``put-key-policy`` command. ::
 
     aws kms create-key
 
-The ``create-key`` command returns the key metadata, including the key ID and ARN of the new KMS key. You can use these values to identify the KMS key in other AWS KMS operations. The output does not include the tags. To view the tags for a KMS key, use the ``list-resource-tags command``. 
+The ``create-key`` command returns the key metadata, including the key ID and ARN of the new KMS key. You can use these values to identify the KMS key in other AWS KMS operations. The output does not include the tags. To view the tags for a KMS key, use the ``list-resource-tags command``.
 
 Output::
 
     {
         "KeyMetadata": {
-            "AWSAccountId": "111122223333",
-            "Arn": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "123456789012",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CreationDate": "2017-07-05T14:04:55-07:00",
             "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "Description": "",
             "Enabled": true,
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "SYMMETRIC_DEFAULT",
             "KeyState": "Enabled",
             "KeyUsage": "ENCRYPT_DECRYPT",
             "MultiRegion": false,
-            "Origin": "AWS_KMS"
+            "Origin": "AWS_KMS",
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
             ]
@@ -41,18 +41,18 @@ For more information, see `Creating keys <https://docs.aws.amazon.com/kms/latest
 
 **Example 2: To create an asymmetric RSA KMS key for encryption and decryption**
 
-The following ``create-key`` example creates a KMS key that contains an asymmetric RSA key pair for encryption and decryption. The key spec and key usage can't be changed after the key is created.::
+The following ``create-key`` example creates a KMS key that contains an asymmetric RSA key pair for encryption and decryption. The key spec and key usage can't be changed after the key is created. ::
 
     aws kms create-key \
-       --key-spec RSA_4096 \
-       --key-usage ENCRYPT_DECRYPT
+        --key-spec RSA_4096 \
+        --key-usage ENCRYPT_DECRYPT
 
 Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2021-04-05T14:04:55-07:00",
             "CustomerMasterKeySpec": "RSA_4096",
             "Description": "",
@@ -61,7 +61,7 @@ Output::
                 "RSAES_OAEP_SHA_1",
                 "RSAES_OAEP_SHA_256"
             ],
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "RSA_4096",
             "KeyState": "Enabled",
@@ -76,7 +76,7 @@ For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.c
 
 **Example 3: To create an asymmetric elliptic curve KMS key for signing and verification**
 
-To create an asymmetric KMS key that contains an asymmetric elliptic curve (ECC) key pair for signing and verification. The ``--key-usage`` parameter is required even though ``SIGN_VERIFY`` is the only valid value for ECC KMS keys. The key spec and key usage can't be changed after the key is created.::
+The following ``create-key`` example creates an asymmetric KMS key that contains an asymmetric elliptic curve (ECC) key pair for signing and verification. The ``--key-usage`` parameter is required even though ``SIGN_VERIFY`` is the only valid value for ECC KMS keys. The key spec and key usage can't be changed after the key is created. ::
 
     aws kms create-key \
         --key-spec ECC_NIST_P521 \
@@ -86,13 +86,13 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2019-12-02T07:48:55-07:00",
             "CustomerMasterKeySpec": "ECC_NIST_P521",
             "Description": "",
             "Enabled": true,
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "ECC_NIST_P521",
             "KeyState": "Enabled",
@@ -110,7 +110,7 @@ For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.c
 
 **Example 4: To create an asymmetric ML-DSA KMS key for signing and verification**
 
-This example creates a module-lattice digital signature algorithm (ML-DSA) key for signing and verification. The key-usage parameter is required even though ``SIGN_VERIFY`` is the only valid value for ML-DSA keys. ::
+The following ``create-key`` example creates a module-lattice digital signature algorithm (ML-DSA) key for signing and verification. The key-usage parameter is required even though ``SIGN_VERIFY`` is the only valid value for ML-DSA keys. ::
 
     aws kms create-key \
         --key-spec ML_DSA_65 \
@@ -120,12 +120,12 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2019-12-02T07:48:55-07:00",
             "Description": "",
             "Enabled": true,
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "ML_DSA_65",
             "KeyState": "Enabled",
@@ -154,13 +154,13 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2022-04-05T14:04:55-07:00",
             "CustomerMasterKeySpec": "HMAC_384",
             "Description": "",
             "Enabled": true,
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "HMAC_384",
             "KeyState": "Enabled",
@@ -173,7 +173,7 @@ Output::
         }
     }
 
-For more information, see `HMAC keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html>`__ in the *AWS Key Management Service Developer Guide*.  
+For more information, see `HMAC keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
 **Example 6: To create a multi-Region primary KMS key**
@@ -187,15 +187,15 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef12345678990ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/mrk-1234abcd12ab34cd56ef12345678990ab",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2021-09-02T016:15:21-09:00",
             "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "Description": "",
             "Enabled": true,
             "EncryptionAlgorithms": [
-              "SYMMETRIC_DEFAULT"
+                "SYMMETRIC_DEFAULT"
             ],
             "KeyId": "mrk-1234abcd12ab34cd56ef12345678990ab",
             "KeyManager": "CUSTOMER",
@@ -206,7 +206,7 @@ Output::
             "MultiRegionConfiguration": {
                 "MultiRegionKeyType": "PRIMARY",
                 "PrimaryKey": {
-                    "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef12345678990ab",
+                    "Arn": "arn:aws:kms:us-west-2:123456789012:key/mrk-1234abcd12ab34cd56ef12345678990ab",
                     "Region": "us-west-2"
                 },
                 "ReplicaKeys": []
@@ -215,7 +215,7 @@ Output::
         }
     }
 
-For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.  
+For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
 **Example 7: To create a KMS key for imported key material**
@@ -227,10 +227,10 @@ The following ``create-key`` example creates a creates a KMS key with no key mat
 
 Output::
 
-   {
+    {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2019-12-02T07:48:55-07:00",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "Description": "",
@@ -238,7 +238,7 @@ Output::
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
             ],
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "SYMMETRIC_DEFAULT",
             "KeyState": "PendingImport",
@@ -248,10 +248,10 @@ Output::
         }
     }
 
-For more information, see `Importing key material in AWS KMS keys <https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html>`__ in the *AWS Key Management Service Developer Guide*. 
+For more information, see `Importing key material in AWS KMS keys <https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
-**Example 6: To create a KMS key in an AWS CloudHSM key store**
+**Example 8: To create a KMS key in an AWS CloudHSM key store**
 
 The following ``create-key`` example creates a creates a KMS key in the specified AWS CloudHSM key store. The operation creates the KMS key and its metadata in AWS KMS and creates the key material in the AWS CloudHSM cluster associated with the custom key store. The ``--custom-key-store-id`` and ``--origin`` parameters are required. ::
 
@@ -263,8 +263,8 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CloudHsmClusterId": "cluster-1a23b4cdefg",
             "CreationDate": "2019-12-02T07:48:55-07:00",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
@@ -274,7 +274,7 @@ Output::
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
             ],
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "SYMMETRIC_DEFAULT",
             "KeyState": "Enabled",
@@ -285,12 +285,12 @@ Output::
     }
 
 
-For more information, see `AWS CloudHSM key stores <https://docs.aws.amazon.com/kms/latest/developerguide/keystore-cloudhsm.html>`__ in the *AWS Key Management Service Developer Guide*. 
+For more information, see `AWS CloudHSM key stores <https://docs.aws.amazon.com/kms/latest/developerguide/keystore-cloudhsm.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 
-**Example 8: To create a KMS key in an external key store**
+**Example 9: To create a KMS key in an external key store**
 
-The following ``create-key`` example creates a creates a KMS key in the specified external key store. The ``--custom-key-store-id``, ``--origin``, and ``--xks-key-id`` parameters are required in this command. 
+The following ``create-key`` example creates a creates a KMS key in the specified external key store. The ``--custom-key-store-id``, ``--origin``, and ``--xks-key-id`` parameters are required in this command.
 
 * The ``--xks-key-id`` parameter specifies the ID of an existing symmetric encryption key in your external key manager. This key serves as the external key material for the KMS key.
 
@@ -307,8 +307,8 @@ Output::
 
     {
         "KeyMetadata": {
-            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-            "AWSAccountId": "111122223333",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AWSAccountId": "123456789012",
             "CreationDate": "2022-12-02T07:48:55-07:00",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "CustomKeyStoreId": "cks-9876543210fedcba9",
@@ -317,7 +317,7 @@ Output::
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
             ],
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "KeyManager": "CUSTOMER",
             "KeySpec": "SYMMETRIC_DEFAULT",
             "KeyState": "Enabled",

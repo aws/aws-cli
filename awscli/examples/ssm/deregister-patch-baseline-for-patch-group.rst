@@ -9,8 +9,8 @@ The following ``deregister-patch-baseline-for-patch-group`` example deregisters 
 Output::
 
     {
-      "PatchGroup":"Production",
-      "BaselineId":"pb-0ca44a362fEXAMPLE"
+        "PatchGroup":"Production",
+        "BaselineId":"pb-0ca44a362fEXAMPLE"
     }
 
 For more information, see `Add a Patch Group to a Patch Baseline  <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-patch-group-patchbaseline.html>`__ in the *AWS Systems Manager User Guide*.

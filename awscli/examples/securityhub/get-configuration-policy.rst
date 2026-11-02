@@ -3,13 +3,13 @@
 The following ``get-configuration-policy`` example retrieves details about the specified configuration policy. ::
 
     aws securityhub get-configuration-policy \
-       --identifier "arn:aws:securityhub:eu-central-1:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+        --identifier "arn:aws:securityhub:us-west-2:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
-        "Arn": "arn:aws:securityhub:eu-central-1:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-        "Id": "ce5ed1e7-9639-4e2f-9313-fa87fcef944b",
+        "Arn": "arn:aws:securityhub:us-west-2:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Name": "SampleConfigurationPolicy",
         "Description": "SampleDescription",
         "UpdatedAt": "2023-11-28T20:28:04.494000+00:00",
@@ -18,7 +18,7 @@ Output::
             "SecurityHub": {
                 "ServiceEnabled": true,
                 "EnabledStandardIdentifiers": [
-                    "arn:aws:securityhub:eu-central-1::standards/aws-foundational-security-best-practices/v/1.0.0",
+                    "arn:aws:securityhub:us-west-2::standards/aws-foundational-security-best-practices/v/1.0.0",
                     "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0"
                 ],
                 "SecurityControlsConfiguration": {

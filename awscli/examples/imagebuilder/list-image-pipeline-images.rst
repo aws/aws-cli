@@ -9,43 +9,27 @@ Output::
 
     {
         "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-        "imagePipelineList": [
+        "imageSummaryList": [
             {
-                "arn": "arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/mywindows2016pipeline",
-                "name": "MyWindows2016Pipeline",
-                "description": "Builds Windows 2016 Images",
+                "arn": "arn:aws:imagebuilder:us-west-2:123456789012:image/mybasicrecipe/2019.12.03/1",
+                "name": "MyBasicRecipe",
+                "version": "2019.12.03/1",
                 "platform": "Windows",
-                "imageRecipeArn": "arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/mybasicrecipe/2019.12.03",
-                "infrastructureConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:infrastructure-configuration/myexampleinfrastructure",
-                "distributionConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/myexampledistribution",
-                "imageTestsConfiguration": {
-                    "imageTestsEnabled": true,
-                    "timeoutMinutes": 60
+                "state": {
+                    "status": "AVAILABLE"
                 },
-                "schedule": {
-                    "scheduleExpression": "cron(0 0 * * SUN)",
-                    "pipelineExecutionStartCondition": "EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE"
-                },
-                "status": "ENABLED",
+                "owner": "123456789012",
                 "dateCreated": "2020-02-19T19:04:01.253Z",
-                "dateUpdated": "2020-02-19T19:04:01.253Z",
-                "tags": {
-                    "KeyName": "KeyValue"
-                }
-            },
-            {
-                "arn": "arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/sam",
-                "name": "PipelineName",
-                "platform": "Linux",
-                "imageRecipeArn": "arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/recipe-name-a1b2c3d45678/1.0.0",
-                "infrastructureConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:infrastructure-configuration/infrastructureconfiguration-name-a1b2c3d45678",
-                "imageTestsConfiguration": {
-                    "imageTestsEnabled": true,
-                    "timeoutMinutes": 720
+                "outputResources": {
+                    "amis": [
+                        {
+                            "region": "us-west-2",
+                            "image": "ami-a1b2c3d4567890ab",
+                            "name": "MyBasicRecipe 2020-02-19T19-04-01.253Z",
+                            "description": "Builds Windows 2016 Images"
+                        }
+                    ]
                 },
-                "status": "ENABLED",
-                "dateCreated": "2019-12-16T18:19:02.068Z",
-                "dateUpdated": "2019-12-16T18:19:02.068Z",
                 "tags": {
                     "KeyName": "KeyValue"
                 }
@@ -53,4 +37,4 @@ Output::
         ]
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Manage custom image creation in Image Builder through a repeatable pipeline process <https://docs.aws.amazon.com/imagebuilder/latest/userguide/manage-pipelines.html>`__ in the *EC2 Image Builder Users Guide*.

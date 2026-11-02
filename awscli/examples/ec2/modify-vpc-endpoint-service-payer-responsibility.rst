@@ -7,3 +7,5 @@ The following ``modify-vpc-endpoint-service-payer-responsibility`` example modif
         --payer-responsibility ServiceOwner
 
 This command produces no output.
+
+For more information, see `Configure an endpoint service <https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html>`__ in the *AWS PrivateLink User Guide*.

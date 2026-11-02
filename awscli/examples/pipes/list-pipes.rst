@@ -10,14 +10,14 @@ Output::
         "Pipes": [
             {
                 "Name": "Demo_Pipe",
-                "Arn": "arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe",
+                "Arn": "arn:aws:pipes:us-west-2:123456789012:pipe/Demo_Pipe",
                 "DesiredState": "RUNNING",
                 "CurrentState": "RUNNING",
                 "StateReason": "User initiated",
                 "CreationTime": "2024-10-08T09:29:10-05:00",
                 "LastModifiedTime": "2024-10-08T10:23:47-05:00",
-                "Source": "arn:aws:sqs:us-east-1:123456789012:Demo_Queue",
-                "Target": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/pipes/Demo_LogGroup"
+                "Source": "arn:aws:sqs:us-west-2:123456789012:Demo_Queue",
+                "Target": "arn:aws:logs:us-west-2:123456789012:log-group:/aws/pipes/Demo_LogGroup"
             }
         ]
     }

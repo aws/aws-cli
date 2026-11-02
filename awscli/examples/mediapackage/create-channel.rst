@@ -1,14 +1,15 @@
 **To create a channel**
 
-The following ``create-channel`` command creates a channel named ``sportschannel`` in the current account. ::
+The following ``create-channel`` example creates a channel named ``sportschannel`` in the current account. ::
 
-    aws mediapackage create-channel --id sportschannel
+    aws mediapackage create-channel \
+        --id sportschannel
 
 Output::
 
     {
-       "Arn": "arn:aws:mediapackage:us-west-2:111222333:channels/6d345804ec3f46c9b454a91d4a80d0e0",
-       "HlsIngest": {
+        "Arn": "arn:aws:mediapackage:us-west-2:111222333:channels/6d345804ec3f46c9b454a91d4a80d0e0",
+        "HlsIngest": {
             "IngestEndpoints": [
                 {
                     "Id": "6d345804ec3f46c9b454a91d4a80d0e0",
@@ -28,6 +29,6 @@ Output::
         "Tags": {
             "region": "west"
         }
-    }                
+    }
 
 For more information, see `Creating a Channel <https://docs.aws.amazon.com/mediapackage/latest/ug/channels-create.html>`__ in the *AWS Elemental MediaPackage User Guide*.

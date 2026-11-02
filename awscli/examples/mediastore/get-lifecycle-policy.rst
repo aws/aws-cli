@@ -7,32 +7,6 @@ The following ``get-lifecycle-policy`` example displays the object lifecycle pol
 
 Output::
 
-   {
-       "LifecyclePolicy": {
-           "rules": [
-               {
-                   "definition": {
-                       "path": [
-                           {
-                               "prefix": "Football/"
-                           },
-                           {
-                               "prefix": "Baseball/"
-                           }
-                       ],
-                       "days_since_create": [
-                           {
-                               "numeric": [
-                                   ">",
-                                   28
-                               ]
-                           }
-                       ]
-                   },
-                   "action": "EXPIRE"
-               }
-           ]
-       }
-   }
-
-For more information, see `Viewing an Object Lifecycle Policy <https://docs.aws.amazon.com/mediastore/latest/ug/policies-object-lifecycle-view.html>`__ in the *AWS Elemental MediaStore User Guide*.
+    {
+        "LifecyclePolicy": "{\"rules\":[{\"definition\":{\"path\":[{\"prefix\":\"Football/\"},{\"prefix\":\"Baseball/\"}],\"days_since_create\":[{\"numeric\":[\">\",28]}]},\"action\":\"EXPIRE\"}]}"
+    }

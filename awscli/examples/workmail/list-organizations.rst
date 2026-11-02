@@ -1,6 +1,6 @@
 **To retrieve a list of organizations**
 
-The following ``list-organizations`` command retrieves summaries of the customer's organizations. ::
+The following ``list-organizations`` example retrieves summaries of the customer's organizations. ::
 
     aws workmail list-organizations
 
@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with organizations <https://docs.aws.amazon.com/workmail/latest/adminguide/organizations_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

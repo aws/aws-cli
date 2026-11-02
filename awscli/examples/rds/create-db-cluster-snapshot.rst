@@ -11,9 +11,9 @@ Output::
     {
         "DBClusterSnapshot": {
             "AvailabilityZones": [
-                "us-east-1a",
-                "us-east-1b",
-                "us-east-1e"
+                "us-west-2a",
+                "us-west-2b",
+                "us-west-2d"
             ],
             "DBClusterSnapshotIdentifier": "mydbclustersnapshot",
             "DBClusterIdentifier": "mydbcluster",
@@ -30,8 +30,8 @@ Output::
             "SnapshotType": "manual",
             "PercentProgress": 0,
             "StorageEncrypted": true,
-            "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/AKIAIOSFODNN7EXAMPLE",
-            "DBClusterSnapshotArn": "arn:aws:rds:us-east-1:123456789012:cluster-snapshot:mydbclustersnapshot",
+            "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/AKIAIOSFODNN7EXAMPLE",
+            "DBClusterSnapshotArn": "arn:aws:rds:us-west-2:123456789012:cluster-snapshot:mydbclustersnapshot",
             "IAMDatabaseAuthenticationEnabled": false
         }
     }

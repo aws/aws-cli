@@ -10,7 +10,7 @@ Output::
     {
         "attributeGroup": {
             "id": "011ge6y3emyjijt8dw8jn6r0hv",
-            "arn": "arn:aws:servicecatalog:us-west-2:813737243517:/attribute-groups/011ge6y3emyjijt8dw8jn6r0hv",
+            "arn": "arn:aws:servicecatalog:us-west-2:123456789012:/attribute-groups/011ge6y3emyjijt8dw8jn6r0hv",
             "name": "ExampleAttributeGroup3",
             "creationTime": "2023-02-28T22:05:35.224000+00:00",
             "lastUpdateTime": "2023-02-28T22:05:35.224000+00:00"

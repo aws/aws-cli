@@ -3,16 +3,18 @@
 The following ``get-core-definition`` example retrieves information about the specified core definition. To retrieve the IDs of your core definitions, use the ``list-core-definitions`` command. ::
 
     aws greengrass get-core-definition \
-        --core-definition-id "c906ed39-a1e3-4822-a981-7b9bd57b4b46"
+        --core-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/237d6916-27cf-457f-ba0c-e86cfb5d25cd",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreationTimestamp": "2018-10-18T04:47:06.721Z",
-        "Id": "237d6916-27cf-457f-ba0c-e86cfb5d25cd",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LastUpdatedTimestamp": "2018-10-18T04:47:06.721Z",
-        "LatestVersion": "bd2cd6d4-2bc5-468a-8962-39e071e34b68",
-        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/237d6916-27cf-457f-ba0c-e86cfb5d25cd/versions/bd2cd6d4-2bc5-468a-8962-39e071e34b68",
+        "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "tags": {}
     }
+
+For more information, see `Configure the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/gg-core.html>`__ in the *AWS IoT Greengrass Developer Guide*.

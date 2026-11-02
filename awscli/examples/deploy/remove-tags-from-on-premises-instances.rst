@@ -7,3 +7,5 @@ The following ``remove-tags-from-on-premises-instances`` example disassociates t
         --tags Key=Name,Value=CodeDeployDemo-OnPrem
 
 This command produces no output.
+
+For more information, see `Manually remove on-premises instance tags from an on-premises instance <https://docs.aws.amazon.com/codedeploy/latest/userguide/on-premises-instances-operations-remove-tags.html>`__ in the *AWS CodeDeploy User Guide*.

@@ -46,10 +46,10 @@ Output::
             {
                 "createdAt": 1570860986.0,
                 "message": "2019-10-12 06:16:26 20969 [Warning] IP address '192.0.2.0' could not be resolved: Temporary failure in name resolution"
-            },
-            ...
             }
         ],
         "nextBackwardToken": "eEXAMPLEZXJUZXh0IjoiZnRWb3F3cUpRSlQ5NndMYThxelRUZlFhR3J6c2dKWEEvM2kvajZMZzVVVWpqRDN0YjFXTjNrak5pRk9iVFRZdjkwVGlpZGw5NFJGSFRQTEdJSjdpQnFCRk5CZFJlYTZaSXpScStuZjJEYXhqM2grUFVJOEpIYlU5YWJ2QitvQWN5cEFyVUo3VDk1QWY3bVF6MEwvcVovVldZdGc9Iiwibm9uY2UiOiJBNHpzdWMvUkZZKzRvUzhEIiwiY2lwaGVyIjoiQUVTL0dDTS9Ob1BhZGEXAMPLEQ==",
         "nextForwardToken": "eEXAMPLEZXJUZXh0IjoiT09Lb0Z6ZFRJbHhaNEQ5N2tPbkkwRmwwNUxPZjFTbFFwUklQbzlSaWgvMWVXbEk4aG56VHg4bW1Gb3grbDVodUVNZEdiZXN0TzVYcjlLK1FUdFB2RlJLS2FMcU05WkN3Rm1uVzBkOFpDR2g0b1BBVlg2NVFGNDNPazZzRXJieHRuU0xzdkRNTkFUMTZibU9HM2YyaGxiS0hUUDA9Iiwibm9uY2UiOiJFQmI4STQ3cU5aWXNXZ0g4IiwiY2lwaGVyIjoiQUVTL0dDTS9Ob1BhZGEXAMPLEQ=="
     }
+
+For more information, see `Monitor MySQL query performance with general and slow query logs in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-enabling-mysql-general-and-slow-query-logs.html>`__ in the *Amazon Lightsail User Guide*.

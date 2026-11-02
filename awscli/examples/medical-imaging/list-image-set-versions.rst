@@ -1,6 +1,6 @@
 **To list image set versions**
 
-The following ``list-image-set-versions`` code example lists the version history for an image set. ::
+The following ``list-image-set-versions`` example lists the version history for an image set. ::
 
     aws medical-imaging list-image-set-versions \
         --datastore-id 12345678901234567890123456789012 \

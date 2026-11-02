@@ -21,9 +21,11 @@ Output::
                 "Created": 1580446904.067,
                 "LastUpdated": 1580446953.265,
                 "Requester": "{\"accountId\":\"123456789012\",\"callerArn\":\"arn:aws:iam::123456789012:root\"}",
-                "QuotaArn": "arn:aws:servicequotas:us-east-2:123456789012:ec2/L-20F13EBD",
+                "QuotaArn": "arn:aws:servicequotas:us-west-2:123456789012:ec2/L-20F13EBD",
                 "GlobalQuota": false,
                 "Unit": "None"
             }
         ]
     }
+
+For more information, see `Requesting a quota increase <https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html>`__ in the *Service Quotas User Guide*.

@@ -1,6 +1,6 @@
 **To add a tag to a SAML provider**
 
-The following ``tag-saml-provider`` command adds a tag with a Department name to the specified SAML provider. ::
+The following ``tag-saml-provider`` example adds a tag with a Department name to the specified SAML provider. ::
 
     aws iam tag-saml-provider \
         --saml-provider-arn arn:aws:iam::123456789012:saml-provider/ADFS \

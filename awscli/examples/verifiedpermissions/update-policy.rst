@@ -11,7 +11,7 @@ The ``statement`` parameter takes a string representation of a JSON object. It c
 
 You can display example strings wrapped across multiple lines for readability, but the operation requires the parameters to be submitted as single-line strings.
 
-Contents of file ``updated-definition.txt``::
+Contents of ``updated-definition.txt``::
 
     {
         "static": {

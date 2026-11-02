@@ -14,5 +14,4 @@ Output::
         ]
     }
 
-For more information, see `Getting Started with MediaConvert Using the API <https://docs.aws.amazon.com/mediaconvert/latest/apireference/getting-started.html>`_ in the *AWS Elemental
-MediaConvert API Reference*.
+For more information, see `Getting started with MediaConvert <https://docs.aws.amazon.com/mediaconvert/latest/ug/getting-started.html>`__ in the *AWS Elemental MediaConvert User Guide*.

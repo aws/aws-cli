@@ -14,4 +14,4 @@ Output::
         ]
     }
 
-For more information, see `ListPrincipalThings <https://docs.aws.amazon.com/iot/latest/apireference/API_ListPrincipleThings.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Attach a thing or policy to a client certificate <https://docs.aws.amazon.com/iot/latest/developerguide/attach-to-cert.html>`__ in the *AWS IoT Core Developer Guide*.

@@ -3,7 +3,7 @@
 The following ``delete-domain-name-access-association`` example deletes a domain name access association between a private custom domain name and VPC endpoint. ::
 
     aws apigateway delete-domain-name-access-association \
-        --domain-name-access-association-arn arn:aws:apigateway:us-west-2:012345678910:/domainnameaccessassociations/domainname/my.private.domain.tld/vpcesource/vpce-abcd1234efg
+        --domain-name-access-association-arn arn:aws:apigateway:us-west-2:123456789012:/domainnameaccessassociations/domainname/my.private.domain.tld/vpcesource/vpce-abcd1234efg
 
 This command produces no output.
 

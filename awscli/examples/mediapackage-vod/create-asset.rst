@@ -5,17 +5,17 @@ The following ``create-asset`` example creates an asset named ``Chicken_Asset`` 
     aws mediapackage-vod create-asset \
         --id chicken_asset \
         --packaging-group-id hls_chicken_gp \
-        --source-role-arn arn:aws:iam::111122223333:role/EMP_Vod \
-        --source-arn arn:aws:s3::111122223333:video-bucket/A/30sec_chicken.smil 
+        --source-role-arn arn:aws:iam::123456789012:role/EMP_Vod \
+        --source-arn arn:aws:s3::123456789012:video-bucket/A/30sec_chicken.smil 
 
 Output::
 
     { 
-        "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:assets/chicken_asset", 
+        "Arn":"arn:aws:mediapackage-vod:us-west-2:123456789012:assets/chicken_asset", 
         "Id":"chicken_asset",
         "PackagingGroupId":"hls_chicken_gp", 
-        "SourceArn":"arn:aws:s3::111122223333:video-bucket/A/30sec_chicken.smil", 
-        "SourceRoleArn":"arn:aws:iam::111122223333:role/EMP_Vod", 
+        "SourceArn":"arn:aws:s3::123456789012:video-bucket/A/30sec_chicken.smil", 
+        "SourceRoleArn":"arn:aws:iam::123456789012:role/EMP_Vod", 
         "EgressEndpoints":[  
             {  
                 "PackagingConfigurationId":"New_config_1", 

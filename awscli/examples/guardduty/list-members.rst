@@ -13,7 +13,7 @@ Output::
             {
                 "RelationshipStatus": "Enabled",
                 "InvitedAt": "2020-06-09T22:49:00.910Z",
-                "MasterId": "111122223333",
+                "MasterId": "123456789111",
                 "DetectorId": "7ab8b2f61b256c87f793f6a86example",
                 "UpdatedAt": "2020-06-09T23:08:22.512Z",
                 "Email": "your+member@example.com",
@@ -39,11 +39,11 @@ Output::
             {
                 "RelationshipStatus": "Enabled",
                 "InvitedAt": "2020-06-09T22:49:00.910Z",
-                "MasterId": "111122223333",
+                "MasterId": "123456789111",
                 "DetectorId": "7ab8b2f61b256c87f793f6a86example",
                 "UpdatedAt": "2020-06-09T23:08:22.512Z",
                 "Email": "your+other+member@example.com",
-                "AccountId": "555555555555"
+                "AccountId": "123456789222"
             }
         ]
     }

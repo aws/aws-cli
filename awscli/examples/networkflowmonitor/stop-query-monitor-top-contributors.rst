@@ -4,7 +4,7 @@ The following ``stop-query-monitor-top-contributors`` example stops the query in
 
     aws networkflowmonitor stop-query-monitor-top-contributors \
         --monitor-name Demo \
-        --query-id aecd3a88-0283-35b0-a17d-6e944dc8531d
+        --query-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

@@ -3,8 +3,7 @@
 The following ``get-devices`` example gets the devices in the specified global network. ::
 
     aws networkmanager get-devices \
-        --global-network-id global-network-01231231231231231 \
-        --region us-west-2
+        --global-network-id global-network-01231231231231231
 
 Output::
 
@@ -24,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Devices in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-devices.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

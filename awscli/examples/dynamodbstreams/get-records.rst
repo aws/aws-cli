@@ -1,9 +1,9 @@
 **To get records from a Dynamodb stream**
 
-The following ``get-records`` command retrieves records using the specified Amazon DynamoDB shard iterator. ::
+The following ``get-records`` example retrieves records using the specified Amazon DynamoDB shard iterator. ::
 
     aws dynamodbstreams get-records \
-        --shard-iterator "arn:aws:dynamodb:us-west-1:123456789012:table/Music/stream/2019-10-22T18:02:01.576|1|AAAAAAAAAAGgM3YZ89vLZZxjmoQeo33r9M4x3+zmmTLsiL86MfrF4+B4EbsByi52InVmiONmy6xVW4IRcIIbs1zO7MNIlqZfx8WQzMwVDyINtGG2hCLg78JKbYxFasXeePGlApTyf3rJxR765uyOVaBvBHAJuwF2TXIuxhaAlOupNGHr52qAC3a49ZOmf+CjNPlqQjnyRSAnfOwWmKhL1/KNParWSfz2odf780oOObIDIWRRMkt7+Hyzh9SD+hFxFAWR5C7QIlOXPc8mRBfNIazfrVCjJK8/jsjCzsqNyXKzJbhh+GXCoxYN+Kpmg4nyj1EAsYhbGL35muvHFoHjcyuynbsczbWaXNfThDwRAyvoTmc8XhHKtAWUbJiaVd8ZPtQwDsThCrmDRPIdmTRGWllGfUr5ezN5LscvkQezzgpaU5p8BgCqRzjv5Vl8LB6wHgQWNG+w/lEGS05ha1qNP+Vl4+tuhz2TRnhnJo/pny9GI/yGpce97mWvSPr5KPwy+Dtcm5BHayBs+PVYHITaTliInFlT+LCwvaz1QH3MY3b8A05Z800wjpktm60iQqtMeDwN4NX6FrcxR34JoFKGsgR8XkHVJzz2xr1xqSJ12ycpNTyHnndusw=="
+        --shard-iterator "arn:aws:dynamodb:us-west-2:123456789012:table/Music/stream/2019-10-22T18:02:01.576|1|AAAAAAAAAAGgM3YZ89vLZZxjmoQeo33r9M4x3+zmmTLsiL86MfrF4+B4EbsByi52InVmiONmy6xVW4IRcIIbs1zO7MNIlqZfx8WQzMwVDyINtGG2hCLg78JKbYxFasXeePGlApTyf3rJxR765uyOVaBvBHAJuwF2TXIuxhaAlOupNGHr52qAC3a49ZOmf+CjNPlqQjnyRSAnfOwWmKhL1/KNParWSfz2odf780oOObIDIWRRMkt7+Hyzh9SD+hFxFAWR5C7QIlOXPc8mRBfNIazfrVCjJK8/jsjCzsqNyXKzJbhh+GXCoxYN+Kpmg4nyj1EAsYhbGL35muvHFoHjcyuynbsczbWaXNfThDwRAyvoTmc8XhHKtAWUbJiaVd8ZPtQwDsThCrmDRPIdmTRGWllGfUr5ezN5LscvkQezzgpaU5p8BgCqRzjv5Vl8LB6wHgQWNG+w/lEGS05ha1qNP+Vl4+tuhz2TRnhnJo/pny9GI/yGpce97mWvSPr5KPwy+Dtcm5BHayBs+PVYHITaTliInFlT+LCwvaz1QH3MY3b8A05Z800wjpktm60iQqtMeDwN4NX6FrcxR34JoFKGsgR8XkHVJzz2xr1xqSJ12ycpNTyHnndusw=="
 
 Output::
 
@@ -14,7 +14,7 @@ Output::
                 "eventName": "INSERT",
                 "eventVersion": "1.1",
                 "eventSource": "aws:dynamodb",
-                "awsRegion": "us-west-1",
+                "awsRegion": "us-west-2",
                 "dynamodb": {
                     "ApproximateCreationDateTime": 1571849028.0,
                     "Keys": {
@@ -49,7 +49,7 @@ Output::
                 "eventName": "INSERT",
                 "eventVersion": "1.1",
                 "eventSource": "aws:dynamodb",
-                "awsRegion": "us-west-1",
+                "awsRegion": "us-west-2",
                 "dynamodb": {
                     "ApproximateCreationDateTime": 1571849029.0,
                     "Keys": {
@@ -84,7 +84,7 @@ Output::
                 "eventName": "MODIFY",
                 "eventVersion": "1.1",
                 "eventSource": "aws:dynamodb",
-                "awsRegion": "us-west-1",
+                "awsRegion": "us-west-2",
                 "dynamodb": {
                     "ApproximateCreationDateTime": 1571849734.0,
                     "Keys": {
@@ -129,7 +129,7 @@ Output::
                 }
             }
         ],
-        "NextShardIterator": "arn:aws:dynamodb:us-west-1:123456789012:table/Music/stream/2019-10-23T16:41:08.740|1|AAAAAAAAAAEhEI04jkFLW+LKOwivjT8d/IHEh3iExV2xK00aTxEzVy1C1C7Kbb5+ZOW6bT9VQ2n1/mrs7+PRiaOZCHJu7JHJVW7zlsqOi/ges3fw8GYEymyL+piEk35cx67rQqwKKyq+Q6w9JyjreIOj4F2lWLV26lBwRTrIYC4IB7C3BZZK4715QwYdDxNdVHiSBRZX8UqoS6WOt0F87xZLNB9F/NhYBLXi/wcGvAcBcC0TNIOH+N0NqwtoB/FGCkNrf8YZ0xRoNN6RgGuVWHF3pxOhxEJeFZoSoJTIKeG9YcYxzi5Ci/mhdtm7tBXnbw5c6xmsGsBqTirNjlDyJLcWl8Cl0UOLX63Ufo/5QliztcjEbKsQe28x8LM8o7VH1Is0fF/ITt8awSA4igyJS0P87GN8Qri8kj8iaE35805jBHWF2wvwT6Iy2xGrR2r2HzYps9dwGOarVdEITaJfWzNoL4HajMhmREZLYfM7Pb0PvRMO7JkENyPIU6e2w16W1CvJO2EGFIxtNk+V04i1YIeHMXJfcwetNRuIbdQXfJht2NQZa4PVV6iknY6d19MrdbSTMKoqAuvp6g3Q2jH4t7GKCLWgodcPAn8g5+43DaNkh4Z5zKOfNw=="
+        "NextShardIterator": "arn:aws:dynamodb:us-west-2:123456789012:table/Music/stream/2019-10-23T16:41:08.740|1|AAAAAAAAAAEhEI04jkFLW+LKOwivjT8d/IHEh3iExV2xK00aTxEzVy1C1C7Kbb5+ZOW6bT9VQ2n1/mrs7+PRiaOZCHJu7JHJVW7zlsqOi/ges3fw8GYEymyL+piEk35cx67rQqwKKyq+Q6w9JyjreIOj4F2lWLV26lBwRTrIYC4IB7C3BZZK4715QwYdDxNdVHiSBRZX8UqoS6WOt0F87xZLNB9F/NhYBLXi/wcGvAcBcC0TNIOH+N0NqwtoB/FGCkNrf8YZ0xRoNN6RgGuVWHF3pxOhxEJeFZoSoJTIKeG9YcYxzi5Ci/mhdtm7tBXnbw5c6xmsGsBqTirNjlDyJLcWl8Cl0UOLX63Ufo/5QliztcjEbKsQe28x8LM8o7VH1Is0fF/ITt8awSA4igyJS0P87GN8Qri8kj8iaE35805jBHWF2wvwT6Iy2xGrR2r2HzYps9dwGOarVdEITaJfWzNoL4HajMhmREZLYfM7Pb0PvRMO7JkENyPIU6e2w16W1CvJO2EGFIxtNk+V04i1YIeHMXJfcwetNRuIbdQXfJht2NQZa4PVV6iknY6d19MrdbSTMKoqAuvp6g3Q2jH4t7GKCLWgodcPAn8g5+43DaNkh4Z5zKOfNw=="
     }  
 
 For more information, see `Capturing Table Activity with DynamoDB Streams <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html>`__ in the *Amazon DynamoDB Developer Guide*.

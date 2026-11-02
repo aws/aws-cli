@@ -6,7 +6,7 @@ The following ``create-scaling-plan`` example creates a scaling plan named ``my-
         --scaling-plan-name my-scaling-plan \
         --cli-input-json file://~/config.json
 
-Contents of ``config.json`` file::
+Contents of ``config.json``::
 
     {
         "ApplicationSource": {
@@ -51,4 +51,4 @@ Output::
     "ScalingPlanVersion": 1
     }
 
-For more information, see the `AWS Auto Scaling User Guide <https://docs.aws.amazon.com/autoscaling/plans/userguide/what-is-aws-auto-scaling.html>`__.
+For more information, see `What is a scaling plan? <https://docs.aws.amazon.com/autoscaling/plans/userguide/what-is-a-scaling-plan.html>`__ in the *AWS Auto Scaling User Guide*.

@@ -10,12 +10,12 @@ Output::
     {
         "virtualServices": [
             {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualService/serviceA.svc.cluster.local",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualService/serviceA.svc.cluster.local",
                 "meshName": "app1",
                 "virtualServiceName": "serviceA.svc.cluster.local"
             },
             {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualService/serviceB.svc.cluster.local",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualService/serviceB.svc.cluster.local",
                 "meshName": "app1",
                 "virtualServiceName": "serviceB.svc.cluster.local"
             }

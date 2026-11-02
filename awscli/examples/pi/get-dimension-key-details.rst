@@ -17,8 +17,7 @@ Output::
                 "Value": "SELECT e.last_name, d.department_name FROM employees e, departments d WHERE e.department_id=d.department_id",
                 "Dimension": "db.sql.statement",
                 "Status": "AVAILABLE"
-            },
-        ...
+            }
         ]
     }
 

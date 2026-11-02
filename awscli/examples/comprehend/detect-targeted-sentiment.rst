@@ -7,7 +7,7 @@ The pre-trained models confidence score for each prediction is also output. ::
         --language-code en \
         --text "I do not enjoy January because it is too cold but August is the perfect temperature"
 
-Output:: 
+Output::
 
     {
         "Entities": [
@@ -64,7 +64,6 @@ Output::
                     0
                 ],
                 "Mentions": [
-                    {
                     {
                         "Score": 0.9664419889450073,
                         "GroupScore": 1.0,

@@ -20,7 +20,7 @@ Output::
         ]
     }
 
-For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html#replace-root>`__ in the *Amazon Elastic Compute Cloud User Guide*.
+For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html>`__ in the *Amazon Elastic Compute Cloud User Guide*.
 
 
 **Example 2: To view information about all root volume replacement tasks for a specific instance**
@@ -53,4 +53,4 @@ Output::
         ]
     }
 
-For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html#replace-root>`__ in the *Amazon Elastic Compute Cloud User Guide*.
+For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html>`__ in the *Amazon Elastic Compute Cloud User Guide*.

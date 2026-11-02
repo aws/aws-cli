@@ -13,16 +13,13 @@ Output::
                 "suiteDefinitionName": "TestSuite1",
                 "defaultDevices": [
                     {
-                        "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/MyIotThing"
+                        "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"
                     }
                 ],
                 "intendedForQualification": false,
                 "isLongDurationTest": false,
                 "protocol": "MqttV3_1_1",
                 "createdAt": "2022-11-17T14:15:56.830000-05:00"
-            },
-            {
-                ......
             }
         ],
         "nextToken": "nextTokenValue"
@@ -53,4 +50,4 @@ Output::
         "nextToken": "nextTokenValue"
     }
 
-For more information, see `ListSuiteDefinitions <https://docs.aws.amazon.com/iot/latest/apireference/API_iotdeviceadvisor_ListSuiteDefinitions.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Device Advisor workflow <https://docs.aws.amazon.com/iot/latest/developerguide/device-advisor-workflow.html>`__ in the *AWS IoT Core Developer Guide*.

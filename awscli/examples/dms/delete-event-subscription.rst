@@ -11,7 +11,7 @@ Output::
         "EventSubscription": {
             "CustomerAwsId": "123456789012",
             "CustSubscriptionId": "my-dms-events",
-            "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:my-sns-topic",
+            "SnsTopicArn": "arn:aws:sns:us-west-2:123456789012:my-sns-topic",
             "Status": "deleting",
             "SubscriptionCreationTime": "2020-05-21 21:58:38.598",
             "Enabled": true

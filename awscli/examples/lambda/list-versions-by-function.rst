@@ -22,7 +22,7 @@ Output::
                     "SecurityGroupIds": []
                 },
                 "MemorySize": 256,
-                "RevisionId": "93017fc9-59cb-41dc-901b-4845ce4bf668",
+                "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "CodeSize": 266,
                 "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:$LATEST",
                 "Handler": "index.handler",
@@ -45,7 +45,7 @@ Output::
                     "SecurityGroupIds": []
                 },
                 "MemorySize": 256,
-                "RevisionId": "949c8914-012e-4795-998c-e467121951b1",
+                "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "CodeSize": 304,
                 "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:1",
                 "Handler": "index.handler",
@@ -68,7 +68,7 @@ Output::
                     "SecurityGroupIds": []
                 },
                 "MemorySize": 256,
-                "RevisionId": "cd669f21-0f3d-4e1c-9566-948837f2e2ea",
+                "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "CodeSize": 266,
                 "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:2",
                 "Handler": "index.handler",

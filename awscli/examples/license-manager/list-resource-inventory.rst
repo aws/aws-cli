@@ -34,3 +34,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Inventory search in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/inventory.html>`__ in the *AWS License Manager User Guide*.

@@ -16,5 +16,3 @@ Output::
             "revisionNumber": 2
         }
     }
-
-For more information, see `Creating Systems <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-sysdeploy-systems.html>`__ in the *AWS IoT Things Graph User Guide*.

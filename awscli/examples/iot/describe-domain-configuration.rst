@@ -9,8 +9,8 @@ Output::
 
     {
         "domainConfigurationName": "additionalDataDomain",
-        "domainConfigurationArn": "arn:aws:iot:us-east-1:758EXAMPLE143:domainconfiguration/additionalDataDomain/norpw",
-        "domainName": "d055exampleed74y71zfd-ats.beta.us-east-1.iot.amazonaws.com",
+        "domainConfigurationArn": "arn:aws:iot:us-west-2:758EXAMPLE143:domainconfiguration/additionalDataDomain/norpw",
+        "domainName": "d055exampleed74y71zfd-ats.beta.us-west-2.iot.amazonaws.com",
         "serverCertificates": [],
         "domainConfigurationStatus": "ENABLED",
         "serviceType": "DATA",

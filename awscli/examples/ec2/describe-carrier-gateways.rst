@@ -24,5 +24,4 @@ Output::
         ]
     }
 
-For more information, see `Carrier gateways<https://docs.aws.amazon.com/vpc/latest/userguide/Carrier_Gateway.html>`__ in the *Amazon Virtual Private Cloud
-User Guide*.
+For more information, see `Carrier gateway for AWS Wavelength <https://docs.aws.amazon.com/wavelength/latest/developerguide/carrier-gateways.html>`__ in the *AWS Wavelength Developer Guide*.

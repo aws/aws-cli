@@ -5,8 +5,8 @@ The following ``untag-resource`` example tags a repository named ``project-a/ngi
     aws ecr-public untag-resource \
         --resource-arn arn:aws:ecr-public::123456789012:repository/project-a/nginx-web-app \
         --tag-keys stack \
-        --region us-east-1
+        --region us-west-2
 
 This command produces no output.
 
-For more information, see `Using Tags for a public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/ecr-public-using-tags.html>`__ in the *Amazon ECR Public*.
+For more information, see `Tag an Amazon ECR Public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/ecr-public-using-tags.html>`__ in the *Amazon ECR Public User Guide*.

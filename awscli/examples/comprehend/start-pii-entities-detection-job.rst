@@ -8,9 +8,9 @@ When the job is complete, the folder, ``output``, is placed in the location spec
     aws comprehend start-pii-entities-detection-job \
         --job-name entities_test \
         --language-code en \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role \
         --language-code en \
         --mode ONLY_OFFSETS
 
@@ -30,11 +30,11 @@ Output::
 
     {
         "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:pii-entities-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:pii-entities-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``SampleText1.txt.out`` with line indents for readability::
+Contents of ``SampleText1.txt.out``::
 
     {
         "Entities": [
@@ -67,7 +67,7 @@ Contents of ``SampleText1.txt.out`` with line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleText2.txt.out`` with line indents for readability::
+Contents of ``SampleText2.txt.out``::
 
     {
         "Entities": [
@@ -100,7 +100,7 @@ Contents of ``SampleText2.txt.out`` with line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleText3.txt.out`` with line indents for readability::
+Contents of ``SampleText3.txt.out``::
 
     {
         "Entities": [

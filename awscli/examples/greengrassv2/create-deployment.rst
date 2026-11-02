@@ -45,7 +45,7 @@ The following ``create-deployment`` example deploys the AWS IoT Greengrass nucle
 - Sets the JVM options for the nucleus' JVM.
 - Sets the logging level for the nucleus.
 
-::
+The following command deploys the component to the group of core devices. ::
 
     aws greengrassv2 create-deployment \
         --cli-input-json file://nucleus-deployment.json

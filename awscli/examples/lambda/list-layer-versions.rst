@@ -1,6 +1,6 @@
 **To list the versions of an AWS Lambda layer**
 
-The following ``list-layers-versions`` example displays information about the versions for the layer named ``my-layer``. ::
+The following ``list-layer-versions`` example displays information about the versions for the layer named ``my-layer``. ::
 
     aws lambda list-layer-versions \
         --layer-name my-layer
@@ -8,9 +8,9 @@ The following ``list-layers-versions`` example displays information about the ve
 Output::
 
     {
-        "Layers": [
+        "LayerVersions": [
             {
-                "LayerVersionArn": "arn:aws:lambda:us-east-2:123456789012:layer:my-layer:2",
+                "LayerVersionArn": "arn:aws:lambda:us-west-2:123456789012:layer:my-layer:2",
                 "Version": 2,
                 "Description": "My layer",
                 "CreatedDate": "2023-11-15T00:37:46.592+0000",

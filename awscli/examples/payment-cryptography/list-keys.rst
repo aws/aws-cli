@@ -9,10 +9,9 @@ Output::
     {
         "Keys": [
         {
-            "CreateTimestamp": "1666506840",
             "Enabled": false,
             "Exportable": true,
-            "KeyArn": "arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h",
+            "KeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h",
             "KeyAttributes": {
                 "KeyAlgorithm": "TDES_3KEY",
                 "KeyClass": "SYMMETRIC_KEY",
@@ -30,10 +29,7 @@ Output::
                 "KeyUsage": "TR31_P1_PIN_GENERATION_KEY"
             },
             "KeyCheckValue": "369D",
-            "KeyCheckValueAlgorithm": "ANSI_X9_24",
-            "KeyOrigin": "AWS_PAYMENT_CRYPTOGRAPHY",
-            "KeyState": "CREATE_COMPLETE",
-            "UsageStopTimestamp": "1666938840"
+            "KeyState": "CREATE_COMPLETE"
         }
         ]
     }

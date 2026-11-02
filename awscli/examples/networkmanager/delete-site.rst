@@ -3,9 +3,8 @@
 The following ``delete-site`` example deletes the specified site (``site-444555aaabbb11223``) in the specified global network. ::
 
     aws networkmanager delete-site \
-        --global-network-id global-network-01231231231231231  \
-        --site-id site-444555aaabbb11223 \
-        --region us-west-2
+        --global-network-id global-network-01231231231231231 \
+        --site-id site-444555aaabbb11223
 
 Output::
 
@@ -24,4 +23,4 @@ Output::
         }
     }
 
-For more information, see `Working with Sites <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#working-with-sites>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Sites and links in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-sites.html>`__ in the *Transit Gateway Network Manager Guide*.

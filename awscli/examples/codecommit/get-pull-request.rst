@@ -1,6 +1,6 @@
 **To view details of a pull request**
 
-This example demonstrates how to view information about a pull request with the ID of ``27``. ::
+The following ``get-pull-request`` example displays information about a pull request with the ID of ``27``. ::
 
     aws codecommit get-pull-request \
         --pull-request-id 27
@@ -43,3 +43,5 @@ Output::
             "pullRequestStatus": "OPEN"
         }
     }
+
+For more information, see `View pull requests in an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-view-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

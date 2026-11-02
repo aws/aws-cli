@@ -10,15 +10,15 @@ Output::
     {
         "PhoneNumberSummaryList": [
             {
-                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/phone-number/xyz80zxy-xyz1-80zx-zx80-11111EXAMPLE",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/phone-number/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "PhoneNumber": "+17065551212",
                 "PhoneNumberType": "DID",
                 "PhoneNumberCountryCode": "US"
             },
             {
-                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
-                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/phone-number/ccc0ccc-xyz1-80zx-zx80-22222EXAMPLE",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/phone-number/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "PhoneNumber": "+18555551212",
                 "PhoneNumberType": "TOLL_FREE",
                 "PhoneNumberCountryCode": "US"

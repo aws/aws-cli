@@ -7,16 +7,16 @@ When you create an EC2 Fleet, use a JSON file to specify information about the i
     aws ec2 create-fleet \
         --cli-input-json file://file_name.json
 
-Contents of file_name.json::
+Contents of ``file_name.json``::
 
     {
         "LaunchTemplateConfigs": [
-        {
-            "LaunchTemplateSpecification": {
-            "LaunchTemplateId": "lt-0e8c754449b27161c",
-            "Version": "1"
+            {
+                "LaunchTemplateSpecification": {
+                    "LaunchTemplateId": "lt-0e8c754449b27161c",
+                    "Version": "1"
+                }
             }
-        }
         ],
         "TargetCapacitySpecification": {
             "TotalTargetCapacity": 2,
@@ -29,6 +29,8 @@ Output::
     {
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
+
+For more information, see `Create an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-ec2-fleet.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To create an EC2 Fleet that launches On-Demand Instances as the default purchasing model**
 
@@ -39,22 +41,22 @@ When you create an EC2 Fleet, use a JSON file to specify information about the i
     aws ec2 create-fleet \
         --cli-input-json file://file_name.json
 
-Contents of file_name.json::
+Contents of ``file_name.json``::
 
-  {
-      "LaunchTemplateConfigs": [
-      {
-          "LaunchTemplateSpecification": {
-          "LaunchTemplateId": "lt-0e8c754449b27161c",
-          "Version": "1"
-          }
-      }
-      ],
-      "TargetCapacitySpecification": {
-      "TotalTargetCapacity": 2,
-      "DefaultTargetCapacityType": "on-demand"
-      }
-  }
+    {
+        "LaunchTemplateConfigs": [
+            {
+                "LaunchTemplateSpecification": {
+                    "LaunchTemplateId": "lt-0e8c754449b27161c",
+                    "Version": "1"
+                }
+            }
+        ],
+        "TargetCapacitySpecification": {
+            "TotalTargetCapacity": 2,
+            "DefaultTargetCapacityType": "on-demand"
+        }
+    }
 
 Output::
 
@@ -62,6 +64,7 @@ Output::
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
 
+For more information, see `Create an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-ec2-fleet.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To create an EC2 Fleet that launches On-Demand Instances as the primary capacity**
 
@@ -72,20 +75,20 @@ When you create an EC2 Fleet, use a JSON file to specify information about the i
     aws ec2 create-fleet \
         --cli-input-json file://file_name.json
 
-Contents of file_name.json::
+Contents of ``file_name.json``::
 
     {
         "LaunchTemplateConfigs": [
-        {
-            "LaunchTemplateSpecification": {
-            "LaunchTemplateId": "lt-0e8c754449b27161c",
-            "Version": "1"
+            {
+                "LaunchTemplateSpecification": {
+                    "LaunchTemplateId": "lt-0e8c754449b27161c",
+                    "Version": "1"
+                }
             }
-        }
         ],
         "TargetCapacitySpecification": {
             "TotalTargetCapacity": 2,
-            "OnDemandTargetCapacity":1,
+            "OnDemandTargetCapacity": 1,
             "DefaultTargetCapacityType": "spot"
         }
     }
@@ -96,40 +99,44 @@ Output::
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
 
+For more information, see `Create an EC2 Fleet <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-ec2-fleet.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 4: To create an EC2 Fleet that launches Spot Instances using the lowest-price allocation strategy**
 
-If the allocation strategy for Spot Instances is not specified, the default allocation strategy, which is ``lowest-price``, is used. The following ``create-fleet`` example creates an EC2 Fleet using the ``lowest-price`` allocation strategy. The three launch specifications, which override the launch template, have different instance types but the same weighted capacity and subnet. The total target capacity is 2 instances and the default purchasing model is ``spot``. The EC2 Fleet launches 2 Spot Instances using the instance type of the launch specification with the lowest price.
+The following ``create-fleet`` example creates an EC2 Fleet using the ``lowest-price`` allocation strategy. If the allocation strategy for Spot Instances is not specified, the default allocation strategy, which is ``lowest-price``, is used. The three launch specifications, which override the launch template, have different instance types but the same weighted capacity and subnet. The total target capacity is 2 instances and the default purchasing model is ``spot``. The EC2 Fleet launches 2 Spot Instances using the instance type of the launch specification with the lowest price.
 
 When you create an EC2 Fleet, use a JSON file to specify information about the instances to launch. ::
 
     aws ec2 create-fleet \
-        --cli-input-json file://file_name.jsonContents of file_name.json::
+        --cli-input-json file://file_name.json
+
+Contents of ``file_name.json``::
 
     {
         "LaunchTemplateConfigs": [
-        {
-            "LaunchTemplateSpecification": {
-            "LaunchTemplateId": "lt-0e8c754449b27161c",
-            "Version": "1"
-            },
-            "Overrides": [
-                {
-                    "InstanceType": "c4.large",
-                    "WeightedCapacity": 1,
-                    "SubnetId": "subnet-a4f6c5d3"
+            {
+                "LaunchTemplateSpecification": {
+                    "LaunchTemplateId": "lt-0e8c754449b27161c",
+                    "Version": "1"
                 },
-                {
-                    "InstanceType": "c3.large",
-                    "WeightedCapacity": 1,
-                    "SubnetId": "subnet-a4f6c5d3"
-                },
-                {
-                    "InstanceType": "c5.large",
-                    "WeightedCapacity": 1,
-                    "SubnetId": "subnet-a4f6c5d3"
-                }
-            ]
-        }
+                "Overrides": [
+                    {
+                        "InstanceType": "c4.large",
+                        "WeightedCapacity": 1,
+                        "SubnetId": "subnet-a4f6c5d3"
+                    },
+                    {
+                        "InstanceType": "c3.large",
+                        "WeightedCapacity": 1,
+                        "SubnetId": "subnet-a4f6c5d3"
+                    },
+                    {
+                        "InstanceType": "c5.large",
+                        "WeightedCapacity": 1,
+                        "SubnetId": "subnet-a4f6c5d3"
+                    }
+                ]
+            }
         ],
         "TargetCapacitySpecification": {
             "TotalTargetCapacity": 2,
@@ -142,3 +149,5 @@ Output::
     {
         "FleetId": "fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE"
     }
+
+For more information, see `Use allocation strategies to determine how EC2 Fleet or Spot Fleet fulfills Spot and On-Demand capacity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-allocation-strategy.html>`__ in the *Amazon EC2 User Guide*.

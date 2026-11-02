@@ -4,7 +4,7 @@ The following ``delete-user`` example deletes the specified user from the specif
 
     aws connect delete-user \
         --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
-        --user-id 87654321-2222-1234-1234-111234567891
+        --user-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 This command produces no output.
 

@@ -12,10 +12,10 @@ Output::
         "virtualNode": {
             "meshName": "app1",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualNode/vnServiceBv2",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualNode/vnServiceBv2",
                 "createdAt": 1563810117.297,
                 "lastUpdatedAt": 1563824700.678,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 2
             },
             "spec": {

@@ -9,7 +9,7 @@ Output::
     {
         "EntityRecognizerPropertiesList": [
             {
-                "EntityRecognizerArn": "arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/EntityRecognizer/version/1",
+                "EntityRecognizerArn": "arn:aws:comprehend:us-west-2:123456789012:entity-recognizer/EntityRecognizer/version/1",
                 "LanguageCode": "en",
                 "Status": "TRAINED",
                 "SubmitTime": "2023-06-14T20:44:59.631000+00:00",
@@ -51,11 +51,11 @@ Output::
                         }
                     ]
                 },
-                "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-servicerole",
+                "DataAccessRoleArn": "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-servicerole",
                 "VersionName": "1"
             },
             {
-                "EntityRecognizerArn": "arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/entityrecognizer3",
+                "EntityRecognizerArn": "arn:aws:comprehend:us-west-2:123456789012:entity-recognizer/entityrecognizer3",
                 "LanguageCode": "en",
                 "Status": "TRAINED",
                 "SubmitTime": "2023-06-14T22:57:51.056000+00:00",
@@ -97,7 +97,7 @@ Output::
                         }
                     ]
                 },
-                "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-servicerole"
+                "DataAccessRoleArn": "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-servicerole"
             }
         ]
     }

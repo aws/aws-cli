@@ -1,15 +1,15 @@
 **To retrieve details about a specific version of a Lambda function**
 
-The following ``get-function-definition-version`` retrieves information about the specified version of the specified function definition. To retrieve the IDs of all versions of the function definition, use the ``list-function-definition-versions`` command. To retrieve the ID of the last version added to the function definition, use the ``get-function-definition`` command and check the ``LatestVersion`` property. ::
+The following ``get-function-definition-version`` example retrieves information about the specified version of the specified function definition. To retrieve the IDs of all versions of the function definition, use the ``list-function-definition-versions`` command. To retrieve the ID of the last version added to the function definition, use the ``get-function-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-function-definition-version \
-        --function-definition-id "063f5d1a-1dd1-40b4-9b51-56f8993d0f85" \
-        --function-definition-version-id "9748fda7-1589-4fcc-ac94-f5559e88678b"
+        --function-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --function-definition-version-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/063f5d1a-1dd1-40b4-9b51-56f8993d0f85/versions/9748fda7-1589-4fcc-ac94-f5559e88678b",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "CreationTimestamp": "2019-06-18T17:04:30.776Z",
         "Definition": {
             "Functions": [
@@ -21,7 +21,7 @@ Output::
                         "Pinned": true,
                         "Timeout": 3
                     },
-                    "Id": "26b69bdb-e547-46bc-9812-84ec04b6cc8c"
+                    "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
                 },
                 {
                     "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:Greengrass_HelloWorld:GG_HelloWorld",
@@ -34,10 +34,12 @@ Output::
                         "Pinned": true,
                         "Timeout": 25
                     },
-                    "Id": "384465a8-eedf-48c6-b793-4c35f7bfae9b"
+                    "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
                 }
             ]
         },
-        "Id": "063f5d1a-1dd1-40b4-9b51-56f8993d0f85",
-        "Version": "9748fda7-1589-4fcc-ac94-f5559e88678b"
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "Version": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
+
+For more information, see `Run Lambda functions on the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/lambda-functions.html>`__ in the *AWS IoT Greengrass Developer Guide*.

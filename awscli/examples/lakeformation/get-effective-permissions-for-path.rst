@@ -9,7 +9,7 @@ Contents of ``input.json``::
 
     {
         "CatalogId": "123456789111",
-        "ResourceArn": "arn:aws:s3:::lf-data-lake-123456789111"
+        "ResourceArn": "arn:aws:s3:::amzn-s3-demo-bucket"
     }
 
 Output::

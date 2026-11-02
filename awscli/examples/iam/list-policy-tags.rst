@@ -1,6 +1,6 @@
 **To list the tags attached to a managed policy**
 
-The following ``list-policy-tags`` command retrieves the list of tags associated with the specified managed policy. ::
+The following ``list-policy-tags`` example retrieves the list of tags associated with the specified managed policy. ::
 
     aws iam list-policy-tags \
         --policy-arn arn:aws:iam::123456789012:policy/billing-access

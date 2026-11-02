@@ -6,3 +6,5 @@ The following ``cancel-signing-profile`` example removes an existing signing pro
         --profile-name MyProfile1
 
 This command produces no output.
+
+For more information, see `Create a Signer signing profile <https://docs.aws.amazon.com/signer/latest/developerguide/signing-profiles.html>`__ in the *AWS Signer Developer Guide*.

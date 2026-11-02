@@ -1,9 +1,13 @@
 **To request tailed logs**
 
-The following command requests logs from an environment named ``my-env``::
+The following ``request-environment-info`` example requests logs from an environment named ``my-env``. ::
 
-  aws elasticbeanstalk request-environment-info --environment-name my-env --info-type tail
+    aws elasticbeanstalk request-environment-info \
+        --environment-name my-env \
+        --info-type tail
 
-After requesting logs, retrieve their location with `retrieve-environment-info`_.
+This command produces no output.
 
-.. _`retrieve-environment-info`: http://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/retrieve-environment-info.html
+After requesting logs, retrieve their location with `retrieve-environment-info <https://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/retrieve-environment-info.html>`__.
+
+For more information, see `Viewing logs from Amazon EC2 instances in your Elastic Beanstalk environment <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.logging.html>`__ in the *AWS Elastic Beanstalk Developer Guide*.

@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "d77345a3-8f80-4d2e-b47d-aaa622718df2",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Disk-1",
                 "resourceType": "Disk",
                 "createdAt": 1569874357.469,
@@ -25,7 +25,7 @@ Output::
                 "statusChangedAt": 1569874357.469
             },
             {
-                "id": "708fa606-2bfd-4e48-a2c1-0b856585b5b1",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "WordPress-1",
                 "resourceType": "Instance",
                 "createdAt": 1569874357.465,
@@ -40,7 +40,7 @@ Output::
                 "statusChangedAt": 1569874357.465
             },
             {
-                "id": "3187e823-8acb-405d-b098-fad5ceb17bec",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "WordPress-1",
                 "resourceType": "Instance",
                 "createdAt": 1569874357.829,
@@ -55,3 +55,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Delete Lightsail instances <https://docs.aws.amazon.com/lightsail/latest/userguide/delete-an-amazon-lightsail-instance.html>`__ in the *Amazon Lightsail User Guide*.

@@ -1,13 +1,12 @@
 **To obtain the capacity used by a set of rules**
 
-The following ``check-capacity`` retrieves the capacity requirements for a rule set that contains a rate-based rule statement, and an AND rule statement that contains nested rules. ::
+The following ``check-capacity`` example retrieves the capacity requirements for a rule set that contains a rate-based rule statement, and an AND rule statement that contains nested rules. ::
 
     aws wafv2 check-capacity \
         --scope REGIONAL \
-        --rules file://waf-rule-list.json \
-        --region us-west-2
+        --rules file://waf-rule-list.json
 
-Contents of `file://waf-rule-list.json`::
+Contents of ``waf-rule-list.json``::
 
     [
         {
@@ -83,4 +82,4 @@ Output::
         "Capacity":15
     }
 
-For more information, see `AWS WAF Web ACL Capacity Units (WCU) <https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html#aws-waf-capacity-units>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.
+For more information, see `AWS WAF Web ACL Capacity Units (WCU) <https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

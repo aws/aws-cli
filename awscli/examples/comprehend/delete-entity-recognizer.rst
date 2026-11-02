@@ -3,7 +3,7 @@
 The following ``delete-entity-recognizer`` example deletes a custom entity recognizer model. ::
 
     aws comprehend delete-entity-recognizer \
-        --entity-recognizer-arn arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/example-entity-recognizer-1
+        --entity-recognizer-arn arn:aws:comprehend:us-west-2:123456789012:entity-recognizer/example-entity-recognizer-1
 
 This command produces no output.
 

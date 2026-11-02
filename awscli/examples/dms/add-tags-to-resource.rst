@@ -3,7 +3,7 @@
 The following ``add-tags-to-resource`` example adds tags to a replication instance. ::
 
     aws dms add-tags-to-resource \
-        --resource-arn arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE \
+        --resource-arn arn:aws:dms:us-west-2:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE \
         --tags Key=Environment,Value=PROD Key=Project,Value=dbMigration
 
 This command produces no output.

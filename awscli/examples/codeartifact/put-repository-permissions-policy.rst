@@ -7,11 +7,37 @@ The following ``put-repository-permissions-policy`` example attaches a permissio
         --repository test-repo \
         --policy-document file://PATH/TO/policy.json
 
+Contents of ``policy.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::123456789012:root"
+                },
+                "Action": [
+                    "codeartifact:DescribePackageVersion",
+                    "codeartifact:DescribeRepository",
+                    "codeartifact:GetPackageVersionReadme",
+                    "codeartifact:GetRepositoryEndpoint",
+                    "codeartifact:ListPackages",
+                    "codeartifact:ListPackageVersions",
+                    "codeartifact:ListPackageVersionAssets",
+                    "codeartifact:ListPackageVersionDependencies",
+                    "codeartifact:ReadFromRepository"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+
 Output::
 
     {
         "policy": {
-            "resourceArn": "arn:aws:codeartifact:region-id:111122223333:repository/test-domain/test-repo",
+            "resourceArn": "arn:aws:codeartifact:region-id:123456789012:repository/test-domain/test-repo",
             "document": "{ ...policy document content...}",
             "revision": "MQlyyTQRASRU3HB58gBtSDHXG7Q3hvxxxxxxx="
         }

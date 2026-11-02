@@ -3,7 +3,8 @@
 The following ``get-cluster-credentials`` example retrieves temporary credentials that enable access to an Amazon Redshift database. ::
 
     aws redshift get-cluster-credentials \
-        --db-user adminuser --db-name dev \
+        --db-user adminuser \
+        --db-name dev \
         --cluster-identifier mycluster
 
 Output::

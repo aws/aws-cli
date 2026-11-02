@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags applied to an application named testApp in CodeDeploy. ::
 
     aws deploy list-tags-for-resource \
-        --resource-arn arn:aws:codedeploy:us-west-2:111122223333:application:testApp
+        --resource-arn arn:aws:codedeploy:us-west-2:123456789012:application:testApp
 
 Output::
 

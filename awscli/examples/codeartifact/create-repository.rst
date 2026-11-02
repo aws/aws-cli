@@ -4,8 +4,8 @@ The following ``create-repository`` example creates a repository named test-repo
 
     aws codeartifact create-repository \
         --domain test-domain \
-        --domain-owner 111122223333 \
-        --repository test-repo \ 
+        --domain-owner 123456789012 \
+        --repository test-repo \
         --description "This is a test repository."
 
 Output::
@@ -13,10 +13,10 @@ Output::
     {
         "repository": {
             "name": "test-repo",
-            "administratorAccount": "111122223333",
+            "administratorAccount": "123456789012",
             "domainName": "test-domain",
-            "domainOwner": "111122223333",
-            "arn": "arn:aws:codeartifact:us-west-2:111122223333:repository/test-domain/test-repo",
+            "domainOwner": "123456789012",
+            "arn": "arn:aws:codeartifact:us-west-2:123456789012:repository/test-domain/test-repo",
             "description": "This is a test repository.",
             "upstreams": [],
             "externalConnections": []

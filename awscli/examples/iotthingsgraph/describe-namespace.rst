@@ -12,5 +12,3 @@ Output::
         "trackingNamespaceVersion": 1,
         "namespaceVersion": 5
     }
-
-For more information, see `Namespaces <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-whatis-namespace.html>`__ in the *AWS IoT Things Graph User Guide*.

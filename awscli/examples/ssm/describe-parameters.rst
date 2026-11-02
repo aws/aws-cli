@@ -13,7 +13,7 @@ Output::
                 "Type": "SecureString",
                 "KeyId": "alias/aws/ssm",
                 "LastModifiedDate": 1582155479.205,
-                "LastModifiedUser": "arn:aws:sts::111222333444:assumed-role/Admin/Richard-Roe-Managed",
+                "LastModifiedUser": "arn:aws:sts::123456789012:assumed-role/Admin/Richard-Roe-Managed",
                 "Description": "This is a SecureString parameter",
                 "Version": 2,
                 "Tier": "Advanced",
@@ -34,7 +34,7 @@ Output::
                 "Name": "MyStringListParameter",
                 "Type": "StringList",
                 "LastModifiedDate": 1582154764.222,
-                "LastModifiedUser": "arn:aws:iam::111222333444:user/Mary-Major",
+                "LastModifiedUser": "arn:aws:iam::123456789012:user/Mary-Major",
                 "Description": "This is a StringList parameter",
                 "Version": 1,
                 "Tier": "Standard",
@@ -44,7 +44,7 @@ Output::
                 "Name": "MyStringParameter",
                 "Type": "String",
                 "LastModifiedDate": 1582154711.976,
-                "LastModifiedUser": "arn:aws:iam::111222333444:user/Alejandro-Rosalez",
+                "LastModifiedUser": "arn:aws:iam::123456789012:user/Alejandro-Rosalez",
                 "Description": "This is a String parameter",
                 "Version": 1,
                 "Tier": "Standard",
@@ -54,7 +54,7 @@ Output::
                 "Name": "latestAmi",
                 "Type": "String",
                 "LastModifiedDate": 1580862415.521,
-                "LastModifiedUser": "arn:aws:sts::111222333444:assumed-role/lambda-ssm-role/Automation-UpdateSSM-Param",
+                "LastModifiedUser": "arn:aws:sts::123456789012:assumed-role/lambda-ssm-role/Automation-UpdateSSM-Param",
                 "Version": 3,
                 "Tier": "Standard",
                 "Policies": []
@@ -64,7 +64,7 @@ Output::
 
 **Example 2: To list all parameters matching specific metadata**
 
-This ``describe-parameters`` example lists all parameters matching a filter.
+The following ``describe-parameters`` example lists all parameters matching a filter. ::
 
     aws ssm describe-parameters \
         --filters "Key=Type,Values=StringList"
@@ -77,7 +77,7 @@ Output::
                 "Name": "MyStringListParameter",
                 "Type": "StringList",
                 "LastModifiedDate": 1582154764.222,
-                "LastModifiedUser": "arn:aws:iam::111222333444:user/Mary-Major",
+                "LastModifiedUser": "arn:aws:iam::123456789012:user/Mary-Major",
                 "Description": "This is a StringList parameter",
                 "Version": 1,
                 "Tier": "Standard",
@@ -86,4 +86,4 @@ Output::
         ]
     }
 
-For more information, see `Searching for Systems Manager Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-search.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `Searching for Parameter Store parameters in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-search.html>`__ in the *AWS Systems Manager User Guide*.

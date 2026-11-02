@@ -1,13 +1,10 @@
-**To generate CloudFront signed cookies**
+**Example 1: To generate CloudFront signed cookies**
 
-The following example generates signed cookies that grant access to every
+The following ``sign-cookies`` example generates signed cookies that grant access to every
 object in a CloudFront distribution. To generate signed cookies, you need the
 key pair ID (called the **Access Key ID** in the AWS Management Console) and
 the private key of the trusted signer's CloudFront key pair. Because the
-resource contains a wildcard, a custom policy is used. For more information
-about signed cookies, see `Using signed cookies
-<https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-cookies.html>`_
-in the *Amazon CloudFront Developer Guide*. ::
+resource contains a wildcard, a custom policy is used. ::
 
     aws cloudfront sign-cookies \
         --resource "https://d111111abcdef8.cloudfront.net/*" \
@@ -15,6 +12,13 @@ in the *Amazon CloudFront Developer Guide*. ::
         --private-key file://cf-signer-priv-key.pem \
         --date-less-than 2020-01-01 \
         --hash-algorithm SHA256
+
+Contents of ``cf-signer-priv-key.pem``::
+
+    -----BEGIN RSA PRIVATE KEY-----
+    EXAMPLEPRIVATEKEYMIIEowIBAAKCAQEAxPMbCA2Ks0lnd7IR+3pwwd3H/7jPGwj8
+    bLUmore7bX+oeGpZ6QmLAe/1UOWcmZX2u70dYcSIzB1ofZtcn4cJEXAMPLEKEY...
+    -----END RSA PRIVATE KEY-----
 
 Output::
 
@@ -29,8 +33,12 @@ Set each cookie in the response to the viewer, adding the cookie attributes
 (such as ``Domain``, ``Path``, ``Secure`` and ``HttpOnly``) that your
 application needs.
 
-**To extract a single cookie value**
+For more information, see `Use signed cookies <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-cookies.html>`__ in the *Amazon CloudFront Developer Guide*.
 
+**Example 2: To extract a single cookie value**
+
+The following ``sign-cookies`` example generates signed cookies and returns
+only the value of the ``CloudFront-Signature`` cookie.
 The set of cookies depends on the policy type and hash algorithm, so the
 columns of ``--output text`` vary between invocations. Use ``--query`` to
 select a cookie by name. ::
@@ -47,3 +55,5 @@ select a cookie by name. ::
 Output::
 
     Uu8FSzfyZ1pUJfnPTfpZpXoR3cHtu6Vk41gOodDpfCGmY4j~TBvOMBUsXzrcBjAqRuVV9b0Aa1HBpHeY-TR3G3Jbb2Yn2cxNSlAfC4tIYwWOkwypCZl4csuHdFC8XaN0yA0G8GRHDsxNPHKY6lq3ypbnJcXDSzzCixTAgJpOO7M_
+
+For more information, see `Use signed cookies <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-cookies.html>`__ in the *Amazon CloudFront Developer Guide*.

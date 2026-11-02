@@ -8,9 +8,9 @@ When the job is complete, the folder, ``output``, is placed in the location spec
 
     aws comprehend start-events-detection-job \
         --job-name events-detection-1 \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/EventsData" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-servicerole \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/EventsData" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-servicerole \
         --language-code en \
         --target-event-types "BANKRUPTCY" "EMPLOYMENT" "CORPORATE_ACQUISITION" "CORPORATE_MERGER" "INVESTMENT_GENERAL"
 
@@ -30,11 +30,11 @@ Output::
 
     {
         "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:events-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:events-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``SampleText1.txt.out`` with line indents for readability::
+Contents of ``SampleText1.txt.out``::
 
     {
         "Entities": [

@@ -15,7 +15,7 @@ Output::
                 "Name": "allow-rule",
                 "Priority": 101,
                 "Action": "ALLOW",
-                "CreatorRequestId": "d81e3fb7-020b-415e-939f-EXAMPLE11111",
+                "CreatorRequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "CreationTime": "2021-05-25T21:44:00.346093Z",
                 "ModificationTime": "2021-05-25T21:44:00.346093Z"
             }

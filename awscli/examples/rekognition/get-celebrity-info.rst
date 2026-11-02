@@ -1,8 +1,9 @@
 **To get information about a celebrity**
 
-The following ``get-celebrity-info`` command displays information about the specified celebrity. The ``id`` parameter comes from a previous call to ``recognize-celebrities``. ::
+The following ``get-celebrity-info`` example displays information about the specified celebrity. The ``id`` parameter comes from a previous call to ``recognize-celebrities``. ::
 
-    aws rekognition get-celebrity-info --id nnnnnnn
+    aws rekognition get-celebrity-info \
+        --id nnnnnnn
 
 Output::
 

@@ -25,4 +25,6 @@ Output::
                 }
             }
         ]
-    } 
+    }
+
+For more information, see `Create a Signer signing profile <https://docs.aws.amazon.com/signer/latest/developerguide/signing-profiles.html>`__ in the *AWS Signer Developer Guide*.

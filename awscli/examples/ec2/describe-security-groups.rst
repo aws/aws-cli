@@ -25,40 +25,40 @@ Output::
                 "Description": "My security group",
                 "Tags": [
                     {
-                        "Value": "SG1", 
+                        "Value": "SG1",
                         "Key": "Name"
                     }
-                ], 
+                ],
                 "IpPermissions": [
                     {
-                        "IpProtocol": "-1", 
-                        "IpRanges": [], 
+                        "IpProtocol": "-1",
+                        "IpRanges": [],
                         "UserIdGroupPairs": [
                             {
-                                "UserId": "123456789012", 
+                                "UserId": "123456789012",
                                 "GroupId": "sg-903004f8"
                             }
-                        ], 
+                        ],
                         "PrefixListIds": []
                     },
                     {
-                        "PrefixListIds": [], 
-                        "FromPort": 22, 
+                        "PrefixListIds": [],
+                        "FromPort": 22,
                         "IpRanges": [
                             {
                                 "Description": "Access from NY office",
                                 "CidrIp": "203.0.113.0/24"
                             }
-                        ], 
-                        "ToPort": 22, 
-                        "IpProtocol": "tcp", 
+                        ],
+                        "ToPort": 22,
+                        "IpProtocol": "tcp",
                         "UserIdGroupPairs": []
-                        }
+                    }
                 ],
                 "GroupName": "MySecurityGroup",
                 "VpcId": "vpc-1a2b3c4d",
                 "OwnerId": "123456789012",
-                "GroupId": "sg-903004f8",
+                "GroupId": "sg-903004f8"
             }
         ]
     }
@@ -69,15 +69,24 @@ The following ``describe-security-groups`` example uses filters to scope the res
 
     aws ec2 describe-security-groups \
         --filters Name=ip-permission.from-port,Values=22 Name=ip-permission.to-port,Values=22 Name=ip-permission.cidr,Values='0.0.0.0/0' \
-        --query "SecurityGroups[*].[GroupName]" \
-        --output text
+        --query "SecurityGroups[*].[GroupName]"
 
 Output::
 
-    default
-    my-security-group
-    web-servers
-    launch-wizard-1
+    [
+        [
+            "default"
+        ],
+        [
+            "my-security-group"
+        ],
+        [
+            "web-servers"
+        ],
+        [
+            "launch-wizard-1"
+        ]
+    ]
 
 **Example 3: To describe security groups based on tags**
 
@@ -86,18 +95,18 @@ The following ``describe-security-groups`` example uses filters to scope the res
     aws ec2 describe-security-groups \
         --filters Name=group-name,Values=*test* Name=tag:Test,Values=To-delete \
         --query "SecurityGroups[*].{Name:GroupName,ID:GroupId}"
-  
+
 Output::
 
     [
         {
-            "Name": "testfornewinstance", 
+            "Name": "testfornewinstance",
             "ID": "sg-33bb22aa"
-        }, 
+        },
         {
-            "Name": "newgrouptest", 
+            "Name": "newgrouptest",
             "ID": "sg-1a2b3c4d"
         }
     ]
 
-For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.
+For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.

@@ -3,13 +3,13 @@
 The following ``get-automation-execution`` example displays detailed information about an Automation execution. ::
 
     aws ssm get-automation-execution \
-        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE
+        --automation-execution-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "AutomationExecution": {
-            "AutomationExecutionId": "73c8eef8-f4ee-4a05-820c-e354fEXAMPLE",
+            "AutomationExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DocumentName": "AWS-StartEC2Instance",
             "DocumentVersion": "1",
             "ExecutionStartTime": 1583737233.748,
@@ -31,7 +31,7 @@ Output::
                             "running"
                         ]
                     },
-                    "StepExecutionId": "95e70479-cf20-4d80-8018-7e4e2EXAMPLE",
+                    "StepExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                     "OverriddenParameters": {}
                 }
             ],

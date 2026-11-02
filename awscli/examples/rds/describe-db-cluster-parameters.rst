@@ -35,8 +35,7 @@ Output::
                 "SupportedEngineModes": [
                     "provisioned"
                 ]
-            },
-            ...some output truncated...
+            }
         ]
     }
 
@@ -65,9 +64,6 @@ Output::
         }, 
         {
             "ParameterName": "aurora_lab_mode"
-        }, 
-
-        ...some output truncated...
         }
     ]
 
@@ -97,9 +93,6 @@ Output::
         {
             "ParameterName": "aurora_lab_mode", 
             "IsModifiable": true
-        }, 
-
-        ...some output truncated...
         }
     ]
 
@@ -133,8 +126,6 @@ Output::
             "DataType": "boolean", 
             "ParameterName": "automatic_sp_privileges", 
             "IsModifiable": true
-        }, 
-        ...some output truncated...
         }
     ]
 

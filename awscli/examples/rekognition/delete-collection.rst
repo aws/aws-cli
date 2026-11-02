@@ -1,6 +1,6 @@
 **To delete a collection**
 
-The following ``delete-collection`` command deletes the specified collection. ::
+The following ``delete-collection`` example deletes the specified collection. ::
 
     aws rekognition delete-collection \
         --collection-id MyCollection 

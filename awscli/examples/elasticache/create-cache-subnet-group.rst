@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Cache Subnet Group <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/VPCs.CreatingSubnetGroup.html>`__ in the *Elasticache User Guide*.
+For more information, see `Creating a subnet group <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SubnetGroups.Creating.html>`__ in the *Elasticache User Guide*.

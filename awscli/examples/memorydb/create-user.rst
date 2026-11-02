@@ -5,8 +5,7 @@ The following ``create-user`` example creates a new user. ::
     aws memorydb create-user \
         --user-name user-name-1 \
         --access-string "~objects:* ~items:* ~public:*" \
-         --authentication-mode \
-             Passwords="enterapasswordhere",Type=password
+        --authentication-mode Passwords="enterapasswordhere",Type=password
 
 Output::
 

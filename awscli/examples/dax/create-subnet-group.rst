@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Step 2: Create a Subnet Group <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.create-cluster.cli.create-subnet-group.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Creating a DAX cluster using the AWS CLI <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.create-cluster.cli.html>`__ in the *Amazon DynamoDB Developer Guide*.

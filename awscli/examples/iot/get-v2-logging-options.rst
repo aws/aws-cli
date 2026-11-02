@@ -7,9 +7,9 @@ The following ``get-v2-logging-options`` example lists the current logging optio
 Output::
 
     {
-        "roleArn": "arn:aws:iam::094249569039:role/service-role/iotLoggingRole",
+        "roleArn": "arn:aws:iam::123456789012:role/service-role/iotLoggingRole",
         "defaultLogLevel": "WARN",
         "disableAllLogs": false
     }
 
-For more information, see `title <link>`__ in the *AWS IoT Developer Guide*.
+For more information, see `Configure AWS IoT logging <https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html>`__ in the *AWS IoT Core Developer Guide*.

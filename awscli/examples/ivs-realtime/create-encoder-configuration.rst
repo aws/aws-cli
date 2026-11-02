@@ -3,13 +3,14 @@
 The following ``create-encoder-configuration`` example creates a composition encoder configuration with the specified properties. ::
 
     aws ivs-realtime create-encoder-configuration \
-        --name test-ec --video bitrate=3500000,framerate=30.0,height=1080,width=1920
+        --name test-ec \
+        --video bitrate=3500000,framerate=30.0,height=1080,width=1920
 
 Output::
 
     {
         "encoderConfiguration": {
-            "arn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef",
+            "arn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/ABabCDcdEFef",
             "name": "test-ec",
             "tags": {},
             "video": {

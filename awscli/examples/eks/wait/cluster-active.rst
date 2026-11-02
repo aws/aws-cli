@@ -6,3 +6,5 @@ The following ``wait cluster-active`` example command waits for an Amazon EKS cl
         --name my-eks-cluster
 
 This command produces no output.
+
+For more information, see `Create an Amazon EKS cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html>`__ in the *Amazon EKS User Guide*.

@@ -3,21 +3,21 @@
 The following ``describe-instance-refreshes`` example returns a description of all instance refresh requests for the specified Auto Scaling group, including the status message and (if available) the status reason. ::
 
     aws autoscaling describe-instance-refreshes \
-        --auto-scaling-group-name my-asg 
+        --auto-scaling-group-name my-asg
 
 Output::
 
     {
         "InstanceRefreshes": [
             {
-                "InstanceRefreshId": "08b91cf7-8fa6-48af-b6a6-d227f40f1b9b",
+                "InstanceRefreshId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "AutoScalingGroupName": "my-asg",
                 "Status": "InProgress",
                 "StatusReason": "Waiting for instances to warm up before continuing. For example: 0e69cc3f05f825f4f is warming up.",
                 "EndTime": "2023-03-23T16:42:55Z",
                 "PercentageComplete": 0,
                 "InstancesToUpdate": 0,
-        "Preferences": {
+                "Preferences": {
                     "MinHealthyPercentage": 100,
                     "InstanceWarmup": 300,
                     "CheckpointPercentages": [
@@ -31,13 +31,13 @@ Output::
                 }
             },
             {
-                "InstanceRefreshId": "dd7728d0-5bc4-4575-96a3-1b2c52bf8bb1",
+                "InstanceRefreshId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "AutoScalingGroupName": "my-asg",
                 "Status": "Successful",
                 "EndTime": "2022-06-02T16:53:37Z",
                 "PercentageComplete": 100,
                 "InstancesToUpdate": 0,
-        "Preferences": {
+                "Preferences": {
                     "MinHealthyPercentage": 90,
                     "InstanceWarmup": 300,
                     "SkipMatching": true,

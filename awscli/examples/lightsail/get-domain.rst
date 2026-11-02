@@ -13,7 +13,7 @@ Output::
     {
         "domain": {
             "name": "example.com",
-            "arn": "arn:aws:lightsail:global:111122223333:Domain/28cda903-3f15-44b2-9baf-3EXAMPLEb304",
+            "arn": "arn:aws:lightsail:global:123456789012:Domain/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "supportCode": "6EXAMPLE3362//hostedzone/ZEXAMPLEONGSC1",
             "createdAt": 1570728588.6,
             "location": {
@@ -68,3 +68,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Understanding DNS in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-dns-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

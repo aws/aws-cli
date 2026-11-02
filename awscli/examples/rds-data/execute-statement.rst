@@ -20,9 +20,9 @@ Output::
 The following ``execute-statement`` example runs a SQL statement with parameters. ::
 
     aws rds-data execute-statement \
-        --resource-arn "arn:aws:rds:us-east-1:123456789012:cluster:mydbcluster" \
+        --resource-arn "arn:aws:rds:us-west-2:123456789012:cluster:mydbcluster" \
         --database "mydb" \
-        --secret-arn "arn:aws:secretsmanager:us-east-1:123456789012:secret:mysecret" \
+        --secret-arn "arn:aws:secretsmanager:us-west-2:123456789012:secret:mysecret" \
         --sql "insert into mytable values (:id, :val)" \
         --parameters "[{\"name\": \"id\", \"value\": {\"longValue\": 1}},{\"name\": \"val\", \"value\": {\"stringValue\": \"value1\"}}]"
 

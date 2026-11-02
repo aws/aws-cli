@@ -3,7 +3,7 @@
 The following ``get-stream-key`` example gets information about the specified stream key. ::
 
     aws ivs get-stream-key \
-        --arn arn:aws:ivs:us-west-2:123456789012:stream-key/skSKABCDefgh --region=us-west-2
+        --arn arn:aws:ivs:us-west-2:123456789012:stream-key/skSKABCDefgh
 
 Output::
 

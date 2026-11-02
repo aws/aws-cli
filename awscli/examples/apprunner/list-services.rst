@@ -21,20 +21,22 @@ Output::
             {
                 "CreatedAt": "2020-11-20T19:05:25Z",
                 "UpdatedAt": "2020-11-23T12:41:37Z",
-                "ServiceArn": "arn:aws:apprunner:us-east-1:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
+                "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
                 "ServiceId": "8fe1e10304f84fd2b0df550fe98a71fa",
                 "ServiceName": "python-app",
-                "ServiceUrl": "psbqam834h.us-east-1.awsapprunner.com",
+                "ServiceUrl": "psbqam834h.us-west-2.awsapprunner.com",
                 "Status": "RUNNING"
             },
             {
                 "CreatedAt": "2020-11-06T23:15:30Z",
                 "UpdatedAt": "2020-11-23T13:21:22Z",
-                "ServiceArn": "arn:aws:apprunner:us-east-1:123456789012:service/golang-container-app/ab8f94cfe29a460fb8760afd2ee87555",
+                "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/golang-container-app/ab8f94cfe29a460fb8760afd2ee87555",
                 "ServiceId": "ab8f94cfe29a460fb8760afd2ee87555",
                 "ServiceName": "golang-container-app",
-                "ServiceUrl": "e2m8rrrx33.us-east-1.awsapprunner.com",
+                "ServiceUrl": "e2m8rrrx33.us-west-2.awsapprunner.com",
                 "Status": "RUNNING"
             }
         ]
     }
+
+For more information, see `Managing your App Runner service <https://docs.aws.amazon.com/apprunner/latest/dg/manage.html>`__ in the *AWS App Runner Developer Guide*.

@@ -3,16 +3,16 @@
 The following ``update-configuration-policy`` example updates an existing configuration policy to use the specified settings. ::
 
     aws securityhub update-configuration-policy \
-        --identifier "arn:aws:securityhub:eu-central-1:508236694226:configuration-policy/09f37766-57d8-4ede-9d33-5d8b0fecf70e" \
+        --identifier "arn:aws:securityhub:us-west-2:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --name "SampleConfigurationPolicyUpdated" \
         --description "SampleDescriptionUpdated" \
-        --configuration-policy '{"SecurityHub": {"ServiceEnabled": true, "EnabledStandardIdentifiers": ["arn:aws:securityhub:eu-central-1::standards/aws-foundational-security-best-practices/v/1.0.0","arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0"],"SecurityControlsConfiguration":{"DisabledSecurityControlIdentifiers": ["CloudWatch.1"], "SecurityControlCustomParameters": [{"SecurityControlId": "ACM.1", "Parameters": {"daysToExpiration": {"ValueType": "CUSTOM", "Value": {"Integer": 21}}}}]}}}' \
+        --configuration-policy '{"SecurityHub": {"ServiceEnabled": true, "EnabledStandardIdentifiers": ["arn:aws:securityhub:us-west-2::standards/aws-foundational-security-best-practices/v/1.0.0","arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0"],"SecurityControlsConfiguration":{"DisabledSecurityControlIdentifiers": ["CloudWatch.1"], "SecurityControlCustomParameters": [{"SecurityControlId": "ACM.1", "Parameters": {"daysToExpiration": {"ValueType": "CUSTOM", "Value": {"Integer": 21}}}}]}}}' \
         --updated-reason "Disabling CloudWatch.1 and changing parameter value"
 
 Output::
 
     {
-        "Arn": "arn:aws:securityhub:eu-central-1:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "Arn": "arn:aws:securityhub:us-west-2:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Name": "SampleConfigurationPolicyUpdated",
         "Description": "SampleDescriptionUpdated",
@@ -22,7 +22,7 @@ Output::
             "SecurityHub": {
                 "ServiceEnabled": true,
                 "EnabledStandardIdentifiers": [
-                    "arn:aws:securityhub:eu-central-1::standards/aws-foundational-security-best-practices/v/1.0.0",
+                    "arn:aws:securityhub:us-west-2::standards/aws-foundational-security-best-practices/v/1.0.0",
                     "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0"
                 ],
                 "SecurityControlsConfiguration": {

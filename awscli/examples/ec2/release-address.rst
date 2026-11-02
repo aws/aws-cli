@@ -1,15 +1,21 @@
-**To release an Elastic IP addresses for EC2-Classic**
+**Example 1: To release an Elastic IP address for EC2-Classic**
 
-This example releases an Elastic IP address for use with instances in EC2-Classic. If the command succeeds, no output is returned.
+The following ``release-address`` example releases an Elastic IP address for use with instances in EC2-Classic. ::
 
-Command::
+    aws ec2 release-address \
+        --public-ip 198.51.100.0
 
-  aws ec2 release-address --public-ip 198.51.100.0
+This command produces no output.
 
-**To release an Elastic IP address for EC2-VPC**
+For more information, see `Release an Elastic IP address <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing-eips-releasing.html>`__ in the *Amazon EC2 User Guide*.
 
-This example releases an Elastic IP address for use with instances in a VPC. If the command succeeds, no output is returned.
+**Example 2: To release an Elastic IP address for EC2-VPC**
 
-Command::
+The following ``release-address`` example releases an Elastic IP address for use with instances in a VPC. ::
 
-  aws ec2 release-address --allocation-id eipalloc-64d5890a
+    aws ec2 release-address \
+        --allocation-id eipalloc-64d5890a
+
+This command produces no output.
+
+For more information, see `Release an Elastic IP address <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing-eips-releasing.html>`__ in the *Amazon EC2 User Guide*.

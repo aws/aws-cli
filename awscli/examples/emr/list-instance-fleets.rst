@@ -1,68 +1,68 @@
 **To get configuration details of instance fleets in a cluster**
 
-This example lists the details of instance fleets in the cluster specified.
+The following ``list-instance-fleets`` example lists the details of instance fleets in the cluster specified. ::
 
-Command::
-
-  list-instance-fleets --cluster-id 'j-12ABCDEFGHI34JK'
+    list-instance-fleets --cluster-id 'j-12ABCDEFGHI34JK'
 
 Output::
 
-  {
-    "InstanceFleets": [
-        {
-            "Status": {
-                "Timeline": {
-                    "ReadyDateTime": "2017-03-05T19:11:34.637000-0500",
-                    "CreationDateTime": "2017-03-05T19:05:19.817000-0500"
+    {
+        "InstanceFleets": [
+            {
+                "Status": {
+                    "Timeline": {
+                        "ReadyDateTime": "2017-03-05T19:11:34.637000-0500",
+                        "CreationDateTime": "2017-03-05T19:05:19.817000-0500"
+                    },
+                    "State": "RUNNING",
+                    "StateChangeReason": {
+                        "Message": ""
+                    }
                 },
-                "State": "RUNNING",
-                "StateChangeReason": {
-                    "Message": ""
-                }
-            },
-            "ProvisionedSpotCapacity": 6,
-            "Name": "CORE",
-            "InstanceFleetType": "CORE",
-            "LaunchSpecifications": {
-                "SpotSpecification": {
-                    "TimeoutDurationMinutes": 60,
-                    "TimeoutAction": "TERMINATE_CLUSTER"
-                }
-            },
-            "ProvisionedOnDemandCapacity": 2,
-            "InstanceTypeSpecifications": [
-                {
-                    "BidPrice": "0.5",
-                    "InstanceType": "m3.xlarge",
-                    "WeightedCapacity": 2
-                }
-            ],
-            "Id": "if-1ABC2DEFGHIJ3"
-        },
-        {
-            "Status": {
-                "Timeline": {
-                    "ReadyDateTime": "2017-03-05T19:10:58.598000-0500",
-                    "CreationDateTime": "2017-03-05T19:05:19.811000-0500"
+                "ProvisionedSpotCapacity": 6,
+                "Name": "CORE",
+                "InstanceFleetType": "CORE",
+                "LaunchSpecifications": {
+                    "SpotSpecification": {
+                        "TimeoutDurationMinutes": 60,
+                        "TimeoutAction": "TERMINATE_CLUSTER"
+                    }
                 },
-                "State": "RUNNING",
-                "StateChangeReason": {
-                    "Message": ""
-                }
+                "ProvisionedOnDemandCapacity": 2,
+                "InstanceTypeSpecifications": [
+                    {
+                        "BidPrice": "0.5",
+                        "InstanceType": "m3.xlarge",
+                        "WeightedCapacity": 2
+                    }
+                ],
+                "Id": "if-1ABC2DEFGHIJ3"
             },
-            "ProvisionedSpotCapacity": 0,
-            "Name": "MASTER",
-            "InstanceFleetType": "MASTER",
-            "ProvisionedOnDemandCapacity": 1,
-            "InstanceTypeSpecifications": [
-                {
-                    "BidPriceAsPercentageOfOnDemandPrice": 100.0,
-                    "InstanceType": "m3.xlarge",
-                    "WeightedCapacity": 1
-                }
-            ],
-           "Id": "if-2ABC4DEFGHIJ4"
-        }
-    ]
-  }
+            {
+                "Status": {
+                    "Timeline": {
+                        "ReadyDateTime": "2017-03-05T19:10:58.598000-0500",
+                        "CreationDateTime": "2017-03-05T19:05:19.811000-0500"
+                    },
+                    "State": "RUNNING",
+                    "StateChangeReason": {
+                        "Message": ""
+                    }
+                },
+                "ProvisionedSpotCapacity": 0,
+                "Name": "MASTER",
+                "InstanceFleetType": "MASTER",
+                "ProvisionedOnDemandCapacity": 1,
+                "InstanceTypeSpecifications": [
+                    {
+                        "BidPriceAsPercentageOfOnDemandPrice": 100.0,
+                        "InstanceType": "m3.xlarge",
+                        "WeightedCapacity": 1
+                    }
+                ],
+                "Id": "if-2ABC4DEFGHIJ4"
+            }
+        ]
+    }
+
+For more information, see `Planning and configuring instance fleets for your Amazon EMR cluster <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html>`__ in the *Amazon EMR Management Guide*.

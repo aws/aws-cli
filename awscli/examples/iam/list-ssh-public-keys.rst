@@ -18,4 +18,4 @@ Output::
         ]
     }
 
-For more information, see `Use SSH keys and SSH with CodeCommit <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html#ssh-keys-code-commit>`__ in the *AWS IAM User Guide*
+For more information, see `IAM credentials for CodeCommit: Git credentials, SSH keys, and AWS access keys <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html#ssh-keys-code-commit>`__ in the *AWS IAM User Guide*.

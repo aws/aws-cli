@@ -3,7 +3,7 @@
 The following ``get-backup-plan`` example displays the details of the specified backup plan. ::
 
     aws backup get-backup-plan \
-        --backup-plan-id "fcbf5d8f-bd77-4f3a-9c97-f24fb3d373a5"
+        --backup-plan-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
@@ -20,12 +20,12 @@ Output::
                     "Lifecycle": {
                         "DeleteAfterDays": 35
                     },
-                    "RuleId": "70e0ccdc-e9df-4e83-82ad-c1e5a9471cc3"
+                    "RuleId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                 }
             ]
         },
-        "BackupPlanId": "fcbf5d8f-bd77-4f3a-9c97-f24fb3d373a5",
-        "BackupPlanArn": "arn:aws:backup:us-west-2:123456789012:backup-plan:fcbf5d8f-bd77-4f3a-9c97-f24fb3d373a5",
+        "BackupPlanId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "BackupPlanArn": "arn:aws:backup:us-west-2:123456789012:backup-plan:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "VersionId": "NjQ2ZTZkODktMGVhNy00MmQ0LWE4YjktZTkwNTQ3OTkyYTcw",
         "CreationDate": 1568926091.57
     }

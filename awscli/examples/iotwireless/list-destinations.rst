@@ -9,14 +9,14 @@ Output::
     {
         "DestinationList": [
             {
-                "Arn": "arn:aws:iotwireless:us-east-1:123456789012:Destination/IoTWirelessDestination",
+                "Arn": "arn:aws:iotwireless:us-west-2:123456789012:Destination/IoTWirelessDestination",
                 "Name": "IoTWirelessDestination",
                 "Expression": "IoTWirelessRule",
                 "Description": "Destination for messages processed using IoTWirelessRule",
                 "RoleArn": "arn:aws:iam::123456789012:role/IoTWirelessDestinationRole"
             },
             {
-                "Arn": "arn:aws:iotwireless:us-east-1:123456789012:Destination/IoTWirelessDestination2",
+                "Arn": "arn:aws:iotwireless:us-west-2:123456789012:Destination/IoTWirelessDestination2",
                 "Name": "IoTWirelessDestination2",
                 "Expression": "IoTWirelessRule2",
                 "RoleArn": "arn:aws:iam::123456789012:role/IoTWirelessDestinationRole"

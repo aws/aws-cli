@@ -1,4 +1,4 @@
-**Describe a Fargate profile**
+**To describe a Fargate profile**
 
 The following ``describe-fargate-profile`` example describes a Fargate profile. ::
 
@@ -11,10 +11,10 @@ Output::
     {
         "fargateProfile": {
             "fargateProfileName": "my-fargate-profile",
-            "fargateProfileArn": "arn:aws:eks:us-east-2:111122223333:fargateprofile/my-eks-cluster/my-fargate-profile/96c766ce-43d2-f9c9-954c-647334391198",
+            "fargateProfileArn": "arn:aws:eks:us-west-2:123456789012:fargateprofile/my-eks-cluster/my-fargate-profile/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "clusterName": "my-eks-cluster",
             "createdAt": "2024-04-11T10:42:52.486000-04:00",
-            "podExecutionRoleArn": "arn:aws:iam::111122223333:role/eksctl-my-eks-cluster-farga-FargatePodExecutionRole-1htfAaJdJUEO",
+            "podExecutionRoleArn": "arn:aws:iam::123456789012:role/eksctl-my-eks-cluster-farga-FargatePodExecutionRole-1htfAaJdJUEO",
             "subnets": [
                 "subnet-09d912bb63ef21b9a",
                 "subnet-04ad87f71c6e5ab4d",
@@ -41,3 +41,5 @@ Output::
             }
         }
     }
+
+For more information, see `Define which Pods use AWS Fargate when launched <https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html>`__ in the *Amazon EKS User Guide*.

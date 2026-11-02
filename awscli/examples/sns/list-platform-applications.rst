@@ -24,3 +24,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Sending mobile push notifications with Amazon SNS <https://docs.aws.amazon.com/sns/latest/dg/sns-mobile-application-as-subscriber.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

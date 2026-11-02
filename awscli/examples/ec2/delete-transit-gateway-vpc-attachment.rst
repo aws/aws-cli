@@ -12,10 +12,10 @@ Output::
             "TransitGatewayAttachmentId": "tgw-attach-0d2c54bdb3EXAMPLE",
             "TransitGatewayId": "tgw-02f776b1a7EXAMPLE",
             "VpcId": "vpc-0065acced4f61c651",
-            "VpcOwnerId": "111122223333",
+            "VpcOwnerId": "123456789012",
             "State": "deleting",
             "CreationTime": "2019-07-17T16:04:27.000Z"
         }
     }
 
-For more information, see `Delete a VPC attachment <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#delete-vpc-attachment>`__ in the *Transit Gateways Guide*.
+For more information, see `Delete a VPC attachment <https://docs.aws.amazon.com/vpc/latest/tgw/delete-vpc-attachment.html>`__ in the *Transit Gateways Guide*.

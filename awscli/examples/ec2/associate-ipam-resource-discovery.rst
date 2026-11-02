@@ -1,6 +1,6 @@
 **To associate a resource discovery with an IPAM**
 
-In this example, you are an IPAM delegated admin and a resource discovery has been created and shared with you by another AWS account so that you can use IPAM to manage and monitor resource CIDRs owned by the other account.
+The following ``associate-ipam-resource-discovery`` example associates a resource discovery with an IPAM. In this example, you are an IPAM delegated admin and a resource discovery has been created and shared with you by another AWS account so that you can use IPAM to manage and monitor resource CIDRs owned by the other account.
 
 Note
 
@@ -8,31 +8,29 @@ Note
 * The resource discovery that you are associating must have first been shared with your account using AWS RAM.
 * The ``--region`` you enter must match the home Region of the IPAM you are associating it with.
 
-The following ``associate-ipam-resource-discovery`` example associates a resource discovery with an IPAM. ::
+To associate the resource discovery with the IPAM, run the following command. ::
 
     aws ec2 associate-ipam-resource-discovery \
         --ipam-id ipam-005f921c17ebd5107 \
         --ipam-resource-discovery-id ipam-res-disco-03e0406de76a044ee \
         --tag-specifications 'ResourceType=ipam-resource-discovery,Tags=[{Key=cost-center,Value=cc123}]' \
-        --region us-east-1
+        --region us-west-2
 
 Output::
 
     {
-        {
-            "IpamResourceDiscoveryAssociation": {
-                "OwnerId": "320805250157",
-                "IpamResourceDiscoveryAssociationId": "ipam-res-disco-assoc-04382a6346357cf82",
-                "IpamResourceDiscoveryAssociationArn": "arn:aws:ec2::320805250157:ipam-resource-discovery-association/ipam-res-disco-assoc-04382a6346357cf82",
-                "IpamResourceDiscoveryId": "ipam-res-disco-0365d2977fc1672fe",
-                "IpamId": "ipam-005f921c17ebd5107",
-                "IpamArn": "arn:aws:ec2::320805250157:ipam/ipam-005f921c17ebd5107",
-                "IpamRegion": "us-east-1",
-                "IsDefault": false,
-                "ResourceDiscoveryStatus": "active",
-                "State": "associate-in-progress",
-                "Tags": []
-            }
+        "IpamResourceDiscoveryAssociation": {
+            "OwnerId": "123456789012",
+            "IpamResourceDiscoveryAssociationId": "ipam-res-disco-assoc-04382a6346357cf82",
+            "IpamResourceDiscoveryAssociationArn": "arn:aws:ec2::123456789012:ipam-resource-discovery-association/ipam-res-disco-assoc-04382a6346357cf82",
+            "IpamResourceDiscoveryId": "ipam-res-disco-0365d2977fc1672fe",
+            "IpamId": "ipam-005f921c17ebd5107",
+            "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-005f921c17ebd5107",
+            "IpamRegion": "us-west-2",
+            "IsDefault": false,
+            "ResourceDiscoveryStatus": "active",
+            "State": "associate-in-progress",
+            "Tags": []
         }
     }
 

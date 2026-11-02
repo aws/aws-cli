@@ -5,7 +5,7 @@ The following ``run-task`` example runs a task on the default cluster and uses a
     aws ecs run-task \
         --cluster default \
         --task-definition sleep360:1 \
-        --client-token 550e8400-e29b-41d4-a716-446655440000
+        --client-token a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -19,14 +19,14 @@ Output::
                         "value": "x86_64"
                     }
                 ],
-                "availabilityZone": "us-east-1b",
+                "availabilityZone": "us-west-2b",
                 "capacityProviderName": "example-capacity-provider",
-                "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/default",
-                "containerInstanceArn": "arn:aws:ecs:us-east-1:123456789012:container-instance/default/bc4d2ec611d04bb7bb97e83ceEXAMPLE",
+                "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/default",
+                "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/default/bc4d2ec611d04bb7bb97e83ceEXAMPLE",
                 "containers": [
                     {
-                        "containerArn": "arn:aws:ecs:us-east-1:123456789012:container/default/d6f51cc5bbc94a47969c92035e9f66f8/75853d2d-711e-458a-8362-0f0aEXAMPLE",
-                        "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/default/d6f51cc5bbc94a47969c9203EXAMPLE",
+                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/default/d6f51cc5bbc94a47969c92035e9f66f8/75853d2d-711e-458a-8362-0f0aEXAMPLE",
+                        "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/default/d6f51cc5bbc94a47969c9203EXAMPLE",
                         "name": "sleep",
                         "image": "busybox",
                         "lastStatus": "PENDING",
@@ -52,8 +52,8 @@ Output::
                     "inferenceAcceleratorOverrides": []
                 },
                 "tags": [],
-                "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/default/d6f51cc5bbc94a47969c9203EXAMPLE",
-                "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/sleep360:1",
+                "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/default/d6f51cc5bbc94a47969c9203EXAMPLE",
+                "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:1",
                 "version": 1
             }
         ],
@@ -72,17 +72,17 @@ The following ``run-task`` example configures an encrypted Amazon EBS volume for
 Contents of ``ebs.json``::
 
     {
-       "cluster": "default",
-       "taskDefinition": "mytaskdef",
-       "launchType": "FARGATE",
-       "networkConfiguration":{
+        "cluster": "default",
+        "taskDefinition": "mytaskdef",
+        "launchType": "FARGATE",
+        "networkConfiguration":{
             "awsvpcConfiguration":{
                 "assignPublicIp": "ENABLED",
                 "securityGroups": ["sg-12344321"],
                 "subnets":["subnet-12344321"]
             }
         },
-       "volumeConfigurations": [
+        "volumeConfigurations": [
             {
                 "name": "myEBSVolume",
                 "managedEBSVolume": {
@@ -90,7 +90,7 @@ Contents of ``ebs.json``::
                     "sizeInGiB": 100,
                     "roleArn":"arn:aws:iam::1111222333:role/ecsInfrastructureRole",
                     "encrypted": true,
-                    "kmsKeyId": "arn:aws:kms:region:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+                    "kmsKeyId": "arn:aws:kms:region:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                 }
             }
         ]
@@ -103,18 +103,18 @@ Output::
             {
                 "attachments": [
                     {
-                        "id": "ce868693-15ca-4083-91ac-f782f64000c9",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                         "type": "ElasticNetworkInterface",
                         "status": "PRECREATED",
                         "details": [
                             {
-                            "name": "subnetId",
-                            "value": "subnet-070982705451dad82"
+                                "name": "subnetId",
+                                "value": "subnet-12344321"
                             }
                         ]
                     },
                     {
-                        "id": "a17ed863-786c-4372-b5b3-b23e53f37877",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                         "type": "AmazonElasticBlockStorage",
                         "status": "CREATED",
                         "details": [
@@ -143,7 +143,7 @@ Output::
                 "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/default",
                 "containers": [
                     {
-                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/default/7f1fbd3629434cc4b82d72d2f09b67c9/e21962a2-f328-4699-98a3-5161ac2c186a",
+                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/default/7f1fbd3629434cc4b82d72d2f09b67c9/a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                         "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/default/7f1fbd3629434cc4b82d72d2f09b67c9",
                         "name": "container-using-ebs",
                         "image": "amazonlinux:2",

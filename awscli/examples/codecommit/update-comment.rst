@@ -1,6 +1,6 @@
 **To update a comment on a commit**
 
-This example demonstrates how to add the content ``"Fixed as requested. I'll update the pull request."`` to a comment with an ID of ``442b498bEXAMPLE5756813``. ::
+The following ``update-comment`` example adds the content ``"Fixed as requested. I'll update the pull request."`` to a comment with an ID of ``442b498bEXAMPLE5756813``. ::
 
     aws codecommit update-comment \
         --comment-id 442b498bEXAMPLE5756813 \
@@ -10,7 +10,7 @@ Output::
 
     {
         "comment": {
-            "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+            "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
             "clientRequestToken": "",
             "commentId": "442b498bEXAMPLE5756813",
             "content": "Fixed as requested. I'll update the pull request.",
@@ -24,3 +24,5 @@ Output::
                 }
         }
     }
+
+For more information, see `Comment on a commit in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-commit-comment.html>`__ in the *AWS CodeCommit User Guide*.

@@ -3,16 +3,16 @@
 The following ``create-custom-routing-endpoint-group`` example creates an endpoint group for a custom routing accelerator. ::
 
     aws globalaccelerator create-custom-routing-endpoint-group \
-        --listener-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz \
-        --endpoint-group-region us-east-2 \
+        --listener-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/0123vxyz \
+        --endpoint-group-region us-west-2 \
         --destination-configurations "FromPort=80,ToPort=81,Protocols=TCP,UDP"
 
 Output::
 
     {
         "EndpointGroup": {
-            "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/4321abcd",
-            "EndpointGroupRegion": "us-east-2",
+            "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/0123vxyz/endpoint-group/4321abcd",
+            "EndpointGroupRegion": "us-west-2",
             "DestinationDescriptions": [
                 {
                     "FromPort": 80,

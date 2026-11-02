@@ -3,8 +3,8 @@
 The following ``update-timeline-event`` example updates the time that the event occurred. ::
 
     aws ssm-incidents update-timeline-event \
-        --event-id 20bcc812-8a94-4cd7-520c-0ff742111424 \
-        --incident-record-arn "arn:aws:ssm-incidents::111122223333:incident-record/Example-Response-Plan/6ebcc812-85f5-b7eb-8b2f-283e4d844308" \
+        --event-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --incident-record-arn "arn:aws:ssm-incidents::123456789012:incident-record/Example-Response-Plan/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222" \
         --event-time "2021-05-21T18:10:57+00:00"
 
 This command produces no output.

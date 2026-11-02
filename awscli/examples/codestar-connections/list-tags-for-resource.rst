@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example retrieves a list of all tags attached to the specified connections resource. ::
 
     aws codestar-connections list-tags-for-resource \
-        --resource-arn arn:aws:codestar-connections:us-east-1:123456789012:connection/aEXAMPLE-8aad-4d5d-8878-dfcab0bc441f
+        --resource-arn arn:aws:codestar-connections:us-west-2:123456789012:connection/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

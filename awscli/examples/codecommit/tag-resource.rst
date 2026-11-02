@@ -3,7 +3,7 @@
 The following ``tag-resource`` example tags the specified repository with two tags. ::
 
     aws codecommit tag-resource \
-        --resource-arn arn:aws:codecommit:us-west-2:111111111111:MyDemoRepo \
+        --resource-arn arn:aws:codecommit:us-west-2:123456789012:MyDemoRepo \
         --tags Status=Secret,Team=Saanvi 
 
 This command produces no output.

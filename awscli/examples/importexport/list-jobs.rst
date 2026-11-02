@@ -1,9 +1,21 @@
-The following command lists the jobs you've created::
+**To list your jobs**
 
-  aws importexport list-jobs
+The following ``list-jobs`` example lists the jobs you've created. ::
 
-The output for the list-jobs command looks like the following::
+    aws importexport list-jobs
 
-  JOBS    2015-05-27T18:58:21Z    False   EX1ID   Import
+Output::
+
+    {
+        "Jobs": [
+            {
+                "JobId": "EX1ID",
+                "CreationDate": "2015-05-27T18:58:21Z",
+                "IsCanceled": false,
+                "JobType": "Import"
+            }
+        ],
+        "IsTruncated": false
+    }
 
 You can only list jobs created by users under the AWS account you are currently using. Listing jobs returns useful information, like job IDs, which are necessary for other AWS Import/Export commands.

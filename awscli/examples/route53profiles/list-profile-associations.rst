@@ -1,6 +1,6 @@
 **To list Profile associations**
 
-The following ``list-profile-associations`` lists the Profile associations in your AWS account. ::
+The following ``list-profile-associations`` example lists the Profile associations in your AWS account. ::
 
     aws route53profiles list-profile-associations
 
@@ -21,3 +21,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing VPCs associated to an Amazon Route 53 Profile <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles-vpcs-editing.html>`__ in the *Amazon Route 53 Developer Guide*.

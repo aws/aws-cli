@@ -4,8 +4,7 @@ The following ``send-messages`` example sends a direct message for an applicatio
 
     aws pinpoint send-messages \
         --application-id 611e3e3cdd47474c9c1399a505665b91 \
-        --message-request file://myfile.json \
-        --region us-west-2
+        --message-request file://myfile.json
 
 Contents of ``myfile.json``::
 
@@ -34,7 +33,7 @@ Output::
                     "StatusMessage": "MessageId: itnuqhai5alf1n6ahv3udc05n7hhddr6gb3lq6g0"
                 }
             },
-            "RequestId": "c7e23264-04b2-4a46-b800-d24923f74753"
+            "RequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }
 

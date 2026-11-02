@@ -1,6 +1,6 @@
 **To get short-term credentials for a role authenticated with Web Identity (OAuth 2."0)**
 
-The following ``assume-role-with-web-identity`` command retrieves a set of short-term credentials for the IAM role ``app1``. The request is authenticated by using the web identity token supplied by the specified web identity provider. Two additional policies are applied to the session to further restrict what the user can do. The returned credentials expire one hour after they are generated. ::
+The following ``assume-role-with-web-identity`` example retrieves a set of short-term credentials for the IAM role ``app1``. The request is authenticated by using the web identity token supplied by the specified web identity provider. Two additional policies are applied to the session to further restrict what the user can do. The returned credentials expire one hour after they are generated. ::
 
     aws sts assume-role-with-web-identity \
         --duration-seconds 3600 \

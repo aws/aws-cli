@@ -39,20 +39,20 @@ Output::
             "DbClusterResourceId": "cluster-ANPAJ4AE5446DAEXAMPLE",
             "DBClusterIdentifier": "sample-cluster",
             "AvailabilityZones": [
-                "us-east-1a",
-                "us-east-1b",
-                "us-east-1e"
+                "us-west-2a",
+                "us-west-2b",
+                "us-west-2d"
             ],
             "MasterUsername": "master",
             "EngineVersion": "5.7.mysql_aurora.2.11.1",
-            "DBClusterArn": "arn:aws:rds:us-east-1:123456789012:cluster:sample-cluster",
+            "DBClusterArn": "arn:aws:rds:us-west-2:123456789012:cluster:sample-cluster",
             "DBClusterMembers": [],
             "Port": 3306,
             "Status": "creating",
-            "Endpoint": "sample-cluster.cluster-cnpexample.us-east-1.rds.amazonaws.com",
+            "Endpoint": "sample-cluster.cluster-cnpexample.us-west-2.rds.amazonaws.com",
             "DBClusterParameterGroup": "default.aurora-mysql5.7",
             "HostedZoneId": "Z2R2ITUGPM61AM",
-            "ReaderEndpoint": "sample-cluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "ReaderEndpoint": "sample-cluster.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
             "CopyTagsToSnapshot": false
         }
     }
@@ -73,7 +73,7 @@ Output::
 
     {
         "DBCluster": {
-            "Endpoint": "sample-pg-cluster.cluster-cnpexample.us-east-1.rds.amazonaws.com",
+            "Endpoint": "sample-pg-cluster.cluster-cnpexample.us-west-2.rds.amazonaws.com",
             "HttpEndpointEnabled": false,
             "DBClusterMembers": [],
             "EngineMode": "provisioned",
@@ -99,16 +99,16 @@ Output::
             "DBClusterIdentifier": "sample-pg-cluster",
             "MultiAZ": false,
             "Port": 5432,
-            "DBClusterArn": "arn:aws:rds:us-east-1:123456789012:cluster:sample-pg-cluster",
+            "DBClusterArn": "arn:aws:rds:us-west-2:123456789012:cluster:sample-pg-cluster",
             "AssociatedRoles": [],
             "DbClusterResourceId": "cluster-ANPAJ4AE5446DAEXAMPLE",
             "PreferredMaintenanceWindow": "wed:03:33-wed:04:03",
-            "ReaderEndpoint": "sample-pg-cluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "ReaderEndpoint": "sample-pg-cluster.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
             "MasterUsername": "master",
             "AvailabilityZones": [
-                "us-east-1a",
-                "us-east-1b",
-                "us-east-1c"
+                "us-west-2a",
+                "us-west-2b",
+                "us-west-2c"
             ],
             "ReadReplicaIdentifiers": [],
             "DBSubnetGroup": "default"
@@ -130,9 +130,9 @@ Output::
         "DBCluster": {
             "AllocatedStorage": 1,
             "AvailabilityZones": [
-                "us-east-1c",
-                "us-east-1a",
-                "us-east-1b"
+                "us-west-2c",
+                "us-west-2a",
+                "us-west-2b"
             ],
             "BackupRetentionPeriod": 7,
             "DBClusterIdentifier": "sample-cluster",
@@ -157,7 +157,7 @@ Output::
             "VpcSecurityGroups": [],
             "StorageEncrypted": false,
             "DbClusterResourceId": "cluster-EXAMPLE4RESOURCE",
-            "DBClusterArn": "arn:aws:rds:us-east-1:123456789012:cluster:sample-cluster",
+            "DBClusterArn": "arn:aws:rds:us-west-2:123456789012:cluster:sample-cluster",
             "AssociatedRoles": [],
             "IAMDatabaseAuthenticationEnabled": true,
             "ClusterCreateTime": "2026-01-10T22:14:02Z",

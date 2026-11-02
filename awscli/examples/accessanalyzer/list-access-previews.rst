@@ -3,15 +3,15 @@
 The following ``list-access-previews`` example retrieves a list of access previews for the specified analyzer in your AWS account. ::
 
     aws accessanalyzer list-access-previews \
-        --analyzer-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account
+        --analyzer-arn arn:aws:access-analyzer:us-west-2:123456789012:analyzer/ConsoleAnalyzer-account
 
 Output::
 
     {
         "accessPreviews": [
             {
-                "id": "3c65eb13-6ef9-4629-8919-a32043619e6b",
-                "analyzerArn": "arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "analyzerArn": "arn:aws:access-analyzer:us-west-2:123456789012:analyzer/ConsoleAnalyzer-account",
                 "createdAt": "2024-02-17T00:18:44+00:00",
                 "status": "COMPLETED"
             }

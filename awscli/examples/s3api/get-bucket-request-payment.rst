@@ -10,3 +10,5 @@ Output::
     {
         "Payer": "BucketOwner"
     }
+
+For more information, see `Using Requester Pays general purpose buckets for storage transfers and usage <https://docs.aws.amazon.com/AmazonS3/latest/userguide/RequesterPaysBuckets.html>`__ in the *Amazon S3 User Guide*.

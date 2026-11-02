@@ -9,9 +9,9 @@ Output::
     {
         "ActivationList": [
             {
-                "ActivationId": "5743558d-563b-4457-8682-d16c3EXAMPLE",
+                "ActivationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Description": "Example1",
-                "IamRole": "HybridWebServersRole,
+                "IamRole": "HybridWebServersRole",
                 "RegistrationLimit": 5,
                 "RegistrationsCount": 5,
                 "ExpirationDate": 1584316800.0,
@@ -19,7 +19,7 @@ Output::
                 "CreatedDate": 1581954699.792
             },
             {
-                "ActivationId": "3ee0322b-f62d-40eb-b672-13ebfEXAMPLE",
+                "ActivationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Description": "Example2",
                 "IamRole": "HybridDatabaseServersRole",
                 "RegistrationLimit": 5,
@@ -27,7 +27,7 @@ Output::
                 "ExpirationDate": 1580515200.0,
                 "Expired": true,
                 "CreatedDate": 1578064132.002
-            },
+            }
         ]
     }
 

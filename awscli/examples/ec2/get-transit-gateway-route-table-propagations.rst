@@ -17,13 +17,13 @@ Output::
             },
             {
                 "TransitGatewayAttachmentId": "tgw-attach-08e0bc912cEXAMPLE",
-                "ResourceId": "11460968-4ac1-4fd3-bdb2-00599EXAMPLE",
+                "ResourceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ResourceType": "direct-connect-gateway",
                 "State": "enabled"
             },
             {
                 "TransitGatewayAttachmentId": "tgw-attach-0a89069f57EXAMPLE",
-                "ResourceId": "8384da05-13ce-4a91-aada-5a1baEXAMPLE",
+                "ResourceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "ResourceType": "direct-connect-gateway",
                 "State": "enabled"
             }

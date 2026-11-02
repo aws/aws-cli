@@ -1,6 +1,6 @@
 **To create an access key for an IAM user**
 
-The following ``create-access-key`` command creates an access key (access key ID and secret access key) for the IAM user named ``Bob``. ::
+The following ``create-access-key`` example creates an access key (access key ID and secret access key) for the IAM user named ``Bob``. ::
 
     aws iam create-access-key \
         --user-name Bob

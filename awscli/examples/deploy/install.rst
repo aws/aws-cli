@@ -5,10 +5,11 @@ The following ``install`` example copies the on-premises configuration file from
     aws deploy install \
         --override-config \
         --config-file C:\temp\codedeploy.onpremises.yml \
-        --region us-west-2 \
         --agent-installer s3://aws-codedeploy-us-west-2/latest/codedeploy-agent.msi
 
 Output::
 
     Creating the on-premises instance configuration file... DONE
     Installing the AWS CodeDeploy Agent... DONE
+
+For more information, see `Use the register command (IAM user ARN) to register an on-premises instance <https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-on-premises-register-instance.html>`__ in the *AWS CodeDeploy User Guide*.

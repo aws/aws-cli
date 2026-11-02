@@ -3,7 +3,7 @@
 The following ``add-tags-to-resource`` example add tags to an RDS database. :: 
 
     aws rds add-tags-to-resource \
-        --resource-name arn:aws:rds:us-east-1:123456789012:db:database-mysql \
+        --resource-name arn:aws:rds:us-west-2:123456789012:db:database-mysql \
         --tags "[{\"Key\": \"Name\",\"Value\": \"MyDatabase\"},{\"Key\": \"Environment\",\"Value\": \"test\"}]"
 
 This command produces no output.

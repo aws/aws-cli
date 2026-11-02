@@ -2,16 +2,14 @@
 
 The following ``list-webhooks`` example retrieves a list of all tags attached to the specified pipeline resource. ::
 
-    aws codepipeline list-webhooks \
-        --endpoint-url "https://codepipeline.eu-central-1.amazonaws.com" \
-        --region "eu-central-1"
+    aws codepipeline list-webhooks
 
 Output::
 
     {
         "webhooks": [
             {
-                "url": "https://webhooks.domain.com/trigger111111111EXAMPLE11111111111111111": {
+                "definition": {
                     "authenticationConfiguration": {
                         "SecretToken": "Secret"
                     },
@@ -26,9 +24,10 @@ Output::
                         }
                     ]
                 },
-                "arn": "arn:aws:codepipeline:eu-central-1:123456789012:webhook:my-webhook"
+                "url": "https://webhooks.domain.com/trigger111111111EXAMPLE11111111111111111",
+                "arn": "arn:aws:codepipeline:us-west-2:123456789012:webhook:my-webhook"
             }
         ]
     }
 
-For more information, see `List webhooks in your account <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html#pipelines-webhooks-view>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `List webhooks in your account <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html>`__ in the *AWS CodePipeline User Guide*.

@@ -3,8 +3,8 @@
 The following ``create-store-image-task`` example stores an AMI in an S3 bucket. Specify the ID of the AMI and the name of the S3 bucket in which to store the AMI. ::
 
     aws ec2 create-store-image-task \
-      --image-id ami-1234567890abcdef0 \
-      --bucket my-ami-bucket
+        --image-id ami-1234567890abcdef0 \
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

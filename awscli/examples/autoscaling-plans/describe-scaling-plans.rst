@@ -10,7 +10,6 @@ Output::
     {
         "ScalingPlans": [
             {
-                "LastMutatingRequestTime": 1565388443.963,
                 "ScalingPlanVersion": 1,
                 "CreationTime": 1565388443.963,
                 "ScalingInstructions": [

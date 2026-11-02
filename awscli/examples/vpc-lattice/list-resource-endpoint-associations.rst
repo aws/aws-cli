@@ -10,10 +10,10 @@ Output::
     {
         "items": [
             {
-                "arn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourceendpointassociation/rea-0956a7435baf89326",
+                "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourceendpointassociation/rea-0956a7435baf89326",
                 "createdAt": "2025-02-01T00:57:38.998000+00:00",
                 "id": "rea-0956a7435baf89326",
-                "resourceConfigurationArn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourceconfiguration/rcfg-07129f3acded87625",
+                "resourceConfigurationArn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourceconfiguration/rcfg-07129f3acded87625",
                 "resourceConfigurationId": "rcfg-07129f3acded87625",
                 "vpcEndpointId": "vpce-019b90d6f16d4f958",
                 "vpcEndpointOwner": "123456789012"

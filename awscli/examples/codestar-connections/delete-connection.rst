@@ -3,7 +3,7 @@
 The following ``delete-connection`` example shows how to delete a connection. ::
 
     aws codestar-connections delete-connection \
-        --connection-arn arn:aws:codestar-connections:us-west-2:123456789012:connection/aEXAMPLE-8aad-4d5d-8878-dfcab0bc441f
+        --connection-arn arn:aws:codestar-connections:us-west-2:123456789012:connection/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

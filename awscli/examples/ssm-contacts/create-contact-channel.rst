@@ -1,9 +1,9 @@
 **To create a contact channel**
 
-Creates a contact channel of type SMS for the contact Akua Mansa. Contact channels can be created of type SMS, EMAIL, or VOICE. ::
+The following ``create-contact-channel`` example creates a contact channel of type SMS for the contact Akua Mansa. Contact channels can be created of type SMS, EMAIL, or VOICE. ::
 
     aws ssm-contacts create-contact-channel \
-        --contact-id "arn:aws:ssm-contacts:us-east-1:111122223333:contact/akuam" \
+        --contact-id "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam" \
         --name "akuas sms-test" \
         --type SMS \
         --delivery-address '{"SimpleAddress": "+15005550199"}'
@@ -11,7 +11,7 @@ Creates a contact channel of type SMS for the contact Akua Mansa. Contact channe
 Output::
 
     {
-        "ContactChannelArn": "arn:aws:ssm-contacts:us-east-1:111122223333:contact-channel/akuam/02f506b9-ea5d-4764-af89-2daa793ff024"
+        "ContactChannelArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact-channel/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Contacts <https://docs.aws.amazon.com/incident-manager/latest/userguide/contacts.html>`__ in the *Incident Manager User Guide*.

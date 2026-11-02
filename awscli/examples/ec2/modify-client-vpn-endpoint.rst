@@ -3,7 +3,7 @@
 The following ``modify-client-vpn-endpoint`` example enables client connection logging for the specified Client VPN endpoint. ::
 
     aws ec2 modify-client-vpn-endpoint \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde \
+        --client-vpn-endpoint-id cvpn-endpoint-123456789012abcde \
         --connection-log-options Enabled=true,CloudwatchLogGroup=ClientVPNLogs
 
 Output::

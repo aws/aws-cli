@@ -14,4 +14,4 @@ Output::
         "pipelineExecutionId": "b59babff-5f34-EXAMPLE"
     }
 
-For more information, see `Retry failed actions (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/actions-retry.html#actions-retry-cli>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `Configuring stage retry for a failed stage or failed actions <https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-retry.html#stage-retry-cli>`__ in the *AWS CodePipeline User Guide*.

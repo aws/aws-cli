@@ -1,6 +1,6 @@
 **To add a recommendation to a code review**
 
-The following ``put-recommendation-feedback`` puts a ``ThumbsUp`` recommendation on a code review. ::
+The following ``put-recommendation-feedback`` example puts a ``ThumbsUp`` recommendation on a code review. ::
 
     aws codeguru-reviewer put-recommendation-feedback \
         --code-review-arn \arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:code-review:RepositoryAnalysis-my-repository-name-branch-abcdefgh12345678 \

@@ -3,7 +3,7 @@
 The following ``describe-stream-consumer`` example returns the description of the specified consumer, registered with the specified data stream. ::
 
     aws kinesis describe-stream-consumer \
-        --stream-arn arn:aws:kinesis:us-west-2:012345678912:stream/samplestream \
+        --stream-arn arn:aws:kinesis:us-west-2:123456789012:stream/samplestream \
         --consumer-name KinesisConsumerApplication
 
 Output::

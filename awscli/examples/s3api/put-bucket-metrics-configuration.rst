@@ -8,3 +8,5 @@ The following ``put-bucket-metrics-configuration`` example sets a metric configu
         --metrics-configuration '{"Id": "123", "Filter": {"Prefix": "logs"}}'
 
 This command produces no output.
+
+For more information, see `CloudWatch metrics configurations <https://docs.aws.amazon.com/AmazonS3/latest/userguide/metrics-configurations.html>`__ in the *Amazon S3 User Guide*.

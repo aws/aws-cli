@@ -9,16 +9,16 @@ Output::
     {
         "Invitations": [ 
         { 
-            "AccountId": "444455556666",
-            "AdministratorId": "111122223333",
+            "AccountId": "123456789222",
+            "AdministratorId": "123456789111",
             "EmailAddress": "mmajor@example.com",
-            "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-            "InvitedTime": 1579826107000,
-            "MasterId": "111122223333",
+            "GraphArn": "arn:aws:detective:us-west-2:123456789111:graph:027c7c4610ea4aacaf0b883093cab899",
+            "InvitedTime": "2020-01-24T00:35:07+00:00",
+            "MasterId": "123456789111",
             "Status": "INVITED",
-            "UpdatedTime": 1579826107000
+            "UpdatedTime": "2020-01-24T00:35:07+00:00"
         }
     ]
     }
 
-For more information, see `Viewing your list of behavior graph invitations<https://docs.aws.amazon.com/detective/latest/adminguide/member-view-graph-invitations.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Viewing your list of behavior graph invitations <https://docs.aws.amazon.com/detective/latest/userguide/member-view-graph-invitations.html>`__ in the *Amazon Detective User Guide*.

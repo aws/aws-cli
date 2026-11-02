@@ -3,8 +3,8 @@
 The following ``get-certificate`` example retrieves a certificate from the specified private CA. ::
 
     aws acm-pca get-certificate \
-        --certificate-authority-arn arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/12345678-1234-1234-1234-123456789012 \
-        --certificate-arn arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/12345678-1234-1234-1234-123456789012/certificate/6707447683a9b7f4055627ffd55cebcc \
+        --certificate-authority-arn arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --certificate-arn arn:aws:acm-pca:us-west-2:123456789012:certificate-authority/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/certificate/6707447683a9b7f4055627ffd55cebcc \
         --output text
 
 Output::
@@ -24,3 +24,5 @@ Output::
     -----END CERTIFICATE-----
 
 The first part of the output is the certificate itself. The second part is the certificate chain that chains to the root CA certificate. Note that when you use the ``--output text`` option, a ``TAB`` character is inserted between the two certificate pieces (that is the cause of the indented text). If you intend to take this output and parse the certificates with other tools, you might need to remove the ``TAB`` character so it is processed correctly.
+
+For more information, see `Retrieve a private certificate <https://docs.aws.amazon.com/privateca/latest/userguide/PcaGetCert.html>`__ in the *AWS Private Certificate Authority User Guide*.

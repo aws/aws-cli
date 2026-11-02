@@ -18,7 +18,7 @@ Output::
                 "IpAddress": "10.0.1.24",
                 "NetworkInterfaceId": "eni-02d542216aexample",
                 "AvailabilityZoneId": "use2-az2",
-                "AvailabilityZoneName": "us-east-2b",
+                "AvailabilityZoneName": "us-west-2b",
                 "VpcId": "vpc-0123456789abcdef0"
             }
         ]

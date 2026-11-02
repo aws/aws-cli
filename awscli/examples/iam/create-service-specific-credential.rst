@@ -1,4 +1,4 @@
-**Create a set of service-specific credentials for a user**
+**To create a set of service-specific credentials for a user**
 
 The following ``create-service-specific-credential`` example creates a username and password that can be used to access only the configured service. ::
 

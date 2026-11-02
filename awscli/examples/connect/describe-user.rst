@@ -3,15 +3,15 @@
 The following ``describe-user`` example displays the details for the specified Amazon Connect user. ::
 
     aws connect describe-user \
-        --user-id 0c245dc0-0cf5-4e37-800e-2a7481cc8a60
-        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e
+        --user-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
+        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "User": {
-            "Id": "0c245dc0-0cf5-4e37-800e-2a7481cc8a60",
-            "Arn": "arn:aws:connect:us-west-2:123456789012:instance/40c83b68-ea62-414c-97bb-d018e39e158e/agent/0c245dc0-0cf5-4e37-800e-2a7481cc8a60",
+            "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/agent/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "Username": "Jane",
             "IdentityInfo": {
                 "FirstName": "Jane",
@@ -24,11 +24,11 @@ Output::
                 "AfterContactWorkTimeLimit": 0,
                 "DeskPhoneNumber": ""
             },
-            "DirectoryUserId": "8b444cf6-b368-4f29-ba18-07af27405658",
+            "DirectoryUserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
             "SecurityProfileIds": [
-                "b6f85a42-1dc5-443b-b621-de0abf70c9cf"
+                "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
             ],
-            "RoutingProfileId": "0be36ee9-2b5f-4ef4-bcf7-87738e5be0e5",
+            "RoutingProfileId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
             "Tags": {}
         }
     }

@@ -1,6 +1,6 @@
 **To modify a VPN connection**
 
-The following ``modify-vpn-connection`` example changes the target gateway for VPN connection ``vpn-12345678901234567`` to virtual private gateway ``vgw-11223344556677889``::
+The following ``modify-vpn-connection`` example changes the target gateway for VPN connection ``vpn-12345678901234567`` to virtual private gateway ``vgw-11223344556677889``. ::
 
     aws ec2 modify-vpn-connection \
         --vpn-connection-id vpn-12345678901234567 \
@@ -38,3 +38,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Modify the target gateway of an AWS Site-to-Site VPN connection <https://docs.aws.amazon.com/vpn/latest/s2svpn/modify-vpn-target.html>`__ in the *AWS Site-to-Site VPN User Guide*.

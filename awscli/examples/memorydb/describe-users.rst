@@ -1,10 +1,10 @@
 **To return a list of users**
 
-The following `describe-users`` returns a list of users. ::
+The following ``describe-users`` example returns a list of users. ::
 
     aws memorydb describe-users
 
-Output ::
+Output::
 
     {
         "Users": [
@@ -19,7 +19,7 @@ Output ::
                 "Authentication": {
                     "Type": "no-password"
                 },
-                "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:user/default"
+                "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:user/default"
             },
             {
                 "Name": "my-user",
@@ -31,7 +31,7 @@ Output ::
                     "Type": "password",
                     "PasswordCount": 2
                 },
-                "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:user/my-user"
+                "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:user/my-user"
             }
         ]
     }

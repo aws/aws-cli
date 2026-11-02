@@ -14,3 +14,5 @@ Output::
             "CodeDeployDefault.OneAtATime"
         ]
     }
+
+For more information, see `View deployment configuration details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

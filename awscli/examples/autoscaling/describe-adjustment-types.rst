@@ -1,6 +1,6 @@
 **To describe the available scaling adjustment types**
 
-This example describes the available adjustment types. ::
+The following ``describe-adjustment-types`` example describes the available adjustment types. ::
 
     aws autoscaling describe-adjustment-types
 

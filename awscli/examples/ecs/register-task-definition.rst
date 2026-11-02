@@ -28,37 +28,37 @@ Output::
 
     {
         "taskDefinition": {
-            "status": "ACTIVE", 
-            "family": "sleep360", 
-            "placementConstraints": [], 
+            "status": "ACTIVE",
+            "family": "sleep360",
+            "placementConstraints": [],
             "compatibilities": [
-                    "EXTERNAL", 
-                    "EC2"
-            ], 
-            "volumes": [], 
-            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/sleep360:1", 
+                "EXTERNAL",
+                "EC2"
+            ],
+            "volumes": [],
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:1",
             "containerDefinitions": [
                 {
-                    "environment": [], 
-                    "name": "sleep", 
-                    "mountPoints": [], 
-                    "image": "busybox", 
-                    "cpu": 10, 
-                    "portMappings": [], 
+                    "environment": [],
+                    "name": "sleep",
+                    "mountPoints": [],
+                    "image": "busybox",
+                    "cpu": 10,
+                    "portMappings": [],
                     "command": [
-                        "sleep", 
+                        "sleep",
                         "360"
-                    ], 
-            "memory": 10, 
-            "essential": true, 
-            "volumesFrom": []
-            }
-        ], 
+                    ],
+                    "memory": 10,
+                    "essential": true,
+                    "volumesFrom": []
+                }
+            ],
             "revision": 1
         }
     }
 
-For more information, see `Example task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/example_task_definitions.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Example Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/example_task_definitions.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 2: To register a task definition with a JSON string parameter**
 
@@ -68,6 +68,38 @@ The following ``register-task-definition`` example registers a task definition u
         --family sleep360 \
         --container-definitions "[{\"name\":\"sleep\",\"image\":\"busybox\",\"cpu\":10,\"command\":[\"sleep\",\"360\"],\"memory\":10,\"essential\":true}]"
 
-The output is identical to the previous example.
+Output::
 
-For more information, see `Creating a Task Definition <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html>`_ in the *Amazon ECS Developer Guide*.
+    {
+        "taskDefinition": {
+            "status": "ACTIVE",
+            "family": "sleep360",
+            "placementConstraints": [],
+            "compatibilities": [
+                "EXTERNAL",
+                "EC2"
+            ],
+            "volumes": [],
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:1",
+            "containerDefinitions": [
+                {
+                    "environment": [],
+                    "name": "sleep",
+                    "mountPoints": [],
+                    "image": "busybox",
+                    "cpu": 10,
+                    "portMappings": [],
+                    "command": [
+                        "sleep",
+                        "360"
+                    ],
+                    "memory": 10,
+                    "essential": true,
+                    "volumesFrom": []
+                }
+            ],
+            "revision": 1
+        }
+    }
+
+For more information, see `Creating an Amazon ECS task definition using the console <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html>`__ in the *Amazon ECS Developer Guide*.

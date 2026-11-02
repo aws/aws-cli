@@ -1,6 +1,6 @@
 **To merge and close a pull request**
 
-This example demonstrates how to merge and close a pull request with the ID of '47' and a source commit ID of '99132ab0EXAMPLE' in a repository named ``MyDemoRepo``. ::
+The following ``merge-pull-request-by-fast-forward`` example merges and closes a pull request with the ID of ``47`` and a source commit ID of ``99132ab0EXAMPLE`` in a repository named ``MyDemoRepo``. ::
 
     aws codecommit merge-pull-request-by-fast-forward \
         --pull-request-id 47 \

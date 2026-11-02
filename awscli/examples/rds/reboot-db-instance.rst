@@ -18,10 +18,7 @@ Output::
                 "Address": "test-mysql-instance.############.us-west-2.rds.amazonaws.com",
                 "Port": 3306,
                 "HostedZoneId": "Z1PVIF0EXAMPLE"
-            },
-            
-        ... output omitted...
-        
+            }
         }
     }
 

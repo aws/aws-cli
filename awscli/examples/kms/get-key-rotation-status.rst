@@ -3,12 +3,12 @@
 The following ``get-key-rotation-status`` example returns information about the rotation status of the specified KMS key, including whether automatic rotation is enabled, the rotation period, and the next scheduled rotation date. You can use this command on customer managed KMS keys and AWS managed KMS keys. However, all AWS managed KMS keys are automatically rotated every year. ::
 
     aws kms get-key-rotation-status \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "KeyRotationEnabled": true,    
         "NextRotationDate": "2024-02-14T18:14:33.587000+00:00",
         "RotationPeriodInDays": 365

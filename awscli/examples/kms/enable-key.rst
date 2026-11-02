@@ -7,7 +7,7 @@ To specify the KMS key, use the ``key-id`` parameter. This example uses an key I
 Before running this command, replace the example key ID with a valid one. ::
 
     aws kms enable-key \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output. To verify that the KMS key is enabled, use the ``describe-key`` command. See the values of the ``KeyState`` and ``Enabled`` fields in the ``describe-key`` output.
 

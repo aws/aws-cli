@@ -3,17 +3,17 @@
 The following ``list-user-hierarchy-groups`` example lists the user hierarchy groups in the specified Amazon Connect instance. ::
 
     aws connect list-user-hierarchy-groups \
-        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e 
+        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
 
 Output::
 
     {
         "UserHierarchyGroupSummaryList": [
             {
-                "Id": "0e2f6d1d-b3ca-494b-8dbc-ba81d9f8182a",
-                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/40c83b68-ea62-414c-97bb-d018e39e158e/agent-group/0e2f6d1d-b3ca-494b-8dbc-ba81d9f8182a",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/agent-group/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Name": "Example Corporation"
-            },
+            }
         ]
     }
 

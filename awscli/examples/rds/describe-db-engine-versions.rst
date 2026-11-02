@@ -36,9 +36,10 @@ Output::
                         "Description": "MySQL 5.5.57",
                         "AutoUpgrade": false,
                         "IsMajorVersionUpgrade": false
-                    },
-                    ...some output truncated...
+                    }
                 ]
             }
+        ]
+    }
 
 For more information, see `What Is Amazon Relational Database Service (Amazon RDS)? <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html>`__ in the *Amazon RDS User Guide*.

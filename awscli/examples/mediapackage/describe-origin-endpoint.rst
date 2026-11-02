@@ -1,6 +1,6 @@
 **To describe an origin endpoint**
 
-The following ``describe-origin-endpoint`` command displays all of the details of the origin endpoint named ``cmaf_sports``. ::
+The following ``describe-origin-endpoint`` example displays all of the details of the origin endpoint named ``cmaf_sports``. ::
 
     aws mediapackage describe-origin-endpoint \
         --id cmaf_sports

@@ -3,8 +3,8 @@
 The following ``describe-maintenance-window-execution-task-invocations`` example lists the invocations for the specified task executed as part of the specified maintenance window execution. ::
 
     aws ssm describe-maintenance-window-execution-task-invocations \
-        --window-execution-id "518d5565-5969-4cca-8f0e-da3b2a638355" \
-        --task-id "ac0c6ae1-daa3-4a89-832e-d384503b6586"
+        --window-execution-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --task-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
 
 Output::
 
@@ -13,11 +13,11 @@ Output::
             {
                 "Status": "SUCCESS",
                 "Parameters": "{\"documentName\":\"AWS-RunShellScript\",\"instanceIds\":[\"i-0000293ffd8c57862\"],\"parameters\":{\"commands\":[\"df\"]},\"maxConcurrency\":\"1\",\"maxErrors\":\"1\"}",
-                "InvocationId": "e274b6e1-fe56-4e32-bd2a-8073c6381d8b",
+                "InvocationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "StartTime": 1487692834.723,
                 "EndTime": 1487692834.871,
-                "WindowExecutionId": "518d5565-5969-4cca-8f0e-da3b2a638355",
-                "TaskExecutionId": "ac0c6ae1-daa3-4a89-832e-d384503b6586"
+                "WindowExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "TaskExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ]
     }

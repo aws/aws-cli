@@ -5,7 +5,9 @@ The following ``describe-load-balancer-attributes`` example displays the attribu
     aws elbv2 describe-load-balancer-attributes \
         --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188
 
-The following example output show the attributes for an Application Load Balancer. ::
+The following example output shows the attributes for an Application Load Balancer.
+
+Output::
 
     {
         "Attributes": [
@@ -36,7 +38,9 @@ The following example output show the attributes for an Application Load Balance
         ]
     }
 
-The following example output includes the attributes for a Network Load Balancer. ::
+The following example output includes the attributes for a Network Load Balancer.
+
+Output::
 
     {
         "Attributes": [
@@ -62,3 +66,5 @@ The following example output includes the attributes for a Network Load Balancer
             }
         ]
     }
+
+For more information, see `Edit attributes for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-load-balancer-attributes.html>`__ in the *Application Load Balancers Guide*.

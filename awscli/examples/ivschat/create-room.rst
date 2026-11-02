@@ -18,7 +18,7 @@ Output::
         "maximumMessageLength": 256, 
         "maximumMessageRatePerSecond": 5,
         "name": "test-room-1",
-        "tags": {}
+        "tags": {},
         "updateTime": "2022-03-16T07:22:09+00:00"
     }
 

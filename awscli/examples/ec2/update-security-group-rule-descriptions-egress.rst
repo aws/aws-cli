@@ -12,4 +12,4 @@ Output::
         "Return": true
     }
 
-For more information, see `Security group rules <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html#security-group-rules>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Security group rules <https://docs.aws.amazon.com/vpc/latest/userguide/security-group-rules.html>`__ in the *Amazon EC2 User Guide*.

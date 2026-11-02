@@ -11,4 +11,6 @@ Output::
 
     {
         "arn": "arn:aws:signer:us-west-2:123456789012:/signing-profiles/MyProfile6"
-    }   
+    }
+
+For more information, see `Create a Signer signing profile <https://docs.aws.amazon.com/signer/latest/developerguide/signing-profiles.html>`__ in the *AWS Signer Developer Guide*.

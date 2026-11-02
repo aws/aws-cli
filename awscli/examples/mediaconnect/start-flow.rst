@@ -3,13 +3,13 @@
 The following ``start-flow`` example starts the specified flow. ::
 
     aws mediaconnect start-flow \
-        --flow-arn arn:aws:mediaconnect:us-east-1:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow
+        --flow-arn arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow
 
 This command produces no output.
 Output::
 
     {
-        "FlowArn": "arn:aws:mediaconnect:us-east-1:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow",
+        "FlowArn": "arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow",
         "Status": "STARTING"
     }
 

@@ -8,12 +8,12 @@ The following ``create-subscription-definition`` example creates a subscription 
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/subscriptions/9d611d57-5d5d-44bd-a3b4-feccbdd69112",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/subscriptions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreationTimestamp": "2019-06-19T22:34:26.677Z",
-        "Id": "9d611d57-5d5d-44bd-a3b4-feccbdd69112",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LastUpdatedTimestamp": "2019-06-19T22:34:26.677Z",
-        "LatestVersion": "aa645c47-ac90-420d-9091-8c7ffa4f103f",
-        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/subscriptions/9d611d57-5d5d-44bd-a3b4-feccbdd69112/versions/aa645c47-ac90-420d-9091-8c7ffa4f103f"
+        "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/subscriptions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
-For more information, see `Getting Started with Connectors (CLI) <https://docs.aws.amazon.com/greengrass/latest/developerguide/connectors-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Getting started with Greengrass connectors (CLI) <https://docs.aws.amazon.com/greengrass/v1/developerguide/connectors-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.

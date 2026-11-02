@@ -1,6 +1,6 @@
 **To get billing information for domain registration charges for the current AWS account**
 
-The following ``view-billing`` command returns all the domain-related billing records for the current account for the period from January 1, 2018 (1514764800 in Unix time) and midnight on December 31, 2019 (1577836800 in Unix time). 
+The following ``view-billing`` example returns all the domain-related billing records for the current account for the period from January 1, 2018 (1514764800 in Unix time) and midnight on December 31, 2019 (1577836800 in Unix time). 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
@@ -30,4 +30,4 @@ Output::
         ]
     }
 
-For more information, see `ViewBilling <https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ViewBilling.html>`__ in the *Amazon Route 53 API Reference*.
+For more information, see `Downloading a domain billing report <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-billing-report.html>`__ in the *Amazon Route 53 Developer Guide*.

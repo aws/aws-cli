@@ -19,4 +19,4 @@ The following ``update-service-specific-credential`` example changes the status 
 
 This command produces no output.
 
-For more information, see `Create Git Credentials for HTTPS Connections to CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-gc.html#setting-up-gc-iam>`__ in the *AWS CodeCommit User Guide*
+For more information, see `Setup for HTTPS users using Git credentials <https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-gc.html#setting-up-gc-iam>`__ in the *AWS CodeCommit User Guide*.

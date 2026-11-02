@@ -1,6 +1,6 @@
 **Example 1: To create an IAM user**
 
-The following ``create-user`` command creates an IAM user named ``Bob`` in the current account. ::
+The following ``create-user`` example creates an IAM user named ``Bob`` in the current account. ::
 
     aws iam create-user \
         --user-name Bob
@@ -21,7 +21,7 @@ For more information, see `Creating an IAM user in your AWS account <https://doc
 
 **Example 2: To create an IAM user at a specified path**
 
-The following ``create-user`` command creates an IAM user named ``Bob`` at the specified path. ::
+The following ``create-user`` example creates an IAM user named ``Bob`` at the specified path. ::
 
     aws iam create-user \
         --user-name Bob \
@@ -41,9 +41,9 @@ Output::
 
 For more information, see `IAM identifiers <https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html>`__ in the *AWS IAM User Guide*.
 
-**Example 3: To Create an IAM User with tags**
+**Example 3: To create an IAM user with tags**
 
-The following ``create-user`` command creates an IAM user named ``Bob`` with tags. This example uses the ``--tags`` parameter flag with the following 
+The following ``create-user`` example creates an IAM user named ``Bob`` with tags. This example uses the ``--tags`` parameter flag with the following 
 JSON-formatted tags: ``'{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'``. Alternatively, the ``--tags`` flag can be used with tags in the shorthand format: ``'Key=Department,Value=Accounting Key=Location,Value=Seattle'``. ::
 
     aws iam create-user \
@@ -74,9 +74,9 @@ Output::
 
 For more information, see `Tagging IAM users <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags_users.html>`__ in the *AWS IAM User Guide*.
 
-**Example 3: To create an IAM user with a set permissions boundary**
+**Example 4: To create an IAM user with a set permissions boundary**
 
-The following ``create-user`` command creates an IAM user named ``Bob`` with the permissions boundary of AmazonS3FullAccess. ::
+The following ``create-user`` example creates an IAM user named ``Bob`` with the permissions boundary of AmazonS3FullAccess. ::
 
     aws iam create-user \
         --user-name Bob \

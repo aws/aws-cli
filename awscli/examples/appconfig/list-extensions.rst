@@ -1,9 +1,8 @@
 **To list all AWS AppConfig extensions in your AWS account for an AWS Region**
 
-The following ``list-extensions`` example lists all AWS AppConfig extensions for the current AWS account in a specific AWS Region. The command returns custom and AWS authored extensions. ::
+The following ``list-extensions`` example lists all AWS AppConfig extensions for the current AWS account in the current AWS Region. The command returns custom and AWS authored extensions. ::
 
-    aws appconfig list-extensions \
-        --region us-west-2 
+    aws appconfig list-extensions
 
 Output::
 

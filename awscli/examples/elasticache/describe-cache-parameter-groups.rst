@@ -2,8 +2,8 @@
 
 The following ``describe-cache-parameter-groups`` example returns a list of cache parameter group descriptions. ::
 
-   aws elasticache describe-cache-parameter-groups \
-       --cache-parameter-group-name "mygroup"
+    aws elasticache describe-cache-parameter-groups \
+        --cache-parameter-group-name "mygroup"
 
 Output::
 

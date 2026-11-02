@@ -12,3 +12,5 @@ Output::
             "IsPublic": false
         }
     }
+
+For more information, see `Blocking public access to your Amazon S3 storage <https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html>`__ in the *Amazon S3 User Guide*.

@@ -4,8 +4,7 @@ The following ``get-campaign`` example retrieves information about the status, c
 
     aws pinpoint get-campaign \
         --application-id 6e0b7591a90841d2b5d93fa11143e5a7 \
-        --campaign-id a1e63c6cc0eb43ed826ffcc3cc90b30d \
-        --region us-east-1
+        --campaign-id a1e63c6cc0eb43ed826ffcc3cc90b30d
 
 Output::
 
@@ -13,7 +12,7 @@ Output::
         "CampaignResponse": {
             "AdditionalTreatments": [],
             "ApplicationId": "6e0b7591a90841d2b5d93fa11143e5a7",
-            "Arn": "arn:aws:mobiletargeting:us-east-1:AIDACKCEVSQ6C2EXAMPLE:apps/6e0b7591a90841d2b5d93fa11143e5a7/campaigns/a1e63c6cc0eb43ed826ffcc3cc90b30d",
+            "Arn": "arn:aws:mobiletargeting:us-west-2:AIDACKCEVSQ6C2EXAMPLE:apps/6e0b7591a90841d2b5d93fa11143e5a7/campaigns/a1e63c6cc0eb43ed826ffcc3cc90b30d",
             "CreationDate": "2019-10-08T18:40:16.581Z",
             "Description": " ",
             "HoldoutPercent": 0,
@@ -49,3 +48,5 @@ Output::
             "Version": 1
         }
     }
+
+For more information, see `Amazon Pinpoint campaigns <https://docs.aws.amazon.com/pinpoint/latest/userguide/campaigns.html>`__ in the *Amazon Pinpoint User Guide*.

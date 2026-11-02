@@ -14,7 +14,7 @@ Output::
                 "ScalableDimension": "ecs:service:DesiredCount",
                 "Description": "Setting desired count to 1.",
                 "ResourceId": "service/default/web-app",
-                "ActivityId": "e6c5f7d1-dbbb-4a3f-89b2-51f33e766399",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "StartTime": 1462575838.171,
                 "ServiceNamespace": "ecs",
                 "EndTime": 1462575872.111,
@@ -27,7 +27,7 @@ Output::
 
 For more information, see `Scaling activities for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scaling-activities.html>`__ in the *Application Auto Scaling User Guide*.
 
-**Example 2:  To describe scaling activities for the specified DynamoDB table**
+**Example 2: To describe scaling activities for the specified DynamoDB table**
 
 The following ``describe-scaling-activities`` example describes the scaling activities for a DynamoDB table called ``TestTable``. The output shows scaling activities initiated by two different scheduled actions. ::
 
@@ -43,7 +43,7 @@ Output::
                 "ScalableDimension": "dynamodb:table:WriteCapacityUnits",
                 "Description": "Setting write capacity units to 10.",
                 "ResourceId": "table/my-table",
-                "ActivityId": "4d1308c0-bbcf-4514-a673-b0220ae38547",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "StartTime": 1561574415.086,
                 "ServiceNamespace": "dynamodb",
                 "EndTime": 1561574449.51,
@@ -55,7 +55,7 @@ Output::
                 "ScalableDimension": "dynamodb:table:WriteCapacityUnits",
                 "Description": "Setting min capacity to 5 and max capacity to 10",
                 "ResourceId": "table/my-table",
-                "ActivityId": "f2b7847b-721d-4e01-8ef0-0c8d3bacc1c7",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "StartTime": 1561574414.644,
                 "ServiceNamespace": "dynamodb",
                 "Cause": "scheduled action name my-second-scheduled-action was triggered",
@@ -66,7 +66,7 @@ Output::
                 "ScalableDimension": "dynamodb:table:WriteCapacityUnits",
                 "Description": "Setting write capacity units to 15.",
                 "ResourceId": "table/my-table",
-                "ActivityId": "d8ea4de6-9eaa-499f-b466-2cc5e681ba8b",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "StartTime": 1561574108.904,
                 "ServiceNamespace": "dynamodb",
                 "EndTime": 1561574140.255,
@@ -78,7 +78,7 @@ Output::
                 "ScalableDimension": "dynamodb:table:WriteCapacityUnits",
                 "Description": "Setting min capacity to 15 and max capacity to 20",
                 "ResourceId": "table/my-table",
-                "ActivityId": "3250fd06-6940-4e8e-bb1f-d494db7554d2",
+                "ActivityId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                 "StartTime": 1561574108.512,
                 "ServiceNamespace": "dynamodb",
                 "Cause": "scheduled action name my-first-scheduled-action was triggered",

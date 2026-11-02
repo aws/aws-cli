@@ -623,6 +623,19 @@
       ],
       "documentation":"<p>Returns a list of resources (for example, instances) that have at least one pending maintenance action.</p>"
     },
+    "DescribeServerlessV2PlatformVersions":{
+      "name":"DescribeServerlessV2PlatformVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeServerlessV2PlatformVersionsMessage"},
+      "output":{
+        "shape":"ServerlessV2PlatformVersionsMessage",
+        "resultWrapper":"DescribeServerlessV2PlatformVersionsResult"
+      },
+      "documentation":"<p>Describes the properties of specific platform versions for Amazon DocumentDB Serverless v2.</p>"
+    },
     "FailoverDBCluster":{
       "name":"FailoverDBCluster",
       "http":{
@@ -1848,6 +1861,10 @@
         "ServerlessV2ScalingConfiguration":{
           "shape":"ServerlessV2ScalingConfigurationInfo",
           "documentation":"<p>The scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
+        },
+        "ServerlessV2PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the Amazon DocumentDB Serverless platform used by the cluster.</p>"
         },
         "MasterUserSecret":{
           "shape":"ClusterMasterUserSecret",
@@ -3207,6 +3224,40 @@
         }
       },
       "documentation":"<p>Represents the input to <a>DescribePendingMaintenanceActions</a>.</p>"
+    },
+    "DescribeServerlessV2PlatformVersionsMessage":{
+      "type":"structure",
+      "members":{
+        "ServerlessV2PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>A specific platform version to return details for.</p> <p>Example: <code>3</code> </p>"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The database engine to return platform version details for.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>This parameter isn't currently supported.</p>"
+        },
+        "DefaultOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to return only the default platform versions for each engine. The default platform version is the version used for new DB clusters.</p>"
+        },
+        "IncludeAll":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to also include platform versions that are no longer in use. If you don't specify a value, the response includes only active platform versions.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token (marker) is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        }
+      },
+      "documentation":"<p>The input for the <code>DescribeServerlessV2PlatformVersions</code> operation.</p>"
     },
     "DoubleOptional":{"type":"double"},
     "Endpoint":{
@@ -4809,6 +4860,57 @@
         }
       },
       "documentation":"<p>Specifies any Amazon DocumentDB Serverless properties or limits that differ between Amazon DocumentDB engine versions. You can test the values of this attribute when deciding which Amazon DocumentDB version to use in a new or upgraded cluster. You can also retrieve the version of an existing cluster and check whether that version supports certain Amazon DocumentDB Serverless features before you attempt to use those features.</p>"
+    },
+    "ServerlessV2PlatformVersionInfo":{
+      "type":"structure",
+      "members":{
+        "ServerlessV2PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>The version number of the serverless platform.</p>"
+        },
+        "ServerlessV2PlatformVersionDescription":{
+          "shape":"String",
+          "documentation":"<p>The description of the serverless platform.</p>"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The name of the database engine.</p>"
+        },
+        "ServerlessV2FeaturesSupport":{
+          "shape":"ServerlessV2FeaturesSupport",
+          "documentation":"<p>Specifies any Amazon DocumentDB Serverless v2 properties or limits that differ between platform versions. You can retrieve the platform version of an existing cluster and check whether it supports specific features before you use them.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the serverless platform. Valid statuses are the following:</p> <ul> <li> <p> <code>enabled</code> - The platform version is in use.</p> </li> <li> <p> <code>disabled</code> - The platform version is not in use.</p> </li> </ul>"
+        },
+        "IsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether this platform version is the default version for the engine. The default platform version is the version used for new DB clusters.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a specific Amazon DocumentDB Serverless platform version, including its version number, status, engine, and supported features.</p>"
+    },
+    "ServerlessV2PlatformVersionList":{
+      "type":"list",
+      "member":{
+        "shape":"ServerlessV2PlatformVersionInfo",
+        "locationName":"ServerlessV2PlatformVersionInfo"
+      }
+    },
+    "ServerlessV2PlatformVersionsMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "ServerlessV2PlatformVersions":{
+          "shape":"ServerlessV2PlatformVersionList",
+          "documentation":"<p>A list of <code>ServerlessV2PlatformVersionInfo</code> elements.</p>"
+        }
+      },
+      "documentation":"<p>Contains the result of a successful invocation of the <code>DescribeServerlessV2PlatformVersions</code> operation.</p>"
     },
     "ServerlessV2ScalingConfiguration":{
       "type":"structure",

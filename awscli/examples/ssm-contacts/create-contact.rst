@@ -11,7 +11,7 @@ The following ``create-contact`` example creates a contact in your environment w
 Output::
 
     {
-        "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam"
+        "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam"
     }
 
 For more information, see `Contacts <https://docs.aws.amazon.com/incident-manager/latest/userguide/contacts.html>`__ in the *Incident Manager User Guide*.

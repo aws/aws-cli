@@ -1,9 +1,9 @@
 **To remove an account as the delegated administrator for GuardDuty within your organization**
 
-This example shows how to remove an account as the delegated administrator for GuardDuty. ::
+The following ``disable-organization-admin-account`` example removes an account as the delegated administrator for GuardDuty. ::
 
     aws guardduty disable-organization-admin-account \
-        --admin-account-id 111122223333
+        --admin-account-id 123456789012
 
 This command produces no output.
 

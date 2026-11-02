@@ -8,4 +8,4 @@ The following ``update-certificate`` example sets the specified device certifica
 
 This command produces no output.
 
-For more information, see `UpdateCertificate <https://docs.aws.amazon.com/iot/latest/apireference/API_UpdateCertificate.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Activate or deactivate a client certificate <https://docs.aws.amazon.com/iot/latest/developerguide/activate-or-deactivate-device-cert.html>`__ in the *AWS IoT Core Developer Guide*.

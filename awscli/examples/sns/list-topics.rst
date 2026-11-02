@@ -2,7 +2,7 @@
 
 The following ``list-topics`` example lists all of SNS topics in your AWS account. ::
 
-  aws sns list-topics
+    aws sns list-topics
 
 Output::
 
@@ -13,3 +13,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Creating an Amazon SNS topic <https://docs.aws.amazon.com/sns/latest/dg/sns-create-topic.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

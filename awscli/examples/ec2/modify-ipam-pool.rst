@@ -2,7 +2,7 @@
 
 The following ``modify-ipam-pool`` example modifies an IPAM pool.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 modify-ipam-pool \
         --ipam-pool-id ipam-pool-0533048da7d823723 \
@@ -10,7 +10,7 @@ The following ``modify-ipam-pool`` example modifies an IPAM pool.
         --clear-allocation-default-netmask-length \
         --allocation-min-netmask-length 14
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 modify-ipam-pool ^
         --ipam-pool-id ipam-pool-0533048da7d823723 ^
@@ -28,7 +28,7 @@ Output::
             "IpamScopeArn": "arn:aws:ec2::123456789012:ipam-scope/ipam-scope-02fc38cd4c48e7d38",
             "IpamScopeType": "private",
             "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-08440e7a3acde3908",
-            "IpamRegion": "us-east-1",
+            "IpamRegion": "us-west-2",
             "Locale": "None",
             "PoolDepth": 1,
             "State": "modify-complete",

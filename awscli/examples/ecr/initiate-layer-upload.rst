@@ -9,5 +9,7 @@ Output::
 
     {
         "partSize": 10485760,
-        "uploadId": "6cb64b8a-9378-0e33-2ab1-b780fab8a9e9"
+        "uploadId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
+
+For more information, see `Pushing an image to an Amazon ECR private repository <https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-push.html>`__ in the *Amazon ECR User Guide*.

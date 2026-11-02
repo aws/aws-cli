@@ -17,4 +17,4 @@ Output::
         ]
     }
 
-For more information about tagging performance analysis reports, see `Adding tags to a performance analysis report in Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.UsingDashboard.ManagePerfAnalysisReportTags.html>`__ in the *Amazon RDS User Guide* and `Adding tags to a performance analysis report in Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.UsingDashboard.ManagePerfAnalysisReportTags.html>`__ in the *Amazon Aurora User Guide*.
+For more information about tagging performance analysis reports, see `AWS CLI examples for Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.API.Examples.html>`__ in the *Amazon RDS User Guide* and `AWS CLI examples for Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.API.Examples.html>`__ in the *Amazon Aurora User Guide*.

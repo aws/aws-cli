@@ -3,7 +3,7 @@
 The following ``disable-import-findings-for-product`` example disables the flow of findings for the specified subscription to a product integration. ::
 
     aws securityhub disable-import-findings-for-product \
-        --product-subscription-arn "arn:aws:securityhub:us-west-1:123456789012:product-subscription/crowdstrike/crowdstrike-falcon"
+        --product-subscription-arn "arn:aws:securityhub:us-west-2:123456789012:product-subscription/crowdstrike/crowdstrike-falcon"
 
 This command produces no output.
 

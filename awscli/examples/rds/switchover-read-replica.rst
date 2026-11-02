@@ -21,8 +21,7 @@ Output::
                     "Status": "replicating"
                 }
             ],
-            "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:rds-oracle-reader",
-            ...some output truncated...
+            "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:rds-oracle-reader"
         }
     }
 

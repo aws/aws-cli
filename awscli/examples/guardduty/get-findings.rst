@@ -3,7 +3,7 @@
 The following ``get-findings`` example retrieves the full JSON finding details of the specified finding. ::
 
     aws guardduty get-findings \
-        --detector-id 12abc34d567e8fa901bc2d34eexample \ 
+        --detector-id 12abc34d567e8fa901bc2d34eexample \
         --finding-id 1ab92989eaf0e742df4a014d5example
 
 Output::
@@ -59,17 +59,17 @@ Output::
                 },
                 "Title": "Unusual user permission reconnaissance activity by testuser.",
                 "Type": "Recon:IAMUser/UserPermissions",
-                "Region": "us-east-1",
+                "Region": "us-west-2",
                 "Partition": "aws",
-                "Arn": "arn:aws:guardduty:us-east-1:111122223333:detector/d4b040365221be2b54a6264dcexample/finding/1ab92989eaf0e742df4a014d5example",
+                "Arn": "arn:aws:guardduty:us-west-2:123456789012:detector/d4b040365221be2b54a6264dcexample/finding/1ab92989eaf0e742df4a014d5example",
                 "UpdatedAt": "2020-05-26T22:55:21.703Z",
                 "SchemaVersion": "2.0",
                 "Severity": 5,
                 "Id": "1ab92989eaf0e742df4a014d5example",
                 "CreatedAt": "2020-05-26T22:21:48.385Z",
-                "AccountId": "111122223333"
+                "AccountId": "123456789012"
             }
         ]
     }
 
-For more information, see `Findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the GuardDuty User Guide.
+For more information, see `Understanding and generating Amazon GuardDuty findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the *Amazon GuardDuty User Guide*.

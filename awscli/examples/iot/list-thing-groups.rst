@@ -1,6 +1,6 @@
 **To list the thing groups defined in your AWS account**
 
-The following ``describe-thing-group`` example lists all thing groups defined in your AWS account. ::
+The following ``list-thing-groups`` example lists all thing groups defined in your AWS account. ::
 
     aws iot list-thing-groups
 

@@ -1,9 +1,8 @@
 **Example 1: To describe the AMI metadata for all instances**
 
-The following ``describe-instance-image-metadata`` example describes the AMI metadata of all the instances in your AWS account in the specified Region. ::
+The following ``describe-instance-image-metadata`` example describes the AMI metadata of all the instances in your AWS account. ::
 
-    aws ec2 describe-instance-image-metadata \
-        --region us-east-1
+    aws ec2 describe-instance-image-metadata
 
 Output::
 
@@ -13,12 +12,12 @@ Output::
                 "InstanceId": "i-1234567890EXAMPLE",
                 "InstanceType": "t2.micro",
                 "LaunchTime": "2024-08-28T11:25:45+00:00",
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "State": {
                     "Code": 16,
                     "Name": "running"
                 },
-                "OwnerId": "123412341234",
+                "OwnerId": "123456789012",
                 "Tags": [
                     {
                         "Key": "MyTagName",
@@ -47,7 +46,6 @@ For more information, see `Amazon Machine Images in Amazon EC2 <https://docs.aws
 The following ``describe-instance-image-metadata`` example describes the AMI metadata for the specified instances. ::
 
     aws ec2 describe-instance-image-metadata \
-        --region us-east-1 \
         --instance-ids i-1234567890EXAMPLE i-0987654321EXAMPLE
 
 Output::
@@ -58,12 +56,12 @@ Output::
                 "InstanceId": "i-1234567890EXAMPLE",
                 "InstanceType": "t2.micro",
                 "LaunchTime": "2024-08-28T11:25:45+00:00",
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "State": {
                     "Code": 16,
                     "Name": "running"
                 },
-                "OwnerId": "123412341234",
+                "OwnerId": "123456789012",
                 "Tags": [
                     {
                         "Key": "MyTagName",
@@ -85,12 +83,12 @@ Output::
                 "InstanceId": "i-0987654321EXAMPLE",
                 "InstanceType": "t2.micro",
                 "LaunchTime": "2024-08-28T11:25:45+00:00",
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "State": {
                     "Code": 16,
                     "Name": "running"
                 },
-                "OwnerId": "123412341234",
+                "OwnerId": "123456789012",
                 "Tags": [
                     {
                         "Key": "MyTagName",
@@ -115,11 +113,10 @@ For more information, see `Amazon Machine Images in Amazon EC2 <https://docs.aws
 
 **Example 3: To describe the AMI metadata for instances based on filters**
 
-The following ``describe-instance-image-metadata`` example describes the AMI metadata for ``t2.nano`` and ``t2.micro`` instances in the ``us-east-1a`` Availability Zone. ::
+The following ``describe-instance-image-metadata`` example describes the AMI metadata for ``t2.nano`` and ``t2.micro`` instances in the ``us-west-2a`` Availability Zone. ::
 
     aws ec2 describe-instance-image-metadata \
-        --region us-east-1 \
-        --filters Name=availability-zone,Values=us-east-1a Name=instance-type,Values=t2.nano,t2.micro
+        --filters Name=availability-zone,Values=us-west-2a Name=instance-type,Values=t2.nano,t2.micro
 
 Output::
 
@@ -129,12 +126,12 @@ Output::
                 "InstanceId": "i-1234567890EXAMPLE",
                 "InstanceType": "t2.micro",
                 "LaunchTime": "2024-08-28T11:25:45+00:00",
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "State": {
                     "Code": 16,
                     "Name": "running"
                 },
-                "OwnerId": "123412341234",
+                "OwnerId": "123456789012",
                 "Tags": [
                     {
                         "Key": "MyTagName",
@@ -156,12 +153,12 @@ Output::
                 "InstanceId": "i-0987654321EXAMPLE",
                 "InstanceType": "t2.micro",
                 "LaunchTime": "2024-08-28T11:25:45+00:00",
-                "AvailabilityZone": "us-east-1a",
+                "AvailabilityZone": "us-west-2a",
                 "State": {
                     "Code": 16,
                     "Name": "running"
                 },
-                "OwnerId": "123412341234",
+                "OwnerId": "123456789012",
                 "Tags": [
                     {
                         "Key": "MyTagName",

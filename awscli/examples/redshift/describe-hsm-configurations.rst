@@ -2,7 +2,7 @@
 
 The following ``describe-hsm-configurations`` example displays details for the available HSM configurations for the calling AWS account. ::
 
-    aws redshift describe-hsm-configurations /
+    aws redshift describe-hsm-configurations \
         --hsm-configuration-identifier myhsmconnection
 
 Output::
@@ -18,3 +18,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Encryption using hardware security modules <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html#working-with-HSM>`__ in the *Amazon Redshift Management Guide*.

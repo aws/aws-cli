@@ -11,11 +11,11 @@ The following ``modify-db-proxy-target-group`` example modifies a DB proxy targe
 Output::
 
     {
-    "DBProxyTargetGroup": 
+        "DBProxyTargetGroup":
         {
             "DBProxyName": "proxyExample",
             "TargetGroupName": "default",
-            "TargetGroupArn": "arn:aws:rds:us-east-1:123456789012:target-group:prx-tg-0123a01b12345c0ab",
+            "TargetGroupArn": "arn:aws:rds:us-west-2:123456789012:target-group:prx-tg-0123a01b12345c0ab",
             "IsDefault": true,
             "Status": "available",
             "ConnectionPoolConfig": {
@@ -29,6 +29,6 @@ Output::
         }
     }
 
-For more information, see `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-managing.html#rds-proxy-modifying-proxy>`__ in the *Amazon RDS User Guide* and `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-managing.html#rds-proxy-modifying-proxy>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-modifying-proxy.html>`__ in the *Amazon RDS User Guide* and `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-modifying-proxy.html>`__ in the *Amazon Aurora User Guide*.
 
 

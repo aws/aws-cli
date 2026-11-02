@@ -1,6 +1,6 @@
 **To add a tag to a user**
 
-The following ``tag-user`` command adds a tag with the associated Department to the specified user. ::
+The following ``tag-user`` example adds a tag with the associated Department to the specified user. ::
 
     aws iam tag-user \
         --user-name alice \

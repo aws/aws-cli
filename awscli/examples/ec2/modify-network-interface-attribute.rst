@@ -1,34 +1,41 @@
-**To modify the attachment attribute of a network interface**
+**Example 1: To modify the attachment attribute of a network interface**
 
-This example command modifies the ``attachment`` attribute of the specified network interface.
+The following ``modify-network-interface-attribute`` example modifies the ``attachment`` attribute of the specified network interface. ::
 
-Command::
+    aws ec2 modify-network-interface-attribute \
+        --network-interface-id eni-686ea200 \
+        --attachment AttachmentId=eni-attach-43348162,DeleteOnTermination=false
 
-  aws ec2 modify-network-interface-attribute --network-interface-id eni-686ea200 --attachment AttachmentId=eni-attach-43348162,DeleteOnTermination=false
+This command produces no output.
 
+**Example 2: To modify the description attribute of a network interface**
 
-**To modify the description attribute of a network interface**
+The following ``modify-network-interface-attribute`` example modifies the ``description`` attribute of the specified network interface. ::
 
-This example command modifies the ``description`` attribute of the specified network interface.
+    aws ec2 modify-network-interface-attribute \
+        --network-interface-id eni-686ea200 \
+        --description "My description"
 
-Command::
+This command produces no output.
 
-  aws ec2 modify-network-interface-attribute --network-interface-id eni-686ea200 --description "My description"
-  
+**Example 3: To modify the groupSet attribute of a network interface**
 
-**To modify the groupSet attribute of a network interface**
+The following ``modify-network-interface-attribute`` example modifies the ``groupSet`` attribute of the specified network interface. ::
 
-This example command modifies the ``groupSet`` attribute of the specified network interface.
+    aws ec2 modify-network-interface-attribute \
+        --network-interface-id eni-686ea200 \
+        --groups sg-903004f8 sg-1a2b3c4d
 
-Command::
+This command produces no output.
 
-  aws ec2 modify-network-interface-attribute --network-interface-id eni-686ea200 --groups sg-903004f8 sg-1a2b3c4d
-  
+**Example 4: To modify the sourceDestCheck attribute of a network interface**
 
-**To modify the sourceDestCheck attribute of a network interface**
+The following ``modify-network-interface-attribute`` example modifies the ``sourceDestCheck`` attribute of the specified network interface. ::
 
-This example command modifies the ``sourceDestCheck`` attribute of the specified network interface.
+    aws ec2 modify-network-interface-attribute \
+        --network-interface-id eni-686ea200 \
+        --no-source-dest-check
 
-Command::
+This command produces no output.
 
-  aws ec2 modify-network-interface-attribute --network-interface-id eni-686ea200 --no-source-dest-check
+For more information, see `Modify network interface attributes <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-network-interface-attributes.html>`__ in the *Amazon EC2 User Guide*.

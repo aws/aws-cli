@@ -28,8 +28,7 @@ Output::
         [
             "Graphics with Windows 10 (Server 2019 based)",
             "wsb-03gyjnfyy"
-        ],
-        ...
+        ]
     ]
 
 For more information, see `WorkSpaces bundles and images <https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-bundles.html>`__ in the *Amazon WorkSpaces Administration Guide*.

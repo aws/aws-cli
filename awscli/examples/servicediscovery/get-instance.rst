@@ -3,7 +3,7 @@
 The following ``get-instance`` example gets the attributes of a service. ::
 
     aws servicediscovery get-instance \
-        --service-id srv-e4anhexample0004
+        --service-id srv-e4anhexample0004 \
         --instance-id i-abcd1234
 
 Output::
@@ -11,7 +11,7 @@ Output::
     {  
         "ResourceOwner": "123456789012", 
         "Instance": {
-            "Id": "arn:aws:servicediscovery:us-west-2:111122223333;:service/srv-e4anhexample0004",
+            "Id": "arn:aws:servicediscovery:us-west-2:123456789012;:service/srv-e4anhexample0004",
             "Attributes": {
                 "AWS_INSTANCE_IPV4": "192.0.2.44",
                 "AWS_INSTANCE_PORT": "80",

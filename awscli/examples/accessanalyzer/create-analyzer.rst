@@ -9,7 +9,7 @@ The following ``create-analyzer`` example creates an analyzer in your AWS accoun
 Output::
 
     {
-        "arn": "arn:aws:access-analyzer:us-east-2:111122223333:analyzer/example"
+        "arn": "arn:aws:access-analyzer:us-west-2:123456789012:analyzer/example"
     }
 
 For more information, see `Getting started with AWS Identity and Access Management Access Analyzer findings <https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html>`__ in the *AWS IAM User Guide*.

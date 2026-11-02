@@ -18,9 +18,9 @@ Output::
             "TransitGatewayAttachment": {
                 "TransitGatewayAttachmentId": "tgw-attach-aabbccddaabbccaab",
                 "ResourceType": "vpc",
-                "ResourceId": "vpc-112233445566aabbc"
+                "ResourceId": "vpc-1122334455aabbccd"
             }
         }
     }
 
-For more information, see `Prefix list references <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-prefix-lists.html>`__ in the *Transit Gateways Guide*.
+For more information, see `Delete a prefix list reference in AWS Transit Gateway <https://docs.aws.amazon.com/vpc/latest/tgw/delete-prefix-list-reference.html>`__ in the *Transit Gateways Guide*.

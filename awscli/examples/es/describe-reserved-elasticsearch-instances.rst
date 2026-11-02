@@ -1,6 +1,6 @@
 **To view all reserved instances**
 
-The following ``describe-elasticsearch-domains`` example provides a summary of all instances you have reserved in a region. ::
+The following ``describe-reserved-elasticsearch-instances`` example provides a summary of all instances you have reserved in a region. ::
 
     aws es describe-reserved-elasticsearch-instances
 
@@ -13,7 +13,7 @@ Output::
             "ReservationName": "my-reservation",
             "PaymentOption": "PARTIAL_UPFRONT",
             "UsagePrice": 0.0,
-            "ReservedElasticsearchInstanceId": "9a8a7a6a-5a4a-3a2a-1a0a-9a8a7a6a5a4a",
+            "ReservedElasticsearchInstanceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "RecurringCharges": [{
                 "RecurringChargeAmount": 0.603,
                 "RecurringChargeFrequency": "Hourly"

@@ -1,6 +1,6 @@
 **Example 1: To get details about an AWS CloudHSM key store**
 
-The following ``describe-custom-key-store`` example displays details about the specified AWS CloudHSM key store. The command is the same for all types of custom key stores, but the output differs with the key store type and, for an external key store, its connectivity option.
+The following ``describe-custom-key-stores`` example displays details about the specified AWS CloudHSM key store. The command is the same for all types of custom key stores, but the output differs with the key store type and, for an external key store, its connectivity option.
 
 By default, this command displays information about all custom key stores in the account and Region. To display information about a particular custom key store, use the ``custom-key-store-name`` or ``custom-key-store-id`` parameter. ::
 
@@ -28,7 +28,7 @@ For more information, see `Viewing an AWS CloudHSM key store <https://docs.aws.a
 
 **Example 2: To get details about an external key store with public endpoint connectivity**
 
-The following ``describe-custom-key-store`` example displays details about the specified external key store. The command is the same for all types of custom key stores, but the output differs with the key store type and, for an external key store, its connectivity option.
+The following ``describe-custom-key-stores`` example displays details about the specified external key store. The command is the same for all types of custom key stores, but the output differs with the key store type and, for an external key store, its connectivity option.
 
 By default, this command displays information about all custom key stores in the account and Region. To display information about a particular custom key store, use the ``custom-key-store-name`` or ``custom-key-store-id`` parameter. ::
 
@@ -61,7 +61,7 @@ For more information, see `Viewing an external key store <https://docs.aws.amazo
 
 **Example 3: To get details about an external key store with VPC endpoint service connectivity**
 
-The following ``describe-custom-key-store`` example displays details about the specified external key store. The command is the same for all types of custom key stores, but the output differs with the key store type and, for an external key store, its connectivity option.
+The following ``describe-custom-key-stores`` example displays details about the specified external key store. The command is the same for all types of custom key stores, but the output differs with the key store type and, for an external key store, its connectivity option.
 
 By default, this command displays information about all custom key stores in the account and Region. To display information about a particular custom key store, use the ``custom-key-store-name`` or ``custom-key-store-id`` parameter. ::
 
@@ -85,7 +85,7 @@ Output::
                     "Connectivity": "VPC_ENDPOINT_SERVICE",
                     "UriEndpoint": "https://myproxy-private.xks.example.com",
                     "UriPath": "/kms/xks/v1",
-                    "VpcEndpointServiceName": "com.amazonaws.vpce.us-east-1.vpce-svc-example1"
+                    "VpcEndpointServiceName": "com.amazonaws.vpce.us-west-2.vpce-svc-example1"
                 }
             }
         ]

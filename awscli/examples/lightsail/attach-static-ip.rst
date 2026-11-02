@@ -11,7 +11,7 @@ Output::
     {
         "operations": [
             {
-                "id": "45e6fa13-4808-4b8d-9292-bEXAMPLE20b2",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "StaticIp-1",
                 "resourceType": "StaticIp",
                 "createdAt": 1571072569.375,
@@ -26,7 +26,7 @@ Output::
                 "statusChangedAt": 1571072569.375
             },
             {
-                "id": "9ee09a17-863c-4e51-8a6d-3EXAMPLE5475",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "MEAN-1",
                 "resourceType": "Instance",
                 "createdAt": 1571072569.376,
@@ -42,3 +42,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create and attach a static IP to your Lightsail instance <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-create-static-ip.html>`__ in the *Amazon Lightsail User Guide*.

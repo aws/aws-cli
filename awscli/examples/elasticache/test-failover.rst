@@ -2,8 +2,8 @@
 
 The following ``test-failover`` example tests automatic failover on the specified node group (called a shard in the console) in a replication group (called a cluster in the console). ::
 
-    aws elasticache test-failover /
-        --replication-group-id "mycluster" /
+    aws elasticache test-failover \
+        --replication-group-id "mycluster" \
         --node-group-id "0001"
 
 Output::
@@ -106,3 +106,5 @@ Output::
             "AtRestEncryptionEnabled": false
         }
     }
+
+For more information, see `Minimizing downtime in ElastiCache by using Multi-AZ with Valkey and Redis OSS <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/AutoFailover.html>`__ in the *Amazon ElastiCache User Guide*.

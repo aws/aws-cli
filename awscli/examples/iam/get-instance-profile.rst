@@ -1,6 +1,6 @@
 **To get information about an instance profile**
 
-The following ``get-instance-profile`` command gets information about the instance profile named ``ExampleInstanceProfile``. ::
+The following ``get-instance-profile`` example gets information about the instance profile named ``ExampleInstanceProfile``. ::
 
     aws iam get-instance-profile \
         --instance-profile-name ExampleInstanceProfile
@@ -17,13 +17,13 @@ Output::
                     "CreateDate": "2013-01-09T06:33:26Z",
                     "RoleName": "Test-Role",
                     "Path": "/",
-                    "Arn": "arn:aws:iam::336924118301:role/Test-Role"
+                    "Arn": "arn:aws:iam::123456789012:role/Test-Role"
                 }
             ],
             "CreateDate": "2013-06-12T23:52:02Z",
             "InstanceProfileName": "ExampleInstanceProfile",
             "Path": "/",
-            "Arn": "arn:aws:iam::336924118301:instance-profile/ExampleInstanceProfile"
+            "Arn": "arn:aws:iam::123456789012:instance-profile/ExampleInstanceProfile"
         }
     }
 

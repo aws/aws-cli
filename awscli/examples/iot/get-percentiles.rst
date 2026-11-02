@@ -1,6 +1,6 @@
 **To group the aggregated values that match the query into percentile groupings**
 
-You can use the following setup script to create 10 things representing 10 temperature sensors. Each new thing has 1 attribute. ::
+The following ``get-percentiles`` example groups the temperature values reported by temperature sensors into percentile groupings. To set up the example, you can use the following setup script to create 10 things representing 10 temperature sensors. Each new thing has 1 attribute. ::
 
     # Bash script. If in other shells, type `bash` before running
     Temperatures=(70 71 72 73 74 75 47 97 98 99)
@@ -19,8 +19,8 @@ Example output of the setup script::
         "attributes": {
             "temperature": "70"
         }, 
-        "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/TempSensor0", 
-        "thingId": "example1-90ab-cdef-fedc-ba987example"
+        "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/TempSensor0", 
+        "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 The following ``get-percentiles`` example queries the 10 sensors created by the setup script and returns a value for each percentile group specified. The percentile group "10" contains the aggregated field value that occurs in approximately 10 percent of the values that match the query. In the following output, {"percent": 10.0, "value": 67.7} means approximately 10.0% of the temperature values are below 67.7. ::

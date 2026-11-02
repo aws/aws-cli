@@ -9,7 +9,7 @@ The following ``increase-replica-count`` example does one of two things. It can 
 
 Output::
 
-   {
+    {
         "ReplicationGroup": {
             "ReplicationGroupId": "my-cluster",
             "Description": " ",
@@ -67,4 +67,4 @@ Output::
         }
     }
 
-For more information, see `Increasing the Number of Replicas in a Shard <https://docs.aws.amazon.c`m/AmazonElastiCache/latest/red-ug/increase-replica-count.html>`__ in the *Elasticache User Guide*.
+For more information, see `Increasing the number of replicas in a shard <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/increase-replica-count.html>`__ in the *Amazon ElastiCache User Guide*.

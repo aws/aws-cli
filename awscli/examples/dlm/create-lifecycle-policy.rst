@@ -7,7 +7,7 @@ The following ``create-lifecycle-policy`` example creates a lifecycle policy tha
         --state ENABLED \
         --execution-role-arn arn:aws:iam::12345678910:role/AWSDataLifecycleManagerDefaultRole \
         --policy-details file://policyDetails.json
-  
+
 Contents of ``policyDetails.json``::
 
     {
@@ -27,7 +27,7 @@ Contents of ``policyDetails.json``::
                 "TagsToAdd": [
                     {
                         "Key": "type",
-                         "Value": "myDailySnapshot"
+                        "Value": "myDailySnapshot"
                     }
                 ],
                 "CreateRule": {
@@ -49,3 +49,5 @@ Output::
     {
         "PolicyId": "policy-0123456789abcdef0"
     }
+
+For more information, see `Create Amazon Data Lifecycle Manager custom policy for EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-ami-policy.html>`__ in the *Amazon EBS User Guide*.

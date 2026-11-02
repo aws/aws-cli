@@ -1,25 +1,30 @@
-The following command lists all active EMR clusters in the current region::
+**To list the active clusters**
 
-  aws emr list-clusters --active
+The following ``list-clusters`` example lists all active EMR clusters in the current region. ::
+
+    aws emr list-clusters \
+        --active
 
 Output::
 
-  {
-      "Clusters": [
-          {
-              "Status": {
-                  "Timeline": {
-                      "ReadyDateTime": "2025-10-28T11:11:52.228000-04:00",
-                      "CreationDateTime": "2025-10-28T11:02:22.179000-04:00"
-                  },
-                  "State": "WAITING",
-                  "StateChangeReason": {
-                      "Message": "Waiting after step completed"
-                  }
-              },
-              "NormalizedInstanceHours": 6,
-              "Id": "j-3SD91U2E1L2QX",
-              "Name": "my-cluster"
-          }
-      ]
-  }
+    {
+        "Clusters": [
+            {
+                "Status": {
+                    "Timeline": {
+                        "ReadyDateTime": "2025-10-28T11:11:52.228000-04:00",
+                        "CreationDateTime": "2025-10-28T11:02:22.179000-04:00"
+                    },
+                    "State": "WAITING",
+                    "StateChangeReason": {
+                        "Message": "Waiting after step completed"
+                    }
+                },
+                "NormalizedInstanceHours": 6,
+                "Id": "j-3SD91U2E1L2QX",
+                "Name": "my-cluster"
+            }
+        ]
+    }
+
+For more information, see `View Amazon EMR cluster status and details <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-manage-view-clusters.html>`__ in the *Amazon EMR Management Guide*.

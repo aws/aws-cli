@@ -1,19 +1,19 @@
 **To describe service revision details**
 
-The following ``describe-service-revisions`` example returns the service revision details for the service revision with the ARN ``arn:aws:ecs:us-east-1:123456789012:service-revision/example-cluster/example-service/1485800978477494678``. ::
+The following ``describe-service-revisions`` example returns the service revision details for the service revision with the ARN ``arn:aws:ecs:us-west-2:123456789012:service-revision/example-cluster/example-service/1485800978477494678``. ::
 
     aws ecs describe-service-revisions \
-        --service-revision-arns arn:aws:ecs:us-east-1:123456789012:service-revision/example-cluster/example-service/1485800978477494678
+        --service-revision-arns arn:aws:ecs:us-west-2:123456789012:service-revision/example-cluster/example-service/1485800978477494678
 
 Output::
 
     {
         "serviceRevisions": [
             {
-                "serviceRevisionArn": "arn:aws:ecs:us-east-1:123456789012:service-revision/example-cluster/example-service/1485800978477494678",
-                "serviceArn": "arn:aws:ecs:us-east-1:123456789012:service/example-cluster/example-service",
-                "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/example-cluster",
-                "taskDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/webserver:5",
+                "serviceRevisionArn": "arn:aws:ecs:us-west-2:123456789012:service-revision/example-cluster/example-service/1485800978477494678",
+                "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/example-cluster/example-service",
+                "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/example-cluster",
+                "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/webserver:5",
                 "capacityProviderStrategy": [
                     {
                         "capacityProvider": "FARGATE",
@@ -57,4 +57,4 @@ Output::
         "failures": []
     }
 
-For more information, see `Amazon ECS service revisions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS service revisions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html>`__ in the *Amazon ECS Developer Guide*.

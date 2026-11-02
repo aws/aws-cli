@@ -7,4 +7,4 @@ The following ``delete-lexicon`` example deletes the specified lexicon. ::
 
 This command produces no output.
 
-For more information, see `Using the DeleteLexicon operation <https://docs.aws.amazon.com/polly/latest/dg/gs-delete-lexicon.html>`__ in the *Amazon Polly Developer Guide*.
+For more information, see `Managing lexicons <https://docs.aws.amazon.com/polly/latest/dg/managing-lexicons.html>`__ in the *Amazon Polly Developer Guide*.

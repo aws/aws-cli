@@ -7,5 +7,3 @@ The following ``dissociate-entity-from-thing`` example dissociates a thing from 
         --entity-type "DEVICE"
 
 This command produces no output.
-
-For more information, see `Creating and Uploading Models <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-models-gs.html>`__ in the *AWS IoT Things Graph User Guide*.

@@ -17,7 +17,7 @@ Output::
                 "VolumeSize": 8,
                 "StartTime": "2019-02-28T21:28:32.000Z",
                 "Progress": "100%",
-                "OwnerId": "012345678910",
+                "OwnerId": "123456789012",
                 "SnapshotId": "snap-01234567890abcdef",
                 "Tags": [
                     {
@@ -48,10 +48,9 @@ Output::
             "Time": "2019-08-04T12:48:18.000Z"
         },
         {
-            "ID": "snap-066877671789bd71b",
-            "Time": "2019-08-04T02:45:16.000Z
-        },
-        ...
+            "ID": "snap-0a1b2c3d4e5f6a7b8",
+            "Time": "2019-08-04T02:45:16.000Z"
+        }
     ]
 
 The following ``describe-snapshots`` example uses filters to scope the results to snapshots created from the specified volume. The example uses the ``--query`` parameter to display only the snapshot IDs. ::
@@ -63,9 +62,15 @@ The following ``describe-snapshots`` example uses filters to scope the results t
 
 Output::
 
-    snap-1234567890abcdef0
-    snap-08637175a712c3fb9
-    ...
+    [
+        [
+            "snap-1234567890abcdef0"
+        ],
+        [
+            "snap-08637175a712c3fb9"
+        ],
+        ...
+    ]
 
 For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
 
@@ -76,17 +81,50 @@ The following ``describe-snapshots`` example uses tag filters to scope the resul
     aws ec2 describe-snapshots \
         --filters Name=tag:Stack,Values=prod
 
-For an example of the output for ``describe-snapshots``, see Example 1.
+Output::
 
-For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.
+    {
+        "Snapshots": [
+            {
+                "Description": "This is my prod snapshot",
+                "Encrypted": false,
+                "VolumeId": "vol-049df61146c4d7901",
+                "State": "completed",
+                "VolumeSize": 8,
+                "StartTime": "2019-02-28T21:28:32.000Z",
+                "Progress": "100%",
+                "OwnerId": "123456789012",
+                "SnapshotId": "snap-0abcdef1234567890",
+                "Tags": [
+                    {
+                        "Key": "Stack",
+                        "Value": "prod"
+                    }
+                ]
+            }
+        ]
+    }
+
+For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 4: To describe snapshots based on age**
 
 The following ``describe-snapshots`` example uses JMESPath expressions to describe all snapshots created by your AWS account before the specified date. It displays only the snapshot IDs. ::
 
     aws ec2 describe-snapshots \
-        --owner-ids 012345678910 \
+        --owner-ids 123456789012 \
         --query "Snapshots[?(StartTime<='2020-03-31')].[SnapshotId]"
+
+Output::
+
+    [
+        [
+            "snap-1234567890abcdef0"
+        ],
+        [
+            "snap-08637175a712c3fb9"
+        ]
+    ]
 
 For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
 
@@ -113,8 +151,8 @@ Output::
                 "SnapshotId": "snap-01234567890aaaaaa",
                 "StorageTier": "archive",
                 "Tags": []
-            },
+            }
         ]
     }
 
-For more information, see `View archived snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-snapshot-archiving.html#view-archived-snapshot>`__ in the *Amazon Elastic Compute Cloud User Guide*.
+For more information, see `View archived Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/view-archived-snapshot.html>`__ in the *Amazon EBS User Guide*.

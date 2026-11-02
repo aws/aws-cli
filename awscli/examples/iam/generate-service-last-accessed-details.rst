@@ -8,7 +8,7 @@ The following ``generate-service-last-accessed-details`` example starts a backgr
 Output::
 
     {
-        "JobId": "2eb6c2b8-7b4c-3xmp-3c13-03b72c8cdfdc"
+        "JobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 **Example 2: To generate a service access report for the AWS managed AdministratorAccess policy**
@@ -21,7 +21,7 @@ The following ``generate-service-last-accessed-details`` example starts a backgr
 Output::
 
     {
-        "JobId": "78b6c2ba-d09e-6xmp-7039-ecde30b26916"
+        "JobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `Refining permissions in AWS using last accessed information <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html>`__ in the *AWS IAM User Guide*.

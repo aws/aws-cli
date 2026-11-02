@@ -1,4 +1,4 @@
-**Example 1: Update a managed node group to add new labels and taint to EKS worker node for an Amazon EKS cluster**
+**Example 1: To update a managed node group to add new labels and taint to EKS worker node for an Amazon EKS cluster**
 
 The following ``update-nodegroup-config`` example updates a managed node group to add new labels and taint to EKS worker node for an Amazon EKS cluster. ::
 
@@ -12,7 +12,7 @@ Output::
 
     {
         "update": {
-            "id": "e66d21d3-bd8b-3ad1-a5aa-b196dc08c7c1",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "InProgress",
             "type": "ConfigUpdate",
             "params": [
@@ -32,7 +32,7 @@ Output::
 
 For more information, see `Updating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: Update a managed node group to remove labels and taint for the EKS worker node for an Amazon EKS cluster**
+**Example 2: To update a managed node group to remove labels and taint for the EKS worker node for an Amazon EKS cluster**
 
 The following ``update-nodegroup-config`` example updates a managed node group to remove labels and taint for the EKS worker node for an Amazon EKS cluster. ::
 
@@ -46,7 +46,7 @@ Output::
 
     {
         "update": {
-            "id": "67a08692-9e59-3ace-a916-13929f44cec3",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "status": "InProgress",
             "type": "ConfigUpdate",
             "params": [
@@ -66,7 +66,7 @@ Output::
 
 For more information, see `Updating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 3: Update a managed node group to remove and add labels and taint for the EKS worker node for an Amazon EKS cluster**
+**Example 3: To update a managed node group to remove and add labels and taint for the EKS worker node for an Amazon EKS cluster**
 
 The following ``update-nodegroup-config`` example updates a managed node group to remove and add labels and taint for the EKS worker node for an Amazon EKS cluster. ::
 
@@ -80,7 +80,7 @@ Output::
 
     {
         "update": {
-            "id": "4a9c8c45-6ac7-3115-be71-d6412a2339b7",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
             "status": "InProgress",
             "type": "ConfigUpdate",
             "params": [
@@ -109,7 +109,7 @@ Output::
 For more information, see `Updating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
 
-**Example 4: Update a managed node group to update scaling-config and update-config for the EKS worker node for an Amazon EKS cluster**
+**Example 4: To update a managed node group to update scaling-config and update-config for the EKS worker node for an Amazon EKS cluster**
 
 The following ``update-nodegroup-config`` example updates a managed node group to update scaling-config and update-config for the EKS worker node for an Amazon EKS cluster. ::
 
@@ -123,7 +123,7 @@ Output::
 
     {
         "update": {
-            "id": "a977160f-59bf-3023-805d-c9826e460aea",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
             "status": "InProgress",
             "type": "ConfigUpdate",
             "params": [

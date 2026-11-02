@@ -1,6 +1,6 @@
 **To delete a launch configuration**
 
-This example deletes the specified launch configuration. ::
+The following ``delete-launch-configuration`` example deletes the specified launch configuration. ::
 
     aws autoscaling delete-launch-configuration \
         --launch-configuration-name my-launch-config

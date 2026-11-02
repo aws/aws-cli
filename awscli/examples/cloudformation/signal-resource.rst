@@ -9,3 +9,5 @@ The following ``signal-resource`` example signals ``success`` to fulfill the wai
         --status SUCCESS
 
 This command produces no output.
+
+For more information, see `Create wait conditions in a CloudFormation template <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-waitcondition.html>`__ in the *AWS CloudFormation User Guide*.

@@ -1,14 +1,14 @@
 **To update the contact information for a domain**
 
-The following ``update-domain-contact`` command updates the contact information for a domain, getting the parameters from the JSON-formatted file ``C:\temp\update-domain-contact.json``. 
+The following ``update-domain-contact`` example updates the contact information for a domain, getting the parameters from the JSON-formatted file ``C:\temp\update-domain-contact.json``. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
-    aws route53domains update-domain-contact \ 
+    aws route53domains update-domain-contact \
         --region us-east-1 \
         --cli-input-json file://C:\temp\update-domain-contact.json
 
-Contents of ``update-domain-contact.json``::
+Contents of ``C:\temp\update-domain-contact.json``::
 
     {
         "AdminContact": {
@@ -59,7 +59,7 @@ Contents of ``update-domain-contact.json``::
 Output::
 
     {
-        "OperationId": "b3a219e9-d801-4244-b533-b7256example"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the operation succeeded, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ . 

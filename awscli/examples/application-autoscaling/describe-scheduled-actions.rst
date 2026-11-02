@@ -1,6 +1,6 @@
 **To describe scheduled actions**
 
-The following ``describe-scheduled-actions`` example displays details for the scheduled actions for the specified service namespace::
+The following ``describe-scheduled-actions`` example displays details for the scheduled actions for the specified service namespace. ::
 
     aws application-autoscaling describe-scheduled-actions \
         --service-namespace dynamodb
@@ -14,7 +14,7 @@ Output::
                 "Schedule": "at(2019-05-20T18:35:00)",
                 "ResourceId": "table/my-table",
                 "CreationTime": 1561571888.361,
-                "ScheduledActionARN": "arn:aws:autoscaling:us-west-2:123456789012:scheduledAction:2d36aa3b-cdf9-4565-b290-81db519b227d:resource/dynamodb/table/my-table:scheduledActionName/my-first-scheduled-action",
+                "ScheduledActionARN": "arn:aws:autoscaling:us-west-2:123456789012:scheduledAction:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:resource/dynamodb/table/my-table:scheduledActionName/my-first-scheduled-action",
                 "ScalableTargetAction": {
                     "MinCapacity": 15,
                     "MaxCapacity": 20
@@ -27,7 +27,7 @@ Output::
                 "Schedule": "at(2019-05-20T18:40:00)",
                 "ResourceId": "table/my-table",
                 "CreationTime": 1561571946.021,
-                "ScheduledActionARN": "arn:aws:autoscaling:us-west-2:123456789012:scheduledAction:2d36aa3b-cdf9-4565-b290-81db519b227d:resource/dynamodb/table/my-table:scheduledActionName/my-second-scheduled-action",
+                "ScheduledActionARN": "arn:aws:autoscaling:us-west-2:123456789012:scheduledAction:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:resource/dynamodb/table/my-table:scheduledActionName/my-second-scheduled-action",
                 "ScalableTargetAction": {
                     "MinCapacity": 5,
                     "MaxCapacity": 10

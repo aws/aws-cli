@@ -11,7 +11,7 @@ Output::
     {
         "operations": [
             {
-                "id": "cf1ad6e3-3cbb-4b8a-a7f2-3EXAMPLEa118",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "LoadBalancer-1",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1571072255.416,
@@ -26,7 +26,7 @@ Output::
                 "statusChangedAt": 1571072255.416
             },
             {
-                "id": "dae1bcfb-d531-4c06-b4ea-bEXAMPLEc04e",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "Certificate2",
                 "resourceType": "LoadBalancerTlsCertificate",
                 "createdAt": 1571072255.416,
@@ -42,3 +42,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Enable HTTPS with an SSL/TLS certificate for your Lightsail load balancer <https://docs.aws.amazon.com/lightsail/latest/userguide/create-tls-ssl-certificate-and-attach-to-lightsail-load-balancer-https.html>`__ in the *Amazon Lightsail User Guide*.

@@ -1,10 +1,9 @@
 **To retrieve a list of custom rule groups**
 
-The following ``list-rule-groups`` retrieves all custom rule groups that are defined for the account for the specified scope and region location. ::
+The following ``list-rule-groups`` example retrieves all custom rule groups that are defined for the account for the specified scope. ::
 
     aws wafv2 list-rule-groups \
-        --scope REGIONAL \
-        --region us-west-2
+        --scope REGIONAL
 
 Output::
 
@@ -14,14 +13,14 @@ Output::
                 "ARN":"arn:aws:wafv2:us-west-2:123456789012:regional/rulegroup/TestRuleGroup/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Description":"",
                 "Name":"TestRuleGroup",
-                "LockToken":"1eb5ec48-0000-0000-0000-ee9b906c541e",
+                "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             },
             {
                 "ARN":"arn:aws:wafv2:us-west-2:123456789012:regional/rulegroup/test/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Description":"",
                 "Name":"test",
-                "LockToken":"b0f4583e-998b-4880-9069-3fbe45738b43",
+                "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ],

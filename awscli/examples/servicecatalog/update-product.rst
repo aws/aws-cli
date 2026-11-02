@@ -35,3 +35,5 @@ Output::
             "CreatedTime": 1577136255.0
         }
     }
+
+For more information, see `Updating products <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/productmgmt-update.html>`__ in the *AWS Service Catalog Administrator Guide*.

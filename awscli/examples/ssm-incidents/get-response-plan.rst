@@ -1,9 +1,9 @@
 **To get details of a response plan**
 
-The following ``command-name`` example gets details about a specified response plan in your AWS account. ::
+The following ``get-response-plan`` example gets details about a specified response plan in your AWS account. ::
 
     aws ssm-incidents get-response-plan \
-        --arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan"
+        --arn "arn:aws:ssm-incidents::123456789012:response-plan/Example-Response-Plan"
 
 Output::
 
@@ -13,20 +13,20 @@ Output::
                 "ssmAutomation": {
                     "documentName": "AWSIncidents-CriticalIncidentRunbookTemplate",
                     "documentVersion": "$DEFAULT",
-                    "roleArn": "arn:aws:iam::111122223333:role/aws-service-role/ssm-incidents.amazonaws.com/AWSServiceRoleForIncidentManager",
+                    "roleArn": "arn:aws:iam::123456789012:role/aws-service-role/ssm-incidents.amazonaws.com/AWSServiceRoleForIncidentManager",
                     "targetAccount": "RESPONSE_PLAN_OWNER_ACCOUNT"
                 }
             }
         ],
-        "arn": "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan",
+        "arn": "arn:aws:ssm-incidents::123456789012:response-plan/Example-Response-Plan",
         "chatChannel": {
             "chatbotSns": [
-                "arn:aws:sns:us-east-1:111122223333:Standard_User"
+                "arn:aws:sns:us-west-2:123456789012:Standard_User"
             ]
         },
         "displayName": "Example response plan",
         "engagements": [
-            "arn:aws:ssm-contacts:us-east-1:111122223333:contact/example"
+            "arn:aws:ssm-contacts:us-west-2:123456789012:contact/example"
         ],
         "incidentTemplate": {
             "impact": 5,

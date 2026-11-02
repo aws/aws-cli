@@ -5,4 +5,6 @@ The following ``delete-scheduled-action`` example deletes the specified schedule
     aws redshift delete-scheduled-action \
         --scheduled-action-name myscheduledaction
 
-This command does not produce any output.
+This command produces no output.
+
+For more information, see `Scheduling a resize <https://docs.aws.amazon.com/redshift/latest/mgmt/resizing-cluster.html#rs-restore-resize-overview-schedule>`__ in the *Amazon Redshift Management Guide*.

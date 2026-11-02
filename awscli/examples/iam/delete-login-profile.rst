@@ -1,6 +1,6 @@
 **To delete a password for an IAM user**
 
-The following ``delete-login-profile`` command deletes the password for the IAM user named ``Bob``. ::
+The following ``delete-login-profile`` example deletes the password for the IAM user named ``Bob``. ::
 
     aws iam delete-login-profile \
         --user-name Bob

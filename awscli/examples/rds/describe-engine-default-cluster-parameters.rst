@@ -20,8 +20,7 @@ Output::
                     "SupportedEngineModes": [
                         "provisioned"
                     ]
-                },
-                ...some output truncated...
+                }
             ]
         }
     }

@@ -2,13 +2,13 @@
 
 The following ``describe-resource-scan`` example describes the resource scan with the specified scan ID. ::
 
-    aws cloudformation describe-resource-scan --region \
-        --resource-scan-id arn:aws:cloudformation:us-east-1:123456789012:resourceScan/0a699f15-489c-43ca-a3ef-3e6ecfa5da60
+    aws cloudformation describe-resource-scan \
+        --resource-scan-id arn:aws:cloudformation:us-west-2:123456789012:resourceScan/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "ResourceScanId": "arn:aws:cloudformation:us-east-1:123456789012:resourceScan/0a699f15-489c-43ca-a3ef-3e6ecfa5da60",
+        "ResourceScanId": "arn:aws:cloudformation:us-west-2:123456789012:resourceScan/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Status": "COMPLETE",
         "StartTime": "2025-08-21T03:10:38.485000+00:00",
         "EndTime": "2025-08-21T03:20:28.485000+00:00",
@@ -29,8 +29,7 @@ Output::
             "AWS::EC2::Subnet",
             "AWS::EC2::SubnetCidrBlock",
             "AWS::EC2::SubnetNetworkAclAssociation",
-            "AWS::EC2::SubnetRouteTableAssociation",
-            ...
+            "AWS::EC2::SubnetRouteTableAssociation"
         ],
         "ResourcesRead": 676
     }

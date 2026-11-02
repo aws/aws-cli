@@ -14,7 +14,7 @@ Output::
                 "sourceStageArn": "arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh",
                 "participantId": "abCDEf12GHIj",
                 "sourceSessionId": "st-a1b2c3d4e5f6g",
-                "destinationStageArn": "arn:aws:ivs:us-west-2:012345678901:stage/ABCDabcdefgh",
+                "destinationStageArn": "arn:aws:ivs:us-west-2:123456789111:stage/ABCDabcdefgh",
                 "destinationSessionId": "st-b1c2d3e4f5g6a",
                 "replicationState": "ACTIVE"
             }

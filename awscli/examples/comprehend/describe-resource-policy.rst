@@ -3,12 +3,12 @@
 The following ``describe-resource-policy`` example gets the properties of a resource-based policy attached to a model. ::
 
     aws comprehend describe-resource-policy \
-        --resource-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier/version/1
+        --resource-arn arn:aws:comprehend:us-west-2:123456789111:document-classifier/example-classifier/version/1
 
 Output::
 
     {
-        "ResourcePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::444455556666:root\"},\"Action\":\"comprehend:ImportModel\",\"Resource\":\"*\"}]}",
+        "ResourcePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::123456789222:root\"},\"Action\":\"comprehend:ImportModel\",\"Resource\":\"*\"}]}",
         "CreationTime": "2023-06-19T18:44:26.028000+00:00",
         "LastModifiedTime": "2023-06-19T18:53:02.002000+00:00",
         "PolicyRevisionId": "baa675d069d07afaa2aa3106ae280f61"

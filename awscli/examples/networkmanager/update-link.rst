@@ -5,8 +5,7 @@ The following ``update-link`` example updates the bandwidth information for link
     aws networkmanager update-link \
         --global-network-id global-network-01231231231231231 \
         --link-id link-11112222aaaabbbb1 \
-        --bandwidth  UploadSpeed=20,DownloadSpeed=20 \
-        --region us-west-2
+        --bandwidth UploadSpeed=20,DownloadSpeed=20
 
 Output::
 
@@ -28,4 +27,4 @@ Output::
         }
     }
 
-For more information, see `Working with Links <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#working-with-links>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Sites and links in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-sites.html>`__ in the *Transit Gateway Network Manager Guide*.

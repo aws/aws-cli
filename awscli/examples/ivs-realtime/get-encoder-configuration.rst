@@ -3,13 +3,13 @@
 The following ``get-encoder-configuration`` example gets the composition encoder configuration specified by the given ARN (Amazon Resource Name). ::
 
     aws ivs-realtime get-encoder-configuration \
-        --arn "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/abcdABCDefgh"
+        --arn "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/abcdABCDefgh"
 
 Output::
 
     {
         "encoderConfiguration": {
-            "arn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/abcdABCDefgh",
+            "arn": "arn:aws:ivs:us-west-2:123456789012:encoder-configuration/abcdABCDefgh",
             "name": "test-ec",
             "tags": {},
             "video": {

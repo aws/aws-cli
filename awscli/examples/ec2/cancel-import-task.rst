@@ -12,3 +12,5 @@ Output::
         "PreviousState": "active",
         "State": "deleting"
     }
+
+For more information, see `Monitor an import image task <https://docs.aws.amazon.com/vm-import/latest/userguide/check-import-task-status.html>`__ in the *VM Import/Export User Guide*.

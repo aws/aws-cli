@@ -7,7 +7,11 @@ The following ``download-db-log-file-portion`` example downloads only the latest
         --log-file-name log.txt \
         --output text > tail.txt
 
+This command produces no output.
+
 The saved file might contain blank lines.  They appear at the end of each part of the log file while being downloaded.
+
+For more information, see `Downloading a database log file <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.Procedural.Downloading.html>`__ in the *Amazon RDS User Guide*.
 
 **Example 2: To download an entire DB log file**
 
@@ -19,4 +23,8 @@ The following ``download-db-log-file-portion`` example downloads the entire log 
         --starting-token 0 \
         --output text > full.txt
 
+This command produces no output.
+
 The saved file might contain blank lines.  They appear at the end of each part of the log file while being downloaded.
+
+For more information, see `Downloading a database log file <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.Procedural.Downloading.html>`__ in the *Amazon RDS User Guide*.

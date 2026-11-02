@@ -11,14 +11,14 @@ Output::
         "Aliases": [
             {
                 "AliasArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:BETA",
-                "RevisionId": "a410117f-ab16-494e-8035-7e204bb7933b",
+                "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "FunctionVersion": "2",
                 "Name": "BETA",
                 "Description": "alias for beta version of function"
             },
             {
                 "AliasArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:LIVE",
-                "RevisionId": "21d40116-f8b1-40ba-9360-3ea284da1bb5",
+                "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "FunctionVersion": "1",
                 "Name": "LIVE",
                 "Description": "alias for live version of function"

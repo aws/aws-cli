@@ -2,12 +2,12 @@
 
 The following ``describe-ipam-pools`` example shows the details for pools.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 describe-ipam-pools \
         --filters Name=owner-id,Values=123456789012 Name=ipam-scope-id,Values=ipam-scope-02fc38cd4c48e7d38
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 describe-ipam-pools ^
         --filters Name=owner-id,Values=123456789012 Name=ipam-scope-id,Values=ipam-scope-02fc38cd4c48e7d38
@@ -23,7 +23,7 @@ Output::
                 "IpamScopeArn": "arn:aws:ec2::123456789012:ipam-scope/ipam-scope-02fc38cd4c48e7d38",
                 "IpamScopeType": "private",
                 "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-08440e7a3acde3908",
-                "IpamRegion": "us-east-1",
+                "IpamRegion": "us-west-2",
                 "Locale": "None",
                 "PoolDepth": 1,
                 "State": "create-complete",
@@ -47,3 +47,5 @@ Output::
             }
         ]
     }
+
+For more information, see `How IPAM works <https://docs.aws.amazon.com/vpc/latest/ipam/how-it-works-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

@@ -16,7 +16,6 @@ Output::
                 "resourceType": "ec2:LocalGatewayRouteTable",
                 "serviceName": "ec2"
             },
-            ...OUTPUT TRUNCATED FOR BREVITY...
             {
                 "resourceType": "ec2:Subnet",
                 "serviceName": "ec2"
@@ -27,3 +26,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Shareable AWS resources <https://docs.aws.amazon.com/ram/latest/userguide/shareable.html>`__ in the *AWS RAM User Guide*.

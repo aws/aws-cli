@@ -9,14 +9,14 @@ Output::
 
     {
         "InstanceConnectEndpoint": {
-            "OwnerId": "111111111111",
+            "OwnerId": "123456789012",
             "InstanceConnectEndpointId": "eice-0123456789example",
-            "InstanceConnectEndpointArn": "arn:aws:ec2:us-east-1:111111111111:instance-connect-endpoint/eice-0123456789example",
+            "InstanceConnectEndpointArn": "arn:aws:ec2:us-west-2:123456789012:instance-connect-endpoint/eice-0123456789example",
             "State": "delete-in-progress",
             "StateMessage": "",
             "NetworkInterfaceIds": [],
             "VpcId": "vpc-0123abcd",
-            "AvailabilityZone": "us-east-1d",
+            "AvailabilityZone": "us-west-2d",
             "CreatedAt": "2023-02-07T12:05:37+00:00",
             "SubnetId": "subnet-0123abcd"
         }

@@ -3,9 +3,8 @@
 The following ``publish-type`` example publishes the specified extension to the CloudFormation registry as a public extension in this Region. ::
 
     aws cloudformation publish-type \
-      --region us-west-2 \
-      --type RESOURCE \
-      --type-name Example::Test::1234567890abcdef0
+        --type RESOURCE \
+        --type-name Example::Test::1234567890abcdef0
 
 Output::
 

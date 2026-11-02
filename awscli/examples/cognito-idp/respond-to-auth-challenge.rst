@@ -32,9 +32,9 @@ For more information, see `Authentication <https://docs.aws.amazon.com/cognito/l
 The following ``respond-to-auth-challenge`` example chooses TOTP MFA as the MFA option for the current user. The user was prompted to select an MFA type and will next be prompted to enter their MFA code. ::
 
     aws cognito-idp respond-to-auth-challenge \
-        --client-id 1example23456789 
-        --session AYABeEv5HklEXAMPLE 
-        --challenge-name SELECT_MFA_TYPE 
+        --client-id 1example23456789 \
+        --session AYABeEv5HklEXAMPLE \
+        --challenge-name SELECT_MFA_TYPE \
         --challenge-responses USERNAME=testuser,ANSWER=SOFTWARE_TOKEN_MFA
 
 Output::

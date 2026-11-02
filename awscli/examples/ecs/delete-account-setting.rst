@@ -1,6 +1,6 @@
 **To delete the account settings for a specific IAM user or IAM role**
 
-The following example ``delete-account-setting`` deletes the account settings for the specific IAM user or IAM role. ::
+The following ``delete-account-setting`` example deletes the account settings for the specific IAM user or IAM role. ::
 
     aws ecs delete-account-setting \
         --name serviceLongArnFormat \
@@ -16,4 +16,4 @@ Output::
         }
     }
 
-For more information, see `Amazon Resource Names (ARNs) and IDs <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-resource-ids.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Access Amazon ECS features with account settings <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html>`__ in the *Amazon ECS Developer Guide*.

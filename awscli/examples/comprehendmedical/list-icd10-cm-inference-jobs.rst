@@ -1,6 +1,6 @@
 **To list all current ICD-10-CM inference jobs**
 
-The following example shows how the ``list-icd10-cm-inference-jobs`` operation returns a list of current asynchronous ICD-10-CM batch inference jobs. ::
+The following ``list-icd10-cm-inference-jobs`` example returns a list of current asynchronous ICD-10-CM batch inference jobs. ::
 
     aws comprehendmedical list-icd10-cm-inference-jobs
 
@@ -23,7 +23,7 @@ Output::
                     "S3Key": "AKIAIOSFODNN7EXAMPLE"
                 },
                 "LanguageCode": "en",
-                "DataAccessRoleArn": "arn:aws:iam::867139942017:role/ComprehendMedicalBatchProcessingRole",
+                "DataAccessRoleArn": "arn:aws:iam::123456789012:role/ComprehendMedicalBatchProcessingRole",
                 "ModelVersion":  "0.1.0"
             }
         ]

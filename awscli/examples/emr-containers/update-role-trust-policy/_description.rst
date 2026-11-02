@@ -3,7 +3,7 @@ Updates the trust policy of given IAM role such that it can be used with Amazon 
 Note:
  To use the IAM Role with Amazon EMR on EKS, OIDC identity provider also needs to be created for the EKS cluster.
  This can be done using ``eksctl utils associate-iam-oidc-provider --cluster <cluster_name> --approve`` command.
- For information about installing or upgrading eksctl, see `Installing or upgrading eksctl <https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html#installing-eksctl>`__ in the *Amazon EKS User Guide*.
+ For information about installing or upgrading eksctl, see `Installing or upgrading eksctl <https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html>`__ in the *Amazon EKS User Guide*.
 
 The command would merge the existing trust policy of the role with the below trust policy::
 

@@ -1,8 +1,9 @@
 **To list resources that AWS Config has discovered**
 
-The following command lists the EC2 instances that AWS Config has discovered::
+The following ``list-discovered-resources`` example lists the EC2 instances that AWS Config has discovered. ::
 
-    aws configservice list-discovered-resources --resource-type AWS::EC2::Instance
+    aws configservice list-discovered-resources \
+        --resource-type AWS::EC2::Instance
 
 Output::
 
@@ -22,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Looking Up Resources That Are Discovered by AWS Config <https://docs.aws.amazon.com/config/latest/developerguide/looking-up-discovered-resources.html>`__ in the *AWS Config Developer Guide*.

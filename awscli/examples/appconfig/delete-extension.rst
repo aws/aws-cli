@@ -3,7 +3,6 @@
 The following ``delete-extension`` example deletes an extension from AWS AppConfig. ::
 
     aws appconfig delete-extension \
-        --region us-west-2 \
         --extension-identifier S3-backup-extension
 
 This command produces no output.

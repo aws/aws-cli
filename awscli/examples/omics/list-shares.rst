@@ -10,32 +10,30 @@ Output::
     {
         "shares": [
             {
-                "shareId": "595c1cbd-a008-4eca-a887-954d30c91c6e",
-                "name": "myShare",
-                "resourceArn": "arn:aws:omics:us-west-2:555555555555:variantStore/store_1",
+                "shareId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "shareName": "myShare",
+                "resourceArn": "arn:aws:omics:us-west-2:123456789111:variantStore/store_1",
                 "principalSubscriber": "123456789012",
-                "ownerId": "555555555555",
+                "ownerId": "123456789111",
                 "status": "PENDING"
-            }
+            },
             {
-                "shareId": "39b65d0d-4368-4a19-9814-b0e31d73c10a",
-                "name": "myShare3456",
-                "resourceArn": "arn:aws:omics:us-west-2:555555555555:variantStore/store_2",
+                "shareId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "shareName": "myShare3456",
+                "resourceArn": "arn:aws:omics:us-west-2:123456789111:variantStore/store_2",
                 "principalSubscriber": "123456789012",
-                "ownerId": "555555555555",
+                "ownerId": "123456789111",
                 "status": "ACTIVE"
             },
             {
-                "shareId": "203152f5-eef9-459d-a4e0-a691668d44ef",
-                "name": "myShare4",
-                "resourceArn": "arn:aws:omics:us-west-2:555555555555:variantStore/store_3",
+                "shareId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                "shareName": "myShare4",
+                "resourceArn": "arn:aws:omics:us-west-2:123456789111:variantStore/store_3",
                 "principalSubscriber": "123456789012",
-                "ownerId": "555555555555",
+                "ownerId": "123456789111",
                 "status": "ACTIVE"
             }
         ]
     }
-        
-
 
 For more information, see `Cross-account sharing <https://docs.aws.amazon.com/omics/latest/dev/cross-account-sharing.html>`__ in the *AWS HealthOmics User Guide*.

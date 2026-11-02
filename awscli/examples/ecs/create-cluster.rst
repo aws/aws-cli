@@ -29,7 +29,7 @@ Output::
         }
     }
 
-For more information, see `Creating a Cluster <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Creating an Amazon ECS cluster for Fargate workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-cluster-console-v2.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 2: To create a new cluster using capacity providers**
 
@@ -38,7 +38,7 @@ The following ``create-cluster`` example creates a cluster and associates two ex
     aws ecs create-cluster \
         --cluster-name MyCluster \
         --capacity-providers MyCapacityProvider1 MyCapacityProvider2 \
-        --default-capacity-provider-strategy capacityProvider=MyCapacityProvider1,weight=1 capacityProvider=MyCapacityProvider2,weight=1 
+        --default-capacity-provider-strategy capacityProvider=MyCapacityProvider1,weight=1 capacityProvider=MyCapacityProvider2,weight=1
 
 Output::
 
@@ -75,23 +75,23 @@ Output::
                 }
             ],
             "attachments": [
-               {
-                   "id": "0fb0c8f4-6edd-4de1-9b09-17e470ee1918",
-                   "type": "asp",
-                   "status": "PRECREATED",
-                   "details": [
-                       {
-                           "name": "capacityProviderName",
-                           "value": "MyCapacityProvider1"
-                       },
-                       {
-                           "name": "scalingPlanName",
-                           "value": "ECSManagedAutoScalingPlan-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
-                       }
+                {
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+                    "type": "asp",
+                    "status": "PRECREATED",
+                    "details": [
+                        {
+                            "name": "capacityProviderName",
+                            "value": "MyCapacityProvider1"
+                        },
+                        {
+                            "name": "scalingPlanName",
+                            "value": "ECSManagedAutoScalingPlan-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+                        }
                     ]
                 },
                 {
-                    "id": "ae592060-2382-4663-9476-b015c685593c",
+                    "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                     "type": "asp",
                     "status": "PRECREATED",
                     "details": [
@@ -110,7 +110,7 @@ Output::
         }
     }
 
-For more information, see `Cluster capacity providers <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS capacity providers for EC2 workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/asg-capacity-providers.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Example 3: To create a new cluster with multiple tags**
 
@@ -118,31 +118,31 @@ The following ``create-cluster`` example creates a cluster with multiple tags.  
 
     aws ecs create-cluster \
         --cluster-name MyCluster \
-        --tags key=key1,value=value1 key=key2,value=value2 
+        --tags key=key1,value=value1 key=key2,value=value2
 
 Output::
 
-   {
-       "cluster": {
-           "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
-           "clusterName": "MyCluster",
-           "status": "ACTIVE",
-           "registeredContainerInstancesCount": 0,
-           "pendingTasksCount": 0,
-           "runningTasksCount": 0,
-           "activeServicesCount": 0,
-           "statistics": [],
-           "tags": [
-               {
-                   "key": "key1",
-                   "value": "value1"
-               },
-               {
-                   "key": "key2",
-                   "value": "value2"
-               }
-           ]
+    {
+        "cluster": {
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
+            "clusterName": "MyCluster",
+            "status": "ACTIVE",
+            "registeredContainerInstancesCount": 0,
+            "pendingTasksCount": 0,
+            "runningTasksCount": 0,
+            "activeServicesCount": 0,
+            "statistics": [],
+            "tags": [
+                {
+                    "key": "key1",
+                    "value": "value1"
+                },
+                {
+                    "key": "key2",
+                    "value": "value2"
+                }
+            ]
         }
     }
 
-For more information, see `Creating a Cluster <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Creating an Amazon ECS cluster for Fargate workloads <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-cluster-console-v2.html>`__ in the *Amazon ECS Developer Guide*.

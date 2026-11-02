@@ -13,7 +13,7 @@ Output::
             "Status": "deleting",
             "NumberOfShards": 1,
             "ClusterEndpoint": {
-                "Address": "clustercfg.my-new-cluster.xxxxx.memorydb.us-east-1.amazonaws.com",
+                "Address": "clustercfg.my-new-cluster.xxxxx.memorydb.us-west-2.amazonaws.com",
                 "Port": 6379
             },
             "NodeType": "db.r6g.large",
@@ -23,7 +23,7 @@ Output::
             "ParameterGroupStatus": "in-sync",
             "SubnetGroupName": "my-sg",
             "TLSEnabled": true,
-            "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:cluster/my-new-cluster",
+            "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:cluster/my-new-cluster",
             "SnapshotRetentionLimit": 0,
             "MaintenanceWindow": "sat:10:00-sat:11:00",
             "SnapshotWindow": "07:30-08:30",
@@ -31,4 +31,4 @@ Output::
         }
     }
 
-For more information, see `Deleting a cluster <https://docs.aws.amazon.com/memorydb/latest/devguide/clusters.delete.html>`__ in the *MemoryDB User Guide*.
+For more information, see `Getting started with MemoryDB <https://docs.aws.amazon.com/memorydb/latest/devguide/getting-started.html>`__ in the *MemoryDB User Guide*.

@@ -6,7 +6,7 @@ The following ``update-suite-definition`` example updates a device advisor test 
         --suite-definition-id 3hsn88h4p2g5 \
         --suite-definition-configuration '{ \
             "suiteDefinitionName": "TestSuiteName", \
-            "devices": [{"thingArn":"arn:aws:iot:us-east-1:123456789012:thing/MyIotThing"}], \
+            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}], \
             "intendedForQualification": false, \
             "rootGroup": "{\"configuration\":{},\"tests\":[{\"name\":\"MQTT Connect\",\"configuration\":{\"EXECUTION_TIMEOUT\":120},\"tests\":[{\"name\":\"MQTT_Connect\",\"configuration\":{},\"test\":{\"id\":\"MQTT_Connect\",\"testCase\":null,\"version\":\"0.0.0\"}}]}]}", \
             "devicePermissionRoleArn": "arn:aws:iam::123456789012:role/Myrole"}'
@@ -29,7 +29,7 @@ The following ``update-suite-definition`` example updates a device advisor quali
         --suite-definition-id txgsuolk2myj \
         --suite-definition-configuration '{
             "suiteDefinitionName": "TestSuiteName", \
-            "devices": [{"thingArn":"arn:aws:iot:us-east-1:123456789012:thing/MyIotThing"}], \
+            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}], \
             "intendedForQualification": true, \
             "rootGroup": "", \
             "devicePermissionRoleArn": "arn:aws:iam::123456789012:role/Myrole"}'
@@ -44,4 +44,4 @@ Output::
         "lastUpdatedAt": "2022-12-02T16:02:45.857000-05:00"
     }
 
-For more information, see `UpdateSuiteDefinition <https://docs.aws.amazon.com/iot/latest/apireference/API_iotdeviceadvisor_UpdateSuiteDefinition.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Device Advisor workflow <https://docs.aws.amazon.com/iot/latest/developerguide/device-advisor-workflow.html#device-advisor-workflow-create-suite-definition>`__ in the *AWS IoT Core Developer Guide*.

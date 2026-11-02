@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Configure AWS IoT logging <https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html>`__ in the *AWS IoT Core Developer Guide*.

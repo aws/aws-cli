@@ -4,7 +4,7 @@ The following ``update-experiment-template`` example updates the description of 
 
     aws fis update-experiment-template \
         --id ABCDE1fgHIJkLmNop \
-        ---description myExperimentTemplate
+        --description myExperimentTemplate
 
 Output::
 
@@ -44,4 +44,4 @@ Output::
         }
     }
 
-For more information, see `Update an experiment template <https://docs.aws.amazon.com/fis/latest/userguide/working-with-templates.html#update-template>`__ in the *AWS Fault Injection Simulator User Guide*.
+For more information, see `Update an experiment template <https://docs.aws.amazon.com/fis/latest/userguide/update-template.html>`__ in the *AWS Fault Injection Simulator User Guide*.

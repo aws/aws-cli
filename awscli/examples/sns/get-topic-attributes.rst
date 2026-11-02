@@ -19,3 +19,5 @@ Output::
             "SubscriptionsPending": "0"
         }
     }
+
+For more information, see `Creating an Amazon SNS topic <https://docs.aws.amazon.com/sns/latest/dg/sns-create-topic.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

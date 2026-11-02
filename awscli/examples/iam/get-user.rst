@@ -1,6 +1,6 @@
 **To get information about an IAM user**
 
-The following ``get-user`` command gets information about the IAM user named ``Paulo``. ::
+The following ``get-user`` example gets information about the IAM user named ``Paulo``. ::
 
     aws iam get-user \
         --user-name Paulo

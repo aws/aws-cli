@@ -3,7 +3,7 @@
 The following ``update-dimension`` example updates a dimension. ::
 
     aws iot update-dimension \
-        --name TopicFilterForAuthMessages \  
+        --name TopicFilterForAuthMessages \
         --string-values device/${iot:ClientId}/auth
 
 Output::
@@ -19,4 +19,4 @@ Output::
         "arn": "arn:aws:iot:us-west-2:1234564789012:dimension/TopicFilterForAuthMessages"
     }
 
-For more information, see `Scoping metrics in security profiles using dimensions <https://docs.aws.amazon.com/iot/latest/developerguide/scoping-security-behavior.html>`__ in the *AWS IoT Core Developer Guide*.
+For more information, see `Scoping metrics in security profiles using dimensions <https://docs.aws.amazon.com/iot-device-defender/latest/devguide/scoping-security-behavior.html>`__ in the *AWS IoT Core Developer Guide*.

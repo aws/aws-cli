@@ -29,7 +29,7 @@ Output::
                 }
             },
             "DocumentVersion": "$DEFAULT",
-            "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Targets": [
                 {
                     "Key": "InstanceIds",
@@ -43,4 +43,4 @@ Output::
         }
     }
 
-For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-associations.html>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `Working with associations in Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations.html>`__ in the *AWS Systems Manager User Guide*.

@@ -1,9 +1,10 @@
 **To get metadata about a CloudFront field-level encryption configuration**
 
-The following example gets metadata about the CloudFront field-level encryption
-configuration with the ID ``C3KM2WVD605UAY``, including its ``ETag``::
+The following ``get-field-level-encryption-config`` example gets metadata about the CloudFront field-level encryption
+configuration with the ID ``C3KM2WVD605UAY``, including its ``ETag``. ::
 
-    aws cloudfront get-field-level-encryption-config --id C3KM2WVD605UAY
+    aws cloudfront get-field-level-encryption-config \
+        --id C3KM2WVD605UAY
 
 Output::
 
@@ -34,3 +35,5 @@ Output::
             }
         }
     }
+
+For more information, see `Use field-level encryption to help protect sensitive data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`__ in the *Amazon CloudFront Developer Guide*.

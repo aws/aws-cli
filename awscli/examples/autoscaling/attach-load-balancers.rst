@@ -1,6 +1,6 @@
 **To attach a Classic Load Balancer to an Auto Scaling group**
 
-This example attaches the specified Classic Load Balancer to the specified Auto Scaling group. ::
+The following ``attach-load-balancers`` example attaches the specified Classic Load Balancer to the specified Auto Scaling group. ::
 
     aws autoscaling attach-load-balancers \
         --load-balancer-names my-load-balancer \

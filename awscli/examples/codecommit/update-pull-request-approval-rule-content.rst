@@ -16,9 +16,9 @@ Output::
             "originApprovalRuleTemplate": {},
             "creationDate": 1570752871.932,
             "lastModifiedDate": 1570754058.333,
-            "approvalRuleName": Require two approved approvers",
+            "approvalRuleName": "Require two approved approvers",
             "lastModifiedUser": "arn:aws:iam::123456789012:user/Mary_Major",
-            "ruleContentSha256": "cd93921cEXAMPLE",
+            "ruleContentSha256": "cd93921cEXAMPLE"
         }
     }
 

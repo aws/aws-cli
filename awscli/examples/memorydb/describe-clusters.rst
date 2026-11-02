@@ -1,6 +1,6 @@
 **To return a list of clusters**
 
-The following `describe-clusters`` returns a list of clusters. ::
+The following ``describe-clusters`` example returns a list of clusters. ::
 
     aws memorydb describe-clusters
 
@@ -13,7 +13,7 @@ Output::
                     "Status": "available",
                     "NumberOfShards": 2,
                     "ClusterEndpoint": {
-                        "Address": "clustercfg.my-cluster.llru6f.memorydb.us-east-1.amazonaws.com",
+                        "Address": "clustercfg.my-cluster.llru6f.memorydb.us-west-2.amazonaws.com",
                         "Port": 6379
                     },
                     "NodeType": "db.r6g.large",
@@ -29,7 +29,7 @@ Output::
                     ],
                     "SubnetGroupName": "pat-sg",
                     "TLSEnabled": true,
-                    "ARN": "arn:aws:memorydb:us-east-1:49165xxxxxx:cluster/my-cluster",
+                    "ARN": "arn:aws:memorydb:us-west-2:49165xxxxxx:cluster/my-cluster",
                     "SnapshotRetentionLimit": 0,
                     "MaintenanceWindow": "wed:03:00-wed:04:00",
                     "SnapshotWindow": "04:30-05:30",

@@ -13,77 +13,72 @@ Output::
                     {
                         "ServiceType": "Gateway"
                     }
-                ], 
-                "AcceptanceRequired": false, 
-                "ServiceName": "com.amazonaws.us-east-1.dynamodb", 
-                "VpcEndpointPolicySupported": true, 
-                "Owner": "amazon", 
+                ],
+                "AcceptanceRequired": false,
+                "ServiceName": "com.amazonaws.us-west-2.dynamodb",
+                "VpcEndpointPolicySupported": true,
+                "Owner": "amazon",
                 "AvailabilityZones": [
-                    "us-east-1a", 
-                    "us-east-1b", 
-                    "us-east-1c", 
-                    "us-east-1d", 
-                    "us-east-1e", 
-                    "us-east-1f"
-                ], 
+                    "us-west-2a", 
+                    "us-west-2b", 
+                    "us-west-2c", 
+                    "us-west-2d"
+                ],
                 "BaseEndpointDnsNames": [
-                    "dynamodb.us-east-1.amazonaws.com"
+                    "dynamodb.us-west-2.amazonaws.com"
                 ]
-            }, 
+            },
             {
                 "ServiceType": [
                     {
                         "ServiceType": "Interface"
                     }
-                ], 
-                "PrivateDnsName": "ec2.us-east-1.amazonaws.com", 
-                "ServiceName": "com.amazonaws.us-east-1.ec2", 
-                "VpcEndpointPolicySupported": false, 
-                "Owner": "amazon", 
+                ],
+                "PrivateDnsName": "ec2.us-west-2.amazonaws.com",
+                "ServiceName": "com.amazonaws.us-west-2.ec2",
+                "VpcEndpointPolicySupported": false,
+                "Owner": "amazon",
                 "AvailabilityZones": [
-                    "us-east-1a", 
-                    "us-east-1b", 
-                    "us-east-1c", 
-                    "us-east-1d", 
-                    "us-east-1e", 
-                    "us-east-1f"
-                ], 
-                "AcceptanceRequired": false, 
+                    "us-west-2a", 
+                    "us-west-2b", 
+                    "us-west-2c", 
+                    "us-west-2d"
+                ],
+                "AcceptanceRequired": false,
                 "BaseEndpointDnsNames": [
-                    "ec2.us-east-1.vpce.amazonaws.com"
+                    "ec2.us-west-2.vpce.amazonaws.com"
                 ]
-            }, 
+            },
             {
                 "ServiceType": [
                     {
                         "ServiceType": "Interface"
                     }
-                ], 
-                "PrivateDnsName": "ssm.us-east-1.amazonaws.com", 
-                "ServiceName": "com.amazonaws.us-east-1.ssm", 
-                "VpcEndpointPolicySupported": true, 
-                "Owner": "amazon", 
+                ],
+                "PrivateDnsName": "ssm.us-west-2.amazonaws.com",
+                "ServiceName": "com.amazonaws.us-west-2.ssm",
+                "VpcEndpointPolicySupported": true,
+                "Owner": "amazon",
                 "AvailabilityZones": [
-                    "us-east-1a", 
-                    "us-east-1b", 
-                    "us-east-1c", 
-                    "us-east-1d", 
-                    "us-east-1e"
-                ], 
-                "AcceptanceRequired": false, 
+                    "us-west-2a", 
+                    "us-west-2b", 
+                    "us-west-2c", 
+                    "us-west-2d"
+                ],
+                "AcceptanceRequired": false,
                 "BaseEndpointDnsNames": [
-                    "ssm.us-east-1.vpce.amazonaws.com"
+                    "ssm.us-west-2.vpce.amazonaws.com"
                 ]
             }
-        ], 
+        ],
         "ServiceNames": [
-            "com.amazonaws.us-east-1.dynamodb", 
-            "com.amazonaws.us-east-1.ec2", 
-            "com.amazonaws.us-east-1.ec2messages", 
-            "com.amazonaws.us-east-1.elasticloadbalancing", 
-            "com.amazonaws.us-east-1.kinesis-streams", 
-            "com.amazonaws.us-east-1.s3", 
-            "com.amazonaws.us-east-1.ssm"
+            "com.amazonaws.us-west-2.dynamodb",
+            "com.amazonaws.us-west-2.ec2",
+            "com.amazonaws.us-west-2.ec2messages",
+            "com.amazonaws.us-west-2.elasticloadbalancing",
+            "com.amazonaws.us-west-2.kinesis-streams",
+            "com.amazonaws.us-west-2.s3",
+            "com.amazonaws.us-west-2.ssm"
         ]
     }
 
@@ -92,14 +87,14 @@ Output::
 The following ``describe-vpc-endpoint-services`` example lists the details of the Amazon S3 interface endpoint service. ::
 
     aws ec2 describe-vpc-endpoint-services \
-        --filter 'Name=service-type,Values=Interface' Name=service-name,Values=com.amazonaws.us-east-1.s3
+        --filter 'Name=service-type,Values=Interface' Name=service-name,Values=com.amazonaws.us-west-2.s3
 
 Output::
 
     {
         "ServiceDetails": [
             {
-                "ServiceName": "com.amazonaws.us-east-1.s3",
+                "ServiceName": "com.amazonaws.us-west-2.s3",
                 "ServiceId": "vpce-svc-081d84efcdEXAMPLE",
                 "ServiceType": [
                     {
@@ -107,16 +102,14 @@ Output::
                     }
                 ],
                 "AvailabilityZones": [
-                    "us-east-1a",
-                    "us-east-1b",
-                    "us-east-1c",
-                    "us-east-1d",
-                    "us-east-1e",
-                "us-east-1f"
+                    "us-west-2a",
+                    "us-west-2b",
+                    "us-west-2c",
+                    "us-west-2d"
                 ],
                 "Owner": "amazon",
                 "BaseEndpointDnsNames": [
-                    "s3.us-east-1.vpce.amazonaws.com"
+                    "s3.us-west-2.vpce.amazonaws.com"
                 ],
                 "VpcEndpointPolicySupported": true,
                 "AcceptanceRequired": false,
@@ -125,7 +118,7 @@ Output::
             }
         ],
         "ServiceNames": [
-            "com.amazonaws.us-east-1.s3"
+            "com.amazonaws.us-west-2.s3"
         ]
     }
 

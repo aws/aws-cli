@@ -14,8 +14,10 @@ Contents of ``message.txt``::
 Output::
 
     {
-        "MessageId": "123a45b6-7890-12c3-45d6-111122223333"
+        "MessageId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
+
+For more information, see `Publishing an Amazon SNS message <https://docs.aws.amazon.com/sns/latest/dg/sns-publishing.html>`__ in the *Amazon Simple Notification Service Developer Guide*.
 
 **Example 2: To publish an SMS message to a phone number**
 
@@ -28,5 +30,7 @@ The following ``publish`` example publishes the message ``Hello world!`` to the 
 Output::
 
     {
-        "MessageId": "123a45b6-7890-12c3-45d6-333322221111"
+        "MessageId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
+
+For more information, see `Sending SMS messages using Amazon SNS <https://docs.aws.amazon.com/sns/latest/dg/sms_sending-overview.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

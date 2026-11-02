@@ -3,7 +3,7 @@
 The following ``list-resource-scan-related-resources`` example lists resources from the specified resource scan that are related to resources in ``resources.json``. ::
 
     aws cloudformation list-resource-scan-related-resources \
-        --resource-scan-id arn:aws:cloudformation:us-east-1:123456789012:resourceScan/0a699f15-489c-43ca-a3ef-3e6ecfa5da60 \
+        --resource-scan-id arn:aws:cloudformation:us-west-2:123456789012:resourceScan/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --resources file://resources.json
 
 Contents of ``resources.json``::

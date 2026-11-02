@@ -10,7 +10,7 @@ The following ``create-service-network-vpc-association`` example associates the 
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetworkvpcassociation/snva-0821fc8631EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetworkvpcassociation/snva-0821fc8631EXAMPLE",
         "createdBy": "123456789012",
         "id": "snva-0821fc8631EXAMPLE",
         "securityGroupIds": [

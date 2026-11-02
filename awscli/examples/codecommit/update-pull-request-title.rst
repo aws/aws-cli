@@ -1,6 +1,6 @@
 **To change the title of a pull request**
 
-This example demonstrates how to change the title of a pull request with the ID of ``47``. ::
+The following ``update-pull-request-title`` example changes the title of a pull request with the ID of ``47``. ::
 
     aws codecommit update-pull-request-title \
         --pull-request-id 47 \
@@ -37,7 +37,7 @@ Output::
                     "destinationCommit": "9f31c968EXAMPLE",
                     "destinationReference": "refs/heads/main",
                     "mergeMetadata": {
-                        "isMerged": false,
+                        "isMerged": false
                     },
                     "repositoryName": "MyDemoRepo",
                     "sourceCommit": "99132ab0EXAMPLE",
@@ -47,3 +47,5 @@ Output::
             "title": "Consolidation of global variables - updated review"
         }
     }
+
+For more information, see `Update a pull request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-update-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

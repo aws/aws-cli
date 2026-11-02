@@ -3,7 +3,7 @@
 The following ``delete-project`` example deletes a wind farm project. ::
 
     aws iotsitewise delete-project \
-        --project-id a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE
+        --project-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

@@ -3,7 +3,7 @@
 The following ``describe-standards-controls`` example requests the list of controls in the requester account's subscription to the PCI DSS standard. The request returns two controls at a time. ::
 
     aws securityhub describe-standards-controls \
-        --standards-subscription-arn "arn:aws:securityhub:us-west-1:123456789012:subscription/pci-dss/v/3.2.1" \
+        --standards-subscription-arn "arn:aws:securityhub:us-west-2:123456789012:subscription/pci-dss/v/3.2.1" \
         --max-results 2
 
 Output::
@@ -11,7 +11,7 @@ Output::
     {
         "Controls": [
             {
-                "StandardsControlArn": "arn:aws:securityhub:us-west-1:123456789012:control/pci-dss/v/3.2.1/PCI.AutoScaling.1",
+                "StandardsControlArn": "arn:aws:securityhub:us-west-2:123456789012:control/pci-dss/v/3.2.1/PCI.AutoScaling.1",
                 "ControlStatus": "ENABLED",
                 "ControlStatusUpdatedAt": "2020-05-15T18:49:04.473000+00:00",
                 "ControlId": "PCI.AutoScaling.1",
@@ -24,7 +24,7 @@ Output::
                 ]
             },
             {
-                "StandardsControlArn": "arn:aws:securityhub:us-west-1:123456789012:control/pci-dss/v/3.2.1/PCI.CW.1",
+                "StandardsControlArn": "arn:aws:securityhub:us-west-2:123456789012:control/pci-dss/v/3.2.1/PCI.CW.1",
                 "ControlStatus": "ENABLED",
                 "ControlStatusUpdatedAt": "2020-05-15T18:49:04.498000+00:00",
                 "ControlId": "PCI.CW.1",

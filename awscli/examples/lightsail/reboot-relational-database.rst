@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "e4c980c0-3137-496c-9c91-1EXAMPLEdec2",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Database-1",
                 "resourceType": "RelationalDatabase",
                 "createdAt": 1571694532.91,
@@ -26,3 +26,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create and manage relational databases in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-databases.html>`__ in the *Amazon Lightsail User Guide*.

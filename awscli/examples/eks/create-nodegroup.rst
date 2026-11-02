@@ -1,21 +1,20 @@
-**Example 1: Creates a managed node group for an Amazon EKS cluster**
+**Example 1: To create a managed node group for an Amazon EKS cluster**
 
 The following ``create-nodegroup`` example creates a managed node group for an Amazon EKS cluster. ::
 
     aws eks create-nodegroup \
         --cluster-name my-eks-cluster \
         --nodegroup-name my-eks-nodegroup \
-        --node-role arn:aws:iam::111122223333:role/role-name \
+        --node-role arn:aws:iam::123456789012:role/role-name \
         --subnets "subnet-0e2907431c9988b72" "subnet-04ad87f71c6e5ab4d" "subnet-09d912bb63ef21b9a" \
-        --scaling-config minSize=1,maxSize=3,desiredSize=1 \
-        --region us-east-2
+        --scaling-config minSize=1,maxSize=3,desiredSize=1
 
 Output::
 
     {
         "nodegroup": {
             "nodegroupName": "my-eks-nodegroup",
-            "nodegroupArn": "arn:aws:eks:us-east-2:111122223333:nodegroup/my-eks-cluster/my-eks-nodegroup/bac7550f-b8b8-5fbb-4f3e-7502a931119e",
+            "nodegroupArn": "arn:aws:eks:us-west-2:123456789012:nodegroup/my-eks-cluster/my-eks-nodegroup/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "clusterName": "my-eks-cluster",
             "version": "1.26",
             "releaseVersion": "1.26.12-20240329",
@@ -35,7 +34,7 @@ Output::
                 "subnet-0e2907431c9988b72, subnet-04ad87f71c6e5ab4d, subnet-09d912bb63ef21b9a"
             ],
             "amiType": "AL2_x86_64",
-            "nodeRole": "arn:aws:iam::111122223333:role/role-name",
+            "nodeRole": "arn:aws:iam::123456789012:role/role-name",
             "diskSize": 20,
             "health": {
                 "issues": []
@@ -49,27 +48,26 @@ Output::
 
 For more information, see `Creating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 2: Creates a managed node group for an Amazon EKS cluster with custom instance-types and disk-size**
+**Example 2: To create a managed node group for an Amazon EKS cluster with custom instance-types and disk-size**
 
 The following ``create-nodegroup`` example creates a managed node group for an Amazon EKS cluster with custom instance-types and disk-size. ::
 
     aws eks create-nodegroup \
         --cluster-name my-eks-cluster \
         --nodegroup-name my-eks-nodegroup \
-        --node-role arn:aws:iam::111122223333:role/role-name \
+        --node-role arn:aws:iam::123456789012:role/role-name \
         --subnets "subnet-0e2907431c9988b72" "subnet-04ad87f71c6e5ab4d" "subnet-09d912bb63ef21b9a" \
         --scaling-config minSize=1,maxSize=3,desiredSize=1 \
         --capacity-type ON_DEMAND \
         --instance-types 'm5.large' \
-        --disk-size 50 \
-        --region us-east-2
+        --disk-size 50
 
 Output::
 
     {
         "nodegroup": {
             "nodegroupName": "my-eks-nodegroup",
-            "nodegroupArn": "arn:aws:eks:us-east-2:111122223333:nodegroup/my-eks-cluster/my-eks-nodegroup/c0c7551b-e4f9-73d9-992c-a450fdb82322",
+            "nodegroupArn": "arn:aws:eks:us-west-2:123456789012:nodegroup/my-eks-cluster/my-eks-nodegroup/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "clusterName": "my-eks-cluster",
             "version": "1.26",
             "releaseVersion": "1.26.12-20240329",
@@ -91,7 +89,7 @@ Output::
                 "subnet-09d912bb63ef21b9a"
             ],
             "amiType": "AL2_x86_64",
-            "nodeRole": "arn:aws:iam::111122223333:role/role-name",
+            "nodeRole": "arn:aws:iam::123456789012:role/role-name",
             "diskSize": 50,
             "health": {
                 "issues": []
@@ -105,14 +103,14 @@ Output::
 
 For more information, see `Creating a managed node group <https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html>`__ in the *Amazon EKS User Guide*.
 
-**Example 3: Creates a managed node group for an Amazon EKS cluster with custom instance-types, disk-size, ami-type, capacity-type, update-config, labels, taints and tags.**
+**Example 3: To create a managed node group for an Amazon EKS cluster with custom instance-types, disk-size, ami-type, capacity-type, update-config, labels, taints and tags**
 
 The following ``create-nodegroup`` example creates a managed node group for an Amazon EKS cluster with custom instance-types, disk-size, ami-type, capacity-type, update-config, labels, taints and tags. ::
 
     aws eks create-nodegroup  \
         --cluster-name my-eks-cluster \
         --nodegroup-name my-eks-nodegroup \
-        --node-role arn:aws:iam::111122223333:role/role-name \
+        --node-role arn:aws:iam::123456789012:role/role-name \
         --subnets "subnet-0e2907431c9988b72" "subnet-04ad87f71c6e5ab4d" "subnet-09d912bb63ef21b9a" \
         --scaling-config minSize=1,maxSize=5,desiredSize=4 \
         --instance-types 't3.large' \
@@ -129,7 +127,7 @@ Output::
     {
         "nodegroup": {
             "nodegroupName": "my-eks-nodegroup",
-            "nodegroupArn": "arn:aws:eks:us-east-2:111122223333:nodegroup/my-eks-cluster/my-eks-nodegroup/88c75524-97af-0cb9-a9c5-7c0423ab5314",
+            "nodegroupArn": "arn:aws:eks:us-west-2:123456789012:nodegroup/my-eks-cluster/my-eks-nodegroup/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
             "clusterName": "my-eks-cluster",
             "version": "1.26",
             "releaseVersion": "1.26.12-20240329",
@@ -151,7 +149,7 @@ Output::
                 "subnet-09d912bb63ef21b9a"
             ],
             "amiType": "AL2_x86_64",
-            "nodeRole": "arn:aws:iam::111122223333:role/role-name",
+            "nodeRole": "arn:aws:iam::123456789012:role/role-name",
             "labels": {
                 "my-eks-nodegroup-label-2": "value-2",
                 "my-eks-nodegroup-label-1": "value-1"

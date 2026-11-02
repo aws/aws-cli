@@ -3,7 +3,7 @@
 The following ``start-extension-pack-association`` example queues the application of an extension pack to the target database. ::
 
     aws dms start-extension-pack-association \
-        --migration-project-identifier arn:aws:dms:us-east-1:123456789012:migration-project:EXAMPLEABCDEFGHIJKLMNOPQRS
+        --migration-project-identifier arn:aws:dms:us-west-2:123456789012:migration-project:EXAMPLEABCDEFGHIJKLMNOPQRS
 
 Output::
 

@@ -1,21 +1,21 @@
 **Example 1: To delete an image by using image digest ids, the image and all of its tags are deleted within a repository in a public registry**
 
-The following ``batch-delete-image`` example deletes an image by specifying the image digest.::
+The following ``batch-delete-image`` example deletes an image by specifying the image digest. ::
 
     aws ecr-public batch-delete-image \
         --repository-name project-a/nginx-web-app \
-        --image-ids imageDigest=sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2 
+        --image-ids imageDigest=sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2
 
 Output::
 
     {
-    "imageIds": [
-        {
-            "imageDigest": "sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2",
-            "imageTag": "latest"
-        }
-    ],
-    "failures": []
+        "imageIds": [
+            {
+                "imageDigest": "sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2",
+                "imageTag": "latest"
+            }
+        ],
+        "failures": []
     }
 
 For more information, see `Deleting an image in a public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/public-image-delete.html>`__ in the *Amazon ECR Public User Guide*.
@@ -44,7 +44,7 @@ For more information, see `Deleting an image in a public repository <https://doc
 
 **Example 3: To delete multiple images, you can specify multiple image tags or image digests in the request for a repository in a public registry.**
 
-The following ``batch-delete-image`` example delete multiple images from a repository named `project-a/nginx-web-app` by specifying multiple image tags or image digests in the request. ::
+The following ``batch-delete-image`` example deletes multiple images from a repository named ``project-a/nginx-web-app`` by specifying multiple image tags or image digests in the request. ::
 
     aws ecr-public batch-delete-image \
         --repository-name project-a/nginx-web-app \
@@ -52,7 +52,7 @@ The following ``batch-delete-image`` example delete multiple images from a repos
 
 Output::
 
-   {
+    {
         "imageIds": [
             {
                 "imageDigest": "sha256:47ba980bc055353d9c0af89b1894f68faa43ca93856917b8406316be86f01278"
@@ -69,10 +69,10 @@ For more information, see `Deleting an image in a public repository <https://doc
 
 **Example 4: To delete an image in cross AWS Account using registry-id and imagedigest ids, the image and all of its tags are deleted within a repository in a public registry**
 
-The following ``batch-delete-image`` example deletes an image by specifying the image digest in the cross AWS Account.::
+The following ``batch-delete-image`` example deletes an image by specifying the image digest in the cross AWS Account. ::
 
     aws ecr-public batch-delete-image \
-        --registry-id 123456789098 \
+        --registry-id 123456789012 \
         --repository-name project-a/nginx-web-app \
         --image-ids imageDigest=sha256:b1f9deb5fe3711a3278379ebbcaefbc5d70a2263135db86bd27a0dae150546c2 \
         --region us-east-1

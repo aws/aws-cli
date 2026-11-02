@@ -86,3 +86,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Exploring your data using Cost Explorer <https://docs.aws.amazon.com/cost-management/latest/userguide/ce-exploring-data.html>`__ in the *AWS Cost Management User Guide*.

@@ -1,4 +1,4 @@
-**Example: To associate an AWS account with an Amazon Inspector delegated administrator**
+**To associate an AWS account with an Amazon Inspector delegated administrator**
 
 The following ``associate-member`` example associates an AWS account with an Amazon Inspector delegated administrator. ::
 

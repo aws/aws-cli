@@ -12,11 +12,11 @@ Contents of ``rule.json``::
         "EventTypeIds": [
             "codecommit-repository-branches-and-tags-created"
         ],
-        "Resource": "arn:aws:codecommit:us-east-1:123456789012:MyDemoRepo",
+        "Resource": "arn:aws:codecommit:us-west-2:123456789012:MyDemoRepo",
         "Targets": [
             {
                 "TargetType": "SNS",
-                "TargetAddress": "arn:aws:sns:us-east-1:123456789012:MyNotificationTopic"
+                "TargetAddress": "arn:aws:sns:us-west-2:123456789012:MyNotificationTopic"
             }
         ],
         "Status": "ENABLED",
@@ -26,7 +26,7 @@ Contents of ``rule.json``::
 Output::
 
     {
-        "Arn": "arn:aws:codestar-notifications:us-east-1:123456789012:notificationrule/dc82df7a-EXAMPLE"
+        "Arn": "arn:aws:codestar-notifications:us-west-2:123456789012:notificationrule/dc82df7a-EXAMPLE"
     }
 
 For more information, see `Create a Notification rule <https://docs.aws.amazon.com/codestar-notifications/latest/userguide/notification-rule-create.html>`__ in the *AWS Developer Tools Console User Guide*.

@@ -1,11 +1,11 @@
 **To view comments for a pull request**
 
-This example demonstrates how to view comments for a pull request in a repository named ``MyDemoRepo``. ::
+The following ``get-comments-for-pull-request`` example displays comments for a pull request in a repository named ``MyDemoRepo``. ::
 
     aws codecommit get-comments-for-pull-request \
         --repository-name MyDemoRepo \
         --pull-request-id 42 \
-        --before-commit-ID 317f8570EXAMPLE \
+        --before-commit-id 317f8570EXAMPLE \
         --after-commit-id 5d036259EXAMPLE
 
 Output::
@@ -19,7 +19,7 @@ Output::
                 "beforeCommitId": "317f8570EXAMPLE",
                 "comments": [ 
                     { 
-                        "authorArn": "arn:aws:iam::111111111111:user/Saanvi_Sarkar",
+                        "authorArn": "arn:aws:iam::123456789012:user/Saanvi_Sarkar",
                         "clientRequestToken": "",
                         "commentId": "abcd1234EXAMPLEb5678efgh",
                         "content": "These don't appear to be used anywhere. Can we remove them?",
@@ -34,14 +34,14 @@ Output::
                         }
                     },
                     {
-                        "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+                        "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
                         "clientRequestToken": "",
                         "commentId": "442b498bEXAMPLE5756813",
                         "content": "Good catch. I'll remove them.",
                         "creationDate": 1508369829.104,
                         "deleted": false,
                         "lastModifiedDate": 150836912.273,
-                        "callerReactions": ["THUMBSUP"]
+                        "callerReactions": ["THUMBSUP"],
                         "reactionCounts": 
                         {
                             "THUMBSUP" : 14
@@ -59,3 +59,5 @@ Output::
         ],
         "nextToken": "exampleToken"
     }
+
+For more information, see `Review a pull request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-review-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

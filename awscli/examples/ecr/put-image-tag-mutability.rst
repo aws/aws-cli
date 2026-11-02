@@ -9,9 +9,9 @@ The following ``put-image-tag-mutability`` example configures the specified repo
 Output::
 
     {
-       "registryId": "012345678910",
-       "repositoryName": "sample-repo",
-       "imageTagMutability": "IMMUTABLE"
+        "registryId": "123456789012",
+        "repositoryName": "sample-repo",
+        "imageTagMutability": "IMMUTABLE"
     }
 
 For more information, see `Image Tag Mutability <https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-tag-mutability.html>`__ in the *Amazon ECR User Guide*.

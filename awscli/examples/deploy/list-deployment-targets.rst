@@ -1,6 +1,6 @@
 **To retrieve a list of target IDs that are associated with a deployment**
 
-The following ``list-deployment-targets`` example retrieves a list of target IDs associated with deployments that have a status of "Failed" or "InProgress." ::
+The following ``list-deployment-targets`` example retrieves a list of target IDs associated with deployments that have a status of "Failed" or "InProgress". ::
 
     aws deploy list-deployment-targets \
         --deployment-id "d-A1B2C3111" \
@@ -14,4 +14,4 @@ Output::
         ]
     }
 
-For more information, see `ListDeploymentTargets <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeploymentTargets.html>`_ in the *AWS CodeDeploy API Reference*.
+For more information, see `View instance details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

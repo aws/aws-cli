@@ -1,19 +1,23 @@
-**To tag a resource**
+**Example 1: To tag a resource**
 
 The following ``tag-resource`` example adds a single tag to the specified resource. ::
 
     aws ecs tag-resource \
-        --resource-arn arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster 
+        --resource-arn arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster \
         --tags key=key1,value=value1
 
 This command produces no output.
 
-**To add multiple tags to a resource**
+For more information, see `Tagging Amazon ECS resources <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html>`__ in the *Amazon ECS Developer Guide*.
+
+**Example 2: To add multiple tags to a resource**
 
 The following ``tag-resource`` example adds multiple tags to the specified resource. ::
 
     aws ecs tag-resource \
-    --resource-arn arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster \
-    --tags key=key1,value=value1 key=key2,value=value2 key=key3,value=value3
+        --resource-arn arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster \
+        --tags key=key1,value=value1 key=key2,value=value2 key=key3,value=value3
 
 This command produces no output.
+
+For more information, see `Tagging Amazon ECS resources <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html>`__ in the *Amazon ECS Developer Guide*.

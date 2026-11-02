@@ -1,6 +1,6 @@
 **To detect unsafe content in an image**
 
-The following ``detect-moderation-labels`` command detects unsafe content in the specified image stored in an Amazon S3 bucket. ::
+The following ``detect-moderation-labels`` example detects unsafe content in the specified image stored in an Amazon S3 bucket. ::
 
     aws rekognition detect-moderation-labels \
         --image "S3Object={Bucket=MyImageS3Bucket,Name=gun.jpg}"

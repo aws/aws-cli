@@ -14,7 +14,7 @@ Output::
                 "IpamScopeId": "ipam-scope-02fc38cd4c48e7d38",
                 "IpamScopeArn": "arn:aws:ec2::123456789012:ipam-scope/ipam-scope-02fc38cd4c48e7d38",
                 "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-08440e7a3acde3908",
-                "IpamRegion": "us-east-1",
+                "IpamRegion": "us-west-2",
                 "IpamScopeType": "private",
                 "IsDefault": true,
                 "PoolCount": 2,
@@ -26,7 +26,7 @@ Output::
                 "IpamScopeId": "ipam-scope-0b9eed026396dbc16",
                 "IpamScopeArn": "arn:aws:ec2::123456789012:ipam-scope/ipam-scope-0b9eed026396dbc16",
                 "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-08440e7a3acde3908",
-                "IpamRegion": "us-east-1",
+                "IpamRegion": "us-west-2",
                 "IpamScopeType": "public",
                 "IsDefault": true,
                 "PoolCount": 0,
@@ -38,7 +38,7 @@ Output::
                 "IpamScopeId": "ipam-scope-0f1aff29486355c22",
                 "IpamScopeArn": "arn:aws:ec2::123456789012:ipam-scope/ipam-scope-0f1aff29486355c22",
                 "IpamArn": "arn:aws:ec2::123456789012:ipam/ipam-08440e7a3acde3908",
-                "IpamRegion": "us-east-1",
+                "IpamRegion": "us-west-2",
                 "IpamScopeType": "private",
                 "IsDefault": false,
                 "Description": "Example description",
@@ -53,3 +53,5 @@ Output::
             }
         ]
     }
+
+For more information, see `How IPAM works <https://docs.aws.amazon.com/vpc/latest/ipam/how-it-works-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

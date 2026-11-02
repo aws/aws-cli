@@ -6,7 +6,7 @@ The following ``create-tags`` example adds the tag ``Stack=production`` to the s
         --resources ami-1234567890abcdef0 \
         --tags Key=Stack,Value=production
 
-This command produces no output
+This command produces no output.
 
 **Example 2: To add tags to multiple resources**
 
@@ -16,7 +16,7 @@ The following ``create-tags`` example adds (or overwrites) two tags for an AMI a
         --resources ami-1a2b3c4d i-1234567890abcdef0 \
         --tags Key=webserver,Value=   Key=stack,Value=Production
 
-This command produces no output
+This command produces no output.
 
 **Example 3: To add tags containing special characters**
 
@@ -28,16 +28,22 @@ If you are using Windows, surround the element that has special characters with 
         --resources i-1234567890abcdef0 ^
         --tags Key=\"[Group]\",Value=test
 
+This command produces no output.
+
 If you are using Windows PowerShell, surround the element the value that has special characters with double quotes ("), precede each double quote character with a backslash (\\), and then surround the entire key and value structure with single quotes (') as follows. ::
 
     aws ec2 create-tags `
         --resources i-1234567890abcdef0 `
         --tags 'Key=\"[Group]\",Value=test'
 
+This command produces no output.
+
 If you are using Linux or OS X, surround the element that has special characters with double quotes ("), and then surround the entire key and value structure with single quotes (') as follows. ::
 
     aws ec2 create-tags \
         --resources i-1234567890abcdef0 \
         --tags 'Key="[Group]",Value=test'
+
+This command produces no output.
 
 For more information, see `Tag your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.

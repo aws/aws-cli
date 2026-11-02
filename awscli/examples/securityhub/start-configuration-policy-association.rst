@@ -3,7 +3,7 @@
 The following ``start-configuration-policy-association`` example associates the specified configuration policy with the specified organizational unit. A configuration may be associated with a target account, organizational unit, or the root. ::
 
     aws securityhub start-configuration-policy-association \
-        --configuration-policy-identifier "arn:aws:securityhub:eu-central-1:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333" \
+        --configuration-policy-identifier "arn:aws:securityhub:us-west-2:123456789012:configuration-policy/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333" \
         --target '{"OrganizationalUnitId": "ou-6hi7-8j91kl2m"}'
 
 Output::

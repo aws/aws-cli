@@ -22,4 +22,4 @@ Output::
         "failedVersions": {}
     }
 
-For more information, see `Update package version status <https://docs.aws.amazon.com/codeartifact/latest/ug/describe-package-version.html#update-package-version-status>`__ in the *AWS CodeArtifact User Guide*.
+For more information, see `Update package version status <https://docs.aws.amazon.com/codeartifact/latest/ug/update-package-version-status.html>`__ in the *AWS CodeArtifact User Guide*.

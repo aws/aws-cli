@@ -1,6 +1,6 @@
 **Example 1: To create an AWS CodeBuild build project**
 
-The following ``create-project`` example creates a CodeBuild build project using source files from an S3 bucket ::
+The following ``create-project`` example creates a CodeBuild build project using source files from an S3 bucket. ::
 
     aws codebuild create-project \
         --name "my-demo-project" \
@@ -55,9 +55,10 @@ Output::
 
 The following ``create-project`` example creates a CodeBuild build project by passing all of the required parameters in a JSON input file. Create the input file template by running the command with only the ``--generate-cli-skeleton parameter``. ::
 
-    aws codebuild create-project --cli-input-json file://create-project.json
+    aws codebuild create-project \
+        --cli-input-json file://create-project.json
 
-The input JSON file ``create-project.json`` contains the following content::
+Contents of ``create-project.json``::
 
     {
         "name": "codebuild-demo-project",
@@ -108,5 +109,5 @@ Output::
         }
     }
 
-For more information, see `Create a Build Project (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/create-project.html#create-project-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Create a build project in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/create-project.html>`__ in the *AWS CodeBuild User Guide*.
 

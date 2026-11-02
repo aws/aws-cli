@@ -17,7 +17,7 @@ Contents of ``access-scope-file.json``::
                         ]
                     }
                 }
-             }
+            }
         ],
         "ExcludePaths": [
             {
@@ -37,7 +37,7 @@ Output::
     {
         "NetworkInsightsAccessScope": {
             "NetworkInsightsAccessScopeId": "nis-123456789abc01234",
-            "NetworkInsightsAccessScopeArn": "arn:aws:ec2:us-east-1:123456789012:network-insights-access-scope/nis-123456789abc01234",
+            "NetworkInsightsAccessScopeArn": "arn:aws:ec2:us-west-2:123456789012:network-insights-access-scope/nis-123456789abc01234",
             "CreatedDate": "2022-01-25T19:20:28.796000+00:00",
             "UpdatedDate": "2022-01-25T19:20:28.797000+00:00"
         },

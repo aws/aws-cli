@@ -1,6 +1,6 @@
 **To update a channel**
 
-The following ``update-channel`` command updates the channel named ``sportschannel`` to include the description ``24x7 sports``. ::
+The following ``update-channel`` example updates the channel named ``sportschannel`` to include the description ``24x7 sports``. ::
 
     aws mediapackage update-channel \
         --id sportschannel \

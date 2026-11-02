@@ -1,7 +1,7 @@
 **To list CloudFront origin access identities**
 
-The following example gets a list of the CloudFront origin access identities
-(OAIs) in your AWS account::
+The following ``list-cloud-front-origin-access-identities`` example gets a list of the CloudFront origin access identities
+(OAIs) in your AWS account. ::
 
     aws cloudfront list-cloud-front-origin-access-identities
 
@@ -28,3 +28,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Restrict access to an Amazon S3 origin <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html>`__ in the *Amazon CloudFront Developer Guide*.

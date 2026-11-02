@@ -11,4 +11,4 @@ Output::
         "TrafficMirrorFilterRuleId": "tmfr-081f71283bEXAMPLE"
     }
 
-For more information, see `Modify Your Traffic Mirror Filter Rules <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-filter.html#modify-traffic-mirroring-filter-rules>`__ in the *AWS Traffic Mirroring Guide*.
+For more information, see `Create, modify, or delete a traffic mirror filter <https://docs.aws.amazon.com/vpc/latest/mirroring/create-traffic-mirroring-filter.html>`__ in the *AWS Traffic Mirroring Guide*.

@@ -9,7 +9,7 @@ The following ``update-service`` example updates a service to update the ``DnsCo
 Output::
 
     {
-        "OperationId": "abcd1234-5678-90ab-cdef-xmpl12345678"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the operation succeeded, you can run ``get-operation``.
@@ -27,7 +27,7 @@ The following ``update-service`` example updates a service using its ARN. Specif
 Output::
 
     {
-        "OperationId": "abcd1234-5678-90ab-cdef-xmpl12345678"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information about updating a service, see `Updating an AWS Cloud Map service <https://docs.aws.amazon.com/cloud-map/latest/dg/editing-services.html>`__ and `Shared AWS Cloud Map namespaces <https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html>`__ in the *AWS Cloud Map Developer Guide*.

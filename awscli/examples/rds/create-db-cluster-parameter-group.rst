@@ -14,8 +14,8 @@ Output::
             "DBClusterParameterGroupName": "mydbclusterparametergroup",
             "DBParameterGroupFamily": "aurora5.6",
             "Description": "My new cluster parameter group",
-            "DBClusterParameterGroupArn": "arn:aws:rds:us-east-1:123456789012:cluster-pg:mydbclusterparametergroup"
+            "DBClusterParameterGroupArn": "arn:aws:rds:us-west-2:123456789012:cluster-pg:mydbclusterparametergroup"
         }
     }
 
-For more information, see `Creating a DB Cluster Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_WorkingWithParamGroups.html#USER_WorkingWithParamGroups.CreatingCluster>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Creating a DB Cluster Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_WorkingWithParamGroups.CreatingCluster.html>`__ in the *Amazon Aurora User Guide*.

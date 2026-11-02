@@ -1,6 +1,6 @@
 **To get information about IAM entity usage and IAM quotas in the current account**
 
-The following ``get-account-summary`` command returns information about the current IAM entity usage and current IAM entity quotas in the account. ::
+The following ``get-account-summary`` example returns information about the current IAM entity usage and current IAM entity quotas in the account. ::
 
     aws iam get-account-summary
 

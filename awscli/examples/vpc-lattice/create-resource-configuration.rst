@@ -12,7 +12,7 @@ Output::
 
     {
         "allowAssociationToShareableServiceNetwork": true,
-        "arn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourceconfiguration/rcfg-07129f3acded87625",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourceconfiguration/rcfg-07129f3acded87625",
         "id": "rcfg-07129f3acded87625",
         "name": "my-resource-config",
         "portRanges": [

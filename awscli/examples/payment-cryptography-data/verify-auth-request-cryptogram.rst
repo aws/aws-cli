@@ -5,7 +5,7 @@ The following ``verify-auth-request-cryptogram`` example verifies an Authorizati
     aws payment-cryptography-data verify-auth-request-cryptogram \
         --auth-request-cryptogram F6E1BD1E6037FB3E \
         --auth-response-attributes '{"ArpcMethod1": {"AuthResponseCode": "1111"}}' \
-        --key-identifier arn:aws:payment-cryptography:us-west-2:111122223333:key/pboipdfzd4mdklya \
+        --key-identifier arn:aws:payment-cryptography:us-west-2:123456789012:key/pboipdfzd4mdklya \
         --major-key-derivation-mode "EMV_OPTION_A" \
         --session-key-derivation-attributes '{"EmvCommon": {"ApplicationTransactionCounter": "1234","PanSequenceNumber": "01","PrimaryAccountNumber": "471234567890123"}}' \
         --transaction-data "123456789ABCDEF" 
@@ -14,7 +14,7 @@ Output::
 
     {
         "AuthResponseValue": "D899B8C6FBF971AA",
-        "KeyArn": "arn:aws:payment-cryptography:us-west-2:111122223333:key/pboipdfzd4mdklya",
+        "KeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/pboipdfzd4mdklya",
         "KeyCheckValue": "985792"
     }
 

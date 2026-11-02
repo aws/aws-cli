@@ -2,18 +2,17 @@
 
 The following ``get-package-version-asset`` example retrieves the ``package.tgz`` asset for version 4.0.0 of an npm package named test-package. ::
 
-    aws codeartifact get-package-version-asset \
+    aws codeartifact get-package-version-asset outfileName \
         --domain test-domain \
         --repository test-repo \
         --format npm \
         --package test-package \
         --package-version 4.0.0 \
-        --asset 'package.tgz' \
-        outfileName
+        --asset 'package.tgz'
+
+The command also stores the raw asset in the file provided in place of ``outfileName``.
 
 Output::
-
-    The output for this command will also store the raw asset in the file provided in place of outfileName.
 
     {
         "assetName": "package.tgz",

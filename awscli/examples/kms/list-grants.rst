@@ -5,9 +5,11 @@ The following ``list-grants`` example displays all of the grants on the specifie
 This command uses the ``key-id`` parameter with a key ID to identify the KMS key. You can use a key ID or key ARN to identify the KMS key. To get the key ID or key ARN of an AWS managed KMS key, use the ``list-keys`` or ``list-aliases`` command. ::
 
     aws kms list-grants \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
-The output shows that the grant gives Amazon DynamoDB permission to use the KMS key for cryptographic operations, and gives it permission to view details about the KMS key (``DescribeKey``) and to retire grants (``RetireGrant``). The ``EncryptionContextSubset`` constraint limits these permission to requests that include the specified encryption context pairs. As a result, the permissions in the grant are effective only on specified account and DynamoDB table. ::
+The output shows that the grant gives Amazon DynamoDB permission to use the KMS key for cryptographic operations, and gives it permission to view details about the KMS key (``DescribeKey``) and to retire grants (``RetireGrant``). The ``EncryptionContextSubset`` constraint limits these permission to requests that include the specified encryption context pairs. As a result, the permissions in the grant are effective only on specified account and DynamoDB table.
+
+Output::
 
     {
         "Grants": [
@@ -19,7 +21,7 @@ The output shows that the grant gives Amazon DynamoDB permission to use the KMS 
                     }
                 },
                 "IssuingAccount": "arn:aws:iam::123456789012:root",
-                "Name": "8276b9a6-6cf0-46f1-b2f0-7993a7f8c89a",
+                "Name": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Operations": [
                     "Decrypt",
                     "Encrypt",
@@ -30,7 +32,7 @@ The output shows that the grant gives Amazon DynamoDB permission to use the KMS 
                     "DescribeKey"
                 ],
                 "GrantId": "1667b97d27cf748cf05b487217dd4179526c949d14fb3903858e25193253fe59",
-                "KeyId": "arn:aws:kms:us-west-2:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+                "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "RetiringPrincipal": "dynamodb.us-west-2.amazonaws.com",
                 "GranteePrincipal": "dynamodb.us-west-2.amazonaws.com",
                 "CreationDate": "2021-05-13T18:32:45.144000+00:00"

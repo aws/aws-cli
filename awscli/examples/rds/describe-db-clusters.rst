@@ -12,9 +12,9 @@ Output::
             {
                 "AllocatedStorage": 1,
                 "AvailabilityZones": [
-                    "us-east-1a",
-                    "us-east-1b",
-                    "us-east-1e"
+                    "us-west-2a",
+                    "us-west-2b",
+                    "us-west-2d"
                 ],
                 "BackupRetentionPeriod": 1,
                 "DatabaseName": "mydbcluster",
@@ -23,8 +23,8 @@ Output::
                 "DBSubnetGroup": "default",
                 "Status": "available",
                 "EarliestRestorableTime": "2019-06-19T09:16:28.210Z",
-                "Endpoint": "mydbcluster.cluster-cnpexample.us-east-1.rds.amazonaws.com",
-                "ReaderEndpoint": "mydbcluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+                "Endpoint": "mydbcluster.cluster-cnpexample.us-west-2.rds.amazonaws.com",
+                "ReaderEndpoint": "mydbcluster.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
                 "MultiAZ": true,
                 "Engine": "aurora-mysql",
                 "EngineVersion": "5.7.mysql_aurora.2.04.2",
@@ -80,9 +80,9 @@ Output::
                 ],
                 "HostedZoneId": "Z2R2ITUGPM61AM",
                 "StorageEncrypted": true,
-                "KmsKeyId": "arn:aws:kms:us-east-1:814387698303:key/AKIAIOSFODNN7EXAMPLE",
+                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/AKIAIOSFODNN7EXAMPLE",
                 "DbClusterResourceId": "cluster-AKIAIOSFODNN7EXAMPLE",
-                "DBClusterArn": "arn:aws:rds:us-east-1:123456789012:cluster:mydbcluster",
+                "DBClusterArn": "arn:aws:rds:us-west-2:123456789012:cluster:mydbcluster",
                 "AssociatedRoles": [],
                 "IAMDatabaseAuthenticationEnabled": false,
                 "ClusterCreateTime": "2019-04-15T14:18:42.785Z",
@@ -104,21 +104,19 @@ Output::
 
     [
         {
-            "Endpoint": "cluster-57-2020-05-01-2270.cluster-cnpexample.us-east-1.rds.amazonaws.com",
-            "ReaderEndpoint": "cluster-57-2020-05-01-2270.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "Endpoint": "cluster-57-2020-05-01-2270.cluster-cnpexample.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "cluster-57-2020-05-01-2270.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
             "DBClusterIdentifier": "cluster-57-2020-05-01-2270"
         },
         {
-            "Endpoint": "cluster-57-2020-05-01-4615.cluster-cnpexample.us-east-1.rds.amazonaws.com",
-            "ReaderEndpoint": "cluster-57-2020-05-01-4615.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "Endpoint": "cluster-57-2020-05-01-4615.cluster-cnpexample.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "cluster-57-2020-05-01-4615.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
             "DBClusterIdentifier": "cluster-57-2020-05-01-4615"
         },
         {
-            "Endpoint": "pg2-cluster.cluster-cnpexample.us-east-1.rds.amazonaws.com",
-            "ReaderEndpoint": "pg2-cluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "Endpoint": "pg2-cluster.cluster-cnpexample.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "pg2-cluster.cluster-ro-cnpexample.us-west-2.rds.amazonaws.com",
             "DBClusterIdentifier": "pg2-cluster"
-        },
-        ...output omitted...
         }
     ]
 

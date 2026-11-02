@@ -1,6 +1,6 @@
 **To update the properties of a partner account**
 
-The following ``update-partner-account`` updates the ``AppServerPrivateKey`` for the account that has the specified ID. ::
+The following ``update-partner-account`` example updates the ``AppServerPrivateKey`` for the account that has the specified ID. ::
 
     aws iotwireless update-partner-account \
         --partner-account-id "78965678771228" \

@@ -1,23 +1,18 @@
-Get a Description of All Cluster Versions
------------------------------------------
+**To get a description of all cluster versions**
 
-This example returns a description of all cluster versions.  By default, the output is in JSON format.
+The following ``describe-cluster-versions`` example returns a description of all cluster versions.  By default, the output is in JSON format. ::
 
-Command::
+    aws redshift describe-cluster-versions
 
-   aws redshift describe-cluster-versions
-
-Result::
+Output::
 
     {
-       "ClusterVersions": [
-          {
-          "ClusterVersion": "1.0",
-          "Description": "Initial release",
-          "ClusterParameterGroupFamily": "redshift-1.0"
-          } ],
-       "ResponseMetadata": {
-          "RequestId": "16a53de3-64cc-11e2-bec0-17624ad140dd"
-       }
+        "ClusterVersions": [
+            {
+                "ClusterVersion": "1.0",
+                "Description": "Initial release",
+                "ClusterParameterGroupFamily": "redshift-1.0"
+            } ]
     }
 
+For more information, see `Cluster versions for Amazon Redshift <https://docs.aws.amazon.com/redshift/latest/mgmt/cluster-versions.html>`__ in the *Amazon Redshift Management Guide*.

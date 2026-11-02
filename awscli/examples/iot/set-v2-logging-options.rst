@@ -4,6 +4,8 @@ The following ``set-v2-logging-options`` example sets the default logging verbos
 
     aws iot set-v2-logging-options \
         --default-log-level ERROR \
-        --role-arn "arn:aws:iam::094249569039:role/service-role/iotLoggingRole"
+        --role-arn "arn:aws:iam::123456789012:role/service-role/iotLoggingRole"
 
 This command produces no output.
+
+For more information, see `Configure AWS IoT logging <https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html#global-logging-cli>`__ in the *AWS IoT Core Developer Guide*.

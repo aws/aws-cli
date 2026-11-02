@@ -1,6 +1,6 @@
 **To get short-term credentials for a role authenticated with SAML**
 
-The following ``assume-role-with-saml`` command retrieves a set of short-term credentials for the  IAM role ``TestSaml``. The request in this example is authenticated by using the SAML assertion supplied by your identity provider when you authenticate to it. ::
+The following ``assume-role-with-saml`` example retrieves a set of short-term credentials for the IAM role ``TestSaml``. The request in this example is authenticated by using the SAML assertion supplied by your identity provider when you authenticate to it. ::
 
     aws sts assume-role-with-saml \
         --role-arn arn:aws:iam::123456789012:role/TestSaml \
@@ -23,7 +23,7 @@ Output::
         },
         "Audience": "https://signin.aws.amazon.com/saml",
         "SubjectType": "transient",
-        "PackedPolicySize": "6",
+        "PackedPolicySize": 6,
         "NameQualifier": "SbdGOnUkh1i4+EXAMPLExL/jEvs=",
         "Subject": "SamlExample"
     }

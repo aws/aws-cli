@@ -38,4 +38,4 @@ The following configuration variables are supported in the config file:
 
 For more information on configuration options, see `Configuring the AWS Command Line Interface`_ in the *AWS CLI User Guide*.
 
-.. _`Configuring the AWS Command Line Interface`: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
+.. _`Configuring the AWS Command Line Interface`: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html

@@ -9,13 +9,13 @@ The following ``create-function-definition`` example creates a Lambda function d
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/3b0d0080-87e7-48c6-b182-503ec743a08b",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreationTimestamp": "2019-06-19T22:24:44.585Z",
-        "Id": "3b0d0080-87e7-48c6-b182-503ec743a08b",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LastUpdatedTimestamp": "2019-06-19T22:24:44.585Z",
-        "LatestVersion": "67f918b9-efb4-40b0-b87c-de8c9faf085b",
-        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/3b0d0080-87e7-48c6-b182-503ec743a08b/versions/67f918b9-efb4-40b0-b87c-de8c9faf085b",
+        "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "Name": "MyGreengrassFunctions"
     }
 
-For more information, see `How to Configure Local Resource Access Using the AWS Command Line Interface <https://docs.aws.amazon.com/greengrass/latest/developerguide/lra-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `How to configure local resource access using the AWS command line interface <https://docs.aws.amazon.com/greengrass/v1/developerguide/lra-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.

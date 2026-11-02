@@ -1,4 +1,4 @@
-**title**
+**To delete a snapshot of an instance**
 
 The following ``delete-instance-snapshot`` example deletes the specified snapshot of an instance. ::
 
@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "14dad182-976a-46c6-bfd4-9480482bf0ea",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "WordPress-1-Snapshot-1",
                 "resourceType": "InstanceSnapshot",
                 "createdAt": 1569874524.562,
@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Delete unused Lightsail snapshots to avoid monthly charges <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-deleting-snapshots.html>`__ in the *Amazon Lightsail User Guide*.

@@ -3,17 +3,17 @@
 The following ``list-custom-routing-port-mappings`` example provides a partial list of the port mappings in a custom routing accelerator. ::
 
     aws globalaccelerator list-custom-routing-port-mappings \
-        --accelerator-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh
+        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "PortMappings": [ 
-            { 
+        "PortMappings": [
+            {
                 "AcceleratorPort": 40480,
-                "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu",
+                "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/0123vxyz/endpoint-group/098765zyxwvu",
                 "EndpointId": "subnet-1234567890abcdef0",
-                "DestinationSocketAddress": { 
+                "DestinationSocketAddress": {
                     "IpAddress": "192.0.2.250",
                     "Port": 80
                 },
@@ -22,14 +22,14 @@ Output::
                     "UDP"
                 ],
                 "DestinationTrafficState": "ALLOW"
-            }
-            { 
+            },
+            {
                 "AcceleratorPort": 40481,
-                "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu",
+                "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/0123vxyz/endpoint-group/098765zyxwvu",
                 "EndpointId": "subnet-1234567890abcdef0",
-                "DestinationSocketAddress": { 
-                   "IpAddress": "192.0.2.251",
-                  "Port": 80
+                "DestinationSocketAddress": {
+                    "IpAddress": "192.0.2.251",
+                    "Port": 80
                 },
                 "Protocols": [
                     "TCP",

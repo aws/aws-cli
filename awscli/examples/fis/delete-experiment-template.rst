@@ -40,4 +40,4 @@ Output::
         }
     }
 
-For more information, see `Delete an experiment template <https://docs.aws.amazon.com/fis/latest/userguide/working-with-templates.html#delete-template>`__ in the *AWS Fault Injection Simulator User Guide*.
+For more information, see `Delete an experiment template <https://docs.aws.amazon.com/fis/latest/userguide/delete-template.html>`__ in the *AWS Fault Injection Simulator User Guide*.

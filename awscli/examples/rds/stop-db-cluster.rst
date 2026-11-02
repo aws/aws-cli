@@ -11,14 +11,14 @@ Output::
         "DBCluster": {
             "AllocatedStorage": 1,
             "AvailabilityZones": [
-                "us-east-1a",
-                "us-east-1e",
-                "us-east-1b"
+                "us-west-2a",
+                "us-west-2d",
+                "us-west-2b"
             ],
             "BackupRetentionPeriod": 1,
             "DatabaseName": "mydb",
             "DBClusterIdentifier": "mydbcluster",
-            ...some output truncated...
+            "Status": "stopping"
         }
     }
 

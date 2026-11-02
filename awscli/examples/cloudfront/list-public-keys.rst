@@ -1,7 +1,7 @@
 **To list CloudFront public keys**
 
-The following example gets a list of the CloudFront public keys in your AWS
-account::
+The following ``list-public-keys`` example gets a list of the CloudFront public keys in your AWS
+account. ::
 
     aws cloudfront list-public-keys
 
@@ -29,3 +29,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Specify signers that can create signed URLs and signed cookies <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-trusted-signers.html>`__ in the *Amazon CloudFront Developer Guide*.

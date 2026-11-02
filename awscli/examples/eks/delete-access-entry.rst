@@ -1,10 +1,10 @@
 **To delete an access entry associated with the cluster**
 
-The following ``delete-access-entry`` deletes an access entry associated with the EKS cluster named ``eks-customer``. ::
+The following ``delete-access-entry`` example deletes an access entry associated with the EKS cluster named ``eks-customer``. ::
 
     aws eks delete-access-entry \
         --cluster-name eks-customer \
-        --principal-arn arn:aws:iam::111122223333:role/Admin
+        --principal-arn arn:aws:iam::123456789012:role/Admin
 
 This command produces no output.
 

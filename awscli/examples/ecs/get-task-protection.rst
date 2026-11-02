@@ -1,6 +1,6 @@
-**Retrieve the protection status of task in ECS service**
+**To retrieve the protection status of a task in an ECS service**
 
-The following ``get-task-protection`` provides the protection status of ECS tasks that belong to Amazon ECS service. ::
+The following ``get-task-protection`` example retrieves the protection status of ECS tasks that belong to Amazon ECS service. ::
 
     aws ecs get-task-protection \
         --cluster ECS-project-update-cluster \

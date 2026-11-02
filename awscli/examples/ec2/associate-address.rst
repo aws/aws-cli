@@ -16,7 +16,7 @@ Output::
 
 The following ``associate-address`` example associates the specified Elastic IP address with the specified network interface. ::
 
-    aws ec2 associate-address 
+    aws ec2 associate-address \
         --allocation-id eipalloc-64d5890a \
         --network-interface-id eni-1a2b3c4d
 

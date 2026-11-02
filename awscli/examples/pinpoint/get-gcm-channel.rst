@@ -3,8 +3,7 @@
 The following ``get-gcm-channel`` example retrieves information about the status and settings of the GCM channel for an application. ::
 
     aws pinpoint get-gcm-channel \
-        --application-id 6e0b7591a90841d2b5d93fa11143e5a7 \
-        --region us-east-1
+        --application-id 6e0b7591a90841d2b5d93fa11143e5a7
 
 Output::
 
@@ -21,3 +20,5 @@ Output::
             "Version": 1
         }
     }
+
+For more information, see `Amazon Pinpoint push notifications <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-push.html>`__ in the *Amazon Pinpoint User Guide*.

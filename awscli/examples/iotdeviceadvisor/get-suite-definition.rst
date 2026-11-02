@@ -9,7 +9,7 @@ Output::
 
     {
         "suiteDefinitionId": "qqcsmtyyjabl",
-        "suiteDefinitionArn": "arn:aws:iotdeviceadvisor:us-east-1:123456789012:suitedefinition/qqcsmtyyjabl",
+        "suiteDefinitionArn": "arn:aws:iotdeviceadvisor:us-west-2:123456789012:suitedefinition/qqcsmtyyjabl",
         "suiteDefinitionVersion": "v1",
         "latestVersion": "v1",
         "suiteDefinitionConfiguration": {

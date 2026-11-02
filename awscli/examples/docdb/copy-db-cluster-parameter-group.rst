@@ -13,7 +13,7 @@ Output::
     {
         "DBClusterParameterGroup": {
             "DBParameterGroupFamily": "docdb3.6",
-            "DBClusterParameterGroupArn": "arn:aws:rds:us-east-1:12345678901:cluster-pg:custom-docdb3-6-copy",
+            "DBClusterParameterGroupArn": "arn:aws:rds:us-west-2:12345678901:cluster-pg:custom-docdb3-6-copy",
             "DBClusterParameterGroupName": "custom-docdb3-6-copy",
             "Description": "Copy of custom-docdb3-6"
         }

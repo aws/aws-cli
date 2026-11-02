@@ -14,7 +14,7 @@ Output::
                         "Key": "domain-name",
                         "Values": [
                             {
-                                "Value": "us-east-2.compute.internal"
+                                "Value": "us-west-2.compute.internal"
                             }
                         ]
                     },
@@ -28,7 +28,7 @@ Output::
                     }
                 ],
                 "DhcpOptionsId": "dopt-19edf471",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             },
             {
                 "DhcpConfigurations": [
@@ -36,7 +36,7 @@ Output::
                         "Key": "domain-name",
                         "Values": [
                             {
-                                "Value": "us-east-2.compute.internal"
+                                "Value": "us-west-2.compute.internal"
                             }
                         ]
                     },
@@ -50,12 +50,12 @@ Output::
                     }
                 ],
                 "DhcpOptionsId": "dopt-fEXAMPLE",
-                "OwnerId": "111122223333"
+                "OwnerId": "123456789012"
             }
         ]
     }
 
-For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html#DHCPOptionSet>`__ in the *AWS VPC User Guide*.
+For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/DHCPOptionSet.html>`__ in the *AWS VPC User Guide*.
 
 **Example 2: To describe your DHCP options and filter the output**
 
@@ -91,4 +91,4 @@ Output::
         ]
     ]
 
-For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html#DHCPOptionSet>`__ in the *AWS VPC User Guide*.
+For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/DHCPOptionSet.html>`__ in the *AWS VPC User Guide*.

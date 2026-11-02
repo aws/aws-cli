@@ -8,15 +8,15 @@ Output::
 
     {
         "AccountLimit": {
-           "CodeSizeUnzipped": 262144000,
-           "UnreservedConcurrentExecutions": 1000,
-           "ConcurrentExecutions": 1000,
-           "CodeSizeZipped": 52428800,
-           "TotalCodeSize": 80530636800
+            "CodeSizeUnzipped": 262144000,
+            "UnreservedConcurrentExecutions": 1000,
+            "ConcurrentExecutions": 1000,
+            "CodeSizeZipped": 52428800,
+            "TotalCodeSize": 80530636800
         },
         "AccountUsage": {
-           "FunctionCount": 4,
-           "TotalCodeSize": 9426
+            "FunctionCount": 4,
+            "TotalCodeSize": 9426
         }
     }
 

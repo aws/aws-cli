@@ -51,11 +51,6 @@ Output::
             "NumberOfNodes": 4,
             "PubliclyAccessible": false,
             "Encrypted": false,
-            "ClusterSnapshotCopyStatus": {
-                "DestinationRegion": "us-west-1",
-                "RetentionPeriod": 7,
-                "ManualSnapshotRetentionPeriod": -1
-            },
             "Tags": [
                 {
                     "Key": "mytags",
@@ -78,4 +73,4 @@ Output::
         }
     }
 
-For more information, see `Cluster Maintenance <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-cluster-maintenance>`__ in the *Amazon Redshift Cluster Management Guide*.
+For more information, see `Cluster Maintenance <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html>`__ in the *Amazon Redshift Cluster Management Guide*.

@@ -2,8 +2,7 @@
 
 The following ``get-network-insights-access-scope-content`` example gets the content of the selected scope analysis ID in your AWS account. ::
 
-    aws ec2 get-network-insights-access-scope-content \ 
-        --region us-east-1 \
+    aws ec2 get-network-insights-access-scope-content \
         --network-insights-access-scope-id nis-123456789222
 
 Output::

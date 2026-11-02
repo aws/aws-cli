@@ -1,4 +1,4 @@
-**To describe a replication task** 
+**To describe a replication task**
 
 The following ``describe-replication-tasks`` example describes current replication tasks. ::
 
@@ -10,17 +10,15 @@ Output::
         "ReplicationTasks": [
             {
                 "ReplicationTaskIdentifier": "moveit2",
-                "SourceEndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:6GGI6YPWWGAYUVLKIB732KEVWA",
-                "TargetEndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:EOM4SFKCZEYHZBFGAGZT3QEC5U",
-                "ReplicationInstanceArn": "arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE",
+                "SourceEndpointArn": "arn:aws:dms:us-west-2:123456789012:endpoint:6GGI6YPWWGAYUVLKIB732KEVWA",
+                "TargetEndpointArn": "arn:aws:dms:us-west-2:123456789012:endpoint:EOM4SFKCZEYHZBFGAGZT3QEC5U",
+                "ReplicationInstanceArn": "arn:aws:dms:us-west-2:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE",
                 "MigrationType": "full-load",
-                "TableMappings": ...output omitted... ,
-                "ReplicationTaskSettings": ...output omitted... ,
                 "Status": "stopped",
                 "StopReason": "Stop Reason FULL_LOAD_ONLY_FINISHED",
                 "ReplicationTaskCreationDate": 1590524772.505,
                 "ReplicationTaskStartDate": 1590619805.212,
-                "ReplicationTaskArn": "arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII",
+                "ReplicationTaskArn": "arn:aws:dms:us-west-2:123456789012:task:K55IUCGBASJS5VHZJIINA45FII",
                 "ReplicationTaskStats": {
                     "FullLoadProgressPercent": 100,
                     "ElapsedTimeMillis": 0,

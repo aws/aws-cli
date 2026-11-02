@@ -11,55 +11,7 @@ Output::
     {
         "versionId": 1,
         "creationDate": 1589308310.574,
-        "templateBody": "{
-            \"Parameters\":{
-                \"SerialNumber\":{
-                    \"Type\":\"String\"
-                },
-                \"AWS::IoT::Certificate::Id\":{
-                    \"Type\":\"String\"
-                }
-            },
-            \"Resources\":{
-                \"certificate\":{
-                    \"Properties\":{
-                        \"CertificateId\":{
-                            \"Ref\":\"AWS::IoT::Certificate::Id\"
-                        },
-                        \"Status\":\"Active\"
-                    },
-                    \"Type\":\"AWS::IoT::Certificate\"
-                },
-                \"policy\":{
-                    \"Properties\":{
-                        \"PolicyName\":\"MyIotPolicy\"
-                    },
-                    \"Type\":\"AWS::IoT::Policy\"
-                },
-                \"thing\":{
-                    \"OverrideSettings\":{
-                        \"AttributePayload\":\"MERGE\",
-                        \"ThingGroups\":\"DO_NOTHING\",
-                        \"ThingTypeName\":\"REPLACE\"
-                    },
-                    \"Properties\":{
-                        \"AttributePayload\":{},
-                        \"ThingGroups\":[],
-                        \"ThingName\":{
-                            \"Fn::Join\":[
-                                \"\",
-                                [
-                                    \"DemoGroup_\",
-                                    {\"Ref\":\"SerialNumber\"}
-                                ]
-                            ]
-                        },
-                        \"ThingTypeName\":\"VirtualThings\"
-                    },
-                    \"Type\":\"AWS::IoT::Thing\"
-                }
-            }
-        }",
+        "templateBody": "{\"Parameters\":{\"SerialNumber\":{\"Type\":\"String\"},\"AWS::IoT::Certificate::Id\":{\"Type\":\"String\"}},\"Resources\":{\"certificate\":{\"Properties\":{\"CertificateId\":{\"Ref\":\"AWS::IoT::Certificate::Id\"},\"Status\":\"Active\"},\"Type\":\"AWS::IoT::Certificate\"},\"policy\":{\"Properties\":{\"PolicyName\":\"MyIotPolicy\"},\"Type\":\"AWS::IoT::Policy\"},\"thing\":{\"OverrideSettings\":{\"AttributePayload\":\"MERGE\",\"ThingGroups\":\"DO_NOTHING\",\"ThingTypeName\":\"REPLACE\"},\"Properties\":{\"AttributePayload\":{},\"ThingGroups\":[],\"ThingName\":{\"Fn::Join\":[\"\",[\"DemoGroup_\",{\"Ref\":\"SerialNumber\"}]]},\"ThingTypeName\":\"VirtualThings\"},\"Type\":\"AWS::IoT::Thing\"}}}",
         "isDefaultVersion": true
     }
 

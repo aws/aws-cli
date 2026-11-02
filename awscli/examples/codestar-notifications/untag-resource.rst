@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the tag with the key name ``Team`` from the specified notification rule. ::
 
     aws codestar-notifications untag-resource \
-        --arn arn:aws:codestar-notifications:us-east-1:123456789012:notificationrule/fe1efd35-EXAMPLE \
+        --arn arn:aws:codestar-notifications:us-west-2:123456789012:notificationrule/fe1efd35-EXAMPLE \
         --tag-keys Team
 
 This command produces no output.

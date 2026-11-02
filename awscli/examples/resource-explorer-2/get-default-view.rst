@@ -7,7 +7,7 @@ The following ``get-default-view`` example retrieves the ARN of the view that is
 Output::
 
     {
-        "ViewArn": "arn:aws:resource-explorer-2:us-east-1:123456789012:view/default-view/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111"
+        "ViewArn": "arn:aws:resource-explorer-2:us-west-2:123456789012:view/default-view/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
-For more information, see `Setting a default view in an AWS Region <https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-views-set-default.html>`__ in the *AWS Resource Explorer Users Guide*.
+For more information, see `Setting a default view in an AWS Region <https://docs.aws.amazon.com/resource-explorer/latest/userguide/configure-views-set-default.html>`__ in the *AWS Resource Explorer Users Guide*.

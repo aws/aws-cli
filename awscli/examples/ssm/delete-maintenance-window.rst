@@ -1,6 +1,6 @@
 **To delete a maintenance window**
 
-This ``delete-maintenance-window`` example removes the specified maintenance window. ::
+The following ``delete-maintenance-window`` example removes the specified maintenance window. ::
 
     aws ssm delete-maintenance-window \
         --window-id "mw-1a2b3c4d5e6f7g8h9"

@@ -8,7 +8,7 @@ The following ``get-groups-for-capacity-reservation`` example lists the resource
 Output::
 
     {
-        "CapacityReservationsGroup": [
+        "CapacityReservationGroups": [
             {
                 "GroupArn": "arn:aws:resource-groups:us-west-2:123456789012:group/my-resource-group",
                 "OwnerId": "123456789012"

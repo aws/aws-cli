@@ -3,7 +3,6 @@
 The following ``update-extension-association`` example adds a new parameter value to an extension association in AWS AppConfig. ::
 
     aws appconfig update-extension-association \
-        --region us-west-2 \
         --extension-association-id a1b2c3d4 \
         --parameters S3bucket=FinanceMobileApp
 

@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "a8c968c7-72a3-4680-a714-af8f03eea535",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "MyFirstLoadBalancer",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1569875092.125,
@@ -24,7 +24,7 @@ Output::
                 "statusChangedAt": 1569875092.125
             },
             {
-                "id": "f91a29fc-8ce3-4e69-a227-ea70ca890bf5",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "MySecondCertificate",
                 "resourceType": "LoadBalancerTlsCertificate",
                 "createdAt": 1569875091.938,
@@ -38,7 +38,7 @@ Output::
                 "statusChangedAt": 1569875091.938
             },
             {
-                "id": "cf64c060-154b-4eb4-ba57-84e2e41563d6",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "MyFirstLoadBalancer",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1569875091.94,
@@ -54,4 +54,4 @@ Output::
         ]
     }
 
-For more information, see `title <link>`__ in the *guide*.
+For more information, see `Delete Lightsail load balancers <https://docs.aws.amazon.com/lightsail/latest/userguide/delete-lightsail-load-balancer.html>`__ in the *Amazon Lightsail User Guide*.

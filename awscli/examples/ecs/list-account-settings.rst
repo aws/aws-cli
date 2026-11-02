@@ -2,7 +2,8 @@
 
 The following ``list-account-settings`` example displays the effective account settings for an account. ::
 
-    aws ecs list-account-settings --effective-settings
+    aws ecs list-account-settings \
+        --effective-settings
 
 Output::
 
@@ -26,11 +27,14 @@ Output::
         ]
     }
 
+For more information, see `Access Amazon ECS features with account settings <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 2: To view the account settings for a specific IAM user or IAM role**
 
 The following ``list-account-settings`` example displays the account settings for the specified IAM user or IAM role. ::
 
-    aws ecs list-account-settings --principal-arn arn:aws:iam::123456789012:user/MyUser
+    aws ecs list-account-settings \
+        --principal-arn arn:aws:iam::123456789012:user/MyUser
 
 Output::
 
@@ -44,4 +48,4 @@ Output::
         ]
     }
 
-For more information, see `Amazon Resource Names (ARNs) and IDs <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-resource-ids.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Access Amazon ECS features with account settings <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html>`__ in the *Amazon ECS Developer Guide*.

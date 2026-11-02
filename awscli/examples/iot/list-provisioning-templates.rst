@@ -9,7 +9,7 @@ Output::
     {
         "templates": [
             {
-                "templateArn": "arn:aws:iot:us-east-1:123456789012:provisioningtemplate/widget-template",
+                "templateArn": "arn:aws:iot:us-west-2:123456789012:provisioningtemplate/widget-template",
                 "templateName": "widget-template",
                 "description": "A provisioning template for widgets",
                 "creationDate": 1574800471.367,

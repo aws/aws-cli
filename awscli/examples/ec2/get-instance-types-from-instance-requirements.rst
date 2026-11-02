@@ -5,7 +5,6 @@ The following ``get-instance-types-from-instance-requirements`` example first ge
 To generate all possible attributes and save the output directly to a JSON file, use the following command. ::
 
     aws ec2 get-instance-types-from-instance-requirements \
-        --region us-east-1 \
         --generate-cli-skeleton input > attributes.json
 
 Output::
@@ -91,10 +90,9 @@ Preview the instance types that have the attributes specified in ``attributes.js
         --cli-input-json file://attributes.json \
         --output table
 
-Contents of ``attributes.json`` file::
+Contents of ``attributes.json``::
 
     {
-        
         "ArchitectureTypes": [
             "x86_64"
         ],

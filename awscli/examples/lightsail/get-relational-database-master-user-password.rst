@@ -11,3 +11,5 @@ Output::
         "masterUserPassword": "VEXAMPLEec.9qvx,_t<)Wkf)kwboM,>2",
         "createdAt": 1571259453.959
     }
+
+For more information, see `Change your Lightsail database password <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-managing-database-password.html>`__ in the *Amazon Lightsail User Guide*.

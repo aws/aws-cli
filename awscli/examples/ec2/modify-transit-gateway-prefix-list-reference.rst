@@ -19,7 +19,7 @@ Output::
             "TransitGatewayAttachment": {
                 "TransitGatewayAttachmentId": "tgw-attach-aabbccddaabbccaab",
                 "ResourceType": "vpc",
-                "ResourceId": "vpc-112233445566aabbc"
+                "ResourceId": "vpc-112233445aabbccdd"
             }
         }
     }

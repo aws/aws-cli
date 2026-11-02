@@ -1,9 +1,9 @@
 **To create a Cost and Usage budget**
 
-The following ``create-budget`` command creates a Cost and Usage budget. ::
+The following ``create-budget`` example creates a Cost and Usage budget. ::
 
     aws budgets create-budget \
-        --account-id 111122223333 \
+        --account-id 123456789012 \
         --budget file://budget.json \
         --notifications-with-subscribers file://notifications-with-subscribers.json
         
@@ -41,6 +41,8 @@ Contents of ``budget.json``::
         "TimeUnit": "MONTHLY"
     }
 
+This command produces no output.
+
 Contents of ``notifications-with-subscribers.json``::
 
     [
@@ -59,3 +61,5 @@ Contents of ``notifications-with-subscribers.json``::
             ]
         }
     ]
+
+For more information, see `Creating a budget <https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-create.html>`__ in the *AWS Cost Management User Guide*.

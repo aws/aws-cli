@@ -19,7 +19,7 @@ Output::
             },
             "SourceTableDetails": {
                 "TableName": "MusicCollection",
-                "TableId": "b0c04bcc-309b-4352-b2ae-9088af169fe2",
+                "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
                 "TableSizeBytes": 0,
                 "KeySchema": [
@@ -44,4 +44,4 @@ Output::
         }
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.

@@ -1,10 +1,10 @@
 **To deactivate an MFA device**
 
-This command deactivates the virtual MFA device with the ARN ``arn:aws:iam::210987654321:mfa/BobsMFADevice`` that is associated with the user ``Bob``. ::
+The following ``deactivate-mfa-device`` example deactivates the virtual MFA device with the ARN ``arn:aws:iam::123456789012:mfa/BobsMFADevice`` that is associated with the user ``Bob``. ::
 
     aws iam deactivate-mfa-device \
         --user-name Bob \
-        --serial-number arn:aws:iam::210987654321:mfa/BobsMFADevice
+        --serial-number arn:aws:iam::123456789012:mfa/BobsMFADevice
 
 This command produces no output.
 

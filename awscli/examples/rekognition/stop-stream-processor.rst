@@ -1,6 +1,6 @@
 **To stop a running stream processor**
 
-The following ``stop-stream-processor`` command stops the specified running stream processor. ::
+The following ``stop-stream-processor`` example stops the specified running stream processor. ::
 
     aws rekognition stop-stream-processor \
         --name my-stream-processor 

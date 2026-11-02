@@ -4,8 +4,7 @@ The following ``send-users-messages`` example sends a direct message for an user
 
     aws pinpoint send-users-messages \
         --application-id 611e3e3cdd47474c9c1399a505665b91 \
-        --send-users-message-request file://myfile.json \
-        --region us-west-2
+        --send-users-message-request file://myfile.json
 
 Contents of ``myfile.json``::
 
@@ -25,7 +24,7 @@ Output::
     {
         "SendUsersMessageResponse": {
             "ApplicationId": "611e3e3cdd47474c9c1399a505665b91",
-            "RequestId": "e0b12cf5-2359-11e9-bb0b-d5fb91876b25",
+            "RequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Result": {
                 "testuser": {
                     "testuserendpoint": {

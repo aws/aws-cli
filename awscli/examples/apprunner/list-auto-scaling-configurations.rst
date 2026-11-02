@@ -20,14 +20,16 @@ Output::
     {
         "AutoScalingConfigurationSummaryList": [
             {
-                "AutoScalingConfigurationArn": "arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability/2/e76562f50d78042e819fead0f59672e6",
+                "AutoScalingConfigurationArn": "arn:aws:apprunner:us-west-2:123456789012:autoscalingconfiguration/high-availability/2/e76562f50d78042e819fead0f59672e6",
                 "AutoScalingConfigurationName": "high-availability",
                 "AutoScalingConfigurationRevision": 2
             },
             {
-                "AutoScalingConfigurationArn": "arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/low-cost/1/50d7804e7656fead0f59672e62f2e819",
+                "AutoScalingConfigurationArn": "arn:aws:apprunner:us-west-2:123456789012:autoscalingconfiguration/low-cost/1/50d7804e7656fead0f59672e62f2e819",
                 "AutoScalingConfigurationName": "low-cost",
                 "AutoScalingConfigurationRevision": 1
             }
         ]
     }
+
+For more information, see `Managing App Runner automatic scaling <https://docs.aws.amazon.com/apprunner/latest/dg/manage-autoscaling.html>`__ in the *AWS App Runner Developer Guide*.

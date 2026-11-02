@@ -15,3 +15,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Self-managed licenses in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/license-configurations.html>`__ in the *AWS License Manager User Guide*.

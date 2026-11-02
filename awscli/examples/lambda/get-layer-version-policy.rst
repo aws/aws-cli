@@ -9,21 +9,8 @@ The following ``get-layer-version-policy`` example displays policy information a
 Output::
 
     {
-        "Policy": {
-            "Version":"2012-10-17",
-            "Id":"default",
-            "Statement":
-            [
-                {
-                    "Sid":"xaccount",
-                    "Effect":"Allow",
-                    "Principal": {"AWS":"arn:aws:iam::123456789012:root"},
-                    "Action":"lambda:GetLayerVersion",
-                    "Resource":"arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1"
-                }
-            ]
-        },
-        "RevisionId": "c68f21d2-cbf0-4026-90f6-1375ee465cd0"
+        "Policy": "{\"Version\":\"2012-10-17\",\"Id\":\"default\",\"Statement\":[{\"Sid\":\"xaccount\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::123456789012:root\"},\"Action\":\"lambda:GetLayerVersion\",\"Resource\":\"arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1\"}]}",
+        "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `AWS Lambda Layers <https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html>`__ in the *AWS Lambda Developer Guide*.

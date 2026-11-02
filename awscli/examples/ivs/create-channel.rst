@@ -45,7 +45,7 @@ For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/lat
 
 **Example 2: To create a channel with recording enabled, using the RecordingConfiguration resource specified by its ARN**
 
-The following ``create-channel`` example creates a new channel and an associated stream key to start streaming, and sets up recording for the channel::
+The following ``create-channel`` example creates a new channel and an associated stream key to start streaming, and sets up recording for the channel. ::
 
     aws ivs create-channel \
         --name test-channel-with-recording \
@@ -65,7 +65,6 @@ Output::
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
             },
-            "type": "STANDARD",
             "playbackRestrictionPolicyArn": "",
             "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
             "srt": {
@@ -92,10 +91,10 @@ For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/
 
 **Example 3: To create a channel with a playback restriction policy specified by its ARN**
 
-The following ``create-channel`` example creates a new channel and an associated stream key to start streaming, and sets up a playback restriction policy for the channel::
+The following ``create-channel`` example creates a new channel and an associated stream key to start streaming, and sets up a playback restriction policy for the channel. ::
 
     aws ivs create-channel \
-        --name test-channel-with-playback-restriction-policy\
+        --name test-channel-with-playback-restriction-policy \
         --insecure-ingest \
         --playback-restriction-policy-arn 'arn:aws:ivs:us-west-2:123456789012:playback-restriction-policy/ABcdef34ghIJ'
 
@@ -112,7 +111,6 @@ Output::
                 "maximumResolution": "FULL_HD",
                 "policy": "ALLOW"
             },
-            "type": "STANDARD",
             "playbackRestrictionPolicyArn": "arn:aws:ivs:us-west-2:123456789012:playback-restriction-policy/ABcdef34ghIJ",
             "recordingConfigurationArn": "",
             "srt": {

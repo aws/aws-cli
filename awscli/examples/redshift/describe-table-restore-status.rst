@@ -2,7 +2,7 @@
 
 The following ``describe-table-restore-status`` example displays details for table restore requests made for the specified cluster. ::
 
-    aws redshift describe-table-restore-status /
+    aws redshift describe-table-restore-status \
         --cluster-identifier mycluster
 
 Output::
@@ -10,7 +10,7 @@ Output::
     {
         "TableRestoreStatusDetails": [
             {
-                "TableRestoreRequestId": "z1116630-0e80-46f4-ba86-bd9670411ebd",
+                "TableRestoreRequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Status": "IN_PROGRESS",
                 "RequestTime": "2019-12-27T18:22:12.257Z",
                 "ClusterIdentifier": "mycluster",
@@ -25,4 +25,4 @@ Output::
         ]
     }
 
-For more information, see `Restoring a Table from a Snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html#working-with-snapshot-restore-table-from-snapshot>`__ in the *Amazon Redshift Cluster Management Guide*.
+For more information, see `Restoring a Table from a Snapshot <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshot-restore-table-from-snapshot.html>`__ in the *Amazon Redshift Cluster Management Guide*.

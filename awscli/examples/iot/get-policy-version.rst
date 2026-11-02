@@ -2,8 +2,8 @@
 
 The following ``get-policy-version`` example gets information about the first version of the specified policy. ::
 
-    aws iot get-policy \
-        --policy-name UpdateDeviceCertPolicy
+    aws iot get-policy-version \
+        --policy-name UpdateDeviceCertPolicy \
         --policy-version-id "1"
 
 Output::

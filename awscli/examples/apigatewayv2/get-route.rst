@@ -16,4 +16,4 @@ Output::
         "Target": "integrations/a1b2c3"
     }
 
-For more information, see `Working with routes for HTTP APIs <https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-routes.html>`__ in the *Amazon API Gateway Developer Guide*
+For more information, see `Create routes for HTTP APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-routes.html>`__ in the *Amazon API Gateway Developer Guide*.

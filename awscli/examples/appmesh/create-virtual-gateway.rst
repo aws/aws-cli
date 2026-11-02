@@ -11,14 +11,14 @@ Contents of ``create-virtual-gateway.json``::
 
     {
         "spec": {
-          "listeners": [
-            {
-              "portMapping": {
-                "port": 9080,
-                "protocol": "http"
-              }
-            }
-          ]
+            "listeners": [
+                {
+                    "portMapping": {
+                        "port": 9080,
+                        "protocol": "http"
+                    }
+                }
+            ]
         }
     }
 
@@ -33,7 +33,7 @@ Output::
                 "lastUpdatedAt": "2022-04-06T10:42:42.015000-05:00",
                 "meshOwner": "123456789012",
                 "resourceOwner": "123456789012",
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 1
             },
             "spec": {

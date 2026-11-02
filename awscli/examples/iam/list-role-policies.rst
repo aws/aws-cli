@@ -1,6 +1,6 @@
 **To list the policies attached to an IAM role**
 
-The following ``list-role-policies`` command lists the names of the permissions policies for the specified IAM role. ::
+The following ``list-role-policies`` example lists the names of the permissions policies for the specified IAM role. ::
 
     aws iam list-role-policies \
         --role-name Test-Role

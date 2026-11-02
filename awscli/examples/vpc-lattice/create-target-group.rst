@@ -19,7 +19,7 @@ Contents of ``tg-config.json``::
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
         "config": {
             "healthCheck": {
                 "enabled": true,
@@ -67,7 +67,7 @@ Contents of ``tg-config.json``::
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
         "config": {
             "healthCheck": {
                 "enabled": true,
@@ -105,7 +105,7 @@ The following ``create-target-group`` example creates a target group with the sp
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
         "id": "tg-0eaa4b9ab4EXAMPLE",
         "name": "my-lattice-target-group-lambda",
         "status": "CREATE_IN_PROGRESS",
@@ -133,7 +133,7 @@ Contents of ``tg-config.json``::
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
         "config": {
             "port": 443,
             "protocol": "HTTPS",

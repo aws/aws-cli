@@ -15,7 +15,7 @@ Output::
     {
         "operations": [
             {
-                "id": "003f8271-b711-464d-b9b8-7f3806cb496e",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "WordPress-2",
                 "resourceType": "Instance",
                 "createdAt": 1569865914.908,
@@ -30,3 +30,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create Lightsail instances from snapshots <https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-create-instance-from-snapshot.html>`__ in the *Amazon Lightsail User Guide*.

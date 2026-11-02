@@ -7,3 +7,5 @@ The following ``wait fargate-profile-deleted`` example command waits until ``Res
         --fargate-profile-name my-fargate-profile
 
 This command produces no output.
+
+For more information, see `Delete a Fargate profile <https://docs.aws.amazon.com/eks/latest/userguide/delete-fargate-profile.html>`__ in the *Amazon EKS User Guide*.

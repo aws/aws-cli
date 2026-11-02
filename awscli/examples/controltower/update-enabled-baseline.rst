@@ -4,12 +4,12 @@ The following ``update-enabled-baseline`` example updates an AWS Control Tower e
 
     aws controltower update-enabled-baseline \
         --baseline-version 4.0 \
-        --enabled-baseline-identifier arn:aws:controltower:us-east-1:123456789012:enabledbaseline/XOM12BEL4YD578CQ2
+        --enabled-baseline-identifier arn:aws:controltower:us-west-2:123456789012:enabledbaseline/XOM12BEL4YD578CQ2
 
 Output::
 
     {
-        "operationIdentifier": "214cde95-5c39-46b9-b429-4fad550a7096"
+        "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 **Example 2: To update an enabled Control Tower baseline**
@@ -18,13 +18,13 @@ The following ``update-enabled-baseline`` example updates an AWS Control Tower e
 
     aws controltower update-enabled-baseline \
         --baseline-version 4.0 \
-        --enabled-baseline-identifier arn:aws:controltower:us-east-1:123456789012:enabledbaseline/XOM12BEL4YD578CQ2 \
-        --parameters '[{"key":"IdentityCenterEnabledBaselineArn","value":"arn:aws:controltower:us-east-1:123456789012:enabledbaseline/XAJNZNCBC1I386C7B"}]'
+        --enabled-baseline-identifier arn:aws:controltower:us-west-2:123456789012:enabledbaseline/XOM12BEL4YD578CQ2 \
+        --parameters '[{"key":"IdentityCenterEnabledBaselineArn","value":"arn:aws:controltower:us-west-2:123456789012:enabledbaseline/XAJNZNCBC1I386C7B"}]'
 
 Output::
 
     {
-        "operationIdentifier": "b0f4a7c2-334d-48d9-971e-47fea9db3e8b"
+        "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `Types of baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.

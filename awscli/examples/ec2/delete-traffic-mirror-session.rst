@@ -11,4 +11,4 @@ Output::
         "TrafficMirrorSessionId": "tms-0af3141ce5EXAMPLE"
     }
 
-For more information, see `Delete a Traffic Mirror Session <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-session.html#delete-traffic-mirroring-session>`__ in the *AWS Traffic Mirroring Guide*.
+For more information, see `Create, modify, or delete a traffic mirror session <https://docs.aws.amazon.com/vpc/latest/mirroring/create-traffic-mirroring-session.html>`__ in the *AWS Traffic Mirroring Guide*.

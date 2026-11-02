@@ -13,7 +13,9 @@ Output::
         "revisionInfo": {
             "description": "Application revision registered by Deployment ID: d-A1B2C3111",
             "registerTime": 1411076520.009,
-            "deploymentGroups": "WordPress_DG",
+            "deploymentGroups": [
+                "WordPress_DG"
+            ],
             "lastUsedTime": 1411076520.009,
             "firstUsedTime": 1411076520.009
         },
@@ -27,3 +29,5 @@ Output::
             }
         }
     }
+
+For more information, see `View application revision details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/application-revisions-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

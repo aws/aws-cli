@@ -1,6 +1,6 @@
 **Example 1: To create an Aurora PostgreSQL primary DB cluster**
 
-The following ``create-db-cluster`` example creates an Aurora PostgreSQL SQL primary DB cluster that's compatible with Aurora Serverless v2 and Aurora Limitless Database. ::
+The following ``create-db-shard-group`` example starts by using the ``create-db-cluster`` command to create an Aurora PostgreSQL SQL primary DB cluster that's compatible with Aurora Serverless v2 and Aurora Limitless Database. ::
 
     aws rds create-db-cluster \
         --db-cluster-identifier my-sv2-cluster \
@@ -19,17 +19,17 @@ Output::
         "DBCluster": {
             "AllocatedStorage": 1,
             "AvailabilityZones": [
-                "us-east-2b",
-                "us-east-2c",
-                "us-east-2a"
+                "us-west-2b",
+                "us-west-2c",
+                "us-west-2a"
             ],
             "BackupRetentionPeriod": 1,
             "DBClusterIdentifier": "my-sv2-cluster",
             "DBClusterParameterGroup": "default.aurora-postgresql15",
             "DBSubnetGroup": "default",
             "Status": "creating",
-            "Endpoint": "my-sv2-cluster.cluster-cekycexample.us-east-2.rds.amazonaws.com",
-            "ReaderEndpoint": "my-sv2-cluster.cluster-ro-cekycexample.us-east-2.rds.amazonaws.com",
+            "Endpoint": "my-sv2-cluster.cluster-cekycexample.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "my-sv2-cluster.cluster-ro-cekycexample.us-west-2.rds.amazonaws.com",
             "MultiAZ": false,
             "Engine": "aurora-postgresql",
             "EngineVersion": "15.2-limitless",
@@ -48,7 +48,7 @@ Output::
             "HostedZoneId": "Z2XHWR1EXAMPLE",
             "StorageEncrypted": false,
             "DbClusterResourceId": "cluster-XYEDT6ML6FHIXH4Q2J1EXAMPLE",
-            "DBClusterArn": "arn:aws:rds:us-east-2:123456789012:cluster:my-sv2-cluster",
+            "DBClusterArn": "arn:aws:rds:us-west-2:123456789012:cluster:my-sv2-cluster",
             "AssociatedRoles": [],
             "IAMDatabaseAuthenticationEnabled": false,
             "ClusterCreateTime": "2024-02-19T16:24:07.771000+00:00",
@@ -79,7 +79,7 @@ Output::
 
 **Example 2: To create the primary (writer) DB instance**
 
-The following ``create-db-instance`` example creates an Aurora Serverless v2 primary (writer) DB instance. When you use the console to create a DB cluster, Amazon RDS automatically creates the writer DB instance for your DB cluster. However, when you use the AWS CLI to create a DB cluster, you must explicitly create the writer DB instance for your DB cluster using the ``create-db-instance`` AWS CLI command. ::
+The following ``create-db-shard-group`` example continues by using the ``create-db-instance`` command to create an Aurora Serverless v2 primary (writer) DB instance. When you use the console to create a DB cluster, Amazon RDS automatically creates the writer DB instance for your DB cluster. However, when you use the AWS CLI to create a DB cluster, you must explicitly create the writer DB instance for your DB cluster using the ``create-db-instance`` AWS CLI command. ::
 
     aws rds create-db-instance \
         --db-instance-identifier my-sv2-instance \
@@ -121,7 +121,7 @@ Output::
                     {
                         "SubnetIdentifier": "subnet-########",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-2c"
+                            "Name": "us-west-2c"
                         },
                         "SubnetOutpost": {},
                         "SubnetStatus": "Active"
@@ -129,7 +129,7 @@ Output::
                     {
                         "SubnetIdentifier": "subnet-########",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-2a"
+                            "Name": "us-west-2a"
                         },
                         "SubnetOutpost": {},
                         "SubnetStatus": "Active"
@@ -137,7 +137,7 @@ Output::
                     {
                         "SubnetIdentifier": "subnet-########",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-2b"
+                            "Name": "us-west-2b"
                         },
                         "SubnetOutpost": {},
                         "SubnetStatus": "Active"
@@ -174,7 +174,7 @@ Output::
             "CopyTagsToSnapshot": false,
             "MonitoringInterval": 0,
             "PromotionTier": 1,
-            "DBInstanceArn": "arn:aws:rds:us-east-2:123456789012:db:my-sv2-instance",
+            "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:my-sv2-instance",
             "IAMDatabaseAuthenticationEnabled": false,
             "PerformanceInsightsEnabled": false,
             "DeletionProtection": false,
@@ -210,7 +210,7 @@ Output::
         "ComputeRedundancy": 0,
         "Status": "creating",
         "PubliclyAccessible": false,
-        "Endpoint": "my-sv2-cluster.limitless-cekycexample.us-east-2.rds.amazonaws.com"
+        "Endpoint": "my-sv2-cluster.limitless-cekycexample.us-west-2.rds.amazonaws.com"
     }
 
 For more information, see `Using Aurora Serverless v2 <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html>`__ in the *Amazon Aurora User Guide*.

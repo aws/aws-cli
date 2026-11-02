@@ -1,19 +1,26 @@
 **To create a hosted connection on an interconnect**
 
-The following ``allocate-connection-on-interconnect`` command creates a hosted connection on an interconnect::
+The following ``allocate-connection-on-interconnect`` example creates a hosted connection on an interconnect. ::
 
-  aws directconnect allocate-connection-on-interconnect --bandwidth 500Mbps --connection-name mydcinterconnect --owner-account 123456789012 --interconnect-id dxcon-fgktov66 --vlan 101
+    aws directconnect allocate-connection-on-interconnect \
+        --bandwidth 500Mbps \
+        --connection-name mydcinterconnect \
+        --owner-account 123456789012 \
+        --interconnect-id dxcon-fgktov66 \
+        --vlan 101
 
 Output::
 
-  {
-      "partnerName": "TIVIT", 
-      "vlan": 101, 
-      "ownerAccount": "123456789012", 
-      "connectionId": "dxcon-ffzc51m1", 
-      "connectionState": "ordering", 
-      "bandwidth": "500Mbps", 
-      "location": "TIVIT", 
-      "connectionName": "mydcinterconnect", 
-      "region": "sa-east-1"
-  }
+    {
+        "partnerName": "TIVIT",
+        "vlan": 101,
+        "ownerAccount": "123456789012",
+        "connectionId": "dxcon-ffzc51m1",
+        "connectionState": "ordering",
+        "bandwidth": "500Mbps",
+        "location": "TIVIT",
+        "connectionName": "mydcinterconnect",
+        "region": "us-west-2"
+    }
+
+For more information, see `Hosted Direct Connect connections <https://docs.aws.amazon.com/directconnect/latest/UserGuide/hosted_connection.html>`__ in the *AWS Direct Connect User Guide*.

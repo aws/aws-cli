@@ -13,4 +13,4 @@ Output::
         "Name": "example-application"
     }
 
-For more information, see `How AWS AppConfig works <https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html#learn-more-appconfig-how-it-works>`__ in the *AWS AppConfig User Guide*.
+For more information, see `How AWS AppConfig works <https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html>`__ in the *AWS AppConfig User Guide*.

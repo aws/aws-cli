@@ -2,7 +2,8 @@
 
 The following ``get-deployment`` example displays information about a deployment that is associated with the user's AWS account. ::
 
-    aws deploy get-deployment --deployment-id d-A1B2C3123
+    aws deploy get-deployment \
+        --deployment-id d-A1B2C3123
 
 Output::
 
@@ -36,3 +37,5 @@ Output::
             "ignoreApplicationStopFailures": false
         }
     }
+
+For more information, see `View CodeDeploy deployment details <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

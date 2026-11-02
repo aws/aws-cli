@@ -18,5 +18,5 @@ Output::
         }
     }
 
+For more information, see `Sentiment <https://docs.aws.amazon.com/comprehend/latest/dg/how-sentiment.html>`__ in the *Amazon Comprehend Developer Guide*.
 
-For more information, see `Sentiment <https://docs.aws.amazon.com/comprehend/latest/dg/how-sentiment.html>`__ in the *Amazon Comprehend Developer Guide*

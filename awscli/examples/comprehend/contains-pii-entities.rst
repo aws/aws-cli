@@ -33,6 +33,7 @@ Output::
                 "Name": "CREDIT_DEBIT_NUMBER",
                 "Score": 1.0
             }
+        ]
     }
 
 For more information, see `Personally Identifiable Information (PII) <https://docs.aws.amazon.com/comprehend/latest/dg/pii.html>`__ in the *Amazon Comprehend Developer Guide*.

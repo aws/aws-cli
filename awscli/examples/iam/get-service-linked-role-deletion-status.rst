@@ -3,7 +3,7 @@
 The following ``get-service-linked-role-deletion-status`` example displays the status of a previously request to delete a service-linked role. The delete operation occurs asynchronously. When you make the request, you get a ``DeletionTaskId`` value that you provide as a parameter for this command. ::
 
     aws iam get-service-linked-role-deletion-status \
-        --deletion-task-id task/aws-service-role/lex.amazonaws.com/AWSServiceRoleForLexBots/1a2b3c4d-1234-abcd-7890-abcdeEXAMPLE
+        --deletion-task-id task/aws-service-role/lex.amazonaws.com/AWSServiceRoleForLexBots/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

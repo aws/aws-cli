@@ -11,7 +11,7 @@ Output::
         "ResolverEndpoint": {
             "Id": "rslvr-out-d5e5920e37example",
             "CreatorRequestId": "2020-01-01-18:47",
-            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-endpoint/rslvr-out-d5e5920e37example",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-endpoint/rslvr-out-d5e5920e37example",
             "Name": "my-outbound-endpoint",
             "SecurityGroupIds": [
                 "sg-05cd7b25d6example"
@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `Values That You Specify When You Create or Edit Inbound Endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries.html#resolver-forwarding-inbound-queries-values>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Values That You Specify When You Create or Edit Inbound Endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries-values.html>`__ in the *Amazon Route 53 Developer Guide*.

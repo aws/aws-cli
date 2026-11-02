@@ -6,7 +6,7 @@ The following ``check-no-public-access`` example checks whether a resource polic
         --policy-document file://check-no-public-access-myfile.json \
         --resource-type AWS::S3::Bucket
 
-Contents of ``myfile.json``::
+Contents of ``check-no-public-access-myfile.json``::
 
     {
         "Version": "2012-10-17",
@@ -14,7 +14,7 @@ Contents of ``myfile.json``::
             {
                 "Sid": "CheckNoPublicAccess",
                 "Effect": "Allow",
-                "Principal": { "AWS": "arn:aws:iam::111122223333:user/JohnDoe" },
+                "Principal": { "AWS": "arn:aws:iam::123456789012:user/JohnDoe" },
                 "Action": [
                     "s3:GetObject"
                 ]

@@ -10,7 +10,7 @@ Output::
     {
         "relationalDatabase": {
             "name": "Database-1",
-            "arn": "arn:aws:lightsail:us-west-2:111122223333:RelationalDatabase/7ea932b1-b85a-4bd5-9b3e-bEXAMPLE8cc4",
+            "arn": "arn:aws:lightsail:us-west-2:123456789012:RelationalDatabase/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "supportCode": "6EXAMPLE3362/ls-9EXAMPLE8ad863723b62cc8901a8aa6e794ae0d2",
             "createdAt": 1571259453.795,
             "location": {
@@ -44,3 +44,5 @@ Output::
             "pendingMaintenanceActions": []
         }
     }
+
+For more information, see `Create and manage relational databases in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-databases.html>`__ in the *Amazon Lightsail User Guide*.

@@ -17,11 +17,14 @@ Output::
         ]
     }
 
+For more information, see `Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 2: To list the registered task definitions in a family**
 
-The following `list-task-definitions` example lists the task definition revisions of a specified family. ::
+The following ``list-task-definitions`` example lists the task definition revisions of a specified family. ::
 
-    aws ecs list-task-definitions --family-prefix wordpress
+    aws ecs list-task-definitions \
+        --family-prefix wordpress
 
 Output::
 
@@ -34,4 +37,4 @@ Output::
         ]
     }
 
-For more information, see `Amazon ECS Task Definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.

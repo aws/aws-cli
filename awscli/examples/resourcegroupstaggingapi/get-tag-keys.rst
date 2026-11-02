@@ -14,5 +14,5 @@ Output::
         ]
     }
 
+For more information, see `What is Tag Editor? <https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html>`__ in the *Tagging AWS Resources and Tag Editor User Guide*.
 
-For more information, see `GetTagKeys <https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetTagKeys.html>`__ in the *Resource Groups Tagging API Reference*.

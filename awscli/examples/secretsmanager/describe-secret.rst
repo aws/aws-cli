@@ -11,7 +11,7 @@ Output::
         "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-Ca8JGt",
         "Name": "MyTestSecret",
         "Description": "My test secret",
-        "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE",
+        "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
         "RotationEnabled": true,
         "RotationLambdaARN": "arn:aws:lambda:us-west-2:123456789012:function:MyTestRotationLambda",
         "RotationRules": {
@@ -55,4 +55,4 @@ Output::
         ]
     }
 
-For more information, see `Secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_secret>`__ in the *Secrets Manager User Guide*.
+For more information, see `What's in a Secrets Manager secret? <https://docs.aws.amazon.com/secretsmanager/latest/userguide/whats-in-a-secret.html>`__ in the *Secrets Manager User Guide*.

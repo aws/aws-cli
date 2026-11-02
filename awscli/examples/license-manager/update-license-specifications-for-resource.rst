@@ -8,3 +8,5 @@ The following ``update-license-specifications-for-resource`` example replaces th
         --add-license-specifications LicenseConfigurationArn=arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-42b6deb06e5399a980d555927EXAMPLE 
 
 This command produces no output.
+
+For more information, see `Self-managed licenses in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/license-configurations.html>`__ in the *AWS License Manager User Guide*.

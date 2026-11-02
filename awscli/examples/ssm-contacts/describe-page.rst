@@ -3,14 +3,14 @@
 The following ``describe-page`` example lists details of a page to a contact channel. The page will include the subject and content provided. ::
 
     aws ssm-contacts describe-page \
-        --page-id "arn:aws:ssm-contacts:us-east-2:111122223333:page/akuam/ad0052bd-e606-498a-861b-25726292eb93"
+        --page-id "arn:aws:ssm-contacts:us-west-2:123456789012:page/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
-        "PageArn": "arn:aws:ssm-contacts:us-east-2:111122223333:page/akuam/ad0052bd-e606-498a-861b-25726292eb93",
-        "EngagementArn": "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/akuam/78a29753-3674-4ac5-9f83-0468563567f0",
-        "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+        "PageArn": "arn:aws:ssm-contacts:us-west-2:123456789012:page/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "EngagementArn": "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
         "Sender": "cli",
         "Subject": "cli-test",
         "Content": "Testing engagements via CLI",

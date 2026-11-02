@@ -8,4 +8,4 @@ The following ``delete-scaling-plan`` example deletes the specified scaling plan
 
 This command produces no output.
 
-For more information, see the `AWS Auto Scaling User Guide <https://docs.aws.amazon.com/autoscaling/plans/userguide/what-is-aws-auto-scaling.html>`__.
+For more information, see `Step 5: Clean up <https://docs.aws.amazon.com/autoscaling/plans/userguide/gs-delete-scaling-plan.html>`__ in the *AWS Auto Scaling User Guide*.

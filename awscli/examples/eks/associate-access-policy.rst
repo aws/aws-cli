@@ -1,10 +1,10 @@
 **To associate an access policy and its scope to the access entry of the cluster**
 
-The following ``associate-access-policy`` associates an access policy and its scope to the access entry of the specified cluster. ::
+The following ``associate-access-policy`` example associates an access policy and its scope to the access entry of the specified cluster. ::
 
     aws eks associate-access-policy \
         --cluster-name eks-customer \
-        --principal-arn arn:aws:iam::111122223333:role/Admin \
+        --principal-arn arn:aws:iam::123456789012:role/Admin \
         --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy \
         --access-scope type=namespace,namespaces=default
 
@@ -12,7 +12,7 @@ Output::
 
     {
         "clusterName": "eks-customer",
-        "principalArn": "arn:aws:iam::111122223333:role/Admin",
+        "principalArn": "arn:aws:iam::123456789012:role/Admin",
         "associatedAccessPolicy": {
             "policyArn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy",
             "accessScope": {

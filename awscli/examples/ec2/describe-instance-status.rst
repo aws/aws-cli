@@ -15,7 +15,7 @@ Output::
                     "Code": 16,
                     "Name": "running"
                 },
-                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZone": "us-west-2d",
                 "SystemStatus": {
                     "Status": "ok",
                     "Details": [

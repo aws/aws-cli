@@ -339,13 +339,16 @@ def test_can_create_default_retry_handler():
         standard.register_retry_handler(mock_client), standard.RetryHandler
     )
     call_args_list = mock_client.meta.events.register.call_args_list
-    # We should have registered the retry quota to after-calls
+    # We should have registered the max attempts seeder to request-created,
+    # the retry quota to after-call, and the handler to needs-retry.
     first_call = call_args_list[0][0]
     second_call = call_args_list[1][0]
+    third_call = call_args_list[2][0]
     # Not sure if there's a way to verify the class associated with the
     # bound method matches what we expect.
-    assert first_call[0] == 'after-call.my-service'
-    assert second_call[0] == 'needs-retry.my-service'
+    assert first_call[0] == 'request-created.my-service'
+    assert second_call[0] == 'after-call.my-service'
+    assert third_call[0] == 'needs-retry.my-service'
 
 
 class TestRetryHandler(unittest.TestCase):

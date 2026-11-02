@@ -542,3 +542,17 @@ def test_auto_update_keep_prompt_shown_without_installed_skills(
     _run(configs, yes_no_return=False, prompts=prompts)
     assert _auto_update_prompts(prompts) == [AUTO_UPDATE_KEEP_PROMPT]
     assert not state.is_auto_update_enabled()
+
+
+def test_no_auto_update_flag_applied_before_skill_fetch_fails(
+    tmp_path, state_file
+):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _make_agent_with_skill(tmp_path)
+    client = _make_client()
+    client.get_paginator.return_value.paginate.side_effect = RuntimeError(
+        'network down'
+    )
+    with pytest.raises(RuntimeError):
+        _run(configs, yes=True, no_auto_update=True, client=client)
+    assert not state.is_auto_update_enabled()

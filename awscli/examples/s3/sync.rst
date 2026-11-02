@@ -118,12 +118,13 @@ Output::
     upload: test.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/test.txt
     upload: test2.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/test2.txt
 
-**Example 9: Sync a local directory to a bucket with tags**
+**Example 9: To sync a local directory to a bucket with tags**
 
-The following ``sync`` command syncs the current directory to a specified bucket while setting two tags on each uploaded object. Specify ``--tags`` once per tag, separating the key and value with a space. Tags are set only on objects that are actually uploaded::
+The following ``sync`` example syncs the current directory to a specified bucket while setting two tags on each uploaded object. Specify ``--tags`` once per tag, separating the key and value with a space. Tags are set only on objects that are actually uploaded. ::
 
     aws s3 sync . s3://amzn-s3-demo-bucket \
-        --tags key1 value1 --tags key2 value2
+        --tags key1 value1 \
+        --tags key2 value2
 
 Output::
 

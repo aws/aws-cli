@@ -740,7 +740,7 @@ class TestRetryQuotaChecker(unittest.TestCase):
         self.assertEqual(self.quota.available_capacity, 450)
 
 
-class TestServiceSpecificRetries(unittest.TestCase):
+class TestServiceSpecificRetries:
     def _make_retry_context(self, attempt, status_code, error_code=None):
         http_response = AWSResponse(
             status_code=status_code, raw=None, headers={}, url='https://foo/'
@@ -782,20 +782,16 @@ class TestServiceSpecificRetries(unittest.TestCase):
             context = self._make_retry_context(
                 attempt=attempt, status_code=500
             )
-            self.assertTrue(retry_conditions.is_retryable(context))
-            self.assertTrue(retry_quota.acquire_retry_quota(context))
-            self.assertEqual(
-                retry_quota_bucket.available_capacity, expected_quota
-            )
-            self.assertEqual(backoff.delay_amount(context), expected_delay)
+            assert retry_conditions.is_retryable(context)
+            assert retry_quota.acquire_retry_quota(context)
+            assert retry_quota_bucket.available_capacity == expected_quota
+            assert backoff.delay_amount(context) == expected_delay
 
         # Attempt 4: NOT retryable because max_attempts=4
         context4 = self._make_retry_context(attempt=4, status_code=500)
-        self.assertFalse(retry_conditions.is_retryable(context4))
-        self.assertEqual(retry_quota_bucket.available_capacity, 458)
-        self.assertEqual(
-            context4.get_retry_metadata(), {'MaxAttemptsReached': True}
-        )
+        assert not retry_conditions.is_retryable(context4)
+        assert retry_quota_bucket.available_capacity == 458
+        assert context4.get_retry_metadata() == {'MaxAttemptsReached': True}
 
     def test_sqs_triggers_long_polling_backoff_when_token_empty(self):
         mock_sleep = mock.Mock()
@@ -861,7 +857,7 @@ class TestServiceSpecificRetries(unittest.TestCase):
             operation=context.operation_model,
         )
 
-        self.assertIsNone(result)
+        assert result is None
         mock_sleep.assert_not_called()
 
 

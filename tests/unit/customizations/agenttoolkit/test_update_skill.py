@@ -718,6 +718,38 @@ def test_update_all_recovers_hidden_skill(tmp_path):
     assert 'Updated aws-s3 (v2)' in output
 
 
+@requires_symlinks
+def test_update_skill_recovers_hidden_symlinked_skill(tmp_path):
+    # The skill is a symlink into a shared dir, so an interrupted swap
+    # leaves its backup next to the target, not in the skills dir.
+    shared = tmp_path / 'shared' / 'aws-s3'
+    shared.mkdir(parents=True)
+    (shared / 'SKILL.md').write_text('name: aws-s3\n')
+    (shared / SKILL_METADATA_FILENAME).write_text(
+        json.dumps({'version': 'v1'})
+    )
+    skill_link = _skill_dir(tmp_path)
+    skill_link.parent.mkdir(parents=True)
+    skill_link.symlink_to(shared, target_is_directory=True)
+    _crash_mid_swap(shared)
+
+    agents = utils.resolve_agents(None, [make_config(tmp_path)])
+    assert [s.name for s in utils.collect_installed_skills(agents)] == [
+        'aws-s3'
+    ]
+    assert _hidden_entries(shared.parent) == []
+
+    rc, output = _run_update(
+        [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+    )
+    assert rc == 0
+    assert 'Updated aws-s3 (v2)' in output
+    assert skill_link.is_symlink()
+    assert json.loads((shared / SKILL_METADATA_FILENAME).read_text()) == {
+        'version': 'v2'
+    }
+
+
 def test_update_skill_recovery_failure_does_not_block_update(tmp_path):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     with patch.object(atomic, 'recover_all', side_effect=OSError('boom')):

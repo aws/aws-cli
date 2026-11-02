@@ -358,9 +358,31 @@ def _recover_interrupted_changes(agents):
         with skills_lock():
             for root in sorted(roots):
                 atomic.recover_all(root)
+            # Changes to a symlinked skill happen at the link's target (see
+            # install_skill), so its leftovers sit next to the target.
+            for target in sorted(_symlinked_skill_targets(roots)):
+                atomic.recover(target)
     except OSError as e:
         # Best effort: installing a skill recovers its directory again.
         LOG.debug('Could not recover interrupted skill changes: %s', e)
+
+
+def _symlinked_skill_targets(roots):
+    """Return resolved targets of skill symlinks outside ``roots``."""
+    targets = set()
+    for root in roots:
+        try:
+            entries = os.listdir(root)
+        except (FileNotFoundError, NotADirectoryError):
+            continue
+        for entry in entries:
+            path = os.path.join(root, entry)
+            if not os.path.islink(path):
+                continue
+            target = os.path.realpath(path)
+            if os.path.dirname(target) not in roots:
+                targets.add(target)
+    return targets
 
 
 class AgentToolkitServiceError(Exception):

@@ -968,16 +968,6 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         if crt_request.headers.get('Content-MD5') is not None:
             crt_request.headers.remove("Content-MD5")
 
-        # In general, the CRT S3 client expects a content length header. It
-        # only expects a missing content length header if the body is not
-        # seekable. However, botocore does not set the content length header
-        # for GetObject API requests and so we set the content length to zero
-        # to meet the CRT S3 client's expectation that the content length
-        # header is set even if there is no body.
-        if crt_request.headers.get('Content-Length') is None:
-            if botocore_http_request.body is None:
-                crt_request.headers.add('Content-Length', "0")
-
         # Botocore sets the Transfer-Encoding header when it cannot determine
         # the content length of the request body (e.g. it's not seekable).
         # However, CRT does not support this header, but it supports

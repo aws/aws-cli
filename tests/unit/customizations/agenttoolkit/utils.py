@@ -13,12 +13,34 @@
 import hashlib
 import io
 import json
+import os
+import tempfile
 import zipfile
 from unittest.mock import Mock
+
+import pytest
 
 from awscli.customizations.agenttoolkit.agents import (
     SKILL_METADATA_FILENAME,
     AgentConfig,
+)
+
+
+def _can_create_symlinks():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        try:
+            os.symlink(
+                tmpdir, os.path.join(tmpdir, 'link'), target_is_directory=True
+            )
+        except (OSError, NotImplementedError):
+            return False
+    return True
+
+
+# Creating symlinks on Windows needs admin rights or Developer Mode.
+requires_symlinks = pytest.mark.skipif(
+    not _can_create_symlinks(),
+    reason='Creating symlinks is not permitted for this user.',
 )
 
 

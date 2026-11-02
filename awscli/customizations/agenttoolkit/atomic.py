@@ -20,6 +20,8 @@ import os
 import re
 import secrets
 import shutil
+import stat
+import sys
 import tempfile
 import time
 
@@ -133,9 +135,23 @@ def write_file_atomic(path, content, prefix):
         raise
 
 
+def _clear_readonly_and_retry(func, path, _):
+    # Windows refuses to delete read-only files, so clear the flag and retry.
+    if not is_windows:
+        return
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except OSError:
+        pass
+
+
 def _remove_tree(path):
     # Best effort. Anything left behind is removed by the next recover().
-    shutil.rmtree(path, ignore_errors=True)
+    if sys.version_info >= (3, 12):
+        shutil.rmtree(path, onexc=_clear_readonly_and_retry)
+    else:
+        shutil.rmtree(path, onerror=_clear_readonly_and_retry)
 
 
 def _sibling(live_dir, kind):

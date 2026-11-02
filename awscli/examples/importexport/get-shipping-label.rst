@@ -11,7 +11,7 @@ The following ``get-shipping-label`` example creates a pre-paid shipping label f
         --state-or-province "WA" \
         --city "Anytown" \
         --postal-code "91011-1111" \
-        --street-1 "123 Any Street"
+        --street1 "123 Any Street"
 
 Output::
 

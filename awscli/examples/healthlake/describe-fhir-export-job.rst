@@ -3,26 +3,26 @@
 The following ``describe-fhir-export-job`` example shows how to find the properties of a FHIR export job in AWS HealthLake. ::
 
     aws healthlake describe-fhir-export-job \
-        --datastore-id (Data store ID) \
+        --datastore-id a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 \
         --job-id 9b9a51943afaedd0a8c0c26c49135a31
 
 Output::
 
     {
         "ExportJobProperties": {
-            "DataAccessRoleArn": "arn:aws:iam::(AWS Account ID):role/(Role Name)",
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/HealthLakeDataAccessRole",
             "JobStatus": "IN_PROGRESS",
             "JobId": "9009813e9d69ba7cf79bcb3468780f16",
             "SubmitTime": "2024-11-20T11:31:46.672000-05:00",
             "EndTime": "2024-11-20T11:34:01.636000-05:00",
             "OutputDataConfig": {
                 "S3Configuration": {
-                "S3Uri": "s3://(Bucket Name)/(Prefix Name)/",
+                "S3Uri": "s3://amzn-s3-demo-bucket/healthlake/",
                 "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
 
             },
-            "DatastoreId": "(Data store ID)"
+            "DatastoreId": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"
         }
     }
 

@@ -16,7 +16,7 @@ The following ``update-endpoint`` example updates information about an endpoint.
 
     aws comprehend update-endpoint \
         --endpoint-arn arn:aws:comprehend:us-west-2:123456789012:document-classifier-endpoint/example-classifier-endpoint \
-        --active-model-arn arn:aws:comprehend:us-west-2:123456789012:document-classifier/example-classifier-new
+        --desired-model-arn arn:aws:comprehend:us-west-2:123456789012:document-classifier/example-classifier-new
 
 This command produces no output.
 

@@ -698,6 +698,9 @@ class CRTTransferMeta(BaseTransferMeta):
         self._call_args = call_args
         self._user_context = {}
         self._size = None
+        self._etag = None
+        self._full_object_checksum = None
+        self._full_object_checksum_unavailable = False
 
     @property
     def call_args(self):
@@ -717,6 +720,27 @@ class CRTTransferMeta(BaseTransferMeta):
 
     def provide_transfer_size(self, size):
         self._size = size
+
+    @property
+    def etag(self):
+        return self._etag
+
+    def provide_object_etag(self, etag):
+        self._etag = etag
+
+    @property
+    def full_object_checksum(self):
+        return self._full_object_checksum
+
+    def provide_full_object_checksum(self, full_object_checksum):
+        self._full_object_checksum = full_object_checksum
+
+    @property
+    def full_object_checksum_unavailable(self):
+        return self._full_object_checksum_unavailable
+
+    def mark_full_object_checksum_unavailable(self):
+        self._full_object_checksum_unavailable = True
 
 
 class CRTTransferFuture(BaseTransferFuture):
@@ -1540,6 +1564,15 @@ class S3ClientArgsCreator:
                 call_args.extra_args
             )
         )
+        single_request = self._should_download_in_single_request(
+            future.meta.size
+        )
+        if not single_request and future.meta.etag is not None:
+            call_args.extra_args['IfMatch'] = future.meta.etag
+            if checksum_config.validate_response:
+                self._configure_full_object_checksum_validation(
+                    checksum_config, future.meta
+                )
         if isinstance(call_args.fileobj, str):
             final_filepath = call_args.fileobj
             # A redirected download creates more than one CRT request for the
@@ -1576,12 +1609,27 @@ class S3ClientArgsCreator:
         make_request_args['recv_filepath'] = recv_filepath
         make_request_args['on_body'] = on_body
         make_request_args['checksum_config'] = checksum_config
-        if self._should_download_in_single_request(future.meta.size):
+        if single_request:
             make_request_args['type'] = S3RequestType.DEFAULT
             make_request_args['operation_name'] = _get_operation_name(
                 request_type
             )
         return make_request_args
+
+    def _configure_full_object_checksum_validation(
+        self, checksum_config, transfer_meta
+    ):
+        # Spares CRT's checksum HeadObject.
+        checksum = transfer_meta.full_object_checksum
+        if checksum is not None:
+            checksum_config.expected_checksum = checksum.expected_b64
+            checksum_config.expected_checksum_algorithm = (
+                awscrt.s3.S3ChecksumAlgorithm[checksum.algorithm.upper()]
+            )
+        elif transfer_meta.full_object_checksum_unavailable:
+            checksum_config.response_validation_mode = (
+                awscrt.s3.S3ChecksumValidationMode.REQUEST_ONLY
+            )
 
     def _should_download_in_single_request(self, size):
         if self._transfer_config is None or size is None:

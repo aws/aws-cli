@@ -15,6 +15,7 @@ import os
 import stat
 
 from s3transfer.checksums import resolve_full_object_checksum
+from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
 from s3transfer.manager import TransferManager
 
 from awscli.compat import get_binary_stdin, is_windows
@@ -40,6 +41,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
+    FullObjectChecksumUnavailableSubscriber,
     ProvideETagSubscriber,
     ProvideFullObjectChecksumSubscriber,
     ProvideLastModifiedTimeSubscriber,
@@ -457,13 +459,27 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
                 )
             )
         if fileinfo.associated_response_data:
-            checksum_info = resolve_full_object_checksum(
-                fileinfo.associated_response_data
+            self._add_full_object_checksum_subscriber(
+                subscribers, fileinfo.associated_response_data
             )
-            if checksum_info is not None:
-                subscribers.append(
-                    ProvideFullObjectChecksumSubscriber(checksum_info)
-                )
+
+    def _add_full_object_checksum_subscriber(self, subscribers, response):
+        checksum_info = resolve_full_object_checksum(response)
+        if checksum_info is not None:
+            subscribers.append(
+                ProvideFullObjectChecksumSubscriber(checksum_info)
+            )
+        elif not self._may_have_full_object_checksum(response):
+            subscribers.append(FullObjectChecksumUnavailableSubscriber())
+
+    def _may_have_full_object_checksum(self, response):
+        # ListObjects reports a checksum's type but not its value.
+        checksum_type = response.get('ChecksumType')
+        if checksum_type is not None:
+            return checksum_type.upper() == 'FULL_OBJECT'
+        return bool(response.get('ChecksumAlgorithm')) or any(
+            response.get(key) for key in FULL_OBJECT_CHECKSUM_ARGS
+        )
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)

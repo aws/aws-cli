@@ -352,18 +352,17 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
             region = self.region
         return f'{bucket}.s3.{region}.amazonaws.com'
 
-    def add_botocore_head_object_response(self, size=100):
-        self.cli_runner.add_response(
-            HTTPResponse(
-                headers={
-                    'Content-Length': str(size),
-                    'Last-Modified': 'Thu, 11 Feb 2021 04:24:23 GMT',
-                    'ETag': 'foobar',
-                }
-            )
-        )
+    def add_botocore_head_object_response(self, size=100, headers=None):
+        response_headers = {
+            'Content-Length': str(size),
+            'Last-Modified': 'Thu, 11 Feb 2021 04:24:23 GMT',
+            'ETag': 'foobar',
+        }
+        if headers:
+            response_headers.update(headers)
+        self.cli_runner.add_response(HTTPResponse(headers=response_headers))
 
-    def add_botocore_list_objects_response(self, keys, size=100):
+    def add_botocore_list_objects_response(self, keys, size=100, extra_xml=''):
         xml_body = (
             '<?xml version="1.0" ?>'
             '<ListBucketResult xmlns='
@@ -377,6 +376,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
                 f'<Key>{key}</Key>'
                 f'<Size>{size}</Size>'
                 f'<ETag>foobar</ETag>'
+                f'{extra_xml}'
                 '</Contents>'
             )
         xml_body += '</ListBucketResult>'

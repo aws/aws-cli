@@ -23,6 +23,7 @@ from botocore.exceptions import (
     NoCredentialsError,
 )
 from botocore.session import Session
+from s3transfer.checksums import FullObjectChecksum
 from s3transfer.constants import GB
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.utils import CallArgs, OSUtils
@@ -533,6 +534,28 @@ class TestBotocoreCRTCredentialsWrapper:
         get_credentials_future = crt_credentials_provider.get_credentials()
         crt_credentials = get_credentials_future.result()
         self.assert_crt_credentials(crt_credentials)
+
+
+@requires_crt()
+class TestCRTTransferMeta(unittest.TestCase):
+    def setUp(self):
+        self.transfer_meta = s3transfer.crt.CRTTransferMeta()
+
+    def test_etag(self):
+        self.assertIsNone(self.transfer_meta.etag)
+        self.transfer_meta.provide_object_etag('"etag"')
+        self.assertEqual(self.transfer_meta.etag, '"etag"')
+
+    def test_full_object_checksum(self):
+        self.assertIsNone(self.transfer_meta.full_object_checksum)
+        checksum = FullObjectChecksum('crc32', 'abc123==')
+        self.transfer_meta.provide_full_object_checksum(checksum)
+        self.assertIs(self.transfer_meta.full_object_checksum, checksum)
+
+    def test_full_object_checksum_unavailable(self):
+        self.assertFalse(self.transfer_meta.full_object_checksum_unavailable)
+        self.transfer_meta.mark_full_object_checksum_unavailable()
+        self.assertTrue(self.transfer_meta.full_object_checksum_unavailable)
 
 
 @requires_crt()

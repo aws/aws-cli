@@ -21,12 +21,15 @@ from botocore.context import with_current_context
 from botocore.exceptions import ClientError
 from botocore.session import Session
 from botocore.useragent import register_feature_id
+from s3transfer.checksums import FullObjectChecksum
 from s3transfer.subscribers import BaseSubscriber
 
 from tests import (
     HAS_CRT,
+    ETagProvider,
     FileCreator,
     FileSizeProvider,
+    FullObjectChecksumProvider,
     NonSeekableReader,
     NonSeekableWriter,
     mock,
@@ -76,6 +79,11 @@ class RecordingSubscriber(BaseSubscriber):
         self.on_done_called = True
         self.on_done_calls += 1
         self.on_done_future = future
+
+
+class FullObjectChecksumUnavailableMarker(BaseSubscriber):
+    def on_queued(self, future, **kwargs):
+        future.meta.mark_full_object_checksum_unavailable()
 
 
 @requires_crt()
@@ -342,6 +350,145 @@ class TestCRTTransferManager(unittest.TestCase):
             self._get_checksum_config_from_make_request(),
             self._get_expected_download_checksum_config(),
         )
+
+    def _assert_accepted_by_crt(self, checksum_config):
+        # The CRT client is mocked, so check a real one accepts the config.
+        client = awscrt.s3.S3Client(
+            region=self.region,
+            credential_provider=awscrt.auth.AwsCredentialsProvider.new_static(
+                'access_key', 'secret_key'
+            ),
+        )
+        request = awscrt.http.HttpRequest(
+            'GET', '/key', awscrt.http.HttpHeaders([('host', '127.0.0.1')])
+        )
+        s3_request = client.make_request(
+            type=awscrt.s3.S3RequestType.GET_OBJECT,
+            request=request,
+            checksum_config=checksum_config,
+        )
+        s3_request.cancel()
+
+    def _get_if_match_from_make_request(self):
+        request = self.s3_crt_client.make_request.call_args[1]['request']
+        return request.headers.get('If-Match')
+
+    def test_download_validates_against_full_object_checksum(self):
+        self._set_checksum_config_variables(
+            response_validation='when_supported'
+        )
+        for algorithm, expected_checksum, expected_algorithm in [
+            ('crc32', 'AAAAAA==', awscrt.s3.S3ChecksumAlgorithm.CRC32),
+            ('crc32c', 'AAAAAA==', awscrt.s3.S3ChecksumAlgorithm.CRC32C),
+            (
+                'crc64nvme',
+                'AAAAAAAAAAA=',
+                awscrt.s3.S3ChecksumAlgorithm.CRC64NVME,
+            ),
+        ]:
+            checksum = FullObjectChecksum(algorithm, expected_checksum)
+            future = self.transfer_manager.download(
+                self.bucket,
+                self.key,
+                self.filename,
+                {},
+                [ETagProvider('"etag"'), FullObjectChecksumProvider(checksum)],
+            )
+            future.result()
+            checksum_config = self._get_checksum_config_from_make_request()
+            self.assertEqual(
+                checksum_config,
+                self._get_expected_download_checksum_config(
+                    expected_checksum=expected_checksum,
+                    expected_checksum_algorithm=expected_algorithm,
+                ),
+            )
+            self.assertEqual(self._get_if_match_from_make_request(), '"etag"')
+            self._assert_accepted_by_crt(checksum_config)
+
+    def test_download_does_not_look_up_unavailable_checksum(self):
+        self._set_checksum_config_variables(
+            response_validation='when_supported'
+        )
+        future = self.transfer_manager.download(
+            self.bucket,
+            self.key,
+            self.filename,
+            {},
+            [ETagProvider('"etag"'), FullObjectChecksumUnavailableMarker()],
+        )
+        future.result()
+        checksum_config = self._get_checksum_config_from_make_request()
+        self.assertEqual(
+            checksum_config,
+            self._get_expected_download_checksum_config(
+                response_validation_mode=(
+                    awscrt.s3.S3ChecksumValidationMode.REQUEST_ONLY
+                )
+            ),
+        )
+        self.assertEqual(self._get_if_match_from_make_request(), '"etag"')
+        self._assert_accepted_by_crt(checksum_config)
+
+    def test_download_looks_up_checksum_without_etag(self):
+        self._set_checksum_config_variables(
+            response_validation='when_supported'
+        )
+        for subscriber in [
+            FullObjectChecksumProvider(
+                FullObjectChecksum('crc32', 'AAAAAA==')
+            ),
+            FullObjectChecksumUnavailableMarker(),
+        ]:
+            future = self.transfer_manager.download(
+                self.bucket, self.key, self.filename, {}, [subscriber]
+            )
+            future.result()
+            self.assertEqual(
+                self._get_checksum_config_from_make_request(),
+                self._get_expected_download_checksum_config(),
+            )
+            self.assertIsNone(self._get_if_match_from_make_request())
+
+    def test_download_with_etag_sends_if_match(self):
+        self._set_checksum_config_variables(
+            response_validation='when_supported'
+        )
+        future = self.transfer_manager.download(
+            self.bucket, self.key, self.filename, {}, [ETagProvider('"etag"')]
+        )
+        future.result()
+        self.assertEqual(
+            self._get_checksum_config_from_make_request(),
+            self._get_expected_download_checksum_config(),
+        )
+        self.assertEqual(self._get_if_match_from_make_request(), '"etag"')
+
+    def test_download_ignores_full_object_checksum_when_not_validating(self):
+        self._set_checksum_config_variables(
+            response_validation='when_required'
+        )
+        future = self.transfer_manager.download(
+            self.bucket,
+            self.key,
+            self.filename,
+            {},
+            [
+                ETagProvider('"etag"'),
+                FullObjectChecksumProvider(
+                    FullObjectChecksum('crc32', 'AAAAAA==')
+                ),
+                FullObjectChecksumUnavailableMarker(),
+            ],
+        )
+        future.result()
+        self.assertEqual(
+            self._get_checksum_config_from_make_request(),
+            self._get_expected_download_checksum_config(
+                validate_response=False
+            ),
+        )
+        self.assertEqual(self._get_if_match_from_make_request(), '"etag"')
 
     def _invoke_done_callbacks(self, **kwargs):
         callargs = self.s3_crt_client.make_request.call_args
@@ -1336,7 +1483,7 @@ def request_serializer():
 def download(crt_client, request_serializer, filename):
     """Downloads an object of a given size and returns the crt request args"""
 
-    def _download(size, multipart_threshold):
+    def _download(size, multipart_threshold, subscribers=None):
         transfer_manager = s3transfer.crt.CRTTransferManager(
             crt_client_factory=lambda region=None: crt_client,
             crt_request_serializer=request_serializer,
@@ -1344,7 +1491,9 @@ def download(crt_client, request_serializer, filename):
                 multipart_threshold=multipart_threshold
             ),
         )
-        subscribers = [FileSizeProvider(size)]
+        subscribers = [FileSizeProvider(size), ETagProvider('"etag"')] + (
+            subscribers or []
+        )
         transfer_manager.download(
             'test_bucket', 'test_key', filename, {}, subscribers
         ).result()
@@ -1374,6 +1523,44 @@ class TestDownloadMultipartThreshold:
     def test_unset_threshold_splits_download(self, download):
         request_args = download(1, None)
         assert request_args['type'] == awscrt.s3.S3RequestType.GET_OBJECT
+
+    @pytest.mark.parametrize(
+        'subscriber',
+        [
+            FullObjectChecksumProvider(
+                FullObjectChecksum('crc32', 'AAAAAA==')
+            ),
+            FullObjectChecksumUnavailableMarker(),
+        ],
+    )
+    def test_single_request_download_ignores_full_object_checksum(
+        self, download, subscriber
+    ):
+        request_args = download(
+            MULTIPART_THRESHOLD, MULTIPART_THRESHOLD, [subscriber]
+        )
+        assert request_args['type'] == awscrt.s3.S3RequestType.DEFAULT
+        assert request_args['checksum_config'] == awscrt.s3.S3ChecksumConfig(
+            validate_response=True
+        )
+        assert request_args['request'].headers.get('If-Match') is None
+
+    def test_above_threshold_validates_against_full_object_checksum(
+        self, download
+    ):
+        checksum = FullObjectChecksum('crc32', 'AAAAAA==')
+        request_args = download(
+            MULTIPART_THRESHOLD + 1,
+            MULTIPART_THRESHOLD,
+            [FullObjectChecksumProvider(checksum)],
+        )
+        assert request_args['type'] == awscrt.s3.S3RequestType.GET_OBJECT
+        assert request_args['checksum_config'] == awscrt.s3.S3ChecksumConfig(
+            validate_response=True,
+            expected_checksum='AAAAAA==',
+            expected_checksum_algorithm=awscrt.s3.S3ChecksumAlgorithm.CRC32,
+        )
+        assert request_args['request'].headers.get('If-Match') == '"etag"'
 
     def test_single_request_download_writes_file(self, download, filename):
         download(MULTIPART_THRESHOLD - 1, MULTIPART_THRESHOLD)

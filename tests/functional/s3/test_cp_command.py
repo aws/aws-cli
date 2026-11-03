@@ -13,7 +13,14 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscrt.s3 import S3RequestTlsMode, S3RequestType, S3ResponseError
+from awscrt.s3 import (
+    S3ChecksumAlgorithm,
+    S3ChecksumConfig,
+    S3ChecksumValidationMode,
+    S3RequestTlsMode,
+    S3RequestType,
+    S3ResponseError,
+)
 from botocore.response import StreamingBody
 
 from awscli.compat import BytesIO, OrderedDict
@@ -3365,6 +3372,120 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             expected_recv_startswith=os.path.join(self.files.rootdir, 'key2'),
         )
 
+    def get_crt_checksum_configs(self):
+        return [
+            crt_request[1]['checksum_config']
+            for crt_request in self.get_crt_make_request_calls()
+        ]
+
+    def get_crt_if_match_headers(self):
+        return [
+            crt_request[1]['request'].headers.get('If-Match')
+            for crt_request in self.get_crt_make_request_calls()
+        ]
+
+    def test_download_passes_full_object_checksum_to_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response(
+            headers={
+                'x-amz-checksum-crc64nvme': 'abcdefghijk=',
+                'x-amz-checksum-type': 'FULL_OBJECT',
+            }
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    expected_checksum='abcdefghijk=',
+                    expected_checksum_algorithm=S3ChecksumAlgorithm.CRC64NVME,
+                )
+            ],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'])
+
+    def test_download_without_full_object_checksum_using_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response(
+            headers={
+                'x-amz-checksum-crc32': 'abcdef==-2',
+                'x-amz-checksum-type': 'COMPOSITE',
+            }
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    response_validation_mode=(
+                        S3ChecksumValidationMode.REQUEST_ONLY
+                    ),
+                )
+            ],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'])
+
+    def test_recursive_download_without_checksum_using_crt_client(self):
+        cmdline = [
+            's3',
+            'cp',
+            's3://bucket/',
+            self.files.rootdir,
+            '--recursive',
+        ]
+        self.add_botocore_list_objects_response(['key1', 'key2'])
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    response_validation_mode=(
+                        S3ChecksumValidationMode.REQUEST_ONLY
+                    ),
+                )
+            ]
+            * 2,
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'] * 2)
+
+    def test_recursive_download_with_full_object_checksum_using_crt_client(
+        self,
+    ):
+        cmdline = [
+            's3',
+            'cp',
+            's3://bucket/',
+            self.files.rootdir,
+            '--recursive',
+        ]
+        self.add_botocore_list_objects_response(
+            ['key1', 'key2'],
+            extra_xml=(
+                '<ChecksumAlgorithm>CRC64NVME</ChecksumAlgorithm>'
+                '<ChecksumType>FULL_OBJECT</ChecksumType>'
+            ),
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [S3ChecksumConfig(validate_response=True)] * 2,
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'] * 2)
+
+    def test_streaming_download_keeps_crt_checksum_lookup(self):
+        cmdline = ['s3', 'cp', 's3://bucket/key', '-']
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [S3ChecksumConfig(validate_response=True)],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), [None])
+
     def test_does_not_use_crt_client_for_copies(self):
         cmdline = ['s3', 'cp', 's3://bucket/key', 's3://otherbucket/']
         self.add_botocore_head_object_response()
@@ -3401,6 +3522,42 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.assertEqual(
             result.stdout, self.expected_download_content.decode('utf-8')
         )
+
+    def fail_crt_requests_with_precondition_failed(self, operation_name):
+        precondition_error = S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=412,
+            headers=[],
+            body=b'<Error><Code>PreconditionFailed</Code></Error>',
+            operation_name=operation_name,
+        )
+
+        def fail_request(**kwargs):
+            kwargs['on_done'](error=precondition_error)
+            return FakeCRTS3Request(future=FakeCRTFuture())
+
+        self.mock_crt_client.return_value.make_request.side_effect = (
+            fail_request
+        )
+
+    def test_no_overwrite_upload_skips_existing_object_using_crt_client(self):
+        self.fail_crt_requests_with_precondition_failed('PutObject')
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key', '--no-overwrite']
+        result = self.run_command(cmdline)
+        self.assertNotIn('upload', result.stdout)
+
+    def test_download_fails_when_object_modified_using_crt_client(self):
+        self.fail_crt_requests_with_precondition_failed('GetObject')
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response()
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 1)
+        self.assertIn('download failed', result.stderr)
+        self.assertIn('PreconditionFailed', result.stderr)
 
     def test_upload_without_region_redirects_from_global_endpoint(self):
         del self.cli_runner.env['AWS_DEFAULT_REGION']

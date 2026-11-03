@@ -346,3 +346,20 @@ def test_recover_finishes_interrupted_remove(live):
     atomic.recover(str(live))
     assert not trash.exists()
     assert not live.exists()
+
+
+def test_two_rename_swap_deletes_old_version_under_trash_name(live):
+    # If deleting the old version is interrupted, what's left must not be
+    # a backup, or recover() would restore it after the skill is removed.
+    staging = _staging_for(live, {'SKILL.md': 'new'})
+    deleted = []
+    with (
+        patch.object(atomic, '_load_exchange', return_value=None),
+        patch.object(atomic, '_remove_tree', side_effect=deleted.append),
+    ):
+        atomic.swap_into_place(staging, str(live))
+    assert len(deleted) == 1
+    assert '.aws-cli-trash-' in os.path.basename(deleted[0])
+    os.rename(live, live.parent / 'removed')
+    atomic.recover(str(live))
+    assert not live.exists()

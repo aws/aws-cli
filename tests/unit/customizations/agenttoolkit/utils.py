@@ -10,16 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import hashlib
 import io
 import json
 import os
 import tempfile
 import zipfile
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
+from awscli.customizations.agenttoolkit import state, utils
 from awscli.customizations.agenttoolkit.agents import (
     SKILL_METADATA_FILENAME,
     AgentConfig,
@@ -92,3 +94,25 @@ def make_config(tmp_path, **overrides):
     }
     defaults.update(overrides)
     return AgentConfig(**defaults)
+
+
+def skills_dir_entries(path):
+    """Names in ``path``, without the skills lock file."""
+    return sorted(
+        p.name for p in path.iterdir() if p.name != utils.SKILLS_LOCK_FILENAME
+    )
+
+
+@contextlib.contextmanager
+def unwritable_aws_cli_dir(tmp_path):
+    """Make the agent toolkit directory impossible to create.
+
+    A file where ``~/.aws`` should be blocks it on every platform, even as
+    root, unlike removing write permission.
+    """
+    aws_path = tmp_path / 'blocked-home' / '.aws'
+    aws_path.parent.mkdir(parents=True)
+    aws_path.write_text('')
+    state_path = aws_path / 'cli' / 'agent-toolkit' / 'state.json'
+    with patch.object(state, 'STATE_PATH', str(state_path)):
+        yield

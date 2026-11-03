@@ -191,8 +191,11 @@ def test_list_installed_shows_skill_hidden_by_interrupted_swap(
 def test_list_installed_does_not_wait_for_skills_lock(tmp_path, monkeypatch):
     # Another process mid-change holds the lock; listing shouldn't stall.
     make_skill(tmp_path, '.test-agent', 'aws-s3')
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    # Leftovers make recovery try to take the lock.
+    atomic.make_staging_dir(str(skill_dir))
     start = time.monotonic()
-    with utils.skills_lock():
+    with utils.skills_lock(str(skill_dir.parent)):
         result = _run_installed(monkeypatch, [make_config(tmp_path)])
     assert time.monotonic() - start < 1
     assert [s['name'] for s in result['skills']] == ['aws-s3']

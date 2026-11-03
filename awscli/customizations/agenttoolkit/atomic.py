@@ -194,7 +194,15 @@ def swap_into_place(staging_dir, live_dir):
                 'Could not restore %s from %s: %s', live_dir, backup_dir, e
             )
         raise
-    _remove_tree(backup_dir)
+    # Rename the backup to trash before deleting it. Otherwise, if deleting
+    # is interrupted, recover() could restore a partly deleted backup.
+    trash_dir = _sibling(live_dir, _TRASH)
+    try:
+        _rename(backup_dir, trash_dir)
+    except OSError as e:
+        LOG.debug('Could not move %s to %s: %s', backup_dir, trash_dir, e)
+        trash_dir = backup_dir
+    _remove_tree(trash_dir)
 
 
 def remove_dir(live_dir):
@@ -226,6 +234,15 @@ def _find_leftovers(parent):
         else:
             to_delete.append(path)
     return leftovers
+
+
+def has_leftovers(parent, name=None):
+    """Whether ``parent`` has leftovers of an interrupted change.
+
+    :param name: Only check for leftovers of this skill directory.
+    """
+    leftovers = _find_leftovers(parent)
+    return name in leftovers if name is not None else bool(leftovers)
 
 
 def recover(live_dir):

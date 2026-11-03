@@ -78,7 +78,14 @@ class RemoveCommand(BasicCommand):
             )
             if entry in removed_paths:
                 continue
-            with skills_lock():
+            with skills_lock(os.path.dirname(entry)):
+                # Delete any backup left by an interrupted update, or the
+                # next recovery would restore the removed skill.
+                atomic.recover(entry)
+                if not os.path.lexists(entry):
+                    # Another process removed it after it was listed.
+                    removed_paths.add(entry)
+                    continue
                 if os.path.islink(entry):
                     # The target may be shared with other agents, so only
                     # remove this agent's link to it.

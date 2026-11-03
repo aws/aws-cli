@@ -68,11 +68,6 @@ def _write_state(path, state):
     write_file_atomic(path, content, prefix='.state-')
 
 
-def toolkit_dir():
-    """Directory holding the state file and other agent toolkit files."""
-    return os.path.dirname(_state_file())
-
-
 def update_state(mutate):
     """Apply ``mutate`` to the state and save it.
 

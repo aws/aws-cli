@@ -28,16 +28,16 @@ from awscli.customizations.agenttoolkit.agents import (
     universal_first,
 )
 from awscli.customizations.agenttoolkit.filelock import file_lock
-from awscli.customizations.agenttoolkit.state import toolkit_dir
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.utils import create_client_from_parsed_globals
 
 LOG = logging.getLogger(__name__)
 MAX_UNCOMPRESSED_SIZE = 10 * 1024 * 1024  # 10 MB
 
-# Serializes changes to skill directories across processes. Lives in the
-# agent toolkit state directory.
-SKILLS_LOCK_FILENAME = 'skills.lock'
+# Serializes changes to skill directories across processes. Each skills
+# directory has its own lock file, so taking it needs only the write access
+# that changing the directory needs anyway.
+SKILLS_LOCK_FILENAME = '.aws-cli-skills.lock'
 
 # Errors zipfile can raise while extracting a member.
 _ZIP_READ_ERRORS = (
@@ -234,15 +234,21 @@ def install_skill(
                 continue
             extracted_paths.add(real_dir)
             try:
-                with skills_lock():
-                    skip_reason = _install_skill_dir(
-                        skill_name,
-                        version,
-                        zf,
-                        real_dir,
-                        stream,
-                        overwrite_existing,
-                    )
+                # Check before locking, so a skill that won't change is
+                # skipped even if its directory isn't writable.
+                skip_reason = _skip_reason(
+                    skill_name, real_dir, overwrite_existing, stream
+                )
+                if skip_reason is None:
+                    with skills_lock(os.path.dirname(real_dir)):
+                        skip_reason = _install_skill_dir(
+                            skill_name,
+                            version,
+                            zf,
+                            real_dir,
+                            stream,
+                            overwrite_existing,
+                        )
             except OSError as e:
                 raise AgentToolkitServiceError(
                     f'Could not install {skill_name} at {real_dir}: {e}'
@@ -281,11 +287,11 @@ def _verify_skill_archive(skill_name, zf):
         )
 
 
-def _install_skill_dir(
-    skill_name, version, zf, real_dir, stream, overwrite_existing
-):
-    """Install into ``real_dir``. Returns why it was skipped, or ``None``."""
-    atomic.recover(real_dir)
+def _skip_reason(skill_name, real_dir, overwrite_existing, stream):
+    """Return why installing into ``real_dir`` is skipped, or ``None``.
+
+    The reason is also written to ``stream``.
+    """
     if os.path.lexists(real_dir) and not os.path.isdir(real_dir):
         reason = 'a file that is not a skill directory is in the way'
         if stream:
@@ -316,11 +322,30 @@ def _install_skill_dir(
                     f'or remove it first to reinstall.\n'
                 )
             return f'already installed{version_note}'
-        if is_corrupted and not overwrite_existing and stream:
-            stream.write(
-                f'  Reinstalling {skill_name} at {real_dir}: '
-                f'previous install appears incomplete.\n'
-            )
+    return None
+
+
+def _install_skill_dir(
+    skill_name, version, zf, real_dir, stream, overwrite_existing
+):
+    """Install into ``real_dir`` while holding its skills lock.
+
+    Returns why it was skipped, or ``None``.
+    """
+    atomic.recover(real_dir)
+    # Recovery can restore a skill hidden by an interrupted change, and
+    # another process may have changed it before the lock was taken.
+    skip_reason = _skip_reason(
+        skill_name, real_dir, overwrite_existing, stream
+    )
+    if skip_reason is not None:
+        return skip_reason
+    if os.path.isdir(real_dir) and not overwrite_existing and stream:
+        # Not skipped, so the previous install is missing its SKILL.md.
+        stream.write(
+            f'  Reinstalling {skill_name} at {real_dir}: '
+            f'previous install appears incomplete.\n'
+        )
 
     os.makedirs(os.path.dirname(real_dir), exist_ok=True)
     staging_dir = atomic.make_staging_dir(real_dir)
@@ -342,33 +367,38 @@ def _install_skill_dir(
     return None
 
 
-def skills_lock(timeout=None):
-    """Lock held while changing skill directories."""
+def skills_lock(parent, timeout=None):
+    """Lock held while changing skill directories in ``parent``.
+
+    :raises TimeoutError: if the lock isn't acquired within ``timeout``.
+    """
     return file_lock(
-        os.path.join(toolkit_dir(), SKILLS_LOCK_FILENAME), timeout=timeout
+        os.path.join(parent, SKILLS_LOCK_FILENAME), timeout=timeout
     )
 
 
 def _recover_interrupted_changes(agents):
-    """Restore or clean up skill directories left by an interrupted change.
-
-    A skill that was mid-swap is hidden from :meth:`get_installed_skills`
-    until it is recovered, so this runs whenever agents are resolved.
-    If another process holds the lock it's mid-change, so this skips
-    recovery rather than waiting, which would stall read-only commands.
-    """
+    """Restore or clean up skill directories left by an interrupted change."""
     roots = {os.path.realpath(agent.skills_path) for agent in agents}
-    try:
-        with skills_lock(timeout=0):
-            for root in sorted(roots):
-                atomic.recover_all(root)
-            # Changes to a symlinked skill happen at the link's target (see
-            # install_skill), so its leftovers sit next to the target.
-            for target in sorted(_symlinked_skill_targets(roots)):
-                atomic.recover(target)
-    except OSError as e:
-        # Best effort: installing a skill recovers its directory again.
-        LOG.debug('Could not recover interrupted skill changes: %s', e)
+    # (parent, skill name), where a name of None means every skill.
+    work = [(root, None) for root in sorted(roots)]
+    # Changes to a symlinked skill happen at the link's target (see
+    # install_skill), so its leftovers sit next to the target.
+    work += [os.path.split(t) for t in sorted(_symlinked_skill_targets(roots))]
+    for parent, name in work:
+        try:
+            if not atomic.has_leftovers(parent, name):
+                continue
+            with skills_lock(parent, timeout=0):
+                if name is None:
+                    atomic.recover_all(parent)
+                else:
+                    atomic.recover(os.path.join(parent, name))
+        except OSError as e:
+            # Best effort: installing a skill recovers its directory again.
+            LOG.debug(
+                'Could not recover interrupted changes in %s: %s', parent, e
+            )
 
 
 def _symlinked_skill_targets(roots):
@@ -377,7 +407,9 @@ def _symlinked_skill_targets(roots):
     for root in roots:
         try:
             entries = os.listdir(root)
-        except (FileNotFoundError, NotADirectoryError):
+        except OSError as e:
+            if not isinstance(e, (FileNotFoundError, NotADirectoryError)):
+                LOG.debug('Could not list %s: %s', root, e)
             continue
         for entry in entries:
             path = os.path.join(root, entry)

@@ -34,6 +34,8 @@ from tests.unit.customizations.agenttoolkit.utils import (
     make_session,
     make_skill_zip,
     requires_symlinks,
+    skills_dir_entries,
+    unwritable_aws_cli_dir,
 )
 
 
@@ -522,7 +524,7 @@ def _skill_dir(tmp_path, name='aws-s3'):
 
 
 def _hidden_entries(path):
-    return sorted(p.name for p in path.iterdir() if p.name.startswith('.'))
+    return [n for n in skills_dir_entries(path) if n.startswith('.')]
 
 
 def _corrupt_zip(files):
@@ -926,3 +928,107 @@ def test_install_skill_returns_empty_when_installed(tmp_path):
     assert (
         utils.install_skill('aws-s3', 'v1', zip_bytes, checksum, [agent]) == []
     )
+
+
+def test_update_skill_does_not_need_writable_aws_cli_dir(tmp_path):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    with unwritable_aws_cli_dir(tmp_path):
+        rc, _ = _run_update(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+        )
+    assert rc == 0
+    assert utils.read_installed_version(str(_skill_dir(tmp_path))) == 'v2'
+
+
+def test_update_skill_locks_the_skills_directory(tmp_path):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    skills = _skill_dir(tmp_path).parent
+    with patch.object(utils, 'file_lock', wraps=utils.file_lock) as file_lock:
+        rc, _ = _run_update(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+        )
+    assert rc == 0
+    paths = {c.args[0] for c in file_lock.call_args_list}
+    assert paths == {str(skills / utils.SKILLS_LOCK_FILENAME)}
+
+
+def test_recovery_skips_directory_locked_by_another_change(tmp_path):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    skills = str(_skill_dir(tmp_path).parent)
+    other_staging = atomic.make_staging_dir(str(_skill_dir(tmp_path)))
+    agents = [Mock(skills_path=skills)]
+    with utils.skills_lock(skills):
+        utils._recover_interrupted_changes(agents)
+    assert os.path.isdir(other_staging)
+    utils._recover_interrupted_changes(agents)
+    assert not os.path.exists(other_staging)
+
+
+def test_recovery_does_not_create_lock_without_leftovers(tmp_path):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    skills = _skill_dir(tmp_path).parent
+    utils._recover_interrupted_changes([Mock(skills_path=str(skills))])
+    assert not (skills / utils.SKILLS_LOCK_FILENAME).exists()
+
+
+@requires_symlinks
+def test_update_symlinked_skill_locks_the_target_directory(tmp_path):
+    shared = tmp_path / 'shared' / 'aws-s3'
+    shared.mkdir(parents=True)
+    (shared / 'SKILL.md').write_text('old')
+    (shared / SKILL_METADATA_FILENAME).write_text(
+        json.dumps({'version': 'v1'})
+    )
+    skills = tmp_path / '.test-agent' / 'skills'
+    skills.mkdir(parents=True)
+    (skills / 'aws-s3').symlink_to(shared, target_is_directory=True)
+    with patch.object(utils, 'file_lock', wraps=utils.file_lock) as file_lock:
+        rc, _ = _run_update(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+        )
+    assert rc == 0
+    paths = {c.args[0] for c in file_lock.call_args_list}
+    lock = utils.SKILLS_LOCK_FILENAME
+    assert paths == {os.path.join(os.path.realpath(shared.parent), lock)}
+
+
+@requires_symlinks
+def test_recovery_of_symlinked_skill_locks_the_target_directory(tmp_path):
+    shared = tmp_path / 'shared' / 'aws-s3'
+    shared.mkdir(parents=True)
+    skills = tmp_path / 'skills'
+    skills.mkdir()
+    (skills / 'aws-s3').symlink_to(shared, target_is_directory=True)
+    staging = atomic.make_staging_dir(str(shared))
+    with patch.object(utils, 'file_lock', wraps=utils.file_lock) as file_lock:
+        utils._recover_interrupted_changes([Mock(skills_path=str(skills))])
+    assert not os.path.exists(staging)
+    paths = {c.args[0] for c in file_lock.call_args_list}
+    lock = utils.SKILLS_LOCK_FILENAME
+    assert paths == {os.path.join(os.path.realpath(shared.parent), lock)}
+
+
+def test_recovery_ignores_skills_dir_that_cannot_be_listed(tmp_path):
+    skills = tmp_path / 'skills'
+    skills.mkdir()
+    with patch.object(os, 'listdir', side_effect=PermissionError('denied')):
+        utils._recover_interrupted_changes([Mock(skills_path=str(skills))])
+
+
+def test_update_skill_skips_without_locking_when_nothing_changes(tmp_path):
+    # A directory the CLI didn't install is skipped without creating a
+    # lock file, so it works even if the directory isn't writable.
+    skill_dir = _skill_dir(tmp_path)
+    skill_dir.mkdir(parents=True)
+    (skill_dir / 'SKILL.md').write_text('mine')
+    skipped = utils.install_skill(
+        'aws-s3',
+        'v2',
+        *make_skill_zip({'SKILL.md': 'new'}),
+        [Mock(skills_path=str(skill_dir.parent), display_label='Test')],
+    )
+    assert [reason for _, reason in skipped] == [
+        'directory was not installed by the AWS CLI'
+    ]
+    assert not (skill_dir.parent / utils.SKILLS_LOCK_FILENAME).exists()
+    assert (skill_dir / 'SKILL.md').read_text() == 'mine'

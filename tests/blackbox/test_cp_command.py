@@ -5734,9 +5734,6 @@ async def test_content_disposition(aws_cli, tmp_path):
     )
 
 
-@pytest.mark.skip(
-    reason="localstub 0.0.3 decodes non-ASCII header bytes; needs wire-level access"
-)
 @pytest.mark.asyncio
 async def test_content_disposition_non_ascii(aws_cli, tmp_path):
     """cp --content-disposition with non-ASCII character (×) sends UTF-8 bytes."""
@@ -5762,15 +5759,16 @@ async def test_content_disposition_non_ascii(aws_cli, tmp_path):
 
     assert rc == 0, stderr.decode()
     assert len(server.requests) == 1, format_requests(server)
-    req = server.requests[0]
-    # The × character (U+00D7) is sent as UTF-8 bytes on the wire
-    cd = req.headers.get("Content-Disposition") or req.headers.get(
-        "content-disposition"
-    )
-    assert cd is not None, "Content-Disposition header missing"
-    assert (
-        "500\u00d7500.jpg" in cd
-    ), f"Expected \u00d7 in Content-Disposition, got {cd!r}"
+    # The × character (U+00D7) is sent as UTF-8 bytes on the wire.
+    # Header lookups decode values as Latin-1, so compare the raw bytes.
+    raw_values = [
+        value
+        for name, value in server.requests[0].headers.raw
+        if name.lower() == b"content-disposition"
+    ]
+    assert raw_values == [
+        'inline; filename="500\u00d7500.jpg"'.encode("utf-8")
+    ], f"Unexpected Content-Disposition bytes: {raw_values!r}"
 
 
 @pytest.mark.asyncio

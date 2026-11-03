@@ -70,12 +70,22 @@ class RemoveCommand(BasicCommand):
         ordered = universal_first(matches, get_id=lambda s: s.agent.config.id)
         for skill in ordered:
             skill_dir = os.path.dirname(skill.path)
-            real_dir = os.path.realpath(skill_dir)
-            if real_dir in removed_paths:
+            # Resolve only the parent so a skills root shared by symlink is
+            # removed once, but a symlinked skill dir is not followed.
+            entry = os.path.join(
+                os.path.realpath(os.path.dirname(skill_dir)),
+                os.path.basename(skill_dir),
+            )
+            if entry in removed_paths:
                 continue
             with skills_lock():
-                atomic.remove_dir(real_dir)
-            removed_paths.add(real_dir)
+                if os.path.islink(entry):
+                    # The target may be shared with other agents, so only
+                    # remove this agent's link to it.
+                    os.unlink(entry)
+                else:
+                    atomic.remove_dir(entry)
+            removed_paths.add(entry)
             self._stream.write(
                 f'Removed {skill.name} from {skill.agent.display_label}.\n'
             )

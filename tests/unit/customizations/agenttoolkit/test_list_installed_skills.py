@@ -12,11 +12,12 @@
 # language governing permissions and limitations under the License.
 import json
 import os
+import time
 from io import StringIO
 
 import pytest
 
-from awscli.customizations.agenttoolkit import atomic
+from awscli.customizations.agenttoolkit import atomic, utils
 from awscli.customizations.agenttoolkit.list_installed_skills import (
     ListInstalledSkillsCommand,
 )
@@ -184,4 +185,14 @@ def test_list_installed_shows_skill_hidden_by_interrupted_swap(
     skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
     os.rename(skill_dir, atomic._sibling(str(skill_dir), atomic._BACKUP))
     result = _run_installed(monkeypatch, [make_config(tmp_path)])
+    assert [s['name'] for s in result['skills']] == ['aws-s3']
+
+
+def test_list_installed_does_not_wait_for_skills_lock(tmp_path, monkeypatch):
+    # Another process mid-change holds the lock; listing shouldn't stall.
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    start = time.monotonic()
+    with utils.skills_lock():
+        result = _run_installed(monkeypatch, [make_config(tmp_path)])
+    assert time.monotonic() - start < 1
     assert [s['name'] for s in result['skills']] == ['aws-s3']

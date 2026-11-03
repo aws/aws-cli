@@ -342,9 +342,11 @@ def _install_skill_dir(
     return None
 
 
-def skills_lock():
+def skills_lock(timeout=None):
     """Lock held while changing skill directories."""
-    return file_lock(os.path.join(toolkit_dir(), SKILLS_LOCK_FILENAME))
+    return file_lock(
+        os.path.join(toolkit_dir(), SKILLS_LOCK_FILENAME), timeout=timeout
+    )
 
 
 def _recover_interrupted_changes(agents):
@@ -352,10 +354,12 @@ def _recover_interrupted_changes(agents):
 
     A skill that was mid-swap is hidden from :meth:`get_installed_skills`
     until it is recovered, so this runs whenever agents are resolved.
+    If another process holds the lock it's mid-change, so this skips
+    recovery rather than waiting, which would stall read-only commands.
     """
     roots = {os.path.realpath(agent.skills_path) for agent in agents}
     try:
-        with skills_lock():
+        with skills_lock(timeout=0):
             for root in sorted(roots):
                 atomic.recover_all(root)
             # Changes to a symlinked skill happen at the link's target (see

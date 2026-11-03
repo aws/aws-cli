@@ -246,3 +246,35 @@ def test_remove_skill_from_skills_root_shared_by_symlink(tmp_path):
     assert rc == 0
     assert output.count('Removed aws-s3') == 1
     assert list((tmp_path / '.agent-a' / 'skills').iterdir()) == []
+
+
+@requires_symlinks
+def test_remove_symlinked_skill_only_removes_link(tmp_path):
+    # The per-skill dir of agent B is a symlink to agent A's install, so
+    # removing it from agent B must not delete agent A's copy.
+    make_skill(tmp_path, '.agent-a', 'aws-s3')
+    target = tmp_path / '.agent-a' / 'skills' / 'aws-s3'
+    link = tmp_path / '.agent-b' / 'skills' / 'aws-s3'
+    link.parent.mkdir(parents=True)
+    link.symlink_to(target, target_is_directory=True)
+    configs = [
+        make_config(
+            tmp_path,
+            id='a',
+            display_name='Agent A',
+            detection_path=str(tmp_path / '.agent-a'),
+        ),
+        make_config(
+            tmp_path,
+            id='b',
+            display_name='Agent B',
+            detection_path=str(tmp_path / '.agent-b'),
+        ),
+    ]
+    rc, output = _run_remove(
+        configs, ['--skill-name', 'aws-s3', '--agent', 'b']
+    )
+    assert rc == 0
+    assert 'Removed aws-s3 from Agent B' in output
+    assert not os.path.lexists(link)
+    assert (target / 'SKILL.md').exists()

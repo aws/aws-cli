@@ -154,6 +154,10 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.assertEqual(self.expected_path, crt_request.path)
         self.assertEqual(self.expected_host, crt_request.headers.get("host"))
         self.assertIsNone(crt_request.headers.get("Authorization"))
+        # A GET has no body, so it is sent without a Content-Length header,
+        # just as botocore sends it.
+        self.assertIsNone(crt_request.headers.get("Content-Length"))
+        self.assertIsNone(crt_request.body_stream)
 
     def test_delete_request(self):
         callargs = CallArgs(
@@ -170,6 +174,9 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.assertEqual(self.expected_path, crt_request.path)
         self.assertEqual(self.expected_host, crt_request.headers.get("host"))
         self.assertIsNone(crt_request.headers.get("Authorization"))
+        # Botocore sets a zero Content-Length on bodyless non-GET requests.
+        self.assertEqual("0", crt_request.headers.get("Content-Length"))
+        self.assertIsNone(crt_request.body_stream)
 
     def _create_crt_response_error(
         self, status_code, body, operation_name=None, headers=None

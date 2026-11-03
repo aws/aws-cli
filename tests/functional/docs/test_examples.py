@@ -35,8 +35,14 @@ import docutils.utils
 import pytest
 from botocore.validate import ParamValidator
 
-from awscli.argparser import ArgTableArgParser, MainArgParser, ServiceArgParser
+from awscli.argparser import (
+    ArgTableArgParser,
+    MainArgParser,
+    ServiceArgParser,
+    SubCommandArgParser,
+)
 from awscli.clidriver import ServiceOperation
+from awscli.customizations.waiters import WaitCommand
 from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
 
 # Mapping of command names to subcommands that have examples in their help
@@ -476,6 +482,40 @@ def check_description(example):
             errors.append(
                 f"Line {lineno}: the paragraph before a command must end "
                 "with '. ::'"
+            )
+    return errors
+
+
+def _command_name(command):
+    """The command an aws command runs, such as ['ec2', 'wait', 'x']."""
+    words = []
+    for word in command[0][1][0].split()[1:]:
+        if word.startswith('-') or word in ('\\', '^', '`'):
+            break
+        words.append(word)
+    return words
+
+
+def check_command_name(example):
+    # Each example must run the command that its description names, which
+    # is the command of the file.  It can also run other commands, such as
+    # one that creates a resource first.
+    path = example.command_path
+    errors = []
+    for section in example.sections:
+        if section.title is None or not section.commands:
+            continue
+        names = [
+            _command_name(command)[: len(path)]
+            for block in section.commands
+            for command in _split_commands(block)
+        ]
+        if path not in names:
+            block = section.commands[0]
+            errors.append(
+                f'Line {block.lineno}: the example must run '
+                f'"aws {" ".join(path)}", but it runs '
+                f'"aws {" ".join(names[0])}"'
             )
     return errors
 
@@ -1190,12 +1230,27 @@ class CommandValidator:
         - Missing required arguments
         - Invalid argument names
         - Malformed argument syntax
+        - Invalid sub-commands, such as waiters of "wait", and their
+          arguments
         """
+        lines = [line.rstrip() for line in command.splitlines()]
+        marker = _continuation_marker(lines[0])
+        if marker != '\\':
+            # Windows examples continue lines with ^ or `, which are not
+            # arguments.
+            command = '\n'.join(
+                line[:-1] if line.endswith(marker) else line for line in lines
+            )
         try:
             command_parts = shlex.split(command)[1:]
             # Strip newlines from arguments that may have been included due to
-            # backslash line continuations in the RST examples
-            command_parts = [part.lstrip('\n') for part in command_parts]
+            # backslash line continuations in the RST examples, and drop the
+            # arguments that are only a line continuation
+            command_parts = [
+                part.lstrip('\n')
+                for part in command_parts
+                if not part or part.strip('\n')
+            ]
             # Only the arguments before a redirect or pipe, such as
             # "> skeleton.json", are passed to the CLI.
             for i, part in enumerate(command_parts):
@@ -1238,21 +1293,47 @@ class CommandValidator:
                 # Not a standard operation (might be help, wait, etc.)
                 return
 
-            operation_name = parsed_operation.operation
-            operation_cmd = cmd_table[operation_name]
-
-            # Validate all arguments using the operation's argument parser
-            arg_table = operation_cmd.arg_table
+            # Validate all arguments using the argument parser of the
+            # command, after following any sub-commands such as
+            # "wait instance-running".
+            command_obj = cmd_table[parsed_operation.operation]
+            args = remaining_args
             errors = []
+
+            def record_message(message, file=None):
+                errors.append(message)
+
             try:
-                with self._cli_required_args(
-                    service_name, operation_name, arg_table, remaining_args
-                ):
-                    operation_parser = ArgTableArgParser(arg_table)
-                    operation_parser._print_message = (
-                        lambda message, file: errors.append(message)
+                while True:
+                    with self._cli_required_args(command_obj, args):
+                        subcommand = None
+                        if command_obj.subcommand_table:
+                            subcommand_parser = SubCommandArgParser(
+                                command_obj.arg_table,
+                                command_obj.subcommand_table,
+                            )
+                            subcommand_parser._print_message = record_message
+                            subcommand = subcommand_parser.parse_known_args(
+                                args
+                            )
+                        if subcommand is None:
+                            parser = ArgTableArgParser(
+                                command_obj.arg_table,
+                                command_obj.subcommand_table,
+                            )
+                            parser._print_message = record_message
+                            _, unknown_args = parser.parse_known_args(args)
+                    if subcommand is None:
+                        break
+                    args, subcommand_name = subcommand
+                    command_obj = command_obj.subcommand_table[subcommand_name]
+                if isinstance(command_obj, WaitCommand):
+                    # The CLI shows a usage error for "wait" on its own.
+                    raise ValueError('Missing the waiter to wait for')
+                if unknown_args:
+                    raise ValueError(
+                        'Unknown options: ' + ', '.join(unknown_args)
                     )
-                    operation_parser.parse_known_args(remaining_args)
             except (SystemExit, Exception) as e:
                 error_msg = [
                     f'Invalid CLI command: {command}\n\n',
@@ -1272,9 +1353,7 @@ class CommandValidator:
             )
 
     @contextlib.contextmanager
-    def _cli_required_args(
-        self, service_name, operation_name, arg_table, args
-    ):
+    def _cli_required_args(self, command_obj, args):
         """Apply the CLI's rules for which arguments are required.
 
         Arguments such as ``--cli-input-json`` and ``--generate-cli-skeleton``
@@ -1283,11 +1362,18 @@ class CommandValidator:
         argument table in place, so the original values are restored
         afterwards for the other examples that use the same operation.
         """
+        arg_table = command_obj.arg_table
+        # Operations name the event after their parent and themselves, such
+        # as "wait.instance-running", and custom commands after their whole
+        # lineage, as the CLI does when it runs them.
+        lineage_names = command_obj.lineage_names
+        if isinstance(command_obj, ServiceOperation):
+            lineage_names = lineage_names[-2:]
         required = {name: arg.required for name, arg in arg_table.items()}
         try:
             self.driver.session.emit(
                 'before-building-argument-table-parser.'
-                f'{service_name}.{operation_name}',
+                + '.'.join(lineage_names),
                 argument_table=arg_table,
                 args=args,
                 session=self.driver.session,
@@ -1305,8 +1391,19 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
 
     def visit_literal_block(self, node):
         contents = node.rawsource.strip()
-        if contents.startswith('aws '):
-            self.cli_commands.append(contents)
+        if not contents.startswith('aws '):
+            return
+        # A block can hold several commands, one after another.
+        commands = []
+        for line in contents.splitlines():
+            continued = commands and commands[-1][-1].rstrip().endswith(
+                ('\\', '^', '`')
+            )
+            if line.startswith('aws ') and not continued:
+                commands.append([line])
+            else:
+                commands[-1].append(line)
+        self.cli_commands.extend('\n'.join(lines) for lines in commands)
 
     def default_visit(self, node):
         pass
@@ -1367,6 +1464,13 @@ def test_example_option_names(command_table, global_options, example_file):
     example = Example(example_file)
     errors = check_option_names(example, command_table, global_options)
     _assert_follows_rule('option-names', example, errors)
+
+
+@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
+def test_example_command_name(example_file):
+    example = Example(example_file)
+    errors = check_command_name(example)
+    _assert_follows_rule('command-name', example, errors)
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)

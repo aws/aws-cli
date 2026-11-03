@@ -4,9 +4,9 @@ The following ``list-application-revisions`` example displays information about 
 
     aws deploy list-application-revisions \
         --application-name WordPress_App \
-        --s-3-bucket CodeDeployDemoBucket \
+        --s3-bucket CodeDeployDemoBucket \
         --deployed exclude \
-        --s-3-key-prefix WordPress_ \
+        --s3-key-prefix WordPress_ \
         --sort-by lastUsedTime \
         --sort-order descending
 

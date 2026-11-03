@@ -226,6 +226,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"DeleteAccountPolicyRequest"},
+      "output":{"shape":"DeleteAccountPolicyResponse"},
       "errors":[
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
@@ -2964,6 +2965,19 @@
         "policyType":{
           "shape":"PolicyType",
           "documentation":"<p>The type of policy to delete.</p>"
+        },
+        "dryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>Specifies whether to preview the impact of deleting the policy without deleting it. If you specify <code>true</code>, CloudWatch Logs does not delete the policy and returns the estimated impact in <code>dryRunResult</code>. The default is <code>false</code>.</p> <p>Specifying <code>dryRun</code> is valid only when you specify <code>RETENTION_POLICY</code> for <code>policyType</code>. Only one dry run can be in progress for an account at a time.</p>"
+        }
+      }
+    },
+    "DeleteAccountPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "dryRunResult":{
+          "shape":"DryRunResult",
+          "documentation":"<p>The estimated impact of deleting the policy. This field is returned only when the request specifies <code>dryRun</code> as <code>true</code>.</p>"
         }
       }
     },
@@ -4300,6 +4314,41 @@
         "Random",
         "ByLogStream"
       ]
+    },
+    "DryRun":{"type":"boolean"},
+    "DryRunCount":{
+      "type":"integer",
+      "min":0
+    },
+    "DryRunResult":{
+      "type":"structure",
+      "members":{
+        "totalMatchedLogGroups":{
+          "shape":"DryRunCount",
+          "documentation":"<p>The number of log groups in the scope of the policy that were analyzed. This value is the sum of <code>increasedRetentionLogGroupCount</code>, <code>decreasedRetentionLogGroupCount</code>, and <code>unchangedRetentionLogGroupCount</code>, and does not include log groups that could not be analyzed.</p>"
+        },
+        "increasedRetentionLogGroupCount":{
+          "shape":"DryRunCount",
+          "documentation":"<p>The number of log groups whose effective retention period would become longer.</p>"
+        },
+        "decreasedRetentionLogGroupCount":{
+          "shape":"DryRunCount",
+          "documentation":"<p>The number of log groups whose effective retention period would become shorter.</p>"
+        },
+        "unchangedRetentionLogGroupCount":{
+          "shape":"DryRunCount",
+          "documentation":"<p>The number of log groups whose effective retention period would not change.</p>"
+        },
+        "failedAnalysisCount":{
+          "shape":"DryRunCount",
+          "documentation":"<p>The number of log groups in the scope of the policy that could not be analyzed. These log groups are not included in <code>totalMatchedLogGroups</code>.</p>"
+        },
+        "topLogGroupsImpacted":{
+          "shape":"LogGroupImpacts",
+          "documentation":"<p>Up to 20 log groups in the scope of the policy, sorted by stored bytes in descending order. This list can include log groups whose effective retention period would not change.</p>"
+        }
+      },
+      "documentation":"<p>Contains the estimated impact of creating, updating, or deleting an account-level retention policy. The analysis compares the effective retention period of each log group, which accounts for all account-level retention policies that apply to it, before and after the change. Log groups in the Delivery class are not included.</p>"
     },
     "DynamicTokenPosition":{"type":"integer"},
     "EmitSystemFields":{
@@ -6393,6 +6442,10 @@
         "bearerTokenAuthenticationEnabled":{
           "shape":"BearerTokenAuthenticationEnabled",
           "documentation":"<p>Indicates whether bearer token authentication is enabled for this log group. When enabled, bearer token authentication is allowed on operations until it is explicitly disabled.</p>"
+        },
+        "retentionPolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the account-level retention policy that determines the retention period of this log group. This field is returned only when an account-level retention policy applies to the log group. When it is returned, <code>retentionInDays</code> shows the retention period from that policy instead of the retention period set on the log group. If the policy specifies that log events never expire, <code>retentionInDays</code> is not returned.</p>"
         }
       },
       "documentation":"<p>Represents a log group.</p>"
@@ -6443,6 +6496,32 @@
     "LogGroupIdentifiers":{
       "type":"list",
       "member":{"shape":"LogGroupIdentifier"}
+    },
+    "LogGroupImpact":{
+      "type":"structure",
+      "members":{
+        "logGroupName":{
+          "shape":"LogGroupName",
+          "documentation":"<p>The name of the log group.</p>"
+        },
+        "currentRetention":{
+          "shape":"RetentionValue",
+          "documentation":"<p>The current effective retention period of the log group, in days. A value of <code>NEVER_EXPIRE</code> indicates that log events in the log group never expire.</p>"
+        },
+        "proposedRetention":{
+          "shape":"RetentionValue",
+          "documentation":"<p>The effective retention period of the log group, in days, after the change. A value of <code>NEVER_EXPIRE</code> indicates that log events in the log group would never expire.</p>"
+        },
+        "storedBytes":{
+          "shape":"StoredBytes",
+          "documentation":"<p>The number of bytes stored in the log group.</p>"
+        }
+      },
+      "documentation":"<p>Describes the estimated effect of an account-level retention policy change on one log group.</p>"
+    },
+    "LogGroupImpacts":{
+      "type":"list",
+      "member":{"shape":"LogGroupImpact"}
     },
     "LogGroupName":{
       "type":"string",
@@ -7377,7 +7456,8 @@
         "SUBSCRIPTION_FILTER_POLICY",
         "FIELD_INDEX_POLICY",
         "TRANSFORMER_POLICY",
-        "METRIC_EXTRACTION_POLICY"
+        "METRIC_EXTRACTION_POLICY",
+        "RETENTION_POLICY"
       ]
     },
     "Priority":{
@@ -7515,6 +7595,10 @@
         "selectionCriteria":{
           "shape":"SelectionCriteria",
           "documentation":"<p>Use this parameter to apply the new policy to a subset of log groups in the account or a data source name and type combination. </p> <p>Specifying <code>selectionCriteria</code> is valid only when you specify <code>SUBSCRIPTION_FILTER_POLICY</code>, <code>FIELD_INDEX_POLICY</code> or <code>TRANSFORMER_POLICY</code>for <code>policyType</code>.</p> <ul> <li> <p>If <code>policyType</code> is <code>SUBSCRIPTION_FILTER_POLICY</code>, the only supported <code>selectionCriteria</code> filter is <code>LogGroupName NOT IN []</code> </p> </li> <li> <p>If <code>policyType</code> is <code>TRANSFORMER_POLICY</code>, the only supported <code>selectionCriteria</code> filter is <code>LogGroupNamePrefix</code> </p> </li> <li> <p>If <code>policyType</code> is <code>FIELD_INDEX_POLICY</code>, the supported <code>selectionCriteria</code> filters are:</p> <ul> <li> <p> <code>LogGroupNamePrefix</code> </p> </li> <li> <p> <code>DataSourceName</code> AND <code>DataSourceType</code> </p> </li> </ul> <p>When you specify <code>selectionCriteria</code> for a field index policy you can use either <code>LogGroupNamePrefix</code> by itself or <code>DataSourceName</code> and <code>DataSourceType</code> together.</p> </li> </ul> <p>The <code>selectionCriteria</code> string can be up to 25KB in length. The length is determined by using its UTF-8 bytes.</p> <p>Using the <code>selectionCriteria</code> parameter with <code>SUBSCRIPTION_FILTER_POLICY</code> is useful to help prevent infinite loops. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Subscriptions-recursion-prevention.html\">Log recursion prevention</a>.</p>"
+        },
+        "dryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>Specifies whether to preview the impact of the policy without creating or updating it. If you specify <code>true</code>, CloudWatch Logs validates the request, does not save the policy, and returns the estimated impact in <code>dryRunResult</code> instead of <code>accountPolicy</code>. The default is <code>false</code>.</p> <p>Specifying <code>dryRun</code> is valid only when you specify <code>RETENTION_POLICY</code> for <code>policyType</code>. Only one dry run can be in progress for an account at a time.</p>"
         }
       }
     },
@@ -7524,6 +7608,10 @@
         "accountPolicy":{
           "shape":"AccountPolicy",
           "documentation":"<p>The account policy that you created.</p>"
+        },
+        "dryRunResult":{
+          "shape":"DryRunResult",
+          "documentation":"<p>The estimated impact of the policy on log groups in the account. This field is returned only when the request specifies <code>dryRun</code> as <code>true</code>.</p>"
         }
       }
     },
@@ -8536,6 +8624,11 @@
     "ResultRows":{
       "type":"list",
       "member":{"shape":"ResultField"}
+    },
+    "RetentionValue":{
+      "type":"string",
+      "max":12,
+      "min":1
     },
     "RoleArn":{
       "type":"string",

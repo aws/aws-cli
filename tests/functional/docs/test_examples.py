@@ -22,7 +22,10 @@ at the man output, we look one step before at the generated rst output
 
 """
 
+import collections.abc
 import contextlib
+import functools
+import gc
 import json
 import os
 import re
@@ -35,6 +38,7 @@ import docutils.utils
 import pytest
 from botocore.validate import ParamValidator
 
+import awscli.clidriver
 from awscli.argparser import (
     ArgTableArgParser,
     MainArgParser,
@@ -42,6 +46,7 @@ from awscli.argparser import (
     SubCommandArgParser,
 )
 from awscli.clidriver import ServiceOperation
+from awscli.customizations.arguments import OverrideRequiredArgsArgument
 from awscli.customizations.waiters import WaitCommand
 from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
 
@@ -1028,17 +1033,25 @@ def extract_error_line(content, error_start, error_end):
     return content[error_line_begin:error_line_end]
 
 
-@pytest.fixture(scope="module")
-def command_validator():
-    # CLIDriver can take up a lot of resources so we'll just create one
-    # instance and use it for all the validation tests.
-    driver = create_clidriver()
-    return CommandValidator(driver)
+@pytest.fixture(scope="module", autouse=True)
+def freeze_collected_objects():
+    # About a million objects, mostly the collected tests, exist before the
+    # first test here and outlive the module.  Freezing them stops every
+    # full garbage collection from scanning them again.
+    gc.collect()
+    gc.freeze()
+    yield
+    gc.unfreeze()
 
 
 @pytest.fixture(scope="module")
 def command_table():
-    return create_clidriver().subcommand_table
+    return ServiceCommandTable()
+
+
+@pytest.fixture(scope="module")
+def command_validator(command_table):
+    return CommandValidator(create_clidriver(), command_table)
 
 
 @pytest.mark.parametrize("command, subcommand", EXAMPLE_COMMAND_TESTS)
@@ -1107,12 +1120,17 @@ def verify_is_valid_rst(filename, contents):
     return document
 
 
+@functools.cache
+def _rst_option_parser():
+    # Creating the option parser takes longer than parsing most examples.
+    return docutils.frontend.OptionParser(
+        components=(docutils.parsers.rst.Parser,)
+    )
+
+
 def parse_rst(contents):
     parser = docutils.parsers.rst.Parser()
-    components = (docutils.parsers.rst.Parser,)
-    settings = docutils.frontend.OptionParser(
-        components=components
-    ).get_default_values()
+    settings = _rst_option_parser().get_default_values()
     document = docutils.utils.new_document('<cli-example>', settings=settings)
     errors = []
 
@@ -1166,14 +1184,51 @@ def find_all_cli_commands(document):
     return visitor.cli_commands
 
 
+class ServiceCommandTable(collections.abc.Mapping):
+    """The CLI's top-level command table, with one service loaded at a time.
+
+    A driver keeps the model of every service it loads, which adds up to
+    hundreds of MB for all of them, and so does the loader that the drivers
+    from ``awscli.testutils`` share.  The examples are checked one service
+    at a time, so each service is looked up in a new driver with its own
+    loader, and the previous driver is released.
+    """
+
+    def __init__(self):
+        self._names = set(awscli.clidriver.create_clidriver().subcommand_table)
+        self._service_name = None
+        self._driver = None
+
+    def driver(self, service_name):
+        if service_name != self._service_name:
+            self._driver = awscli.clidriver.create_clidriver()
+            self._service_name = service_name
+        return self._driver
+
+    def __getitem__(self, name):
+        if name not in self._names:
+            raise KeyError(name)
+        return self.driver(name).subcommand_table[name]
+
+    def __contains__(self, name):
+        return name in self._names
+
+    def __iter__(self):
+        return iter(self._names)
+
+    def __len__(self):
+        return len(self._names)
+
+
 class CommandValidator:
-    def __init__(self, driver):
-        self.driver = driver
-        help_command = self.driver.create_help_command()
-        self._service_command_table = help_command.command_table
+    def __init__(self, driver, command_table):
+        # The driver only parses the global arguments and the service name.
+        # The commands of the service come from command_table.
+        help_command = driver.create_help_command()
+        self._command_table = command_table
         self._global_arg_table = help_command.arg_table
         self._main_parser = MainArgParser(
-            self._service_command_table,
+            help_command.command_table,
             driver.session.user_agent(),
             'Some description',
             self._global_arg_table,
@@ -1231,7 +1286,8 @@ class CommandValidator:
             service_name = parsed_args.command
 
             # Get the service command
-            service_cmd = self._service_command_table[service_name]
+            service_cmd = self._command_table[service_name]
+            session = self._command_table.driver(service_name).session
 
             # Create the service parser
             cmd_table = service_cmd.create_help_command().command_table
@@ -1263,7 +1319,7 @@ class CommandValidator:
 
             try:
                 while True:
-                    with self._cli_required_args(command_obj, args):
+                    with self._cli_required_args(command_obj, args, session):
                         subcommand = None
                         if command_obj.subcommand_table:
                             subcommand_parser = SubCommandArgParser(
@@ -1311,7 +1367,7 @@ class CommandValidator:
             )
 
     @contextlib.contextmanager
-    def _cli_required_args(self, command_obj, args):
+    def _cli_required_args(self, command_obj, args, session):
         """Apply the CLI's rules for which arguments are required.
 
         Arguments such as ``--cli-input-json`` and ``--generate-cli-skeleton``
@@ -1328,13 +1384,26 @@ class CommandValidator:
         if isinstance(command_obj, ServiceOperation):
             lineage_names = lineage_names[-2:]
         required = {name: arg.required for name, arg in arg_table.items()}
+        # Arguments such as --cli-input-json register their handler for the
+        # event of every command when their argument table is built.  The
+        # CLI builds one argument table, but these tests build thousands, and
+        # the handlers left behind would make every emit slower.  So they
+        # are unregistered, and only this command's handlers are called.
+        event = 'before-building-argument-table-parser'
+        handlers = [
+            arg.override_required_args
+            for arg in arg_table.values()
+            if isinstance(arg, OverrideRequiredArgsArgument)
+        ]
         try:
-            self.driver.session.emit(
-                'before-building-argument-table-parser.'
-                + '.'.join(lineage_names),
+            for handler in handlers:
+                session.unregister(event, handler)
+                handler(argument_table=arg_table, args=args)
+            session.emit(
+                f'{event}.' + '.'.join(lineage_names),
                 argument_table=arg_table,
                 args=args,
-                session=self.driver.session,
+                session=session,
             )
             yield
         finally:
@@ -1383,73 +1452,30 @@ def _assert_name_contains_only_allowed_characters(filename):
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_whitespace(example_file):
+def test_example_style(command_table, example_file):
+    # All the style rules are checked in one test per file, so each file is
+    # read and parsed once, and the test count stays at one per file.
     example = Example(example_file)
-    errors = check_whitespace(example)
-    _assert_follows_rule('whitespace', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_location(command_table, example_file):
-    example = Example(example_file)
-    errors = check_location(example, command_table)
-    _assert_follows_rule('location', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_title(example_file):
-    example = Example(example_file)
-    errors = check_title(example)
-    _assert_follows_rule('title', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_description(example_file):
-    example = Example(example_file)
-    errors = check_description(example)
-    _assert_follows_rule('description', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_command(example_file):
-    example = Example(example_file)
-    errors = check_command(example)
-    _assert_follows_rule('command', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_command_name(example_file):
-    example = Example(example_file)
-    errors = check_command_name(example)
-    _assert_follows_rule('command-name', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_file_contents(example_file):
-    example = Example(example_file)
-    errors = check_file_contents(example)
-    _assert_follows_rule('file-contents', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_output(command_table, example_file):
-    example = Example(example_file)
-    errors = check_output(example, command_table)
-    _assert_follows_rule('output', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_link(example_file):
-    example = Example(example_file)
-    errors = check_link(example)
-    _assert_follows_rule('link', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_sanitization(example_file):
-    example = Example(example_file)
-    errors = check_sanitization(example)
-    _assert_follows_rule('sanitization', example, errors)
+    errors_by_rule = {
+        'whitespace': check_whitespace(example),
+        'location': check_location(example, command_table),
+        'title': check_title(example),
+        'description': check_description(example),
+        'command': check_command(example),
+        'command-name': check_command_name(example),
+        'file-contents': check_file_contents(example),
+        'output': check_output(example, command_table),
+        'link': check_link(example),
+        'sanitization': check_sanitization(example),
+    }
+    failures = []
+    for rule, errors in errors_by_rule.items():
+        try:
+            _assert_follows_rule(rule, example, errors)
+        except AssertionError as e:
+            failures.append(str(e))
+    if failures:
+        raise AssertionError('\n'.join(failures))
 
 
 def test_example_style_exceptions_exist():

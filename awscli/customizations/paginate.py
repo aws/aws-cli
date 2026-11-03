@@ -110,7 +110,9 @@ def add_paging_description(help_command, **kwargs):
         (
             '``%s`` is a paginated operation. Multiple API calls may be issued '
             'in order to retrieve the entire data set of results. You can '
-            'disable pagination by providing the ``--no-paginate`` argument.'
+            'disable automatic pagination by providing the ``--no-paginate`` '
+            'argument. Disabling automatic pagination results in a single request '
+            'for the first page of results for the command.'
         )
         % help_command.name
     )
@@ -128,6 +130,14 @@ def add_paging_description(help_command, **kwargs):
             )
             % queries
         )
+    # Link to AWS User Guide for more information on pagination
+    help_command.doc.writeln(
+        (
+            'For more information, see `Using the pagination options in the AWS CLI '
+            '<https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-pagination.html>`__ '
+            'in the *AWS Command Line Interface User Guide*.'
+        )
+    )
 
 
 def unify_paging_params(

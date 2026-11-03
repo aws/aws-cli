@@ -13,7 +13,10 @@
 import pytest
 from botocore.auth import BearerAuth
 from botocore.awsrequest import AWSRequest
-from botocore.exceptions import NoAuthTokenError
+from botocore.exceptions import (
+    InvalidEndpointConfigurationError,
+    NoAuthTokenError,
+)
 from botocore.tokens import FrozenAuthToken
 
 cases = [
@@ -43,12 +46,26 @@ cases = [
         "token": None,
         "expectedException": NoAuthTokenError,
     },
+    {
+        "documentation": "Signer rejects http endpoints",
+        "url": "http://example.com",
+        "headers": {},
+        "token": "mF_9.B5f-4.1JqM",
+        "expectedException": InvalidEndpointConfigurationError,
+    },
+    {
+        "documentation": "Signer rejects http endpoints with existing header",
+        "url": "http://example.com/path?query=value",
+        "headers": {"Authorization": "Bearer foo"},
+        "token": "mF_9.B5f-4.1JqM",
+        "expectedException": InvalidEndpointConfigurationError,
+    },
 ]
 
 
 @pytest.mark.parametrize("test_case", cases)
 def test_bearer_auth(test_case):
-    url = "https://example.com"
+    url = test_case.get("url", "https://example.com")
     headers = test_case.get("headers", {})
     request = AWSRequest(method="GET", url=url, headers=headers)
 
@@ -69,3 +86,7 @@ def test_bearer_auth(test_case):
     elif expected_exception:
         with pytest.raises(expected_exception):
             bearer_auth.add_auth(request)
+        # The token must never be attached when signing fails
+        assert request.headers.get("Authorization") != (
+            f"Bearer {test_case['token']}"
+        )

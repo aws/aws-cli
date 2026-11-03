@@ -33,6 +33,7 @@ from botocore.compat import (
     urlunsplit,
 )
 from botocore.exceptions import (
+    InvalidEndpointConfigurationError,
     NoAuthTokenError,
     NoCredentialsError,
     UnknownSignatureVersionError,
@@ -875,6 +876,12 @@ class BearerAuth(TokenSigner):
     def add_auth(self, request):
         if self.auth_token is None:
             raise NoAuthTokenError()
+
+        # Bearer tokens are sent in plaintext so must only be sent over TLS
+        if not request.url.startswith('https'):
+            raise InvalidEndpointConfigurationError(
+                msg='Bearer authorization requires an HTTPS endpoint.'
+            )
 
         auth_header = f'Bearer {self.auth_token.token}'
         if 'Authorization' in request.headers:

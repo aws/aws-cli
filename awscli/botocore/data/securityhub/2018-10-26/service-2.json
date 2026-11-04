@@ -1488,6 +1488,66 @@
       ],
       "documentation":"<p> Retrieves the definition of a security control. The definition includes the control title, description, Region availability, parameter definitions, and other details. </p>"
     },
+    "GetSoftwareResourcesV2":{
+      "name":"GetSoftwareResourcesV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/softwarev2/resources"
+      },
+      "input":{"shape":"GetSoftwareResourcesV2Request"},
+      "output":{"shape":"GetSoftwareResourcesV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OrganizationalUnitNotFoundException"},
+        {"shape":"OrganizationNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of resources that contain a specific software package. You identify the package with <code>PackageName</code> and <code>PackageType</code>. To narrow the results to one version of the package, include <code>PackageVersion</code>.</p> <p>You can use the <code>Scopes</code> parameter to define the data boundary for the query. Currently, <code>Scopes</code> supports <code>AwsOrganizations</code>, which lets you retrieve resources from your entire organization or from specific organizational units. Only the delegated administrator account can use <code>Scopes</code>.</p> <p>You can use the <code>Filters</code> parameter to further refine results based on resource attributes, such as <code>ResourceType</code> or <code>Region</code>.</p>"
+    },
+    "GetSoftwareStatisticsV2":{
+      "name":"GetSoftwareStatisticsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/softwarev2/statistics"
+      },
+      "input":{"shape":"GetSoftwareStatisticsV2Request"},
+      "output":{"shape":"GetSoftwareStatisticsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OrganizationalUnitNotFoundException"},
+        {"shape":"OrganizationNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves aggregated counts of software packages installed on your resources, grouped by a field that you specify. For example, you can return the most common package types or the accounts with the most installed packages.</p> <p>Each count is the number of package-to-resource pairs that match the grouping value. A package installed on three resources contributes three to the count.</p> <p>You can use the <code>Scopes</code> parameter to define the data boundary for the query. Currently, <code>Scopes</code> supports <code>AwsOrganizations</code>, which lets you aggregate software from your entire organization or from specific organizational units. Only the delegated administrator account can use <code>Scopes</code>.</p> <p>This operation doesn't paginate. Use <code>MaxStatisticResults</code> to control how many grouping values are returned.</p>"
+    },
+    "GetSoftwareV2":{
+      "name":"GetSoftwareV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/softwarev2"
+      },
+      "input":{"shape":"GetSoftwareV2Request"},
+      "output":{"shape":"GetSoftwareV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OrganizationalUnitNotFoundException"},
+        {"shape":"OrganizationNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of software packages installed on your resources. Each result identifies a package by name, version, and type, and includes the number of resources that contain that package.</p> <p>You can use the <code>Scopes</code> parameter to define the data boundary for the query. Currently, <code>Scopes</code> supports <code>AwsOrganizations</code>, which lets you retrieve software from your entire organization or from specific organizational units. Only the delegated administrator account can use <code>Scopes</code>.</p> <p>You can use the <code>Filters</code> parameter to refine results based on package and resource attributes. You can use <code>Scopes</code> and <code>Filters</code> independently or together. When both are provided, <code>Scopes</code> narrows the data set first, and then <code>Filters</code> refines results within that scoped data set.</p> <p>To list the resources that contain a specific package, use <code>GetSoftwareResourcesV2</code>. To get counts of software grouped by a field, use <code>GetSoftwareStatisticsV2</code>.</p>"
+    },
     "InviteMembers":{
       "name":"InviteMembers",
       "http":{
@@ -21006,6 +21066,132 @@
         "SecurityControlDefinition":{"shape":"SecurityControlDefinition"}
       }
     },
+    "GetSoftwareResourcesV2Request":{
+      "type":"structure",
+      "required":[
+        "PackageName",
+        "PackageType"
+      ],
+      "members":{
+        "PackageName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the software package, for example <code>openssl</code>. This value must match the <code>PackageName</code> returned by <code>GetSoftwareV2</code>.</p>"
+        },
+        "PackageType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The type of the software package, for example <code>operating-system</code>, <code>application</code>, or <code>library</code>. This value must match the <code>PackageType</code> returned by <code>GetSoftwareV2</code>.</p>"
+        },
+        "PackageVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The version of the software package, for example <code>3.0.8</code>. If you omit this value, the response includes resources that contain any version of the package.</p>"
+        },
+        "Filters":{
+          "shape":"SoftwareFilters",
+          "documentation":"<p>Filters the returned resources based on a set of criteria. You can nest composite filters up to three levels deep.</p>"
+        },
+        "Scopes":{
+          "shape":"SoftwareScopes",
+          "documentation":"<p>Limits the results to resources from specific organizational units or from the delegated administrator's organization. Only the delegated administrator account can use this parameter. Other accounts receive an <code>AccessDeniedException</code>.</p> <p>This parameter is optional. If you omit it, the delegated administrator sees resources from all accounts across the entire organization. Other accounts see only their own resources.</p> <p>You can specify up to 10 entries in <code>Scopes.AwsOrganizations</code>. If multiple entries are specified, the entries are combined using OR logic.</p>"
+        },
+        "SortCriteria":{
+          "shape":"SortCriteria",
+          "documentation":"<p>The resource attribute used to sort the list of returned resources, for example <code>Region</code> or <code>ResourceType</code>. You can specify one sort criterion.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token required for pagination. On your first call, set the value of this parameter to <code>NULL</code>. For subsequent calls, to continue listing data, set the value of this parameter to the value returned in the previous response.</p> <p>A token expires one hour after it's issued. If you change the request parameters between calls, the token is no longer valid and the request fails with a <code>ValidationException</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. Valid values are 1–100. The default is 100.</p>"
+        }
+      }
+    },
+    "GetSoftwareResourcesV2Response":{
+      "type":"structure",
+      "required":["SoftwareResources"],
+      "members":{
+        "SoftwareResources":{
+          "shape":"SoftwareResourceResultList",
+          "documentation":"<p>An array of resources that contain the specified software package.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
+        }
+      }
+    },
+    "GetSoftwareStatisticsV2Request":{
+      "type":"structure",
+      "required":["GroupByRules"],
+      "members":{
+        "GroupByRules":{
+          "shape":"SoftwareGroupByRules",
+          "documentation":"<p>How software statistics should be aggregated and organized in the response.</p>"
+        },
+        "Scopes":{
+          "shape":"SoftwareScopes",
+          "documentation":"<p>Limits the results to software on resources from specific organizational units or from the delegated administrator's organization. Only the delegated administrator account can use this parameter. Other accounts receive an <code>AccessDeniedException</code>.</p> <p>This parameter is optional. If you omit it, the delegated administrator sees statistics from all accounts across the entire organization. Other accounts see only statistics for software on their own resources.</p> <p>You can specify up to 10 entries in <code>Scopes.AwsOrganizations</code>. If multiple entries are specified, the entries are combined using OR logic.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Sorts aggregated statistics by count. The default is descending, which returns the values with the highest counts first.</p>"
+        },
+        "MaxStatisticResults":{
+          "shape":"MaxStatisticResults",
+          "documentation":"<p>The maximum number of grouping values to return. Valid values are 1–400. The default is 400.</p>"
+        }
+      }
+    },
+    "GetSoftwareStatisticsV2Response":{
+      "type":"structure",
+      "required":["GroupByResults"],
+      "members":{
+        "GroupByResults":{
+          "shape":"GroupByResults",
+          "documentation":"<p>The aggregated statistics about software based on the specified grouping rule.</p>"
+        }
+      }
+    },
+    "GetSoftwareV2Request":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"SoftwareFilters",
+          "documentation":"<p>Filters software packages based on a set of criteria. You can nest composite filters up to three levels deep.</p>"
+        },
+        "Scopes":{
+          "shape":"SoftwareScopes",
+          "documentation":"<p>Limits the results to software on resources from specific organizational units or from the delegated administrator's organization. Only the delegated administrator account can use this parameter. Other accounts receive an <code>AccessDeniedException</code>.</p> <p>This parameter is optional. If you omit it, the delegated administrator sees software from all accounts across the entire organization. Other accounts see only software on their own resources.</p> <p>You can specify up to 10 entries in <code>Scopes.AwsOrganizations</code>. If multiple entries are specified, the entries are combined using OR logic.</p>"
+        },
+        "SortCriteria":{
+          "shape":"SortCriteria",
+          "documentation":"<p>The software attributes used to sort the list of returned software packages. You can't sort by <code>ResourceCount</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token required for pagination. On your first call, set the value of this parameter to <code>NULL</code>. For subsequent calls, to continue listing data, set the value of this parameter to the value returned in the previous response.</p> <p>A token expires one hour after it's issued. If you change <code>Filters</code> or <code>SortCriteria</code> between calls, the token is no longer valid and the request fails with a <code>ValidationException</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. Valid values are 1–100. The default is 100.</p>"
+        }
+      }
+    },
+    "GetSoftwareV2Response":{
+      "type":"structure",
+      "required":["Software"],
+      "members":{
+        "Software":{
+          "shape":"SoftwareList",
+          "documentation":"<p>An array of software packages returned by the operation.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
+        }
+      }
+    },
     "GranularityField":{
       "type":"string",
       "enum":[
@@ -26433,6 +26619,86 @@
       "min":1
     },
     "SizeBytes":{"type":"long"},
+    "SoftwareCompositeFilter":{
+      "type":"structure",
+      "members":{
+        "StringFilters":{
+          "shape":"SoftwareStringFilterList",
+          "documentation":"<p>Enables filtering based on string field values.</p>"
+        },
+        "NestedCompositeFilters":{
+          "shape":"SoftwareCompositeFilterList",
+          "documentation":"<p>Provides an additional level of filtering, creating a three-layer nested structure. The first layer is a <code>CompositeFilters</code> array with a <code>CompositeOperator</code> (<code>AND</code>/<code>OR</code>). The second layer is a <code>CompositeFilter</code> object that contains direct filters and <code>NestedCompositeFilters</code>. The third layer is <code>NestedCompositeFilters</code>, which contains additional filter conditions.</p>"
+        },
+        "Operator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator used to combine multiple filter conditions.</p>"
+        }
+      },
+      "documentation":"<p>Enables the creation of criteria for software packages in Security Hub.</p>"
+    },
+    "SoftwareCompositeFilterList":{
+      "type":"list",
+      "member":{"shape":"SoftwareCompositeFilter"},
+      "documentation":"<p>A list of composite filters for software.</p>"
+    },
+    "SoftwareFilters":{
+      "type":"structure",
+      "members":{
+        "CompositeFilters":{
+          "shape":"SoftwareCompositeFilterList",
+          "documentation":"<p>A collection of complex filtering conditions that can be applied to software packages.</p>"
+        },
+        "CompositeOperator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator used to combine multiple filter conditions in the structure.</p>"
+        }
+      },
+      "documentation":"<p>Enables filtering of software packages and the resources that contain them.</p>"
+    },
+    "SoftwareGroupByField":{
+      "type":"string",
+      "documentation":"<p>The software or resource field to group statistics by.</p>",
+      "enum":[
+        "AccountId",
+        "PackageName",
+        "PackageVersion",
+        "PackageType",
+        "Region",
+        "ResourceRegion",
+        "ResourceType",
+        "ResourceId",
+        "ResourceProvider",
+        "ResourceOwnerAccountId",
+        "ResourceOwnerOrgId",
+        "ResourceCloudPartition"
+      ]
+    },
+    "SoftwareGroupByRule":{
+      "type":"structure",
+      "required":["GroupByField"],
+      "members":{
+        "GroupByField":{
+          "shape":"SoftwareGroupByField",
+          "documentation":"<p>Specifies the attribute that software statistics should be grouped by.</p>"
+        },
+        "Filters":{
+          "shape":"SoftwareFilters",
+          "documentation":"<p>The criteria used to select the software packages included in the statistics. You can nest composite filters up to three levels deep.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for organizing and categorizing software packages installed on your resources.</p>"
+    },
+    "SoftwareGroupByRules":{
+      "type":"list",
+      "member":{"shape":"SoftwareGroupByRule"},
+      "documentation":"<p>A list of rules that define how to group software statistics.</p>"
+    },
+    "SoftwareList":{
+      "type":"list",
+      "member":{"shape":"SoftwareResult"},
+      "documentation":"<p>A list of software packages.</p>"
+    },
     "SoftwarePackage":{
       "type":"structure",
       "members":{
@@ -26486,6 +26752,133 @@
     "SoftwarePackageList":{
       "type":"list",
       "member":{"shape":"SoftwarePackage"}
+    },
+    "SoftwareResourceResult":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "ResourceType",
+        "Region",
+        "ResourceId"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services account that recorded the resource data in Security Hub.</p>"
+        },
+        "ResourceType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The type of resource, for example <code>AWS::EC2::Instance</code> or <code>AWS::Lambda::Function</code>.</p>"
+        },
+        "Region":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services Region that recorded the resource data in Security Hub.</p>"
+        },
+        "ResourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier for a resource.</p>"
+        },
+        "ResourceProvider":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The cloud provider where the resource exists. Valid values are <code>AWS</code> and <code>Azure</code>.</p>"
+        },
+        "ResourceOwnerOrgId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier of the cloud organization that owns the resource. For Amazon Web Services resources, this is the Organizations ID. For Azure resources, this is the Azure tenant ID.</p>"
+        },
+        "ResourceOwnerAccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier of the cloud account that owns the resource. For Amazon Web Services resources, this is the Amazon Web Services account ID. For Azure resources, this is the Azure subscription ID.</p>"
+        },
+        "ResourceCloudPartition":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The cloud partition where the resource exists. For Amazon Web Services, valid values include <code>aws</code>, <code>aws-cn</code>, and <code>aws-us-gov</code>. This field isn't returned for cloud providers that don't use partitions.</p>"
+        },
+        "ResourceRegion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The native cloud region where the resource is located. For Amazon Web Services, this is an Amazon Web Services Region (for example, <code>us-east-1</code>). For Azure resources, this is the Azure region (for example, <code>westus2</code>).</p>"
+        }
+      },
+      "documentation":"<p>Provides information about a resource that contains a software package.</p>"
+    },
+    "SoftwareResourceResultList":{
+      "type":"list",
+      "member":{"shape":"SoftwareResourceResult"},
+      "documentation":"<p>A list of resources that contain a software package.</p>"
+    },
+    "SoftwareResult":{
+      "type":"structure",
+      "required":[
+        "PackageName",
+        "PackageType",
+        "ResourceCount"
+      ],
+      "members":{
+        "PackageName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the software package.</p>"
+        },
+        "PackageVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The version of the software package.</p>"
+        },
+        "PackageType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The type of the software package, for example <code>operating-system</code>, <code>application</code>, or <code>library</code>.</p>"
+        },
+        "ResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources that contain this software package. To list these resources, call <code>GetSoftwareResourcesV2</code>.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about a software package installed on one or more of your resources.</p>"
+    },
+    "SoftwareScopes":{
+      "type":"structure",
+      "members":{
+        "AwsOrganizations":{
+          "shape":"AwsOrganizationScopeList",
+          "documentation":"<p>A list of Organizations scopes to include in the query results. Each entry in the list specifies an organization or organizational unit to include for the delegated administrator's account. If the list specifies multiple entries, the entries are combined using OR logic.</p>"
+        }
+      },
+      "documentation":"<p>Defines the data boundary for a software query. Scopes determine which organizational units or organizations to retrieve data from.</p>"
+    },
+    "SoftwareStringField":{
+      "type":"string",
+      "documentation":"<p>The software or resource field to filter on.</p>",
+      "enum":[
+        "AccountId",
+        "PackageName",
+        "PackageVersion",
+        "PackageType",
+        "Region",
+        "ResourceRegion",
+        "ResourceType",
+        "ResourceId",
+        "ResourceProvider",
+        "ResourceOwnerAccountId",
+        "ResourceOwnerOrgId",
+        "ResourceCloudPartition"
+      ]
+    },
+    "SoftwareStringFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"SoftwareStringField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{
+          "shape":"StringFilter",
+          "documentation":"<p>The string value and comparison operator to filter on. Supported comparisons are <code>EQUALS</code>, <code>NOT_EQUALS</code>, <code>PREFIX</code>, and <code>PREFIX_NOT_EQUALS</code>.</p>"
+        }
+      },
+      "documentation":"<p>Enables filtering of software packages based on string field values.</p>"
+    },
+    "SoftwareStringFilterList":{
+      "type":"list",
+      "member":{"shape":"SoftwareStringFilter"},
+      "documentation":"<p>A list of string filters for software.</p>"
     },
     "SortCriteria":{
       "type":"list",

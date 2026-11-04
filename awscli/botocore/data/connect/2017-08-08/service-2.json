@@ -10126,6 +10126,35 @@
       "max":100,
       "min":1
     },
+    "CaseEntries":{
+      "type":"list",
+      "member":{"shape":"CaseEntry"},
+      "documentation":"<p>A list of cases associated with the contact.</p>"
+    },
+    "CaseEntry":{
+      "type":"structure",
+      "members":{
+        "CaseId":{
+          "shape":"CaseId",
+          "documentation":"<p>Unique identifier of the case in UUID format.</p>"
+        },
+        "CaseReferenceNumber":{
+          "shape":"CaseReferenceNumber",
+          "documentation":"<p>A friendly number for the case. Reference numbers are not guaranteed to be unique.</p>"
+        }
+      },
+      "documentation":"<p>Information about a case associated with a contact.</p>"
+    },
+    "CaseId":{
+      "type":"string",
+      "max":36,
+      "min":1
+    },
+    "CaseReferenceNumber":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
     "CaseSlaConfiguration":{
       "type":"structure",
       "required":[
@@ -10813,6 +10842,10 @@
         "TaskTemplateInfo":{
           "shape":"TaskTemplateInfoV2",
           "documentation":"<p>If this contact was created using a task template, this contains information about the task template.</p>"
+        },
+        "Cases":{
+          "shape":"CaseEntries",
+          "documentation":"<p>A list of cases associated with the contact. This field is populated when one or more cases have been linked to the contact.</p>"
         },
         "ContactDetails":{
           "shape":"ContactDetails",

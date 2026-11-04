@@ -74,6 +74,20 @@
         "ResourceArnList":{"path":"keys(RequestItems)"}
       }
     },
+    "CancelBulkOperation":{
+      "name":"CancelBulkOperation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelBulkOperationInput"},
+      "output":{"shape":"CancelBulkOperationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Cancels an in-progress bulk operation asynchronously. Cancellation doesn't remove items that the operation has already written. Use <code>DescribeBulkOperation</code> to monitor the operation until it reaches a terminal status.</p>",
+      "endpointdiscovery":{}
+    },
     "CreateBackup":{
       "name":"CreateBackup",
       "http":{
@@ -213,6 +227,20 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>Describes an existing backup of a table.</p> <p>You can call <code>DescribeBackup</code> at a maximum rate of 10 times per second.</p>",
+      "endpointdiscovery":{}
+    },
+    "DescribeBulkOperation":{
+      "name":"DescribeBulkOperation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeBulkOperationInput"},
+      "output":{"shape":"DescribeBulkOperationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes the specified bulk operation.</p>",
       "endpointdiscovery":{}
     },
     "DescribeContinuousBackups":{
@@ -545,6 +573,17 @@
       "documentation":"<p>List DynamoDB backups that are associated with an Amazon Web Services account and weren't made with Amazon Web Services Backup. To list these backups for a given table, specify <code>TableName</code>. <code>ListBackups</code> returns a paginated list of results with at most 1 MB worth of items in a page. You can also specify a maximum number of entries to be returned in a page.</p> <p>In the request, start time is inclusive, but end time is exclusive. Note that these boundaries are for the time at which the original backup was requested.</p> <p>You can call <code>ListBackups</code> a maximum of five times per second.</p> <p>If you want to retrieve the complete list of backups made with Amazon Web Services Backup, use the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_ListBackupJobs.html\">Amazon Web Services Backup list API.</a> </p>",
       "endpointdiscovery":{}
     },
+    "ListBulkOperations":{
+      "name":"ListBulkOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListBulkOperationsInput"},
+      "output":{"shape":"ListBulkOperationsOutput"},
+      "documentation":"<p>Lists bulk operations that started within the past 90 days for the current Amazon Web Services account and Amazon Web Services Region, with the most recent operations first. Results are paginated. Use the <code>NextToken</code> parameter to retrieve additional results.</p>",
+      "endpointdiscovery":{}
+    },
     "ListContributorInsights":{
       "name":"ListContributorInsights",
       "http":{
@@ -762,6 +801,23 @@
       "staticContextParams":{
         "IsSearchOperation":{"value":true}
       }
+    },
+    "StartBulkPutItems":{
+      "name":"StartBulkPutItems",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartBulkPutItemsInput"},
+      "output":{"shape":"StartBulkPutItemsOutput"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Starts an asynchronous bulk operation that reads items from Amazon S3 and writes them to an existing DynamoDB table, so you can efficiently load or migrate large datasets.</p>",
+      "endpointdiscovery":{}
     },
     "TagResource":{
       "name":"TagResource",
@@ -1668,6 +1724,257 @@
     },
     "BooleanAttributeValue":{"type":"boolean"},
     "BooleanObject":{"type":"boolean"},
+    "BulkOperationArn":{
+      "type":"string",
+      "max":1024,
+      "min":37
+    },
+    "BulkOperationBytes":{
+      "type":"structure",
+      "members":{
+        "BulkPutBytes":{
+          "shape":"NonNegativeLongObject",
+          "documentation":"<p>The number of bulk put bytes.</p>"
+        }
+      },
+      "documentation":"<p>Contains the bulk put bytes used during a bulk operation.</p>"
+    },
+    "BulkOperationDescription":{
+      "type":"structure",
+      "members":{
+        "BulkOperationArn":{
+          "shape":"BulkOperationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the bulk operation.</p>"
+        },
+        "BulkOperationStatus":{
+          "shape":"BulkOperationStatus",
+          "documentation":"<p>The current status of the bulk operation can be one of the following values:</p> <dl> <dt> IN_PROGRESS </dt> <dd> <p>DynamoDB is processing the input.</p> </dd> <dt> COMPLETED </dt> <dd> <p>The bulk operation finished without parsing or validation errors. Condition-check failures do not cause the operation to complete with errors.</p> </dd> <dt> COMPLETED_WITH_ERRORS </dt> <dd> <p>The bulk operation finished, but DynamoDB couldn't process at least one input item because of a parsing or validation error. When you enable <code>ERROR</code> output, DynamoDB writes the details to the configured Amazon S3 output location.</p> </dd> <dt> CANCELLING </dt> <dd> <p>DynamoDB accepted a cancellation request and is stopping the operation.</p> </dd> <dt> CANCELLED </dt> <dd> <p>DynamoDB stopped the operation after a cancellation request.</p> </dd> <dt> FAILED </dt> <dd> <p>The bulk operation failed. DynamoDB might write some items before the operation reaches this status. See <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BulkOperationDescription.html#DDB-Type-BulkOperationDescription-FailureCode\">FailureCode</a> and <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BulkOperationDescription.html#DDB-Type-BulkOperationDescription-FailureMessage\">FailureMessage</a> for details.</p> </dd> </dl>"
+        },
+        "TableDetails":{
+          "shape":"BulkOperationTableDetails",
+          "documentation":"<p>A list containing identifying information for the table targeted by the bulk operation.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotency token associated with the start request.</p>"
+        },
+        "InputS3Configuration":{
+          "shape":"InputS3Configuration",
+          "documentation":"<p>The Amazon S3 input configuration associated with the bulk operation.</p>"
+        },
+        "OutputS3Configuration":{
+          "shape":"OutputS3Configuration",
+          "documentation":"<p>The Amazon S3 output configuration associated with the bulk operation.</p>"
+        },
+        "StartTime":{
+          "shape":"BulkOperationStartTime",
+          "documentation":"<p>The time when DynamoDB accepted the start request.</p>"
+        },
+        "EndTime":{
+          "shape":"BulkOperationEndTime",
+          "documentation":"<p>The time when the operation reached a terminal status. DynamoDB omits this value while the operation remains in progress.</p>"
+        },
+        "ProcessedItemCount":{
+          "shape":"BulkOperationItemCount",
+          "documentation":"<p>The number of input items that DynamoDB has processed. This count includes successful writes, parsing or validation failures, and condition-check failures.</p>"
+        },
+        "ProcessedInputBytes":{
+          "shape":"ProcessedInputBytes",
+          "documentation":"<p>The number of bytes that DynamoDB has read from the Amazon S3 input objects.</p>"
+        },
+        "TotalInputBytes":{
+          "shape":"TotalInputBytes",
+          "documentation":"<p>The total size, in bytes, of the Amazon S3 input objects. DynamoDB omits this value until the initial input-size calculation completes.</p>"
+        },
+        "BulkOperationUsage":{
+          "shape":"BulkOperationUsageMultiple",
+          "documentation":"<p>Usage information for the table and its indexes.</p>"
+        },
+        "FailedItemCount":{
+          "shape":"BulkOperationItemCount",
+          "documentation":"<p>The number of processed input items that failed because of parsing or validation errors. This count is included in <code>ProcessedItemCount</code>. Condition-check failures do not increase this count.</p>"
+        },
+        "FailureCode":{
+          "shape":"FailureCode",
+          "documentation":"<p>A code that identifies why the bulk operation failed or was cancelled. DynamoDB returns this value only when <code>BulkOperationStatus</code> is <code>FAILED</code> or <code>CANCELLED</code>.</p>"
+        },
+        "FailureMessage":{
+          "shape":"FailureMessage",
+          "documentation":"<p>A message that describes why the bulk operation failed or was cancelled. DynamoDB returns this value only when <code>BulkOperationStatus</code> is <code>FAILED</code> or <code>CANCELLED</code>.</p>"
+        },
+        "MaxWriteRequestUnits":{
+          "shape":"BulkOperationMaxWriteRequestUnits",
+          "documentation":"<p>The maximum write request unit rate configured for the bulk operation.</p>"
+        },
+        "PerformanceTier":{
+          "shape":"BulkOperationPerformanceTier",
+          "documentation":"<p>The performance tier selected for the bulk operation. Valid values are <code>STANDARD</code> and <code>ACCELERATED</code>. If the start request omitted this value, DynamoDB uses <code>STANDARD</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about a bulk operation.</p>"
+    },
+    "BulkOperationEndTime":{"type":"timestamp"},
+    "BulkOperationInputFormat":{
+      "type":"string",
+      "enum":[
+        "DYNAMODB_JSON",
+        "ION"
+      ]
+    },
+    "BulkOperationItemCount":{
+      "type":"long",
+      "min":0
+    },
+    "BulkOperationMaxWriteRequestUnits":{
+      "type":"long",
+      "min":1024
+    },
+    "BulkOperationNextToken":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"([0-9a-f]{16})+"
+    },
+    "BulkOperationPerformanceTier":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "ACCELERATED"
+      ]
+    },
+    "BulkOperationStartTime":{"type":"timestamp"},
+    "BulkOperationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "COMPLETED_WITH_ERRORS",
+        "CANCELLING",
+        "CANCELLED",
+        "FAILED"
+      ]
+    },
+    "BulkOperationSummary":{
+      "type":"structure",
+      "required":[
+        "BulkOperationArn",
+        "BulkOperationStatus",
+        "StartTime"
+      ],
+      "members":{
+        "BulkOperationArn":{
+          "shape":"BulkOperationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the bulk operation.</p>"
+        },
+        "BulkOperationStatus":{
+          "shape":"BulkOperationStatus",
+          "documentation":"<p>The current status of the bulk operation.</p>"
+        },
+        "StartTime":{
+          "shape":"BulkOperationStartTime",
+          "documentation":"<p>The time when DynamoDB accepted the start request.</p>"
+        },
+        "EndTime":{
+          "shape":"BulkOperationEndTime",
+          "documentation":"<p>The time when the operation reached a terminal status. DynamoDB omits this value while the operation remains in progress.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a bulk operation.</p>"
+    },
+    "BulkOperationTableDetail":{
+      "type":"structure",
+      "members":{
+        "TableName":{
+          "shape":"TableArn",
+          "documentation":"<p>The name or ARN of the table associated with the bulk operation.</p>"
+        },
+        "TableId":{
+          "shape":"TableId",
+          "documentation":"<p>The unique identifier of the table associated with the bulk operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains identifying information for a table associated with a bulk operation.</p>"
+    },
+    "BulkOperationTableDetails":{
+      "type":"list",
+      "member":{"shape":"BulkOperationTableDetail"}
+    },
+    "BulkOperationUsage":{
+      "type":"structure",
+      "members":{
+        "TableName":{
+          "shape":"TableArn",
+          "documentation":"<p>The name or ARN of the table associated with the reported usage.</p>"
+        },
+        "BulkPutBytes":{
+          "shape":"NonNegativeLongObject",
+          "documentation":"<p>The total number of bulk put bytes used by the operation. This value excludes bulk put vector bytes.</p>"
+        },
+        "Table":{
+          "shape":"BulkOperationBytes",
+          "documentation":"<p>The number of bulk put bytes for the table, excluding its indexes.</p>"
+        },
+        "LocalSecondaryIndexes":{
+          "shape":"SecondaryIndexesBulkBytesMap",
+          "documentation":"<p>The bulk put bytes used on each local secondary index affected by the operation, keyed by index name.</p>"
+        },
+        "GlobalSecondaryIndexes":{
+          "shape":"SecondaryIndexesBulkBytesMap",
+          "documentation":"<p>The bulk put bytes used on each global secondary index affected by the operation, keyed by index name.</p>"
+        },
+        "VectorIndexes":{
+          "shape":"VectorIndexesBulkVectorBytesMap",
+          "documentation":"<p>The bulk put vector bytes used on each vector index affected by the operation, keyed by index name.</p>"
+        }
+      },
+      "documentation":"<p>Contains the bytes used during a bulk operation, including a breakdown for the table and its indexes.</p>"
+    },
+    "BulkOperationUsageMultiple":{
+      "type":"list",
+      "member":{"shape":"BulkOperationUsage"}
+    },
+    "BulkOperationVectorBytes":{
+      "type":"structure",
+      "members":{
+        "BulkPutVectorBytes":{
+          "shape":"NonNegativeLongObject",
+          "documentation":"<p>The number of bulk put vector bytes used on the vector index.</p>"
+        }
+      },
+      "documentation":"<p>Contains the bulk put vector bytes used by a vector index during a bulk operation.</p>"
+    },
+    "BulkOperationsSummaryList":{
+      "type":"list",
+      "member":{"shape":"BulkOperationSummary"}
+    },
+    "CancelBulkOperationInput":{
+      "type":"structure",
+      "required":["BulkOperationArn"],
+      "members":{
+        "BulkOperationArn":{
+          "shape":"BulkOperationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the bulk operation to cancel.</p>",
+          "contextParam":{"name":"ResourceArn"}
+        }
+      }
+    },
+    "CancelBulkOperationOutput":{
+      "type":"structure",
+      "required":[
+        "BulkOperationArn",
+        "BulkOperationStatus"
+      ],
+      "members":{
+        "BulkOperationArn":{
+          "shape":"BulkOperationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the bulk operation for which DynamoDB accepted the cancellation request.</p>"
+        },
+        "BulkOperationStatus":{
+          "shape":"BulkOperationStatus",
+          "documentation":"<p>The status returned after DynamoDB accepts the cancellation request. This value is <code>CANCELLING</code>. Use <code>DescribeBulkOperation</code> to determine when the operation reaches <code>CANCELLED</code>.</p>"
+        }
+      }
+    },
     "CancellationReason":{
       "type":"structure",
       "members":{
@@ -2505,6 +2812,27 @@
         "BackupDescription":{
           "shape":"BackupDescription",
           "documentation":"<p>Contains the description of the backup created for the table.</p>"
+        }
+      }
+    },
+    "DescribeBulkOperationInput":{
+      "type":"structure",
+      "required":["BulkOperationArn"],
+      "members":{
+        "BulkOperationArn":{
+          "shape":"BulkOperationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the bulk operation to describe.</p>",
+          "contextParam":{"name":"ResourceArn"}
+        }
+      }
+    },
+    "DescribeBulkOperationOutput":{
+      "type":"structure",
+      "required":["BulkOperationDescription"],
+      "members":{
+        "BulkOperationDescription":{
+          "shape":"BulkOperationDescription",
+          "documentation":"<p>Contains detailed information about the bulk operation.</p>"
         }
       }
     },
@@ -3986,6 +4314,36 @@
       },
       "documentation":"<p> The format options for the data that was imported into the target table. There is one value, CsvOption.</p>"
     },
+    "InputS3Configuration":{
+      "type":"structure",
+      "required":[
+        "S3Bucket",
+        "InputFormat"
+      ],
+      "members":{
+        "S3BucketOwner":{
+          "shape":"S3BucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID of the input bucket owner. If you omit this value, DynamoDB uses the Amazon Web Services account ID of the requester.</p> <note> <p> <code>S3BucketOwner</code> is required when the bucket is owned by another Amazon Web Services account.</p> </note>"
+        },
+        "S3Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>The name of the Amazon S3 bucket that contains the input objects.</p>"
+        },
+        "S3KeyPrefix":{
+          "shape":"S3Prefix",
+          "documentation":"<p>An optional key prefix that limits the input to matching objects in the Amazon S3 bucket.</p>"
+        },
+        "InputFormat":{
+          "shape":"BulkOperationInputFormat",
+          "documentation":"<p>The format of the input objects. <code>DYNAMODB_JSON</code> uses JSON Lines, with one JSON record per line. <code>ION</code> uses a sequence of Ion structs.</p>"
+        },
+        "InputCompressionType":{
+          "shape":"InputCompressionType",
+          "documentation":"<p>The compression type of the input objects. Valid values are <code>GZIP</code>, <code>ZSTD</code>, and <code>NONE</code>. If you don't specify a value, DynamoDB uses <code>NONE</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Amazon S3 location and format settings for bulk operation input. The <code>S3Bucket</code> and <code>InputFormat</code> fields are required.</p>"
+    },
     "Integer":{"type":"integer"},
     "IntegerObject":{"type":"integer"},
     "InternalServerError":{
@@ -4290,6 +4648,37 @@
         "LastEvaluatedBackupArn":{
           "shape":"BackupArn",
           "documentation":"<p> The ARN of the backup last evaluated when the current page of results was returned, inclusive of the current page of results. This value may be specified as the <code>ExclusiveStartBackupArn</code> of a new <code>ListBackups</code> operation in order to fetch the next page of results. </p> <p> If <code>LastEvaluatedBackupArn</code> is empty, then the last page of results has been processed and there are no more results to be retrieved. </p> <p> If <code>LastEvaluatedBackupArn</code> is not empty, this may or may not indicate that there is more data to be returned. All results are guaranteed to have been returned if and only if no value for <code>LastEvaluatedBackupArn</code> is returned. </p>"
+        }
+      }
+    },
+    "ListBulkOperationsInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListBulkOperationsMaxLimit",
+          "documentation":"<p>The maximum number of bulk operation summaries to return in one page. If you don't specify a value, DynamoDB uses 10.</p>"
+        },
+        "NextToken":{
+          "shape":"BulkOperationNextToken",
+          "documentation":"<p>An optional string that, if supplied, must be copied from the output of a previous call to <code>ListBulkOperations</code>. When provided in this manner, the API fetches the next page of results.</p>"
+        }
+      }
+    },
+    "ListBulkOperationsMaxLimit":{
+      "type":"integer",
+      "max":25,
+      "min":1
+    },
+    "ListBulkOperationsOutput":{
+      "type":"structure",
+      "members":{
+        "BulkOperationsSummaryList":{
+          "shape":"BulkOperationsSummaryList",
+          "documentation":"<p>A list of bulk operation summaries for the current Amazon Web Services account and Amazon Web Services Region.</p>"
+        },
+        "NextToken":{
+          "shape":"BulkOperationNextToken",
+          "documentation":"<p>If this value is returned, there are additional results to be displayed. To retrieve them, call <code>ListBulkOperations</code> again, with <code>NextToken</code> set to this value.</p>"
         }
       }
     },
@@ -4634,6 +5023,48 @@
       },
       "documentation":"<p>Overrides the on-demand throughput settings for this replica table. If you don't specify a value for this parameter, it uses the source table's on-demand throughput settings.</p>"
     },
+    "OutputS3Configuration":{
+      "type":"structure",
+      "required":["OutputType"],
+      "members":{
+        "S3BucketOwner":{
+          "shape":"S3BucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID of the output bucket owner. If you omit this value, DynamoDB uses the Amazon Web Services account ID of the requester.</p> <note> <p> <code>S3BucketOwner</code> is required when the bucket is owned by another Amazon Web Services account.</p> </note>"
+        },
+        "S3Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>The name of the Amazon S3 bucket where DynamoDB writes output records.</p>"
+        },
+        "S3KeyPrefix":{
+          "shape":"S3Prefix",
+          "documentation":"<p>An optional key prefix under which DynamoDB writes the output records.</p>"
+        },
+        "S3SseAlgorithm":{
+          "shape":"S3SseAlgorithm",
+          "documentation":"<p>The server-side encryption algorithm for the output objects. Valid values are <code>AES256</code> and <code>KMS</code>. If you don't specify a value, Amazon S3 applies the destination bucket's default encryption settings.</p>"
+        },
+        "S3SseKmsKeyId":{
+          "shape":"S3SseKmsKeyId",
+          "documentation":"<p>The identifier of the KMS key that encrypts the output objects. Specify this value when <code>S3SseAlgorithm</code> is <code>KMS</code>. Don't specify it when the algorithm is <code>AES256</code>.</p>"
+        },
+        "OutputType":{
+          "shape":"OutputTypeList",
+          "documentation":"<p>The following values describe the types of output that DynamoDB writes for individual input items. Include one or both values.</p> <dl> <dt> ERROR </dt> <dd> <p>Reports input records or input objects that DynamoDB couldn't process. This includes malformed input and item validation failures, such as a missing or incorrectly typed primary key attribute or an item that exceeds a DynamoDB limit.</p> </dd> <dt> CONDITION_CHECK_FAILURE </dt> <dd> <p>Reports the attempted item and, when present, the existing item for a write whose condition expression evaluates to false.</p> </dd> </dl>"
+        }
+      },
+      "documentation":"<p>Contains the Amazon S3 location, encryption settings, and output types for a bulk operation. The <code>S3Bucket</code> and <code>OutputType</code> fields are required.</p>"
+    },
+    "OutputTypeEnum":{
+      "type":"string",
+      "enum":[
+        "ERROR",
+        "CONDITION_CHECK_FAILURE"
+      ]
+    },
+    "OutputTypeList":{
+      "type":"list",
+      "member":{"shape":"OutputTypeEnum"}
+    },
     "ParameterizedStatement":{
       "type":"structure",
       "required":["Statement"],
@@ -4756,6 +5187,10 @@
       "type":"list",
       "member":{"shape":"AttributeValue"},
       "min":1
+    },
+    "ProcessedInputBytes":{
+      "type":"long",
+      "min":0
     },
     "ProcessedItemCount":{
       "type":"long",
@@ -6062,7 +6497,7 @@
         },
         "SearchConditionExpression":{
           "shape":"String",
-          "documentation":"<p>A condition expression used to filter the vector search results. The expression can reference attributes defined in the vector index search schema, including <code>HASH</code> and <code>INLINE_FILTER</code> key elements.</p> <p>Only the equality operator (<code>=</code>) is supported for <code>HASH</code> attributes. Comparison and range operators are supported for <code>INLINE_FILTER</code> attributes. Only top-level attributes from the search schema can be referenced.</p>"
+          "documentation":"<p>A condition expression used to filter the vector search results. The expression can reference attributes defined in the vector index search schema, including <code>HASH</code> and <code>INLINE_FILTER</code> key elements.</p> <p>The <code>HASH</code> and <code>INLINE_FILTER</code> attributes support only the equality operator (<code>=</code>). You can reference only top-level attributes from the search schema.</p>"
         },
         "TopK":{
           "shape":"TopKInteger",
@@ -6082,6 +6517,11 @@
           "documentation":"<p>A list of items returned by the vector similarity search, sorted by similarity with the most similar item first. Each item contains the projected attributes and a similarity score.</p>"
         }
       }
+    },
+    "SecondaryIndexesBulkBytesMap":{
+      "type":"map",
+      "key":{"shape":"IndexName"},
+      "value":{"shape":"BulkOperationBytes"}
     },
     "SecondaryIndexesCapacityMap":{
       "type":"map",
@@ -6176,6 +6616,52 @@
         }
       },
       "documentation":"<p>Contains the details of the features enabled on the table when the backup was created. For example, LSIs, GSIs, streams, TTL. </p>"
+    },
+    "StartBulkPutItemsInput":{
+      "type":"structure",
+      "required":[
+        "InputS3Configuration",
+        "OutputS3Configuration",
+        "TableName"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that ensures the bulk operation starts no more than one time. During the 8 hours after the initial request, repeated requests that use the same token and parameters return the same bulk operation. If a request reuses the token with different parameters, DynamoDB returns an <code>IdempotentParameterMismatchException</code>. If you omit the token, an Amazon Web Services SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        },
+        "InputS3Configuration":{
+          "shape":"InputS3Configuration",
+          "documentation":"<p>The Amazon S3 location, data format, and compression settings for the input objects.</p>"
+        },
+        "OutputS3Configuration":{
+          "shape":"OutputS3Configuration",
+          "documentation":"<p>The Amazon S3 location, encryption settings, and output types for the bulk operation.</p>"
+        },
+        "TableName":{
+          "shape":"TableArn",
+          "documentation":"<p>The name or ARN of the existing DynamoDB table that receives the items.</p>",
+          "contextParam":{"name":"ResourceArn"}
+        },
+        "MaxWriteRequestUnits":{
+          "shape":"BulkOperationMaxWriteRequestUnits",
+          "documentation":"<p>The maximum rate, in write request units per second, at which the bulk operation attempts to write. The value must be at least 1,024. With this setting, you limit only the bulk operation; the table's provisioned or on-demand capacity settings don't change. The actual write rate can be lower.</p>"
+        },
+        "PerformanceTier":{
+          "shape":"BulkOperationPerformanceTier",
+          "documentation":"<p>The performance tier for the bulk operation. Valid values are <code>STANDARD</code> and <code>ACCELERATED</code>. If you don't specify a value, the operation uses <code>STANDARD</code>.</p>"
+        }
+      }
+    },
+    "StartBulkPutItemsOutput":{
+      "type":"structure",
+      "required":["BulkOperationDescription"],
+      "members":{
+        "BulkOperationDescription":{
+          "shape":"BulkOperationDescription",
+          "documentation":"<p>Contains detailed information about a bulk operation.</p>"
+        }
+      }
     },
     "StreamArn":{
       "type":"string",
@@ -6629,6 +7115,10 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "TotalInputBytes":{
+      "type":"long",
+      "min":0
     },
     "TransactGetItem":{
       "type":"structure",
@@ -7478,6 +7968,11 @@
     "VectorIndexes":{
       "type":"list",
       "member":{"shape":"VectorIndexInfo"}
+    },
+    "VectorIndexesBulkVectorBytesMap":{
+      "type":"map",
+      "key":{"shape":"IndexName"},
+      "value":{"shape":"BulkOperationVectorBytes"}
     },
     "VectorIndexesCapacityMap":{
       "type":"map",

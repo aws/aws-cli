@@ -1,6 +1,38 @@
 {
   "version": 2,
   "waiters": {
+    "BulkOperationCompleted": {
+      "operation": "DescribeBulkOperation",
+      "delay": 20,
+      "maxAttempts": 180,
+      "description": "Wait until a bulk operation is completed.",
+      "acceptors": [
+        {
+          "expected": "COMPLETED",
+          "matcher": "path",
+          "state": "success",
+          "argument": "BulkOperationDescription.BulkOperationStatus"
+        },
+        {
+          "expected": "COMPLETED_WITH_ERRORS",
+          "matcher": "path",
+          "state": "success",
+          "argument": "BulkOperationDescription.BulkOperationStatus"
+        },
+        {
+          "expected": "CANCELLED",
+          "matcher": "path",
+          "state": "failure",
+          "argument": "BulkOperationDescription.BulkOperationStatus"
+        },
+        {
+          "expected": "FAILED",
+          "matcher": "path",
+          "state": "failure",
+          "argument": "BulkOperationDescription.BulkOperationStatus"
+        }
+      ]
+    },
     "ContributorInsightsEnabled": {
       "operation": "DescribeContributorInsights",
       "delay": 20,

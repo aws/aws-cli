@@ -391,6 +391,10 @@
           "shape":"NetworkConfiguration",
           "documentation":"<p>Network configuration for the workflow execution environment, including VPC security groups and subnets for secure network access. When specified, Amazon Managed Workflows for Apache Airflow Serverless deploys ECS worker tasks in your customer VPC to provide secure connectivity to your resources. If not specified, tasks run in the service's default worker VPC with network isolation from other customers. This configuration enables secure access to VPC-only resources like RDS databases or private endpoints.</p>"
         },
+        "Environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment variables to set for tasks in the workflow. If you don't specify this parameter, the workflow has no environment variables.</p>"
+        },
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>A map of tags to assign to the workflow resource. Tags are key-value pairs that are used for resource organization and cost allocation.</p>"
@@ -452,7 +456,7 @@
         },
         "VersionId":{
           "shape":"String",
-          "documentation":"<p>Optional. The version ID of the workflow definition file in Amazon S3. If not specified, the latest version is used.</p>"
+          "documentation":"<p>Optional. The version ID of the workflow definition file in Amazon S3. If you don't specify a version, we use the latest version.</p>"
         }
       },
       "documentation":"<p>Specifies the Amazon S3 location of a workflow definition file. This structure contains the bucket name, object key, and optional version ID for the workflow definition. Amazon Managed Workflows for Apache Airflow Serverless takes a snapshot of the definition file at the time of workflow creation or update, ensuring that the workflow behavior remains consistent even if the source file is modified. The definition must be a valid YAML file that uses supported Amazon Web Services operators and Amazon Managed Workflows for Apache Airflow Serverless syntax.</p>"
@@ -521,6 +525,35 @@
     "EngineVersion":{
       "type":"integer",
       "box":true
+    },
+    "Environment":{
+      "type":"structure",
+      "members":{
+        "Variables":{
+          "shape":"EnvironmentVariablesMap",
+          "documentation":"<p>A map of environment variable names to values. Your workflow tasks use these variables while they run. You can specify up to 50 environment variables. Each name must be between 1 and 128 characters, start with a letter, and contain only letters, numbers, and underscores. Each value can be up to 255 characters.</p> <p>Names that start with <code>AWS_</code> or <code>AIRFLOW__</code> are reserved. You can use the following Apache Airflow secrets backend settings, which are exceptions:</p> <ul> <li> <p> <code>AIRFLOW__WORKERS__SECRETS_BACKEND</code> – The secrets backend class that workers use.</p> </li> <li> <p> <code>AIRFLOW__WORKERS__SECRETS_BACKEND_KWARGS</code> – The keyword arguments for the secrets backend, as a JSON string.</p> </li> <li> <p> <code>AIRFLOW__WORKERS__SECRETS_BACKEND_KWARG__*</code> – Names with this prefix, for additional secrets backend configuration.</p> </li> </ul> <p>If you set <code>EncryptionConfiguration</code> to use a customer managed AWS KMS key, we encrypt the environment variables with that key. Otherwise, we store them with default encryption at rest.</p>"
+        }
+      },
+      "documentation":"<p>Contains the environment variables that tasks in a workflow use during execution.</p>"
+    },
+    "EnvironmentVariableKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]*"
+    },
+    "EnvironmentVariableValue":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "sensitive":true
+    },
+    "EnvironmentVariablesMap":{
+      "type":"map",
+      "key":{"shape":"EnvironmentVariableKey"},
+      "value":{"shape":"EnvironmentVariableValue"},
+      "max":50,
+      "min":0
     },
     "ErrorMessage":{
       "type":"string",
@@ -712,6 +745,10 @@
         "NetworkConfiguration":{
           "shape":"NetworkConfiguration",
           "documentation":"<p>The network configuration for the workflow execution environment.</p>"
+        },
+        "Environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment variables that tasks in the workflow use during execution.</p>"
         },
         "TriggerMode":{
           "shape":"GenericString",
@@ -1097,7 +1134,7 @@
         },
         "VersionId":{
           "shape":"S3LocationVersionIdString",
-          "documentation":"<p>The version ID of the object in Amazon S3. If not specified, the latest version is used.</p>"
+          "documentation":"<p>Specifies the version ID of the object in Amazon S3. If you don't specify a version, we use the latest version.</p>"
         }
       },
       "documentation":"<p>Specifies the Amazon S3 location of code artifacts that workflows use during execution.</p>"
@@ -1187,7 +1224,7 @@
         },
         "WorkflowVersion":{
           "shape":"VersionId",
-          "documentation":"<p>Optional. The specific version of the workflow to execute. If not specified, the latest version is used.</p>"
+          "documentation":"<p>Optional. The specific version of the workflow to execute. If you don't specify a version, we use the latest version.</p>"
         }
       }
     },
@@ -1300,7 +1337,7 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-[a-z]+-[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
+      "pattern":"arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-(?:[a-z]+-)+[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
     },
     "Tags":{
       "type":"map",
@@ -1461,6 +1498,10 @@
           "shape":"NetworkConfiguration",
           "documentation":"<p>Updated network configuration for the workflow execution environment.</p>"
         },
+        "Environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment variables to set for tasks in the workflow.</p> <important> <p>The variables that you specify replace all existing environment variables for the workflow. If you don't specify this parameter, the workflow has no environment variables. To keep existing environment variables, include them in the request.</p> </important>"
+        },
         "TriggerMode":{
           "shape":"GenericString",
           "documentation":"<p>The trigger mode for the workflow execution.</p>"
@@ -1554,7 +1595,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-[a-z]+-[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
+      "pattern":"arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-(?:[a-z]+-)+[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
     },
     "WorkflowRunDetail":{
       "type":"structure",

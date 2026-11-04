@@ -104,6 +104,24 @@
       ],
       "documentation":"<p>Returns a list of SpeechSynthesisTask objects ordered by their creation date. This operation can filter the tasks by their status, for example, allowing users to list only tasks that are completed.</p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/listTagsForResource/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InvalidTagParameterException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the tags for an Amazon Polly resource.</p>"
+    },
     "PutLexicon":{
       "name":"PutLexicon",
       "http":{
@@ -120,9 +138,12 @@
         {"shape":"LexiconSizeExceededException"},
         {"shape":"MaxLexemeLengthExceededException"},
         {"shape":"MaxLexiconsNumberExceededException"},
-        {"shape":"ServiceFailureException"}
+        {"shape":"ValidationException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"InvalidTagParameterException"}
       ],
-      "documentation":"<p>Stores a pronunciation lexicon in an Amazon Web Services Region. If a lexicon with the same name already exists in the region, it is overwritten by the new lexicon. Lexicon operations have eventual consistency, therefore, it might take some time before the lexicon is available to the SynthesizeSpeech operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/managing-lexicons.html\">Managing Lexicons</a>.</p>"
+      "documentation":"<p>Stores a pronunciation lexicon in an Amazon Web Services Region. If a lexicon with the same name already exists in the region, it is overwritten by the new lexicon. Lexicon operations have eventual consistency, therefore, it might take some time before the lexicon is available to the SynthesizeSpeech operation.</p> <p>Overwriting a lexicon keeps its existing tags. You can specify tags only when you create a lexicon. If you specify tags for a lexicon that already exists, the request fails with a <code>ValidationException</code>. To change the tags of an existing lexicon, use <code>TagResource</code> and <code>UntagResource</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/managing-lexicons.html\">Managing Lexicons</a>.</p>"
     },
     "StartSpeechSynthesisStream":{
       "name":"StartSpeechSynthesisStream",
@@ -186,10 +207,52 @@
         {"shape":"EngineNotSupportedException"}
       ],
       "documentation":"<p>Synthesizes UTF-8 input, plain text or SSML, to a stream of bytes. SSML input must be valid, well-formed SSML. Some alphabets might not be available with all the voices (for example, Cyrillic might not be read at all by English voices) unless phoneme mapping is used. For more information, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/how-text-to-speech-works.html\">How it Works</a>.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/tagResource",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceInput"},
+      "output":{"shape":"TagResourceOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ValidationException"},
+        {"shape":"InvalidTagParameterException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Adds specified tags to a resource with the specified ARN. Existing tags on a resource are not changed if they are not specified in the request parameters. If you specify a tag key that already exists on the resource, the value in the request replaces the existing value.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/untagResource",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "output":{"shape":"UntagResourceOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InvalidTagParameterException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes specified tags from a resource.</p>"
     }
   },
   "shapes":{
     "Alphabet":{"type":"string"},
+    "AmazonResourceName":{
+      "type":"string",
+      "max":1011,
+      "min":1
+    },
     "AudioChunk":{"type":"blob"},
     "AudioEvent":{
       "type":"structure",
@@ -299,6 +362,7 @@
       "exception":true
     },
     "ErrorMessage":{"type":"string"},
+    "ExceptionMessage":{"type":"string"},
     "FlushStreamConfiguration":{
       "type":"structure",
       "members":{
@@ -424,6 +488,15 @@
         "message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The SSML you provided is invalid. Verify the SSML syntax, spelling of tags and values, and then try again.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "InvalidTagParameterException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The resource ARN or a tag in the request isn't valid. Specify the ARN of a supported resource in the Amazon Web Services account and Region of the request. Tag keys can have a maximum length of 128 characters, and tag values can have a maximum length of 256 characters. Correct the ARN or the tags, and then try again.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -653,6 +726,27 @@
         }
       }
     },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the only supported resource is an Amazon Polly lexicon.</p>",
+          "location":"querystring",
+          "locationName":"arn"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags for the resource.</p>"
+        }
+      }
+    },
     "MarksNotSupportedForFormatException":{
       "type":"structure",
       "members":{
@@ -720,13 +814,17 @@
       "members":{
         "Name":{
           "shape":"LexiconName",
-          "documentation":"<p>Name of the lexicon. The name must follow the regular express format [0-9A-Za-z]{1,20}. That is, the name is a case-sensitive alphanumeric string up to 20 characters long. </p>",
+          "documentation":"<p>Name of the lexicon. The name must follow the regular expression format [0-9A-Za-z]{1,20}. That is, the name is a case-sensitive alphanumeric string up to 20 characters long. </p>",
           "location":"uri",
           "locationName":"LexiconName"
         },
         "Content":{
           "shape":"LexiconContent",
           "documentation":"<p>Content of the PLS lexicon as string data.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The metadata that you apply to the lexicon to help you categorize and organize it. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters. You can't replace the tags of an existing lexicon by overwriting it with PutLexicon.</p>"
         }
       }
     },
@@ -742,6 +840,33 @@
       ]
     },
     "RequestCharacters":{"type":"integer"},
+    "ResourceId":{"type":"string"},
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the resource that wasn't found.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource that wasn't found.</p>"
+        }
+      },
+      "documentation":"<p>Amazon Polly can't find the specified resource. Verify that the resource exists in the Amazon Web Services account and Region of the request and that its ARN is spelled correctly, and then try again.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
+    "ResourceType":{
+      "type":"string",
+      "enum":["lexicon"]
+    },
     "SampleRate":{"type":"string"},
     "ServiceCode":{
       "type":"string",
@@ -1137,6 +1262,50 @@
       },
       "payload":"AudioStream"
     },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":1
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":200,
+      "min":1
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which to add tags. Currently, the only supported resource is an Amazon Polly lexicon.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to add to the resource, as key-value pairs. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.</p>"
+        }
+      }
+    },
+    "TagResourceOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
     "TaskId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,100}$"
@@ -1220,6 +1389,15 @@
       "type":"list",
       "member":{"shape":"ThrottlingReason"}
     },
+    "TooManyTagsException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The list of tags on the resource is over the limit. The maximum number of tags that can be applied to a resource is 50. Remove unused tags or reduce the number of tags in the request, and then try again.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "UnsupportedPlsAlphabetException":{
       "type":"structure",
       "members":{
@@ -1237,6 +1415,27 @@
       "documentation":"<p>The language specified in the lexicon is unsupported. For a list of supported languages, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_LexiconAttributes.html\">Lexicon Attributes</a>.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which to remove tags. Currently, the only supported resource is an Amazon Polly lexicon.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The keys of the tags to be removed.</p>"
+        }
+      }
+    },
+    "UntagResourceOutput":{
+      "type":"structure",
+      "members":{}
     },
     "ValidationException":{
       "type":"structure",

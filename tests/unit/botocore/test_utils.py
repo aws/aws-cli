@@ -585,6 +585,17 @@ class TestParseTimestamps(unittest.TestCase):
             datetime.datetime(2050, 1, 1, 0, 0, 0, tzinfo=tzutc()),
         )
 
+    def test_parse_epoch_uses_utc_offset_at_that_time(self):
+        timestamp = 1793729325
+        expected = datetime.datetime.fromtimestamp(timestamp, tzutc())
+        expected_offset = expected.astimezone().utcoffset()
+        stale_offset = int(-expected_offset.total_seconds()) + 3600
+        with mock.patch('time.timezone', stale_offset):
+            with mock.patch('time.daylight', 0):
+                parsed = parse_timestamp(timestamp)
+        self.assertEqual(parsed, expected)
+        self.assertEqual(parsed.utcoffset(), expected_offset)
+
     def test_parse_epoch_as_string(self):
         self.assertEqual(
             parse_timestamp('1222172800'),
@@ -650,7 +661,9 @@ class TestParseTimestamps(unittest.TestCase):
         with self.mocked_fromtimestamp_that_raises(OverflowError):
             with_fallback = parse_timestamp(0)
             self.assertEqual(with_fallback, wout_fallback)
-            self.assertEqual(with_fallback.tzinfo, wout_fallback.tzinfo)
+            self.assertEqual(
+                with_fallback.utcoffset(), wout_fallback.utcoffset()
+            )
 
     def test_parse_timestamp_succeeds_with_fromtimestamp_oserror(self):
         # Same as test_parse_timestamp_succeeds_with_fromtimestamp_overflowerror
@@ -660,7 +673,9 @@ class TestParseTimestamps(unittest.TestCase):
         with self.mocked_fromtimestamp_that_raises(OSError):
             with_fallback = parse_timestamp(0)
             self.assertEqual(with_fallback, wout_fallback)
-            self.assertEqual(with_fallback.tzinfo, wout_fallback.tzinfo)
+            self.assertEqual(
+                with_fallback.utcoffset(), wout_fallback.utcoffset()
+            )
 
 
 class TestDatetime2Timestamp(unittest.TestCase):

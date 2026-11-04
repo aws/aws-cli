@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from botocore.credentials import (
     AssumeRoleProvider,
     AssumeRoleWithWebIdentityProvider,
@@ -45,6 +47,30 @@ class TestAssumeRolePlugin(unittest.TestCase):
             mock_web_identity.cache,
             assumerole.JSONFileCache,
         )
+
+    def test_injected_cache_is_default_cli_cache_dir(self):
+        # Profile credential_cache settings are handled by the providers,
+        # so the injected cache stays the default ~/.aws/cli/cache.
+        mock_assume_role = mock.Mock(spec=AssumeRoleProvider)
+        mock_web_identity = mock.Mock(spec=AssumeRoleWithWebIdentityProvider)
+        providers = {
+            'assume-role': mock_assume_role,
+            'assume-role-with-web-identity': mock_web_identity,
+        }
+        mock_resolver = mock.Mock(spec=CredentialResolver)
+        mock_resolver.get_provider = providers.get
+        session = mock.Mock(spec=Session)
+        session.get_component.return_value = mock_resolver
+
+        assumerole.inject_assume_role_provider_cache(session)
+
+        expected = os.path.expanduser(
+            os.path.join('~', '.aws', 'cli', 'cache')
+        )
+        self.assertEqual(assumerole.CACHE_DIR, expected)
+        self.assertEqual(mock_assume_role.cache._working_dir, expected)
+        self.assertEqual(mock_web_identity.cache._working_dir, expected)
+        session.get_config_variable.assert_not_called()
 
     def test_assume_role_provider_registration(self):
         event_handlers = HierarchicalEmitter()

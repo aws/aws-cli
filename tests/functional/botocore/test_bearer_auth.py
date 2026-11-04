@@ -11,9 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import copy
+
 import botocore
 import pytest
 from botocore.config import Config
+from botocore.exceptions import InvalidEndpointConfigurationError
 
 from tests import ClientHTTPStubber, patch_load_service_model
 from tests.functional.test_useragent import (
@@ -253,3 +256,25 @@ def test_user_agent_does_not_have_bearer_service_env_vars_feature_id(
     feature_ids = parse_registered_feature_ids(ua_string)
 
     assert "3" not in feature_ids
+
+
+def test_bearer_auth_rejects_http_endpoint(monkeypatch, patched_session):
+    monkeypatch.setenv(
+        "AWS_BEARER_TOKEN_BEARER_SERVICE", "bearer-service-token"
+    )
+    http_ruleset = copy.deepcopy(MOCK_RULESET)
+    http_ruleset["rules"][0]["endpoint"]["url"] = (
+        "http://bearer-service.us-west-2.amazonaws.com/"
+    )
+    patch_load_service_model(
+        patched_session, monkeypatch, MOCK_SERVICE_MODEL, http_ruleset
+    )
+    client = patched_session.create_client(
+        "bearer-service",
+        region_name="us-west-2",
+    )
+    with ClientHTTPStubber(client) as http_stubber:
+        http_stubber.add_response()
+        with pytest.raises(InvalidEndpointConfigurationError):
+            client.mock_operation(MockOpParam="mock-op-param-value")
+        assert len(http_stubber.requests) == 0

@@ -15,3 +15,7 @@
 AUTO_RESOLVE_TRANSFER_CLIENT = 'auto'
 CLASSIC_TRANSFER_CLIENT = 'classic'
 CRT_TRANSFER_CLIENT = 'crt'
+
+# Constants for bucket_lister configuration
+SINGLE_BUCKET_LISTER = 'single'
+THREADED_BUCKET_LISTER = 'threaded'

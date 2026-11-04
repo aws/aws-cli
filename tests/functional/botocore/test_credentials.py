@@ -892,7 +892,7 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
     # ~/.aws/cli/cache.
     def setUp(self):
         super().setUp()
-        # Keep ~ inside the temporary folder on every OS.
+        # On Windows a cache location must be under the user profile folder.
         self.environ['HOME'] = self.tempdir
         self.environ['USERPROFILE'] = self.tempdir
         self.cache_dir = os.path.join(self.tempdir, 'cli-cache')

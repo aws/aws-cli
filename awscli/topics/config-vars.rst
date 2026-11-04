@@ -286,27 +286,68 @@ in the AWS CLI config file:
 * ``credential_cache`` - Where the AWS CLI caches the temporary credentials
   from the ``AssumeRole`` call for this profile. Valid values are ``file``
   (the default) and ``memory``. With ``file``, the credentials are stored on
-  disk, in ``~/.aws/cli/cache``, and reused by later commands until they
-  expire. With ``memory``, they are kept only for the duration of a single
-  AWS CLI command and are never written to disk. This is an optional
+  disk, in ``credential_cache_location``, and reused by later commands until
+  they expire. With ``memory``, they are kept only for the duration of a
+  single AWS CLI command and are never written to disk. This is an optional
   parameter.
+* ``credential_cache_location`` - The directory where the AWS CLI stores the
+  cached temporary credentials for this profile when ``credential_cache`` is
+  ``file``. The value must be an absolute path or a path that starts with
+  ``~/``; a relative path is an error, and environment variables are not
+  expanded. The directory must be private to you; see the checks below. With
+  ``credential_cache = memory``, this setting is ignored. This is an optional
+  parameter, and by default the value is ``~/.aws/cli/cache``.
+
+When a profile sets ``credential_cache_location``, the AWS CLI checks that
+directory when it loads the profile, before it calls AWS STS. If the directory
+does not exist, it is created, along with any missing parent directories, with
+permissions that only you can access (mode ``700``). Parent directories that
+already exist are not changed. The directory must be a directory, not a
+symbolic link, and writable by you. If any check fails, the command fails with
+an error that names the profile, the directory and the reason. Cache files in
+that directory that are symbolic links are ignored, and new cache files
+replace them instead of writing through them. If the credentials can't be
+written to the cache after a successful ``AssumeRole`` call, the AWS CLI logs
+a warning and the command continues. These checks don't apply to the default
+``~/.aws/cli/cache``, which behaves as in earlier versions of the AWS CLI,
+whether the profile sets ``credential_cache = file`` or neither setting.
+
+On Linux and macOS, a ``credential_cache_location`` directory must also be
+owned by you and not writable by other users or your group. The AWS CLI checks
+the directory again each time it reads or writes a cache file. Cache files
+that are owned by another user, that other users or your group can write, that
+have more than one hard link, or that aren't valid cached credentials are
+ignored, and the AWS CLI gets new credentials instead.
+
+On Windows, a ``credential_cache_location`` directory must be your user
+profile folder (``%USERPROFILE%``) or a folder under it, after junctions and
+symbolic links are followed. The AWS CLI refuses other locations, including
+network (UNC) paths, with an error before it calls AWS STS. If your user
+profile folder is the root of a drive or a network share, every
+``credential_cache_location`` is refused. The AWS CLI doesn't check the owner
+or permissions of the directory or its files; the default permissions of your
+user profile folder keep them private to you.
 
 Switching a profile to ``credential_cache = memory`` does not delete the
-credentials it has already cached. To remove them, delete the files in
-``~/.aws/cli/cache``; the AWS CLI recreates the ones it needs.
+credentials it has already cached. To remove them, delete the files in the
+cache directory (``~/.aws/cli/cache``, or the profile's
+``credential_cache_location``); the AWS CLI recreates the ones it needs.
 
-Only the AWS CLI reads ``credential_cache``. The AWS SDKs and other tools
-that read the shared config file ignore it, so a tool that keeps its own file
-cache may still write credentials to disk for a profile set to ``memory``.
+Only the AWS CLI reads ``credential_cache`` and
+``credential_cache_location``. The AWS SDKs and other tools that read the
+shared config file ignore them, so a tool that keeps its own file cache may
+still write credentials to disk for a profile set to ``memory``.
 
 In a chain of roles, where a ``source_profile`` is itself a profile that
-assumes a role, each profile's ``credential_cache`` applies only to that
-profile's ``AssumeRole`` call.
+assumes a role, each profile's ``credential_cache`` and
+``credential_cache_location`` apply only to that profile's ``AssumeRole``
+call.
 
 When the ``source_profile`` is an assume role with web identity profile that
-doesn't set ``credential_cache``, its credentials are cached only in memory,
-as in earlier versions of the AWS CLI. To cache that hop on disk in
-``~/.aws/cli/cache``, set ``credential_cache = file`` in that profile.
+sets neither setting, its credentials are cached only in memory, as in earlier
+versions of the AWS CLI. To cache that hop on disk, set
+``credential_cache = file`` (which uses ``~/.aws/cli/cache``) or
+``credential_cache_location`` in that profile.
 
 .. warning::
 
@@ -324,7 +365,7 @@ If you do not have MFA authentication required, then you only need to specify a
 When you specify a profile that has IAM role configuration, the AWS CLI
 will make an ``AssumeRole`` call to retrieve temporary credentials.  These
 credentials are then stored (in ``~/.aws/cli/cache``, unless the profile sets
-``credential_cache = memory``).  Subsequent AWS CLI
+``credential_cache`` or ``credential_cache_location``).  Subsequent AWS CLI
 commands will use the cached temporary credentials until they expire, in which
 case the AWS CLI will automatically refresh credentials.
 
@@ -388,10 +429,18 @@ assume role with web identity profile in the shared config:
   from the ``AssumeRoleWithWebIdentity`` call: ``file`` (the default) or
   ``memory``. See ``credential_cache`` under `Using AWS IAM Roles`_, including
   the warning about AWS STS quotas.
+* ``credential_cache_location`` - The directory where the AWS CLI stores the
+  cached temporary credentials when ``credential_cache`` is ``file``. The
+  value must be an absolute path or a path that starts with ``~``; a relative
+  path is an error. The directory must be private to you, and is checked in
+  the same way as under `Using AWS IAM Roles`_. With
+  ``credential_cache = memory``, this setting is ignored. By default, the
+  value is ``~/.aws/cli/cache``.
 
-Only the AWS CLI reads ``credential_cache``. The AWS SDKs and other tools
-that read the shared config file ignore it, so a tool that keeps its own file
-cache may still write credentials to disk for a profile set to ``memory``.
+Only the AWS CLI reads ``credential_cache`` and
+``credential_cache_location``. The AWS SDKs and other tools that read the
+shared config file ignore them, so a tool that keeps its own file cache may
+still write credentials to disk for a profile set to ``memory``.
 
 Below is an example configuration for the minimal amount of configuration
 needed to configure an assume role with web identity profile::
@@ -417,9 +466,9 @@ This provider can also be configured via the environment:
     These environment variables currently only apply to the assume role with
     web identity provider and do not apply to the general assume role provider
     configuration. When the provider is configured through these environment
-    variables, the ``credential_cache`` setting of the profile in use still
-    applies. If the profile does not set it, credentials are cached in
-    ``~/.aws/cli/cache``.
+    variables, the ``credential_cache`` and ``credential_cache_location``
+    settings of the profile in use still apply. If the profile does not set
+    them, credentials are cached in ``~/.aws/cli/cache``.
 
 
 Sourcing Credentials From External Processes

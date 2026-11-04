@@ -13,6 +13,7 @@
 # language governing permissions and limitations under the License.
 import contextlib
 import logging
+import ntpath
 import os
 import re
 import shutil
@@ -3303,13 +3304,19 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             cache=cache,
             profile_name='development',
         )
-        with mock.patch.object(
-            credentials, '_check_credential_cache_dir'
-        ) as check_dir:
+        with (
+            mock.patch.object(
+                credentials, '_check_credential_cache_dir'
+            ) as check_dir,
+            mock.patch.object(
+                credentials, '_check_windows_cache_location'
+            ) as check_windows,
+        ):
             creds = provider.load().get_frozen_credentials()
         self.assertEqual(creds.access_key, 'foo')
         self.assertEqual(len(cache.entries), 1)
         check_dir.assert_not_called()
+        check_windows.assert_not_called()
 
     def test_credential_cache_file_without_injected_cache_uses_default_dir(
         self,
@@ -3366,6 +3373,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         tempdir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tempdir)
         with mock.patch('os.path.expanduser') as expanduser:
+            # Also the user profile folder, for the Windows rule.
             expanduser.return_value = tempdir
             self._load_with_cache_config(
                 credential_cache='file',
@@ -3612,6 +3620,7 @@ class TestCredentialCacheLocationChecks(unittest.TestCase):
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.tempdir)
+        # On Windows the location must be under the user profile folder.
         patcher = mock.patch.dict(os.environ, _profile_env(self.tempdir))
         patcher.start()
         self.addCleanup(patcher.stop)
@@ -4043,8 +4052,313 @@ class TestCredentialCacheLocationChecks(unittest.TestCase):
 
 def _profile_env(path):
     # Makes ``path`` the user profile folder (HOME on POSIX, USERPROFILE on
-    # Windows).
+    # Windows), so a cache location under it passes the Windows rule.
     return {'HOME': path, 'USERPROFILE': path}
+
+
+def _nt_paths(profile_dir, links=None):
+    # ntpath with expanduser and realpath faked, so the Windows location
+    # logic can run on any OS. ``links`` maps a folder to where it really
+    # points, like a junction or a symbolic link.
+    links = links or {}
+
+    def realpath(path):
+        path = ntpath.normpath(path)
+        for link, target in links.items():
+            key = ntpath.normcase(link)
+            if ntpath.normcase(path) == key or ntpath.normcase(
+                path
+            ).startswith(key + '\\'):
+                path = target + path[len(link) :]
+        return path
+
+    def expanduser(path):
+        if path == '~' or path.startswith(('~/', '~\\')):
+            return profile_dir + path[1:]
+        return path
+
+    return SimpleNamespace(
+        realpath=realpath,
+        expanduser=expanduser,
+        isabs=ntpath.isabs,
+        normcase=ntpath.normcase,
+        commonpath=ntpath.commonpath,
+        splitdrive=ntpath.splitdrive,
+    )
+
+
+class TestWindowsCacheLocationProblem(unittest.TestCase):
+    # On Windows the CLI doesn't check owners or ACLs, so the cache
+    # directory must be under the user profile folder. These run the path
+    # logic with ntpath on any OS.
+    profile_dir = 'C:\\Users\\me'
+
+    def problem(self, path, links=None):
+        return credentials._windows_cache_location_problem(
+            path, pathmod=_nt_paths(self.profile_dir, links)
+        )
+
+    def test_under_profile_is_allowed(self):
+        self.assertIsNone(self.problem('C:\\Users\\me\\aws\\cache'))
+
+    def test_profile_folder_itself_is_allowed(self):
+        self.assertIsNone(self.problem('C:\\Users\\me'))
+
+    def test_default_location_is_allowed(self):
+        paths = _nt_paths(self.profile_dir)
+        default = paths.expanduser(credentials._DEFAULT_CREDENTIAL_CACHE_DIR)
+        self.assertIsNone(
+            credentials._windows_cache_location_problem(default, paths)
+        )
+
+    def test_case_only_difference_is_allowed(self):
+        self.assertIsNone(self.problem('c:\\users\\ME\\aws\\cache'))
+
+    def test_forward_slashes_are_allowed(self):
+        self.assertIsNone(self.problem('C:/Users/me/aws/cache'))
+
+    def test_outside_profile_is_refused(self):
+        for path in (
+            'C:\\aws-cache',
+            'C:\\ProgramData\\x',
+            'D:\\Users\\me\\cache',
+            'C:\\Users\\meme\\cache',
+            'C:\\Users\\other\\cache',
+        ):
+            with self.subTest(path=path):
+                self.assertEqual(
+                    self.problem(path), ('outside', self.profile_dir)
+                )
+
+    def test_dot_dot_escaping_profile_is_refused(self):
+        self.assertEqual(
+            self.problem('C:\\Users\\me\\..\\..\\aws-cache'),
+            ('outside', self.profile_dir),
+        )
+
+    def test_unc_path_is_refused(self):
+        for path in (
+            '\\\\server\\share\\cache',
+            '//server/share/cache',
+            '\\\\?\\UNC\\server\\share\\cache',
+        ):
+            with self.subTest(path=path):
+                self.assertEqual(
+                    self.problem(path), ('network', self.profile_dir)
+                )
+
+    def test_unc_path_is_refused_even_for_a_unc_profile(self):
+        # A user profile folder on a network share doesn't make a network
+        # cache folder acceptable.
+        paths = _nt_paths('\\\\server\\home\\me')
+        self.assertEqual(
+            credentials._windows_cache_location_problem(
+                '\\\\server\\home\\me\\cache', paths
+            )[0],
+            'network',
+        )
+
+    def test_link_resolving_outside_is_refused(self):
+        links = {'C:\\Users\\me\\cache': 'C:\\aws-cache'}
+        self.assertEqual(
+            self.problem('C:\\Users\\me\\cache\\cli', links),
+            ('outside', self.profile_dir),
+        )
+
+    def test_link_resolving_to_network_share_is_refused(self):
+        links = {'C:\\Users\\me\\cache': '\\\\server\\share'}
+        self.assertEqual(
+            self.problem('C:\\Users\\me\\cache', links)[0], 'network'
+        )
+
+    def test_link_resolving_inside_is_allowed(self):
+        links = {'C:\\aws-cache': 'C:\\Users\\me\\aws-cache'}
+        self.assertIsNone(self.problem('C:\\aws-cache', links))
+
+    def test_unknown_profile_folder_refuses_everything(self):
+        # USERPROFILE and HOMEPATH unset: expanduser leaves ~ as it is.
+        paths = _nt_paths('~')
+        self.assertEqual(
+            credentials._windows_cache_location_problem(
+                'C:\\Users\\me\\cache', paths
+            ),
+            ('no-profile', None),
+        )
+
+    def test_drive_or_share_root_profile_refuses_everything(self):
+        # A profile folder at the root of a drive or share would let any
+        # folder on it pass, including shared ones like C:\ProgramData.
+        for profile_dir in (
+            'C:\\',
+            'C:/',
+            '\\\\server\\share',
+            '\\\\server\\share\\',
+            '\\\\?\\C:\\',
+        ):
+            paths = _nt_paths(profile_dir)
+            for path in ('C:\\aws-cache', 'C:\\ProgramData\\x'):
+                with self.subTest(profile_dir=profile_dir, path=path):
+                    self.assertEqual(
+                        credentials._windows_cache_location_problem(
+                            path, paths
+                        ),
+                        ('no-profile', None),
+                    )
+
+    def test_profile_folder_linked_to_a_drive_root_refuses_everything(self):
+        links = {'C:\\Users\\me': 'D:\\'}
+        self.assertEqual(
+            self.problem('D:\\cache', links), ('no-profile', None)
+        )
+
+    def test_profile_folder_is_resolved_too(self):
+        # A user profile folder that is itself a link is compared by where
+        # it really is.
+        links = {'C:\\Users\\me': 'D:\\Profiles\\me'}
+        self.assertIsNone(self.problem('D:\\Profiles\\me\\cache', links))
+        self.assertIsNotNone(self.problem('D:\\Profiles\\cache', links))
+
+
+class TestWindowsCacheLocationRefused(unittest.TestCase):
+    # The Windows rule wired into profile loading, with os.name patched.
+    # Uses this OS's real paths and realpath, so a real symbolic link is
+    # followed.
+    def setUp(self):
+        self.tempdir = os.path.realpath(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tempdir)
+        self.profile_dir = os.path.join(self.tempdir, 'profile')
+        os.mkdir(self.profile_dir)
+        self.fake_config = {
+            'profiles': {
+                'ci': {'role_arn': 'myrole', 'source_profile': 'longterm'},
+                'longterm': {
+                    'aws_access_key_id': 'akid',
+                    'aws_secret_access_key': 'skid',
+                },
+            }
+        }
+        self.client = mock.Mock()
+        self.client.assume_role.return_value = {
+            'Credentials': {
+                'AccessKeyId': 'real',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': (
+                    datetime.now(tzlocal()) + timedelta(hours=24)
+                ).isoformat(),
+            },
+        }
+        env = {'HOME': self.profile_dir, 'USERPROFILE': self.profile_dir}
+        for patcher in (
+            mock.patch('os.name', 'nt'),
+            mock.patch.dict(os.environ, env),
+        ):
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+    def load(self, **settings):
+        self.fake_config['profiles']['ci'].update(settings)
+        provider = credentials.AssumeRoleProvider(
+            lambda: self.fake_config,
+            mock.Mock(return_value=self.client),
+            cache={},
+            profile_name='ci',
+        )
+        return provider.load()
+
+    def assert_outside(self, location):
+        with self.assertRaises(InvalidConfigError) as e:
+            self.load(credential_cache_location=location)
+        self.assertEqual(
+            str(e.exception),
+            f'The credential_cache_location "{location}" in profile "ci" '
+            f'is outside your user profile folder ({self.profile_dir}). '
+            'On Windows, use a folder under your user profile.',
+        )
+        self.client.assume_role.assert_not_called()
+
+    def test_location_under_profile_is_used(self):
+        location = os.path.join(self.profile_dir, 'aws', 'cache')
+        creds = self.load(credential_cache_location=location)
+        self.assertEqual(creds.get_frozen_credentials().access_key, 'real')
+        self.assertEqual(len(os.listdir(location)), 1)
+
+    def test_default_location_is_used(self):
+        # Explicit file with no location: the default isn't checked.
+        with mock.patch.object(
+            credentials, '_windows_cache_location_problem'
+        ) as problem:
+            creds = self.load(credential_cache='file')
+        problem.assert_not_called()
+        self.assertEqual(creds.get_frozen_credentials().access_key, 'real')
+        default = os.path.join(self.profile_dir, '.aws', 'cli', 'cache')
+        self.assertEqual(len(os.listdir(default)), 1)
+
+    def test_location_outside_profile_is_refused_and_not_created(self):
+        location = os.path.join(self.tempdir, 'aws-cache')
+        self.assert_outside(location)
+        self.assertFalse(os.path.lexists(location))
+
+    def test_dot_dot_escaping_profile_is_refused(self):
+        location = os.path.join(self.profile_dir, '..', 'aws-cache')
+        self.assert_outside(location)
+        self.assertFalse(
+            os.path.lexists(os.path.join(self.tempdir, 'aws-cache'))
+        )
+
+    @skip_if_windows('Symlinks need extra privileges on Windows.')
+    def test_symlink_resolving_outside_is_refused(self):
+        outside = os.path.join(self.tempdir, 'outside')
+        os.mkdir(outside)
+        link = os.path.join(self.profile_dir, 'cache')
+        os.symlink(outside, link)
+        self.assert_outside(link)
+        self.assertEqual(os.listdir(outside), [])
+
+    def test_drive_root_profile_refuses_every_location(self):
+        # USERPROFILE set to the root of a drive (/ on POSIX) is treated as
+        # no user profile folder, so no custom location is accepted.
+        root = os.path.splitdrive(self.tempdir)[0] + os.sep
+        location = os.path.join(self.profile_dir, 'aws', 'cache')
+        with mock.patch.dict(os.environ, {'HOME': root, 'USERPROFILE': root}):
+            with self.assertRaises(InvalidConfigError) as e:
+                self.load(credential_cache_location=location)
+        self.assertEqual(
+            str(e.exception),
+            f'The credential_cache_location "{location}" in profile "ci" '
+            "can't be checked: your user profile folder can't be found. "
+            'On Windows, use a folder under your user profile.',
+        )
+        self.client.assume_role.assert_not_called()
+        self.assertFalse(os.path.lexists(location))
+
+    def test_unc_location_is_refused(self):
+        # The UNC logic is covered with ntpath above. This checks the
+        # message, with a path this OS treats as absolute.
+        if sys.platform == 'win32':
+            location = '\\\\server\\share\\cache'
+        else:
+            location = '/server/share/cache'
+        with mock.patch.object(
+            credentials,
+            '_windows_cache_location_problem',
+            return_value=('network', self.profile_dir),
+        ):
+            with self.assertRaises(InvalidConfigError) as e:
+                self.load(credential_cache_location=location)
+        self.assertEqual(
+            str(e.exception),
+            f'The credential_cache_location "{location}" in profile "ci" '
+            'is a network path. On Windows, use a folder under your user '
+            'profile.',
+        )
+        self.client.assume_role.assert_not_called()
+
+    def test_profiles_without_the_settings_are_unchanged(self):
+        # No credential_cache keys: the provider's injected cache is used
+        # and no location is checked.
+        creds = self.load()
+        self.assertEqual(creds.get_frozen_credentials().access_key, 'real')
 
 
 def _cached_response(access_key):

@@ -1053,6 +1053,10 @@ def _get_credential_cache_config(profile_name, profile):
     ignores it. Otherwise it is the profile's ``credential_cache_location``
     with ``~`` expanded. That directory is created if needed and checked to
     be private to the current user (see ``_check_credential_cache_dir``).
+    On Windows, it must
+    also be under the user profile folder (see
+    ``_windows_cache_location_problem``); that is checked first, so a
+    refused directory isn't created.
     """
     credential_cache = profile.get('credential_cache')
     if (
@@ -1102,8 +1106,79 @@ def _get_credential_cache_config(profile_name, profile):
         if '$' in location or '%' in location:
             message += " Environment variables aren't expanded."
         raise InvalidConfigError(error_msg=message)
+    if os.name == 'nt':
+        _check_windows_cache_location(profile_name, location, expanded)
     _check_credential_cache_dir(profile_name, location, expanded)
     return credential_cache, expanded
+
+
+def _windows_cache_location_problem(path, pathmod=os.path):
+    """Return why ``path`` can't hold a Windows credential cache, or None.
+
+    The CLI doesn't check owners or ACLs on Windows. It relies instead on
+    the default permissions of the user profile folder, which only that
+    user (and administrators) can access. So the directory must be the
+    user profile folder or under it, after following junctions and
+    symbolic links. Network (UNC) paths are refused too.
+
+    Returns a ``(reason, profile_dir)`` tuple, where ``reason`` is
+    ``'no-profile'``, ``'network'`` or ``'outside'``. ``pathmod`` is the
+    path module to use (``ntpath`` on Windows), so the logic can be tested
+    on any OS.
+    """
+    home = pathmod.expanduser('~')
+    if home.startswith('~') or not pathmod.isabs(home):
+        # expanduser leaves ~ unchanged when USERPROFILE and HOMEPATH are
+        # unset. Nothing can be shown to be under the profile then.
+        return 'no-profile', None
+    profile_dir = pathmod.realpath(home)
+    if pathmod.splitdrive(profile_dir)[1] in ('', '\\', '/'):
+        # A drive root (C:\) or a share root (\\server\share) isn't a user
+        # profile folder: other users can write to folders under it.
+        return 'no-profile', None
+    resolved = pathmod.realpath(path)
+    if _is_unc_path(resolved, pathmod):
+        return 'network', profile_dir
+    profile_key = pathmod.normcase(profile_dir)
+    resolved_key = pathmod.normcase(resolved)
+    try:
+        common = pathmod.commonpath([profile_key, resolved_key])
+    except ValueError:
+        # On different drives, or one path is relative.
+        return 'outside', profile_dir
+    if common != profile_key:
+        return 'outside', profile_dir
+    return None
+
+
+def _is_unc_path(path, pathmod):
+    # A path like \\server\share\dir, or its \\?\UNC\server\share form.
+    # splitdrive returns the \\server\share part as the drive for those.
+    drive = pathmod.normcase(pathmod.splitdrive(path)[0]).replace('/', '\\')
+    if not drive.startswith('\\\\'):
+        return False
+    # \\?\C: and \\.\C: are a local drive in device path form.
+    return not (len(drive) == 6 and drive[2] in '?.' and drive[5] == ':')
+
+
+def _check_windows_cache_location(profile_name, location, path):
+    problem = _windows_cache_location_problem(path)
+    if problem is None:
+        return
+    reason, profile_dir = problem
+    if reason == 'no-profile':
+        where = "can't be checked: your user profile folder can't be found"
+    elif reason == 'network':
+        where = 'is a network path'
+    else:
+        where = f'is outside your user profile folder ({profile_dir})'
+    raise InvalidConfigError(
+        error_msg=(
+            f'The credential_cache_location "{location}" in profile '
+            f'"{profile_name}" {where}. On Windows, use a folder under your '
+            'user profile.'
+        )
+    )
 
 
 def _credential_cache_dir_error(profile_name, location, reason):

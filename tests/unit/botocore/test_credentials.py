@@ -11,12 +11,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import logging
 import os
+import re
 import shutil
+import stat
 import subprocess
+import sys
 import tempfile
 from datetime import datetime, timedelta
+from types import SimpleNamespace
 
 import botocore.exceptions
 import botocore.session
@@ -1236,6 +1241,16 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         self._load_with_cache(cache)
         self.assertEqual(cache, {})
 
+    def test_credential_cache_location_writes_there(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        self.config['credential_cache'] = 'file'
+        self.config['credential_cache_location'] = tempdir
+        cache = {}
+        self._load_with_cache(cache, env=_profile_env(tempdir))
+        self.assertEqual(cache, {})
+        self.assertEqual(len(os.listdir(tempdir)), 1)
+
     def test_credential_cache_invalid_value_raises(self):
         self.config['credential_cache'] = 'none'
         provider = credentials.AssumeRoleWithWebIdentityProvider(
@@ -1269,6 +1284,21 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
             },
         )
         self.assertEqual(cache, {})
+
+    def test_env_token_file_honors_profile_location(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        self.config['credential_cache_location'] = tempdir
+        cache = {}
+        self._load_with_cache(
+            cache,
+            env={
+                'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt',
+                **_profile_env(tempdir),
+            },
+        )
+        self.assertEqual(cache, {})
+        self.assertEqual(len(os.listdir(tempdir)), 1)
 
     def test_env_token_file_without_profile_keys_uses_injected_cache(self):
         cache = {}
@@ -1306,6 +1336,20 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
                 InvalidConfigError, 'credential_cache'
             ):
                 provider.load()
+
+    def test_credential_cache_relative_location_raises(self):
+        self.config['credential_cache_location'] = 'relcache'
+        provider = credentials.AssumeRoleWithWebIdentityProvider(
+            load_config=self._load_config,
+            client_creator=self.create_client_creator(with_response={}),
+            cache={},
+            profile_name=self.profile_name,
+            token_loader_cls=self._mock_loader_cls('totally.a.token'),
+        )
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'credential_cache_location'
+        ):
+            provider.load()
 
     def test_credential_cache_memory_reused_in_process(self):
         # A second load from the same provider (one CLI command) hits the
@@ -3230,9 +3274,9 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         cache = self._load_with_cache_config()
         self.assertEqual(len(cache), 1)
 
-    def test_credential_cache_file_uses_injected_cache(self):
-        # An explicit file behaves as unset: the injected cache (the CLI's
-        # ~/.aws/cli/cache) is used.
+    def test_credential_cache_file_without_location_uses_injected_cache(self):
+        # An explicit file with no location behaves as unset: the injected
+        # cache (the CLI's ~/.aws/cli/cache) is used, with no folder checks.
         class InjectedCache:
             # Stands in for the CLI's JSONFileCache: not a plain dict.
             def __init__(self):
@@ -3259,28 +3303,76 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             cache=cache,
             profile_name='development',
         )
-        creds = provider.load().get_frozen_credentials()
+        with mock.patch.object(
+            credentials, '_check_credential_cache_dir'
+        ) as check_dir:
+            creds = provider.load().get_frozen_credentials()
         self.assertEqual(creds.access_key, 'foo')
         self.assertEqual(len(cache.entries), 1)
+        check_dir.assert_not_called()
 
     def test_credential_cache_file_without_injected_cache_uses_default_dir(
         self,
     ):
         # Where nothing was injected (the plain dict default), an explicit
-        # file still caches on disk, in ~/.aws/cli/cache.
+        # file still caches on disk, in ~/.aws/cli/cache, unchecked.
         tempdir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tempdir)
         default_dir = os.path.join(tempdir, 'cli', 'cache')
-        with mock.patch.object(
-            credentials, '_DEFAULT_CREDENTIAL_CACHE_DIR', default_dir
+        with (
+            mock.patch.object(
+                credentials, '_DEFAULT_CREDENTIAL_CACHE_DIR', default_dir
+            ),
+            mock.patch.object(
+                credentials, '_check_credential_cache_dir'
+            ) as check_dir,
         ):
             cache = self._load_with_cache_config(credential_cache='file')
         self.assertEqual(cache, {})
         self.assertEqual(len(os.listdir(default_dir)), 1)
+        check_dir.assert_not_called()
 
     def test_credential_cache_memory_skips_injected_cache(self):
         cache = self._load_with_cache_config(credential_cache='memory')
         self.assertEqual(cache, {})
+
+    def test_credential_cache_memory_ignores_location(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        location = os.path.join(tempdir, 'cache')
+        cache = self._load_with_cache_config(
+            credential_cache='memory', credential_cache_location=location
+        )
+        self.assertEqual(cache, {})
+        self.assertFalse(os.path.exists(location))
+
+    def test_credential_cache_location_writes_there(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        location = os.path.join(tempdir, 'custom', 'cache')
+        with mock.patch.dict(os.environ, _profile_env(tempdir)):
+            cache = self._load_with_cache_config(
+                credential_cache_location=location
+            )
+        self.assertEqual(cache, {})
+        files = os.listdir(location)
+        self.assertEqual(len(files), 1)
+        self.assertTrue(files[0].endswith('.json'))
+        with open(os.path.join(location, files[0])) as f:
+            cached = json.load(f)
+        self.assertEqual(cached['Credentials']['AccessKeyId'], 'foo')
+
+    def test_credential_cache_location_expands_user(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        with mock.patch('os.path.expanduser') as expanduser:
+            expanduser.return_value = tempdir
+            self._load_with_cache_config(
+                credential_cache='file',
+                credential_cache_location='~/role-cache',
+            )
+        expanduser.assert_any_call('~/role-cache')
+        self.assertEqual(len(os.listdir(tempdir)), 1)
 
     def test_credential_cache_invalid_value_raises(self):
         self.fake_config['profiles']['development']['credential_cache'] = (
@@ -3294,6 +3386,97 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         )
         with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
             provider.load()
+
+    def test_credential_cache_empty_location_raises(self):
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = ''
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'credential_cache_location'
+        ):
+            provider.load()
+
+    def test_credential_cache_relative_location_raises(self):
+        for location in ('relcache', './relcache', 'a/b'):
+            with self.subTest(location=location):
+                self.fake_config['profiles']['development'][
+                    'credential_cache_location'
+                ] = location
+                provider = credentials.AssumeRoleProvider(
+                    self.create_config_loader(),
+                    self.create_client_creator(with_response={}),
+                    cache={},
+                    profile_name='development',
+                )
+                with self.assertRaisesRegex(
+                    InvalidConfigError, 'credential_cache_location'
+                ):
+                    provider.load()
+
+    def test_credential_cache_unknown_user_location_raises(self):
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = '~nosuchuser/x'
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        # Pin expanduser's behavior for a user with no home directory.
+        with mock.patch('os.path.expanduser', side_effect=lambda p: p):
+            with self.assertRaisesRegex(
+                InvalidConfigError,
+                r'"~nosuchuser/x" in profile "development" could not be '
+                r'expanded: the home directory for that user can\'t be found\. '
+                r'Use an absolute path or a path that starts with ~/\.',
+            ):
+                provider.load()
+
+    def test_credential_cache_relative_location_writes_nothing(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = 'relcache'
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(
+                with_response=self._assume_role_response()
+            ),
+            cache={},
+            profile_name='development',
+        )
+        cwd = os.getcwd()
+        os.chdir(tempdir)
+        self.addCleanup(os.chdir, cwd)
+        with self.assertRaises(InvalidConfigError):
+            provider.load().get_frozen_credentials()
+        self.assertEqual(os.listdir(tempdir), [])
+
+    def test_credential_cache_memory_ignores_empty_location(self):
+        cache = self._load_with_cache_config(
+            credential_cache='memory', credential_cache_location=''
+        )
+        self.assertEqual(cache, {})
+
+    def test_credential_cache_memory_ignores_relative_location(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        cwd = os.getcwd()
+        os.chdir(tempdir)
+        self.addCleanup(os.chdir, cwd)
+        cache = self._load_with_cache_config(
+            credential_cache='memory', credential_cache_location='relcache'
+        )
+        self.assertEqual(cache, {})
+        self.assertEqual(os.listdir(tempdir), [])
 
     def test_credential_cache_memory_reused_in_process(self):
         # A second fetch in the same CLI command (a refresh) reads the
@@ -3382,6 +3565,639 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             r'valid\. Valid values are: file, memory\.',
         ):
             provider.load()
+
+    def test_credential_cache_env_var_location_says_not_expanded(self):
+        for location in ('$HOME/cache', '%USERPROFILE%\\cache'):
+            with self.subTest(location=location):
+                self.fake_config['profiles']['development'][
+                    'credential_cache_location'
+                ] = location
+                provider = credentials.AssumeRoleProvider(
+                    self.create_config_loader(),
+                    self.create_client_creator(with_response={}),
+                    cache={},
+                    profile_name='development',
+                )
+                with self.assertRaisesRegex(
+                    InvalidConfigError,
+                    "is not an absolute path.*Environment variables aren't "
+                    "expanded",
+                ):
+                    provider.load()
+
+    def test_credential_cache_relative_location_has_no_env_var_note(self):
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = 'relcache'
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        with self.assertRaises(InvalidConfigError) as e:
+            provider.load()
+        self.assertNotIn('Environment variables', str(e.exception))
+        # Same path hint as the message for an unknown ~user.
+        self.assertIn(
+            'Use an absolute path or a path that starts with ~/.',
+            str(e.exception),
+        )
+
+
+class TestCredentialCacheLocationChecks(unittest.TestCase):
+    # The checks on a directory set by credential_cache_location. The
+    # default ~/.aws/cli/cache isn't checked, with or without an explicit
+    # credential_cache = file.
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.tempdir)
+        patcher = mock.patch.dict(os.environ, _profile_env(self.tempdir))
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.fake_config = {
+            'profiles': {
+                'development': {
+                    'role_arn': 'myrole',
+                    'source_profile': 'longterm',
+                },
+                'longterm': {
+                    'aws_access_key_id': 'akid',
+                    'aws_secret_access_key': 'skid',
+                },
+            }
+        }
+        self.client = mock.Mock()
+        self.client.assume_role.return_value = {
+            'Credentials': {
+                'AccessKeyId': 'real',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': (
+                    datetime.now(tzlocal()) + timedelta(hours=24)
+                ).isoformat(),
+            },
+        }
+
+    def provider(self, **settings):
+        self.fake_config['profiles']['development'].update(settings)
+        return credentials.AssumeRoleProvider(
+            lambda: self.fake_config,
+            mock.Mock(return_value=self.client),
+            cache={},
+            profile_name='development',
+        )
+
+    def assert_refused(self, location, reason):
+        provider = self.provider(credential_cache_location=location)
+        with self.assertRaisesRegex(
+            InvalidConfigError,
+            rf'"{re.escape(location)}" in profile "development" {reason}\. The '
+            'directory must be private to the current user',
+        ):
+            provider.load()
+        self.client.assume_role.assert_not_called()
+
+    def plant(self, directory, access_key='ATTACKER'):
+        # What another local user could do in a shared directory: write a
+        # cache file under the predictable name for this role.
+        fetcher = credentials.AssumeRoleCredentialFetcher(
+            client_creator=None,
+            source_credentials=credentials.Credentials('a', 'b'),
+            role_arn='myrole',
+            extra_args={},
+            cache={},
+        )
+        path = os.path.join(directory, fetcher._cache_key + '.json')
+        response = dict(self.client.assume_role.return_value)
+        response['Credentials'] = dict(
+            response['Credentials'], AccessKeyId=access_key
+        )
+        with open(path, 'w') as f:
+            json.dump(response, f)
+        return path
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_created_directory_is_private(self):
+        parent = os.path.join(self.tempdir, 'parent')
+        os.mkdir(parent, 0o755)
+        os.chmod(parent, 0o755)
+        location = os.path.join(parent, 'cache')
+        provider = self.provider(credential_cache_location=location)
+        provider.load()
+        self.assertEqual(os.stat(location).st_mode & 0o777, 0o700)
+        # Only the leaf is created private; an existing parent keeps its
+        # mode.
+        self.assertEqual(os.stat(parent).st_mode & 0o777, 0o755)
+
+    def assert_created_private_under_umask(self, umask):
+        os.chmod(self.tempdir, 0o755)
+        location = os.path.join(self.tempdir, 'a', 'b', 'cache')
+        old_umask = os.umask(umask)
+        try:
+            self.provider(credential_cache_location=location).load()
+        finally:
+            os.umask(old_umask)
+        # The leaf and both missing parents are private.
+        for path in (
+            location,
+            os.path.dirname(location),
+            os.path.dirname(os.path.dirname(location)),
+        ):
+            self.assertEqual(os.stat(path).st_mode & 0o777, 0o700, path)
+        # The parent that already existed keeps its mode.
+        self.assertEqual(os.stat(self.tempdir).st_mode & 0o777, 0o755)
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_created_directories_are_private_with_umask_000(self):
+        self.assert_created_private_under_umask(0o000)
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_created_directories_are_private_with_umask_002(self):
+        self.assert_created_private_under_umask(0o002)
+
+    @skip_if_windows('Symlinks need extra privileges on Windows.')
+    def test_dangling_symlink_parent_is_not_followed(self):
+        target = os.path.join(self.tempdir, 'elsewhere')
+        os.symlink(target, os.path.join(self.tempdir, 'link'))
+        location = os.path.join(self.tempdir, 'link', 'cache')
+        self.assert_refused(location, 'could not be created: .+')
+        self.assertFalse(os.path.lexists(target))
+
+    def test_directory_is_created_at_load_before_sts(self):
+        location = os.path.join(self.tempdir, 'cache')
+        self.provider(credential_cache_location=location).load()
+        self.assertTrue(os.path.isdir(location))
+        self.client.assume_role.assert_not_called()
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_group_writable_directory_is_refused(self):
+        location = os.path.join(self.tempdir, 'shared')
+        os.mkdir(location)
+        planted = self.plant(location)
+        os.chmod(location, 0o770)
+        self.assert_refused(location, 'can be written by other users')
+        with open(planted) as f:
+            self.assertIn('ATTACKER', f.read())
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_world_writable_directory_is_refused(self):
+        # A directory like /tmp/aws-cache, with the sticky bit.
+        location = os.path.join(self.tempdir, 'shared')
+        os.mkdir(location)
+        self.plant(location)
+        os.chmod(location, 0o1777)
+        self.assert_refused(location, 'can be written by other users')
+
+    @skip_if_windows('POSIX ownership only.')
+    def test_directory_owned_by_another_user_is_refused(self):
+        location = os.path.join(self.tempdir, 'theirs')
+        os.mkdir(location, 0o700)
+        self.plant(location)
+        other_uid = os.lstat(location).st_uid + 1
+        with mock.patch('os.geteuid', return_value=other_uid):
+            self.assert_refused(location, 'is owned by another user')
+
+    @skip_if_windows('Symlinks need extra privileges on Windows.')
+    def test_symlinked_directory_is_refused(self):
+        real = os.path.join(self.tempdir, 'real')
+        os.mkdir(real, 0o700)
+        location = os.path.join(self.tempdir, 'link')
+        os.symlink(real, location)
+        # The message names where the link points.
+        self.assert_refused(
+            location,
+            rf'is a symbolic link \(to {re.escape(os.path.realpath(real))}\)',
+        )
+
+    def test_file_is_refused(self):
+        location = os.path.join(self.tempdir, 'file')
+        with open(location, 'w') as f:
+            f.write('x')
+        self.assert_refused(location, 'is not a directory')
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_unwritable_directory_is_refused_before_sts(self):
+        if os.geteuid() == 0:
+            raise unittest.SkipTest('root can write to any directory.')
+        location = os.path.join(self.tempdir, 'readonly')
+        os.mkdir(location, 0o500)
+        self.addCleanup(os.chmod, location, 0o700)
+        self.assert_refused(location, 'is not writable by the current user')
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_directory_that_cannot_be_created_is_refused(self):
+        if os.geteuid() == 0:
+            raise unittest.SkipTest('root can write to any directory.')
+        parent = os.path.join(self.tempdir, 'readonly')
+        os.mkdir(parent, 0o500)
+        self.addCleanup(os.chmod, parent, 0o700)
+        location = os.path.join(parent, 'cache')
+        self.assert_refused(location, 'could not be created: .+')
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_write_failure_after_sts_returns_credentials(self):
+        if os.geteuid() == 0:
+            raise unittest.SkipTest('root can write to any directory.')
+        location = os.path.join(self.tempdir, 'cache')
+        provider = self.provider(credential_cache_location=location)
+        creds = provider.load()
+        # The directory becomes unwritable after the profile loads.
+        os.chmod(location, 0o500)
+        self.addCleanup(os.chmod, location, 0o700)
+        with self.assertLogs('botocore.credentials', 'WARNING') as logs:
+            frozen = creds.get_frozen_credentials()
+        self.assertEqual(frozen.access_key, 'real')
+        self.assertIn(
+            'Unable to write credentials to the cache', logs.output[0]
+        )
+        self.assertEqual(os.listdir(location), [])
+
+    def test_private_directory_reuses_cache_file(self):
+        location = os.path.join(self.tempdir, 'cache')
+        self.provider(
+            credential_cache_location=location
+        ).load().get_frozen_credentials()
+        creds = (
+            self.provider(credential_cache_location=location)
+            .load()
+            .get_frozen_credentials()
+        )
+        self.assertEqual(creds.access_key, 'real')
+        self.assertEqual(self.client.assume_role.call_count, 1)
+
+    @skip_if_windows('POSIX ownership only.')
+    def test_cache_file_owned_by_another_user_is_ignored(self):
+        location = os.path.join(self.tempdir, 'cache')
+        os.mkdir(location, 0o700)
+        planted = self.plant(location)
+        file_uid = os.lstat(planted).st_uid
+        provider = self.provider(credential_cache_location=location)
+        creds = provider.load()
+        real_lstat = os.lstat
+        real_fstat = os.fstat
+
+        def as_other_user(result):
+            fields = list(result)
+            fields[stat.ST_UID] = file_uid + 1
+            return os.stat_result(fields)
+
+        def fake_lstat(path, *args, **kwargs):
+            result = real_lstat(path, *args, **kwargs)
+            if os.fspath(path) == planted:
+                return as_other_user(result)
+            return result
+
+        def fake_fstat(fd):
+            result = real_fstat(fd)
+            if result.st_ino == real_lstat(planted).st_ino:
+                return as_other_user(result)
+            return result
+
+        with mock.patch('os.lstat', fake_lstat):
+            with mock.patch('os.fstat', fake_fstat):
+                frozen = creds.get_frozen_credentials()
+        self.assertEqual(frozen.access_key, 'real')
+        self.client.assume_role.assert_called_once()
+
+    def private_cache_dir(self):
+        location = os.path.join(self.tempdir, 'cache')
+        os.mkdir(location, 0o700)
+        return location
+
+    def assert_fetches_fresh_credentials(self, location, planted):
+        creds = (
+            self.provider(credential_cache_location=location)
+            .load()
+            .get_frozen_credentials()
+        )
+        self.assertEqual(creds.access_key, 'real')
+        self.client.assume_role.assert_called_once()
+        # The bad entry is replaced by a fresh, private cache file.
+        self.assertEqual(os.lstat(planted).st_nlink, 1)
+        with open(planted) as f:
+            cached = json.load(f)
+        self.assertEqual(cached['Credentials']['AccessKeyId'], 'real')
+
+    @skip_if_windows('POSIX link counts only.')
+    def test_hard_linked_cache_file_is_ignored(self):
+        # A hard link from this role's entry to another role's entry must
+        # not make this profile use the other role's credentials.
+        location = self.private_cache_dir()
+        planted = self.plant(location, access_key='OTHER-ROLE')
+        other = os.path.join(location, 'other-role.json')
+        os.link(planted, other)
+        self.assert_fetches_fresh_credentials(location, planted)
+        with open(other) as f:
+            self.assertIn('OTHER-ROLE', f.read())
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_group_or_world_writable_cache_file_is_ignored(self):
+        for mode in (0o660, 0o606, 0o666):
+            self.client.assume_role.reset_mock()
+            location = os.path.join(self.tempdir, f'cache-{mode:o}')
+            os.mkdir(location, 0o700)
+            planted = self.plant(location)
+            os.chmod(planted, mode)
+            self.assert_fetches_fresh_credentials(location, planted)
+            self.assertEqual(os.stat(planted).st_mode & 0o777, 0o600)
+
+    def test_damaged_cache_file_is_a_miss(self):
+        damaged = {
+            'truncated': '{"Credentials": {',
+            'not-json': 'not json\n',
+            'not-an-object': '[]',
+            'no-credentials': '{"AssumedRoleUser": {}}',
+            'no-session-token': json.dumps(
+                {
+                    'Credentials': {
+                        'AccessKeyId': 'AKIDCACHED',
+                        'SecretAccessKey': 'SECRETCACHED',
+                        'Expiration': '2999-01-01T00:00:00Z',
+                    }
+                }
+            ),
+        }
+        for name, content in damaged.items():
+            self.client.assume_role.reset_mock()
+            location = os.path.join(self.tempdir, name)
+            os.mkdir(location, 0o700)
+            planted = self.plant(location)
+            with open(planted, 'w') as f:
+                f.write(content)
+            with self.assertLogs('botocore.credentials', 'DEBUG') as logs:
+                self.assert_fetches_fresh_credentials(location, planted)
+            output = '\n'.join(logs.output)
+            self.assertIn('Ignoring the cache file', output, name)
+            self.assertNotIn('SECRETCACHED', output)
+            self.assertNotIn('AKIDCACHED', output)
+
+    def test_missing_key_log_names_only_the_key(self):
+        location = self.private_cache_dir()
+        planted = self.plant(location)
+        with open(planted) as f:
+            response = json.load(f)
+        del response['Credentials']['SessionToken']
+        with open(planted, 'w') as f:
+            json.dump(response, f)
+        with self.assertLogs('botocore.credentials', 'DEBUG') as logs:
+            self.assert_fetches_fresh_credentials(location, planted)
+        output = '\n'.join(logs.output)
+        self.assertIn('it has no valid SessionToken', output)
+        self.assertNotIn('ATTACKER', output)
+        self.assertNotIn(response['Credentials']['SecretAccessKey'], output)
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_cache_file_is_private_with_umask_000(self):
+        location = self.private_cache_dir()
+        old_umask = os.umask(0)
+        try:
+            self.provider(
+                credential_cache_location=location
+            ).load().get_frozen_credentials()
+        finally:
+            os.umask(old_umask)
+        [name] = os.listdir(location)
+        mode = os.stat(os.path.join(location, name)).st_mode & 0o777
+        self.assertEqual(mode, 0o600)
+
+    def swap_leaf_for_symlink(self, location):
+        # Someone who can write the parent renames the checked directory
+        # and puts a symbolic link to another directory in its place.
+        redirect = os.path.join(self.tempdir, 'redirect')
+        os.mkdir(redirect, 0o700)
+        os.rename(location, location + '.moved')
+        os.symlink(redirect, location)
+        return redirect
+
+    def assert_swap_not_written_through(self, uses_dir_fd):
+        location = self.private_cache_dir()
+        creds = self.provider(credential_cache_location=location).load()
+        redirect = self.swap_leaf_for_symlink(location)
+        with mock.patch.object(
+            credentials._PrivateCredentialFileCache,
+            '_uses_dir_fd',
+            return_value=uses_dir_fd,
+        ):
+            with self.assertLogs('botocore.credentials', 'WARNING') as logs:
+                frozen = creds.get_frozen_credentials()
+        self.assertEqual(frozen.access_key, 'real')
+        self.assertEqual(os.listdir(redirect), [])
+        self.assertEqual(os.listdir(location + '.moved'), [])
+        self.assertIn('Unable to write credentials', logs.output[0])
+        if not uses_dir_fd:
+            self.assertIn('the directory is a symbolic link', logs.output[0])
+
+    @skip_if_windows('Symlinks need extra privileges on Windows.')
+    def test_swapped_directory_is_refused_with_dir_fd(self):
+        if not credentials._PrivateCredentialFileCache('x')._uses_dir_fd():
+            raise unittest.SkipTest('dir_fd is not supported.')
+        self.assert_swap_not_written_through(uses_dir_fd=True)
+
+    @skip_if_windows('Symlinks need extra privileges on Windows.')
+    def test_swapped_directory_is_refused_without_dir_fd(self):
+        # Where dir_fd isn't supported, the path is checked again just
+        # before the write.
+        self.assert_swap_not_written_through(uses_dir_fd=False)
+
+    @skip_if_windows('POSIX ownership only.')
+    def test_directory_owned_by_another_user_at_write_is_refused(self):
+        location = self.private_cache_dir()
+        creds = self.provider(credential_cache_location=location).load()
+        other_uid = os.lstat(location).st_uid + 1
+        with mock.patch('os.geteuid', return_value=other_uid):
+            with self.assertLogs('botocore.credentials', 'WARNING') as logs:
+                frozen = creds.get_frozen_credentials()
+        self.assertEqual(frozen.access_key, 'real')
+        self.assertIn('owned by another user', logs.output[0])
+        self.assertEqual(os.listdir(location), [])
+
+    def test_posix_checks_are_skipped_on_windows(self):
+        # Windows has no owner or mode bits to check, so the POSIX owner,
+        # mode and link count checks are skipped there, and the path is
+        # checked again instead of using dir_fd. Pins the documented
+        # Windows behavior.
+        location = os.path.join(self.tempdir, 'shared')
+        os.mkdir(location)
+        planted = self.plant(location, access_key='CACHED')
+        if hasattr(os, 'link'):
+            os.link(planted, os.path.join(location, 'other.json'))
+        os.chmod(planted, 0o666)
+        os.chmod(location, 0o777)
+        self.addCleanup(os.chmod, location, 0o700)
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(mock.patch('os.name', 'nt'))
+            stack.enter_context(mock.patch('os.supports_dir_fd', set()))
+            if hasattr(os, 'geteuid'):
+                # Windows has no os.geteuid. The patch puts it back after.
+                stack.enter_context(mock.patch.object(os, 'geteuid'))
+                del os.geteuid
+            frozen = (
+                self.provider(credential_cache_location=location)
+                .load()
+                .get_frozen_credentials()
+            )
+        self.assertEqual(frozen.access_key, 'CACHED')
+        self.client.assume_role.assert_not_called()
+
+
+def _profile_env(path):
+    # Makes ``path`` the user profile folder (HOME on POSIX, USERPROFILE on
+    # Windows).
+    return {'HOME': path, 'USERPROFILE': path}
+
+
+def _cached_response(access_key):
+    return {
+        'Credentials': {
+            'AccessKeyId': access_key,
+            'SecretAccessKey': 'SECRET-' + access_key,
+            'SessionToken': 'TOKEN-' + access_key,
+            'Expiration': '2999-01-01T00:00:00Z',
+        }
+    }
+
+
+@skip_if_windows('Symlinks need extra privileges on Windows.')
+class TestPrivateCredentialFileCache(unittest.TestCase):
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.tempdir)
+        self.cache_dir = os.path.join(self.tempdir, 'cache')
+        os.mkdir(self.cache_dir, 0o700)
+        self.cache = credentials._PrivateCredentialFileCache(self.cache_dir)
+        self.target = os.path.join(self.tempdir, 'victim-file')
+        with open(self.target, 'w') as f:
+            f.write('IMPORTANT\n')
+        self.link = os.path.join(self.cache_dir, 'key.json')
+        os.symlink(self.target, self.link)
+
+    def test_write_never_follows_a_symlinked_cache_file(self):
+        self.cache['key'] = _cached_response('REAL')
+        with open(self.target) as f:
+            self.assertEqual(f.read(), 'IMPORTANT\n')
+        # The link itself is replaced by a regular, private cache file.
+        self.assertFalse(os.path.islink(self.link))
+        self.assertEqual(os.stat(self.link).st_mode & 0o777, 0o600)
+        self.assertEqual(
+            self.cache['key']['Credentials']['AccessKeyId'], 'REAL'
+        )
+
+    def test_read_never_follows_a_symlinked_cache_file(self):
+        with open(self.target, 'w') as f:
+            json.dump(_cached_response('ATTACKER'), f)
+        self.assertNotIn('key', self.cache)
+        with self.assertRaises(KeyError):
+            self.cache['key']
+
+    def test_write_leaves_no_temporary_files(self):
+        self.cache['key'] = _cached_response('A')
+        self.cache['key'] = _cached_response('B')
+        self.assertEqual(os.listdir(self.cache_dir), ['key.json'])
+        self.assertEqual(self.cache['key']['Credentials']['AccessKeyId'], 'B')
+
+    def test_write_without_dir_fd_leaves_no_temporary_files(self):
+        with mock.patch.object(self.cache, '_uses_dir_fd', return_value=False):
+            self.cache['key'] = _cached_response('A')
+            self.assertEqual(os.listdir(self.cache_dir), ['key.json'])
+            self.assertEqual(
+                self.cache['key']['Credentials']['AccessKeyId'], 'A'
+            )
+        with open(self.target) as f:
+            self.assertEqual(f.read(), 'IMPORTANT\n')
+
+    def test_contains_and_getitem_agree(self):
+        # The entry is read once, by the ``in`` check, so a change between
+        # the check and the lookup can't fail the command.
+        self.cache['key'] = _cached_response('A')
+        self.assertIn('key', self.cache)
+        os.remove(self.link)
+        self.assertEqual(self.cache['key']['Credentials']['AccessKeyId'], 'A')
+        with self.assertRaises(KeyError):
+            self.cache['key']
+
+    def test_hard_link_is_not_a_cache_file(self):
+        self.cache['other'] = _cached_response('OTHER-ROLE')
+        os.remove(self.link)
+        os.link(os.path.join(self.cache_dir, 'other.json'), self.link)
+        self.assertNotIn('key', self.cache)
+        with self.assertRaises(KeyError):
+            self.cache['key']
+
+    def test_fifo_is_not_opened_for_blocking_read(self):
+        os.remove(self.link)
+        os.mkfifo(self.link, 0o600)
+        self.assertNotIn('key', self.cache)
+
+    def test_directory_entry_is_not_a_cache_file(self):
+        os.mkdir(os.path.join(self.cache_dir, 'dir.json'))
+        self.assertNotIn('dir', self.cache)
+        with self.assertRaises(KeyError):
+            self.cache['dir']
+
+    def assert_fds_closed_when_fdopen_fails(self, uses_dir_fd):
+        # os.fdopen can raise before it owns the file descriptor (for
+        # example MemoryError). The raw descriptor must still be closed.
+        self.cache['key'] = _cached_response('A')
+        opened = []
+        real_open = os.open
+
+        def recording_open(*args, **kwargs):
+            fd = real_open(*args, **kwargs)
+            opened.append(fd)
+            return fd
+
+        with (
+            mock.patch.object(
+                self.cache, '_uses_dir_fd', return_value=uses_dir_fd
+            ),
+            mock.patch('os.open', side_effect=recording_open),
+        ):
+            with mock.patch('os.fdopen', side_effect=MemoryError()):
+                with self.assertRaises(MemoryError):
+                    'key' in self.cache
+            with mock.patch('os.fdopen', side_effect=OSError(5, 'EIO')):
+                self.assertNotIn('key', self.cache)
+                with self.assertLogs('botocore.credentials', 'WARNING'):
+                    self.cache['key'] = _cached_response('B')
+        self.assertGreaterEqual(len(opened), 3)
+        for fd in opened:
+            with self.assertRaises(OSError):
+                os.fstat(fd)
+        self.assertEqual(os.listdir(self.cache_dir), ['key.json'])
+        self.assertEqual(self.cache['key']['Credentials']['AccessKeyId'], 'A')
+
+    def test_fds_closed_when_fdopen_fails_with_dir_fd(self):
+        if not self.cache._uses_dir_fd():
+            raise unittest.SkipTest('dir_fd is not supported.')
+        self.assert_fds_closed_when_fdopen_fails(uses_dir_fd=True)
+
+    def test_fds_closed_when_fdopen_fails_without_dir_fd(self):
+        self.assert_fds_closed_when_fdopen_fails(uses_dir_fd=False)
+
+    def test_write_failure_is_logged_not_raised(self):
+        with mock.patch('os.replace', side_effect=OSError(18, 'cross')):
+            with self.assertLogs('botocore.credentials', 'DEBUG') as logs:
+                self.cache['key'] = _cached_response('AKIDWRITE')
+        output = '\n'.join(logs.output)
+        self.assertIn('Unable to write credentials', output)
+        for secret in ('AKIDWRITE', 'SECRET-AKIDWRITE', 'TOKEN-AKIDWRITE'):
+            self.assertNotIn(secret, output)
+        self.assertEqual(os.listdir(self.cache_dir), ['key.json'])
+        with open(self.target) as f:
+            self.assertEqual(f.read(), 'IMPORTANT\n')
+
+    def test_unserializable_value_raises_without_secrets(self):
+        value = _cached_response('AKIDVALUE')
+        value['Credentials']['Extra'] = object()
+        with self.assertRaises(ValueError) as cm:
+            self.cache['key'] = value
+        message = str(cm.exception)
+        self.assertIn('not JSON serializable', message)
+        for secret in ('AKIDVALUE', 'SECRET-AKIDVALUE', 'TOKEN-AKIDVALUE'):
+            self.assertNotIn(secret, message)
+        self.assertIsNone(cm.exception.__cause__)
+        self.assertTrue(cm.exception.__suppress_context__)
 
 
 class ProfileProvider:

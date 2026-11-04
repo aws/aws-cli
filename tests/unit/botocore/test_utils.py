@@ -107,7 +107,7 @@ from botocore.utils import (
     switch_to_virtual_host_style,
     validate_jmespath_for_set,
 )
-from dateutil.tz import tzoffset, tzutc
+from dateutil.tz import tzlocal, tzoffset, tzutc
 
 from tests import FreezeTime, RawResponse, create_session, mock, unittest
 
@@ -661,9 +661,7 @@ class TestParseTimestamps(unittest.TestCase):
         with self.mocked_fromtimestamp_that_raises(OverflowError):
             with_fallback = parse_timestamp(0)
             self.assertEqual(with_fallback, wout_fallback)
-            self.assertEqual(
-                with_fallback.utcoffset(), wout_fallback.utcoffset()
-            )
+            self.assertEqual(with_fallback.tzinfo, tzlocal())
 
     def test_parse_timestamp_succeeds_with_fromtimestamp_oserror(self):
         # Same as test_parse_timestamp_succeeds_with_fromtimestamp_overflowerror
@@ -673,9 +671,7 @@ class TestParseTimestamps(unittest.TestCase):
         with self.mocked_fromtimestamp_that_raises(OSError):
             with_fallback = parse_timestamp(0)
             self.assertEqual(with_fallback, wout_fallback)
-            self.assertEqual(
-                with_fallback.utcoffset(), wout_fallback.utcoffset()
-            )
+            self.assertEqual(with_fallback.tzinfo, tzlocal())
 
 
 class TestDatetime2Timestamp(unittest.TestCase):

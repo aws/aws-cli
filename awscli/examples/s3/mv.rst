@@ -114,4 +114,16 @@ Output::
 
     move: mydoc.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
 
+**Example 11: To move a file with tags**
+
+The following ``mv`` example moves a single file (``file.txt``) to a specified bucket and key while setting two tags on the object. Specify ``--tags`` once per tag, separating the key and value with a space. Tags are supported only when transferring from a local path to S3. ::
+
+    aws s3 mv file.txt s3://amzn-s3-demo-bucket/file.txt \
+        --tags key1 value1 \
+        --tags key2 value2
+
+Output::
+
+    move: file.txt to s3://amzn-s3-demo-bucket/file.txt
+
 For more information, see `Using high-level (s3) commands in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html#using-s3-commands-managing-objects-move>`__ in the *AWS CLI User Guide*.

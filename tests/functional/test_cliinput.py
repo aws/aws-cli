@@ -10,9 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import os
 
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 from awscli.utils import dump_yaml_to_str
 
 
@@ -76,6 +77,26 @@ class TestCLIInputJSON(BaseCLIInputArgumentTest):
         self.assert_params_for_cmd(
             cmdline, expected_rc=252, stderr_contains='Unknown'
         )
+
+    def test_cli_input_json_from_stdin(self):
+        with mock.patch(
+            'awscli.customizations.cliinput.sys.stdin',
+            io.StringIO(self.input_json),
+        ):
+            cmdline = 's3api head-object --cli-input-json -'
+            self.assert_params_for_cmd(
+                cmdline, params={'Bucket': 'bucket', 'Key': 'key'}
+            )
+
+    def test_cli_input_json_stdin_can_override(self):
+        with mock.patch(
+            'awscli.customizations.cliinput.sys.stdin',
+            io.StringIO(self.input_json),
+        ):
+            cmdline = 's3api head-object --key bar --cli-input-json -'
+            self.assert_params_for_cmd(
+                cmdline, params={'Bucket': 'bucket', 'Key': 'bar'}
+            )
 
 
 class TestCLIInputYAML(BaseCLIInputArgumentTest):
@@ -147,6 +168,21 @@ class TestCLIInputYAML(BaseCLIInputArgumentTest):
         self.assert_params_for_cmd(
             command, {'Bucket': 'test-bucket', 'EncodingType': 'url'}
         )
+
+    def test_input_yaml_from_stdin(self):
+        with mock.patch(
+            'awscli.customizations.cliinput.sys.stdin',
+            io.StringIO('Bucket: test-bucket\nEncodingType: url'),
+        ):
+            command = [
+                's3api',
+                'list-objects-v2',
+                '--cli-input-yaml',
+                '-',
+            ]
+            self.assert_params_for_cmd(
+                command, {'Bucket': 'test-bucket', 'EncodingType': 'url'}
+            )
 
     def test_errors_when_both_yaml_and_json_provided(self):
         command = [

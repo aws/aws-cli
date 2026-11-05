@@ -60,13 +60,9 @@ class ConfigureGetCommand(BasicCommand):
             self._stream.write('\n')
             return 0
         elif isinstance(value, dict):
-            # TODO: add support for this. We would need to print it off in
-            # the same format as the config file.
-            self._error_stream.write(
-                'varname (%s) must reference a value, not a section or '
-                'sub-section.' % varname
-            )
-            return 1
+            for key, val in value.items():
+                self._stream.write('%s = %s\n' % (key, val))
+            return 0
         else:
             return 1
 

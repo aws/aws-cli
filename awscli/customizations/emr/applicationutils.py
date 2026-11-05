@@ -13,7 +13,6 @@
 
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
 
 
 def build_applications(region,

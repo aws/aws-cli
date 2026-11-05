@@ -22,6 +22,8 @@ from awscli.customizations.cloudformation.artifact_exporter \
     copy_to_temp_dir, include_transform_export_handler, GLOBAL_EXPORT_DICT, \
     ServerlessLayerVersionResource, ServerlessRepoApplicationLicense, \
     ServerlessRepoApplicationReadme, \
+    AppSyncResolverCodeResource, \
+    AppSyncFunctionConfigurationCodeResource, \
     AppSyncResolverRequestTemplateResource, \
     AppSyncResolverResponseTemplateResource, \
     AppSyncFunctionConfigurationRequestTemplateResource, \
@@ -88,12 +90,22 @@ RESOURCE_EXPORT_TEST_CASES = [
     },
 
     {
+        "class": AppSyncResolverCodeResource,
+        "expected_result": UPLOADED_S3_URL
+    },
+
+    {
         "class": AppSyncResolverRequestTemplateResource,
         "expected_result": UPLOADED_S3_URL
     },
 
     {
         "class": AppSyncResolverResponseTemplateResource,
+        "expected_result": UPLOADED_S3_URL
+    },
+
+    {
+        "class": AppSyncFunctionConfigurationCodeResource,
         "expected_result": UPLOADED_S3_URL
     },
 

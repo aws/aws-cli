@@ -18,8 +18,10 @@ This command can upload local artifacts referenced in the following places:
     - ``ContentUri`` property for the ``AWS::Serverless::LayerVersion`` resource
     - ``Location`` property for the ``AWS::Serverless::Application`` resource
     - ``DefinitionS3Location`` property for the ``AWS::AppSync::GraphQLSchema`` resource
+    - ``CodeS3Location`` property for the ``AWS::AppSync::Resolver`` resource
     - ``RequestMappingTemplateS3Location`` property for the ``AWS::AppSync::Resolver`` resource
     - ``ResponseMappingTemplateS3Location`` property for the ``AWS::AppSync::Resolver`` resource
+    - ``CodeS3Location`` property for the ``AWS::AppSync::FunctionConfiguration`` resource
     - ``RequestMappingTemplateS3Location`` property for the ``AWS::AppSync::FunctionConfiguration`` resource
     - ``ResponseMappingTemplateS3Location`` property for the ``AWS::AppSync::FunctionConfiguration`` resource
     - ``DefinitionUri`` property for the ``AWS::Serverless::Api`` resource

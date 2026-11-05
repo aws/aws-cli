@@ -117,3 +117,16 @@ Output::
 
     upload: test.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/test.txt
     upload: test2.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/test2.txt
+
+**Example 9: Sync to S3 and apply tags**
+
+The following ``sync`` command syncs the current directory to a specified bucket and applies two tags to each object as
+it is uploaded. Because tags are applied only as objects are uploaded, files that are already in sync are not retagged::
+
+    aws s3 sync . s3://amzn-s3-demo-bucket \
+        --tags Key1 Value1 \
+        --tags Key2 Value2
+
+Output::
+
+    upload: test.txt to s3://amzn-s3-demo-bucket/test.txt

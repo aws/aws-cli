@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import json
 import sys
 
@@ -149,13 +150,55 @@ class StubbedCLIOperationCaller(CLIOperationCaller):
         )
         fake_response = {}
         if operation_model.output_shape:
-            argument_generator = ArgumentGenerator(use_member_names=True)
+            argument_generator = StubbedResponseArgumentGenerator(
+                use_member_names=True
+            )
             fake_response = argument_generator.generate_skeleton(
                 operation_model.output_shape
             )
         with Stubber(client) as stubber:
             stubber.add_response(method_name, fake_response)
             return getattr(client, method_name)(**parameters)
+
+
+class StubbedResponseArgumentGenerator(ArgumentGenerator):
+    """Generates a sample response that satisfies the output shape
+
+    The stubber validates the sample response against the output shape, so a
+    placeholder that is shorter or smaller than the ``min`` of its shape makes
+    the command fail on its own sample data.
+    """
+
+    # Padding for placeholder strings that are shorter than their min length.
+    _PADDING = 'x'
+
+    def _generate_skeleton(self, shape, stack, name=''):
+        skeleton = super()._generate_skeleton(shape, stack, name)
+        return self._satisfy_min(shape, skeleton)
+
+    def _generate_type_map(self, shape, stack):
+        skeleton = super()._generate_type_map(shape, stack)
+        # The key is a placeholder as well and is validated against the key
+        # shape, so it also has to be long enough.
+        return {
+            self._satisfy_min(shape.key, key): value
+            for key, value in skeleton.items()
+        }
+
+    def _satisfy_min(self, shape, value):
+        minimum = shape.metadata.get('min')
+        if minimum is None:
+            return value
+        if isinstance(value, str):
+            return value.ljust(minimum, self._PADDING)
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, (int, float)):
+            return max(value, minimum)
+        if isinstance(value, list) and value:
+            while len(value) < minimum:
+                value.append(copy.deepcopy(value[0]))
+        return value
 
 
 class _Bytes:

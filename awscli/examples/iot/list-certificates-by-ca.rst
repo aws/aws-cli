@@ -18,4 +18,4 @@ Output::
         ]
     }
 
-For more information, see `ListCertificatesByCA <https://docs.aws.amazon.com/iot/latest/apireference/API_ListCertificatesByCA.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Manage your CA certificates <https://docs.aws.amazon.com/iot/latest/developerguide/manage-your-CA-certs.html>`__ in the *AWS IoT Core Developer Guide*.

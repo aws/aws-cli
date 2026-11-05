@@ -8,4 +8,4 @@ The following ``modify-workspace-creation-properties`` example enables the ``Ena
 
 This command produces no output.
 
-For more information, see `Update directory details for your WorkSpaces <https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html>`__ in the *Amazon WorkSpaces Administration Guide*.
+For more information, see `Manage directories for WorkSpaces Personal <https://docs.aws.amazon.com/workspaces/latest/adminguide/manage-workspaces-directory.html>`__ in the *Amazon WorkSpaces Administration Guide*.

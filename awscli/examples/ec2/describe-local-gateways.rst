@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Local gateways for your Outposts racks <https://docs.aws.amazon.com/outposts/latest/userguide/outposts-local-gateways.html>`__ in the *AWS Outposts User Guide*.

@@ -1,6 +1,6 @@
 **To get an IAM group**
 
-This example returns details about the IAM group ``Admins``. ::
+The following ``get-group`` example returns details about the IAM group ``Admins``. ::
 
     aws iam get-group \
         --group-name Admins

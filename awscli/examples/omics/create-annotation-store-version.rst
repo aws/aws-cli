@@ -12,9 +12,6 @@ Output::
         "creationTime": "2023-07-21T17:15:49.251040+00:00",
         "id": "3b93cdef69d2",
         "name": "my_annotation_store",
-        "reference": {
-            "referenceArn": "arn:aws:omics:us-west-2:555555555555:referenceStore/6505293348/reference/5987565360"
-        },
         "status": "CREATING",
         "versionName": "my_version"
     }

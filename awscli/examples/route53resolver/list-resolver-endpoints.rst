@@ -12,7 +12,7 @@ Output::
             {
                 "Id": "rslvr-in-497098ad59example",
                 "CreatorRequestId": "2020-01-01-18:47",
-                "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-endpoint/rslvr-in-497098ad59example",
+                "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-endpoint/rslvr-in-497098ad59example",
                 "Name": "my-inbound-endpoint",
                 "SecurityGroupIds": [
                     "sg-05cd7b25d6example"
@@ -28,7 +28,7 @@ Output::
             {
                 "Id": "rslvr-out-d5e5920e37example",
                 "CreatorRequestId": "2020-01-01-18:48",
-                "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-endpoint/rslvr-out-d5e5920e37example",
+                "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-endpoint/rslvr-out-d5e5920e37example",
                 "Name": "my-outbound-endpoint",
                 "SecurityGroupIds": [
                     "sg-05cd7b25d6example"
@@ -44,3 +44,4 @@ Output::
         ]
     }
 
+For more information, see `Managing inbound endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries-managing.html>`__ and `Managing outbound endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-outbound-queries-managing.html>`__ in the *Amazon Route 53 Developer Guide*.

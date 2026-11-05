@@ -3,7 +3,7 @@
 The following ``enable-ipam-organization-admin-account`` example integrates IPAM with AWS Organizations and delegates a member account as the IPAM account. ::
 
     aws ec2 enable-ipam-organization-admin-account \
-        --delegated-admin-account-id 320805250157
+        --delegated-admin-account-id 123456789012
 
 Output::
 

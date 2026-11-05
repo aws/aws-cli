@@ -1,6 +1,6 @@
 **To detach a policy from a group**
 
-This example removes the managed policy with the ARN ``arn:aws:iam::123456789012:policy/TesterAccessPolicy`` from the group called ``Testers``. ::
+The following ``detach-group-policy`` example removes the managed policy with the ARN ``arn:aws:iam::123456789012:policy/TesterAccessPolicy`` from the group called ``Testers``. ::
 
     aws iam detach-group-policy \
         --group-name Testers \

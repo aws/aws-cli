@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists all tags for a wind turbine asset. ::
 
     aws iotsitewise list-tags-for-resource \
-        --resource-arn arn:aws:iotsitewise:us-west-2:123456789012:asset/a1b2c3d4-5678-90ab-cdef-33333EXAMPLE
+        --resource-arn arn:aws:iotsitewise:us-west-2:123456789012:asset/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 Output::
 

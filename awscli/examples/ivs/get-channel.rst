@@ -29,8 +29,8 @@ Output::
                 "endpoint": "a1b2c3d4e5f6.srt.live-video.net",
                 "passphrase": "AB1C2defGHijkLMNo3PqQRstUvwxyzaBCDEfghh4ijklMN5opqrStuVWxyzAbCDEfghIJ"
             },
-            "tags": {}
-            "type": "STANDARD",
+            "tags": {},
+            "type": "STANDARD"
         }
     }
 

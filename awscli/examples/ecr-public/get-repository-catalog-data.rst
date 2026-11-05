@@ -20,10 +20,10 @@ Output::
             "operatingSystems": [
                 "Linux"
             ],
-            "logoUrl": "https://d3g9o9u8re44ak.cloudfront.net/logo/491d3846-8f33-4d8b-a10c-c2ce271e6c0d/4f09d87c-2569-4916-a932-5c296bf6f88a.png",
+            "logoUrl": "https://d3g9o9u8re44ak.cloudfront.net/logo/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222.png",
             "aboutText": "## Quick reference\n\nMaintained <truncated>",
             "usageText": "## Supported architectures\n\namd64, arm64v8\n\n## <truncated>"
         }
     }
 
-For more information, see `Repository catalog data <https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-catalog-data.html>`__ in the *Amazon ECR Public*.
+For more information, see `Specifying the repository catalog data in Amazon ECR public <https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-catalog-data.html>`__ in the *Amazon ECR Public User Guide*.

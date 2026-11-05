@@ -832,7 +832,7 @@ class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
     def test_retrieves_from_cache(self):
         date_in_future = datetime.utcnow() + timedelta(seconds=1000)
         utc_timestamp = date_in_future.isoformat() + 'Z'
-        cache_key = '793d6e2f27667ab2da104824407e486bfec24a47'
+        cache_key = '3f7f13ece7d7b07c65483f4ea63d31c8bdb894f4'
         cache = {
             cache_key: {
                 'Credentials': {
@@ -854,6 +854,80 @@ class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
 
         self.assertEqual(response, expected_response)
         client_creator.assert_not_called()
+
+    def test_different_tokens_produce_different_cache_keys(self):
+        client_creator = mock.Mock()
+        fetcher_a = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, lambda: 'token-a', self.role_arn
+        )
+        fetcher_b = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, lambda: 'token-b', self.role_arn
+        )
+        self.assertNotEqual(fetcher_a._cache_key, fetcher_b._cache_key)
+
+    def test_different_token_does_not_reuse_cached_credentials(self):
+        cache = {}
+        response_a = {
+            'Credentials': {
+                'AccessKeyId': 'akid-a',
+                'SecretAccessKey': 'sk-a',
+                'SessionToken': 'st-a',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+        }
+        response_b = {
+            'Credentials': {
+                'AccessKeyId': 'akid-b',
+                'SecretAccessKey': 'sk-b',
+                'SessionToken': 'st-b',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+        }
+        client_creator_a = self.create_client_creator(with_response=response_a)
+        fetcher_a = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator_a, lambda: 'token-a', self.role_arn, cache=cache
+        )
+        fetcher_a.fetch_credentials()
+
+        client_creator_b = self.create_client_creator(with_response=response_b)
+        fetcher_b = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator_b, lambda: 'token-b', self.role_arn, cache=cache
+        )
+        creds_b = fetcher_b.fetch_credentials()
+
+        client = client_creator_b.return_value
+        client.assume_role_with_web_identity.assert_called_once()
+        self.assertEqual(creds_b['access_key'], 'akid-b')
+
+    def test_same_token_still_hits_cache(self):
+        cache = {}
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        fetcher_1 = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, self.load_token, self.role_arn, cache=cache
+        )
+        fetcher_1.fetch_credentials()
+        self.assertEqual(len(cache), 1)
+
+        fetcher_2 = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, self.load_token, self.role_arn, cache=cache
+        )
+        self.assertEqual(fetcher_1._cache_key, fetcher_2._cache_key)
+        self.assertIn(fetcher_2._cache_key, cache)
+
+    def test_token_material_not_present_in_cache_key(self):
+        client_creator = mock.Mock()
+        fetcher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, lambda: 'super-secret-token', self.role_arn
+        )
+        self.assertNotIn('super-secret-token', fetcher._cache_key)
 
     def test_assume_role_in_cache_but_expired(self):
         response = {
@@ -1022,7 +1096,7 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         date_in_future = datetime.utcnow() + timedelta(seconds=1000)
         utc_timestamp = date_in_future.isoformat() + 'Z'
 
-        cache_key = 'c29461feeacfbed43017d20612606ff76abc073d'
+        cache_key = '28500c163dbc087f6ccd4a6c1e103f76c300b953'
         cache = {
             cache_key: {
                 'Credentials': {
@@ -3053,6 +3127,26 @@ class TestJSONCache(unittest.TestCase):
         cache['foo'] = {'bar': 'baz'}
         self.assertEqual(cache['foo'], {'bar': 'baz'})
 
+    def test_working_dir_created_concurrently(self):
+        # Simulate another process creating the directory between the
+        # isdir() check and the makedirs() call.
+        working_dir = os.path.join(self.tempdir, 'foo')
+        cache = credentials.JSONFileCache(working_dir)
+        real_isdir = os.path.isdir
+        checked = []
+
+        def racing_isdir(path):
+            if not checked:
+                checked.append(path)
+                result = real_isdir(path)
+                os.makedirs(working_dir)
+                return result
+            return real_isdir(path)
+
+        with mock.patch('os.path.isdir', side_effect=racing_isdir):
+            cache['foo'] = {'bar': 'baz'}
+        self.assertEqual(cache['foo'], {'bar': 'baz'})
+
     def test_key_error_raised_when_cache_key_does_not_exist(self):
         with self.assertRaises(KeyError):
             self.cache['foo']
@@ -4388,3 +4482,79 @@ def test_login_credential_fetcher_access_denied_errors(
 
     with pytest.raises(expected_exception):
         fetcher.refresh_credentials()
+
+
+def _login_refresh_client():
+    client = mock.Mock()
+    client.exceptions.AccessDeniedException = ClientError
+    client.create_o_auth2_token.return_value = {
+        'tokenOutput': {
+            'accessToken': {
+                'accessKeyId': 'new-akid',
+                'secretAccessKey': 'new-secret',
+                'sessionToken': 'new-session-token',
+            },
+            'refreshToken': 'new-refresh-token',
+            'expiresIn': 900,
+        }
+    }
+    return client
+
+
+def _expired_login_token(**extra):
+    token = {
+        'clientId': 'test-client',
+        'refreshToken': 'test-refresh-token',
+        'dpopKey': SAMPLE_SIGN_IN_DPOP_PEM,
+        'accessToken': {
+            'accessKeyId': 'old-akid',
+            'secretAccessKey': 'old-secret',
+            'sessionToken': 'old-session-token',
+            'accountId': '123456789012',
+            'expiresAt': '2020-01-01T00:00:00Z',
+        },
+    }
+    token.update(extra)
+    return token
+
+
+def test_login_refresh_uses_sign_in_region():
+    token_loader = mock.Mock()
+    token_loader.load_token.return_value = _expired_login_token(
+        signInRegion='eu-west-2'
+    )
+    client_creator = mock.Mock(return_value=_login_refresh_client())
+
+    fetcher = credentials.LoginCredentialFetcher(
+        session_name='test-session',
+        token_loader=token_loader,
+        client_creator=client_creator,
+    )
+    creds = fetcher.refresh_credentials()
+
+    assert creds['access_key'] == 'new-akid'
+    client_creator.assert_called_once_with(
+        'signin', config=mock.ANY, region_name='eu-west-2'
+    )
+    # The region is preserved for the next refresh, not rewritten.
+    saved_token = token_loader.save_token.call_args[0][1]
+    assert saved_token['signInRegion'] == 'eu-west-2'
+
+
+@pytest.mark.parametrize(
+    'extra', [{}, {'signInRegion': ''}], ids=['missing', 'empty']
+)
+def test_login_refresh_without_sign_in_region(extra):
+    token_loader = mock.Mock()
+    token_loader.load_token.return_value = _expired_login_token(**extra)
+    client_creator = mock.Mock(return_value=_login_refresh_client())
+
+    fetcher = credentials.LoginCredentialFetcher(
+        session_name='test-session',
+        token_loader=token_loader,
+        client_creator=client_creator,
+    )
+    fetcher.refresh_credentials()
+
+    client_creator.assert_called_once_with('signin', config=mock.ANY)
+    assert 'region_name' not in client_creator.call_args.kwargs

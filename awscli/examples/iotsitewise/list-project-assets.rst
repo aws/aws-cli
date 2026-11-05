@@ -3,13 +3,13 @@
 The following ``list-project-assets`` example lists all assets that are associated to a wind farm project. ::
 
     aws iotsitewise list-project-assets \
-        --project-id a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE
+        --project-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "assetIds": [
-            "a1b2c3d4-5678-90ab-cdef-44444EXAMPLE"
+            "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
         ]
     }
 

@@ -12,8 +12,8 @@ Output::
         "Findings": [
             {
                 "SchemaVersion": "2018-10-08",
-                "Id": "arn:aws:securityhub:eu-central-1:123456789012:subscription/pci-dss/v/3.2.1/PCI.Lambda.2/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-                "ProductArn": "arn:aws:securityhub:us-west-1::product/aws/securityhub",
+                "Id": "arn:aws:securityhub:us-west-2:123456789012:subscription/pci-dss/v/3.2.1/PCI.Lambda.2/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "ProductArn": "arn:aws:securityhub:us-west-2::product/aws/securityhub",
                 "GeneratorId": "pci-dss/v/3.2.1/PCI.Lambda.2",
                 "AwsAccountId": "123456789012",
                 "Types": [
@@ -21,7 +21,7 @@ Output::
                 ],
                 "FindingProviderFields": {
                     "Severity": {
-                        "Original": 0,
+                        "Original": "0",
                         "Label": "INFORMATIONAL"
                     },
                     "Types": [
@@ -33,7 +33,7 @@ Output::
                 "CreatedAt": "2020-06-02T14:02:49.159Z",
                 "UpdatedAt": "2020-06-02T14:02:52.397Z",
                 "Severity": {
-                    "Original": 0,
+                    "Original": "0",
                     "Label": "INFORMATIONAL",
                     "Normalized": 0
                 },
@@ -47,23 +47,23 @@ Output::
                 },
                 "ProductFields": {
                     "StandardsArn": "arn:aws:securityhub:::standards/pci-dss/v/3.2.1",
-                    "StandardsSubscriptionArn": "arn:aws:securityhub:us-west-1:123456789012:subscription/pci-dss/v/3.2.1",
+                    "StandardsSubscriptionArn": "arn:aws:securityhub:us-west-2:123456789012:subscription/pci-dss/v/3.2.1",
                     "ControlId": "PCI.Lambda.2",
                     "RecommendationUrl": "https://docs.aws.amazon.com/console/securityhub/PCI.Lambda.2/remediation",
                     "RelatedAWSResources:0/name": "securityhub-lambda-inside-vpc-0e904a3b",
                     "RelatedAWSResources:0/type": "AWS::Config::ConfigRule",
-                    "StandardsControlArn": "arn:aws:securityhub:us-west-1:123456789012:control/pci-dss/v/3.2.1/PCI.Lambda.2",
+                    "StandardsControlArn": "arn:aws:securityhub:us-west-2:123456789012:control/pci-dss/v/3.2.1/PCI.Lambda.2",
                     "aws/securityhub/SeverityLabel": "INFORMATIONAL",
                     "aws/securityhub/ProductName": "Security Hub",
                     "aws/securityhub/CompanyName": "AWS",
-                    "aws/securityhub/FindingId": "arn:aws:securityhub:eu-central-1::product/aws/securityhub/arn:aws:securityhub:eu-central-1:123456789012:subscription/pci-dss/v/3.2.1/PCI.Lambda.2/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+                    "aws/securityhub/FindingId": "arn:aws:securityhub:us-west-2::product/aws/securityhub/arn:aws:securityhub:us-west-2:123456789012:subscription/pci-dss/v/3.2.1/PCI.Lambda.2/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             },
                 "Resources": [
                     {
                         "Type": "AwsAccount",
                         "Id": "AWS::::Account:123456789012",
                         "Partition": "aws",
-                        "Region": "us-west-1"
+                        "Region": "us-west-2"
                     }
                 ],
                 "Compliance": {
@@ -100,16 +100,16 @@ Output::
         "Findings": [
             {
                 "SchemaVersion": "2018-10-08",
-                "Id": "arn:aws:securityhub:us-west-1: 123456789012:subscription/cis-aws-foundations-benchmark/v/1.2.0/1.13/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "Id": "arn:aws:securityhub:us-west-2: 123456789012:subscription/cis-aws-foundations-benchmark/v/1.2.0/1.13/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ProductArn": "arn:aws:securityhub:us-west-2::product/aws/securityhub",
                 "GeneratorId": "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0/rule/1.13",
                 "AwsAccountId": "123456789012",
                 "Types": [
                     "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
                 ],
-                "FindingProviderFields" {
+                "FindingProviderFields": {
                     "Severity": {
-                        "Original": 90,
+                        "Original": "90",
                         "Label": "CRITICAL"
                     },
                     "Types": [
@@ -121,7 +121,7 @@ Output::
                 "CreatedAt": "2020-05-21T20:16:34.752Z",
                 "UpdatedAt": "2020-06-09T08:16:36.430Z",
                 "Severity": {
-                    "Original": 90,
+                    "Original": "90",
                     "Label": "CRITICAL",
                     "Normalized": 90
                 },
@@ -135,23 +135,23 @@ Output::
                 },
                 "ProductFields": {
                     "StandardsGuideArn": "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0",
-                    "StandardsGuideSubscriptionArn": "arn:aws:securityhub:us-west-1:123456789012:subscription/cis-aws-foundations-benchmark/v/1.2.0",
+                    "StandardsGuideSubscriptionArn": "arn:aws:securityhub:us-west-2:123456789012:subscription/cis-aws-foundations-benchmark/v/1.2.0",
                     "RuleId": "1.13",
                     "RecommendationUrl": "https://docs.aws.amazon.com/console/securityhub/standards-cis-1.13/remediation",
                     "RelatedAWSResources:0/name": "securityhub-root-account-mfa-enabled-5pftha",
                     "RelatedAWSResources:0/type": "AWS::Config::ConfigRule",
-                    "StandardsControlArn": "arn:aws:securityhub:us-west-1:123456789012:control/cis-aws-foundations-benchmark/v/1.2.0/1.13",
+                    "StandardsControlArn": "arn:aws:securityhub:us-west-2:123456789012:control/cis-aws-foundations-benchmark/v/1.2.0/1.13",
                     "aws/securityhub/SeverityLabel": "CRITICAL",
                     "aws/securityhub/ProductName": "Security Hub",
                     "aws/securityhub/CompanyName": "AWS",
-                    "aws/securityhub/FindingId": "arn:aws:securityhub:us-west-1::product/aws/securityhub/arn:aws:securityhub:us-west-1:123456789012:subscription/cis-aws-foundations-benchmark/v/1.2.0/1.13/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+                    "aws/securityhub/FindingId": "arn:aws:securityhub:us-west-2::product/aws/securityhub/arn:aws:securityhub:us-west-2:123456789012:subscription/cis-aws-foundations-benchmark/v/1.2.0/1.13/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 },
                 "Resources": [
                     {
                         "Type": "AwsAccount",
                         "Id": "AWS::::Account:123456789012",
                         "Partition": "aws",
-                        "Region": "us-west-1"
+                        "Region": "us-west-2"
                     }
                 ],
                 "Compliance": {
@@ -166,4 +166,4 @@ Output::
         ]
     }
 
-For more information, see `Filtering and grouping findings <https://docs.aws.amazon.com/securityhub/latest/userguide/findings-filtering-grouping.html>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Filtering findings in Security Hub CSPM <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-manage.html>`__ in the *AWS Security Hub User Guide*.

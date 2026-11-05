@@ -1,36 +1,29 @@
-Get a Description of All Cluster Parameter Groups
--------------------------------------------------
+**To get a description of all cluster parameter groups**
 
-This example returns a description of all cluster parameter groups for the
-account, with column headers.  By default, the output is in JSON format.
+The following ``describe-cluster-parameter-groups`` example returns a description of all cluster parameter groups for the
+account, with column headers.  By default, the output is in JSON format. ::
 
-Command::
+    aws redshift describe-cluster-parameter-groups
 
-   aws redshift describe-cluster-parameter-groups
-
-Result::
+Output::
 
     {
-       "ParameterGroups": [
-          {
-             "ParameterGroupFamily": "redshift-1.0",
-             "Description": "My first cluster parameter group",
-             "ParameterGroupName": "myclusterparametergroup"
-          } ],
-       "ResponseMetadata": {
-          "RequestId": "8ceb8f6f-64cc-11e2-bea9-49e0ce183f07"
-       }
+        "ParameterGroups": [
+            {
+                "ParameterGroupFamily": "redshift-1.0",
+                "Description": "My first cluster parameter group",
+                "ParameterGroupName": "myclusterparametergroup"
+            }
+        ]
     }
 
-You can also obtain the same information in text format using the ``--output text`` option.
+You can also obtain the same information in text format using the ``--output text`` option. ::
 
-Command::
+    aws redshift describe-cluster-parameter-groups \
+        --output text
 
-   aws redshift describe-cluster-parameter-groups --output text
+Output::
 
-Result::
+    redshift-1.0        My first cluster parameter group        myclusterparametergroup
 
-    redshift-1.0	My first cluster parameter group	myclusterparametergroup
-    RESPONSEMETADATA	9e665a36-64cc-11e2-8f7d-3b939af52818
-
-
+For more information, see `Amazon Redshift parameter groups <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html>`__ in the *Amazon Redshift Management Guide*.

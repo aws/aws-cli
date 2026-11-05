@@ -13,10 +13,13 @@
 import os
 import sys
 
+from botocore.exceptions import ClientError
+
 from awscli.customizations.agenttoolkit.agents import AGENT_CONFIGS
 from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
     SKILL_NAME_ARG,
+    AgentToolkitServiceError,
     agents_with_skill,
     collect_installed_skills,
     create_client,
@@ -59,11 +62,21 @@ class UpdateSkillCommand(BasicCommand):
         AGENT_ARG,
     ]
 
-    def __init__(self, session, stream=None, client=None, agent_configs=None):
+    def __init__(
+        self,
+        session,
+        stream=None,
+        client=None,
+        agent_configs=None,
+        error_stream=None,
+    ):
         super().__init__(session)
         if stream is None:
             stream = sys.stdout
         self._stream = stream
+        if error_stream is None:
+            error_stream = sys.stderr
+        self._error_stream = error_stream
         self._client = client
         if agent_configs is None:
             agent_configs = AGENT_CONFIGS
@@ -131,15 +144,28 @@ class UpdateSkillCommand(BasicCommand):
 
         client = self._create_client(parsed_globals)
         updated_any = False
+        failed_any = False
         for skill_name in sorted(agents_by_skill):
-            remote_version, outdated = self._find_outdated(
-                agents_by_skill[skill_name], client, skill_name
-            )
-            if not outdated:
+            # One bad skill should not block updates to the remaining skills.
+            try:
+                remote_version, outdated = self._find_outdated(
+                    agents_by_skill[skill_name], client, skill_name
+                )
+                if not outdated:
+                    continue
+                self._install_version(
+                    client, skill_name, remote_version, outdated
+                )
+            except (AgentToolkitServiceError, ClientError) as e:
+                self._error_stream.write(
+                    f'  Failed to update {skill_name}: {e}\n'
+                )
+                failed_any = True
                 continue
-            self._install_version(client, skill_name, remote_version, outdated)
             updated_any = True
 
+        if failed_any:
+            return 1
         if not updated_any:
             self._stream.write(
                 'All installed AWS skills are already up to date.\n'

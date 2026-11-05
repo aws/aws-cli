@@ -7,13 +7,11 @@ which contains the dominant language of each of the text files as well as the pr
 
     aws comprehend start-dominant-language-detection-job \
         --job-name example_language_analysis_job \
-        --language-code en \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
-        --language-code en
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role
 
-Contents of Sampletext1.txt::
+Contents of ``Sampletext1.txt``::
 
     "Physics is the natural science that involves the study of matter and its motion and behavior through space and time, along with related concepts such as energy and force."
 
@@ -21,7 +19,7 @@ Output::
 
     {
         "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:dominant-language-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:dominant-language-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
         "JobStatus": "SUBMITTED"
     }
 

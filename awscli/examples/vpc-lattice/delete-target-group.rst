@@ -8,7 +8,7 @@ The following ``delete-target-group`` example deletes the specified target group
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
         "id": "tg-0eaa4b9ab4EXAMPLE",
         "status": "DELETE_IN_PROGRESS"
     }

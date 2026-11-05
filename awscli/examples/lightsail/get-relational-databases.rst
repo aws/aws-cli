@@ -10,7 +10,7 @@ Output::
         "relationalDatabases": [
             {
                 "name": "MySQL",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:RelationalDatabase/8529020c-3ab9-4d51-92af-5EXAMPLE8979",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:RelationalDatabase/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "supportCode": "6EXAMPLE3362/ls-3EXAMPLEa995d8c3b06b4501356e5f2f28e1aeba",
                 "createdAt": 1554306019.155,
                 "location": {
@@ -46,7 +46,7 @@ Output::
             },
             {
                 "name": "Postgres",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:RelationalDatabase/e9780b6b-d0ab-4af2-85f1-1EXAMPLEac68",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:RelationalDatabase/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "supportCode": "6EXAMPLE3362/ls-3EXAMPLEb4fffb5cec056220c734713e14bd5fcd",
                 "createdAt": 1554306000.814,
                 "location": {
@@ -82,3 +82,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Create and manage relational databases in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-databases.html>`__ in the *Amazon Lightsail User Guide*.

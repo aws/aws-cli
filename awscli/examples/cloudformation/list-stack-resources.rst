@@ -1,6 +1,6 @@
 **To list resources in a stack**
 
-The following command displays the list of resources in the specified stack. ::
+The following ``list-stack-resources`` example displays the list of resources in the specified stack. ::
 
     aws cloudformation list-stack-resources \
         --stack-name my-stack
@@ -41,3 +41,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Managing AWS resources as a single unit with CloudFormation stacks <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html>`__ in the *AWS CloudFormation User Guide*.

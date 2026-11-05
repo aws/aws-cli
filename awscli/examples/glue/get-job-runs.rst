@@ -10,7 +10,7 @@ Output::
     {
         "JobRuns": [
             {
-                "Id": "jr_012e176506505074d94d761755e5c62538ee1aad6f17d39f527e9140cf0c9a5e",
+                "Id": "jr_012e1765065050a4d94d761755e5c62538ee1aad6f17d39f527e9140cf0c9a5e",
                 "Attempt": 0,
                 "JobName": "my-testing-job",
                 "StartedOn": 1602873931.255,
@@ -22,7 +22,7 @@ Output::
                     "--enable-metrics": "",
                     "--enable-spark-ui": "true",
                     "--job-bookmark-option": "job-bookmark-enable",
-                    "--spark-event-logs-path": "s3://aws-glue-assets-111122223333-us-east-1/sparkHistoryLogs/"
+                    "--spark-event-logs-path": "s3://amzn-s3-demo-bucket/sparkHistoryLogs/"
                 },
                 "PredecessorRuns": [],
                 "AllocatedCapacity": 10,
@@ -43,10 +43,7 @@ Output::
                 "LastModifiedOn": 1602811282.39,
                 "CompletedOn": 1602811282.39,
                 "JobRunState": "FAILED",
-                "ErrorMessage": "An error occurred while calling o122.pyWriteDynamicFrame. 
-                    Access Denied (Service: Amazon S3; Status Code: 403; Error Code: AccessDenied; 
-                    Request ID: 021AAB703DB20A2D; 
-                    S3 Extended Request ID: teZk24Y09TkXzBvMPG502L5VJBhe9DJuWA9/TXtuGOqfByajkfL/Tlqt5JBGdEGpigAqzdMDM/U=)",
+                "ErrorMessage": "An error occurred while calling o122.pyWriteDynamicFrame. Access Denied (Service: Amazon S3; Status Code: 403; Error Code: AccessDenied; Request ID: 021AAB703DB20A2D; S3 Extended Request ID: teZk24Y09TkXzBvMPG502L5VJBhe9DJuWA9/TXtuGOqfByajkfL/Tlqt5JBGdEGpigAqzdMDM/U=)",
                 "PredecessorRuns": [],
                 "AllocatedCapacity": 10,
                 "ExecutionTime": 110,
@@ -66,10 +63,7 @@ Output::
                 "LastModifiedOn": 1602811138.364,
                 "CompletedOn": 1602811138.364,
                 "JobRunState": "FAILED",
-                "ErrorMessage": "An error occurred while calling o122.pyWriteDynamicFrame. 
-                     Access Denied (Service: Amazon S3; Status Code: 403; Error Code: AccessDenied; 
-                     Request ID: 2671D37856AE7ABB; 
-                     S3 Extended Request ID: RLJCJw20brV+PpC6GpORahyF2fp9flB5SSb2bTGPnUSPVizLXRl1PN3QZldb+v1o9qRVktNYbW8=)",
+                "ErrorMessage": "An error occurred while calling o122.pyWriteDynamicFrame. Access Denied (Service: Amazon S3; Status Code: 403; Error Code: AccessDenied; Request ID: 2671D37856AE7ABB; S3 Extended Request ID: RLJCJw20brV+PpC6GpORahyF2fp9flB5SSb2bTGPnUSPVizLXRl1PN3QZldb+v1o9qRVktNYbW8=)",
                 "PredecessorRuns": [],
                 "AllocatedCapacity": 10,
                 "ExecutionTime": 113,

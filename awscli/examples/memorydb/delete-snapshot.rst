@@ -12,7 +12,7 @@ Output::
             "Name": "my-cluster-snapshot",
             "Status": "deleting",
             "Source": "manual",
-            "ARN": "arn:aws:memorydb:us-east-1:49165xxxxxx:snapshot/my-cluster-snapshot",
+            "ARN": "arn:aws:memorydb:us-west-2:49165xxxxxx:snapshot/my-cluster-snapshot",
             "ClusterConfiguration": {
                 "Name": "my-cluster",
                 "Description": "",

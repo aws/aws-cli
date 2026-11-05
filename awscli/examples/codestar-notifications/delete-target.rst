@@ -3,7 +3,7 @@
 The following ``delete-target`` example removes the specified target from all notification rules configured to use it as a target, and then deletes the target. ::
 
     aws codestar-notifications  delete-target \
-        --target-address arn:aws:sns:us-east-1:123456789012:MyNotificationTopic \
+        --target-address arn:aws:sns:us-west-2:123456789012:MyNotificationTopic \
         --force-unsubscribe-all
 
 This command produces no output.

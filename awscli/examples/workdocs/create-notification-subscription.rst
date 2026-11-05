@@ -12,10 +12,8 @@ Output::
 
     {
         "Subscription": {
-            "SubscriptionId": "123ab4c5-678d-901e-f23g-45h6789j0123",
+            "SubscriptionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "EndPoint": "https://example.com/example",
             "Protocol": "HTTPS"
         }
     }
-
-For more information, see `Subscribe to Notifications <https://docs.aws.amazon.com/workdocs/latest/developerguide/subscribe-notifications.html>`__ in the *Amazon WorkDocs Developer Guide*.

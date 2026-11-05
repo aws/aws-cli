@@ -9,7 +9,7 @@ The following ``start-automation-execution`` example runs an Automation document
 Output::
 
     {
-      "AutomationExecutionId": "4105a4fc-f944-11e6-9d32-0a1b2EXAMPLE"
+        "AutomationExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Running an Automation Workflow Manually <https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-working-executing-manually.html>`__ in the *AWS Systems Manager User Guide*.
@@ -19,12 +19,12 @@ For more information, see `Running an Automation Workflow Manually <https://docs
 The following ``start-automation-execution`` example runs a shared Automation document. ::
 
     aws ssm start-automation-execution \
-        --document-name "arn:aws:ssm:us-east-1:123456789012:document/ExampleDocument"
+        --document-name "arn:aws:ssm:us-west-2:123456789012:document/ExampleDocument"
 
 Output::
 
     {
-      "AutomationExecutionId": "4105a4fc-f944-11e6-9d32-0a1b2EXAMPLE"
+        "AutomationExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Using shared SSM documents <https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-using-shared.html>`__ in the *AWS Systems Manager User Guide*.

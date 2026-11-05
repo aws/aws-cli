@@ -1,6 +1,6 @@
 **To view your transit gateway attachments**
 
- The following ``describe-transit-gateway-attachments`` example displays details for your transit gateway attachments. ::
+The following ``describe-transit-gateway-attachments`` example displays details for your transit gateway attachments. ::
 
     aws ec2 describe-transit-gateway-attachments
 
@@ -49,7 +49,7 @@ Output::
                 "TransitGatewayOwnerId": "123456789012",
                 "ResourceOwnerId": "123456789012",
                 "ResourceType": "direct-connect-gateway",
-                "ResourceId": "11460968-4ac1-4fd3-bdb2-00599EXAMPLE",
+                "ResourceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "State": "available",
                 "Association": {
                     "TransitGatewayRouteTableId": "tgw-rtb-002573ed1eEXAMPLE",
@@ -64,7 +64,7 @@ Output::
                 "TransitGatewayOwnerId": "123456789012",
                 "ResourceOwnerId": "123456789012",
                 "ResourceType": "direct-connect-gateway",
-                "ResourceId": "8384da05-13ce-4a91-aada-5a1baEXAMPLE",
+                "ResourceId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "State": "available",
                 "Association": {
                     "TransitGatewayRouteTableId": "tgw-rtb-002573ed1eEXAMPLE",

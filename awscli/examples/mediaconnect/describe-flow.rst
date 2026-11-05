@@ -3,7 +3,7 @@
 The following ``describe-flow`` example displays the specified flow's details, such as ARN, Availability Zone, status, source, entitlements, and outputs. ::
 
     aws mediaconnect describe-flow \
-        --flow-arn arn:aws:mediaconnect:us-east-1:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow
+        --flow-arn arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow
 
 Output::
 
@@ -12,14 +12,14 @@ Output::
             "EgressIp": "54.201.4.39",
             "AvailabilityZone": "us-west-2c",
             "Status": "ACTIVE",
-            "FlowArn": "arn:aws:mediaconnect:us-east-1:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow",
+            "FlowArn": "arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow",
             "Entitlements": [
                 {
                     "EntitlementArn": "arn:aws:mediaconnect:us-west-2:123456789012:entitlement:1-AaBb11CcDd22EeFf-34DE5fG12AbC:MyEntitlement",
                     "Description": "Assign to this account",
                     "Name": "MyEntitlement",
                     "Subscribers": [
-                        "444455556666"
+                        "123456789111"
                     ]
                 }
             ],
@@ -33,7 +33,7 @@ Output::
                         "SmoothingLatency": 0,
                         "Protocol": "rtp-fec"
                     },
-                    "OutputArn": "arn:aws:mediaconnect:us-east-1:123456789012:output:2-3aBC45dEF67hiJ89-c34de5fG678h:NYC",
+                    "OutputArn": "arn:aws:mediaconnect:us-west-2:123456789012:output:2-3aBC45dEF67hiJ89-c34de5fG678h:NYC",
                     "Destination": "192.0.2.0"
                 },
                 {
@@ -43,13 +43,13 @@ Output::
                         "SmoothingLatency": 0,
                         "Protocol": "rtp-fec"
                     },
-                    "OutputArn": "arn:aws:mediaconnect:us-east-1:123456789012:output:2-987655dEF67hiJ89-c34de5fG678h:LA",
+                    "OutputArn": "arn:aws:mediaconnect:us-west-2:123456789012:output:2-987655dEF67hiJ89-c34de5fG678h:LA",
                     "Destination": "192.0.2.0"
                 }
             ],
             "Source": {
                 "IngestIp": "54.201.4.39",
-                "SourceArn": "arn:aws:mediaconnect:us-east-1:123456789012:source:3-4aBC56dEF78hiJ90-4de5fG6Hi78Jk:ShowSource",
+                "SourceArn": "arn:aws:mediaconnect:us-west-2:123456789012:source:3-4aBC56dEF78hiJ90-4de5fG6Hi78Jk:ShowSource",
                 "Transport": {
                     "MaxBitrate": 80000000,
                     "Protocol": "rtp"

@@ -19,6 +19,8 @@ Contents of ``notification.json``::
         ]
     }
 
+This command produces no output.
+
 The SNS topic must have an IAM policy attached to it that allows Amazon S3 to publish to it. ::
 
     {
@@ -43,3 +45,5 @@ The SNS topic must have an IAM policy attached to it that allows Amazon S3 to pu
             }
         ]
     }
+
+For more information, see `Amazon S3 Event Notifications <https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html>`__ in the *Amazon S3 User Guide*.

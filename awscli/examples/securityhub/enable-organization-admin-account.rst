@@ -3,7 +3,7 @@
 The following ``enable-organization-admin-account`` example designates the specified account as a Security Hub administrator account. ::
 
     aws securityhub enable-organization-admin-account \
-        --admin-account-id 777788889999
+        --admin-account-id 123456789012
 
 This command produces no output.
 

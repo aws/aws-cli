@@ -28,7 +28,7 @@ Output::
             },
             "Type": "DNS_HTTP",
             "CreateDate": "2025-08-18T13:45:31.023000-05:00",
-            "CreatorRequestId": "abcd1234-5678-90ab-cdef-xmpl12345678",
+            "CreatorRequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CreatedByAccount": "123456789012"
         }
     }
@@ -65,7 +65,7 @@ Output::
             },
             "Type": "DNS_HTTP",
             "CreateDate": "2025-08-18T13:45:31.023000-05:00",
-            "CreatorRequestId": "abcd1234-5678-90ab-cdef-xmpl12345678",
+            "CreatorRequestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CreatedByAccount": "123456789012"
         }
     }

@@ -3,8 +3,7 @@
 The following ``get-channels`` example retrieves information about the history and status of each channel for an application. ::
 
     aws pinpoint get-channels \
-        --application-id 6e0b7591a90841d2b5d93fa11143e5a7 \
-        --region us-east-1
+        --application-id 6e0b7591a90841d2b5d93fa11143e5a7
 
 Output::
 
@@ -47,3 +46,5 @@ Output::
             }
         }
     }
+
+For more information, see `Amazon Pinpoint channels <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels.html>`__ in the *Amazon Pinpoint User Guide*.

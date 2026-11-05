@@ -15,8 +15,8 @@ Output::
             "ApplicationDomain": "example.com",
             "EndpointType": "network-interface",
             "AttachmentType": "vpc",
-            "DomainCertificateArn": "arn:aws:acm:us-east-2:123456789012:certificate/eb065ea0-26f9-4e75-a6ce-0a1a7EXAMPLE",
-            "EndpointDomain": "my-ava-app.edge-00c3372d53b1540bb.vai-0ce000c0b7643abea.prod.verified-access.us-east-2.amazonaws.com",
+            "DomainCertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "EndpointDomain": "my-ava-app.edge-00c3372d53b1540bb.vai-0ce000c0b7643abea.prod.verified-access.us-west-2.amazonaws.com",
             "SecurityGroupIds": [
                 "sg-004915970c4c8f13a"
             ],

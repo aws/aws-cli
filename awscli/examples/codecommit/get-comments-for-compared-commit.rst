@@ -1,10 +1,10 @@
 **To view comments on a commit**
 
-This example demonstrates how to view view comments made on the comparison between two commits in a repository named ``MyDemoRepo``. ::
+The following ``get-comments-for-compared-commit`` example displays comments made on the comparison between two commits in a repository named ``MyDemoRepo``. ::
 
     aws codecommit get-comments-for-compared-commit \
         --repository-name MyDemoRepo \
-        --before-commit-ID 6e147360EXAMPLE \
+        --before-commit-id 6e147360EXAMPLE \
         --after-commit-id 317f8570EXAMPLE
 
 Output::
@@ -18,13 +18,13 @@ Output::
                 "beforeCommitId": "6e147360EXAMPLE",
                 "comments": [ 
                     { 
-                        "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+                        "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
                         "clientRequestToken": "123Example",
                         "commentId": "ff30b348EXAMPLEb9aa670f",
                         "content": "Whoops - I meant to add this comment to the line, not the file, but I don't see how to delete it.",
                         "creationDate": 1508369768.142,
                         "deleted": false,
-                        "CommentId": "123abc-EXAMPLE",
+                        "inReplyTo": "123abc-EXAMPLE",
                         "lastModifiedDate": 1508369842.278,
                         "callerReactions": [],
                         "reactionCounts": 
@@ -34,13 +34,13 @@ Output::
                         }
                     },
                     {
-                        "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+                        "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
                         "clientRequestToken": "123Example",
                         "commentId": "553b509bEXAMPLE56198325",
                         "content": "Can you add a test case for this?",
                         "creationDate": 1508369612.240,
                         "deleted": false,
-                        "commentId": "456def-EXAMPLE",
+                        "inReplyTo": "456def-EXAMPLE",
                         "lastModifiedDate": 1508369612.240,
                         "callerReactions": [],
                         "reactionCounts": 
@@ -59,3 +59,5 @@ Output::
         ],
         "nextToken": "exampleToken"
     }
+
+For more information, see `Comment on a commit in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-commit-comment.html#how-to-commit-comment-cli-get-comments>`__ in the *AWS CodeCommit User Guide*.

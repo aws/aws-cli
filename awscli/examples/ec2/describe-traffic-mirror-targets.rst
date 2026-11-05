@@ -11,13 +11,13 @@ Output::
         "TrafficMirrorTargets": [
             {
                 "TrafficMirrorTargetId": "tmt-0dabe9b0a6EXAMPLE",
-                "NetworkLoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:111122223333:loadbalancer/net/NLB/7cdec873fEXAMPLE",
+                "NetworkLoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/NLB/7cdec873fEXAMPLE",
                 "Type": "network-load-balancer",
                 "Description": "Example Network Load Balancer target",
-                "OwnerId": "111122223333",
+                "OwnerId": "123456789012",
                 "Tags": []
             }
         ]
     }
 
-For more information, see `Traffic mirror targets <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-target.html>`__ in the *Amazon VPC Traffic Mirroring Guide*.
+For more information, see `View traffic mirror targets and modify target tags <https://docs.aws.amazon.com/vpc/latest/mirroring/modify-traffic-mirroring-targets.html>`__ in the *Amazon VPC Traffic Mirroring Guide*.

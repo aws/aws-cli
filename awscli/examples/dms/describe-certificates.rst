@@ -12,11 +12,8 @@ Output::
                 "CertificateIdentifier": "my-cert",
                 "CertificateCreationDate": 1543259542.506,
                 "CertificatePem": "-----BEGIN CERTIFICATE-----\nMIID9DCCAtygAwIBAgIBQjANBgkqhkiG9w0BAQ ...U"
-
-                ... remaining output omittted ...
-
             }
         ]
     }
 
-For more information, see `Using SSL <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#CHAP_Security.SSL>`__ in the *AWS Database Migration Service User Guide*.
+For more information, see `Using SSL <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.SSL.html>`__ in the *AWS Database Migration Service User Guide*.

@@ -1,19 +1,31 @@
-**[EC2-Classic] To delete a security group**
+**Example 1: To delete a security group (EC2-Classic)**
 
-This example deletes the security group named ``MySecurityGroup``. If the command succeeds, no output is returned.
+The following ``delete-security-group`` example deletes the security group named ``MySecurityGroup``. ::
 
-Command::
+    aws ec2 delete-security-group \
+        --group-name MySecurityGroup
 
-  aws ec2 delete-security-group --group-name MySecurityGroup
+Output::
 
-**[EC2-VPC] To delete a security group**
+    {
+        "Return": true,
+        "GroupId": "sg-1a2b3c4d"
+    }
 
-This example deletes the security group with the ID ``sg-903004f8``. Note that you can't reference a security group for EC2-VPC by name. If the command succeeds, no output is returned.
+For more information, see `Delete an Amazon EC2 security group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/deleting-security-group.html>`__ in the *Amazon EC2 User Guide*.
 
-Command::
+**Example 2: To delete a security group (EC2-VPC)**
 
-  aws ec2 delete-security-group --group-id sg-903004f8
+The following ``delete-security-group`` example deletes the security group with the ID ``sg-903004f8``. Note that you can't reference a security group for EC2-VPC by name. ::
 
-For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
+    aws ec2 delete-security-group \
+        --group-id sg-903004f8
 
-.. _`Using Security Groups`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html
+Output::
+
+    {
+        "Return": true,
+        "GroupId": "sg-903004f8"
+    }
+
+For more information, see `Delete an Amazon EC2 security group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/deleting-security-group.html>`__ in the *Amazon EC2 User Guide* and `Creating, configuring, and deleting Amazon EC2 security groups in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-sg.html>`__ in the *AWS CLI User Guide*.

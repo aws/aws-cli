@@ -1,36 +1,29 @@
-Describe All Events
--------------------
+**To describe all events**
 
-this example returns all events. By default, the output is in JSON format.
+The following ``describe-events`` example returns all events. By default, the output is in JSON format. ::
 
-Command::
+    aws redshift describe-events
 
-   aws redshift describe-events
-
-Result::
+Output::
 
     {
-       "Events": [
-          {
-          "Date": "2013-01-22T19:17:03.640Z",
-          "SourceIdentifier": "myclusterparametergroup",
-          "Message": "Cluster parameter group myclusterparametergroup has been created.",
-          "SourceType": "cluster-parameter-group"
-          } ],
-       "ResponseMetadata": {
-          "RequestId": "9f056111-64c9-11e2-9390-ff04f2c1e638"
-       }
+        "Events": [
+            {
+                "Date": "2013-01-22T19:17:03.640Z",
+                "SourceIdentifier": "myclusterparametergroup",
+                "Message": "Cluster parameter group myclusterparametergroup has been created.",
+                "SourceType": "cluster-parameter-group"
+            }
+        ]
     }
 
-You can also obtain the same information in text format using the ``--output text`` option.
+You can also obtain the same information in text format using the ``--output text`` option. ::
 
-Command::
+    aws redshift describe-events \
+        --output text
 
-   aws redshift describe-events --output text
+Output::
 
-Result::
+    2013-01-22T19:17:03.640Z    myclusterparametergroup Cluster parameter group myclusterparametergroup has been created.       cluster-parameter-group
 
-    2013-01-22T19:17:03.640Z	myclusterparametergroup	Cluster parameter group myclusterparametergroup has been created.	cluster-parameter-group
-    RESPONSEMETADATA	8e5fe765-64c9-11e2-bce3-e56f52c50e17
-
-
+For more information, see `Amazon Redshift events <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-events.html>`__ in the *Amazon Redshift Management Guide*.

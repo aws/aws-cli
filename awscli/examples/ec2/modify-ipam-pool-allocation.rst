@@ -2,13 +2,13 @@
 
 The following ``modify-ipam-pool-allocation`` example modifies the description of an IPAM pool allocation.
 
-(Linux)::
+For Linux, use the following command. ::
 
     aws ec2 modify-ipam-pool-allocation \
         --ipam-pool-allocation-id ipam-pool-alloc-018ecc28043b54ba38e2cd99943cebfbd \
         --description "Engineering team  us-west-2 allocation"
 
-(Windows)::
+For Windows, use the following command. ::
 
     aws ec2 modify-ipam-pool-allocation ^
         --ipam-pool-allocation-id ipam-pool-alloc-018ecc28043b54ba38e2cd99943cebfbd ^

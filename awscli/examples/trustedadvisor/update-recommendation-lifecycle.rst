@@ -3,7 +3,7 @@
 The following ``update-recommendation-lifecycle`` example updates the lifecycle of a recommendation by its identifier. ::
 
     aws trustedadvisor update-recommendation-lifecycle \
-        --recommendation-identifier arn:aws:trustedadvisor::000000000000:recommendation/861c9c6e-f169-405a-8b59-537a8caccd7a \
+        --recommendation-identifier arn:aws:trustedadvisor::123456789012:recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --lifecycle-stage resolved \
         --update-reason-code valid_business_case
 

@@ -45,8 +45,6 @@ Output::
                 "description": "Controls whether the server autogenerates SSL key and certificate files in the data directory, if they do not already exist.",
                 "isModifiable": false,
                 "parameterName": "auto_generate_certs"
-            },
-            ...
             }
         ]
     }

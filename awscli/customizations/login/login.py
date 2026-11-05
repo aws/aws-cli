@@ -5,8 +5,8 @@ import webbrowser
 
 import botocore
 from awscrt.crypto import EC, ECType
+from botocore.configprovider import ConfiguredEndpointProvider
 from botocore.exceptions import ProfileNotFound
-from botocore.loaders import Loader
 from botocore.utils import (
     JSONFileCache,
     LoginCredentialsLoader,
@@ -34,7 +34,7 @@ from awscli.customizations.sso.utils import (
     open_browser_with_original_ld_path,
     validate_redirect_port,
 )
-from awscli.customizations.utils import uni_print
+from awscli.customizations.utils import load_all_regions, uni_print
 
 DEFAULT_REGION_FOR_PROMPT = 'us-east-1'
 
@@ -146,6 +146,14 @@ class LoginCommand(BasicCommand):
         ):
             return
 
+        # Record where we signed in. Refresh tokens are regional, so the
+        # refresh has to go back to the same region rather than whatever
+        # region is configured when it runs. An endpoint override supplies
+        # the host instead, so the region no longer says where the request
+        # went and we leave it out for the refresh to resolve itself.
+        if not self._resolve_endpoint_override(parsed_globals):
+            access_token['signInRegion'] = region
+
         # Cache the access token to disk
         self._token_loader.save_token(session_id, access_token)
 
@@ -231,6 +239,19 @@ class LoginCommand(BasicCommand):
         profile = self._session.profile
         return profile if profile is not None else 'default'
 
+    def _resolve_endpoint_override(self, parsed_globals):
+        if parsed_globals.endpoint_url:
+            return parsed_globals.endpoint_url
+        if self._session.get_config_variable(
+            'ignore_configured_endpoint_urls'
+        ):
+            return None
+        return ConfiguredEndpointProvider(
+            full_config=self._session.full_config,
+            scoped_config=self._session.get_scoped_config(),
+            client_name='signin',
+        ).provide()
+
     def _resolve_region(self, parsed_globals):
         if parsed_globals.region:
             return parsed_globals.region
@@ -264,18 +285,11 @@ class LoginCommand(BasicCommand):
         new_region = prompter.get_value(
             DEFAULT_REGION_FOR_PROMPT,
             'AWS Region',
-            completions=list(self._load_all_regions()),
+            completions=list(load_all_regions()),
             validator=RequiredInputValidator(DEFAULT_REGION_FOR_PROMPT),
         )
 
         return new_region if new_region else DEFAULT_REGION_FOR_PROMPT
-
-    @staticmethod
-    def _load_all_regions():
-        """Loads all regions from all partitions via partitions.json"""
-        loader = Loader()
-        for partition in loader.load_data('partitions')['partitions']:
-            yield from partition['regions'].keys()
 
     def _update_profile_with_login_session(
         self, profile_name, session_id, region

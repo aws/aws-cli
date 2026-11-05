@@ -15,7 +15,7 @@ Contents of ``create-stream.json``::
                 "fileId": 123,
                 "s3Location": {
                     "bucket":"codesign-ota-bucket",
-                    "key":"48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"
+                    "key":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 }
             }
         ],
@@ -25,10 +25,10 @@ Contents of ``create-stream.json``::
 Output::
 
     {
-         "streamId": "stream12345",
-         "streamArn": "arn:aws:iot:us-west-2:123456789012:stream/stream12345",
-         "description": "This stream is used for Amazon FreeRTOS OTA Update 12345.",
-         "streamVersion": "1"
+        "streamId": "stream12345",
+        "streamArn": "arn:aws:iot:us-west-2:123456789012:stream/stream12345",
+        "description": "This stream is used for Amazon FreeRTOS OTA Update 12345.",
+        "streamVersion": 1
     }
 
-For more information, see `CreateStream <https://docs.aws.amazon.com/iot/latest/apireference/API_CreateStream.html>`__ in the *AWS IoT API Reference*.
+For more information, see `MQTT-based file delivery <https://docs.aws.amazon.com/iot/latest/developerguide/mqtt-based-file-delivery.html>`__ in the *AWS IoT Developer Guide*.

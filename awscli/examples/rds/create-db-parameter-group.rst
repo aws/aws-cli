@@ -14,8 +14,8 @@ Output::
             "DBParameterGroupName": "mydbparametergroup",
             "DBParameterGroupFamily": "mysql5.6",
             "Description": "My new parameter group",
-            "DBParameterGroupArn": "arn:aws:rds:us-east-1:123456789012:pg:mydbparametergroup"
+            "DBParameterGroupArn": "arn:aws:rds:us-west-2:123456789012:pg:mydbparametergroup"
         }
     }
 
-For more information, see `Creating a DB Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html#USER_WorkingWithParamGroups.Creating>`__ in the *Amazon RDS User Guide*.
+For more information, see `Creating a DB Parameter Group <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.Creating.html>`__ in the *Amazon RDS User Guide*.

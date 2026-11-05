@@ -267,7 +267,7 @@ class AuthCodeFetcher:
         try:
             handler = partial(OAuthCallbackHandler, self)
             server_port = 0 if redirect_port is None else redirect_port
-            self.http_server = HTTPServer(('', server_port), handler)
+            self.http_server = HTTPServer(('127.0.0.1', server_port), handler)
             self.http_server.timeout = self._REQUEST_TIMEOUT
         except OSError as e:
             raise AuthCodeFetcherError(error_msg=e)

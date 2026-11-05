@@ -4,12 +4,12 @@ The following ``update-monitor`` example updates the monitor named ``Demo`` in t
 
     aws networkflowmonitor update-monitor \
         --monitor-name Demo \
-        --local-resources-to-add type="AWS::EC2::VPC",identifier="arn:aws:ec2:us-east-1:123456789012:vpc/vpc-048d08dfbec623f94" 
+        --local-resources-to-add type="AWS::EC2::VPC",identifier="arn:aws:ec2:us-west-2:123456789012:vpc/vpc-048d08dfbec623f94" 
 
 Output::
 
     {
-        "monitorArn": "arn:aws:networkflowmonitor:us-east-1:123456789012:monitor/Demo",
+        "monitorArn": "arn:aws:networkflowmonitor:us-west-2:123456789012:monitor/Demo",
         "monitorName": "Demo",
         "monitorStatus": "ACTIVE",
         "tags": {

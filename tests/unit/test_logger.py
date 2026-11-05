@@ -15,6 +15,7 @@ import logging
 import awscrt.io
 
 from awscli.logger import (
+    RedactingFormatter,
     disable_crt_logging,
     enable_crt_logging,
     remove_stream_logger,
@@ -40,6 +41,24 @@ class TestLogger(unittest.TestCase):
             log.handlers[0].name, 'test_stream_logger_stream_handler'
         )
         self.assertEqual(log.handlers[0].level, logging.ERROR)
+
+    def test_redacting_formatter_redacts_message_and_traceback(self):
+        key = '-----BEGIN PRIVATE KEY-----\nMIIC\n-----END PRIVATE KEY-----'
+        try:
+            raise ValueError(key)
+        except ValueError as e:
+            record = logging.LogRecord(
+                'name',
+                logging.DEBUG,
+                'path',
+                1,
+                'args: %s',
+                (key,),
+                (type(e), e, e.__traceback__),
+            )
+        formatted = RedactingFormatter('%(message)s').format(record)
+        self.assertNotIn('MIIC', formatted)
+        self.assertEqual(formatted.count('<redacted private key>'), 2)
 
     def test_can_remove_stream_handler(self):
         set_stream_logger('test_stream_logger', logging.DEBUG)

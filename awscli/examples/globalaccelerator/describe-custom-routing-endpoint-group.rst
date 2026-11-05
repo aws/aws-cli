@@ -3,14 +3,14 @@
 The following ``describe-custom-routing-endpoint-group`` example describes an endpoint group for a custom routing accelerator. ::
 
     aws globalaccelerator describe-custom-routing-endpoint-group \
-        --endpoint-group-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/6789vxyz/endpoint-group/ab88888example
+        --endpoint-group-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/6789vxyz/endpoint-group/ab88888example
 
 Output::
 
     {
         "EndpointGroup": {
-            "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/6789vxyz/endpoint-group/ab88888example",
-            "EndpointGroupRegion": "us-east-2",
+            "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/6789vxyz/endpoint-group/ab88888example",
+            "EndpointGroupRegion": "us-west-2",
             "DestinationDescriptions": [
                 {
                     "FromPort": 5000,

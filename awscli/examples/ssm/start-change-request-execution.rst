@@ -5,18 +5,18 @@ The following ``start-change-request-execution`` example starts a change request
     aws ssm start-change-request-execution \
         --change-request-name MyChangeRequest \
         --document-name AWS-HelloWorldChangeTemplate \
-        --runbooks '[{"DocumentName": "AWS-HelloWorld","Parameters": {"AutomationAssumeRole": ["arn:aws:iam:us-east-2:1112223233444:role/MyChangeManagerAssumeRole"]}}]' \
-        --parameters Approver="JohnDoe",ApproverType="IamUser",ApproverSnsTopicArn="arn:aws:sns:us-east-2:1112223233444:MyNotificationTopic"
+        --runbooks '[{"DocumentName": "AWS-HelloWorld","Parameters": {"AutomationAssumeRole": ["arn:aws:iam:us-west-2:1112223233444:role/MyChangeManagerAssumeRole"]}}]' \
+        --parameters Approver="JohnDoe",ApproverType="IamUser",ApproverSnsTopicArn="arn:aws:sns:us-west-2:1112223233444:MyNotificationTopic"
 
 Output::
 
     {
-      "AutomationExecutionId": "9d32a4fc-f944-11e6-4105-0a1b2EXAMPLE"
+        "AutomationExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 **Example 2: To start a change request using an external JSON file**
 
-The following ``start-automation-execution`` example starts a change request with multiple options specified in a JSON file. ::
+The following ``start-change-request-execution`` example starts a change request with multiple options specified in a JSON file. ::
 
     aws ssm start-change-request-execution \
         --cli-input-json file://MyChangeRequest.json
@@ -43,7 +43,7 @@ Contents of ``MyChangeRequest.json``::
                 "IamUser"
             ],
             "ApproverSnsTopicArn": [
-                "arn:aws:sns:us-east-2:111222333444;:MyNotificationTopic
+                "arn:aws:sns:us-west-2:123456789012;:MyNotificationTopic
             ]
         },
         "Runbooks": [
@@ -54,7 +54,7 @@ Contents of ``MyChangeRequest.json``::
                 "MaxErrors": "1",
                 "Parameters": {
                     "AutomationAssumeRole": [
-                        "arn:aws:iam::111222333444:role/MyChangeManagerAssumeRole"
+                        "arn:aws:iam::123456789012:role/MyChangeManagerAssumeRole"
                     ]
                 }
             }
@@ -65,7 +65,7 @@ Contents of ``MyChangeRequest.json``::
 Output::
 
     {
-      "AutomationExecutionId": "9d32a4fc-f944-11e6-4105-0a1b2EXAMPLE"
+        "AutomationExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Creating change requests <https://docs.aws.amazon.com/systems-manager/latest/userguide/change-requests-create.html>`__ in the *AWS Systems Manager User Guide*.

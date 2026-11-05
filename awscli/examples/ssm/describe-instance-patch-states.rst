@@ -1,6 +1,6 @@
 **To get the patch summary states for instances**
 
-This ``describe-instance-patch-states`` example gets the patch summary states for an instance. ::
+The following ``describe-instance-patch-states`` example gets the patch summary states for an instance. ::
 
     aws ssm describe-instance-patch-states \
         --instance-ids "i-1234567890abcdef0"
@@ -13,7 +13,7 @@ Output::
                 "InstanceId": "i-1234567890abcdef0",
                 "PatchGroup": "my-patch-group",
                 "BaselineId": "pb-0713accee01234567",            
-                "SnapshotId": "521c3536-930c-4aa9-950e-01234567abcd",
+                "SnapshotId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "CriticalNonCompliantCount": 2,
                 "SecurityNonCompliantCount": 2,
                 "OtherNonCompliantCount": 1,

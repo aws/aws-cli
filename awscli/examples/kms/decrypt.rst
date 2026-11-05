@@ -1,6 +1,6 @@
 **Example 1: To decrypt an encrypted message with a symmetric KMS key (Linux and macOS)**
 
-The following ``decrypt`` command example demonstrates the recommended way to decrypt data with the AWS CLI. This version shows how to decrypt data under a symmetric KMS key.
+The following ``decrypt`` example demonstrates the recommended way to decrypt data with the AWS CLI. This version shows how to decrypt data under a symmetric KMS key.
 
 * Provide the ciphertext in a file.
 
@@ -22,24 +22,23 @@ Before running this command, replace the example key ID with a valid key ID from
 
     aws kms decrypt \
         --ciphertext-blob fileb://ExampleEncryptedFile \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --output text \
-        --query Plaintext | base64 \
-        --decode > ExamplePlaintextFile
+        --query Plaintext | base64 --decode > ExamplePlaintextFile
 
 This command produces no output. The output from the ``decrypt`` command is base64-decoded and saved in a file.
 
-For more information, see `Decrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `AWS KMS cryptography essentials <https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#symmetric-key-0ps>`__ in the *AWS Key Management Service Developer Guide*.
 
 **Example 2: To decrypt an encrypted message with a symmetric KMS key (Windows command prompt)**
 
-The following example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
+The following ``decrypt`` example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
 
 Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 
     aws kms decrypt ^
         --ciphertext-blob fileb://ExampleEncryptedFile ^
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab ^
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 ^
         --output text ^
         --query Plaintext > ExamplePlaintextFile.base64
 
@@ -53,11 +52,11 @@ Output::
     Output Length = 12
     CertUtil: -decode command completed successfully.
 
-For more information, see `Decrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `AWS KMS cryptography essentials <https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#symmetric-key-0ps>`__ in the *AWS Key Management Service Developer Guide*.
 
 **Example 3: To decrypt an encrypted message with an asymmetric KMS key (Linux and macOS)**
 
-The following ``decrypt`` command example shows how to decrypt data encrypted under an RSA asymmetric KMS key.
+The following ``decrypt`` example shows how to decrypt data encrypted under an RSA asymmetric KMS key.
 
 When using an asymmetric KMS key, the ``encryption-algorithm`` parameter, which specifies the algorithm used to encrypt the plaintext, is required.
 
@@ -65,11 +64,10 @@ Before running this command, replace the example key ID with a valid key ID from
 
     aws kms decrypt \
         --ciphertext-blob fileb://ExampleEncryptedFile \
-        --key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --encryption-algorithm RSAES_OAEP_SHA_256 \
         --output text \
-        --query Plaintext | base64 \
-        --decode > ExamplePlaintextFile
+        --query Plaintext | base64 --decode > ExamplePlaintextFile
 
 This command produces no output. The output from the ``decrypt`` command is base64-decoded and saved in a file.
 

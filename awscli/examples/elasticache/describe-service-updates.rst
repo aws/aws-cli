@@ -2,11 +2,11 @@
 
 The following ``describe-service-updates`` example returns details about service updates. ::
 
-    aws elasticache describe-service-updates 
+    aws elasticache describe-service-updates
 
 Output::
 
-   {
+    {
         "ServiceUpdates": [
             {
                 "ServiceUpdateName": "elc-xxxxxxxx7-001",
@@ -38,3 +38,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Service updates in ElastiCache <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Self-Service-Updates.html>`__ in the *Amazon ElastiCache User Guide*.

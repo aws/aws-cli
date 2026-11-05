@@ -1,6 +1,6 @@
 **To get the results of a people pathing operation**
 
-The following ``get-person-tracking`` command displays the results of a people pathing operation that you started previously by calling ``start-person-tracking``. ::
+The following ``get-person-tracking`` example displays the results of a people pathing operation that you started previously by calling ``start-person-tracking``. ::
 
     aws rekognition get-person-tracking  \
         --job-id 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef 

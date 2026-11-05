@@ -4,13 +4,13 @@ The following ``register-type`` example registers the specified resource type as
 
     aws cloudformation register-type \
         --type-name My::Organization::ResourceName \
-        --schema-handler-package s3://bucket_name/my-organization-resource_name.zip \
+        --schema-handler-package s3://amzn-s3-demo-bucket_name/my-organization-resource_name.zip \
         --type RESOURCE
 
 Output::
 
     {
-        "RegistrationToken": "f5525280-104e-4d35-bef5-8f1f1example"
+        "RegistrationToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
-For more information, see `Registering Resource Providers <https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-register.html>`__ in the *CloudFormation Command Line Interface User Guide for Type Development*.
+For more information, see `Registering extensions for use in the CloudFormation registry <https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-register.html>`__ in the *CloudFormation Command Line Interface (CLI) User Guide*.

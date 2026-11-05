@@ -11,11 +11,11 @@ Output::
 
     {
         "KeyMetadata": {
-            "AWSAccountId": "846764612917",
-            "KeyId": "b8a9477d-836c-491f-857e-07937918959b",
-            "Arn": "arn:aws:kms:us-west-2:846764612917:key/b8a9477d-836c-491f-857e-07937918959b",
+            "AWSAccountId": "123456789012",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
-            "CreationDate": 2017-06-30T21:44:32.140000+00:00,
+            "CreationDate": "2017-06-30T21:44:32.140000+00:00",
             "Enabled": true,
             "Description": "Default KMS key that protects my S3 objects when no other key is defined",
             "KeyUsage": "ENCRYPT_DECRYPT",
@@ -36,15 +36,15 @@ For more information, see `Viewing keys <https://docs.aws.amazon.com/kms/latest/
 The following ``describe-key`` example gets detailed information about an asymmetric RSA KMS key used for signing and verification. ::
 
     aws kms describe-key \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "KeyMetadata": {
-            "AWSAccountId": "111122223333",
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
-            "Arn": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "123456789012",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "CreationDate": "2019-12-02T19:47:14.861000+00:00",
             "CustomerMasterKeySpec": "RSA_2048",
             "Enabled": false,
@@ -71,15 +71,15 @@ Output::
 The following ``describe-key`` example gets metadata for a multi-Region replica key. This multi-Region key is a symmetric encryption key. The output of a ``describe-key`` command for any multi-Region key returns information about the primary key and all of its replicas. ::
 
     aws kms describe-key \
-        --key-id arn:aws:kms:ap-northeast-1:111122223333:key/mrk-1234abcd12ab34cd56ef1234567890ab
+        --key-id arn:aws:kms:ap-northeast-1:123456789012:key/mrk-1234abcd12ab34cd56ef1234567890ab
 
 Output::
 
     {
         "KeyMetadata": {
             "MultiRegion": true,
-            "AWSAccountId": "111122223333",
-            "Arn": "arn:aws:kms:ap-northeast-1:111122223333:key/mrk-1234abcd12ab34cd56ef1234567890ab",
+            "AWSAccountId": "123456789012",
+            "Arn": "arn:aws:kms:ap-northeast-1:123456789012:key/mrk-1234abcd12ab34cd56ef1234567890ab",
             "CreationDate": "2021-06-28T21:09:16.114000+00:00",
             "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
             "Description": "",
@@ -96,20 +96,20 @@ Output::
             "MultiRegionConfiguration": {
                 "MultiRegionKeyType": "PRIMARY",
                 "PrimaryKey": {
-                    "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef1234567890ab",
+                    "Arn": "arn:aws:kms:us-west-2:123456789012:key/mrk-1234abcd12ab34cd56ef1234567890ab",
                     "Region": "us-west-2"
                 },
                 "ReplicaKeys": [
                     {
-                        "Arn": "arn:aws:kms:eu-west-1:111122223333:key/mrk-1234abcd12ab34cd56ef1234567890ab",
+                        "Arn": "arn:aws:kms:eu-west-1:123456789012:key/mrk-1234abcd12ab34cd56ef1234567890ab",
                         "Region": "eu-west-1"
                     },
                     {
-                        "Arn": "arn:aws:kms:ap-northeast-1:111122223333:key/mrk-1234abcd12ab34cd56ef1234567890ab",
+                        "Arn": "arn:aws:kms:ap-northeast-1:123456789012:key/mrk-1234abcd12ab34cd56ef1234567890ab",
                         "Region": "ap-northeast-1"
                     },
                     {
-                        "Arn": "arn:aws:kms:sa-east-1:111122223333:key/mrk-1234abcd12ab34cd56ef1234567890ab",
+                        "Arn": "arn:aws:kms:sa-east-1:123456789012:key/mrk-1234abcd12ab34cd56ef1234567890ab",
                         "Region": "sa-east-1"
                     }
                 ]
@@ -122,15 +122,15 @@ Output::
 The following ``describe-key`` example gets detailed information about an HMAC KMS key. ::
 
     aws kms describe-key \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "KeyMetadata": {
             "AWSAccountId": "123456789012",
-            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
-            "Arn": "arn:aws:kms:us-west-2:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "Arn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "CreationDate": "2022-04-03T22:23:10.194000+00:00",
             "Enabled": true,
             "Description": "Test key",

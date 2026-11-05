@@ -3,7 +3,7 @@
 The following ``get-resource-request-status`` example returns status information about the specified resource request. ::
 
     aws cloudcontrol get-resource-request-status \
-        --request-token "e1a6b86e-46bd-41ac-bfba-001234567890"
+        --request-token "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
  
 Output::
 
@@ -11,7 +11,7 @@ Output::
         "ProgressEvent": {
             "TypeName": "AWS::Kinesis::Stream",
             "Identifier": "Demo",
-            "RequestToken": "e1a6b86e-46bd-41ac-bfba-001234567890",
+            "RequestToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Operation": "CREATE",
             "OperationStatus": "FAILED",
             "EventTime": 1632950268.481,

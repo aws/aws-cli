@@ -26,7 +26,7 @@ Output::
                 },
                 "PerformanceMode": "generalPurpose",
                 "Encrypted": true,
-                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a59b3472-e62c-42e4-adcf-30d92example",
+                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ThroughputMode": "bursting",
                 "Tags": [
                     {

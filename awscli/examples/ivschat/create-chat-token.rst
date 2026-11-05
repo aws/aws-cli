@@ -12,8 +12,7 @@ Output::
 
     {
         "token": "ACEGmnoq#1rstu2...BDFH3vxwy!4hlm!#5",
-        "sessionExpirationTime": "2022-03-16T04:44:09+00:00"
-        "state": "CREATING",
+        "sessionExpirationTime": "2022-03-16T04:44:09+00:00",
         "tokenExpirationTime": "2022-03-16T03:45:09+00:00"
     }
 

@@ -13,10 +13,10 @@ Output::
         "isAuthenticated": true,
         "principalId": "principalId",
         "policyDocuments": [
-            "{"Version":"2012-10-17","Statement":[{"Action":"iot:Publish","Effect":"Allow","Resource":"arn:aws:iot:us-west-2:123456789012:topic/customauthtesting"}]}"
+            "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"iot:Publish\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:iot:us-west-2:123456789012:topic/customauthtesting\"}]}"
         ],
         "refreshAfterInSeconds": 600,
         "disconnectAfterInSeconds": 3600
     }
 
-For more information, see `TestInvokeAuthorizer <https://docs.aws.amazon.com/iot/latest/apireference/API_TestInvokeAuthorizers.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Creating and managing custom authorizers (CLI) <https://docs.aws.amazon.com/iot/latest/developerguide/config-custom-auth.html>`__ in the *AWS IoT Core Developer Guide*.

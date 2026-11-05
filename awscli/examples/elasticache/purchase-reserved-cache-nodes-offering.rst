@@ -5,7 +5,7 @@ The following ``purchase-reserved-cache-nodes-offering`` example allows you to p
     aws elasticache purchase-reserved-cache-nodes-offering \
         --reserved-cache-nodes-offering-id xxxxxxx-4da5-4b90-b92d-929fbd7abed2
 
-Output ::
+Output::
 
     {
         "ReservedCacheNode": {
@@ -29,4 +29,4 @@ Output ::
         }
     }
 
-For more information, see `Getting Info About Reserved Node Offerings <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/reserved-nodes-offerings.html>`__ in the *Elasticache Redis User Guide* or `Getting Info About Reserved Node Offerings <https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/reserved-nodes-offerings.html>`__ in the *Elasticache Memcached User Guide*.
+For more information, see `Reserved nodes <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/CacheNodes.Reserved.html>`__ in the *Elasticache User Guide*.

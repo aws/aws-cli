@@ -13,5 +13,7 @@ The following ``create-deployment-group`` example creates a deployment group and
 Output::
 
     {
-        "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"
+        "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
+
+For more information, see `Create a deployment group with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-groups-create.html>`__ in the *AWS CodeDeploy User Guide*.

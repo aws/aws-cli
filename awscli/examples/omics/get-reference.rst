@@ -7,4 +7,6 @@ The following ``get-reference`` example downloads part 1 of a genome as ``hg38.1
         --id 1234567890 \
         --part-number 1 hg38.1.fa
 
+This command produces no output.
+
 For more information, see `Omics Storage <https://docs.aws.amazon.com/omics/latest/dev/sequence-stores.html>`__ in the *Amazon Omics Developer Guide*.

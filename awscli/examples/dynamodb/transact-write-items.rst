@@ -7,7 +7,7 @@ The following ``transact-write-items`` example updates one item and deletes anot
         --return-consumed-capacity TOTAL \
         --return-item-collection-metrics SIZE
 
-Contents of the ``transact-items.json`` file::
+Contents of ``transact-items.json``::
 
     [
         {
@@ -78,13 +78,13 @@ For more information, see `Managing Complex Workflows with DynamoDB Transactions
 
 **Example 2: To write items atomically using a client request token**
 
-The following command uses a client request token to make the call to ``transact-write-items`` idempotent, meaning that multiple calls have the same effect as one single call. ::
+The following ``transact-write-items`` example uses a client request token to make the call to ``transact-write-items`` idempotent, meaning that multiple calls have the same effect as one single call. ::
 
     aws dynamodb transact-write-items \
         --transact-items file://transact-items.json \
         --client-request-token abc123
 
-Contents of the ``transact-items.json`` file::
+Contents of ``transact-items.json``::
 
     [
         {

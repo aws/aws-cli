@@ -45,10 +45,10 @@ For more information, see `Adding user pool sign-in through a third party <https
 
 **Example 2: To create a user pool SAML identity provider (IdP) with a metadata file**
 
-The following ``create-identity-provider`` example creates a new SAML IdP with metadata from a file, attribute mapping, and two identifiers. File syntax can differ between operating systems in the ``--provider-details`` parameter. It's easiest to create a JSON input file for this operation.::
+The following ``create-identity-provider`` example creates a new SAML IdP with metadata from a file, attribute mapping, and two identifiers. File syntax can differ between operating systems in the ``--provider-details`` parameter. It's easiest to create a JSON input file for this operation. ::
 
     aws cognito-idp create-identity-provider \
-        --cli-input-json file://.\SAML-identity-provider.json
+        --cli-input-json file://SAML-identity-provider.json
 
 Contents of ``SAML-identity-provider.json``::
 

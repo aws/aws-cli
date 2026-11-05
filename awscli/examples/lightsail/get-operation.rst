@@ -3,14 +3,14 @@
 The following ``get-operation`` example displays details about the specified operation. ::
 
     aws lightsail get-operation \
-        --operation-id e5700e8a-daf2-4b49-bc01-3EXAMPLE910a
+        --operation-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 
 Output::
 
     {
         "operation": {
-            "id": "e5700e8a-daf2-4b49-bc01-3EXAMPLE910a",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "resourceName": "Instance-1",
             "resourceType": "Instance",
             "createdAt": 1571679872.404,
@@ -24,3 +24,5 @@ Output::
             "statusChangedAt": 1571679890.304
         }
     }
+
+For more information, see `Virtual private server instances in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-instances-virtual-private-servers-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

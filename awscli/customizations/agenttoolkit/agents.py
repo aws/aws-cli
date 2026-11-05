@@ -324,6 +324,20 @@ AGENT_CONFIGS = [
         mcp_config_path='mcp.json',
         mcp_servers_key='mcpServers',
     ),
+    # https://docs.devin.ai/cli/extensibility/mcp/configuration
+    # https://docs.devin.ai/cli/extensibility/skills/overview
+    # Covers Devin CLI and the Devin Local agent in Devin Desktop, which
+    # share ~/.config/devin/.
+    # Windows (%APPDATA%\devin) and a non-default $XDG_CONFIG_HOME are not
+    # detected.
+    AgentConfig(
+        id='devin',
+        display_name='Devin',
+        detection_path='~/.config/devin/',
+        skills_path_override='~/.agents/skills/',
+        mcp_config_path='mcp_config.json',
+        mcp_servers_key='mcpServers',
+    ),
     # https://geminicli.com/docs/cli/tutorials/mcp-setup/
     # https://geminicli.com/docs/cli/skills/
     AgentConfig(

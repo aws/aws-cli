@@ -9,8 +9,8 @@ Output::
     {
         "assetModelSummaries": [
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
-                "arn": "arn:aws:iotsitewise:us-west-2:123456789012:asset-model/a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "arn": "arn:aws:iotsitewise:us-west-2:123456789012:asset-model/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "name": "Wind Farm Model",
                 "description": "Represents a wind farm that comprises many wind turbines",
                 "creationDate": 1575671284.0,
@@ -20,8 +20,8 @@ Output::
                 }
             },
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
-                "arn": "arn:aws:iotsitewise:us-west-2:123456789012:asset-model/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "arn": "arn:aws:iotsitewise:us-west-2:123456789012:asset-model/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "name": "Wind Turbine Model",
                 "description": "Represents a wind turbine manufactured by Example Corp",
                 "creationDate": 1575671207.0,
@@ -33,4 +33,4 @@ Output::
         ]
     }
 
-For more information, see `Listing all asset models <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/discover-asset-resources.html#list-asset-models>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Model industrial assets <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/industrial-asset-models.html>`__ in the *AWS IoT SiteWise User Guide*.

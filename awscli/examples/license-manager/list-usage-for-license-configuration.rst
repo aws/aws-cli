@@ -2,8 +2,8 @@
 
 The following ``list-usage-for-license-configuration`` example lists information about the resources using licenses for the specified license configuration. For example, if the license type is vCPU, any instances consume one license per vCPU. ::
 
-  aws license-manager list-usage-for-license-configuration \
-      --license-configuration-arn arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-38b658717b87478aaa7c00883EXAMPLE
+    aws license-manager list-usage-for-license-configuration \
+        --license-configuration-arn arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-38b658717b87478aaa7c00883EXAMPLE
 
 Output::
 
@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View self-managed licenses in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/view-license-configuration.html>`__ in the *AWS License Manager User Guide*.

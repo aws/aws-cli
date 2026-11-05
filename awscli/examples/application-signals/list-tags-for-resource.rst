@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example displays the tags associated with a CloudWatch resource. ::
 
     aws application-signals list-tags-for-resource \
-        --resource-arn "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName"
+        --resource-arn "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName"
 
 Output::
 

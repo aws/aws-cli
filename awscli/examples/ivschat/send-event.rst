@@ -5,9 +5,7 @@ The following ``send-event`` example sends the given event to the specified room
     aws ivschat send-event \
         --room-identifier "arn:aws:ivschat:us-west-2:12345689012:room/g1H2I3j4k5L6" \
         --event-name "SystemMessage" \
-        --attributes \
-            "msgType"="user-notification", \
-            "msgText"="This chat room will close in 15 minutes."
+        --attributes "msgType"="user-notification","msgText"="This chat room will close in 15 minutes."
 
 Output::
 

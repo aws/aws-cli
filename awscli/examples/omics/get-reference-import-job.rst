@@ -16,7 +16,7 @@ Output::
         "sources": [
             {
                 "name": "assembly-38",
-                "sourceFile": "s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.fasta",
+                "sourceFile": "s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.fasta",
                 "status": "IN_PROGRESS",
                 "statusMessage": "The source job is currently in progress."
             }

@@ -1,20 +1,20 @@
-**1. To add tags to a cluster**
+**To add tags to a cluster**
 
-- Command::
+The following ``add-tags`` example adds tags to the specified cluster. ::
 
-    aws emr add-tags --resource-id j-xxxxxxx --tags name="John Doe" age=29 sex=male address="123 East NW Seattle"
+    aws emr add-tags \
+        --resource-id j-xxxxxxx \
+        --tags name="John Doe" age=29 sex=male address="123 East NW Seattle"
 
-- Output::
+This command produces no output.
 
-    None
+To list the tags of the cluster, run the following ``describe-cluster`` command. ::
 
-**2. To list tags of a cluster**
+    aws emr describe-cluster \
+        --cluster-id j-xxxxxxx \
+        --query Cluster.Tags
 
---Command::
-
-  aws emr describe-cluster --cluster-id j-XXXXXXYY --query Cluster.Tags
-
-- Output::
+Output::
 
     [
         {
@@ -34,3 +34,5 @@
             "Key": "age"
         }
     ]
+
+For more information, see `Tag and categorize Amazon EMR cluster resources <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html>`__ in the *Amazon EMR Management Guide*.

@@ -1,6 +1,6 @@
 **To suspend Auto Scaling processes**
 
-This example suspends the specified scaling process for the specified Auto Scaling group. ::
+The following ``suspend-processes`` example suspends the specified scaling process for the specified Auto Scaling group. ::
 
     aws autoscaling suspend-processes \
         --auto-scaling-group-name my-asg \

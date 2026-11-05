@@ -4,25 +4,25 @@ The following ``create-secret`` example creates a secret from credentials in a f
 
     aws secretsmanager create-secret \
         --name MyTestSecret \
-        --secret-string file://mycreds.json 
+        --secret-string file://mycreds.json
 
 Contents of ``mycreds.json``::
 
     {
-      "engine": "mysql",
-      "username": "saanvis",
-      "password": "EXAMPLE-PASSWORD",
-      "host": "my-database-endpoint.us-west-2.rds.amazonaws.com",
-      "dbname": "myDatabase",
-      "port": "3306"
+        "engine": "mysql",
+        "username": "saanvis",
+        "password": "EXAMPLE-PASSWORD",
+        "host": "my-database-endpoint.us-west-2.rds.amazonaws.com",
+        "dbname": "myDatabase",
+        "port": "3306"
     }
 
 Output::
 
     {
-      "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
-      "Name": "MyTestSecret",
-      "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+        "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
+        "Name": "MyTestSecret",
+        "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Create a secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_create-basic-secret.html>`__ in the *Secrets Manager User Guide*.
@@ -34,14 +34,14 @@ The following ``create-secret`` example creates a secret with two key-value pair
     aws secretsmanager create-secret \
         --name MyTestSecret \
         --description "My test secret created with the CLI." \
-        --secret-string "{\"user\":\"diegor\",\"password\":\"EXAMPLE-PASSWORD\"}" 
+        --secret-string "{\"user\":\"diegor\",\"password\":\"EXAMPLE-PASSWORD\"}"
 
 Output::
 
     {
-      "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
-      "Name": "MyTestSecret",
-      "VersionId": "EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE"
+        "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
+        "Name": "MyTestSecret",
+        "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `Create a secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_create-basic-secret.html>`__ in the *Secrets Manager User Guide*.

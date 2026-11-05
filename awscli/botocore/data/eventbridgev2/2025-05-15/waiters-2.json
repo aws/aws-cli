@@ -1,0 +1,48 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "EventBusActive" : {
+      "description" : "Waits until the event bus reports ACTIVE. Use after CreateEventBus (bus starts in CREATING) or UpdateEventBus (bus moves to UPDATING) before invoking operations that require an ACTIVE bus. Fails fast on the terminal failure states CREATE_FAILED, UPDATE_FAILED, and DELETE_FAILED, surfacing StateReason. CREATING, UPDATING, and DELETING are intentionally unmodeled intermediate states that fall through to the implicit retry.",
+      "delay" : 2,
+      "maxAttempts" : 60,
+      "operation" : "DescribeEventBus",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "State",
+        "state" : "failure",
+        "expected" : "CREATE_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "State",
+        "state" : "failure",
+        "expected" : "UPDATE_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "State",
+        "state" : "failure",
+        "expected" : "DELETE_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "State",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      } ]
+    },
+    "EventBusDeleted" : {
+      "description" : "Waits until the event bus is fully deleted, signaled by DescribeEventBus returning ResourceNotFoundException. Use after DeleteEventBus. Fails fast on the terminal DELETE_FAILED state, surfacing StateReason; retry DeleteEventBus after removing subscribers.",
+      "delay" : 2,
+      "maxAttempts" : 60,
+      "operation" : "DescribeEventBus",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "State",
+        "state" : "failure",
+        "expected" : "DELETE_FAILED"
+      }, {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
+      } ]
+    }
+  }
+}

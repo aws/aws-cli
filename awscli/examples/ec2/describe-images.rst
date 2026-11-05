@@ -1,9 +1,8 @@
 **Example 1: To describe an AMI**
 
-The following ``describe-images`` example describes the specified AMI in the specified Region. ::
+The following ``describe-images`` example describes the specified AMI. ::
 
     aws ec2 describe-images \
-        --region us-east-1 \
         --image-ids ami-1234567890EXAMPLE
 
 Output::
@@ -24,7 +23,7 @@ Output::
                     {
                         "DeviceName": "/dev/sda1", 
                         "Ebs": {
-                            "SnapshotId": "snap-111222333444aaabb", 
+                            "SnapshotId": "snap-1234567890abcdef0", 
                             "DeleteOnTermination": true, 
                             "VolumeType": "gp2", 
                             "VolumeSize": 10, 
@@ -55,7 +54,46 @@ The following ``describe-images`` example describes Windows AMIs provided by Ama
         --owners amazon \
         --filters "Name=platform,Values=windows" "Name=root-device-type,Values=ebs"
 
-For an example of the output for ``describe-images``, see Example 1.
+Output::
+
+    {
+        "Images": [
+            {
+                "Architecture": "x86_64",
+                "CreationDate": "2024-05-15T09:12:34.000Z",
+                "ImageId": "ami-0abcdef1234567890",
+                "ImageLocation": "amazon/Windows_Server-2022-English-Full-Base-2024.05.15",
+                "ImageType": "machine",
+                "Public": true,
+                "OwnerId": "123456789012",
+                "Platform": "windows",
+                "PlatformDetails": "Windows",
+                "UsageOperation": "RunInstances:0002",
+                "State": "available",
+                "BlockDeviceMappings": [
+                    {
+                        "DeviceName": "/dev/sda1",
+                        "Ebs": {
+                            "DeleteOnTermination": true,
+                            "SnapshotId": "snap-0abcdef1234567890",
+                            "VolumeSize": 30,
+                            "VolumeType": "gp2",
+                            "Encrypted": false
+                        }
+                    }
+                ],
+                "Description": "Microsoft Windows Server 2022 Full Locale English AMI provided by Amazon",
+                "EnaSupport": true,
+                "Hypervisor": "xen",
+                "ImageOwnerAlias": "amazon",
+                "Name": "Windows_Server-2022-English-Full-Base-2024.05.15",
+                "RootDeviceName": "/dev/sda1",
+                "RootDeviceType": "ebs",
+                "SriovNetSupport": "simple",
+                "VirtualizationType": "hvm"
+            }
+        ]
+    }
 
 For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
 
@@ -65,12 +103,17 @@ The following ``describe-images`` example describes all AMIs that have the tag `
 
     aws ec2 describe-images \
         --filters "Name=tag:Type,Values=Custom" \
-        --query 'Images[*].[ImageId]' \
-        --output text
+        --query 'Images[*].[ImageId]'
 
 Output::
 
-    ami-1234567890EXAMPLE
-    ami-0abcdef1234567890
+    [
+        [
+            "ami-1234567890EXAMPLE"
+        ],
+        [
+            "ami-0abcdef1234567890"
+        ]
+    ]
 
-For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.
+For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html>`__ in the *Amazon EC2 User Guide*.

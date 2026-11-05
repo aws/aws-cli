@@ -1,6 +1,6 @@
 **To update the name servers for a domain**
 
-The following ``update-domain-nameservers`` command updates the name servers for a domain. 
+The following ``update-domain-nameservers`` example updates the name servers for a domain. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
@@ -12,7 +12,7 @@ This command runs only in the ``us-east-1`` Region. If your default region is se
 Output::
 
     {
-        "OperationId": "f1691ec4-0e7a-489e-82e0-b19d3example"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the operation succeeded, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ .

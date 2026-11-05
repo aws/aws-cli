@@ -1,32 +1,24 @@
-The following command returns the status the specified job::
+**To get the status of a job**
 
-  aws importexport get-status  --job-id EX1ID
+The following ``get-status`` example returns the status of the specified job. ::
 
-The output for the get-status command looks like the following::
+    aws importexport get-status \
+        --job-id EX1ID
 
-  2015-05-27T18:58:21Z    manifestVersion:2.0
-  generator:Text editor
-  bucket:amzn-s3-demo-bucket
-  deviceId:49382
-  eraseDevice:yes
-  notificationEmail:john.doe@example.com;jane.roe@example.com
-  trueCryptPassword:password123
-  acl:private
-  serviceLevel:standard
-  returnAddress:
-      name: Jane Roe
-      company: Example Corp.
-      street1: 123 Any Street
-      street2:
-      street3:
-      city: Anytown
-      stateOrProvince: WA
-      postalCode: 91011-1111
-      country:USA
-      phoneNumber:206-555-1111    0       EX1ID   Import  NotReceived     AWS has not received your device.       Pending The specified job has not started.
-  ktKDXpdbEXAMPLEyGFJmQO744UHw=    version:2.0
-  signingMethod:HmacSHA1
-  jobId:EX1ID
-  signature:ktKDXpdbEXAMPLEyGFJmQO744UHw=
+Output::
+
+    {
+        "JobId": "EX1ID",
+        "JobType": "Import",
+        "LocationCode": "NotReceived",
+        "LocationMessage": "AWS has not received your device.",
+        "ProgressCode": "Pending",
+        "ProgressMessage": "The specified job has not started.",
+        "ErrorCount": 0,
+        "Signature": "ktKDXpdbEXAMPLEyGFJmQO744UHw=",
+        "SignatureFileContents": "version:2.0\nsigningMethod:HmacSHA1\njobId:EX1ID\nsignature:ktKDXpdbEXAMPLEyGFJmQO744UHw=",
+        "CurrentManifest": "manifestVersion:2.0\ngenerator:Text editor\nbucket:amzn-s3-demo-bucket\ndeviceId:49382\neraseDevice:yes\nnotificationEmail:john.doe@example.com;jane.roe@example.com\ntrueCryptPassword:password123\nacl:private\nserviceLevel:standard\nreturnAddress:\n    name: Jane Roe\n    company: Example Corp.\n    street1: 123 Any Street\n    street2:\n    street3:\n    city: Anytown\n    stateOrProvince: WA\n    postalCode: 91011-1111\n    country:USA\n    phoneNumber:206-555-1111",
+        "CreationDate": "2015-05-27T18:58:21Z"
+    }
 
 When you ship your device, it will be delivered to a sorting facility, and then forwarded on to an AWS data center. Note that when you send a get-status command, the status of your job will not show as ``At AWS`` until the shipment has been received at the AWS data center.

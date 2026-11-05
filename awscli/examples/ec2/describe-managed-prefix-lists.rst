@@ -30,8 +30,8 @@ Output::
                 "Version": 1,
                 "Tags": [],
                 "OwnerId": "123456789012"
-          }
-      ]
+            }
+        ]
     }
 
 For more information, see `Managed prefix lists <https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html>`__ in the *Amazon VPC User Guide*.

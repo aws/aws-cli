@@ -3,13 +3,13 @@
 The following ``get-wireless-gateway-task`` example gets information about the wireless gateway task with the specified ID. ::
 
     aws iotwireless get-wireless-gateway-task \
-        --id "11693a46-6866-47c3-a031-c9a616e7644b"
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
-        "WirelessGatewayId": "6c44ab31-8b4d-407a-bed3-19b6c7cda551",
-        "WirelessGatewayTaskDefinitionId": "b7d3baad-25c7-35e7-a4e1-1683a0d61da9",
+        "WirelessGatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "WirelessGatewayTaskDefinitionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
         "Status": "Success"
     }
 

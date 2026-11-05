@@ -1,6 +1,6 @@
 **To initiate a document version upload**
 
-The following ``initiate-document-upload`` example creates a new document object and version object. ::
+The following ``initiate-document-version-upload`` example creates a new document object and version object. ::
 
     aws workdocs initiate-document-version-upload \
         --name exampledocname \
@@ -23,7 +23,7 @@ Output::
                 "Status": "INITIALIZED",
                 "CreatedTimestamp": 1536773972.914,
                 "ModifiedTimestamp": 1536773972.914,
-                "CreatorId": "arn:aws:iam::123456789123:user/EXAMPLE"
+                "CreatorId": "arn:aws:iam::123456789012:user/EXAMPLE"
             },
             "ResourceState": "ACTIVE"
         },

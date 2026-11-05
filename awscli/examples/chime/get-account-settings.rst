@@ -2,7 +2,8 @@
 
 The following ``get-account-settings`` example retrieves the account settings for the specified account. ::
 
-    aws chime get-account-settings --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+    aws chime get-account-settings \
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -13,4 +14,4 @@ Output::
         }
     }
 
-For more information, see `Managing Your Amazon Chime Accounts <https://docs.aws.amazon.com/chime/latest/ag/manage-chime-account.html>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Managing your Amazon Chime accounts <https://docs.aws.amazon.com/chime/latest/ag/manage-chime-account.html>`__ in the *Amazon Chime Administration Guide*.

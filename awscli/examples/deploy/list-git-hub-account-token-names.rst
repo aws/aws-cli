@@ -14,4 +14,4 @@ Output::
         ]
     }
 
-For more information, see `ListGitHubAccountTokenNames <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListGitHubAccountTokenNames.html>`_ in the *AWS CodeDeploy API Reference*.
+For more information, see `Integrating CodeDeploy with GitHub <https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-partners-github.html>`__ in the *AWS CodeDeploy User Guide*.

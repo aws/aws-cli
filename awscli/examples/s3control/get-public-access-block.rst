@@ -8,10 +8,12 @@ The following ``get-public-access-block`` example displays the block public acce
 Output::
 
     {
-       "PublicAccessBlockConfiguration": {
-          "BlockPublicPolicy": true,
-          "RestrictPublicBuckets": true,
-          "IgnorePublicAcls": true,
-          "BlockPublicAcls": true
-       }
+        "PublicAccessBlockConfiguration": {
+            "BlockPublicPolicy": true,
+            "RestrictPublicBuckets": true,
+            "IgnorePublicAcls": true,
+            "BlockPublicAcls": true
+        }
     }
+
+For more information, see `Configuring block public access settings for your account <https://docs.aws.amazon.com/AmazonS3/latest/userguide/configuring-block-public-access-account.html>`__ in the *Amazon S3 User Guide*.

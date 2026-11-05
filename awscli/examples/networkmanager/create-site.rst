@@ -4,9 +4,8 @@ The following ``create-site`` example creates a site in the specified global net
 
     aws networkmanager create-site \
         --global-network-id global-network-01231231231231231 \
-        --description  "New York head office" \
-        --location Latitude=40.7128,Longitude=-74.0060 \
-        --region us-west-2
+        --description "New York head office" \
+        --location Latitude=40.7128,Longitude=-74.0060
 
 Output::
 
@@ -25,4 +24,4 @@ Output::
         }
     }
 
-For more information, see `Working with Sites <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#working-with-sites>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Sites and links in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-sites.html>`__ in the *Transit Gateway Network Manager Guide*.

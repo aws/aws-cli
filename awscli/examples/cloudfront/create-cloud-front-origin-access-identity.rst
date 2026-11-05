@@ -1,20 +1,18 @@
 **To create a CloudFront origin access identity**
 
-The following example creates a CloudFront origin access identity (OAI) by
-providing the OAI configuration as a command line argument::
+The following ``create-cloud-front-origin-access-identity`` example creates a CloudFront origin access identity (OAI) by
+providing the OAI configuration as a command line argument. ::
 
     aws cloudfront create-cloud-front-origin-access-identity \
-        --cloud-front-origin-access-identity-config \
-            CallerReference="cli-example",Comment="Example OAI"
+        --cloud-front-origin-access-identity-config CallerReference="cli-example",Comment="Example OAI"
 
 You can accomplish the same thing by providing the OAI configuration in a JSON
-file, as shown in the following example::
+file, as shown in the following example. ::
 
     aws cloudfront create-cloud-front-origin-access-identity \
         --cloud-front-origin-access-identity-config file://OAI-config.json
 
-The file ``OAI-config.json`` is a JSON document in the current directory that
-contains the following::
+Contents of ``OAI-config.json``::
 
     {
         "CallerReference": "cli-example",
@@ -22,7 +20,9 @@ contains the following::
     }
 
 Whether you provide the OAI configuration with a command line argument or a
-JSON file, the output is the same::
+JSON file, the output is the same.
+
+Output::
 
     {
         "Location": "https://cloudfront.amazonaws.com/2019-03-26/origin-access-identity/cloudfront/E74FTE3AEXAMPLE",
@@ -36,3 +36,5 @@ JSON file, the output is the same::
             }
         }
     }
+
+For more information, see `Restrict access to an Amazon S3 origin <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html>`__ in the *Amazon CloudFront Developer Guide*.

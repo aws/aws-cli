@@ -92,3 +92,4 @@ Output::
         ]
     }
 
+For more information, see `View available metrics <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>`__ in the *Amazon CloudWatch User Guide*.

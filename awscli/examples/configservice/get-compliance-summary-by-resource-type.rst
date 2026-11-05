@@ -1,6 +1,6 @@
-**To get the compliance summary for all resource types**
+**Example 1: To get the compliance summary for all resource types**
 
-The following command returns the number of AWS resources that are noncompliant and the number that are compliant::
+The following ``get-compliance-summary-by-resource-type`` example returns the number of AWS resources that are noncompliant and the number that are compliant. ::
 
     aws configservice get-compliance-summary-by-resource-type
 
@@ -26,11 +26,14 @@ Output::
         ]
     }
 
-**To get the compliance summary for a specific resource type**
+For more information, see `Viewing Compliance Information and Evaluation Results for your AWS Resources with AWS Config <https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_view-compliance.html>`__ in the *AWS Config Developer Guide*.
 
-The following command returns the number of EC2 instances that are noncompliant and the number that are compliant::
+**Example 2: To get the compliance summary for a specific resource type**
 
-    aws configservice get-compliance-summary-by-resource-type --resource-types AWS::EC2::Instance
+The following ``get-compliance-summary-by-resource-type`` example returns the number of EC2 instances that are noncompliant and the number that are compliant. ::
+
+    aws configservice get-compliance-summary-by-resource-type \
+        --resource-types AWS::EC2::Instance
 
 In the output, the value for each ``CappedCount`` attribute indicates how many resources are compliant or noncompliant.
 
@@ -54,3 +57,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing Compliance Information and Evaluation Results for your AWS Resources with AWS Config <https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_view-compliance.html>`__ in the *AWS Config Developer Guide*.

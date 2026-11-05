@@ -2,7 +2,8 @@
 
 The following ``copy-product`` example makes a copy of the specified product, using a JSON file to pass parameters. ::
 
-    aws servicecatalog copy-product --cli-input-json file://copy-product-input.json
+    aws servicecatalog copy-product \
+        --cli-input-json file://copy-product-input.json
 
 Contents of ``copy-product-input.json``::
 
@@ -20,3 +21,4 @@ Output::
         "CopyProductToken": "copyproduct-abc5defgjkdji"
     }
 
+For more information, see `Managing Products <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_products.html>`__ in the *AWS Service Catalog Administrator Guide*.

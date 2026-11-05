@@ -53,4 +53,4 @@ Output::
         "nextToken": "nextTokenValue"
     }
 
-For more information, see `ListSuiteRuns <https://docs.aws.amazon.com/iot/latest/apireference/API_iotdeviceadvisor_ListSuiteRuns.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Device Advisor workflow <https://docs.aws.amazon.com/iot/latest/developerguide/device-advisor-workflow.html#device-advisor-workflow-describe-suite>`__ in the *AWS IoT Core Developer Guide*.

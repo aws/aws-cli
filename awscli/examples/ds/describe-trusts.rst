@@ -2,7 +2,7 @@
 
 The following ``describe-trusts`` example displays details about the trust relationships for the specified directory. ::
 
-     aws ds describe-trusts \
+    aws ds describe-trusts \
         --directory-id d-a1b2c3d4e5
 
 Output::
@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Creating a trust relationship between your AWS Managed Microsoft AD and self-managed AD <https://docs.aws.amazon.com/directoryservice/latest/admin-guide/ms_ad_setup_trust.html>`__ in the *AWS Directory Service Administration Guide*.

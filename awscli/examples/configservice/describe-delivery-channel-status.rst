@@ -1,6 +1,6 @@
 **To get status information for the delivery channel**
 
-The following command returns the status of the delivery channel::
+The following ``describe-delivery-channel-status`` example returns the status of the delivery channel. ::
 
     aws configservice describe-delivery-channel-status
 
@@ -27,3 +27,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with the Delivery Channel <https://docs.aws.amazon.com/config/latest/developerguide/manage-delivery-channel.html>`__ in the *AWS Config Developer Guide*.

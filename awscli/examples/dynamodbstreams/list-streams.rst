@@ -1,6 +1,6 @@
 **To list DynamoDB streams**
 
-The following ``list-streams`` command lists all existing Amazon DynamoDB streams within the default AWS Region. ::
+The following ``list-streams`` example lists all existing Amazon DynamoDB streams within the default AWS Region. ::
 
     aws dynamodbstreams list-streams
 
@@ -9,7 +9,7 @@ Output::
     {
         "Streams": [
             {
-                "StreamArn": "arn:aws:dynamodb:us-west-1:123456789012:table/Music/stream/2019-10-22T18:02:01.576",
+                "StreamArn": "arn:aws:dynamodb:us-west-2:123456789012:table/Music/stream/2019-10-22T18:02:01.576",
                 "TableName": "Music",
                 "StreamLabel": "2019-10-22T18:02:01.576"
             }

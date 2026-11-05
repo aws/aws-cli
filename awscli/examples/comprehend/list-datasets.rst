@@ -3,14 +3,14 @@
 The following ``list-datasets`` example lists all datasets associated with a flywheel. ::
 
     aws comprehend list-datasets \
-        --flywheel-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity
+        --flywheel-arn arn:aws:comprehend:us-west-2:123456789012:flywheel/flywheel-entity
 
 Output:: 
 
     {
         "DatasetPropertiesList": [
             {
-                "DatasetArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity/dataset/example-dataset-1",
+                "DatasetArn": "arn:aws:comprehend:us-west-2:123456789012:flywheel/flywheel-entity/dataset/example-dataset-1",
                 "DatasetName": "example-dataset-1",
                 "DatasetType": "TRAIN",
                 "DatasetS3Uri": "s3://amzn-s3-demo-bucket/flywheel-entity/schemaVersion=1/20230616T200543Z/datasets/example-dataset-1/20230616T203710Z/",
@@ -18,7 +18,7 @@ Output::
                 "CreationTime": "2023-06-16T20:37:10.400000+00:00"
             },
             {
-                "DatasetArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity/dataset/example-dataset-2",
+                "DatasetArn": "arn:aws:comprehend:us-west-2:123456789012:flywheel/flywheel-entity/dataset/example-dataset-2",
                 "DatasetName": "example-dataset-2",
                 "DatasetType": "TRAIN",
                 "DatasetS3Uri": "s3://amzn-s3-demo-bucket/flywheel-entity/schemaVersion=1/20230616T200543Z/datasets/example-dataset-2/20230616T200607Z/",
@@ -30,4 +30,4 @@ Output::
         ]
     }
 
-For more information, see `Flywheel Overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in *Amazon Comprehend Developer Guide*.
+For more information, see `Flywheel overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in the *Amazon Comprehend Developer Guide*.

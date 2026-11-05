@@ -3,7 +3,7 @@
 The following ``delete-sink`` example deletes a sink. You must delete all links to a sink before you can delete that sink. ::
 
     aws oam delete-sink \
-        --identifier arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345
+        --identifier arn:aws:oam:us-west-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

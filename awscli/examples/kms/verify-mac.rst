@@ -1,6 +1,6 @@
 **Example 1: To verify an HMAC**
 
-The following ``verify-mac`` command verifies an HMAC for a particular message, HMAC KMS keys, and MAC algorithm. A value of 'true' in the MacValid value in the response indicates that the HMAC is valid.
+The following ``verify-mac`` example verifies an HMAC for a particular message, HMAC KMS keys, and MAC algorithm. A value of 'true' in the MacValid value in the response indicates that the HMAC is valid.
 
 In AWS CLI v2, the value of the ``message`` parameter must be Base64-encoded. Or, you can save the message in a file and use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file.
 
@@ -11,7 +11,7 @@ Before running this command, replace the example key ID with a valid key ID from
     msg=(echo 'Hello World' | base64)
     
     aws kms verify-mac \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --message fileb://Message \
         --mac-algorithm HMAC_SHA_384 \
         --mac fileb://ExampleMac
@@ -19,7 +19,7 @@ Before running this command, replace the example key ID with a valid key ID from
 Output::
 
     {
-        "KeyId": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "MacValid": true,
         "MacAlgorithm": "HMAC_SHA_384"
     }

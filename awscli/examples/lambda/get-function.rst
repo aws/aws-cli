@@ -28,7 +28,7 @@ Output::
                 "SecurityGroupIds": []
             },
             "MemorySize": 128,
-            "RevisionId": "28f0fb31-5c5c-43d3-8955-03e76c5c1075",
+            "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CodeSize": 304,
             "FunctionArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function",
             "Handler": "index.handler",

@@ -10,12 +10,12 @@ Output::
     {
         "virtualNodes": [
             {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualNode/vnServiceBv1",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualNode/vnServiceBv1",
                 "meshName": "app1",
                 "virtualNodeName": "vnServiceBv1"
             },
             {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualNode/vnServiceBv2",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualNode/vnServiceBv2",
                 "meshName": "app1",
                 "virtualNodeName": "vnServiceBv2"
             }

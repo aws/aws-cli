@@ -6,3 +6,5 @@ The following ``wait stack-import-complete`` example pauses and resumes only aft
         --stack-name "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack-1234/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
+
+For more information, see `Import AWS resources into a CloudFormation stack <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/import-resources.html>`__ in the *AWS CloudFormation User Guide*.

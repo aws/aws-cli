@@ -1,6 +1,6 @@
 **To cancel a maintenance window execution**
 
-This ``cancel-maintenance-window-execution`` example stops the specified maintenance window execution that is already in progress. ::
+The following ``cancel-maintenance-window-execution`` example stops the specified maintenance window execution that is already in progress. ::
 
     aws ssm cancel-maintenance-window-execution \
         --window-execution-id j2l8d5b5c-mw66-tk4d-r3g9-1d4d1EXAMPLE

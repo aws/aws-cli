@@ -35,7 +35,7 @@ Output::
         }
     }
 
-For more information, see `Batch Transcription Overview <https://docs.aws.amazon.com/transcribe/latest/dg/batch-med-transcription.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Transcribing an audio file of a medical conversation <https://docs.aws.amazon.com/transcribe/latest/dg/batch-medical-conversation.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 2: To transcribe a clinician-patient dialogue stored as an audio file**
 
@@ -74,7 +74,7 @@ Output::
         }
     }
 
-For more information, see `Batch Transcription Overview <https://docs.aws.amazon.com/transcribe/latest/dg/batch-med-transcription.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Transcribing an audio file of a medical conversation <https://docs.aws.amazon.com/transcribe/latest/dg/batch-medical-conversation.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 3: To transcribe a multichannel audio file of a clinician-patient dialogue**
 
@@ -91,12 +91,12 @@ Contents of ``mythirdfile.json``::
         "Specialty": "PRIMARYCARE",
         "Type": "CONVERSATION",
         "OutputBucketName":"amzn-s3-demo-bucket",
-            "Media": {
-              "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
-            },
-            "Settings":{
-              "ChannelIdentification": true
-            }
+        "Media": {
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
+        },
+        "Settings":{
+            "ChannelIdentification": true
+        }
     }
 
 Output::
@@ -119,7 +119,7 @@ Output::
         }
     }
 
-For more information, see `Channel Identification <https://docs.aws.amazon.com/transcribe/latest/dg/how-channel-id-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Transcribing multi-channel audio <https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 4: To transcribe an audio file of a clinician-patient dialogue and identify the speakers in the transcription output**
 
@@ -138,11 +138,11 @@ Contents of ``myfourthfile.json``::
         "OutputBucketName":"amzn-s3-demo-bucket",
         "Media": {
             "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
-            },
+        },
         "Settings":{
             "ShowSpeakerLabels": true,
             "MaxSpeakerLabels": 2
-            }
+        }
     }
 
 Output::
@@ -166,7 +166,7 @@ Output::
         }
     }
 
-For more information, see `Identifying Speakers <https://docs.aws.amazon.com/transcribe/latest/dg/diarization-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Enabling speaker partitioning <https://docs.aws.amazon.com/transcribe/latest/dg/conversation-diarization-med.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 5: To transcribe a medical conversation stored as an audio file with up to two transcription alternatives**
 
@@ -213,7 +213,7 @@ Output::
         }
     }
 
-For more information, see `Alternative Transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Alternative transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/alternatives.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 6: To transcribe an audio file of a medical dictation with up to two alternative transcriptions**
 
@@ -234,8 +234,8 @@ Contents of ``mysixthfile.json``::
             "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
         },
         "Settings":{
-              "ShowAlternatives": true,
-              "MaxAlternatives": 2
+            "ShowAlternatives": true,
+            "MaxAlternatives": 2
         }
     }
 
@@ -260,16 +260,16 @@ Output::
         }
     }
 
-For more information, see `Alternative Transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Alternative transcriptions <https://docs.aws.amazon.com/transcribe/latest/dg/alternatives.html>`__ in the *Amazon Transcribe Developer Guide*.
 
 **Example 7: To transcribe an audio file of a medical dictation with increased accuracy by using a custom vocabulary**
 
 The following ``start-medical-transcription-job`` example transcribes an audio file and uses a medical custom vocabulary you've previously created to increase the transcription accuracy. You specify the location of the transcription output in the ``OutputBucketName`` parameter. ::
 
-    aws transcribe start-transcription-job \
+    aws transcribe start-medical-transcription-job \
         --cli-input-json file://myseventhfile.json
 
-Contents of ``mysixthfile.json``::
+Contents of ``myseventhfile.json``::
 
     {
         "MedicalTranscriptionJobName": "vocabulary-dictation-medical-transcription-job",
@@ -305,4 +305,4 @@ Output::
         }
     }
 
-For more information, see `Medical Custom Vocabularies <https://docs.aws.amazon.com/transcribe/latest/dg/how-vocabulary-med.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Improving transcription accuracy with medical custom vocabularies <https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-med.html>`__ in the *Amazon Transcribe Developer Guide*.

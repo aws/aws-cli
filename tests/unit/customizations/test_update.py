@@ -1,8 +1,11 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
+import ntpath
 import os
+import re
 import subprocess
 from argparse import Namespace
+from types import SimpleNamespace
 from unittest import mock
 
 import pytest
@@ -27,6 +30,9 @@ SYSTEM_INSTALL = {
 }
 
 
+WINDOWS_SYSTEM_DIR = 'C:\\Windows\\System32'
+
+
 def global_args(color='auto'):
     return Namespace(color=color)
 
@@ -34,6 +40,8 @@ def global_args(color='auto'):
 def mock_session():
     session = mock.Mock()
     session.user_agent_extra = 'aws-cli'
+    # A real session returns None when no plugin overrides an arg value.
+    session.emit_first_non_none_response.return_value = None
     return session
 
 
@@ -45,8 +53,9 @@ class TestUnixUpdateCommand:
         elevated=True,
         runner=None,
         downloader=None,
+        verifier=None,
     ):
-        return UnixUpdateCommand(
+        command = UnixUpdateCommand(
             mock_session(),
             source=source,
             install_metadata=install,
@@ -54,6 +63,10 @@ class TestUnixUpdateCommand:
             is_elevated=elevated,
             runner=runner or mock.Mock(),
         )
+        # Signature verification is exercised by TestUnixVerifyScript; here we
+        # replace it so the behavioral tests don't shell out to gpg.
+        command._verify_script = verifier or mock.Mock()
+        return command
 
     def _run(self, install, color='auto', **kwargs):
         runner = mock.Mock()
@@ -176,6 +189,61 @@ class TestUnixUpdateCommand:
         assert 'XDG_DATA_HOME' not in env
         assert 'XDG_BIN_HOME' not in env
 
+    def test_forwards_skip_signature_verification_to_install_script(self):
+        # --skip-signature-verification must be passed through to install.sh,
+        # otherwise install.sh re-verifies and hard-fails when gpg is missing,
+        # defeating the opt-out.
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command(['--skip-signature-verification'], global_args())
+        cmd = runner.call_args.args[0]
+        assert '--skip-signature-verification' in cmd
+
+    def test_system_install_also_forwards_skip_flag(self):
+        runner = mock.Mock()
+        command = self._command(SYSTEM_INSTALL, elevated=True, runner=runner)
+        command(['--skip-signature-verification'], global_args())
+        cmd = runner.call_args.args[0]
+        assert '--system' in cmd
+        assert '--skip-signature-verification' in cmd
+
+    def test_no_skip_flag_passed_by_default(self):
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command([], global_args())
+        cmd = runner.call_args.args[0]
+        assert '--skip-signature-verification' not in cmd
+
+    def test_env_var_true_honored_as_skip(self, monkeypatch):
+        # AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION=true is honored as a
+        # version-independent opt-out, equivalent to the flag, and is forwarded
+        # to the install script.
+        monkeypatch.setenv(
+            'AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION', 'true'
+        )
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command([], global_args())
+        assert '--skip-signature-verification' in runner.call_args.args[0]
+
+    def test_env_var_is_case_insensitive(self, monkeypatch):
+        monkeypatch.setenv(
+            'AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION', 'TRUE'
+        )
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command([], global_args())
+        assert '--skip-signature-verification' in runner.call_args.args[0]
+
+    def test_env_var_non_true_value_does_not_skip(self, monkeypatch):
+        # Follows the ensure_boolean convention: only "true" enables it, so a
+        # value like "1" must NOT disable verification.
+        monkeypatch.setenv('AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION', '1')
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command([], global_args())
+        assert '--skip-signature-verification' not in runner.call_args.args[0]
+
     def test_system_install_requires_elevation(self):
         runner = mock.Mock()
         command = self._command(SYSTEM_INSTALL, elevated=False, runner=runner)
@@ -256,8 +324,10 @@ class TestWindowsUpdateCommand:
         runner=None,
         downloader=None,
         powershell_path='powershell.exe',
+        verifier=None,
+        system_directory=WINDOWS_SYSTEM_DIR,
     ):
-        return WindowsUpdateCommand(
+        command = WindowsUpdateCommand(
             mock_session(),
             source='exe',
             install_metadata=install,
@@ -265,23 +335,50 @@ class TestWindowsUpdateCommand:
             is_elevated=elevated,
             runner=runner or mock.Mock(),
             powershell_path=powershell_path,
+            system_directory=system_directory,
         )
+        # Signature verification is exercised by TestWindowsVerifyScript; here
+        # we replace it so the behavioral tests don't shell out to PowerShell.
+        command._verify_script = verifier or mock.Mock()
+        return command
 
     def _run(self, install, color='auto', **kwargs):
+        cmd, _, wrapper = self._run_with_cwd(install, color=color, **kwargs)
+        return cmd, wrapper
+
+    def _run_with_cwd(self, install, color='auto', **kwargs):
         runner = mock.Mock()
         command = self._command(install, runner=runner, **kwargs)
         command([], global_args(color=color))
-        (cmd,) = runner.call_args.args
+        cmd, cwd = runner.call_args.args
         with open(cmd[-1]) as f:
-            return cmd, f.read()
+            return cmd, cwd, f.read()
 
     def test_spawns_detached_cmd_wrapper(self):
         cmd, _ = self._run(USER_INSTALL)
 
-        assert cmd[0] == 'cmd'
+        assert cmd[0] == os.path.join(WINDOWS_SYSTEM_DIR, 'cmd.exe')
         assert cmd[1] == '/c'
         assert cmd[2].endswith('.cmd')
         assert len(cmd) == 3
+
+    def test_runs_wrapper_from_its_temp_directory(self):
+        cmd, cwd, _ = self._run_with_cwd(USER_INSTALL)
+
+        assert cwd == os.path.dirname(cmd[-1])
+
+    def test_wrapper_disables_current_directory_lookup(self):
+        _, wrapper = self._run(USER_INSTALL)
+
+        assert wrapper.startswith(
+            '@echo off\nset NoDefaultCurrentDirectoryInExePath=1\n'
+        )
+
+    def test_wrapper_runs_ping_by_absolute_path(self):
+        _, wrapper = self._run(USER_INSTALL)
+
+        ping_exe = os.path.join(WINDOWS_SYSTEM_DIR, 'PING.EXE')
+        assert f'"{ping_exe}" -n 3 127.0.0.1' in wrapper
 
     def test_prints_agent_toolkit_tip(self, capsys):
         command = self._command(USER_INSTALL)
@@ -309,6 +406,20 @@ class TestWindowsUpdateCommand:
 
         assert wrapper.rstrip().endswith('-System')
 
+    def test_wrapper_forwards_skip_signature_verification(self):
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command(['--skip-signature-verification'], global_args())
+        cmd, _ = runner.call_args.args
+        with open(cmd[-1]) as f:
+            wrapper = f.read()
+        assert '-SkipSignatureVerification' in wrapper
+
+    def test_wrapper_omits_skip_flag_by_default(self):
+        _, wrapper = self._run(USER_INSTALL)
+
+        assert '-SkipSignatureVerification' not in wrapper
+
     def test_wrapper_sets_no_color_when_color_off(self):
         _, wrapper = self._run(USER_INSTALL, color='off')
 
@@ -319,40 +430,184 @@ class TestWindowsUpdateCommand:
 
         assert 'set PSModulePath=\n' in wrapper
 
-    def test_prefers_windows_powershell_when_available(self, monkeypatch):
-        def which(name):
-            return {
-                'powershell': 'C:\\powershell.exe',
-                'pwsh': 'C:\\pwsh.exe',
-            }.get(name)
+    @pytest.fixture
+    def path_dirs(self, tmp_path, monkeypatch):
+        windows_ps = tmp_path / 'WindowsPowerShell'
+        pwsh_dir = tmp_path / 'PowerShell7'
+        planted = tmp_path / 'planted'
+        for d in (windows_ps, pwsh_dir, planted):
+            d.mkdir()
+        self.system_dir = tmp_path / 'System32'
+        self.system_dir.mkdir()
+        monkeypatch.chdir(planted)
+        monkeypatch.setenv(
+            'PATH', os.pathsep.join([str(windows_ps), str(pwsh_dir)])
+        )
+        return windows_ps, pwsh_dir, planted
 
-        monkeypatch.setattr(update_module.shutil, 'which', which)
+    def _find(self, **kwargs):
+        kwargs.setdefault('system_directory', str(self.system_dir))
+        _, wrapper = self._run(USER_INSTALL, powershell_path=None, **kwargs)
+        return wrapper
 
-        _, wrapper = self._run(USER_INSTALL, powershell_path=None)
+    def _install_system_powershell(self):
+        return _touch(
+            self.system_dir / 'WindowsPowerShell' / 'v1.0', 'powershell.exe'
+        )
 
-        assert '"C:\\powershell.exe" -NoProfile' in wrapper
+    def test_falls_back_to_system_directory_when_not_on_path(
+        self, path_dirs, monkeypatch
+    ):
+        monkeypatch.setenv('PATH', '')
+        powershell = self._install_system_powershell()
+
+        assert f'"{powershell}" -NoProfile' in self._find()
+
+    def test_prefers_pwsh_on_path_over_system_directory(self, path_dirs):
+        _, pwsh_dir, _ = path_dirs
+        pwsh = _touch(pwsh_dir, 'pwsh.exe')
+        self._install_system_powershell()
+
+        assert f'"{pwsh}" -NoProfile' in self._find()
+
+    def test_prefers_windows_powershell_over_earlier_pwsh(
+        self, path_dirs, monkeypatch
+    ):
+        windows_ps, pwsh_dir, _ = path_dirs
+        powershell = _touch(windows_ps, 'powershell.exe')
+        _touch(pwsh_dir, 'pwsh.exe')
+        monkeypatch.setenv(
+            'PATH', os.pathsep.join([str(pwsh_dir), str(windows_ps)])
+        )
+
+        assert f'"{powershell}" -NoProfile' in self._find()
 
     def test_falls_back_to_pwsh_when_windows_powershell_missing(
-        self, monkeypatch
+        self, path_dirs
     ):
-        def which(name):
-            return 'C:\\pwsh.exe' if name == 'pwsh' else None
+        _, pwsh_dir, _ = path_dirs
+        pwsh = _touch(pwsh_dir, 'pwsh.exe')
 
-        monkeypatch.setattr(update_module.shutil, 'which', which)
+        assert f'"{pwsh}" -NoProfile' in self._find()
 
-        _, wrapper = self._run(USER_INSTALL, powershell_path=None)
+    def test_finds_powershell_in_quoted_path_entry(
+        self, path_dirs, monkeypatch
+    ):
+        windows_ps, _, _ = path_dirs
+        powershell = _touch(windows_ps, 'powershell.exe')
+        monkeypatch.setenv('PATH', f'"{windows_ps}"')
 
-        assert '"C:\\pwsh.exe" -NoProfile' in wrapper
+        assert f'"{powershell}" -NoProfile' in self._find()
 
-    def test_raises_when_no_powershell_found(self, monkeypatch):
-        def which(name):
-            return None
-
-        monkeypatch.setattr(update_module.shutil, 'which', which)
-        command = self._command(USER_INSTALL, powershell_path=None)
+    def test_raises_when_no_powershell_found(self, path_dirs):
+        command = self._command(
+            USER_INSTALL,
+            powershell_path=None,
+            system_directory=str(self.system_dir),
+        )
 
         with pytest.raises(UpdateError, match='Neither powershell'):
             command([], global_args())
+
+    def test_ignores_executables_planted_in_cwd(self, path_dirs):
+        # Guards against reintroducing shutil.which(), which searches the cwd
+        # on Windows.
+        windows_ps, _, planted = path_dirs
+        powershell = _touch(windows_ps, 'powershell.exe')
+        for name in (
+            'powershell.cmd',
+            'powershell.exe',
+            'pwsh.cmd',
+            'pwsh.exe',
+        ):
+            _touch(planted, name)
+
+        wrapper = self._find()
+
+        assert f'"{powershell}" -NoProfile' in wrapper
+        assert str(planted) not in wrapper
+
+    @pytest.mark.parametrize('entry', ['', '.', 'planted'])
+    def test_ignores_relative_path_entries(
+        self, entry, path_dirs, monkeypatch
+    ):
+        # Empty and relative PATH entries resolve against the cwd.
+        windows_ps, _, planted = path_dirs
+        _touch(planted, 'powershell.exe')
+        _touch(planted / 'planted', 'powershell.exe')
+        pwsh = _touch(windows_ps, 'pwsh.exe')
+        monkeypatch.setenv('PATH', os.pathsep.join([entry, str(windows_ps)]))
+
+        assert f'"{pwsh}" -NoProfile' in self._find()
+
+    @pytest.mark.parametrize(
+        'entry, expected',
+        [
+            ('C:\\Tools', True),
+            ('C:/Tools', True),
+            ('\\\\server\\share\\Tools', True),
+            ('\\Tools', False),
+            ('/Tools', False),
+            ('C:Tools', False),
+            ('Tools', False),
+            ('', False),
+        ],
+    )
+    def test_windows_path_entry_requires_drive_or_share(
+        self, entry, expected, monkeypatch
+    ):
+        # Simulate ntpath.isabs() before Python 3.13, which also accepts
+        # root-relative paths such as "\Tools".
+        def isabs(path):
+            return path[:1] in ('\\', '/') or ntpath.isabs(path)
+
+        fake_os = SimpleNamespace(
+            name='nt',
+            path=SimpleNamespace(isabs=isabs, splitdrive=ntpath.splitdrive),
+        )
+        monkeypatch.setattr(update_module, 'os', fake_os)
+        command = self._command(USER_INSTALL)
+
+        assert command._is_absolute_path(entry) is expected
+
+    def test_only_accepts_exe_on_path(self, path_dirs):
+        windows_ps, pwsh_dir, _ = path_dirs
+        _touch(windows_ps, 'powershell.cmd')
+        pwsh = _touch(pwsh_dir, 'pwsh.exe')
+
+        assert f'"{pwsh}" -NoProfile' in self._find()
+
+    def test_run_install_uses_cwd_and_disables_current_directory_lookup(
+        self, monkeypatch
+    ):
+        popen = mock.Mock()
+        monkeypatch.setattr(update_module.subprocess, 'Popen', popen)
+        # DETACHED_PROCESS and CREATE_NEW_PROCESS_GROUP only exist on Windows.
+        monkeypatch.setattr(
+            update_module.subprocess, 'DETACHED_PROCESS', 0x8, raising=False
+        )
+        monkeypatch.setattr(
+            update_module.subprocess,
+            'CREATE_NEW_PROCESS_GROUP',
+            0x200,
+            raising=False,
+        )
+        command = self._command(USER_INSTALL)
+
+        command._run_install(['cmd.exe', '/c', 'wrapper.cmd'], 'C:\\tmp')
+
+        kwargs = popen.call_args.kwargs
+        assert kwargs['cwd'] == 'C:\\tmp'
+        assert kwargs['env']['NoDefaultCurrentDirectoryInExePath'] == '1'
+
+    def test_raises_when_system_directory_unavailable(self, monkeypatch):
+        monkeypatch.setattr(
+            update_module, 'ctypes', _fake_system_directory_ctypes('', 0)
+        )
+        command = self._command(USER_INSTALL, system_directory=None)
+
+        with pytest.raises(UpdateError, match='system directory'):
+            command._get_system_directory()
 
     def test_system_install_requires_elevation(self):
         runner = mock.Mock()
@@ -397,6 +652,194 @@ class TestWindowsUpdateCommand:
         _, wrapper = self._run({'install_dir': 'C:\\Users\\me\\AWSCLIV2'})
 
         assert '-System' not in wrapper
+
+
+class TestUnixVerifyScript:
+    def _command(self, runner=None, downloader=None):
+        # Note: does NOT mock _verify_script -- these tests exercise it.
+        return UnixUpdateCommand(
+            mock_session(),
+            source='exe',
+            install_metadata=USER_INSTALL,
+            downloader=downloader or mock.Mock(),
+            is_elevated=True,
+            runner=runner or mock.Mock(),
+        )
+
+    def test_skips_verification_with_flag(self, monkeypatch):
+        which = mock.Mock()
+        run = mock.Mock()
+        monkeypatch.setattr(update_module.shutil, 'which', which)
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        command(['--skip-signature-verification'], global_args())
+
+        which.assert_not_called()
+        run.assert_not_called()
+        runner.assert_called_once()
+
+    def test_missing_gpg_raises(self, monkeypatch):
+        monkeypatch.setattr(update_module.shutil, 'which', lambda name: None)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        with pytest.raises(UpdateError, match='gpg was not found'):
+            command([], global_args())
+        runner.assert_not_called()
+
+    def test_verifies_and_runs_on_success(self, monkeypatch):
+        monkeypatch.setattr(
+            update_module.shutil, 'which', lambda name: '/usr/bin/gpg'
+        )
+        run = mock.Mock(return_value=mock.Mock(returncode=0, stderr=''))
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        downloader = mock.Mock()
+        runner = mock.Mock()
+        command = self._command(runner=runner, downloader=downloader)
+
+        command([], global_args())
+
+        downloaded = [c.args[0] for c in downloader.call_args_list]
+        assert UnixUpdateCommand.SCRIPT_URL + '.sig' in downloaded
+        assert any('--verify' in c.args[0] for c in run.call_args_list)
+        runner.assert_called_once()
+
+    def test_verification_failure_raises(self, monkeypatch):
+        monkeypatch.setattr(
+            update_module.shutil, 'which', lambda name: '/usr/bin/gpg'
+        )
+
+        def fake_run(cmd, **kwargs):
+            returncode = 1 if '--verify' in cmd else 0
+            return mock.Mock(returncode=returncode, stderr='bad signature')
+
+        monkeypatch.setattr(update_module.subprocess, 'run', fake_run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        with pytest.raises(UpdateError, match='signature verification failed'):
+            command([], global_args())
+        runner.assert_not_called()
+
+
+class TestWindowsVerifyScript:
+    def _command(self, runner=None, downloader=None):
+        # Note: does NOT mock _verify_script -- these tests exercise it.
+        return WindowsUpdateCommand(
+            mock_session(),
+            source='exe',
+            install_metadata=USER_INSTALL,
+            downloader=downloader or mock.Mock(),
+            is_elevated=True,
+            runner=runner or mock.Mock(),
+            powershell_path='powershell.exe',
+            system_directory=WINDOWS_SYSTEM_DIR,
+        )
+
+    def test_skips_verification_with_flag(self, monkeypatch):
+        run = mock.Mock()
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        command(['--skip-signature-verification'], global_args())
+
+        run.assert_not_called()
+        runner.assert_called_once()
+
+    def test_verifies_and_runs_on_success(self, monkeypatch):
+        run = mock.Mock(
+            return_value=mock.Mock(returncode=0, stdout='', stderr='')
+        )
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        command([], global_args())
+
+        ps_cmd = ' '.join(run.call_args.args[0])
+        assert 'Get-AuthenticodeSignature' in ps_cmd
+        runner.assert_called_once()
+
+    def test_verification_failure_raises(self, monkeypatch):
+        run = mock.Mock(
+            return_value=mock.Mock(
+                returncode=1, stdout='', stderr='not signed by AWS'
+            )
+        )
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        with pytest.raises(UpdateError, match='signature verification failed'):
+            command([], global_args())
+        runner.assert_not_called()
+
+    def test_verify_subprocess_clears_psmodulepath(self, monkeypatch):
+        # The verification PowerShell invocation must not inherit PSModulePath;
+        # inheriting it can break module resolution across PS5/PS7.
+        # https://github.com/aws/aws-cli/issues/10532
+        monkeypatch.setenv('PSModulePath', 'C:\\inherited\\modules')
+        captured = {}
+
+        def fake_run(cmd, **kwargs):
+            captured['env'] = kwargs.get('env')
+            return mock.Mock(returncode=0, stdout='', stderr='')
+
+        monkeypatch.setattr(update_module.subprocess, 'run', fake_run)
+        command = self._command(runner=mock.Mock())
+
+        command([], global_args())
+
+        assert 'PSModulePath' not in captured['env']
+
+    def test_verification_matches_org_exactly(self, monkeypatch):
+        # The signer check must gate on an exact match of the certificate's
+        # Organization (O) RDN, not a substring of the whole subject DN: a
+        # substring match would also accept a DigiCert-issued cert whose CN/OU
+        # merely contained one of the allowlisted org strings. The PowerShell
+        # logic itself is exercised out-of-band (it needs a real
+        # Get-AuthenticodeSignature); here we lock in the shape of the emitted
+        # command so the fragile substring form cannot silently return.
+        captured = {}
+
+        def fake_run(cmd, **kwargs):
+            captured['ps'] = cmd[cmd.index('-Command') + 1]
+            return mock.Mock(returncode=0, stdout='', stderr='')
+
+        monkeypatch.setattr(update_module.subprocess, 'run', fake_run)
+        command = self._command(runner=mock.Mock())
+
+        command([], global_args())
+
+        ps = captured['ps']
+        # Exact O-RDN match against the allowlist.
+        assert '-notcontains $subjectOrg' in ps
+        assert 'Get-Org' in ps
+        # Format($true) quotes comma-bearing O values (e.g. "Amazon Web
+        # Services, Inc."); the surrounding quote pair must be stripped so the
+        # value matches the plain allowlist entry.
+        assert '-replace' in ps
+        # The previous whole-subject substring check must be gone.
+        assert '$cert.Subject -like' not in ps
+
+
+def _touch(directory, name):
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / name
+    path.write_text('')
+    return str(path)
+
+
+def _fake_system_directory_ctypes(value, length):
+    fake_ctypes = mock.Mock()
+    buf = mock.MagicMock(value=value)
+    buf.__len__.return_value = 260
+    fake_ctypes.create_unicode_buffer.return_value = buf
+    fake_ctypes.windll.kernel32.GetSystemDirectoryW.return_value = length
+    return fake_ctypes
 
 
 def _response(status_code, content=b''):
@@ -480,6 +923,39 @@ class TestDownloadWithRetry:
                 session=session,
             )
         assert session.send.call_count == 4
+
+
+_INSTALL_SH = os.path.normpath(
+    os.path.join(
+        os.path.dirname(__file__),
+        '..',
+        '..',
+        '..',
+        'scripts',
+        'install-v2',
+        'install.sh',
+    )
+)
+_PGP_BLOCK_RE = re.compile(
+    r'-----BEGIN PGP PUBLIC KEY BLOCK-----'
+    r'.*?'
+    r'-----END PGP PUBLIC KEY BLOCK-----',
+    re.DOTALL,
+)
+
+
+def test_embedded_pgp_key_matches_install_script():
+    # update.py embeds its own copy of the AWS CLI signing key because it
+    # cannot read install.sh at runtime (the script is standalone and scripts/
+    # is not shipped in the package). This test guards against the two copies
+    # drifting apart.
+    with open(_INSTALL_SH, encoding='utf-8') as f:
+        install_sh = f.read()
+    match = _PGP_BLOCK_RE.search(install_sh)
+    assert match is not None, 'no PGP key block found in install.sh'
+    assert (
+        match.group(0) == update_module.AWS_CLI_PGP_KEY
+    ), 'AWS_CLI_PGP_KEY in update.py does not match install.sh; update both.'
 
 
 def _fake_ctypes(module_filename):

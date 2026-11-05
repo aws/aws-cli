@@ -10,10 +10,19 @@ To specify the file input for the ``trust-anchor-certificate`` command in the AW
         --key-store-password kmsPswd \
         --trust-anchor-certificate file://customerCA.crt
 
+Contents of ``customerCA.crt``::
+
+    -----BEGIN CERTIFICATE-----
+    MIIDWTCCAkGgAwIBAgIUEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEwDQYJKoZI
+    hvcNAQELBQAwTDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24xEDAO
+    ...
+    EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLE==
+    -----END CERTIFICATE-----
+
 Output::
 
     {
-        "CustomKeyStoreId": cks-1234567890abcdef0
+        "CustomKeyStoreId": "cks-1234567890abcdef0"
     }
 
 For more information, see `Creating an AWS CloudHSM key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
@@ -42,10 +51,10 @@ Otherwise, AWS CLI version 1.0 replaces the parameter value with the content fou
 Output::
 
     {
-        "CustomKeyStoreId": cks-2234567890abcdef0
+        "CustomKeyStoreId": "cks-2234567890abcdef0"
     }
 
-For more information, see `Creating an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-keystorecreate-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Create an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
 
 **Example 3: To create an external key store with VPC endpoint service connectivity**
 
@@ -63,13 +72,13 @@ Otherwise, AWS CLI version 1.0 replaces the parameter value with the content fou
         --xks-proxy-connectivity VPC_ENDPOINT_SERVICE \
         --xks-proxy-uri-endpoint "https://myproxy-private.xks.example.com" \
         --xks-proxy-uri-path "/kms/xks/v1" \
-        --xks-proxy-vpc-endpoint-service-name "com.amazonaws.vpce.us-east-1.vpce-svc-example1" \
+        --xks-proxy-vpc-endpoint-service-name "com.amazonaws.vpce.us-west-2.vpce-svc-example1" \
         --xks-proxy-authentication-credential "AccessKeyId=ABCDE12345670EXAMPLE, RawSecretAccessKey=DXjSUawnel2fr6SKC7G25CNxTyWKE5PF9XX6H/u9pSo="
 
 Output::
 
     {
-        "CustomKeyStoreId": cks-3234567890abcdef0
+        "CustomKeyStoreId": "cks-3234567890abcdef0"
     }
 
-For more information, see `Creating an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-keystorecreate-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Create an external key store <https://docs.aws.amazon.com/kms/latest/developerguide/create-xks-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.

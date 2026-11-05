@@ -1,6 +1,6 @@
 **To get detailed information about a specified domain**
 
-The following ``get-domain-detail`` command displays detailed information about the specified domain. 
+The following ``get-domain-detail`` example displays detailed information about the specified domain. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
@@ -87,3 +87,5 @@ Output::
             "clientTransferProhibited"
         ]
     }
+
+For more information, see `Registering and managing domains using Amazon Route 53 <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar.html>`__ in the *Amazon Route 53 Developer Guide*.

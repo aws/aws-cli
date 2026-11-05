@@ -5,15 +5,14 @@ The following ``start-read-set-export-job`` example exports two read sets to Ama
     aws omics start-read-set-export-job \
         --sequence-store-id 1234567890 \
         --sources readSetId=1234567890 readSetId=1234567890 \
-        --role-arn arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ
- \
-        --destination s3://omics-artifacts-01d6xmpl4e72dd32/read-set-export/
+        --role-arn arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ \
+        --destination s3://amzn-s3-demo-bucket/read-set-export/
 
 Output::
 
     {
         "creationTime": "2022-12-06T22:37:18.612Z",
-        "destination": "s3://omics-artifacts-01d6xmpl4e72dd32/read-set-export/",
+        "destination": "s3://amzn-s3-demo-bucket/read-set-export/",
         "id": "1234567890",
         "sequenceStoreId": "1234567890",
         "status": "SUBMITTED"

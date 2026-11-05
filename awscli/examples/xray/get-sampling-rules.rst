@@ -1,6 +1,6 @@
 **To retrieve all sampling rules**
 
-The following ``get-sampling-rules`` example displays details for all available sampling rules.::
+The following ``get-sampling-rules`` example displays details for all available sampling rules. ::
 
     aws xray get-sampling-rules
 	
@@ -11,7 +11,7 @@ Output::
             {
                 "SamplingRule": {
                     "RuleName": "Default",
-                    "RuleARN": "arn:aws:xray:us-east-1::sampling-rule/Default",
+                    "RuleARN": "arn:aws:xray:us-west-2::sampling-rule/Default",
                     "ResourceARN": "*",
                     "Priority": 10000,
                     "FixedRate": 0.01,
@@ -30,7 +30,7 @@ Output::
             {
                 "SamplingRule": {
                     "RuleName": "base-scorekeep",
-                    "RuleARN": "arn:aws:xray:us-east-1::sampling-rule/base-scorekeep",
+                    "RuleARN": "arn:aws:xray:us-west-2::sampling-rule/base-scorekeep",
                     "ResourceARN": "*",
                     "Priority": 9000,
                     "FixedRate": 0.1,
@@ -49,7 +49,7 @@ Output::
             {
                 "SamplingRule": {
                     "RuleName": "polling-scorekeep",
-                    "RuleARN": "arn:aws:xray:us-east-1::sampling-rule/polling-scorekeep",
+                    "RuleARN": "arn:aws:xray:us-west-2::sampling-rule/polling-scorekeep",
                     "ResourceARN": "*",
                     "Priority": 5000,
                     "FixedRate": 0.003,

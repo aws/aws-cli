@@ -3,7 +3,6 @@
 The following ``set-type-configuration`` example specifies the configuration data for a registered CloudFormation extension, in the given account and Region. ::
 
     aws cloudformation set-type-configuration \
-        --region us-west-2 \
         --type RESOURCE \
         --type-name Example::Test::Type \
         --configuration-alias default \

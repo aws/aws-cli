@@ -26,4 +26,4 @@ Output::
         ]
     }
 
-For more information about configuring a Windows AMI for faster launching, see `Configure your AMI for faster launching <https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/windows-ami-version-history.html#win-ami-config-fast-launch>`__ in the *Amazon EC2 User Guide*.
+For more information about configuring a Windows AMI for faster launching, see `Configure your AMI for faster launching <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/win-ami-config-fast-launch.html>`__ in the *Amazon EC2 User Guide*.

@@ -4,8 +4,7 @@ The following ``delete-device`` example deletes the specified device from the sp
 
     aws networkmanager delete-device \
         --global-network-id global-network-01231231231231231 \
-        --device-id device-07f6fd08867abc123 \
-        --region us-west-2
+        --device-id device-07f6fd08867abc123
 
 Output::
 
@@ -25,4 +24,4 @@ Output::
         }
     }
 
-For more information, see `Working with Devices <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#working-with-devices>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Devices in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-devices.html>`__ in the *Transit Gateway Network Manager Guide*.

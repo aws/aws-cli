@@ -9,12 +9,12 @@ Output::
     {
         "DeviceProfileList": [
             {
-                "Id": "12345678-a1b2-3c45-67d8-e90fa1b2c34d", 
-                "Arn": "arn:aws:iotwireless:us-east-1:123456789012:DeviceProfile/12345678-a1b2-3c45-67d8-e90fa1b2c34d"
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+                "Arn": "arn:aws:iotwireless:us-west-2:123456789012:DeviceProfile/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }, 
             {
-                "Id": "a1b2c3d4-5678-90ab-cdef-12ab345c67de", 
-                "Arn": "arn:aws:iotwireless:us-east-1:123456789012:DeviceProfile/a1b2c3d4-5678-90ab-cdef-12ab345c67de"
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222", 
+                "Arn": "arn:aws:iotwireless:us-west-2:123456789012:DeviceProfile/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         ]
     }

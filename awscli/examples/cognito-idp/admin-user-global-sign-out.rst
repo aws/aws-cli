@@ -6,4 +6,6 @@ The following ``admin-user-global-sign-out`` example signs out the user diego@ex
         --user-pool-id us-west-2_EXAMPLE \
         --username diego@example.com
 
+This command produces no output.
+
 For more information, see `Authentication with a user pool <https://docs.aws.amazon.com/cognito/latest/developerguide/authentication.html>`__ in the *Amazon Cognito Developer Guide*.

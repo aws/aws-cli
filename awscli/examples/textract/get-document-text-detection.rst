@@ -6,7 +6,7 @@ The following ``get-document-text-detection`` example shows how to get the resul
         --job-id 57849a3dc627d4df74123dca269d69f7b89329c870c65bb16c9fd63409d200b9 \
         --max-results 1000
 
-Output ::
+Output::
 
     {
         "Blocks": [
@@ -41,14 +41,14 @@ Output ::
                     {
                         "Type": "CHILD", 
                         "Ids": [
-                            "1b926a34-0357-407b-ac8f-ec473160c6a9", 
-                            "0c35dc17-3605-4c9d-af1a-d9451059df51", 
-                            "dea3db8a-52c2-41c0-b50c-81f66f4aa758"
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222", 
+                            "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
                         ]
                     }
                 ], 
                 "BlockType": "PAGE", 
-                "Id": "84671a5e-8c99-43be-a9d1-6838965da33e", 
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444", 
                 "Page": 1
             }
         ], 
@@ -59,6 +59,4 @@ Output ::
         "JobStatus": "SUCCEEDED"
     }
 
-For more information, see `Detecting and Analyzing Text in Multi-Page Documents`_ in the *Amazon Textract Developers Guide*
-
-.. _`Detecting and Analyzing Text in Multi-Page Documents`: https://docs.aws.amazon.com/textract/latest/dg/async.html
+For more information, see `Processing Documents Asynchronously <https://docs.aws.amazon.com/textract/latest/dg/async.html>`__ in the *Amazon Textract Developer Guide*.

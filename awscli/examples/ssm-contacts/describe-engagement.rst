@@ -3,13 +3,13 @@
 The following ``describe-engagement`` example lists the details of an engagement to a contact or escalation plan. The subject and content are sent to the contact channels. ::
 
     aws ssm-contacts describe-engagement \
-        --engagement-id "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/example_escalation/69e40ce1-8dbb-4d57-8962-5fbe7fc53356"
+        --engagement-id "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/example_escalation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
-        "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation",
-        "EngagementArn": "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/example_escalation/69e40ce1-8dbb-4d57-8962-5fbe7fc53356",
+        "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/example_escalation",
+        "EngagementArn": "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/example_escalation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Sender": "cli",
         "Subject": "cli-test",
         "Content": "Testing engagements via CLI",

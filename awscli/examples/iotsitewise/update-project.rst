@@ -3,7 +3,7 @@
 The following ``update-project`` example updates a wind farm project. ::
 
     aws iotsitewise update-project \
-        --project-id a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE \
+        --project-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --project-name "Wind Farm 1" \
         --project-description "Contains asset visualizations for Wind Farm #1 for Example Corp."
 

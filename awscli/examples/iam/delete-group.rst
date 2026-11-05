@@ -1,6 +1,6 @@
 **To delete an IAM group**
 
-The following ``delete-group`` command deletes an IAM group named ``MyTestGroup``. ::
+The following ``delete-group`` example deletes an IAM group named ``MyTestGroup``. ::
 
     aws iam delete-group \
         --group-name MyTestGroup

@@ -1,6 +1,6 @@
 **To update a user's mailbox quota**
 
-The following ``update-mailbox-quota`` command changes the specified user's mailbox quota. ::
+The following ``update-mailbox-quota`` example changes the specified user's mailbox quota. ::
 
     aws workmail update-mailbox-quota \
         --organization-id m-n1pq2345678r901st2u3vx45x6789yza \
@@ -9,4 +9,4 @@ The following ``update-mailbox-quota`` command changes the specified user's mail
 
 This command produces no output.
 
-For more information, see `Managing User Accounts <https://docs.aws.amazon.com/workmail/latest/adminguide/manage-users.html>`__ in the *Amazon WorkMail Administrator Guide*.
+For more information, see `Working with users <https://docs.aws.amazon.com/workmail/latest/adminguide/users_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

@@ -1,6 +1,6 @@
 **To retrieve a list of IP addresses that are blocked by a rate-based rule**
 
-The following ``get-rate-based-statement-managed-keys`` retrieves the IP addresses currently blocked by a rate-based rule that's being used for a regional application. ::
+The following ``get-rate-based-statement-managed-keys`` example retrieves the IP addresses currently blocked by a rate-based rule that's being used for a regional application. ::
 
     aws wafv2 get-rate-based-statement-managed-keys \
         --scope REGIONAL \

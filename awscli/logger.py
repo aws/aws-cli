@@ -10,9 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import logging
 
 import awscrt.io
+
+from awscli.redaction import redact
 
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
@@ -29,6 +32,17 @@ except RuntimeError:
     # case of multiple imports, we should still guard against it if
     # something causes the module cache to be cleared between imports.
     pass
+
+
+class RedactingFormatter(logging.Formatter):
+    """A formatter that redacts sensitive values from each log record."""
+
+    def format(self, record):
+        if record.args:
+            record = copy.copy(record)
+            record.args = redact(record.args)
+        # The whole formatted record, including any traceback, is redacted.
+        return redact(super().format(record))
 
 
 def set_stream_logger(logger_name, log_level, stream=None, format_string=None):
@@ -66,7 +80,7 @@ def set_stream_logger(logger_name, log_level, stream=None, format_string=None):
     # create formatter
     if format_string is None:
         format_string = LOG_FORMAT
-    formatter = logging.Formatter(format_string)
+    formatter = RedactingFormatter(format_string)
 
     # add formatter to ch
     ch.setFormatter(formatter)

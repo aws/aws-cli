@@ -14,27 +14,28 @@ The following ``post-comment-for-pull-request`` example adds the comment "These 
 Output::
 
     {
-         "afterBlobId": "1f330709EXAMPLE",
-         "afterCommitId": "5d036259EXAMPLE",
-         "beforeBlobId": "80906a4cEXAMPLE",
-         "beforeCommitId": "317f8570EXAMPLE",
-         "comment": {
-                "authorArn": "arn:aws:iam::111111111111:user/Saanvi_Sarkar",
-                "clientRequestToken": "123Example",
-                "commentId": "abcd1234EXAMPLEb5678efgh",
-                "content": "These don't appear to be used anywhere. Can we remove them?",
-                "creationDate": 1508369622.123,
-                "deleted": false,
-                "CommentId": "",
-                "lastModifiedDate": 1508369622.123,
-                "callerReactions": [],
-                "reactionCounts": []
-            },
-            "location": { 
-                "filePath": "ahs_count.py",
-                "filePosition": 367,
-                "relativeFileVersion": "AFTER"
-             },
-         "repositoryName": "MyDemoRepo",
-         "pullRequestId": "47"
+        "afterBlobId": "1f330709EXAMPLE",
+        "afterCommitId": "5d036259EXAMPLE",
+        "beforeBlobId": "80906a4cEXAMPLE",
+        "beforeCommitId": "317f8570EXAMPLE",
+        "comment": {
+            "authorArn": "arn:aws:iam::123456789012:user/Saanvi_Sarkar",
+            "clientRequestToken": "123Example",
+            "commentId": "abcd1234EXAMPLEb5678efgh",
+            "content": "These don't appear to be used anywhere. Can we remove them?",
+            "creationDate": 1508369622.123,
+            "deleted": false,
+            "lastModifiedDate": 1508369622.123,
+            "callerReactions": [],
+            "reactionCounts": {}
+        },
+        "location": {
+            "filePath": "ahs_count.py",
+            "filePosition": 367,
+            "relativeFileVersion": "AFTER"
+        },
+        "repositoryName": "MyDemoRepo",
+        "pullRequestId": "47"
     }
+
+For more information, see `Review a pull request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-review-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

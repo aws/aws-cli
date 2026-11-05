@@ -7,5 +7,3 @@ The following ``tag-resource`` example creates a tag for the specified resource.
         --tags key="Type",value="Residential"
 
 This command produces no output.
-
-For more information, see `Tagging Your AWS IoT Things Graph Resources <https://docs.aws.amazon.com/thingsgraph/latest/ug/tagging-tg.html>`__ in the *AWS IoT Things Graph User Guide*.

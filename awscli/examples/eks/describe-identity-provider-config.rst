@@ -1,4 +1,4 @@
-**Describe an identity provider configuration associated to your Amazon EKS Cluster**
+**To describe an identity provider configuration associated to your Amazon EKS Cluster**
 
 The following ``describe-identity-provider-config`` example describes an identity provider configuration associated to your Amazon EKS Cluster. ::
 
@@ -12,9 +12,9 @@ Output::
         "identityProviderConfig": {
             "oidc": {
                 "identityProviderConfigName": "my-identity-provider",
-                "identityProviderConfigArn": "arn:aws:eks:us-east-2:111122223333:identityproviderconfig/my-eks-cluster/oidc/my-identity-provider/8ac76722-78e4-cec1-ed76-d49eea058622",
+                "identityProviderConfigArn": "arn:aws:eks:us-west-2:123456789012:identityproviderconfig/my-eks-cluster/oidc/my-identity-provider/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "clusterName": "my-eks-cluster",
-                "issuerUrl": "https://oidc.eks.us-east-2.amazonaws.com/id/38D6A4619A0A69E342B113ED7F1A7652",
+                "issuerUrl": "https://oidc.eks.us-west-2.amazonaws.com/id/38D6A4619A0A69E342B113ED7F1A7652",
                 "clientId": "kubernetes",
                 "usernameClaim": "email",
                 "usernamePrefix": "my-username-prefix",

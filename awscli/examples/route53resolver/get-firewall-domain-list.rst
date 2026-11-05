@@ -10,7 +10,7 @@ Output::
     {
         "FirewallDomainList": {
             "Id": "rslvr-fdl-9e956e9ffexample",
-            "Arn": "arn:aws:route53resolver:us-west-2:123457689012:firewall-domain-list/rslvr-fdl-42b60677cexample",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:firewall-domain-list/rslvr-fdl-42b60677cexample",
             "Name": "test",
             "DomainCount": 0,
             "Status": "COMPLETE",

@@ -9,13 +9,13 @@ Output::
     {
         "outgoingCertificates": [
             {
-                "certificateArn": "arn:aws:iot:us-west-2:030714055129:cert/488b6a7f2acdeb00a77384e63c4e40b18b1b3caaae57b7272ba44c45e3448142",
+                "certificateArn": "arn:aws:iot:us-west-2:123456789111:cert/488b6a7f2acdeb00a77384e63c4e40b18b1b3caaae57b7272ba44c45e3448142",
                 "certificateId": "488b6a7f2acdeb00a77384e63c4e40b18b1b3caaae57b7272ba44c45e3448142",
-                "transferredTo": "030714055129",
+                "transferredTo": "123456789111",
                 "transferDate": 1569427780.441,
                 "creationDate": 1569363250.557
             }
         ]
     }
 
-For more information, see `ListOutgoingCertificates <https://docs.aws.amazon.com/iot/latest/apireference/API_ListOutgoingCertificates.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Transfer a certificate to another account <https://docs.aws.amazon.com/iot/latest/developerguide/transfer-cert.html>`__ in the *AWS IoT Core Developer Guide*.

@@ -1,6 +1,6 @@
 **To change the description of a pull request**
 
-This example demonstrates how to change the description of a pull request with the ID of ``47``. ::
+The following ``update-pull-request-description`` example changes the description of a pull request with the ID of ``47``. ::
 
     aws codecommit update-pull-request-description \
         --pull-request-id 47 \
@@ -10,7 +10,7 @@ Output::
 
     {
         "pullRequest": { 
-            "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
+            "authorArn": "arn:aws:iam::123456789012:user/Li_Juan",
             "clientRequestToken": "",
             "creationDate": 1508530823.155,
             "description": "Updated the pull request to remove unused global variable.",
@@ -22,7 +22,7 @@ Output::
                     "destinationCommit": "9f31c968EXAMPLE",
                     "destinationReference": "refs/heads/main",
                     "mergeMetadata": { 
-                        "isMerged": false,
+                        "isMerged": false
                     },
                     "repositoryName": "MyDemoRepo",
                     "sourceCommit": "99132ab0EXAMPLE",
@@ -32,3 +32,5 @@ Output::
             "title": "Consolidation of global variables"
         }
     }
+
+For more information, see `Update a pull request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-update-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

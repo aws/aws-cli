@@ -1,6 +1,6 @@
 **To retrieve load forecast data**
 
-This example retrieves load forecast data for a scalable resource (an Auto Scaling group) that is associated with the specified scaling plan. ::
+The following ``get-scaling-plan-resource-forecast-data`` example retrieves load forecast data for a scalable resource (an Auto Scaling group) that is associated with the specified scaling plan. ::
 
     aws autoscaling-plans get-scaling-plan-resource-forecast-data \
         --scaling-plan-name my-scaling-plan \
@@ -15,7 +15,20 @@ This example retrieves load forecast data for a scalable resource (an Auto Scali
 Output::
 
     {
-        "Datapoints": [...] 
+        "Datapoints": [
+            {
+                "Timestamp": "2019-08-30T00:00:00+00:00",
+                "Value": 400.0
+            },
+            {
+                "Timestamp": "2019-08-30T01:00:00+00:00",
+                "Value": 420.0
+            },
+            {
+                "Timestamp": "2019-08-30T02:00:00+00:00",
+                "Value": 435.0
+            }
+        ]
     }
 
 For more information, see `What Is AWS Auto Scaling <https://docs.aws.amazon.com/autoscaling/plans/userguide/what-is-aws-auto-scaling.html>`__ in the *AWS Auto Scaling User Guide*.

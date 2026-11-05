@@ -3,7 +3,7 @@
 The following ``batch-delete-cluster-snapshots`` example deletes a set of manual cluster snapshots. ::
 
     aws redshift batch-delete-cluster-snapshots \
-	    --identifiers SnapshotIdentifier=mycluster-2019-11-06-14-12 SnapshotIdentifier=mycluster-2019-11-06-14-20
+        --identifiers SnapshotIdentifier=mycluster-2019-11-06-14-12 SnapshotIdentifier=mycluster-2019-11-06-14-20
 
 Output::
 

@@ -15,7 +15,7 @@ Output::
         "format": "npm",
         "package": "test-package",
         "version": "4.0.0",
-        "readme": "<div align=\"center\">\n   <a href=\https://github.com/test-package/testpack\"> ... more content ... \n",
+        "readme": "<div align=\"center\">\n   <a href=\"https://github.com/test-package/testpack\">\n   </a>\n</div>\n",
         "versionRevision": "Ciqe5/9yicvkJT13b5/LdLpCyE6fqA7poa9qp+FilPs="
     }
 

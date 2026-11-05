@@ -1,6 +1,6 @@
 **Example 1: To create a lifecycle hook**
 
-This example creates a lifecycle hook that will invoke on any newly launched instances, with a timeout of 4800 seconds. This is useful for keeping the instances in a wait state until the user data scripts have finished, or for invoking an AWS Lambda function using EventBridge. ::
+The following ``put-lifecycle-hook`` example creates a lifecycle hook that will invoke on any newly launched instances, with a timeout of 4800 seconds. This is useful for keeping the instances in a wait state until the user data scripts have finished, or for invoking an AWS Lambda function using EventBridge. ::
 
     aws autoscaling put-lifecycle-hook \
         --auto-scaling-group-name my-asg \
@@ -14,7 +14,7 @@ For more information, see `Amazon EC2 Auto Scaling lifecycle hooks <https://docs
 
 **Example 2: To send an Amazon SNS email message to notify you of instance state transitions**
 
-This example creates a lifecycle hook with the Amazon SNS topic and IAM role to use to receive notification at instance launch. ::
+The following ``put-lifecycle-hook`` example creates a lifecycle hook with the Amazon SNS topic and IAM role to use to receive notification at instance launch. ::
 
     aws autoscaling put-lifecycle-hook \
         --auto-scaling-group-name my-asg \
@@ -29,7 +29,7 @@ For more information, see `Amazon EC2 Auto Scaling lifecycle hooks <https://docs
 
 **Example 3: To publish a message to an Amazon SQS queue**
 
-This example creates a lifecycle hook that publishes a message with metadata to the specified Amazon SQS queue. ::
+The following ``put-lifecycle-hook`` example creates a lifecycle hook that publishes a message with metadata to the specified Amazon SQS queue. ::
 
     aws autoscaling put-lifecycle-hook \
         --auto-scaling-group-name my-asg \

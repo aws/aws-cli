@@ -1,6 +1,6 @@
 **To get the results of an objects and scenes detection operation**
 
-The following ``get-label-detection`` command displays the results of an objects and scenes detection operation that you started previously by calling ``start-label-detection``. ::
+The following ``get-label-detection`` example displays the results of an objects and scenes detection operation that you started previously by calling ``start-label-detection``. ::
 
     aws rekognition get-label-detection  \
         --job-id 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef

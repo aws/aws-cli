@@ -2,14 +2,13 @@
 
 The following ``create-device`` example creates a device in the specified global network. The device details include a description, the type, vendor, model, and serial number. ::
 
-    aws networkmanager create-device  
+    aws networkmanager create-device \
         --global-network-id global-network-01231231231231231 \
         --description "New York office device" \
         --type "office device" \
         --vendor "anycompany" \
         --model "abcabc" \
-        --serial-number "1234" \
-        --region us-west-2
+        --serial-number "1234"
 
 Output::
 
@@ -28,4 +27,4 @@ Output::
         }
     }
 
-For more information, see `Working with Devices <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#working-with-devices>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Devices in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-devices.html>`__ in the *Transit Gateway Network Manager Guide*.

@@ -1,6 +1,6 @@
 **To remove a policy from an IAM user**
 
-The following ``delete-user-policy`` command removes the specified policy from the IAM user named ``Bob``. ::
+The following ``delete-user-policy`` example removes the specified policy from the IAM user named ``Bob``. ::
 
     aws iam delete-user-policy \
         --user-name Bob \

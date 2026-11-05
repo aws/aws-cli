@@ -3,8 +3,8 @@
 The following ``delete-timeline-event`` example deletes a custom timeline event from the specified incident record. ::
 
     aws ssm-incidents delete-timeline-event \
-        --event-id "c0bcc885-a41d-eb01-b4ab-9d2de193643c" \
-        --incident-record-arn "arn:aws:ssm-incidents::111122223333:incident-record/Example-Response-Plan/6ebcc812-85f5-b7eb-8b2f-283e4d844308"
+        --event-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --incident-record-arn "arn:aws:ssm-incidents::123456789012:incident-record/Example-Response-Plan/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
 
 This command produces no output.
 

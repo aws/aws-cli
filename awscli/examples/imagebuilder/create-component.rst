@@ -50,7 +50,7 @@ The following ``create-component`` example creates a component from a YAML defin
         --uri s3://amzn-s3-demo-bucket/components/install-my-app.yaml \
         --client-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
-Contents of ``install-my-app.yaml``, uploaded to the Amazon S3 URI that the command references::
+Contents of ``install-my-app.yaml``::
 
     name: InstallMyApp
     description: Installs a specific version of my application

@@ -636,6 +636,9 @@ PLUGIN_REGISTRY = {
     'building-command-table.gamelift': [
         ('awscli.customizations.gamelift', 'register_gamelift_commands')
     ],
+    'building-command-table.healthlake': [
+        ('awscli.customizations.removals', 'register_removals')
+    ],
     'building-command-table.iam': [
         ('awscli.customizations.wizard.commands', 'register_wizard_commands')
     ],
@@ -651,6 +654,9 @@ PLUGIN_REGISTRY = {
     ],
     'building-command-table.lexv2-runtime': [
         ('awscli.customizations.removals', 'register_removals')
+    ],
+    'building-command-table.lambda-web': [
+        ('awscli.customizations.lambdaweb', 'register_lambda_web_commands')
     ],
     'building-command-table.lightsail': [
         ('awscli.customizations.lightsail', 'initialize')
@@ -918,5 +924,10 @@ MAIN_COMMAND_TABLE_OPS: list[
         'update',
         'awscli.customizations.update',
         'UpdateCommand',
+    ),
+    (
+        CommandTableOp.RENAME,
+        'eventbridgev2',
+        'eventsv2',
     ),
 ]

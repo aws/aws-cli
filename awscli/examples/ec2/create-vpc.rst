@@ -30,7 +30,7 @@ Output::
             "Tags": [
                 {
                     "Key": "Name",
-                    "Value": MyVpc"
+                    "Value": "MyVpc"
                 }
             ]
         }
@@ -52,7 +52,7 @@ Output::
             "DhcpOptionsId": "dopt-19edf471",
             "State": "pending",
             "VpcId": "vpc-0a53287fa4EXAMPLE",
-            "OwnerId": "111122223333",
+            "OwnerId": "123456789012",
             "InstanceTenancy": "dedicated",
             "Ipv6CidrBlockAssociationSet": [],
             "CidrBlockAssociationSet": [
@@ -114,13 +114,13 @@ Output::
 
 The following ``create-vpc`` example creates a VPC with a CIDR from an Amazon VPC IP Address Manager (IPAM) pool.
 
-Linux and macOS::
+For Linux and macOS, use the following command. ::
 
     aws ec2 create-vpc \
         --ipv4-ipam-pool-id ipam-pool-0533048da7d823723 \
         --tag-specifications ResourceType=vpc,Tags='[{Key=Environment,Value="Preprod"},{Key=Owner,Value="Build Team"}]'
 
-Windows::
+For Windows, use the following command. ::
 
     aws ec2 create-vpc ^
         --ipv4-ipam-pool-id ipam-pool-0533048da7d823723 ^

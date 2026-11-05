@@ -1,14 +1,18 @@
-The following command deletes an object named ``test.txt`` from a bucket named ``amzn-s3-demo-bucket``::
+**To delete an object**
 
-  aws s3api delete-object --bucket amzn-s3-demo-bucket --key test.txt
+The following ``delete-object`` example deletes an object named ``test.txt`` from a bucket named ``amzn-s3-demo-bucket``. ::
 
-If bucket versioning is enabled, the output will contain the version ID of the delete marker::
+    aws s3api delete-object \
+        --bucket amzn-s3-demo-bucket \
+        --key test.txt
 
-  {
-    "VersionId": "9_gKg5vG56F.TTEUdwkxGpJ3tNDlWlGq",
-    "DeleteMarker": true
-  }
+If bucket versioning is enabled, the output contains the version ID of the delete marker.
 
-For more information about deleting objects, see `Deleting Objects`_ in the *Amazon S3 Developer Guide*.
+Output::
 
-.. _`Deleting Objects`: http://docs.aws.amazon.com/AmazonS3/latest/dev/DeletingObjects.html
+    {
+        "VersionId": "9_gKg5vG56F.TTEUdwkxGpJ3tNDlWlGq",
+        "DeleteMarker": true
+    }
+
+For more information, see `Deleting a single object <https://docs.aws.amazon.com/AmazonS3/latest/userguide/delete-objects.html>`__ in the *Amazon S3 User Guide*.

@@ -1,4 +1,4 @@
-**To update several phone number product types at the same time**
+**Example 1: To update several phone number product types at the same time**
 
 The following ``batch-update-phone-number`` example updates the product types for all of the specified phone numbers. ::
 
@@ -11,7 +11,7 @@ Output::
         "PhoneNumberErrors": []
     }
 
-**To update several phone number calling names at the same time**
+**Example 2: To update several phone number calling names at the same time**
 
 The following ``batch-update-phone-number`` example updates the calling names for all of the specified phone numbers. ::
 

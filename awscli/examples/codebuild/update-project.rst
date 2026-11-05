@@ -2,14 +2,15 @@
 
 The following ``update-project`` example changes the settings of the specified CodeBuild build project named my-demo-project. ::
 
-    aws codebuild update-project --name "my-demo-project" \
+    aws codebuild update-project \
+        --name "my-demo-project" \
         --description "This project is updated" \
         --source "{\"type\": \"S3\",\"location\": \"codebuild-us-west-2-123456789012-input-bucket/my-source-2.zip\"}" \
         --artifacts {"\"type\": \"S3\",\"location\": \"codebuild-us-west-2-123456789012-output-bucket-2\""} \
         --environment "{\"type\": \"LINUX_CONTAINER\",\"image\": \"aws/codebuild/standard:1.0\",\"computeType\": \"BUILD_GENERAL1_MEDIUM\"}" \
         --service-role "arn:aws:iam::123456789012:role/service-role/my-codebuild-service-role"
 
-The output displays the updated settings. ::
+Output::
 
     {
         "project": {
@@ -53,4 +54,4 @@ The output displays the updated settings. ::
         }
     }
 
-For more information, see `Change a Build Project's Settings (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/change-project.html#change-project-cli>`_ in the *AWS CodeBuild User Guide*
+For more information, see `Change build project settings in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/change-project.html#change-project-cli>`__ in the *AWS CodeBuild User Guide*.

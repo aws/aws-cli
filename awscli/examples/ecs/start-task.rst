@@ -28,7 +28,7 @@ Output::
                 "memory": "128",
                 "containers": [
                     {
-                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/75f11ed4-8a3d-4f26-a33b-ad1db9e02d41",
+                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                         "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/default/666fdccc2e2d4b6894dd422f4eeee8f8",
                         "name": "sleep",
                         "lastStatus": "PENDING",
@@ -61,16 +61,16 @@ The following ``start-task`` example configures an encrypted Amazon EBS volume f
 Contents of ``ebs.json``::
 
     {
-       "cluster": "default",
-       "taskDefinition": "mytaskdef",
-       "networkConfiguration":{
+        "cluster": "default",
+        "taskDefinition": "mytaskdef",
+        "networkConfiguration":{
             "awsvpcConfiguration":{
                 "assignPublicIp": "ENABLED",
                 "securityGroups": ["sg-12344321"],
                 "subnets":["subnet-12344321"]
             }
         },
-       "volumeConfigurations": [
+        "volumeConfigurations": [
             {
                 "name": "myEBSVolume",
                 "managedEBSVolume": {
@@ -78,7 +78,7 @@ Contents of ``ebs.json``::
                     "sizeInGiB": 100,
                     "roleArn":"arn:aws:iam::123456789012:role/ecsInfrastructureRole",
                     "encrypted": true,
-                    "kmsKeyId": "arn:aws:kms:region:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+                    "kmsKeyId": "arn:aws:kms:region:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                 }
             }
         ]
@@ -91,7 +91,7 @@ Output::
             {
                 "attachments": [
                     {
-                        "id": "aea29489-9dcd-49f1-8164-4d91566e1113",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                         "type": "ElasticNetworkInterface",
                         "status": "PRECREATED",
                         "details": [
@@ -102,7 +102,7 @@ Output::
                         ]
                     },
                     {
-                        "id": "f29e1222-9a1e-410f-b499-a12a7cd6d42e",
+                        "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                         "type": "AmazonElasticBlockStorage",
                         "status": "CREATED",
                         "details": [
@@ -132,7 +132,7 @@ Output::
                 "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/default/765936fadbdd46b5991a4bd70c2a43d4",
                 "containers": [
                     {
-                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/default/bb122ace3ed84add92c00a351a03c69e/a4a9ed10-51c7-4567-9653-50e71b94f867",
+                        "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/default/bb122ace3ed84add92c00a351a03c69e/a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                         "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/default/bb122ace3ed84add92c00a351a03c69e",
                         "name": "container-using-ebs",
                         "image": "amazonlinux:2",
@@ -157,7 +157,7 @@ Output::
                     ],
                     "inferenceAcceleratorOverrides": []
                 },
-                 "tags": [],
+                "tags": [],
                 "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/default/bb122ace3ed84add92c00a351a03c69e",
                 "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/mytaskdef:4",
                 "version": 1

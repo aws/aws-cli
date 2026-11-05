@@ -19,7 +19,7 @@ Output::
                 "RecognizerName": "entity-recognizer-2",
                 "NumberOfVersions": 1,
                 "LatestVersionCreatedAt": "2023-06-14T22:55:27.805000+00:00",
-                "LatestVersionName": "2"
+                "LatestVersionName": "2",
                 "LatestVersionStatus": "TRAINED"
             },
             {

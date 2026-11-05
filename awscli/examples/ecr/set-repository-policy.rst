@@ -27,7 +27,9 @@ Contents of ``my-policy.json``::
 Output::
 
     {
-        "registryId": "012345678910",
+        "registryId": "123456789012",
         "repositoryName": "cluster-autoscaler",
         "policyText": "{\n  \"Version\" : \"2008-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"allow public pull\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : \"*\",\n    \"Action\" : [ \"ecr:BatchCheckLayerAvailability\", \"ecr:BatchGetImage\", \"ecr:GetDownloadUrlForLayer\" ]\n  } ]\n}"
     }
+
+For more information, see `Setting a private repository policy statement in Amazon ECR <https://docs.aws.amazon.com/AmazonECR/latest/userguide/set-repository-policy.html>`__ in the *Amazon ECR User Guide*.

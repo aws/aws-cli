@@ -1,15 +1,23 @@
-**To modify the enableDnsSupport attribute**
+**Example 1: To modify the enableDnsSupport attribute**
 
-This example modifies the ``enableDnsSupport`` attribute. This attribute indicates whether DNS resolution is enabled for the VPC. If this attribute is ``true``, the Amazon DNS server resolves DNS hostnames for your instances to their corresponding IP addresses; otherwise, it does not. If the command succeeds, no output is returned.
+The following ``modify-vpc-attribute`` example modifies the ``enableDnsSupport`` attribute. This attribute indicates whether DNS resolution is enabled for the VPC. If this attribute is ``true``, the Amazon DNS server resolves DNS hostnames for your instances to their corresponding IP addresses; otherwise, it does not. ::
 
-Command::
+    aws ec2 modify-vpc-attribute \
+        --vpc-id vpc-a01106c2 \
+        --enable-dns-support "{\"Value\":false}"
 
-  aws ec2 modify-vpc-attribute --vpc-id vpc-a01106c2 --enable-dns-support "{\"Value\":false}"
-  
-**To modify the enableDnsHostnames attribute**
+This command produces no output.
 
-This example modifies the ``enableDnsHostnames`` attribute. This attribute indicates whether instances launched in the VPC get DNS hostnames. If this attribute is ``true``, instances in the VPC get DNS hostnames; otherwise, they do not. If the command succeeds, no output is returned.
+For more information, see `View and update DNS attributes for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns-updating.html>`__ in the *Amazon VPC User Guide*.
 
-Command::
+**Example 2: To modify the enableDnsHostnames attribute**
 
-  aws ec2 modify-vpc-attribute --vpc-id vpc-a01106c2 --enable-dns-hostnames "{\"Value\":false}"
+The following ``modify-vpc-attribute`` example modifies the ``enableDnsHostnames`` attribute. This attribute indicates whether instances launched in the VPC get DNS hostnames. If this attribute is ``true``, instances in the VPC get DNS hostnames; otherwise, they do not. ::
+
+    aws ec2 modify-vpc-attribute \
+        --vpc-id vpc-a01106c2 \
+        --enable-dns-hostnames "{\"Value\":false}"
+
+This command produces no output.
+
+For more information, see `View and update DNS attributes for your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns-updating.html>`__ in the *Amazon VPC User Guide*.

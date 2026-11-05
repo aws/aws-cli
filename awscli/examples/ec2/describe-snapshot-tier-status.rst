@@ -15,7 +15,7 @@ Output::
                 "LastTieringProgress": 100,
                 "Tags": [],
                 "VolumeId": "vol-01234567890abcedf",
-                "LastTieringOperationState": "archival-completed",
+                "LastTieringOperationStatus": "archival-completed",
                 "StorageTier": "archive",
                 "OwnerId": "123456789012",
                 "SnapshotId": "snap-01234567890abcedf",
@@ -24,4 +24,4 @@ Output::
         ]
     }
 
-For more information, see `View archived snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-snapshot-archiving.html#view-archived-snapshot>`__ in the *Amazon Elastic Compute Cloud User Guide*.
+For more information, see `View archived Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/view-archived-snapshot.html>`__ in the *Amazon EBS User Guide*.

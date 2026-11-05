@@ -2,7 +2,8 @@
 
 The following ``delete-git-hub-account-token`` example deletes the connection of the specified GitHub account. ::
 
-    aws deploy delete-git-hub-account-token --token-name my-github-account
+    aws deploy delete-git-hub-account-token \
+        --token-name my-github-account
     
 Output::
 
@@ -10,4 +11,4 @@ Output::
         "tokenName": "my-github-account"
     }
 
-For more information, see `DeleteGitHubAccountToken <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_DeleteGitHubAccountToken.html>`_ in the *AWS CodeDeploy API Reference*.
+For more information, see `Integrating CodeDeploy with GitHub <https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-partners-github.html>`__ in the *AWS CodeDeploy User Guide*.

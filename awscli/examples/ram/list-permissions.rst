@@ -80,7 +80,6 @@ Output::
                 "lastUpdatedTime": 1589307188.584,
                 "isResourceTypeDefault": true
             },
-            ...TRUNCATED FOR BREVITY...
             {
                 "arn": "arn:aws:ram::aws:permission/AWSRAMSubordinateCACertificatePathLen0IssuanceCertificateAuthority",
                 "version": "1",
@@ -93,3 +92,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing managed permissions <https://docs.aws.amazon.com/ram/latest/userguide/working-with-sharing-view-permissions.html>`__ in the *AWS RAM User Guide*.

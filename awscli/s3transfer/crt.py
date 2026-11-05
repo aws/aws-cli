@@ -121,6 +121,7 @@ def create_s3_crt_client(
     multipart_upload_threshold=None,
     max_active_connections_override=None,
     retry_options=None,
+    connect_timeout_ms=None,
 ):
     """
     :type region: str
@@ -186,6 +187,10 @@ def create_s3_crt_client(
     :param retry_options: Kwargs to use to build an
         `awscrt.s3.S3RetryConfig`. If not set, the CRT's own retry
         configuration is used.
+
+    :type connect_timeout_ms: Optional[int]
+    :param connect_timeout_ms: Timeout, in milliseconds, for establishing a
+        connection. If not set, the CRT's own default is used.
     """
 
     if bootstrap is None:
@@ -236,6 +241,7 @@ def create_s3_crt_client(
         multipart_upload_threshold=multipart_upload_threshold,
         max_active_connections_override=max_active_connections_override,
         retry_config=crt_retry_config,
+        connect_timeout_ms=connect_timeout_ms,
     )
 
 
@@ -698,6 +704,9 @@ class CRTTransferMeta(BaseTransferMeta):
         self._call_args = call_args
         self._user_context = {}
         self._size = None
+        self._etag = None
+        self._full_object_checksum = None
+        self._full_object_checksum_unavailable = False
 
     @property
     def call_args(self):
@@ -717,6 +726,27 @@ class CRTTransferMeta(BaseTransferMeta):
 
     def provide_transfer_size(self, size):
         self._size = size
+
+    @property
+    def etag(self):
+        return self._etag
+
+    def provide_object_etag(self, etag):
+        self._etag = etag
+
+    @property
+    def full_object_checksum(self):
+        return self._full_object_checksum
+
+    def provide_full_object_checksum(self, full_object_checksum):
+        self._full_object_checksum = full_object_checksum
+
+    @property
+    def full_object_checksum_unavailable(self):
+        return self._full_object_checksum_unavailable
+
+    def mark_full_object_checksum_unavailable(self):
+        self._full_object_checksum_unavailable = True
 
 
 class CRTTransferFuture(BaseTransferFuture):
@@ -967,16 +997,6 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
             crt_request.headers.set("host", url_parts.netloc)
         if crt_request.headers.get('Content-MD5') is not None:
             crt_request.headers.remove("Content-MD5")
-
-        # In general, the CRT S3 client expects a content length header. It
-        # only expects a missing content length header if the body is not
-        # seekable. However, botocore does not set the content length header
-        # for GetObject API requests and so we set the content length to zero
-        # to meet the CRT S3 client's expectation that the content length
-        # header is set even if there is no body.
-        if crt_request.headers.get('Content-Length') is None:
-            if botocore_http_request.body is None:
-                crt_request.headers.add('Content-Length', "0")
 
         # Botocore sets the Transfer-Encoding header when it cannot determine
         # the content length of the request body (e.g. it's not seekable).
@@ -1550,6 +1570,15 @@ class S3ClientArgsCreator:
                 call_args.extra_args
             )
         )
+        single_request = self._should_download_in_single_request(
+            future.meta.size
+        )
+        if not single_request and future.meta.etag is not None:
+            call_args.extra_args['IfMatch'] = future.meta.etag
+            if checksum_config.validate_response:
+                self._configure_full_object_checksum_validation(
+                    checksum_config, future.meta
+                )
         if isinstance(call_args.fileobj, str):
             final_filepath = call_args.fileobj
             # A redirected download creates more than one CRT request for the
@@ -1586,12 +1615,27 @@ class S3ClientArgsCreator:
         make_request_args['recv_filepath'] = recv_filepath
         make_request_args['on_body'] = on_body
         make_request_args['checksum_config'] = checksum_config
-        if self._should_download_in_single_request(future.meta.size):
+        if single_request:
             make_request_args['type'] = S3RequestType.DEFAULT
             make_request_args['operation_name'] = _get_operation_name(
                 request_type
             )
         return make_request_args
+
+    def _configure_full_object_checksum_validation(
+        self, checksum_config, transfer_meta
+    ):
+        # Spares CRT's checksum HeadObject.
+        checksum = transfer_meta.full_object_checksum
+        if checksum is not None:
+            checksum_config.expected_checksum = checksum.expected_b64
+            checksum_config.expected_checksum_algorithm = (
+                awscrt.s3.S3ChecksumAlgorithm[checksum.algorithm.upper()]
+            )
+        elif transfer_meta.full_object_checksum_unavailable:
+            checksum_config.response_validation_mode = (
+                awscrt.s3.S3ChecksumValidationMode.REQUEST_ONLY
+            )
 
     def _should_download_in_single_request(self, size):
         if self._transfer_config is None or size is None:

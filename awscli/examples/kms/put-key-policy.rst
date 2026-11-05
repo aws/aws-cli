@@ -16,7 +16,7 @@ Contents of ``key_policy.json``::
                 "Sid" : "Enable IAM User Permissions",
                 "Effect" : "Allow",
                 "Principal" : {
-                    "AWS" : "arn:aws:iam::111122223333:root"
+                    "AWS" : "arn:aws:iam::123456789012:root"
                 },
                 "Action" : "kms:*",
                 "Resource" : "*"
@@ -25,7 +25,7 @@ Contents of ``key_policy.json``::
                 "Sid" : "Allow Use of Key",
                 "Effect" : "Allow",
                 "Principal" : {
-                    "AWS" : "arn:aws:iam::111122223333:user/test-user"
+                    "AWS" : "arn:aws:iam::123456789012:user/test-user"
                 },
                 "Action" : [
                     "kms:DescribeKey",
@@ -40,14 +40,14 @@ To identify the KMS key, this example uses the key ID, but you can also use a ke
 
     aws kms put-key-policy \
         --policy-name default \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --policy file://key_policy.json
 
 This command does not produce any output. To verify that the command was effective, use the ``get-key-policy`` command. The following example command gets the key policy for the same KMS key. The ``output`` parameter with a value of ``text`` returns a text format that is easy to read. ::
 
     aws kms get-key-policy \
         --policy-name default \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --output text
 
 Output::
@@ -60,7 +60,7 @@ Output::
                 "Sid" : "Enable IAM User Permissions",
                 "Effect" : "Allow",
                 "Principal" : {
-                    "AWS" : "arn:aws:iam::111122223333:root"
+                    "AWS" : "arn:aws:iam::123456789012:root"
                 },
                 "Action" : "kms:*",
                 "Resource" : "*"
@@ -69,7 +69,7 @@ Output::
                 "Sid" : "Allow Use of Key",
                 "Effect" : "Allow",
                 "Principal" : {
-                    "AWS" : "arn:aws:iam::111122223333:user/test-user"
+                    "AWS" : "arn:aws:iam::123456789012:user/test-user"
                 },
                 "Action" : [ "kms:Describe", "kms:List" ],
                 "Resource" : "*"

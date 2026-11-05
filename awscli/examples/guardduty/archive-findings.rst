@@ -1,6 +1,6 @@
 **To archive findings in the current region**
 
-This ``archive-findings`` example shows how to archive findings in the current region. ::
+The following ``archive-findings`` example archives findings in the current region. ::
 
     aws guardduty archive-findings \
         --detector-id 12abc34d567e8fa901bc2d34eexample \
@@ -8,4 +8,4 @@ This ``archive-findings`` example shows how to archive findings in the current r
 
 This command produces no output.
 
-For more information, see `Creating suppression rules <https://docs.aws.amazon.com/guardduty/latest/ug/findings_suppression-rules-console.html>`__ in the *GuardDuty User Guide*.
+For more information, see `Creating suppression rules in GuardDuty <https://docs.aws.amazon.com/guardduty/latest/ug/create-suppression-rules-guardduty.html>`__ in the *GuardDuty User Guide*.

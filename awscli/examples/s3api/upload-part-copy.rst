@@ -17,3 +17,5 @@ Output::
             "ETag": "\"711470fc377698c393d94aed6305e245\""
         }
     }
+
+For more information, see `Copying an object using multipart upload <https://docs.aws.amazon.com/AmazonS3/latest/userguide/CopyingObjectsMPUapi.html>`__ in the *Amazon S3 User Guide*.

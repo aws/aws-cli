@@ -12,14 +12,14 @@ Output::
         "id": "ab3de6",
         "name": "my-vpc-link",
         "targetArns": [
-            "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/net/my-lb/12a456s89aaa12345"
+            "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-lb/12a456s89aaa12345"
         ],
         "status": "AVAILABLE",
         "statusMessage": "Your vpc link is ready for use",
         "tags": {}
     }
 
-For more information, see `Updating existing VPC link <https://docs.aws.amazon.com/cli/latest/reference/apigateway/update-vpc-link.html>`__ in the *AWS CLI Command Reference*.
+For more information, see `Private integration using VPC links V1 (legacy) <https://docs.aws.amazon.com/apigateway/latest/developerguide/vpc-links-v1.html>`__ in the *Amazon API Gateway Developer Guide*.
 
 
 **Example 2: To update an existing VPC link name and description**
@@ -37,11 +37,11 @@ Output::
         "name": "my-vpc-link",
         "description": "My custom description",
         "targetArns": [
-            "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/net/my-lb/12a456s89aaa12345"
+            "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-lb/12a456s89aaa12345"
         ],
         "status": "AVAILABLE",
         "statusMessage": "Your vpc link is ready for use",
         "tags": {}
     }
 
-For more information, see `Updating existing VPC link <https://docs.aws.amazon.com/cli/latest/reference/apigateway/update-vpc-link.html>`__ in the *AWS CLI Command Reference*.
+For more information, see `Private integration using VPC links V1 (legacy) <https://docs.aws.amazon.com/apigateway/latest/developerguide/vpc-links-v1.html>`__ in the *Amazon API Gateway Developer Guide*.

@@ -10,7 +10,7 @@ Output::
         "Hosts": [
             {
                 "Name": "My-Host",
-                "HostArn": "arn:aws:codestar-connections:us-east-1:123456789012:host/My-Host-28aef605",
+                "HostArn": "arn:aws:codestar-connections:us-west-2:123456789012:host/My-Host-28aef605",
                 "ProviderType": "GitHubEnterpriseServer",
                 "ProviderEndpoint": "https://my-instance.test.dev",
                 "Status": "AVAILABLE"

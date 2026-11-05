@@ -24,12 +24,14 @@ Output::
 
 **Example 2: To request an authorization decision for a user request (deny)**
 
-The following example is the same as the previous example, except that the principal is ``User::"Bob"``. The policy store doesn't contain any policy that allows that user access to ``Album::"alice_folder"``.
+The following ``is-authorized`` example requests the same authorization decision as the previous example, except that the principal is ``User::"Bob"``. The policy store doesn't contain any policy that allows that user access to ``Album::"alice_folder"``.
 
 The output indicates that the ``Deny`` was implicit because the list of ``DeterminingPolicies`` is empty. ::
 
-    aws verifiedpermissions create-policy \
-        --definition file://definition2.txt \
+    aws verifiedpermissions is-authorized \
+        --principal entityType=User,entityId=bob \
+        --action actionType=Action,actionId=view \
+        --resource entityType=Photo,entityId=VactionPhoto94.jpg \
         --policy-store-id PSEXAMPLEabcdefg111111
 
 Output::
@@ -40,4 +42,4 @@ Output::
         "errors": []
     }
 
-For more information,  see the `Amazon Verified Permissions User Guide <https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/>`__.
+For more information, see `Implementing authorization in Amazon Verified Permissions <https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/authorization.html>`__ in the *Amazon Verified Permissions User Guide*.

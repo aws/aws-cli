@@ -10,7 +10,7 @@ Output::
         "instances": [
             {
                 "name": "Windows_Server_2022-1",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:Instance/0f44fbb9-8f55-4e47-a25e-EXAMPLE04763",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:Instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "supportCode": "62EXAMPLE362/i-0bEXAMPLE71a686b9",
                 "createdAt": 1571332358.665,
                 "location": {
@@ -39,7 +39,7 @@ Output::
                         },
                         {
                             "name": "my-disk-for-windows-server",
-                            "arn": "arn:aws:lightsail:us-west-2:111122223333:Disk/4123a81c-484c-49ea-afea-5EXAMPLEda87",
+                            "arn": "arn:aws:lightsail:us-west-2:123456789012:Disk/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                             "supportCode": "6EXAMPLE3362/vol-0EXAMPLEb2b99ca3d",
                             "createdAt": 1571355063.494,
                             "location": {
@@ -103,7 +103,7 @@ Output::
             },
             {
                 "name": "MEAN-1",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:Instance/bd470fc5-a68b-44c5-8dbc-8EXAMPLEbada",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:Instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "supportCode": "6EXAMPLE3362/i-0EXAMPLEa407c97d3",
                 "createdAt": 1570635023.124,
                 "location": {
@@ -123,7 +123,7 @@ Output::
                     "disks": [
                         {
                             "name": "Disk-1",
-                            "arn": "arn:aws:lightsail:us-west-2:111122223333:Disk/c21cfb0a-07f2-44ae-9a23-bEXAMPLE8096",
+                            "arn": "arn:aws:lightsail:us-west-2:123456789012:Disk/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                             "supportCode": "6EXAMPLE3362/vol-0EXAMPLEf2f88b32f",
                             "createdAt": 1566585439.587,
                             "location": {
@@ -200,3 +200,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Virtual private server instances in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-instances-virtual-private-servers-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

@@ -31,4 +31,4 @@ Output::
         ]
     }
 
-For more information about the values in the output, see `Values That You Specify When You Create or Edit Inbound Endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries.html#resolver-forwarding-inbound-queries-values>`__, and `Values That You Specify When You Create or Edit Outbound Endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-outbound-queries.html#resolver-forwarding-outbound-queries-endpoint-values>`__, both in the *Amazon Route 53 Developer Guide*.
+For more information about the values in the output, see `Values that you specify when you create or edit inbound endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries-values.html>`__ and `Values that you specify when you create or edit outbound endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-outbound-queries-endpoint-values.html>`__ in the *Amazon Route 53 Developer Guide*.

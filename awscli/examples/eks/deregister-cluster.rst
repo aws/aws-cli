@@ -10,15 +10,15 @@ Output::
     {
         "cluster": {
             "name": "my-eks-anywhere-cluster",
-            "arn": "arn:aws:eks:us-east-2:111122223333:cluster/my-eks-anywhere-cluster",
+            "arn": "arn:aws:eks:us-west-2:123456789012:cluster/my-eks-anywhere-cluster",
             "createdAt": "2024-04-12T12:38:37.561000-04:00",
             "status": "DELETING",
             "tags": {},
             "connectorConfig": {
-                "activationId": "dfb5ad28-13c3-4e26-8a19-5b2457638c74",
+                "activationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "activationExpiry": "2024-04-15T12:38:37.082000-04:00",
                 "provider": "EKS_ANYWHERE",
-                "roleArn": "arn:aws:iam::111122223333:role/AmazonEKSConnectorAgentRole"
+                "roleArn": "arn:aws:iam::123456789012:role/AmazonEKSConnectorAgentRole"
             }
         }
     }

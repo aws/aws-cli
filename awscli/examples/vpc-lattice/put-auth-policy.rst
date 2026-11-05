@@ -17,7 +17,7 @@ Contents of ``auth-policy.json``::
                     "AWS": "arn:aws:iam::123456789012:role/my-clients"
                 },
                 "Action": "vpc-lattice-svcs:Invoke",
-                "Resource": "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE"
+                "Resource": "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE"
             }
         ]
     }
@@ -25,7 +25,7 @@ Contents of ``auth-policy.json``::
 Output::
 
     {
-        "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::123456789012:role/my-clients\"},\"Action\":\"vpc-lattice-svcs:Invoke\",\"Resource\":\"arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE\"}]}",
+        "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::123456789012:role/my-clients\"},\"Action\":\"vpc-lattice-svcs:Invoke\",\"Resource\":\"arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE\"}]}",
         "state": "Active"
     }
 

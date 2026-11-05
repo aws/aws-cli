@@ -9,7 +9,7 @@ Output::
 
     {
         "thingGroupName": "HalogenBulbs",
-        "thingGroupId": "f4ec6b84-b42b-499d-9ce1-4dbd4d4f6f6e",
+        "thingGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "thingGroupArn": "arn:aws:iot:us-west-2:123456789012:thinggroup/HalogenBulbs",
         "version": 1,
         "thingGroupProperties": {},

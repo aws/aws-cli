@@ -20,4 +20,4 @@ Output::
         }
     }
 
-For more information, see `Upload a Custom Server Build to GameLift <https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-build-cli-uploading.html#gamelift-build-cli-uploading-builds>`__ in the *Amazon GameLift Developer Guide*.
+For more information, see `Upload a Custom Server Build to GameLift <https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-build-cli-uploading-builds.html>`__ in the *Amazon GameLift Developer Guide*.

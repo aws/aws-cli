@@ -8,9 +8,9 @@ The following ``create-core-definition`` example creates an empty (no initial ve
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/b5c08008-54cb-44bd-9eec-c121b04283b5",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreationTimestamp": "2019-06-25T18:23:22.106Z",
-        "Id": "b5c08008-54cb-44bd-9eec-c121b04283b5",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LastUpdatedTimestamp": "2019-06-25T18:23:22.106Z",
         "Name": "cliGroup_Core"
     }
@@ -19,7 +19,7 @@ Output::
 
 The following ``create-core-definition`` example creates a core definition that contains an initial core definition version. The version can contain one core only. Before you can create a core, you must first create and provision the corresponding AWS IoT thing. This process includes the following ``iot`` commands, which return the ``ThingArn`` and ``CertificateArn`` required for the ``create-core-definition`` command.
 
-* Create the AWS IoT thing that corresponds to the core device::
+* Create the AWS IoT thing that corresponds to the core device. ::
 
     aws iot create-thing \
         --thing-name "MyCoreDevice"
@@ -29,7 +29,7 @@ Output::
     {
         "thingArn": "arn:aws:iot:us-west-2:123456789012:thing/MyCoreDevice",
         "thingName": "MyCoreDevice",
-        "thingId": "cb419a19-9099-4515-9cec-e9b0e760608a"
+        "thingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 * Create public and private keys and the core device certificate for the thing. This example uses the ``create-keys-and-certificate`` command and requires write permissions to the current directory. Alternatively, you can use the ``create-certificate-from-csr`` command. ::
@@ -67,7 +67,7 @@ Output::
         "policyVersionId": "1"
     }
 
-* Attach the policy to the certificate::
+* Attach the policy to the certificate. ::
 
     aws iot attach-policy \
         --policy-name "Core_Devices" \
@@ -75,7 +75,7 @@ Output::
 
 This command produces no output.
 
-* Attach the thing to the certificate::
+* Attach the thing to the certificate. ::
 
     aws iot attach-thing-principal \
         --thing-name "MyCoreDevice" \
@@ -83,7 +83,7 @@ This command produces no output.
 
 This command produces no output.
 
-* Create the core definition::
+* Create the core definition. ::
 
     aws greengrass create-core-definition \
         --name "MyCores" \
@@ -92,13 +92,13 @@ This command produces no output.
 Output::
 
     {
-        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/582efe12-b05a-409e-9a24-a2ba1bcc4a12/versions/cc87b5b3-8f4b-465d-944c-1d6de5dbfcdb",
+        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
         "Name": "MyCores",
         "LastUpdatedTimestamp": "2019-09-18T00:11:06.197Z",
-        "LatestVersion": "cc87b5b3-8f4b-465d-944c-1d6de5dbfcdb",
+        "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
         "CreationTimestamp": "2019-09-18T00:11:06.197Z",
-        "Id": "582efe12-b05a-409e-9a24-a2ba1bcc4a12",
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/582efe12-b05a-409e-9a24-a2ba1bcc4a12"
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/cores/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
     }
 
-For more information, see `Configure the AWS IoT Greengrass Core <https://docs.aws.amazon.com/greengrass/latest/developerguide/gg-core.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Configure the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/gg-core.html>`__ in the *AWS IoT Greengrass Developer Guide*.

@@ -6,7 +6,7 @@ The following ``create-subscriber`` example creates a subscriber in Security Lak
         --access-types "S3" \
         --sources '[{"awsLogSource": {"sourceName": "VPC_FLOW","sourceVersion": "2.0"}}]' \
         --subscriber-name 'opensearch-s3' \
-        --subscriber-identity '{"principal": "029189416600","externalId": "123456789012"}'
+        --subscriber-identity '{"principal": "123456789111","externalId": "123456789012"}'
 
 Output::
 
@@ -16,8 +16,8 @@ Output::
                 "S3"
             ],
             "createdAt": "2024-07-17T19:08:26.787000+00:00",
-            "roleArn": "arn:aws:iam::773172568199:role/AmazonSecurityLake-896f218b-cfba-40be-a255-8b49a65d0407",
-            "s3BucketArn": "arn:aws:s3:::aws-security-data-lake-us-east-1-um632ufwpvxkyz0bc5hkb64atycnf3",
+            "roleArn": "arn:aws:iam::123456789012:role/AmazonSecurityLake-896f218b-cfba-40be-a255-8b49a65d0407",
+            "s3BucketArn": "arn:aws:s3:::amzn-s3-demo-bucket",
             "sources": [
                 {
                     "awsLogSource": {
@@ -26,11 +26,11 @@ Output::
                     }
                 }
             ],
-            "subscriberArn": "arn:aws:securitylake:us-east-1:773172568199:subscriber/896f218b-cfba-40be-a255-8b49a65d0407",
-            "subscriberId": "896f218b-cfba-40be-a255-8b49a65d0407",
+            "subscriberArn": "arn:aws:securitylake:us-west-2:123456789012:subscriber/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "subscriberId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "subscriberIdentity": {
                 "externalId": "123456789012",
-                "principal": "029189416600"
+                "principal": "123456789111"
             },
             "subscriberName": "opensearch-s3",
             "subscriberStatus": "ACTIVE",
@@ -38,7 +38,7 @@ Output::
         }
     }
 
-For more information, see `Creating a subscriber with data access <https://docs.aws.amazon.com/security-lake/latest/userguide/subscriber-data-access.html#create-subscriber-data-access>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Creating a subscriber with data access <https://docs.aws.amazon.com/security-lake/latest/userguide/create-subscriber-data-access.html>`__ in the *Amazon Security Lake User Guide*.
 
 **Example 2: To create a subscriber with query access**
 
@@ -48,7 +48,7 @@ The following ``create-subscriber`` example creates a subscriber in Security Lak
         --access-types "LAKEFORMATION" \
         --sources '[{"awsLogSource": {"sourceName": "VPC_FLOW","sourceVersion": "2.0"}}]' \
         --subscriber-name 'opensearch-s3' \
-        --subscriber-identity '{"principal": "029189416600","externalId": "123456789012"}'
+        --subscriber-identity '{"principal": "123456789111","externalId": "123456789012"}'
 
 Output::
 
@@ -58,7 +58,7 @@ Output::
                 "LAKEFORMATION"
             ],
             "createdAt": "2024-07-18T01:05:55.853000+00:00",
-            "resourceShareArn": "arn:aws:ram:us-east-1:123456789012:resource-share/8c31da49-c224-4f1e-bb12-37ab756d6d8a",
+            "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "resourceShareName": "LakeFormation-V2-NAMENAMENA-123456789012",
             "sources": [
                 {
@@ -68,11 +68,11 @@ Output::
                     }
                 }
             ],
-            "subscriberArn": "arn:aws:securitylake:us-east-1:123456789012:subscriber/e762aabb-ce3d-4585-beab-63474597845d",
-            "subscriberId": "e762aabb-ce3d-4585-beab-63474597845d",
+            "subscriberArn": "arn:aws:securitylake:us-west-2:123456789012:subscriber/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+            "subscriberId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
             "subscriberIdentity": {
                 "externalId": "123456789012",
-                "principal": "029189416600"
+                "principal": "123456789111"
             },
             "subscriberName": "opensearch-s3",
             "subscriberStatus": "ACTIVE",
@@ -80,4 +80,4 @@ Output::
         }
     }
 
-For more information, see `Creating a subscriber with query access <https://docs.aws.amazon.com/security-lake/latest/userguide/subscriber-query-access.html#create-query-subscriber-procedures>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Creating a subscriber with query access <https://docs.aws.amazon.com/security-lake/latest/userguide/create-query-subscriber-procedures.html>`__ in the *Amazon Security Lake User Guide*.

@@ -3,7 +3,7 @@
 The following ``verify-card-validation-data`` example validates a CVV/CVV2 for a PAN. ::
 
     aws payment-cryptography-data verify-card-validation-data \
-        --key-identifier arn:aws:payment-cryptography:us-east-2:111122223333:key/tqv5yij6wtxx64pi \
+        --key-identifier arn:aws:payment-cryptography:us-west-2:123456789012:key/tqv5yij6wtxx64pi \
         --primary-account-number=171234567890123 \
         --verification-attributes CardVerificationValue2={CardExpiryDate=0123} \
         --validation-data 801
@@ -11,7 +11,7 @@ The following ``verify-card-validation-data`` example validates a CVV/CVV2 for a
 Output::
 
     {
-        "KeyArn": "arn:aws:payment-cryptography:us-east-2:111122223333:key/tqv5yij6wtxx64pi",
+        "KeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/tqv5yij6wtxx64pi",
         "KeyCheckValue": "CADDA1"
     }
 

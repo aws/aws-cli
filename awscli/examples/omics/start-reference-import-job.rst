@@ -5,7 +5,7 @@ The following ``start-reference-import-job`` example imports a reference genome 
     aws omics start-reference-import-job \
         --reference-store-id 1234567890 \
         --role-arn arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ \
-        --sources sourceFile=s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.fasta,name=assembly-38
+        --sources sourceFile=s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.fasta,name=assembly-38
 
 Output::
 

@@ -1,4 +1,4 @@
-**Example 1: Create a SigV4-enabled HealthLake data store**
+**Example 1: To create a SigV4-enabled HealthLake data store**
 
 The following ``create-fhir-datastore`` example demonstrates how to create a new data store in AWS HealthLake. ::
 
@@ -9,13 +9,13 @@ The following ``create-fhir-datastore`` example demonstrates how to create a new
 Output::
 
     {
-        "DatastoreEndpoint": "https://healthlake.us-east-1.amazonaws.com/datastore/(Data store ID)/r4/",
-        "DatastoreArn": "arn:aws:healthlake:us-east-1:(AWS Account ID):datastore/(Data store ID)",
+        "DatastoreEndpoint": "https://healthlake.us-west-2.amazonaws.com/datastore/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6/r4/",
+        "DatastoreArn": "arn:aws:healthlake:us-west-2:123456789012:datastore/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
         "DatastoreStatus": "CREATING",
-        "DatastoreId": "(Data store ID)"
+        "DatastoreId": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"
     }
 
-**Example 2: Create a SMART on FHIR-enabled HealthLake data store**
+**Example 2: To create a SMART on FHIR-enabled HealthLake data store**
 
 The following ``create-fhir-datastore`` example demonstrates how to create a new SMART on FHIR-enabled data store in AWS HealthLake. ::
 
@@ -23,7 +23,7 @@ The following ``create-fhir-datastore`` example demonstrates how to create a new
         --datastore-name "your-data-store-name" \
         --datastore-type-version R4 \
         --preload-data-config PreloadDataType="SYNTHEA" \
-        --sse-configuration '{ "KmsEncryptionConfig": {  "CmkType": "CUSTOMER_MANAGED_KMS_KEY", "KmsKeyId": "arn:aws:kms:us-east-1:your-account-id:key/your-key-id" } }' \
+        --sse-configuration '{ "KmsEncryptionConfig": {  "CmkType": "CUSTOMER_MANAGED_KMS_KEY", "KmsKeyId": "arn:aws:kms:us-west-2:your-account-id:key/your-key-id" } }' \
         --identity-provider-configuration  file://identity_provider_configuration.json
 
 Contents of ``identity_provider_configuration.json``::
@@ -38,10 +38,10 @@ Contents of ``identity_provider_configuration.json``::
 Output::
 
     {
-        "DatastoreEndpoint": "https://healthlake.us-east-1.amazonaws.com/datastore/(Data store ID)/r4/",
-        "DatastoreArn": "arn:aws:healthlake:us-east-1:(AWS Account ID):datastore/(Data store ID)",
+        "DatastoreEndpoint": "https://healthlake.us-west-2.amazonaws.com/datastore/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6/r4/",
+        "DatastoreArn": "arn:aws:healthlake:us-west-2:123456789012:datastore/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
         "DatastoreStatus": "CREATING",
-        "DatastoreId": "(Data store ID)"
+        "DatastoreId": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"
     }
 
-For more information, see `Creating and monitoring a FHIR data store <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>`__ in the *AWS HealthLake Developer Guide*.
+For more information, see `Creating a HealthLake data store <https://docs.aws.amazon.com/healthlake/latest/devguide/managing-data-stores-create.html>`__ in the *AWS HealthLake Developer Guide*.

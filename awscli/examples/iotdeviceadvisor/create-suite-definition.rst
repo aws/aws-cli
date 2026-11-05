@@ -5,7 +5,7 @@ The following ``create-suite-definition`` example creates a device advisor test 
     aws iotdeviceadvisor create-suite-definition \
         --suite-definition-configuration '{ \
             "suiteDefinitionName": "TestSuiteName", \
-            "devices": [{"thingArn":"arn:aws:iot:us-east-1:123456789012:thing/MyIotThing"}], \
+            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}], \
             "intendedForQualification": false, \
             "rootGroup": "{\"configuration\":{},\"tests\":[{\"name\":\"MQTT Connect\",\"configuration\":{\"EXECUTION_TIMEOUT\":120},\"tests\":[{\"name\":\"MQTT_Connect\",\"configuration\":{},\"test\":{\"id\":\"MQTT_Connect\",\"testCase\":null,\"version\":\"0.0.0\"}}]}]}", \
             "devicePermissionRoleArn": "arn:aws:iam::123456789012:role/Myrole"}'
@@ -14,7 +14,7 @@ Output::
 
     {
         "suiteDefinitionId": "0jtsgio7yenu",
-        "suiteDefinitionArn": "arn:aws:iotdeviceadvisor:us-east-1:123456789012:suitedefinition/0jtsgio7yenu",
+        "suiteDefinitionArn": "arn:aws:iotdeviceadvisor:us-west-2:123456789012:suitedefinition/0jtsgio7yenu",
         "suiteDefinitionName": "TestSuiteName",
         "createdAt": "2022-12-02T11:38:13.263000-05:00"
     }
@@ -28,7 +28,7 @@ The following ``create-suite-definition`` example creates a device advisor quali
     aws iotdeviceadvisor create-suite-definition \
         --suite-definition-configuration '{ \
             "suiteDefinitionName": "TestSuiteName", \
-            "devices": [{"thingArn":"arn:aws:iot:us-east-1:123456789012:thing/MyIotThing"}], \
+            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}], \
             "intendedForQualification": true, \
             "rootGroup": "", \
             "devicePermissionRoleArn": "arn:aws:iam::123456789012:role/Myrole"}'
@@ -37,7 +37,7 @@ Output::
 
     {
         "suiteDefinitionId": "txgsuolk2myj",
-        "suiteDefinitionArn": "arn:aws:iotdeviceadvisor:us-east-1:123456789012:suitedefinition/txgsuolk2myj",
+        "suiteDefinitionArn": "arn:aws:iotdeviceadvisor:us-west-2:123456789012:suitedefinition/txgsuolk2myj",
         "suiteDefinitionName": "TestSuiteName",
         "createdAt": "2022-12-02T11:38:13.263000-05:00"
     }

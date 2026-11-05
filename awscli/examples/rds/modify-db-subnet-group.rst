@@ -44,7 +44,7 @@ Output::
                     "SubnetStatus": "Active"
                 }
             ],
-            "DBSubnetGroupArn": "arn:aws:rds:us-west-2:534026745191:subgrp:mysubnetgroup"
+            "DBSubnetGroupArn": "arn:aws:rds:us-west-2:123456789012:subgrp:mysubnetgroup"
         }
     }
 

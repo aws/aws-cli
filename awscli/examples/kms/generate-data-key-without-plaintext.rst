@@ -7,17 +7,17 @@ To request a 256-bit data key, use the ``key-spec`` parameter with a value of ``
 The KMS key you specify must be a symmetric encryption KMS key, that is, a KMS key with a key spec value of SYMMETRIC_DEFAULT. ::
 
     aws kms generate-data-key-without-plaintext \
-        --key-id "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab" \
+        --key-id "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --key-spec AES_256
 
 Output::
 
     {
         "CiphertextBlob": "AQEDAHjRYf5WytIc0C857tFSnBaPn2F8DgfmThbJlGfR8P3WlwAAAH4wfAYJKoZIhvcNAQcGoG8wbQIBADBoBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDEFogL",
-        "KeyId": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "KeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6"
     }
 
 The ``CiphertextBlob`` (encrypted data key) is returned in base64-encoded format. 
 
-For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/data-keys.html>`__ in the *AWS Key Management Service Developer Guide*.

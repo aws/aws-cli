@@ -1,6 +1,6 @@
 **To return a list of ACLs**
 
-The following `describe-acls`` returns a list of ACLs. ::
+The following ``describe-acls`` example returns a list of ACLs. ::
 
     aws memorydb describe-acls
 
@@ -16,17 +16,17 @@ Output::
                 ],
                 "MinimumEngineVersion": "6.2",
                 "Clusters": [],
-                "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:acl/open-access"
+                "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:acl/open-access"
             },
             {
-                "Name": my-acl",
+                "Name": "my-acl",
                 "Status": "active",
                 "UserNames": [],
                 "MinimumEngineVersion": "6.2",
                 "Clusters": [
                     "my-cluster"
                 ],
-                "ARN": "arn:aws:memorydb:us-east-1:49165xxxxxxx:acl/my-acl"
+                "ARN": "arn:aws:memorydb:us-west-2:49165xxxxxxx:acl/my-acl"
             }
         ]
     }

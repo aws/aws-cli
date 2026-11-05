@@ -1,6 +1,6 @@
 **To retrieve a password to authenticate to a registry**
 
-The following ``get-login-password`` displays a password that you can use with a container client of your choice to authenticate to any Amazon ECR registry that your IAM principal has access to. ::
+The following ``get-login-password`` example displays a password that you can use with a container client of your choice to authenticate to any Amazon ECR registry that your IAM principal has access to. ::
 
     aws ecr get-login-password
 
@@ -16,4 +16,4 @@ To use with the Docker CLI, pipe the output of the ``get-login-password`` comman
         --username AWS \
         --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com
 
-For more information, see `Registry Authentication <https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries#registry_auth>`__ in the *Amazon ECR User Guide*.
+For more information, see `Registry Authentication <https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry_auth.html>`__ in the *Amazon ECR User Guide*.

@@ -5,7 +5,7 @@ The following ``create-report-group`` example creates a new report group. ::
     aws codebuild create-report-group \
         --cli-input-json file://create-report-group-source.json
 
-Contents of create-report-group-source.json::
+Contents of ``create-report-group-source.json``::
 
     {
         "name": "cli-created-report-group",

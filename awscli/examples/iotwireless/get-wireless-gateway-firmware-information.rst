@@ -3,7 +3,7 @@
 The following ``get-wireless-gateway-firmware-information`` example gets firmware version and other information about a wireless gateway. ::
 
     aws iotwireless get-wireless-gateway-firmware-information \
-        --id "3039b406-5cc9-4307-925b-9948c63da25b"
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 
 Output::

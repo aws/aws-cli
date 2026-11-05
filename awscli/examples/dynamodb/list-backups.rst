@@ -33,11 +33,11 @@ Output::
         ]
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 2: To list user-created backups in a specific time range**
 
-The following example lists only backups of the ``MusicCollection`` table that were created by the user (not those automatically created by DynamoDB) with a creation date between January 1, 2020 and March 1, 2020. ::
+The following ``list-backups`` example lists only backups of the ``MusicCollection`` table that were created by the user (not those automatically created by DynamoDB) with a creation date between January 1, 2020 and March 1, 2020. ::
 
     aws dynamodb list-backups \
         --table-name MusicCollection \
@@ -63,11 +63,11 @@ Output::
         ]
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 3: To limit page size**
 
-The following example returns a list of all existing backups, but retrieves only one item in each call, performing multiple calls if necessary to get the entire list. Limiting the page size is useful when running list commands on a large number of resources, which can result in a "timed out" error when using the default page size of 1000. ::
+The following ``list-backups`` example returns a list of all existing backups, but retrieves only one item in each call, performing multiple calls if necessary to get the entire list. Limiting the page size is useful when running list commands on a large number of resources, which can result in a "timed out" error when using the default page size of 1000. ::
 
     aws dynamodb list-backups \
         --page-size 1
@@ -101,11 +101,11 @@ Output::
         ]
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 4: To limit the number of items returned**
 
-The following example limits the number of items returned to 1. The response includes a ``NextToken`` value with which to retrieve the next page of results. ::
+The following ``list-backups`` example limits the number of items returned to 1. The response includes a ``NextToken`` value with which to retrieve the next page of results. ::
 
     aws dynamodb list-backups \
         --max-items 1
@@ -129,16 +129,16 @@ Output::
         "NextToken": "abCDeFGhiJKlmnOPqrSTuvwxYZ1aBCdEFghijK7LM51nOpqRSTuv3WxY3ZabC5dEFGhI2Jk3LmnoPQ6RST9"
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
 **Example 5: To retrieve the next page of results**
 
-The following command uses the ``NextToken`` value from a previous call to the ``list-backups`` command to retrieve another page of results. Since the response in this case does not include a ``NextToken`` value, we know that we have reached the end of the results. ::
+The following ``list-backups`` example uses the ``NextToken`` value from a previous call to the ``list-backups`` command to retrieve another page of results. Since the response in this case does not include a ``NextToken`` value, we know that we have reached the end of the results. ::
 
     aws dynamodb list-backups \
         --starting-token abCDeFGhiJKlmnOPqrSTuvwxYZ1aBCdEFghijK7LM51nOpqRSTuv3WxY3ZabC5dEFGhI2Jk3LmnoPQ6RST9
 
-Output ::
+Output::
 
     {
         "BackupSummaries": [
@@ -156,4 +156,4 @@ Output ::
         ]
     }
 
-For more information, see `On-Demand Backup and Restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Backup and restore for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html>`__ in the *Amazon DynamoDB Developer Guide*.

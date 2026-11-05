@@ -10,7 +10,7 @@ Output::
         "diskSnapshots": [
             {
                 "name": "Disk-2-1571090588",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:DiskSnapshot/32e889a9-38d4-4687-9f21-eEXAMPLE7839",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:DiskSnapshot/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "supportCode": "6EXAMPLE3362/snap-0EXAMPLE1ca192a4",
                 "createdAt": 1571090591.226,
                 "location": {
@@ -23,12 +23,12 @@ Output::
                 "state": "completed",
                 "progress": "100%",
                 "fromDiskName": "Disk-2",
-                "fromDiskArn": "arn:aws:lightsail:us-west-2:111122223333:Disk/6a343ff8-6341-422d-86e2-bEXAMPLE16c2",
+                "fromDiskArn": "arn:aws:lightsail:us-west-2:123456789012:Disk/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "isFromAutoSnapshot": false
             },
             {
                 "name": "Disk-1-1566839161",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:DiskSnapshot/e2d0fa53-8ee0-41a0-8e56-0EXAMPLE1051",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:DiskSnapshot/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "supportCode": "6EXAMPLE3362/snap-0EXAMPLEe06100d09",
                 "createdAt": 1566839163.749,
                 "location": {
@@ -41,8 +41,10 @@ Output::
                 "state": "completed",
                 "progress": "100%",
                 "fromDiskName": "Disk-1",
-                "fromDiskArn": "arn:aws:lightsail:us-west-2:111122223333:Disk/c21cfb0a-07f2-44ae-9a23-bEXAMPLE8096",
+                "fromDiskArn": "arn:aws:lightsail:us-west-2:123456789012:Disk/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "isFromAutoSnapshot": false
             }
         ]
     }
+
+For more information, see `Create Lightsail block storage disk snapshots for backup or baseline <https://docs.aws.amazon.com/lightsail/latest/userguide/create-block-storage-disk-snapshot.html>`__ in the *Amazon Lightsail User Guide*.

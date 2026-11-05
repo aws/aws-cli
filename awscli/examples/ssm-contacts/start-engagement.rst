@@ -1,9 +1,9 @@
 **Example 1: To page a contact's contact channels**
 
-The following ``start-engagement`` pages contact's contact channels. Sender, subject, public-subject, and public-content are all free from fields. Incident Manager sends the subject and content to the provided VOICE or EMAIL contact channels. Incident Manager sends the public-subject and public-content to the provided SMS contact channels. Sender is used to track who started the engagement. ::
+The following ``start-engagement`` example pages a contact's contact channels. Sender, subject, public-subject, and public-content are all free from fields. Incident Manager sends the subject and content to the provided VOICE or EMAIL contact channels. Incident Manager sends the public-subject and public-content to the provided SMS contact channels. Sender is used to track who started the engagement. ::
 
     aws ssm-contacts start-engagement \
-        --contact-id  "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam" \
+        --contact-id  "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam" \
         --sender "cli" \
         --subject "cli-test" \
         --content "Testing engagements via CLI" \
@@ -13,17 +13,17 @@ The following ``start-engagement`` pages contact's contact channels. Sender, sub
 Output::
 
     {
-        "EngagementArn": "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/akuam/607ced0e-e8fa-4ea7-8958-a237b8803f8f"
+        "EngagementArn": "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Contacts <https://docs.aws.amazon.com/incident-manager/latest/userguide/contacts.html>`__ in the *Incident Manager User Guide*.
 
 **Example 2: To page a contact in the provided escalation plan.**
 
-The following ``start-engagement`` engages contact's through an escalation plan. Each contact is paged according to their engagement plan. ::
+The following ``start-engagement`` example engages contacts through an escalation plan. Each contact is paged according to their engagement plan. ::
 
     aws ssm-contacts start-engagement \
-        --contact-id  "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation" \
+        --contact-id  "arn:aws:ssm-contacts:us-west-2:123456789012:contact/example_escalation" \
         --sender "cli" \
         --subject "cli-test" \
         --content "Testing engagements via CLI" \
@@ -33,7 +33,7 @@ The following ``start-engagement`` engages contact's through an escalation plan.
 Output::
 
     {
-        "EngagementArn": "arn:aws:ssm-contacts:us-east-2:111122223333:engagement/example_escalation/69e40ce1-8dbb-4d57-8962-5fbe7fc53356"
+        "EngagementArn": "arn:aws:ssm-contacts:us-west-2:123456789012:engagement/example_escalation/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
 
 For more information, see `Contacts <https://docs.aws.amazon.com/incident-manager/latest/userguide/contacts.html>`__ in the *Incident Manager User Guide*.

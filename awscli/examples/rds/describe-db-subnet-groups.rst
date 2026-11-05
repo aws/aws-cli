@@ -17,33 +17,33 @@ Output::
                     {
                         "SubnetIdentifier": "subnet-d8c8e7f4",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1a"
+                            "Name": "us-west-2a"
                         },
                         "SubnetStatus": "Active"
                     },
                     {
                         "SubnetIdentifier": "subnet-718fdc7d",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1f"
+                            "Name": "us-west-2d"
                         },
                         "SubnetStatus": "Active"
                     },
                     {
                         "SubnetIdentifier": "subnet-cbc8e7e7",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1a"
+                            "Name": "us-west-2a"
                         },
                         "SubnetStatus": "Active"
                     },
                     {
                         "SubnetIdentifier": "subnet-0ccde220",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1a"
+                            "Name": "us-west-2a"
                         },
                         "SubnetStatus": "Active"
                     }
                 ],
-                "DBSubnetGroupArn": "arn:aws:rds:us-east-1:123456789012:subgrp:mydbsubnetgroup"
+                "DBSubnetGroupArn": "arn:aws:rds:us-west-2:123456789012:subgrp:mydbsubnetgroup"
             }
         ]
     }

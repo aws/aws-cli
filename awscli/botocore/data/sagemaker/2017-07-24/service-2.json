@@ -1036,6 +1036,21 @@
       ],
       "documentation":"<p>Creates a new training plan in SageMaker to reserve compute capacity.</p> <p>Amazon SageMaker Training Plan is a capability within SageMaker that allows customers to reserve and manage GPU capacity for large-scale AI model training. It provides a way to secure predictable access to computational resources within specific timelines and budgets, without the need to manage underlying infrastructure. </p> <p> <b>How it works</b> </p> <p>Plans can be created for specific resources such as SageMaker Training Jobs or SageMaker HyperPod clusters, automatically provisioning resources, setting up infrastructure, executing workloads, and handling infrastructure failures.</p> <p> <b>Plan creation workflow</b> </p> <ul> <li> <p>Users search for available plan offerings based on their requirements (e.g., instance type, count, start time, duration) using the <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SearchTrainingPlanOfferings.html\">SearchTrainingPlanOfferings</a> </code> API operation.</p> </li> <li> <p>They create a plan that best matches their needs using the ID of the plan offering they want to use. </p> </li> <li> <p>After successful upfront payment, the plan's status becomes <code>Scheduled</code>. </p> </li> <li> <p>The plan can be used to:</p> <ul> <li> <p>Queue training jobs.</p> </li> <li> <p>Allocate to an instance group of a SageMaker HyperPod cluster. </p> </li> </ul> </li> <li> <p>When the plan start date arrives, it becomes <code>Active</code>. Based on available reserved capacity:</p> <ul> <li> <p>Training jobs are launched.</p> </li> <li> <p>Instance groups are provisioned.</p> </li> </ul> </li> </ul> <p> <b>Plan composition</b> </p> <p>A plan can consist of one or more Reserved Capacities, each defined by a specific instance type, quantity, Availability Zone, duration, and start and end times. For more information about Reserved Capacity, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ReservedCapacitySummary.html\">ReservedCapacitySummary</a> </code>.</p>"
     },
+    "CreateTrainingSession":{
+      "name":"CreateTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTrainingSessionRequest"},
+      "output":{"shape":"CreateTrainingSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a training session in Amazon SageMaker. A training session provisions compute resources for fine-tuning a foundation model using Low-Rank Adaptation (LoRA). After the session is created, you can submit training operations and sample inference requests through the Amazon SageMaker Training Session Runtime API.</p> <p>The following operations are related to <code>CreateTrainingSession</code>:</p> <ul> <li> <p> <code>DescribeTrainingSession</code> </p> </li> <li> <p> <code>ListTrainingSessions</code> </p> </li> <li> <p> <code>StopTrainingSession</code> </p> </li> <li> <p> <code>DeleteTrainingSession</code> </p> </li> </ul>"
+    },
     "CreateTransformJob":{
       "name":"CreateTransformJob",
       "http":{
@@ -1808,6 +1823,19 @@
         {"shape":"ResourceInUse"}
       ],
       "documentation":"<p>Deletes a training job. After SageMaker deletes a training job, all of the metadata for the training job is lost. You can delete only training jobs that are in a terminal state (<code>Stopped</code>, <code>Failed</code>, or <code>Completed</code>) and don't retain an <code>Available</code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html\">managed warm pool</a>. You cannot delete a job that is in the <code>InProgress</code> or <code>Stopping</code> state. After deleting the job, you can reuse its name to create another training job.</p>"
+    },
+    "DeleteTrainingSession":{
+      "name":"DeleteTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTrainingSessionRequest"},
+      "output":{"shape":"DeleteTrainingSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes a training session. You must stop a running session before deleting it. Use the <code>StopTrainingSession</code> operation to stop the session first.</p> <p>The following operations are related to <code>DeleteTrainingSession</code>:</p> <ul> <li> <p> <code>CreateTrainingSession</code> </p> </li> <li> <p> <code>DescribeTrainingSession</code> </p> </li> <li> <p> <code>StopTrainingSession</code> </p> </li> </ul>"
     },
     "DeleteTrial":{
       "name":"DeleteTrial",
@@ -2755,6 +2783,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Retrieves the extension history for a specified training plan. The response includes details about each extension, such as the offering ID, start and end dates, status, payment status, and cost information.</p>"
+    },
+    "DescribeTrainingSession":{
+      "name":"DescribeTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTrainingSessionRequest"},
+      "output":{"shape":"DescribeTrainingSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a training session, including its current status, model configuration, Low-Rank Adaptation (LoRA) parameters, and timestamps.</p> <p>The following operations are related to <code>DescribeTrainingSession</code>:</p> <ul> <li> <p> <code>CreateTrainingSession</code> </p> </li> <li> <p> <code>ListTrainingSessions</code> </p> </li> <li> <p> <code>StopTrainingSession</code> </p> </li> <li> <p> <code>DeleteTrainingSession</code> </p> </li> </ul>",
+      "readonly":true
     },
     "DescribeTransformJob":{
       "name":"DescribeTransformJob",
@@ -3870,6 +3912,17 @@
       "output":{"shape":"ListTrainingPlansResponse"},
       "documentation":"<p>Retrieves a list of training plans for the current account. </p>"
     },
+    "ListTrainingSessions":{
+      "name":"ListTrainingSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTrainingSessionsRequest"},
+      "output":{"shape":"ListTrainingSessionsResponse"},
+      "documentation":"<p>Lists training sessions in your account. You can filter results by creation time, name, and status. The operation paginates results. To retrieve additional results, use the <code>NextToken</code> parameter.</p> <p>The following operations are related to <code>ListTrainingSessions</code>:</p> <ul> <li> <p> <code>CreateTrainingSession</code> </p> </li> <li> <p> <code>DescribeTrainingSession</code> </p> </li> </ul>",
+      "readonly":true
+    },
     "ListTransformJobs":{
       "name":"ListTransformJobs",
       "http":{
@@ -4386,6 +4439,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Stops a training job. To stop a job, SageMaker sends the algorithm the <code>SIGTERM</code> signal, which delays job termination for 120 seconds. Algorithms might use this 120-second window to save the model artifacts, so the results of the training is not lost. </p> <p>When it receives a <code>StopTrainingJob</code> request, SageMaker changes the status of the job to <code>Stopping</code>. After SageMaker stops the job, it sets the status to <code>Stopped</code>.</p>"
+    },
+    "StopTrainingSession":{
+      "name":"StopTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopTrainingSessionRequest"},
+      "output":{"shape":"StopTrainingSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Stops a running training session and sets the session status to <code>Stopping</code>. After the session stops, the status changes to <code>Stopped</code>. To delete a stopped session, use the <code>DeleteTrainingSession</code> operation.</p> <p>The following operations are related to <code>StopTrainingSession</code>:</p> <ul> <li> <p> <code>CreateTrainingSession</code> </p> </li> <li> <p> <code>DescribeTrainingSession</code> </p> </li> <li> <p> <code>DeleteTrainingSession</code> </p> </li> </ul>"
     },
     "StopTransformJob":{
       "name":"StopTransformJob",
@@ -5921,6 +5987,34 @@
       "max":10000000,
       "min":0
     },
+    "AcceleratorPartitionLayout":{
+      "type":"structure",
+      "members":{
+        "AcceleratorPartitionTypes":{
+          "shape":"AcceleratorPartitionTypeList",
+          "documentation":"<p>The list of partition profiles to carve on each accelerator that this layout applies to. On NVIDIA GPUs these are Multi-Instance GPU (MIG) profiles, for example <code>[\"mig-3g.40gb\", \"mig-4g.40gb\"]</code>. The order of the profiles doesn't change how the accelerator is partitioned. However, when you update an endpoint, a layout with the same profiles in a different order counts as a different layout, and the update is rejected. Repeat a profile to request more than one partition of that size: for example, <code>[\"mig-3g.40gb\", \"mig-3g.40gb\"]</code> requests two <code>mig-3g.40gb</code> partitions.</p>"
+        }
+      },
+      "documentation":"<p>A layout of accelerator partitions for a production variant. On NVIDIA GPUs, the partitions are Multi-Instance GPU (MIG) instances. SageMaker applies the layout to every accelerator on the variant's instance type. You can't change the layout of a running endpoint. To use a different layout, create a new endpoint.</p>"
+    },
+    "AcceleratorPartitionLayouts":{
+      "type":"list",
+      "member":{"shape":"AcceleratorPartitionLayout"},
+      "max":32,
+      "min":0
+    },
+    "AcceleratorPartitionType":{
+      "type":"string",
+      "max":32,
+      "min":0,
+      "pattern":"mig-[0-9]+g\\.[0-9]+gb([+-][a-z0-9.]+)*"
+    },
+    "AcceleratorPartitionTypeList":{
+      "type":"list",
+      "member":{"shape":"AcceleratorPartitionType"},
+      "max":32,
+      "min":0
+    },
     "AcceleratorsAmount":{
       "type":"integer",
       "box":true,
@@ -7307,6 +7401,20 @@
         "TEXTFILE"
       ]
     },
+    "AthenaStepMetadata":{
+      "type":"structure",
+      "members":{
+        "QueryExecutionId":{
+          "shape":"String256",
+          "documentation":"<p>The unique identifier of the Amazon Athena query execution that was run by this step execution.</p>"
+        },
+        "S3OutputLocation":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 location of the Amazon Athena query results. This is the effective output location reported by <code>GetQueryExecution</code> for the query. This value can be absent when the query uses Athena managed query results.</p>"
+        }
+      },
+      "documentation":"<p>The query execution identifier and the result output location for the Amazon Athena query that an Athena step runs.</p>"
+    },
     "AthenaWorkGroup":{
       "type":"string",
       "documentation":"<p>The name of the workgroup in which the Athena query is being started.</p>",
@@ -8333,6 +8441,12 @@
       },
       "documentation":"<p>Identifies the foundation model that was used as the starting point for model customization.</p>"
     },
+    "BaseModelArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:[a-z0-9-.]{1,63}:sagemaker:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)+:([0-9]{12}|aws):hub-content/)[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}/Model/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}(/[0-9]{1,4}\\.[0-9]{1,4}\\.[0-9]{1,4})?"
+    },
     "BaseModelName":{
       "type":"string",
       "max":256,
@@ -9033,6 +9147,24 @@
       "type":"long",
       "box":true,
       "min":0
+    },
+    "BillableTokenUsage":{
+      "type":"structure",
+      "members":{
+        "PrefillTokenCount":{
+          "shape":"JavaLong",
+          "documentation":"<p>The number of prefill tokens consumed.</p>"
+        },
+        "SampleTokenCount":{
+          "shape":"JavaLong",
+          "documentation":"<p>The number of sample tokens consumed.</p>"
+        },
+        "TrainingTokenCount":{
+          "shape":"JavaLong",
+          "documentation":"<p>The number of training tokens consumed.</p>"
+        }
+      },
+      "documentation":"<p>The billable token usage for a training session, broken down by operation type.</p>"
     },
     "BlockedReason":{
       "type":"string",
@@ -10117,6 +10249,62 @@
         "xx"
       ]
     },
+    "CleanupFailure":{
+      "type":"structure",
+      "members":{
+        "StepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the upstream step whose Amazon S3 output resources the Cleanup step could not delete.</p>"
+        },
+        "ErrorCode":{
+          "shape":"CleanupFailureErrorCode",
+          "documentation":"<p>The error code that identifies why the Cleanup step could not delete the output resources associated with the upstream step.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String2048",
+          "documentation":"<p>A message describing why the Cleanup step could not delete the output resources associated with the upstream step.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 output resources associated with an upstream step that the Cleanup step could not delete.</p>"
+    },
+    "CleanupFailureErrorCode":{
+      "type":"string",
+      "documentation":"<p>The type of error that prevented the Cleanup step from deleting output resources. Valid values are:</p> <ul> <li> <p> <code>ClientError</code> indicates that the failure was caused by the request.</p> </li> <li> <p> <code>InternalFailure</code> indicates that the failure was caused by an internal error.</p> </li> </ul>",
+      "enum":[
+        "ClientError",
+        "InternalFailure"
+      ]
+    },
+    "CleanupFailureList":{
+      "type":"list",
+      "member":{"shape":"CleanupFailure"},
+      "max":100,
+      "min":0
+    },
+    "CleanupStepMetadata":{
+      "type":"structure",
+      "members":{
+        "CleanedSteps":{
+          "shape":"CleanupStepNameList",
+          "documentation":"<p>The names of upstream steps whose Amazon S3 output resources the Cleanup step deleted successfully.</p>"
+        },
+        "FailedSteps":{
+          "shape":"CleanupFailureList",
+          "documentation":"<p>The upstream steps whose Amazon S3 output resources the Cleanup step could not delete.</p>"
+        },
+        "SkippedSteps":{
+          "shape":"CleanupStepNameList",
+          "documentation":"<p>The names of upstream steps that the Cleanup step skipped. The Cleanup step skips a step when the output properties needed to locate its resources are unavailable.</p>"
+        }
+      },
+      "documentation":"<p>The cleanup outcomes for Amazon S3 output resources associated with upstream steps.</p>"
+    },
+    "CleanupStepNameList":{
+      "type":"list",
+      "member":{"shape":"String256"},
+      "max":100,
+      "min":0
+    },
     "ClientId":{
       "type":"string",
       "max":1024,
@@ -10135,6 +10323,56 @@
       "max":36,
       "min":1,
       "pattern":"[a-zA-Z0-9-]+"
+    },
+    "ClusterAccountingDatabase":{
+      "type":"structure",
+      "required":[
+        "Endpoint",
+        "SecretArn"
+      ],
+      "members":{
+        "Endpoint":{
+          "shape":"ClusterAccountingDatabaseEndpoint",
+          "documentation":"<p>The hostname or endpoint of the accounting database, such as the endpoint of an Amazon RDS for MySQL or Aurora MySQL database. The database must be reachable from the subnets and security groups that you configure for the cluster.</p>"
+        },
+        "Port":{
+          "shape":"ClusterAccountingDatabasePort",
+          "documentation":"<p>The port that the accounting database listens on. The default is <code>3306</code>.</p>"
+        },
+        "Name":{
+          "shape":"ClusterAccountingDatabaseName",
+          "documentation":"<p>The name of the database schema that stores the Slurm accounting data. The default is <code>slurm_acct_db_</code> followed by the cluster ID from the cluster ARN, for example <code>slurm_acct_db_a1b2c3d4e5f6</code>.</p>"
+        },
+        "SecretArn":{
+          "shape":"ClusterAccountingDatabaseSecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that contains the user name and password for the accounting database. The database user must be able to create the schema and to read from and write to it.</p>"
+        }
+      },
+      "documentation":"<p>The external MySQL-compatible database that the Slurm accounting daemon (<code>slurmdbd</code>) connects to for a SageMaker HyperPod cluster. You provide the database credentials in an Amazon Web Services Secrets Manager secret instead of in the request.</p>"
+    },
+    "ClusterAccountingDatabaseEndpoint":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"(?=.{1,255}$)([a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)(\\.[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)*"
+    },
+    "ClusterAccountingDatabaseName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9$_]+"
+    },
+    "ClusterAccountingDatabasePort":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
+    "ClusterAccountingDatabaseSecretArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:secretsmanager:[a-z0-9\\-]*:[0-9]{12}:secret:.+"
     },
     "ClusterArn":{
       "type":"string",
@@ -10250,7 +10488,7 @@
     },
     "ClusterAvailabilityZoneId":{
       "type":"string",
-      "pattern":"[a-z]{3}\\d-az\\d"
+      "pattern":"[a-z]{3,5}\\d-az\\d"
     },
     "ClusterAvailabilityZones":{
       "type":"list",
@@ -11061,7 +11299,9 @@
         "ml.g7.8xlarge",
         "ml.g7.12xlarge",
         "ml.g7.24xlarge",
-        "ml.g7.48xlarge"
+        "ml.g7.48xlarge",
+        "ml.c8a.16xlarge",
+        "ml.m8a.16xlarge"
       ]
     },
     "ClusterInstanceTypeDetail":{
@@ -11557,6 +11797,10 @@
         "SlurmConfigStrategy":{
           "shape":"ClusterSlurmConfigStrategy",
           "documentation":"<p>The strategy for managing partitions for the Slurm configuration. Valid values are <code>Managed</code>, <code>Overwrite</code>, and <code>Merge</code>.</p>"
+        },
+        "AccountingDatabase":{
+          "shape":"ClusterAccountingDatabase",
+          "documentation":"<p>The external database that stores the Slurm accounting data for the cluster, such as job history, associations, and usage. When you omit this field, Slurm accounting uses a database on the cluster's controller node.</p> <note> <p>This field is only supported for clusters using <code>Continuous</code> as the <code>NodeProvisioningMode</code>.</p> </note>"
         }
       },
       "documentation":"<p>The configuration settings for the Slurm orchestrator used with the SageMaker HyperPod cluster.</p>"
@@ -13383,7 +13627,7 @@
       "members":{
         "Name":{
           "shape":"EntityName",
-          "documentation":"<p>Name for the cluster policy.</p>"
+          "documentation":"<p>The name for the cluster policy. The name must be unique within the SageMaker AI HyperPod cluster specified by <code>ClusterArn</code>. You can use the same name in other clusters within a Region or across Regions.</p>"
         },
         "ClusterArn":{
           "shape":"ClusterArn",
@@ -13515,7 +13759,7 @@
       "members":{
         "Name":{
           "shape":"EntityName",
-          "documentation":"<p>Name to the compute allocation definition.</p>"
+          "documentation":"<p>The name of the compute allocation definition. The name must be unique within the SageMaker AI HyperPod cluster specified by <code>ClusterArn</code>. You can use the same name in other clusters within a Region or across Regions.</p>"
         },
         "Description":{
           "shape":"EntityDescription",
@@ -16109,6 +16353,60 @@
         }
       }
     },
+    "CreateTrainingSessionRequest":{
+      "type":"structure",
+      "required":[
+        "TrainingSessionName",
+        "LoraConfig",
+        "RoleArn",
+        "ModelConfig",
+        "OutputConfig"
+      ],
+      "members":{
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session.</p>"
+        },
+        "ModelPackageGroupArn":{
+          "shape":"ModelPackageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model package group where checkpoints and fine-tuned model artifacts are published.</p>"
+        },
+        "LoraConfig":{
+          "shape":"LoraConfig",
+          "documentation":"<p>The Low-Rank Adaptation (LoRA) configuration for the training session, including the rank and alpha parameters.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon SageMaker assumes to access resources on your behalf. The role must have permissions to access the output S3 path and model package group.</p>"
+        },
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The Virtual Private Cloud (VPC) configuration for the training session. Specify subnets and security groups to run the training session in your VPC.</p>"
+        },
+        "ModelConfig":{
+          "shape":"TrainingSessionModelConfig",
+          "documentation":"<p>The configuration for the base model, including the model ARN and end-user license agreement (EULA) acceptance.</p>"
+        },
+        "OutputConfig":{
+          "shape":"TrainingSessionOutputConfig",
+          "documentation":"<p>The output configuration for the training session, including the S3 location and optional encryption settings.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs to apply to the training session as tags. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p>"
+        }
+      }
+    },
+    "CreateTrainingSessionResponse":{
+      "type":"structure",
+      "required":["TrainingSessionArn"],
+      "members":{
+        "TrainingSessionArn":{
+          "shape":"TrainingSessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the training session.</p>"
+        }
+      }
+    },
     "CreateTransformJobRequest":{
       "type":"structure",
       "required":[
@@ -16542,6 +16840,12 @@
       },
       "documentation":"<p>Details about the POSIX identity that is used for file system operations.</p>"
     },
+    "CustomerKmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws[a-z\\-]*:kms:[a-z0-9\\-]+:[0-9]{12}:key/(mrk-)?[a-f0-9\\-]+"
+    },
     "CustomerMetadataKey":{
       "type":"string",
       "max":128,
@@ -16805,6 +17109,32 @@
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "DatabaseConfigurationMetadata":{
+      "type":"structure",
+      "members":{
+        "RollbackStatus":{
+          "shape":"DatabaseConfigurationRollbackStatus",
+          "documentation":"<p>Whether HyperPod restored the previous accounting database configuration after the change failed. Valid values:</p> <ul> <li> <p> <code>NotApplicable</code>: The change failed before HyperPod modified the cluster, for example because the database could not be reached or rejected the credentials, so there was nothing to restore.</p> </li> <li> <p> <code>Reverted</code>: The change failed after it was applied, and HyperPod restored the previous configuration. The cluster continues to use the previous accounting database.</p> </li> <li> <p> <code>RevertFailed</code>: The change failed and HyperPod could not restore the previous configuration, so Slurm accounting on the cluster might not be working.</p> </li> </ul> <p>This field is omitted when the change succeeds.</p>"
+        },
+        "Advisory":{
+          "shape":"String",
+          "documentation":"<p>Additional information about a change that succeeded, such as an action to take on the cluster.</p>"
+        },
+        "FailureMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message describing why the accounting database change failed, and how to resolve it.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about a change to the external Slurm accounting database of a HyperPod cluster.</p>"
+    },
+    "DatabaseConfigurationRollbackStatus":{
+      "type":"string",
+      "enum":[
+        "NotApplicable",
+        "Reverted",
+        "RevertFailed"
+      ]
+    },
     "DatasetDefinition":{
       "type":"structure",
       "members":{
@@ -16946,7 +17276,8 @@
       "type":"string",
       "enum":[
         "InstanceStress",
-        "InstanceConnectivity"
+        "InstanceConnectivity",
+        "MultiNodeTrainingValidation"
       ]
     },
     "DeepHealthChecks":{
@@ -17857,6 +18188,20 @@
           "documentation":"<p>The name of the training job to delete.</p>"
         }
       }
+    },
+    "DeleteTrainingSessionRequest":{
+      "type":"structure",
+      "required":["TrainingSessionName"],
+      "members":{
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session to delete.</p>"
+        }
+      }
+    },
+    "DeleteTrainingSessionResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteTrialComponentRequest":{
       "type":"structure",
@@ -23142,7 +23487,7 @@
       "required":["TrainingPlanName"],
       "members":{
         "TrainingPlanName":{
-          "shape":"TrainingPlanName",
+          "shape":"TrainingPlanNameOrArn",
           "documentation":"<p>The name of the training plan to describe.</p>"
         }
       }
@@ -23226,6 +23571,26 @@
         "ReservedCapacitySummaries":{
           "shape":"ReservedCapacitySummaries",
           "documentation":"<p>The list of Reserved Capacity providing the underlying compute resources of the plan. </p>"
+        }
+      }
+    },
+    "DescribeTrainingSessionRequest":{
+      "type":"structure",
+      "required":["TrainingSessionName"],
+      "members":{
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session to describe.</p>"
+        }
+      }
+    },
+    "DescribeTrainingSessionResponse":{
+      "type":"structure",
+      "required":["TrainingSessionDetail"],
+      "members":{
+        "TrainingSessionDetail":{
+          "shape":"TrainingSessionDetail",
+          "documentation":"<p>The detailed information about the training session.</p>"
         }
       }
     },
@@ -24350,6 +24715,40 @@
       },
       "documentation":"<p>The settings for assigning a custom Amazon EFS file system to a user profile or space for an Amazon SageMaker AI Domain.</p>"
     },
+    "EMRServerlessApplicationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":".*[0-9a-z]+.*"
+    },
+    "EMRServerlessJobRunId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":".*[0-9a-z]+.*"
+    },
+    "EMRServerlessStepMetadata":{
+      "type":"structure",
+      "members":{
+        "ApplicationId":{
+          "shape":"EMRServerlessApplicationId",
+          "documentation":"<p>The identifier of the Amazon EMR Serverless application.</p>"
+        },
+        "JobRunId":{
+          "shape":"EMRServerlessJobRunId",
+          "documentation":"<p>The identifier of the Amazon EMR Serverless job run.</p>"
+        },
+        "JobRunName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the Amazon EMR Serverless job run.</p>"
+        },
+        "LogFilePath":{
+          "shape":"String1024",
+          "documentation":"<p>The path to the log file for the Amazon EMR Serverless job run.</p>"
+        }
+      },
+      "documentation":"<p>The configurations and outcomes of an Amazon EMR Serverless step execution.</p>"
+    },
     "EMRStepMetadata":{
       "type":"structure",
       "members":{
@@ -25419,6 +25818,14 @@
         "Instance":{
           "shape":"InstanceMetadata",
           "documentation":"<p>Metadata specific to instance-level events.</p>"
+        },
+        "DatabaseConfiguration":{
+          "shape":"DatabaseConfigurationMetadata",
+          "documentation":"<p>Metadata specific to events about the external Slurm accounting database of the cluster.</p>"
+        },
+        "SlurmHealth":{
+          "shape":"SlurmHealthMetadata",
+          "documentation":"<p>Metadata specific to events about the health of the Slurm components on the controller node of the cluster.</p>"
         }
       },
       "documentation":"<p>Metadata associated with a cluster event, which may include details about various resource types.</p>",
@@ -26384,6 +26791,69 @@
       "max":128,
       "min":1,
       "pattern":"[\\t\\n\\r -\\uD7FF\\uE000-\\uFFFD]*"
+    },
+    "ForEachSelectorResult":{
+      "type":"structure",
+      "members":{
+        "StepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the step associated with the iteration.</p>"
+        },
+        "Index":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the iteration within the ForEach step.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The result of the selector that identifies an iteration of a ForEach step.</p>"
+    },
+    "ForEachStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a ForEach step execution. Valid values are:</p> <ul> <li> <p> <code>Succeeded</code> indicates that the ForEach step execution completed successfully.</p> </li> <li> <p> <code>Failed</code> indicates that the ForEach step execution failed.</p> </li> <li> <p> <code>Stopped</code> indicates that the ForEach step execution was stopped.</p> </li> </ul>",
+      "enum":[
+        "Succeeded",
+        "Failed",
+        "Stopped"
+      ]
+    },
+    "ForEachStepMetadata":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ForEachStatus",
+          "documentation":"<p>The status of the ForEach step execution.</p>"
+        },
+        "InputItemCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of input items that the ForEach step iterates over.</p>",
+          "box":true
+        },
+        "TotalStepCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of steps generated across all iterations of the ForEach step.</p>",
+          "box":true
+        },
+        "SucceededStepCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of iteration steps that completed successfully.</p>",
+          "box":true
+        },
+        "FailedStepCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of iteration steps that failed.</p>",
+          "box":true
+        },
+        "StoppedStepCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of iteration steps that were stopped.</p>",
+          "box":true
+        },
+        "Selector":{
+          "shape":"ForEachSelectorResult",
+          "documentation":"<p>Identifies the body step and iteration selected within the ForEach step.</p>"
+        }
+      },
+      "documentation":"<p>The status, the iteration-step counts, and the selector information for a ForEach step execution.</p>"
     },
     "ForecastFrequency":{
       "type":"string",
@@ -28594,6 +29064,10 @@
         "MaxMemoryRequiredInMb":{
           "shape":"MemoryInMb",
           "documentation":"<p>The maximum MB of memory to allocate to run a model that you assign to an inference component.</p>"
+        },
+        "AcceleratorPartitionType":{
+          "shape":"AcceleratorPartitionType",
+          "documentation":"<p>The accelerator partition profile this inference component occupies; on NVIDIA GPUs this is a Multi-Instance GPU (MIG) profile such as <code>mig-3g.40gb</code>. It must be one of the partition profiles declared in the target endpoint's accelerator partition layout, and when set, <code>NumberOfAcceleratorDevicesRequired</code> must be <code>1</code>. This field is required when the endpoint's production variant has an accelerator partition layout. For endpoints without a layout, omit this field to place the inference component on a whole accelerator.</p>"
         }
       },
       "documentation":"<p>Defines the compute resources to allocate to run a model, plus any adapter models, that you assign to an inference component. These resources include CPU cores, accelerators, and memory.</p>"
@@ -29994,6 +30468,37 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "IterationContext":{
+      "type":"structure",
+      "members":{
+        "ParentStepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the ForEach step that generated this iteration.</p>"
+        },
+        "Index":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the iteration within the ForEach step.</p>",
+          "box":true
+        },
+        "Item":{
+          "shape":"String12800",
+          "documentation":"<p>The input item that is being processed in this iteration.</p>"
+        }
+      },
+      "documentation":"<p>The context for an iteration of a ForEach step.</p>"
+    },
+    "JavaBoolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "JavaInteger":{
+      "type":"integer",
+      "box":true
+    },
+    "JavaLong":{
+      "type":"long",
+      "box":true
     },
     "Job":{
       "type":"structure",
@@ -35234,6 +35739,48 @@
         }
       }
     },
+    "ListTrainingSessionsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response was truncated, use the token returned in the previous response to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of training sessions to return in the response.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only training sessions created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only training sessions created before the specified time.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>A string in the training session name to filter results. Only sessions whose name contains the specified string are returned.</p>"
+        },
+        "StatusEquals":{
+          "shape":"TrainingSessionStatus",
+          "documentation":"<p>A filter that returns only training sessions with the specified status.</p>"
+        }
+      }
+    },
+    "ListTrainingSessionsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, this token retrieves the next set of results.</p>"
+        },
+        "TrainingSessionSummaries":{
+          "shape":"TrainingSessionSummaries",
+          "documentation":"<p>An array of <code>TrainingSessionSummary</code> objects that provide summary information about the training sessions.</p>"
+        }
+      }
+    },
     "ListTransformJobsRequest":{
       "type":"structure",
       "members":{
@@ -35579,6 +36126,29 @@
       "max":2048,
       "min":0,
       "pattern":"(https|s3)://([^/]+)/?(.*)"
+    },
+    "LoraAlpha":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "LoraConfig":{
+      "type":"structure",
+      "required":[
+        "Rank",
+        "Alpha"
+      ],
+      "members":{
+        "Rank":{
+          "shape":"Rank",
+          "documentation":"<p>The rank of the Low-Rank Adaptation (LoRA) adapter matrices.</p>"
+        },
+        "Alpha":{
+          "shape":"LoraAlpha",
+          "documentation":"<p>The Low-Rank Adaptation (LoRA) scaling factor.</p>"
+        }
+      },
+      "documentation":"<p>The Low-Rank Adaptation (LoRA) configuration for a training session, including the rank and alpha parameters.</p>"
     },
     "MIGProfileType":{
       "type":"string",
@@ -39890,6 +40460,12 @@
       "max":50,
       "min":0
     },
+    "OutputS3Path":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"(https|s3)://([^/]+)/?(.*)"
+    },
     "OwnershipSettings":{
       "type":"structure",
       "required":["OwnerUserProfileName"],
@@ -40261,6 +40837,10 @@
         "RoutingConfig":{
           "shape":"ProductionVariantRoutingConfig",
           "documentation":"<p>Settings that control how the endpoint routes incoming traffic to the instances that the endpoint hosts.</p>"
+        },
+        "AcceleratorPartitionLayouts":{
+          "shape":"AcceleratorPartitionLayouts",
+          "documentation":"<p>The accelerator partition layout that SageMaker is applying to this production variant. On NVIDIA GPUs, the profiles are Multi-Instance GPU (MIG) profiles. SageMaker returns the accelerator partition layout as you provided it in the pending deployment configuration, without normalization.</p>"
         }
       },
       "documentation":"<p>The production variant summary for a deployment when an endpoint is creating or updating with the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html\">UpdateEndpoint</a> operations. Describes the <code>VariantStatus </code>, weight and capacity for a production variant associated with an endpoint. </p>"
@@ -40481,7 +41061,8 @@
         "Stopping",
         "Stopped",
         "Failed",
-        "Succeeded"
+        "Succeeded",
+        "CompletedWithFailures"
       ]
     },
     "PipelineExecutionStep":{
@@ -40531,6 +41112,10 @@
         "SelectiveExecutionResult":{
           "shape":"SelectiveExecutionResult",
           "documentation":"<p>The ARN from an execution of the current pipeline from which results are reused for this step.</p>"
+        },
+        "IterationContext":{
+          "shape":"IterationContext",
+          "documentation":"<p>The context for the iteration of a ForEach step that generated this step execution.</p>"
         }
       },
       "documentation":"<p>An execution of a step in a pipeline.</p>"
@@ -40584,6 +41169,10 @@
           "shape":"EMRStepMetadata",
           "documentation":"<p>The configurations and outcomes of an Amazon EMR step execution.</p>"
         },
+        "EMRServerless":{
+          "shape":"EMRServerlessStepMetadata",
+          "documentation":"<p>The configurations and outcomes of an Amazon EMR Serverless step execution.</p>"
+        },
         "QualityCheck":{
           "shape":"QualityCheckStepMetadata",
           "documentation":"<p>The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted.</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The Boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>"
@@ -40635,6 +41224,18 @@
         "Job":{
           "shape":"JobStepMetadata",
           "documentation":"<p>The metadata for a SageMaker job used in a pipeline execution step.</p>"
+        },
+        "Athena":{
+          "shape":"AthenaStepMetadata",
+          "documentation":"<p>The metadata for the Athena step execution.</p>"
+        },
+        "Cleanup":{
+          "shape":"CleanupStepMetadata",
+          "documentation":"<p>The metadata for the cleanup step execution.</p>"
+        },
+        "ForEach":{
+          "shape":"ForEachStepMetadata",
+          "documentation":"<p>The metadata for the ForEach step execution.</p>"
         }
       },
       "documentation":"<p>Metadata for a step execution.</p>"
@@ -40917,11 +41518,11 @@
       "members":{
         "PrefixLength":{
           "shape":"PrefixAwareRoutingPrefixLength",
-          "documentation":"<p>The maximum length of the prefix used for routing decisions. Required when <code>RoutingStrategy</code> is <code>PREFIX_AWARE</code>.</p> <ul> <li> <p>For the SageMaker Runtime <code>InvokeEndpoint</code> and <code>InvokeEndpointWithResponseStream</code> APIs, this value specifies the number of bytes from the beginning of the request body.</p> </li> <li> <p>For OpenAI-compatible API, this value specifies the number of characters from the text content of the messages array.</p> </li> </ul> <p>The endpoint routes requests that share the same prefix to the same instance. Set this value to cover shared content (such as system prompts) plus enough unique content to distribute workloads across instances.</p>"
+          "documentation":"<p>The maximum length of the prefix used for routing decisions. Required when <code>RoutingStrategy</code> is <code>PREFIX_AWARE</code>.</p> <ul> <li> <p>For the SageMaker Runtime <code>InvokeEndpoint</code> and <code>InvokeEndpointWithResponseStream</code> APIs, this value specifies the number of bytes from the beginning of the request body.</p> </li> <li> <p>For OpenAI-compatible API, this value specifies the number of characters from the text content of the messages array.</p> </li> </ul> <p>The endpoint routes requests that share the same prefix to the same instance and, when that instance hosts more than one copy of the invoked inference component, to the same copy. Set this value to cover shared content (such as system prompts) plus enough unique content to distribute workloads across instances and copies.</p>"
         },
         "ConcurrencyThreshold":{
           "shape":"PrefixAwareRoutingConcurrencyThreshold",
-          "documentation":"<p>The maximum number of in-flight requests on the target instance before the endpoint routes to another instance. Required when <code>RoutingStrategy</code> is <code>PREFIX_AWARE</code>. When in-flight requests on the prefix-selected instance reach this threshold, the endpoint routes the request to an instance with more available capacity.</p>"
+          "documentation":"<p>The number of in-flight requests on the selected instance or inference component copy at which the endpoint routes a request to another copy or instance. Required when <code>RoutingStrategy</code> is <code>PREFIX_AWARE</code>.</p> <p>On an endpoint without inference components, the endpoint compares this threshold with the number of in-flight requests on the selected instance. When that number reaches the threshold, the endpoint routes the request to another instance.</p> <p>On an endpoint with inference components, the endpoint compares this threshold with the number of in-flight requests on the selected copy of the invoked inference component. Requests to other inference components on the same instance don't count. When the instance hosts more than one copy of the inference component, the endpoint routes requests that share a prefix to the same copy and, while that copy has reached the threshold, to another copy on the instance that is under the threshold. When every copy on the instance has reached the threshold, the endpoint routes the request to another instance.</p> <p>The threshold applies to every instance and every copy of every inference component in the production variant, so choose a value that suits the instance or copy that can serve the fewest concurrent requests.</p>"
         }
       },
       "documentation":"<p>The configuration for prefix-aware routing on a SageMaker real-time inference endpoint. Specify <code>PrefixLength</code> and <code>ConcurrencyThreshold</code> to control routing behavior.</p>"
@@ -41289,7 +41890,40 @@
         "ml.r8i.24xlarge",
         "ml.r8i.32xlarge",
         "ml.r8i.48xlarge",
-        "ml.r8i.96xlarge"
+        "ml.r8i.96xlarge",
+        "ml.m7i-flex.large",
+        "ml.m7i-flex.xlarge",
+        "ml.m7i-flex.2xlarge",
+        "ml.m7i-flex.4xlarge",
+        "ml.m7i-flex.8xlarge",
+        "ml.m7i-flex.12xlarge",
+        "ml.m7i-flex.16xlarge",
+        "ml.c7i-flex.xlarge",
+        "ml.c7i-flex.2xlarge",
+        "ml.c7i-flex.4xlarge",
+        "ml.c7i-flex.8xlarge",
+        "ml.c7i-flex.12xlarge",
+        "ml.c7i-flex.16xlarge",
+        "ml.m8i-flex.large",
+        "ml.m8i-flex.xlarge",
+        "ml.m8i-flex.2xlarge",
+        "ml.m8i-flex.4xlarge",
+        "ml.m8i-flex.8xlarge",
+        "ml.m8i-flex.12xlarge",
+        "ml.m8i-flex.16xlarge",
+        "ml.c8i-flex.xlarge",
+        "ml.c8i-flex.2xlarge",
+        "ml.c8i-flex.4xlarge",
+        "ml.c8i-flex.8xlarge",
+        "ml.c8i-flex.12xlarge",
+        "ml.c8i-flex.16xlarge",
+        "ml.r8i-flex.large",
+        "ml.r8i-flex.xlarge",
+        "ml.r8i-flex.2xlarge",
+        "ml.r8i-flex.4xlarge",
+        "ml.r8i-flex.8xlarge",
+        "ml.r8i-flex.12xlarge",
+        "ml.r8i-flex.16xlarge"
       ]
     },
     "ProcessingJob":{
@@ -41716,9 +42350,19 @@
         "CapacityReservationConfig":{
           "shape":"ProductionVariantCapacityReservationConfig",
           "documentation":"<p>Settings for the capacity reservation for the compute instances that SageMaker AI reserves for an endpoint. </p>"
+        },
+        "AcceleratorPartitionLayouts":{
+          "shape":"ProductionVariantAcceleratorPartitionLayoutsList",
+          "documentation":"<p>The accelerator partition layout for the accelerators backing this production variant. A layout lists the partition profiles to carve on the accelerators it applies to; on NVIDIA GPUs these are Multi-Instance GPU (MIG) profiles such as <code>mig-3g.40gb</code>. Specify a single layout: SageMaker applies it uniformly to every accelerator on the variant's instance type, and you place one inference component on each partition. Omit this field to use whole, unpartitioned accelerators.</p>"
         }
       },
       "documentation":"<p> Identifies a model that you want to host and the resources chosen to deploy for hosting it. If you are deploying multiple models, tell SageMaker how to distribute traffic among the models by specifying variant weights. For more information on production variants, check <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html\"> Production variants</a>. </p>"
+    },
+    "ProductionVariantAcceleratorPartitionLayoutsList":{
+      "type":"list",
+      "member":{"shape":"AcceleratorPartitionLayout"},
+      "max":32,
+      "min":1
     },
     "ProductionVariantAcceleratorType":{
       "type":"string",
@@ -42147,7 +42791,7 @@
       "members":{
         "RoutingStrategy":{
           "shape":"RoutingStrategy",
-          "documentation":"<p>Sets how the endpoint routes incoming traffic:</p> <ul> <li> <p> <code>LEAST_OUTSTANDING_REQUESTS</code>: The endpoint routes requests to the specific instances that have more capacity to process them.</p> </li> <li> <p> <code>RANDOM</code>: The endpoint routes each request to a randomly chosen instance.</p> </li> <li> <p> <code>PREFIX_AWARE</code>: The endpoint routes requests that share the same prompt prefix to the same instance. When the number of in-flight requests on the selected instance reaches the configured threshold, the endpoint routes the request to an instance with more available capacity.</p> </li> </ul>"
+          "documentation":"<p>Sets how the endpoint routes incoming traffic:</p> <ul> <li> <p> <code>LEAST_OUTSTANDING_REQUESTS</code>: The endpoint routes requests to the specific instances that have more capacity to process them.</p> </li> <li> <p> <code>RANDOM</code>: The endpoint routes each request to a randomly chosen instance.</p> </li> <li> <p> <code>PREFIX_AWARE</code>: The endpoint routes requests that share the same prompt prefix to the same instance and, when that instance hosts more than one copy of the invoked inference component, to the same copy. When the number of in-flight requests on the selected instance or copy reaches the <code>ConcurrencyThreshold</code> value, the endpoint routes the request to another copy on that instance or to another instance. The endpoint applies prefix-aware routing only when two or more instances can serve the request.</p> </li> </ul>"
         },
         "PrefixAwareRoutingConfig":{
           "shape":"PrefixAwareRoutingConfig",
@@ -42276,6 +42920,10 @@
         "CapacityReservationConfig":{
           "shape":"ProductionVariantCapacityReservationSummary",
           "documentation":"<p>Settings for the capacity reservation for the compute instances that SageMaker AI reserves for an endpoint. </p>"
+        },
+        "AcceleratorPartitionLayouts":{
+          "shape":"AcceleratorPartitionLayouts",
+          "documentation":"<p>The accelerator partition layout that SageMaker applies to this production variant. On NVIDIA GPUs, the profiles are Multi-Instance GPU (MIG) profiles. SageMaker returns the accelerator partition layout as you provided it when you created the variant, without normalization.</p>"
         }
       },
       "documentation":"<p>Describes weight and capacities for a production variant associated with an endpoint. If you sent a request to the <code>UpdateEndpointWeightsAndCapacities</code> API and the endpoint status is <code>Updating</code>, you get different desired and current values. </p>"
@@ -42932,6 +43580,12 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "Rank":{
+      "type":"integer",
+      "box":true,
+      "max":256,
+      "min":1
     },
     "RealTimeInferenceConfig":{
       "type":"structure",
@@ -45098,7 +45752,7 @@
         },
         "SequenceLength":{
           "shape":"SequenceLength",
-          "documentation":"<p> The maximum sequence length, in tokens, that the customization job supports. SageMaker uses this value to select a training configuration for the base model that you specify. The parameter supports the following values: </p> <ul> <li> <p> <code>1K</code> </p> </li> <li> <p> <code>2K</code> </p> </li> <li> <p> <code>4K</code> </p> </li> <li> <p> <code>8K</code> </p> </li> <li> <p> <code>16K</code> </p> </li> <li> <p> <code>32K</code> </p> </li> <li> <p> <code>64K</code> </p> </li> <li> <p> <code>128K</code> </p> </li> </ul> <p> If you don't specify a value, SageMaker selects a training configuration based on the other values that you specify. The selection is not restricted to a particular sequence length. </p>"
+          "documentation":"<p> The maximum sequence length, in tokens, that the customization job supports. SageMaker uses this value to select a training configuration for the base model that you specify. The value must be an integer value from <code>1K</code> to <code>1024K</code> (for example, <code>32K</code>). </p> <p> If you don't specify a value, SageMaker selects a training configuration based on the other values that you specify. The selection is not restricted to a particular sequence length. </p>"
         }
       },
       "documentation":"<p> The configuration for the serverless training job. </p>"
@@ -45299,6 +45953,47 @@
       "enum":[
         "All",
         "None"
+      ]
+    },
+    "SlurmHealthComponent":{
+      "type":"string",
+      "enum":["Slurmdbd"]
+    },
+    "SlurmHealthMetadata":{
+      "type":"structure",
+      "required":[
+        "Component",
+        "Status"
+      ],
+      "members":{
+        "Component":{
+          "shape":"SlurmHealthComponent",
+          "documentation":"<p>The Slurm component that the health information describes. The valid value is <code>Slurmdbd</code>, the Slurm accounting daemon.</p>"
+        },
+        "Status":{
+          "shape":"SlurmHealthStatus",
+          "documentation":"<p>The health of the component. Valid values are <code>Healthy</code> and <code>Unhealthy</code>.</p>"
+        },
+        "Reason":{
+          "shape":"SlurmHealthReason",
+          "documentation":"<p>The reason the component is unhealthy. Valid values:</p> <ul> <li> <p> <code>DaemonDown</code>: The daemon is not running, so job accounting records are not being written.</p> </li> <li> <p> <code>DaemonDisabled</code>: The daemon is running and its accounting database is responding, but the daemon is not enabled to start automatically. Job accounting stops the next time the controller node restarts.</p> </li> <li> <p> <code>DbUnreachable</code>: The daemon is running, but its accounting database did not respond. Job accounting records might not be written.</p> </li> </ul> <p>This field is omitted when the component is healthy.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about the health of a Slurm component on the controller node of a HyperPod cluster.</p>"
+    },
+    "SlurmHealthReason":{
+      "type":"string",
+      "enum":[
+        "DaemonDown",
+        "DaemonDisabled",
+        "DbUnreachable"
+      ]
+    },
+    "SlurmHealthStatus":{
+      "type":"string",
+      "enum":[
+        "Healthy",
+        "Unhealthy"
       ]
     },
     "SnsTopicArn":{
@@ -46285,6 +46980,20 @@
         }
       }
     },
+    "StopTrainingSessionRequest":{
+      "type":"structure",
+      "required":["TrainingSessionName"],
+      "members":{
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session to stop.</p>"
+        }
+      }
+    },
+    "StopTrainingSessionResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "StopTransformJobRequest":{
       "type":"structure",
       "required":["TransformJobName"],
@@ -46332,6 +47041,11 @@
     "String128":{
       "type":"string",
       "max":128,
+      "min":0
+    },
+    "String12800":{
+      "type":"string",
+      "max":12800,
       "min":0
     },
     "String200":{
@@ -47587,7 +48301,40 @@
         "ml.r8i.24xlarge",
         "ml.r8i.32xlarge",
         "ml.r8i.48xlarge",
-        "ml.r8i.96xlarge"
+        "ml.r8i.96xlarge",
+        "ml.m7i-flex.large",
+        "ml.m7i-flex.xlarge",
+        "ml.m7i-flex.2xlarge",
+        "ml.m7i-flex.4xlarge",
+        "ml.m7i-flex.8xlarge",
+        "ml.m7i-flex.12xlarge",
+        "ml.m7i-flex.16xlarge",
+        "ml.c7i-flex.xlarge",
+        "ml.c7i-flex.2xlarge",
+        "ml.c7i-flex.4xlarge",
+        "ml.c7i-flex.8xlarge",
+        "ml.c7i-flex.12xlarge",
+        "ml.c7i-flex.16xlarge",
+        "ml.m8i-flex.large",
+        "ml.m8i-flex.xlarge",
+        "ml.m8i-flex.2xlarge",
+        "ml.m8i-flex.4xlarge",
+        "ml.m8i-flex.8xlarge",
+        "ml.m8i-flex.12xlarge",
+        "ml.m8i-flex.16xlarge",
+        "ml.c8i-flex.xlarge",
+        "ml.c8i-flex.2xlarge",
+        "ml.c8i-flex.4xlarge",
+        "ml.c8i-flex.8xlarge",
+        "ml.c8i-flex.12xlarge",
+        "ml.c8i-flex.16xlarge",
+        "ml.r8i-flex.large",
+        "ml.r8i-flex.xlarge",
+        "ml.r8i-flex.2xlarge",
+        "ml.r8i-flex.4xlarge",
+        "ml.r8i-flex.8xlarge",
+        "ml.r8i-flex.12xlarge",
+        "ml.r8i-flex.16xlarge"
       ]
     },
     "TrainingInstanceTypes":{
@@ -48094,6 +48841,13 @@
       "min":1,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
     },
+    "TrainingPlanNameOrArn":{
+      "type":"string",
+      "documentation":"<p>A training plan name, or the ARN of a training plan.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:training-plan/)?[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+    },
     "TrainingPlanOffering":{
       "type":"structure",
       "required":[
@@ -48305,6 +49059,184 @@
       "max":2048,
       "min":1,
       "pattern":"arn:[\\p{Alnum}\\-]+:lambda:[\\p{Alnum}\\-]+:[0-9]{12}:function:.*"
+    },
+    "TrainingSessionArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:(aws[a-z\\-]*):sagemaker:[a-z0-9\\-]+:[0-9]{12}:training-session/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "TrainingSessionDetail":{
+      "type":"structure",
+      "required":[
+        "TrainingSessionArn",
+        "TrainingSessionName",
+        "TrainingSessionStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "TrainingSessionArn":{
+          "shape":"TrainingSessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the training session.</p>"
+        },
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session.</p>"
+        },
+        "TrainingSessionStatus":{
+          "shape":"TrainingSessionStatus",
+          "documentation":"<p>The current status of the training session.</p>"
+        },
+        "ModelPackageGroupArn":{
+          "shape":"ModelPackageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model package group where checkpoints are published.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session was last modified.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session ended.</p>"
+        },
+        "ErrorDetails":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the training session failed or is blocked, detailed error information.</p>"
+        },
+        "LastReceivedSequenceNumber":{
+          "shape":"JavaInteger",
+          "documentation":"<p>The sequence number of the last training operation received by the session.</p>"
+        },
+        "BillableTokenUsage":{
+          "shape":"BillableTokenUsage",
+          "documentation":"<p>The billable token usage for the training session.</p>"
+        },
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The Virtual Private Cloud (VPC) configuration for the training session.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the training session.</p>"
+        },
+        "LoraConfig":{
+          "shape":"LoraConfig",
+          "documentation":"<p>The Low-Rank Adaptation (LoRA) configuration for the training session.</p>"
+        },
+        "ModelConfig":{
+          "shape":"TrainingSessionModelConfig",
+          "documentation":"<p>The configuration for the base model.</p>"
+        },
+        "OutputConfig":{
+          "shape":"TrainingSessionOutputConfig",
+          "documentation":"<p>The output configuration for the training session.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the training session.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about a training session.</p>"
+    },
+    "TrainingSessionModelConfig":{
+      "type":"structure",
+      "required":["BaseModelArn"],
+      "members":{
+        "BaseModelArn":{
+          "shape":"BaseModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the base foundation model from SageMaker Hub.</p>"
+        },
+        "AcceptEula":{
+          "shape":"JavaBoolean",
+          "documentation":"<p>Specifies whether you accept the end-user license agreement (EULA) for gated models.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the base model used in a training session.</p>"
+    },
+    "TrainingSessionName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "TrainingSessionOutputConfig":{
+      "type":"structure",
+      "required":["S3Location"],
+      "members":{
+        "S3Location":{
+          "shape":"TrainingSessionS3Location",
+          "documentation":"<p>The Amazon S3 location where training session outputs, including checkpoints and model artifacts, are stored.</p>"
+        }
+      },
+      "documentation":"<p>The output configuration for a training session, including the Amazon S3 location for checkpoints and model artifacts, and optional encryption settings.</p>"
+    },
+    "TrainingSessionS3Location":{
+      "type":"structure",
+      "required":["Path"],
+      "members":{
+        "Path":{
+          "shape":"OutputS3Path",
+          "documentation":"<p>The Amazon S3 path where training session outputs are stored.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"CustomerKmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt output data. If not specified, the default Amazon S3 encryption is used.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the Amazon S3 path and optional encryption settings for training session output data, including checkpoints, model artifacts, and invocation results.</p>"
+    },
+    "TrainingSessionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a training session.</p>",
+      "enum":[
+        "Created",
+        "Blocked",
+        "Running",
+        "Failed",
+        "Scheduled",
+        "Stopping",
+        "Stopped",
+        "Expired",
+        "Deleting",
+        "DeletionFailed"
+      ]
+    },
+    "TrainingSessionSummaries":{
+      "type":"list",
+      "member":{"shape":"TrainingSessionSummary"},
+      "max":100,
+      "min":0
+    },
+    "TrainingSessionSummary":{
+      "type":"structure",
+      "required":[
+        "TrainingSessionArn",
+        "TrainingSessionStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "TrainingSessionArn":{
+          "shape":"TrainingSessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the training session.</p>"
+        },
+        "TrainingSessionStatus":{
+          "shape":"TrainingSessionStatus",
+          "documentation":"<p>The current status of the training session.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a training session.</p>"
     },
     "TrainingSpecification":{
       "type":"structure",

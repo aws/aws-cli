@@ -12,15 +12,15 @@ Output::
             {
                 "ApiId": "a1b2c3d4",
                 "ApiMappingId": "a1b2c3d5",
-                "ApiMappingKey": "myTestApi"
+                "ApiMappingKey": "myTestApi",
                 "Stage": "test"
             },
             {
                 "ApiId": "a5b6c7d8",
                 "ApiMappingId": "a1b2c3d6",
-                "ApiMappingKey": "myDevApi"
+                "ApiMappingKey": "myDevApi",
                 "Stage": "dev"
-            },
+            }
         ]
     }
 

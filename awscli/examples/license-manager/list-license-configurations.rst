@@ -51,12 +51,11 @@ Output::
                         "AssociationCount": 0
                     }
                 ]
-            },
-            {
-                ...
             }
         ]
     }
+
+For more information, see `View self-managed licenses in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/view-license-configuration.html>`__ in the *AWS License Manager User Guide*.
 
 **Example 2: To list a specific license configuration**
 
@@ -64,3 +63,36 @@ The following ``list-license-configurations`` example lists only the specified l
 
     aws license-manager list-license-configurations \
         --license-configuration-arns arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-38b658717b87478aaa7c00883EXAMPLE
+
+Output::
+
+    {
+        "LicenseConfigurations": [
+            {
+                "LicenseConfigurationId": "lic-38b658717b87478aaa7c00883EXAMPLE",
+                "LicenseConfigurationArn": "arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-38b658717b87478aaa7c00883EXAMPLE",
+                "Name": "my-license-configuration",
+                "LicenseCountingType": "vCPU",
+                "LicenseRules": [],
+                "LicenseCount": 10,
+                "LicenseCountHardLimit": false,
+                "ConsumedLicenses": 0,
+                "Status": "AVAILABLE",
+                "OwnerAccountId": "123456789012",
+                "ConsumedLicenseSummaryList": [
+                    {
+                        "ResourceType": "EC2_INSTANCE",
+                        "ConsumedLicenses": 0
+                    }
+                ],
+                "ManagedResourceSummaryList": [
+                    {
+                        "ResourceType": "EC2_INSTANCE",
+                        "AssociationCount": 0
+                    }
+                ]
+            }
+        ]
+    }
+
+For more information, see `View self-managed licenses in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/view-license-configuration.html>`__ in the *AWS License Manager User Guide*.

@@ -41,7 +41,7 @@ Output::
                         ]
                     ]
                 },
-                "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-11111example",
+                "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "triggerConfigurations": [],
                 "applicationName": "my-codedeploy-application",
                 "computePlatform": "Server",
@@ -72,7 +72,7 @@ Output::
                         ]
                     ]
                 },
-                "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-22222example",
+                "deploymentGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "triggerConfigurations": [],
                 "applicationName": "my-codedeploy-application",
                 "computePlatform": "Server",
@@ -82,5 +82,4 @@ Output::
         "errorMessage": ""
     }
 
-For more information, see `BatchGetDeploymentGroups <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_BatchGetDeploymentGroups.html>`_ in the *AWS CodeDeploy API Reference*.
-    
+For more information, see `View deployment group details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-groups-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

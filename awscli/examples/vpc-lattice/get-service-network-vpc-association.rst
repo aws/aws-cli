@@ -8,7 +8,7 @@ The following ``get-service-network-vpc-association`` example gets information a
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetworkvpcassociation/snva-0821fc8631EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetworkvpcassociation/snva-0821fc8631EXAMPLE",
         "createdAt": "2023-06-06T23:41:08.421Z",
         "createdBy": "123456789012",
         "id": "snva-0c5dcb60d6EXAMPLE",
@@ -16,7 +16,7 @@ Output::
         "securityGroupIds": [
             "sg-0aee16bc6cEXAMPLE"
         ],
-        "serviceNetworkArn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
+        "serviceNetworkArn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetwork/sn-080ec7dc93EXAMPLE",
         "serviceNetworkId": "sn-080ec7dc93EXAMPLE",
         "serviceNetworkName": "my-service-network",
         "status": "ACTIVE",

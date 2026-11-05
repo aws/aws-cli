@@ -6,6 +6,6 @@ The following ``delete-distribution-tenant`` example deletes a distribution tena
         --id dt_2wjMUbg3NHZEQ7OfoalP5zi1AB \
         --if-match ETVPDKIKX0DABC
 
-When successful, this command has no output.
+This command produces no output.
 
 For more information, see `Delete a distribution <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToDeleteDistribution.html>`__ in the *Amazon CloudFront Developer Guide*.

@@ -22,4 +22,4 @@ Output::
         }
     }
 
-For more information, see `Creating an Aurora global database <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-getting-started.html#aurora-global-database-creating>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Creating an Aurora global database <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-creating.html>`__ in the *Amazon Aurora User Guide*.

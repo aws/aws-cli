@@ -16,3 +16,5 @@ Output::
             }
         }
     }
+
+For more information, see `Creating query-based groups in AWS Resource Groups <https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html>`__ in the *AWS Resource Groups User Guide*.

@@ -118,6 +118,21 @@ class ProvideFullObjectChecksumSubscriber(BaseSubscriber):
             )
 
 
+class FullObjectChecksumUnavailableSubscriber(BaseSubscriber):
+    """
+    A subscriber which indicates the object has no full object checksum.
+    """
+
+    def on_queued(self, future, **kwargs):
+        if hasattr(future.meta, 'mark_full_object_checksum_unavailable'):
+            future.meta.mark_full_object_checksum_unavailable()
+        else:
+            LOGGER.debug(
+                'Not marking full object checksum unavailable. Future: '
+                f'{future} does not offer the capability',
+            )
+
+
 class CaseConflictCleanupSubscriber(BaseSubscriber):
     """
     A subscriber which removes object compare key from case conflict set

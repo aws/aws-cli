@@ -1,21 +1,20 @@
 **To retrieve a list of notification rule targets**
 
-The following ``list-targets`` example retrieves a list of all notification rule targets in the specified AWS Region. ::
+The following ``list-targets`` example retrieves a list of all notification rule targets in the current AWS Region. ::
 
-    aws codestar-notifications list-targets \
-        --region us-east-1
+    aws codestar-notifications list-targets
 
 Output::
 
     {
         "Targets": [
             {
-                "TargetAddress": "arn:aws:sns:us-east-1:123456789012:MySNSTopicForNotificationRules",
+                "TargetAddress": "arn:aws:sns:us-west-2:123456789012:MySNSTopicForNotificationRules",
                 "TargetType": "SNS",
                 "TargetStatus": "ACTIVE"
             },
             {
-                "TargetAddress": "arn:aws:sns:us-east-1:123456789012:MySNSTopicForNotificationsAboutMyDemoRepo",
+                "TargetAddress": "arn:aws:sns:us-west-2:123456789012:MySNSTopicForNotificationsAboutMyDemoRepo",
                 "TargetType": "SNS",
                 "TargetStatus": "ACTIVE"
             }

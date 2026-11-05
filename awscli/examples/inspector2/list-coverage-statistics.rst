@@ -3,7 +3,7 @@
 The following ``list-coverage-statistics`` example lists the coverage statistics of your AWS environment by groups. ::
 
     aws inspector2 list-coverage-statistics \
-       --group-by RESOURCE_TYPE 
+        --group-by RESOURCE_TYPE
 
 Output::
 
@@ -39,8 +39,8 @@ For more information, see `Assessing Amazon Inspector coverage of your AWS envir
 
 The following ``list-coverage-statistics`` example lists the coverage statistics of your AWS environment by resource type. ::
 
-    aws inspector2 list-coverage-statistics 
-        --filter-criteria '{"resourceType":[{"comparison":"EQUALS","value":"AWS_ECR_REPOSITORY"}]}' 
+    aws inspector2 list-coverage-statistics \
+        --filter-criteria '{"resourceType":[{"comparison":"EQUALS","value":"AWS_ECR_REPOSITORY"}]}' \
         --group-by SCAN_STATUS_REASON
 
 Output::
@@ -61,9 +61,9 @@ For more information, see `Assessing Amazon Inspector coverage of your AWS envir
 
 The following ``list-coverage-statistics`` example lists the coverage statistics of your AWS environment by ECR repository name. ::
 
-    aws inspector2 list-coverage-statistics
-       --filter-criteria '{"ecrRepositoryName":[{"comparison":"EQUALS","value":"debian"}]}'
-       --group-by SCAN_STATUS_REASON
+    aws inspector2 list-coverage-statistics \
+        --filter-criteria '{"ecrRepositoryName":[{"comparison":"EQUALS","value":"debian"}]}' \
+        --group-by SCAN_STATUS_REASON
 
 Output::
 

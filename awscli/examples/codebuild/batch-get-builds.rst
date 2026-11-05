@@ -2,7 +2,8 @@
 
 The following ``batch-get-builds`` example gets information about builds in CodeBuild with the specified IDs. ::
 
-    aws codebuild batch-get-builds --ids codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE
+    aws codebuild batch-get-builds \
+        --ids codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
@@ -12,7 +13,7 @@ Output::
             {
                 "artifacts": {
                     "md5sum": "0e95edf915048a0c22efe6d139fff837",
-                    "location": "arn:aws:s3:::codepipeline-us-west-2-820783811474/CodeBuild-Python-Pip/BuildArtif/6DJsqQa",
+                    "location": "arn:aws:s3:::amzn-s3-demo-bucket1/CodeBuild-Python-Pip/BuildArtif/6DJsqQa",
                     "encryptionDisabled": false,
                     "sha256sum": "cfa0df33a090966a737f64ae4fe498969fdc842a0c9aec540bf93c37ac0d05a2"
                 },
@@ -23,9 +24,9 @@ Output::
                     "s3Logs": {
                         "status": "DISABLED"
                     },
-                    "streamName": "46472baf-8f6b-43c2-9255-b3b963af2732",
+                    "streamName": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "groupName": "/aws/codebuild/codebuild-demo-project",
-                    "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEvent:group=/aws/codebuild/codebuild-demo-project;stream=46472baf-8f6b-43c2-9255-b3b963af2732"
+                    "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEvent:group=/aws/codebuild/codebuild-demo-project;stream=a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
                 },
                 "timeoutInMinutes": 60,
                 "environment": {
@@ -174,13 +175,13 @@ Output::
                 "secondarySources": [],
                 "serviceRole": "arn:aws:iam::123456789012:role/service-role/my-codebuild-service-role",
                 "currentPhase": "COMPLETED",
-                "id": "codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE",
+                "id": "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "cache": {
                     "type": "NO_CACHE"
                 },
-                "sourceVersion": "arn:aws:s3:::codepipeline-us-west-2-820783811474/CodeBuild-Python-Pip/SourceArti/1TspnN3.zip",
+                "sourceVersion": "arn:aws:s3:::amzn-s3-demo-bucket1/CodeBuild-Python-Pip/SourceArti/1TspnN3.zip",
                 "endTime": 1548717536.846,
-                "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE",
+                "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "queuedTimeoutInMinutes": 480,
                 "resolvedSourceVersion": "f2194c1757bbdcb0f8f229254a4b3c8b27d43e0b"
             },
@@ -188,7 +189,7 @@ Output::
                 "artifacts": {
                     "md5sum": "",
                     "overrideArtifactName": false,
-                    "location": "arn:aws:s3:::my-artifacts/codebuild-demo-project",
+                    "location": "arn:aws:s3:::amzn-s3-demo-bucket2/codebuild-demo-project",
                     "encryptionDisabled": false,
                     "sha256sum": ""
                 },
@@ -199,9 +200,9 @@ Output::
                     "s3Logs": {
                         "status": "DISABLED"
                     },
-                    "streamName": "4dea3ca4-20ec-4898-b22a-a9eb9292775d",
+                    "streamName": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                     "groupName": "/aws/codebuild/codebuild-demo-project",
-                    "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEvent:group=/aws/codebuild/codebuild-demo-project;stream=4dea3ca4-20ec-4898-b22a-a9eb9292775d"
+                    "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEvent:group=/aws/codebuild/codebuild-demo-project;stream=a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
                 },
                 "timeoutInMinutes": 60,
                 "environment": {
@@ -349,11 +350,11 @@ Output::
                 "startTime": 1548716241.89,
                 "secondarySourceVersions": [],
                 "initiator": "my-codebuild-project",
-                "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE",
+                "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "encryptionKey": "arn:aws:kms:us-west-2:123456789012:alias/aws/s3",
                 "serviceRole": "arn:aws:iam::123456789012:role/service-role/my-codebuild-service-role",
                 "currentPhase": "COMPLETED",
-                "id": "codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE",
+                "id": "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "cache": {
                     "type": "NO_CACHE"
                 },
@@ -365,5 +366,5 @@ Output::
         ]
     }
 
-For more information, see `View Build Details (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-details.html#view-build-details-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `View build details in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-details.html>`__ in the *AWS CodeBuild User Guide*.
 

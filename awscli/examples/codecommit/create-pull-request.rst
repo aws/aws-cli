@@ -27,7 +27,7 @@ Output::
                     "ruleContentSha256": "4711b576EXAMPLE"
                 }
             ],
-            "authorArn": "arn:aws:iam::111111111111:user/Jane_Doe",
+            "authorArn": "arn:aws:iam::123456789111:user/Jane_Doe",
             "description": "Please review these changes by Tuesday",
             "title": "Pronunciation difficulty analyzer",
             "pullRequestTargets": [
@@ -49,3 +49,5 @@ Output::
             "creationDate": 1508962823.285
         }
     }
+
+For more information, see `Create a pull request <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-create-pull-request.html#how-to-create-pull-request-cli>`__ in the *AWS CodeCommit User Guide*.

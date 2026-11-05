@@ -13,7 +13,7 @@ Output::
 
     {
         "operation": {
-            "id": "06eacd01-d785-420e-8daa-823150c7dca1",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "resourceName": "example.com ",
             "resourceType": "Domain",
             "createdAt": 1569874157.005,
@@ -27,3 +27,5 @@ Output::
             "statusChangedAt": 1569874157.005
         }
     }
+
+For more information, see `Edit a Lightsail DNS zone <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-edit-or-delete-a-dns-zone.html>`__ in the *Amazon Lightsail User Guide*.

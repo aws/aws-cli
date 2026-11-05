@@ -10,7 +10,7 @@ Output::
         "instanceSnapshots": [
             {
                 "name": "MEAN-1-1571421498",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:InstanceSnapshot/a20e6ebe-b0ee-4ae4-a750-3EXAMPLEcb0c",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:InstanceSnapshot/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "supportCode": "6EXAMPLE3362/ami-0EXAMPLEe33cabfa1",
                 "createdAt": 1571421527.755,
                 "location": {
@@ -26,7 +26,7 @@ Output::
                 "state": "available",
                 "fromAttachedDisks": [],
                 "fromInstanceName": "MEAN-1",
-                "fromInstanceArn": "arn:aws:lightsail:us-west-2:111122223333:Instance/1761aa0a-6038-4f25-8b94-2EXAMPLE19fd",
+                "fromInstanceArn": "arn:aws:lightsail:us-west-2:123456789012:Instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "fromBlueprintId": "wordpress",
                 "fromBundleId": "micro_3_0",
                 "isFromAutoSnapshot": false,
@@ -34,7 +34,7 @@ Output::
             },
             {
                 "name": "MEAN-1-1571419854",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:InstanceSnapshot/ac54700c-48a8-40fd-b065-2EXAMPLEac8f",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:InstanceSnapshot/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "supportCode": "6EXAMPLE3362/ami-0EXAMPLE67a73020d",
                 "createdAt": 1571419891.927,
                 "location": {
@@ -46,7 +46,7 @@ Output::
                 "state": "available",
                 "fromAttachedDisks": [],
                 "fromInstanceName": "MEAN-1",
-                "fromInstanceArn": "arn:aws:lightsail:us-west-2:111122223333:Instance/bd470fc5-a68b-44c5-8dbc-8EXAMPLEbada",
+                "fromInstanceArn": "arn:aws:lightsail:us-west-2:123456789012:Instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "fromBlueprintId": "mean",
                 "fromBundleId": "medium_3_0",
                 "isFromAutoSnapshot": false,
@@ -54,3 +54,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Snapshots in Amazon Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-snapshots-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

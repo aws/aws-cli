@@ -3,7 +3,7 @@
 The following ``list-distribution-tenants-by-customization`` example lists distribution tenants that use the specified web ACL. ::
 
     aws cloudfront list-distribution-tenants-by-customization \
-        --web-acl-arn arn:aws:wafv2:us-east-1:123456789012:global/webacl/CreatedByCloudFront-0273cd2f/a3c19bce-42b5-48a1-a8d4-b2bb2f28eabc
+        --web-acl-arn arn:aws:wafv2:us-east-1:123456789012:global/webacl/CreatedByCloudFront-0273cd2f/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -24,7 +24,7 @@ Output::
                 "Customizations": {
                     "WebAcl": {
                         "Action": "override",
-                        "Arn": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/CreatedByCloudFront-0273cd2f/a3c19bce-42b5-48a1-a8d4-b2bb2f28eabc"
+                        "Arn": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/CreatedByCloudFront-0273cd2f/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                     },
                     "GeoRestrictions": {
                         "RestrictionType": "whitelist",

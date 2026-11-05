@@ -33,9 +33,11 @@ Output::
             "CreatorRequestId": "2022-05-10-16:33", 
             "ModificationTime": "2022-05-10T21:35:30.923187Z", 
             "ShareStatus": "NOT_SHARED", 
-            "Arn": "arn:aws:route53resolver:us-east-1:111117012054:resolver-rule/rslvr-rr-b1e0b905e93611111", 
-            "OwnerId": "111111111111", 
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-rule/rslvr-rr-b1e0b905e93611111", 
+            "OwnerId": "123456789012", 
             "Id": "rslvr-rr-rslvr-rr-b1e0b905e93611111", 
             "StatusMessage": "[Trace id: 1-22222222-3e56afcc71a3724664f22e24] Successfully created Resolver Rule."
         }
     }
+
+For more information, see `Managing forwarding rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-rules-managing.html#resolver-rules-managing-creating-rules>`__ in the *Amazon Route 53 Developer Guide*.

@@ -19,3 +19,5 @@ Output::
         "commitId": "317f8570EXAMPLE",
         "treeId": "347a3408EXAMPLE"
     }
+
+For more information, see `Create or add a file to an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-create-file.html>`__ in the *AWS CodeCommit User Guide*.

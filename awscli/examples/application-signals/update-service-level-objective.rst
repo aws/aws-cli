@@ -3,12 +3,12 @@
 The following ``update-service-level-objective`` example updates an existing service level objective (SLO). ::
 
     aws application-signals update-service-level-objective \
-    --cli-input-json file://update-slo.json
+        --cli-input-json file://update-slo.json
 
 Contents of ``update-slo.json``::
 
     {
-        "id": "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName",
+        "id": "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName",
         "goal": {
             "Interval": {
                 "RollingInterval": {
@@ -25,7 +25,7 @@ Output::
 
     {
         "Slo": {
-            "Arn": "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName",
+            "Arn": "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName",
             "Name": "SLOName",
             "Description": "Description of your SLO",
             "CreatedTime": "2024-12-24T22:19:18.624000+05:30",

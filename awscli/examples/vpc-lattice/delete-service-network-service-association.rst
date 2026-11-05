@@ -8,7 +8,7 @@ The following ``delete-service-network-service-association`` example disassociat
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetworkserviceassociation/snsa-031fabb4d8EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetworkserviceassociation/snsa-031fabb4d8EXAMPLE",
         "id": "snsa-031fabb4d8EXAMPLE",
         "status": "DELETE_IN_PROGRESS"
     }

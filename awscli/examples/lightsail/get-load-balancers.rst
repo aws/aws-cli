@@ -10,8 +10,8 @@ Output::
         "loadBalancers": [
             {
                 "name": "LoadBalancer-1",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:LoadBalancer/40486b2b-1ad0-4152-83e4-cEXAMPLE6f4b",
-                "supportCode": "6EXAMPLE3362/arn:aws:elasticloadbalancing:us-west-2:333322221111:loadbalancer/app/bEXAMPLE128cb59d86f946a9395dd304/1EXAMPLE8dd9d77e",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:LoadBalancer/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "supportCode": "6EXAMPLE3362/arn:aws:elasticloadbalancing:us-west-2:123456789111:loadbalancer/app/bEXAMPLE128cb59d86f946a9395dd304/1EXAMPLE8dd9d77e",
                 "createdAt": 1571677906.723,
                 "location": {
                     "availabilityZone": "all",
@@ -54,3 +54,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Distribute web traffic with Lightsail load balancers <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-lightsail-load-balancers.html>`__ in the *Amazon Lightsail User Guide*.

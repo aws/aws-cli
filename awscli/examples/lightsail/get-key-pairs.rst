@@ -10,7 +10,7 @@ Output::
         "keyPairs": [
             {
                 "name": "MyKey1",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:KeyPair/19a4efdf-3054-43d6-91fd-eEXAMPLE21bf",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:KeyPair/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "supportCode": "6EXAMPLE3362/MyKey1",
                 "createdAt": 1571255026.975,
                 "location": {
@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Manage SSH key pairs and connect to your Lightsail instances <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-ssh-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

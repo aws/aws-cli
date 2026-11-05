@@ -13,9 +13,18 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscrt.s3 import S3RequestTlsMode, S3RequestType
+from awscrt.s3 import (
+    S3ChecksumAlgorithm,
+    S3ChecksumConfig,
+    S3ChecksumValidationMode,
+    S3RequestTlsMode,
+    S3RequestType,
+    S3ResponseError,
+)
+from botocore.response import StreamingBody
 
 from awscli.compat import BytesIO, OrderedDict
+from awscli.customizations.s3.factory import MAX_CRT_CONNECT_TIMEOUT_MS
 from awscli.customizations.s3.utils import relative_path
 from awscli.testutils import (
     BaseAWSCommandParamsTest,
@@ -23,11 +32,12 @@ from awscli.testutils import (
     mock,
     skip_if_windows,
 )
-from botocore.response import StreamingBody
 from tests.functional.s3 import (
     BaseCRTTransferClientTest,
     BaseS3CLIRunnerTest,
     BaseS3TransferCommandTest,
+    FakeCRTFuture,
+    FakeCRTS3Request,
 )
 from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 
@@ -1538,6 +1548,61 @@ class TestCPCommand(BaseCPCommandTest):
         )
 
 
+@skip_if_windows('Symlink tests only supported on mac/linux')
+class TestCPDownloadNoFollowSymlinks(BaseCPCommandTest):
+    def setUp(self):
+        super().setUp()
+        self.target = self.files.create_file('target.txt', 'original')
+        self.symlink = os.path.join(self.files.rootdir, 'link.txt')
+        os.symlink(self.target, self.symlink)
+        self.parsed_responses = [
+            self.head_object_response(),
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'injected')},
+        ]
+
+    def test_skips_download_onto_symlink(self):
+        # Writing to the destination means following it, so nothing is
+        # downloaded. Matches uploads, which silently omit symlinks.
+        cmdline = (
+            f'{self.prefix} s3://bucket/key.txt {self.symlink} '
+            f'--no-follow-symlinks'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(
+            [op[0].name for op in self.operations_called], ['HeadObject']
+        )
+        self.assertTrue(os.path.islink(self.symlink))
+        with open(self.target) as f:
+            self.assertEqual(f.read(), 'original')
+
+    def test_skips_download_onto_symlink_named_by_key(self):
+        os.symlink(self.files.rootdir, os.path.join(self.files.rootdir, 'sub'))
+        self.parsed_responses = [
+            self.list_objects_response(['sub/key.txt']),
+        ]
+        cmdline = (
+            f'{self.prefix} s3://bucket/ {self.files.rootdir} '
+            f'--recursive --no-follow-symlinks'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            [op[0].name for op in self.operations_called], ['ListObjectsV2']
+        )
+
+    def test_replaces_symlink_by_default(self):
+        cmdline = f'{self.prefix} s3://bucket/key.txt {self.symlink}'
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            [op[0].name for op in self.operations_called],
+            ['HeadObject', 'GetObject'],
+        )
+        self.assertFalse(os.path.islink(self.symlink))
+        with open(self.target) as f:
+            self.assertEqual(f.read(), 'original')
+
+
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):
         command = "s3 cp - s3://bucket/streaming.txt"
@@ -2941,13 +3006,13 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]
@@ -3008,13 +3073,13 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]
@@ -3059,7 +3124,7 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]
@@ -3308,6 +3373,120 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             expected_recv_startswith=os.path.join(self.files.rootdir, 'key2'),
         )
 
+    def get_crt_checksum_configs(self):
+        return [
+            crt_request[1]['checksum_config']
+            for crt_request in self.get_crt_make_request_calls()
+        ]
+
+    def get_crt_if_match_headers(self):
+        return [
+            crt_request[1]['request'].headers.get('If-Match')
+            for crt_request in self.get_crt_make_request_calls()
+        ]
+
+    def test_download_passes_full_object_checksum_to_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response(
+            headers={
+                'x-amz-checksum-crc64nvme': 'abcdefghijk=',
+                'x-amz-checksum-type': 'FULL_OBJECT',
+            }
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    expected_checksum='abcdefghijk=',
+                    expected_checksum_algorithm=S3ChecksumAlgorithm.CRC64NVME,
+                )
+            ],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'])
+
+    def test_download_without_full_object_checksum_using_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response(
+            headers={
+                'x-amz-checksum-crc32': 'abcdef==-2',
+                'x-amz-checksum-type': 'COMPOSITE',
+            }
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    response_validation_mode=(
+                        S3ChecksumValidationMode.REQUEST_ONLY
+                    ),
+                )
+            ],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'])
+
+    def test_recursive_download_without_checksum_using_crt_client(self):
+        cmdline = [
+            's3',
+            'cp',
+            's3://bucket/',
+            self.files.rootdir,
+            '--recursive',
+        ]
+        self.add_botocore_list_objects_response(['key1', 'key2'])
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [
+                S3ChecksumConfig(
+                    validate_response=True,
+                    response_validation_mode=(
+                        S3ChecksumValidationMode.REQUEST_ONLY
+                    ),
+                )
+            ]
+            * 2,
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'] * 2)
+
+    def test_recursive_download_with_full_object_checksum_using_crt_client(
+        self,
+    ):
+        cmdline = [
+            's3',
+            'cp',
+            's3://bucket/',
+            self.files.rootdir,
+            '--recursive',
+        ]
+        self.add_botocore_list_objects_response(
+            ['key1', 'key2'],
+            extra_xml=(
+                '<ChecksumAlgorithm>CRC64NVME</ChecksumAlgorithm>'
+                '<ChecksumType>FULL_OBJECT</ChecksumType>'
+            ),
+        )
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [S3ChecksumConfig(validate_response=True)] * 2,
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), ['foobar'] * 2)
+
+    def test_streaming_download_keeps_crt_checksum_lookup(self):
+        cmdline = ['s3', 'cp', 's3://bucket/key', '-']
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.get_crt_checksum_configs(),
+            [S3ChecksumConfig(validate_response=True)],
+        )
+        self.assertEqual(self.get_crt_if_match_headers(), [None])
+
     def test_does_not_use_crt_client_for_copies(self):
         cmdline = ['s3', 'cp', 's3://bucket/key', 's3://otherbucket/']
         self.add_botocore_head_object_response()
@@ -3343,6 +3522,88 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         )
         self.assertEqual(
             result.stdout, self.expected_download_content.decode('utf-8')
+        )
+
+    def fail_crt_requests_with_precondition_failed(self, operation_name):
+        precondition_error = S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=412,
+            headers=[],
+            body=b'<Error><Code>PreconditionFailed</Code></Error>',
+            operation_name=operation_name,
+        )
+
+        def fail_request(**kwargs):
+            kwargs['on_done'](error=precondition_error)
+            return FakeCRTS3Request(future=FakeCRTFuture())
+
+        self.mock_crt_client.return_value.make_request.side_effect = (
+            fail_request
+        )
+
+    def test_no_overwrite_upload_skips_existing_object_using_crt_client(self):
+        self.fail_crt_requests_with_precondition_failed('PutObject')
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key', '--no-overwrite']
+        result = self.run_command(cmdline)
+        self.assertNotIn('upload', result.stdout)
+
+    def test_download_fails_when_object_modified_using_crt_client(self):
+        self.fail_crt_requests_with_precondition_failed('GetObject')
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = ['s3', 'cp', 's3://bucket/key', filename]
+        self.add_botocore_head_object_response()
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 1)
+        self.assertIn('download failed', result.stderr)
+        self.assertIn('PreconditionFailed', result.stderr)
+
+    def test_upload_without_region_redirects_from_global_endpoint(self):
+        del self.cli_runner.env['AWS_DEFAULT_REGION']
+        self.cli_runner.env['AWS_EC2_METADATA_DISABLED'] = 'true'
+        redirect_error = S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=301,
+            headers=[('x-amz-bucket-region', 'eu-central-1')],
+            body=b'<Error><Code>PermanentRedirect</Code></Error>',
+            operation_name='PutObject',
+        )
+        make_request = self.mock_crt_client.return_value.make_request
+
+        def redirect_first_request(**kwargs):
+            if make_request.call_count == 1:
+                kwargs['on_done'](error=redirect_error)
+            else:
+                kwargs['on_done'](error=None)
+            return FakeCRTS3Request(future=FakeCRTFuture())
+
+        make_request.side_effect = redirect_first_request
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key']
+        self.run_command(cmdline)
+        self.assertEqual(
+            [c.kwargs['region'] for c in self.mock_crt_client.call_args_list],
+            ['us-east-1', 'eu-central-1'],
+        )
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 2)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='bucket.s3.amazonaws.com',
+            expected_path='/key',
+            expected_send_filepath=filename,
+        )
+        self.assert_crt_make_request_call(
+            crt_requests[1],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='bucket.s3.eu-central-1.amazonaws.com',
+            expected_path='/key',
+            expected_send_filepath=filename,
         )
 
     def test_respects_region_parameter(self):
@@ -3417,6 +3678,46 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             S3RequestTlsMode.DISABLED,
         )
 
+    def assert_tls_disabled_for_configured_endpoint_url(self, env_var):
+        self.cli_runner.env[env_var] = 'http://my.endpoint.com'
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key']
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='my.endpoint.com',
+            expected_path='/bucket/key',
+            expected_send_filepath=filename,
+        )
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.DISABLED,
+        )
+
+    def test_can_disable_ssl_using_global_endpoint_url_env_var(self):
+        self.assert_tls_disabled_for_configured_endpoint_url(
+            'AWS_ENDPOINT_URL'
+        )
+
+    def test_can_disable_ssl_using_s3_endpoint_url_env_var(self):
+        self.assert_tls_disabled_for_configured_endpoint_url(
+            'AWS_ENDPOINT_URL_S3'
+        )
+
+    def test_ignores_configured_endpoint_url_when_requested(self):
+        self.cli_runner.env['AWS_ENDPOINT_URL'] = 'http://my.endpoint.com'
+        self.cli_runner.env['AWS_IGNORE_CONFIGURED_ENDPOINT_URLS'] = 'true'
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key']
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.ENABLED,
+        )
+
     def test_respects_no_sign_request_parameter(self):
         filename = self.files.create_file('myfile', 'mycontent')
         cmdline = [
@@ -3480,6 +3781,45 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.assertEqual(len(crt_requests), 1)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         self.assertFalse(tls_context_options.verify_peer)
+
+    def test_uses_default_connect_timeout(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key']
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['connect_timeout_ms'], 60_000
+        )
+
+    def test_respects_cli_connect_timeout_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3',
+            'cp',
+            filename,
+            's3://bucket/key',
+            '--cli-connect-timeout',
+            '5',
+        ]
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['connect_timeout_ms'], 5_000
+        )
+
+    def test_cli_connect_timeout_of_zero_disables_timeout(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3',
+            'cp',
+            filename,
+            's3://bucket/key',
+            '--cli-connect-timeout',
+            '0',
+        ]
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['connect_timeout_ms'],
+            MAX_CRT_CONNECT_TIMEOUT_MS,
+        )
 
 
 class TestCpRecursiveCaseConflict(TestSyncCaseConflict):

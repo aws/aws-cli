@@ -12,10 +12,9 @@ Output::
     {
         "DBInstance": {
             "AllocatedStorage": 20,
-            "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:restored-test-instance",
+            "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:restored-test-instance",
             "DBInstanceStatus": "creating",
-            "DBInstanceIdentifier": "restored-test-instance",
-            ...some output omitted...
+            "DBInstanceIdentifier": "restored-test-instance"
         }
     }
 
@@ -43,7 +42,6 @@ Output::
             "AllocatedStorage": 20,
             "PreferredBackupWindow": "07:45-08:15",
             "BackupRetentionPeriod": 14,
-            ... some output omitted ...
             "DbiResourceId": "db-KGLXG75BGVIWKQT7NQ4EXAMPLE",
             "CACertificateIdentifier": "rds-ca-2019",
             "DomainMemberships": [],
@@ -58,4 +56,4 @@ Output::
         }
     }
 
-For more information, see `Restoring to a specified time from a replicated backup <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html#AutomatedBackups.PiTR>`__ in the *Amazon RDS User Guide*.
+For more information, see `Restoring to a specified time from a replicated backup <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AutomatedBackups.PiTR.html>`__ in the *Amazon RDS User Guide*.

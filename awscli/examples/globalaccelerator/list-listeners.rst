@@ -3,14 +3,14 @@
 The following ``list-listeners`` example lists the listeners for an accelerator. ::
 
     aws globalaccelerator list-listeners \
-        --accelerator-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh
+        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "Listeners": [
             {
-                "ListenerArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234",
+                "ListenerArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/abcdef1234",
                 "PortRanges": [
                     {
                         "FromPort": 80,

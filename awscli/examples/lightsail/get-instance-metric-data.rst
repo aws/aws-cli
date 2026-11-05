@@ -80,3 +80,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Monitor Lightsail instance performance with metrics <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-viewing-instance-health-metrics.html>`__ in the *Amazon Lightsail User Guide*.

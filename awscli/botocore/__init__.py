@@ -171,6 +171,8 @@ _xform_cache = {
         'UpdateLinkedWhatsAppBusinessAccountPhoneNumber',
         '-',
     ): 'update-linked-whatsapp-business-account-phone-number',
+    ('UpdateOTelEnrichment', '_'): 'update_otel_enrichment',
+    ('UpdateOTelEnrichment', '-'): 'update-otel-enrichment',
     ('UpdateWhatsAppFlow', '_'): 'update_whatsapp_flow',
     ('UpdateWhatsAppFlow', '-'): 'update-whatsapp-flow',
     ('UpdateWhatsAppFlowAssets', '_'): 'update_whatsapp_flow_assets',

@@ -2,12 +2,11 @@
 
 The following ``export-api`` example exports an OpenAPI 3.0 definition of an API stage named ``prod`` to a YAML file named ``stage-definition.yaml``. The exported definition file includes API Gateway extensions by default. ::
 
-    aws apigatewayv2 export-api \
+    aws apigatewayv2 export-api stage-definition.yaml \
         --api-id a1b2c3d4 \
         --output-type YAML \
         --specification OAS30 \
-        --stage-name prod \
-        stage-definition.yaml
+        --stage-name prod
 
 This command produces no output.
 

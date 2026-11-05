@@ -21,4 +21,4 @@ Output::
         ]
     }
 
-For more information, see `Connect Source Providers with Access Tokens (CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/sample-access-tokens.html#sample-access-tokens-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Access your source provider in CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/access-tokens.html>`__ in the *AWS CodeBuild User Guide*.

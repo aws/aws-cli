@@ -12,7 +12,7 @@ Contents of ``update-wind-farm-model.json``::
         "assetModelDescription": "Represents a wind farm that comprises many wind turbines",
         "assetModelProperties": [
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-88888EXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE88888",
                 "name": "Region",
                 "dataType": "STRING",
                 "type": {
@@ -20,7 +20,7 @@ Contents of ``update-wind-farm-model.json``::
                 }
             },
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-99999EXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE99999",
                 "name": "Total Generated Power",
                 "dataType": "DOUBLE",
                 "unit": "kW",
@@ -31,8 +31,8 @@ Contents of ``update-wind-farm-model.json``::
                             {
                                 "name": "power",
                                 "value": {
-                                    "hierarchyId": "a1b2c3d4-5678-90ab-cdef-77777EXAMPLE",
-                                    "propertyId": "a1b2c3d4-5678-90ab-cdef-66666EXAMPLE"
+                                    "hierarchyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE77777",
+                                    "propertyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE66666"
                                 }
                             }
                         ],
@@ -47,9 +47,9 @@ Contents of ``update-wind-farm-model.json``::
         ],
         "assetModelHierarchies": [
             {
-                "id": "a1b2c3d4-5678-90ab-cdef-77777EXAMPLE",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE77777",
                 "name": "Wind Turbines",
-                "childAssetModelId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"
+                "childAssetModelId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         ]
     }
@@ -57,11 +57,10 @@ Contents of ``update-wind-farm-model.json``::
 Output::
 
     {
-        "assetModelId": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
-        "assetModelArn": "arn:aws:iotsitewise:us-west-2:123456789012:asset-model/a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
+        "assetModelId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "assetModelStatus": {
             "state": "CREATING"
         }
     }
 
-For more information, see `Updating asset models <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-assets-and-models.html#update-asset-models>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Updating asset models <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-asset-models.html>`__ in the *AWS IoT SiteWise User Guide*.

@@ -1,6 +1,6 @@
 **To authorize the DRT to access an Amazon S3 bucket**
 
-The following ``associate-drt-log-bucket`` example creates an association between the DRT and the specified S3 bucket. This permits the DRT to access the bucket on behalf of the account.::
+The following ``associate-drt-log-bucket`` example creates an association between the DRT and the specified S3 bucket. This permits the DRT to access the bucket on behalf of the account. ::
 
     aws shield associate-drt-log-bucket \
         --log-bucket flow-logs-for-website-lb

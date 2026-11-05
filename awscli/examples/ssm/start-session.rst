@@ -1,6 +1,6 @@
 **Example 1: To start a Session Manager session**
 
-This ``start-session`` example establishes a connection with an instance for a Session Manager session. Note that this interactive command requires the Session Manager plugin to be installed on the client machine making the call. ::
+The following ``start-session`` example establishes a connection with an instance for a Session Manager session. Note that this interactive command requires the Session Manager plugin to be installed on the client machine making the call. ::
 
     aws ssm start-session \
         --target "i-1234567890abcdef0"
@@ -11,7 +11,7 @@ Output::
 
 **Example 2: To start a Session Manager session using SSH**
 
-This ``start-session`` example establishes a connection with an instance for a Session Manager session using SSH. Note that this interactive command requires the Session Manager plugin to be installed on the client machine making the call, and that the command uses the default user on the instance, such as ``ec2-user`` for EC2 instances for Linux. ::
+The following ``start-session`` example establishes a connection with an instance for a Session Manager session using SSH. Note that this interactive command requires the Session Manager plugin to be installed on the client machine making the call, and that the command uses the default user on the instance, such as ``ec2-user`` for EC2 instances for Linux. ::
 
     ssh -i /path/my-key-pair.pem ec2-user@i-02573cafcfEXAMPLE
   

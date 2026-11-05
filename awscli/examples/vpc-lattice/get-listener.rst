@@ -9,7 +9,7 @@ The following ``get-listener`` example gets information about the specified list
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE/listener/listener-0ccf55918cEXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE/listener/listener-0ccf55918cEXAMPLE",
         "createdAt": "2023-05-07T05:08:45.192Z",
         "defaultAction": {
             "forward": {
@@ -26,7 +26,7 @@ Output::
         "name": "http-80",
         "port": 80,
         "protocol": "HTTP",
-        "serviceArn": "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE",
+        "serviceArn": "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE",
         "serviceId": "svc-0285b53b2eEXAMPLE"
     }
 

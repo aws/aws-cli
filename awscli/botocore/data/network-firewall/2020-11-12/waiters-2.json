@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "waiters": {
+    "FirewallPolicyActive": {
+      "operation": "DescribeFirewallPolicy",
+      "delay": 15,
+      "maxAttempts": 40,
+      "acceptors": [
+        {
+          "expected": "ACTIVE",
+          "matcher": "path",
+          "state": "success",
+          "argument": "FirewallPolicyResponse.FirewallPolicyStatus"
+        },
+        {
+          "expected": "ERROR",
+          "matcher": "path",
+          "state": "failure",
+          "argument": "FirewallPolicyResponse.FirewallPolicyStatus"
+        }
+      ]
+    }
+  }
+}

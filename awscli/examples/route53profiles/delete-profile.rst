@@ -9,8 +9,8 @@ Output::
 
     {
         "Profile": {
-            "Arn": "arn:aws:route53profiles:us-east-1:123456789012:profile/rp-6ffe47d5example",
-            "ClientToken": "0a15fec0-05d9-4f78-bec0-EXAMPLE11111",
+            "Arn": "arn:aws:route53profiles:us-west-2:123456789012:profile/rp-6ffe47d5example",
+            "ClientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "CreationTime": 1710850903.578,
             "Id": "rp-6ffe47d5example",
             "ModificationTime": 1710850903.578,
@@ -21,3 +21,5 @@ Output::
             "StatusMessage": "Deleted Profile"
         }
     }
+
+For more information, see `Viewing and updating Amazon Route 53 Profiles <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles-editing.html>`__ in the *Amazon Route 53 Developer Guide*.

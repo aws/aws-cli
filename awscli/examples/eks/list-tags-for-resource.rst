@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists all the tags for an Amazon EKS Cluster ARN. ::
 
     aws eks list-tags-for-resource \
-        --resource-arn arn:aws:eks:us-east-2:111122223333:cluster/my-eks-cluster
+        --resource-arn arn:aws:eks:us-west-2:123456789012:cluster/my-eks-cluster
 
 Output::
 
@@ -12,7 +12,7 @@ Output::
             "aws:cloudformation:stack-name": "eksctl-my-eks-cluster-cluster",
             "alpha.eksctl.io/cluster-name": "my-eks-cluster",
             "karpenter.sh/discovery": "my-eks-cluster",
-            "aws:cloudformation:stack-id": "arn:aws:cloudformation:us-east-2:111122223333:stack/eksctl-my-eks-cluster-cluster/e752ea00-e217-11ee-beae-0a9599c8c7ed",
+            "aws:cloudformation:stack-id": "arn:aws:cloudformation:us-west-2:123456789012:stack/eksctl-my-eks-cluster-cluster/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "auto-delete": "no",
             "eksctl.cluster.k8s.io/v1alpha1/cluster-name": "my-eks-cluster",
             "EKS-Cluster-Name": "my-eks-cluster",
@@ -23,19 +23,21 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 2: To list all the tags for an Amazon EKS Node group ARN**
 
 The following ``list-tags-for-resource`` example lists all the tags for an Amazon EKS Node group ARN. ::
 
     aws eks list-tags-for-resource \
-        --resource-arn arn:aws:eks:us-east-2:111122223333:nodegroup/my-eks-cluster/my-eks-managed-node-group/60c71ed2-2cfb-020f-a5f4-ad32477f198c
+        --resource-arn arn:aws:eks:us-west-2:123456789012:nodegroup/my-eks-cluster/my-eks-managed-node-group/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "tags": {
             "aws:cloudformation:stack-name": "eksctl-my-eks-cluster-nodegroup-my-eks-managed-node-group",
-            "aws:cloudformation:stack-id": "arn:aws:cloudformation:us-east-2:111122223333:stack/eksctl-my-eks-cluster-nodegroup-my-eks-managed-node-group/eaa20310-e219-11ee-b851-0ab9ad8228ff",
+            "aws:cloudformation:stack-id": "arn:aws:cloudformation:us-west-2:123456789012:stack/eksctl-my-eks-cluster-nodegroup-my-eks-managed-node-group/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
             "eksctl.cluster.k8s.io/v1alpha1/cluster-name": "my-eks-cluster",
             "EKS-Cluster-Name": "my-eks-cluster",
             "alpha.eksctl.io/nodegroup-type": "managed",
@@ -53,12 +55,14 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 3: To list all the tags on an Amazon EKS Fargate profil ARNe**
 
 The following ``list-tags-for-resource`` example lists all the tags for an Amazon EKS Fargate profile ARN. ::
 
     aws eks list-tags-for-resource  \
-        --resource-arn arn:aws:eks:us-east-2:111122223333:fargateprofile/my-eks-cluster/my-fargate-profile/d6c76780-e541-0725-c816-36754cab734b
+        --resource-arn arn:aws:eks:us-west-2:123456789012:fargateprofile/my-eks-cluster/my-fargate-profile/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444
 
 Output::
 
@@ -69,12 +73,14 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 4: To list all the tags for an Amazon EKS Add-on ARN**
 
 The following ``list-tags-for-resource`` example lists all the tags for an Amazon EKS Add-on ARN. ::
 
     aws eks list-tags-for-resource \
-        --resource-arn arn:aws:eks:us-east-2:111122223333:addon/my-eks-cluster/vpc-cni/0ec71efc-98dd-3203-60b0-4b939b2a5e5f
+        --resource-arn arn:aws:eks:us-west-2:123456789012:addon/my-eks-cluster/vpc-cni/a1b2c3d4-5678-90ab-cdef-EXAMPLE55555
 
 Output::
 
@@ -85,12 +91,14 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.
+
 **Example 5: To list all the tags for an Amazon EKS OIDC identity provider ARN**
 
 The following ``list-tags-for-resource`` example lists all the tags for an Amazon EKS OIDC identity provider ARN. ::
 
     aws eks list-tags-for-resource \
-        --resource-arn arn:aws:eks:us-east-2:111122223333:identityproviderconfig/my-eks-cluster/oidc/my-identity-provider/8ac76722-78e4-cec1-ed76-d49eea058622
+        --resource-arn arn:aws:eks:us-west-2:123456789012:identityproviderconfig/my-eks-cluster/oidc/my-identity-provider/a1b2c3d4-5678-90ab-cdef-EXAMPLE66666
 
 Output::
 
@@ -100,3 +108,4 @@ Output::
         }
     }
 
+For more information, see `Organize Amazon EKS resources with tags <https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html>`__ in the *Amazon EKS User Guide*.

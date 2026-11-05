@@ -1,9 +1,8 @@
-**To disable block public access for AMIs in the specified Region**
+**To disable block public access for AMIs in the current Region**
 
-The following ``disable-image-block-public-access`` example disables block public access for AMIs at the account level in the specified Region. ::
+The following ``disable-image-block-public-access`` example disables block public access for AMIs at the account level in the current Region. ::
 
-    aws ec2 disable-image-block-public-access \
-        --region us-east-1
+    aws ec2 disable-image-block-public-access
 
 Output::
 

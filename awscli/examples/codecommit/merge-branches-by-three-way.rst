@@ -5,7 +5,8 @@ The following ``merge-branches-by-three-way`` example merges the specified sourc
     aws codecommit merge-branches-by-three-way \
         --source-commit-specifier main \
         --destination-commit-specifier bugfix-bug1234 \
-        --author-name "Jorge Souza" --email "jorge_souza@example.com" \
+        --author-name "Jorge Souza" \
+        --email "jorge_souza@example.com" \
         --commit-message "Merging changes from main to bugfix branch before additional testing." \
         --repository-name MyDemoRepo
 

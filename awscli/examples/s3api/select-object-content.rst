@@ -11,3 +11,5 @@ The following ``select-object-content`` example filters the object ``my-data-fil
         --output-serialization '{"CSV": {}}' "output.csv"
 
 This command produces no output.
+
+For more information, see `Querying data in place with Amazon S3 Select <https://docs.aws.amazon.com/AmazonS3/latest/userguide/selecting-content-from-objects.html>`__ in the *Amazon S3 User Guide*.

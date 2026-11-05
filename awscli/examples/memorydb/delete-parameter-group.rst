@@ -12,7 +12,7 @@ Output::
             "Name": "myredis6x",
             "Family": "memorydb_redis6",
             "Description": "my-parameter-group",
-            "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:parametergroup/myredis6x"
+            "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:parametergroup/myredis6x"
         }
     }
 

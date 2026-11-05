@@ -11,7 +11,7 @@ Output::
         "actionName": "AddThingsToQuarantineGroupAction",
         "actionType": "ADD_THINGS_TO_THING_GROUP",
         "actionArn": "arn:aws:iot:us-west-2:123456789012:mitigationaction/AddThingsToQuarantineGroupAction",
-        "actionId": "2fd2726d-98e1-4abf-b10f-09465ccd6bfa",
+        "actionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "roleArn": "arn:aws:iam::123456789012:role/service-role/MoveThingsToQuarantineGroupRole",
         "actionParams": {
             "addThingsToThingGroupParams": {
@@ -25,4 +25,4 @@ Output::
         "lastModifiedDate": "2019-12-10T11:09:35.999000-08:00"
     }
 
-For more information, see `DescribeMitigationAction (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html#dd-api-iot-DescribeMitigationAction>`__ in the *AWS IoT Developer Guide*.
+For more information, see `DescribeMitigationAction (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html>`__ in the *AWS IoT Developer Guide*.

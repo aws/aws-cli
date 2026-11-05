@@ -3,7 +3,7 @@
 The following ``invite-users`` example sends an email to invite a user to the specified Amazon Chime account. ::
 
     aws chime invite-users \
-        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE \
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --user-email-list "alejandror@example.com" "janed@example.com"
 
 Output::
@@ -11,13 +11,13 @@ Output::
     {
         "Invites": [
             {
-                "InviteId": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE",
+                "InviteId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Status": "Pending",
                 "EmailAddress": "alejandror@example.com",
                 "EmailStatus": "Sent"
-            }
+            },
             {
-                "InviteId": "a1b2c3d4-5678-90ab-cdef-33333EXAMPLE",
+                "InviteId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "Status": "Pending",
                 "EmailAddress": "janed@example.com",
                 "EmailStatus": "Sent"
@@ -25,4 +25,4 @@ Output::
         ]
     }
 
-For more information, see `Inviting and Suspending Users <https://docs.aws.amazon.com/chime/latest/ag/manage-access.html#invite-users-team>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Managing user permissions and access <https://docs.aws.amazon.com/chime/latest/ag/manage-access.html>`__ in the *Amazon Chime Administration Guide*.

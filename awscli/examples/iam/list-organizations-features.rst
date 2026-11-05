@@ -1,6 +1,6 @@
 **To list the centralized root access features enabled for your organization**
 
-The following ``list-organizations-features`` command lists the centralized root access features enabled for your organization. ::
+The following ``list-organizations-features`` example lists the centralized root access features enabled for your organization. ::
 
     aws iam list-organizations-features
 
@@ -10,7 +10,7 @@ Output::
         "EnabledFeatures": [
             "RootCredentialsManagement",
             "RootSessions"
-        ]
+        ],
         "OrganizationId": "o-aa111bb222"
     }
 

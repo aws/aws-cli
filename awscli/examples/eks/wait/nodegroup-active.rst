@@ -7,3 +7,5 @@ The following ``wait nodegroup-active`` example command waits for an nodegroup n
         --nodegroup-name my-nodegroup
 
 This command produces no output.
+
+For more information, see `Create a managed node group for your cluster <https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html>`__ in the *Amazon EKS User Guide*.

@@ -10,8 +10,8 @@ Output::
     {
         "enabledControls": [
             {
-                "arn": "arn:aws:controltower:us-east-1:123456789012:enabledcontrol/26RGJRSLXCP1KW8D",
-                "controlIdentifier": "arn:aws:controltower:us-east-1::control/AWS-GR_CLOUDTRAIL_CHANGE_PROHIBITED",
+                "arn": "arn:aws:controltower:us-west-2:123456789012:enabledcontrol/26RGJRSLXCP1KW8D",
+                "controlIdentifier": "arn:aws:controltower:us-west-2::control/AWS-GR_CLOUDTRAIL_CHANGE_PROHIBITED",
                 "driftStatusSummary": {
                     "driftStatus": "NOT_CHECKING"
                 },
@@ -21,8 +21,8 @@ Output::
                 "targetIdentifier": "arn:aws:organizations::123456789012:ou/o-s64ryxxxxx/ou-oqxx-i5wnxxxx"
             },
             {
-                "arn": "arn:aws:controltower:us-east-1:123456789012:enabledcontrol/18AY24CWKM6IVSLU",
-                "controlIdentifier": "arn:aws:controltower:us-east-1::control/AWS-GR_CLOUDTRAIL_CLOUDWATCH_LOGS_ENABLED",
+                "arn": "arn:aws:controltower:us-west-2:123456789012:enabledcontrol/18AY24CWKM6IVSLU",
+                "controlIdentifier": "arn:aws:controltower:us-west-2::control/AWS-GR_CLOUDTRAIL_CLOUDWATCH_LOGS_ENABLED",
                 "driftStatusSummary": {
                     "driftStatus": "NOT_CHECKING"
                 },

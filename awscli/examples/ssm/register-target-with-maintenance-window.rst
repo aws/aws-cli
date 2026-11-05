@@ -67,7 +67,7 @@ The following ``register-target-with-maintenance-window`` example register a spe
 
     aws ssm register-target-with-maintenance-window \
         --window-id "mw-0c50858d01EXAMPLE" \
-        --resource-type "RESOURCE_GROUP" \    
+        --resource-type "RESOURCE_GROUP" \
         --target "Key=resource-groups:Name,Values=MyResourceGroup"
 
 Output::

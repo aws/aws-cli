@@ -9,7 +9,7 @@ termination and put into the ``STOP_REQUESTED`` state. If the job completes befo
 Output::
 
     {
-        "JobId": "123456abcdeb0e11022f22a11EXAMPLE,
+        "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
         "JobStatus": "STOP_REQUESTED"
     }
 

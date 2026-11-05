@@ -8,3 +8,5 @@ The following ``associate-principal-with-portfolio`` example associates a user w
         --principal-type IAM
 
 This command produces no output.
+
+For more information, see `Granting Access to Users <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_portfolios_users.html>`__ in the *AWS Service Catalog Administrator Guide*.

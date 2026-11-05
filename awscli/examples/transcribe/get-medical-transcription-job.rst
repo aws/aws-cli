@@ -33,4 +33,4 @@ Output::
         }
     }
 
-For more information, see `Batch Transcription <https://docs.aws.amazon.com/transcribe/latest/dg/batch-med-transcription.html>`__ in the *Amazon Transcribe Developer Guide*.
+For more information, see `Transcribing an audio file of a medical conversation <https://docs.aws.amazon.com/transcribe/latest/dg/batch-medical-conversation.html>`__ in the *Amazon Transcribe Developer Guide*.

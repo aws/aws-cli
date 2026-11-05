@@ -11,7 +11,7 @@ Output::
     {
         "operations": [
             {
-                "id": "31c36e09-3d52-46d5-b6d8-7EXAMPLE534a",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "WordPress-1",
                 "resourceType": "Instance",
                 "createdAt": 1571088141.501,

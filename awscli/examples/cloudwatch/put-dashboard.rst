@@ -4,7 +4,7 @@ The following ``put-dashboard`` example creates a dashboard named ``Dashboard-A`
 
     aws cloudwatch put-dashboard \
         --dashboard-name Dashboard-A \
-        --dashboard-body '{"widgets":[{"height":6,"width":6,"y":0,"x":0,"type":"metric","properties":{"view":"timeSeries","stacked":false,"metrics":[["Namespace","CPUUtilization","Environment","Prod","Type","App"]],"region":"us-east-1"}}]}'
+        --dashboard-body '{"widgets":[{"height":6,"width":6,"y":0,"x":0,"type":"metric","properties":{"view":"timeSeries","stacked":false,"metrics":[["Namespace","CPUUtilization","Environment","Prod","Type","App"]],"region":"us-west-2"}}]}'
 
 Output::
 

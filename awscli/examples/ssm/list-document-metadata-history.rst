@@ -1,4 +1,4 @@
-**Example: To view approval history and status for a change template**
+**To view approval history and status for a change template**
 
 The following ``list-document-metadata-history`` example returns the approval history for the specified Change Manager change template. ::
 
@@ -11,7 +11,7 @@ Output::
     {
         "Name": "MyChangeManagerTemplate",
         "DocumentVersion": "1",
-        "Author": "arn:aws:iam::111222333444;:user/JohnDoe",
+        "Author": "arn:aws:iam::123456789012;:user/JohnDoe",
         "Metadata": {
             "ReviewerResponse": [
                 {
@@ -24,7 +24,7 @@ Output::
                             "Content": "I approve this template version"
                         }
                     ],
-                    "Reviewer": "arn:aws:iam::111222333444;:user/ShirleyRodriguez"
+                    "Reviewer": "arn:aws:iam::123456789012;:user/ShirleyRodriguez"
                 },
                 {
                     "CreateTime": "2021-07-30T11:58:28.025000-07:00",

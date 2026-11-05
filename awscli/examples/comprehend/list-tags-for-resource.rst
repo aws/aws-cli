@@ -3,12 +3,12 @@
 The following ``list-tags-for-resource`` example lists the tags for an Amazon Comprehend resource. ::
 
     aws comprehend list-tags-for-resource \
-        --resource-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier/version/1
+        --resource-arn arn:aws:comprehend:us-west-2:123456789012:document-classifier/example-classifier/version/1
 
 Output::
 
     {
-        "ResourceArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier/version/1",
+        "ResourceArn": "arn:aws:comprehend:us-west-2:123456789012:document-classifier/example-classifier/version/1",
         "Tags": [
             {
                 "Key": "Department",

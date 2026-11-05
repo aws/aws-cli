@@ -6071,9 +6071,27 @@
         "EncryptionKeyArn":{
           "shape":"String",
           "documentation":"<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
+        },
+        "AdditionalInfo":{
+          "shape":"StepAdditionalInfo",
+          "documentation":"<p>Additional information about the step, including the YARN application IDs associated with the step and the resource manager that processed it.</p>"
         }
       },
       "documentation":"<p>This represents a step in a cluster.</p>"
+    },
+    "StepAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "ResourceManagerApplicationIds":{
+          "shape":"StringList",
+          "documentation":"<p>The YARN application IDs associated with the step.</p>"
+        },
+        "ResourceManager":{
+          "shape":"String",
+          "documentation":"<p>The address of the YARN resource manager that processed the step.</p>"
+        }
+      },
+      "documentation":"<p>Additional information about a step's execution, available after the step has started running.</p>"
     },
     "StepCancellationOption":{
       "type":"string",
@@ -6277,6 +6295,10 @@
         "EncryptionKeyArn":{
           "shape":"String",
           "documentation":"<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
+        },
+        "AdditionalInfo":{
+          "shape":"StepAdditionalInfo",
+          "documentation":"<p>Additional information about the step, including the YARN application IDs associated with the step and the resource manager that processed it.</p>"
         }
       },
       "documentation":"<p>The summary of the cluster step.</p>"

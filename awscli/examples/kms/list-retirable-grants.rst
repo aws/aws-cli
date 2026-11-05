@@ -9,20 +9,20 @@ You cannot specify a service for the value of ``retiring-principal`` in this com
 The output shows that ``ExampleAdmin`` user has permission to retire grants on two different KMS keys in the account and region. In addition to the retiring principal, the account has permission to retire any grant in the account. ::
 
     aws kms list-retirable-grants \
-        --retiring-principal arn:aws:iam::111122223333:user/ExampleAdmin
+        --retiring-principal arn:aws:iam::123456789012:user/ExampleAdmin
 
 Output::
 
     {
         "Grants": [
             {
-                "KeyId": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+                "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "GrantId": "156b69c63cb154aa21f59929ff19760717be8d9d82b99df53e18b94a15a5e88e",
                 "Name": "",
-                "CreationDate": 2021-01-14T20:17:36.419000+00:00,
-                "GranteePrincipal": "arn:aws:iam::111122223333:user/ExampleUser",
-                "RetiringPrincipal": "arn:aws:iam::111122223333:user/ExampleAdmin",
-                "IssuingAccount": "arn:aws:iam::111122223333:root",
+                "CreationDate": "2021-01-14T20:17:36.419000+00:00",
+                "GranteePrincipal": "arn:aws:iam::123456789012:user/ExampleUser",
+                "RetiringPrincipal": "arn:aws:iam::123456789012:user/ExampleAdmin",
+                "IssuingAccount": "arn:aws:iam::123456789012:root",
                 "Operations": [
                     "Encrypt"
                 ],
@@ -33,13 +33,13 @@ Output::
                 }
             },
             {
-                "KeyId": "arn:aws:kms:us-west-2:111122223333:key/0987dcba-09fe-87dc-65ba-ab0987654321",
+                "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "GrantId": "8c94d1f12f5e69f440bae30eaec9570bb1fb7358824f9ddfa1aa5a0dab1a59b2",
                 "Name": "",
                 "CreationDate": "2021-02-02T19:49:49.638000+00:00",
-                "GranteePrincipal": "arn:aws:iam::111122223333:role/ExampleRole",
-                "RetiringPrincipal": "arn:aws:iam::111122223333:user/ExampleAdmin",
-                "IssuingAccount": "arn:aws:iam::111122223333:root",
+                "GranteePrincipal": "arn:aws:iam::123456789012:role/ExampleRole",
+                "RetiringPrincipal": "arn:aws:iam::123456789012:user/ExampleAdmin",
+                "IssuingAccount": "arn:aws:iam::123456789012:root",
                 "Operations": [
                     "Decrypt"
                 ],

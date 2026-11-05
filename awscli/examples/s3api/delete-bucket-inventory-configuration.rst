@@ -7,3 +7,5 @@ The following ``delete-bucket-inventory-configuration`` example deletes the inve
         --id 1
 
 This command produces no output.
+
+For more information, see `Cataloging and analyzing your data with S3 Inventory <https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html>`__ in the *Amazon S3 User Guide*.

@@ -10,11 +10,11 @@ Output::
         "Aliases": [
             {
                 "AliasName": "alias/sampleAlias1",
-                "KeyArn": "arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h"
+                "KeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h"
             },
             {
                 "AliasName": "alias/sampleAlias2",
-                "KeyArn": "arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h"
+                "KeyArn": "arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h"
             }
         ]
     }

@@ -9,6 +9,25 @@ The following ``update-service-pipeline`` example updates a service pipeline to 
         --template-minor-version "1" \
         --deployment-type "MINOR_VERSION"
 
+Contents of ``service-spec.yaml``::
+
+    proton: ServiceSpec
+
+    pipeline:
+      my_sample_pipeline_optional_input: "abc"
+      my_sample_pipeline_required_input: "123"
+
+    instances:
+      - name: "my-instance"
+        environment: "MySimpleEnv"
+        spec:
+          my_sample_service_instance_optional_input: "def"
+          my_sample_service_instance_required_input: "456"
+      - name: "my-other-instance"
+        environment: "MySimpleEnv"
+        spec:
+          my_sample_service_instance_required_input: "789"
+
 Output::
 
     {

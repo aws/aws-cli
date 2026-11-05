@@ -3,7 +3,7 @@
 The following ``create-bot`` example creates a bot for the specified Amazon Chime Enterprise account. ::
 
     aws chime create-bot \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45 \
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --display-name "myBot" \
         --domain "example.com"
 
@@ -11,8 +11,8 @@ Output::
 
     {
         "Bot": {
-            "BotId": "123abcd4-5ef6-789g-0h12-34j56789012k",
-            "UserId": "123abcd4-5ef6-789g-0h12-34j56789012k",
+            "BotId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "UserId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "DisplayName": "myBot (Bot)",
             "BotType": "ChatBot",
             "Disabled": false,
@@ -23,4 +23,4 @@ Output::
         }
     }
 
-For more information, see `Integrate a Chat Bot with Amazon Chime <https://docs.aws.amazon.com/chime/latest/dg/integrate-bots.html>`__ in the *Amazon Chime Developer Guide*.
+For more information, see `Step 1: Integrate a chatbot with Amazon Chime <https://docs.aws.amazon.com/chime/latest/ag/integrate-bots.html>`__ in the *Amazon Chime Administration Guide*.

@@ -15,7 +15,7 @@ Output::
         "Name": "MyTestSecret"
     }
 
-For more information, see `Version <https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_version>`__ in the *Secrets Manager User Guide*.
+For more information, see `What's in a Secrets Manager secret? <https://docs.aws.amazon.com/secretsmanager/latest/userguide/whats-in-a-secret.html>`__ in the *Secrets Manager User Guide*.
 
 **Example 2: To add a staging label attached to a version of a secret**
 
@@ -24,7 +24,7 @@ The following ``update-secret-version-stage`` example adds a staging label to a 
     aws secretsmanager update-secret-version-stage \
         --secret-id MyTestSecret \
         --version-stage STAGINGLABEL1 \
-        --move-to-version-id EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE
+        --move-to-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 Output::
 
@@ -33,7 +33,7 @@ Output::
         "Name": "MyTestSecret"
     }
 
-For more information, see `Version <https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_version>`__ in the *Secrets Manager User Guide*.
+For more information, see `What's in a Secrets Manager secret? <https://docs.aws.amazon.com/secretsmanager/latest/userguide/whats-in-a-secret.html>`__ in the *Secrets Manager User Guide*.
 
 **Example 3: To delete a staging label attached to a version of a secret**
 
@@ -51,4 +51,4 @@ Output::
         "Name": "MyTestSecret"
     }
 
-For more information, see `Version <https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_version>`__ in the *Secrets Manager User Guide*.
+For more information, see `What's in a Secrets Manager secret? <https://docs.aws.amazon.com/secretsmanager/latest/userguide/whats-in-a-secret.html>`__ in the *Secrets Manager User Guide*.

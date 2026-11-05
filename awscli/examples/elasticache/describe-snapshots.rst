@@ -1,6 +1,6 @@
 **To describe snapshots**
 
-The following ''describe-snapshots'' example returns information about your cluster or replication group snapshots. ::
+The following ``describe-snapshots`` example returns information about your cluster or replication group snapshots. ::
 
     aws elasticache describe-snapshots 
 

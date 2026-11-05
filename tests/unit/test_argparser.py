@@ -12,8 +12,14 @@
 # language governing permissions and limitations under the License.
 from argparse import ArgumentParser
 
-from awscli.argparser import CommandAction, FirstPassGlobalArgParser
-from awscli.testutils import unittest
+from awscli.argparser import (
+    CommandAction,
+    FirstPassGlobalArgParser,
+    format_unknown_options_error,
+    get_option_suggestion_candidates,
+)
+from awscli.arguments import CustomArgument
+from awscli.testutils import mock, unittest
 
 
 class TestCommandAction(unittest.TestCase):
@@ -67,3 +73,69 @@ class TestPartialGlobalArgsParser(unittest.TestCase):
         )
         self.assertEqual(parsed_args.debug, True)
         self.assertEqual(remains, ['--foo', 'bar'])
+
+
+class TestGetOptionSuggestionCandidates(unittest.TestCase):
+    def test_includes_documented_options_and_globals_only(self):
+        # Suggest options and globals, excluding positional and hidden args.
+        hidden = CustomArgument('marker')
+        hidden._UNDOCUMENTED = True
+        arg_table = {
+            'instance-ids': CustomArgument('instance-ids'),
+            'outfile': CustomArgument('outfile', positional_arg=True),
+            'marker': hidden,
+        }
+        session = mock.Mock()
+        session.get_data.return_value = {'options': {'region': {}, 'debug': {}}}
+
+        candidates = get_option_suggestion_candidates(arg_table, session)
+
+        self.assertCountEqual(candidates, ['instance-ids', 'region', 'debug'])
+
+
+class TestFormatUnknownOptionsError(unittest.TestCase):
+    def setUp(self):
+        self.candidates = ['region', 'instance-ids', 'dry-run', 'no-dry-run']
+
+    def test_no_suggestions(self):
+        msg = format_unknown_options_error(['--foo', 'bar'], self.candidates)
+        self.assertEqual(msg, 'Unknown options: --foo, bar')
+
+    def test_suggests_close_match(self):
+        msg = format_unknown_options_error(
+            ['--regoin', 'us-west-2'], self.candidates
+        )
+        self.assertEqual(
+            msg,
+            'Unknown options: --regoin, us-west-2\n\n'
+            'Maybe you meant:\n'
+            '  * --region (instead of --regoin)',
+        )
+
+    def test_suggests_for_each_unknown_option(self):
+        msg = format_unknown_options_error(
+            ['--regoin', '--instance-idz'], self.candidates
+        )
+        self.assertIn('  * --region (instead of --regoin)', msg)
+        self.assertIn('  * --instance-ids (instead of --instance-idz)', msg)
+
+    def test_deduplicates_repeated_unknown_option(self):
+        msg = format_unknown_options_error(
+            ['--regoin', 'a', '--regoin', 'b'], self.candidates
+        )
+        self.assertEqual(
+            msg,
+            'Unknown options: --regoin, a, --regoin, b\n\n'
+            'Maybe you meant:\n'
+            '  * --region (instead of --regoin)',
+        )
+
+    def test_ignores_value_after_equals(self):
+        msg = format_unknown_options_error(
+            ['--regoin=us-west-2'], self.candidates
+        )
+        self.assertIn('  * --region (instead of --regoin)', msg)
+
+    def test_does_not_match_values(self):
+        msg = format_unknown_options_error(['region'], self.candidates)
+        self.assertNotIn('Maybe you meant', msg)

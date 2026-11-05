@@ -19,7 +19,8 @@ For more information, see `Login for AWS local development using console credent
 
 The following ``login`` example uses the ``--remote`` option to authenticate from a host where a browser is not available, such as over SSH. You visit the provided URL on another device and paste the authorization code back into the CLI. ::
 
-    aws login --remote
+    aws login \
+        --remote
 
 Output::
 

@@ -1,11 +1,11 @@
 **To change the description for a repository**
 
-This example changes the description for an AWS CodeCommit repository. This command produces output only if there are errors.
+The following ``update-repository-description`` example changes the description for an AWS CodeCommit repository. ::
 
-Command::
+    aws codecommit update-repository-description \
+        --repository-name MyDemoRepo \
+        --repository-description "This description was changed"
 
-  aws codecommit update-repository-description --repository-name MyDemoRepo --repository-description "This description was changed"
+This command produces no output.
 
-Output::
-
-  None.
+For more information, see `Change AWS CodeCommit repository settings <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-change-repository.html>`__ in the *AWS CodeCommit User Guide*.

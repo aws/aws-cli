@@ -10,16 +10,16 @@ The following ``describe-job-execution`` example retrieves the details of the la
 Output::
 
     {
-        "execution": { 
+        "execution": {
             "approximateSecondsBeforeTimedOut": 88,
             "executionNumber": 2939653338,
             "jobId": "SampleJob",
-            "lastUpdatedAt": 1567701875.743,
-            "queuedAt": 1567701902.444,
+            "lastUpdatedAt": 1567701875,
+            "queuedAt": 1567701902,
             "status": "QUEUED",
             "thingName": "MotionSensor1 ",
             "versionNumber": 3
-       }
+        }
     }
 
 For more information, see `Devices and Jobs <https://docs.aws.amazon.com/iot/latest/developerguide/jobs-devices.html>`__ in the *AWS IoT Developer Guide*.

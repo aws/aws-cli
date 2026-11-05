@@ -1662,6 +1662,21 @@
       },
       "documentation":"<p>Defines the rules by which an image pipeline is automatically disabled when it fails. By default, if the schedule doesn't include an auto-disable policy, Image Builder disables the pipeline after 5 consecutive failed scheduled builds.</p>"
     },
+    "AutoScalingGroupConfiguration":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the Auto Scaling group, in the same account and Amazon Web Services Region as the infrastructure configuration. To specify a group, you must have permissions to describe it.</p>"
+        },
+        "capacityWaitTimeoutSeconds":{
+          "shape":"CapacityWaitTimeoutSeconds",
+          "documentation":"<p>The number of seconds that Image Builder waits for an instance to become available in the group before the build fails. If you set this value to 0 or omit it, the build fails as soon as the group has no instance available.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the Amazon EC2 Auto Scaling group that Image Builder takes the build instance from, and how long Image Builder waits when the group has no instance available.</p>"
+    },
     "Boolean":{"type":"boolean"},
     "BuildType":{
       "type":"string",
@@ -1742,6 +1757,11 @@
           "documentation":"<p>The unique identifier of the lifecycle execution that the cancellation request applies to. The cancellation completes asynchronously.</p>"
         }
       }
+    },
+    "CapacityWaitTimeoutSeconds":{
+      "type":"integer",
+      "max":3600,
+      "min":0
     },
     "ClientException":{
       "type":"structure",
@@ -2603,7 +2623,7 @@
         },
         "imageScanningConfiguration":{
           "shape":"ImageScanningConfiguration",
-          "documentation":"<p>Contains settings for vulnerability scans that Amazon Inspector runs against the test instance during image creation.</p>"
+          "documentation":"<p>The settings that determine whether and how Amazon Inspector scans the images that this pipeline creates.</p>"
         },
         "workflows":{
           "shape":"WorkflowConfigurationList",
@@ -2767,7 +2787,7 @@
         },
         "imageScanningConfiguration":{
           "shape":"ImageScanningConfiguration",
-          "documentation":"<p>Settings for vulnerability scans that Amazon Inspector runs during image creation. For AMI output, Amazon Inspector scans the test instance. For container output, Amazon Inspector scans the container image that Image Builder pushes to the Amazon ECR repository specified in <code>ecrConfiguration</code>.</p>"
+          "documentation":"<p>The settings that determine whether and how Amazon Inspector scans the image for vulnerabilities.</p>"
         },
         "workflows":{
           "shape":"WorkflowConfigurationList",
@@ -2848,6 +2868,10 @@
           "shape":"NullableBoolean",
           "documentation":"<p>Specifies whether to terminate the instance on failure. Set to false if you want Image Builder to retain the instance used to configure your AMI if the build or test phase of your workflow fails. Defaults to <code>true</code>.</p>"
         },
+        "terminateInstanceOnCompletion":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether Image Builder terminates build and test instances when image creation ends without a failure (success, cancellation, or expiration). Defaults to <code>true</code>.</p>"
+        },
         "snsTopicArn":{
           "shape":"SnsTopicArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the SNS topic to which Image Builder sends image build event notifications. Specify a standard topic. Image Builder doesn't support FIFO topics. Image Builder validates the topic when you create or update the configuration. You must have permission to publish to the topic.</p> <note> <p>EC2 Image Builder can't send notifications to SNS topics that are encrypted using keys from other accounts. If your SNS topic is encrypted, the key must be owned by the same account that owns your Image Builder resources.</p> </note>"
@@ -2867,6 +2891,10 @@
         "placement":{
           "shape":"Placement",
           "documentation":"<p>The instance placement settings that define where the build and test instances that Image Builder launches during image creation run. These settings don't affect instances that you launch from the output image.</p>"
+        },
+        "parentInstance":{
+          "shape":"ParentInstanceConfiguration",
+          "documentation":"<p>The Amazon EC2 Auto Scaling group that Image Builder takes the build instance from, instead of launching a new instance. This applies only to the build phase.</p> <p>To use this feature, the execution role for the build must have permissions to describe the Auto Scaling group, tag the instance while it's still in the group, and detach it from the group. For more information, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/userguide/infra-config-parent-instance.html\">Build on an instance from an Auto Scaling group</a> in the <i>EC2 Image Builder User Guide</i>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -4399,7 +4427,7 @@
         },
         "imageScanningConfiguration":{
           "shape":"ImageScanningConfiguration",
-          "documentation":"<p>Settings for the vulnerability scans that Amazon Inspector runs for this image. For AMI output, Amazon Inspector scans the test instance during image creation. For container output, Amazon Inspector scans the container image in its Amazon ECR repository.</p>"
+          "documentation":"<p>The settings that determine whether and how Amazon Inspector scans this image.</p>"
         },
         "deprecationTime":{
           "shape":"DateTimeTimestamp",
@@ -4600,7 +4628,7 @@
         },
         "imageScanningConfiguration":{
           "shape":"ImageScanningConfiguration",
-          "documentation":"<p>Contains settings for vulnerability scans that Amazon Inspector runs against the test instance during image creation.</p>"
+          "documentation":"<p>The settings that determine whether and how Amazon Inspector scans the images that the pipeline creates.</p>"
         },
         "imageTags":{
           "shape":"TagMap",
@@ -4909,14 +4937,35 @@
       "members":{
         "imageScanningEnabled":{
           "shape":"NullableBoolean",
-          "documentation":"<p>Specifies whether Amazon Inspector scans for vulnerabilities when you create a new image, and whether Image Builder saves the findings. Amazon Inspector must be enabled in the account. Image tests must also be enabled. For AMI output, Amazon Inspector scans the test instance. For container output, Amazon Inspector scans the container image that Image Builder pushes to the Amazon ECR repository from your <code>ecrConfiguration</code> settings.</p>"
+          "documentation":"<p>Specifies whether Amazon Inspector scans for vulnerabilities when you create a new image. You must also enable image tests. For AMI output, <code>imageScanningTypes</code> sets whether Amazon Inspector scans the test instance or the output AMI. For container output, Amazon Inspector scans the container image that Image Builder pushes to the Amazon ECR repository from your <code>ecrConfiguration</code> settings.</p> <p>To use container image scans, you must activate Amazon Inspector for Amazon ECR scanning in your account. The Image Builder <code>ListImageScanFindings</code> operation returns the findings of these scans.</p>"
         },
         "ecrConfiguration":{
           "shape":"EcrConfiguration",
           "documentation":"<p>Contains Amazon ECR settings for vulnerability scans.</p>"
+        },
+        "imageScanningTypes":{
+          "shape":"ImageScanningTypeList",
+          "documentation":"<p>The type of vulnerability scan that Image Builder runs for AMI output when <code>imageScanningEnabled</code> is <code>true</code>. Specify a single value. If you omit <code>imageScanningTypes</code>, Image Builder uses <code>TEST_INSTANCE_CVE</code>. The scan types work as follows:</p> <ul> <li> <p>With <code>TEST_INSTANCE_CVE</code>, Amazon Inspector scans the test instance during image tests. To use this scan, you must activate Amazon Inspector for Amazon EC2 scanning in your account. The Image Builder <code>ListImageScanFindings</code> operation returns the findings.</p> </li> <li> <p>With <code>ON_DEMAND_AMI_CVE</code>, Amazon Inspector starts an on-demand scan of the output AMI during image tests. To use this scan, you must build from an image recipe, but you do not need to activate Amazon Inspector in your account. The Amazon EC2 <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetImageFindings.html\">GetImageFindings</a> operation returns the findings.</p> </li> </ul>"
+        },
+        "scanResultCondition":{
+          "shape":"ScanResultCondition",
+          "documentation":"<p>The condition that the output AMI's scan results must meet for the image to pass. You can set <code>scanResultCondition</code> only when <code>imageScanningTypes</code> is <code>ON_DEMAND_AMI_CVE</code>. If you omit it, Image Builder starts the scan but does not wait for it or use its results to pass or fail the image.</p> <p>When you set <code>scanResultCondition</code>, the test phase waits for the scan to finish. Then Image Builder checks the findings against the condition. By default, Image Builder counts only findings that have a fix available. To count every finding, set <code>fixAvailable</code> to <code>false</code>. If a counted finding exceeds <code>maximumSeverityLabel</code>, Image Builder fails the image in the test phase and does not distribute the AMI.</p>"
         }
       },
       "documentation":"<p>Contains settings for Image Builder image resource and container image scans.</p>"
+    },
+    "ImageScanningType":{
+      "type":"string",
+      "enum":[
+        "TEST_INSTANCE_CVE",
+        "ON_DEMAND_AMI_CVE"
+      ]
+    },
+    "ImageScanningTypeList":{
+      "type":"list",
+      "member":{"shape":"ImageScanningType"},
+      "max":1,
+      "min":1
     },
     "ImageSource":{
       "type":"string",
@@ -5415,6 +5464,14 @@
         "placement":{
           "shape":"Placement",
           "documentation":"<p>The instance placement settings that define where the build and test instances that Image Builder launches during image creation run. These settings don't affect instances that you launch from the output image.</p>"
+        },
+        "terminateInstanceOnCompletion":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether Image Builder terminates build and test instances when image creation ends without a failure.</p>"
+        },
+        "parentInstance":{
+          "shape":"ParentInstanceConfiguration",
+          "documentation":"<p>The Amazon EC2 Auto Scaling group that Image Builder takes the build instance from, instead of launching a new instance. This applies only to the build phase.</p>"
         }
       },
       "documentation":"<p>Details of the infrastructure configuration.</p>"
@@ -7077,6 +7134,15 @@
       "type":"integer",
       "min":1
     },
+    "MaximumSeverityLabel":{
+      "type":"string",
+      "enum":[
+        "INFORMATIONAL",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
     "NonEmptyMaxLengthString":{
       "type":"string",
       "max":384000,
@@ -7217,6 +7283,17 @@
       "max":100,
       "min":1,
       "pattern":"^[A-Za-z0-9][A-Za-z0-9-_+#]{0,99}$"
+    },
+    "ParentInstanceConfiguration":{
+      "type":"structure",
+      "required":["autoScalingGroup"],
+      "members":{
+        "autoScalingGroup":{
+          "shape":"AutoScalingGroupConfiguration",
+          "documentation":"<p>The Amazon EC2 Auto Scaling group that Image Builder takes the build instance from. This is required when you specify <code>parentInstance</code>.</p>"
+        }
+      },
+      "documentation":"<p>Settings for building on an instance that is already running, instead of an instance that Image Builder launches for the build.</p>"
     },
     "PipelineExecutionStartCondition":{
       "type":"string",
@@ -7689,6 +7766,21 @@
         }
       },
       "documentation":"<p>Amazon S3 logging configuration.</p>"
+    },
+    "ScanResultCondition":{
+      "type":"structure",
+      "required":["maximumSeverityLabel"],
+      "members":{
+        "maximumSeverityLabel":{
+          "shape":"MaximumSeverityLabel",
+          "documentation":"<p>The maximum severity allowed for findings on the output AMI. A finding above this severity fails the image, unless <code>fixAvailable</code> excludes it. Valid values are <code>INFORMATIONAL</code>, <code>LOW</code>, <code>MEDIUM</code>, and <code>HIGH</code>. A <code>CRITICAL</code> finding that counts always fails the image.</p>"
+        },
+        "fixAvailable":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether only findings that have a fix available count toward <code>maximumSeverityLabel</code>. When <code>false</code>, Image Builder counts every finding. The default is <code>true</code>.</p>"
+        }
+      },
+      "documentation":"<p>A condition that sets which findings from an on-demand AMI scan fail the image. Image Builder checks the output AMI's findings against this condition during the test phase.</p>"
     },
     "Schedule":{
       "type":"structure",
@@ -8182,7 +8274,7 @@
         },
         "imageScanningConfiguration":{
           "shape":"ImageScanningConfiguration",
-          "documentation":"<p>Contains settings for vulnerability scans that Amazon Inspector runs against the test instance during image creation.</p>"
+          "documentation":"<p>The updated settings that determine whether and how Amazon Inspector scans the images that this pipeline creates.</p>"
         },
         "workflows":{
           "shape":"WorkflowConfigurationList",
@@ -8263,6 +8355,10 @@
           "shape":"NullableBoolean",
           "documentation":"<p>Specifies whether to terminate the instance on failure. Set to false if you want Image Builder to retain the instance used to configure your AMI if the build or test phase of your workflow fails. Defaults to <code>true</code>.</p>"
         },
+        "terminateInstanceOnCompletion":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether Image Builder terminates build and test instances when image creation ends without a failure (success, cancellation, or expiration). Defaults to <code>true</code>.</p>"
+        },
         "snsTopicArn":{
           "shape":"SnsTopicArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the SNS topic to which Image Builder sends image build event notifications. Specify a standard topic. Image Builder doesn't support FIFO topics. Image Builder validates the topic when you create or update the configuration. You must have permission to publish to the topic.</p> <note> <p>EC2 Image Builder can't send notifications to SNS topics that are encrypted using keys from other accounts. If your SNS topic is encrypted, the key must be owned by the same account that owns your Image Builder resources.</p> </note>"
@@ -8278,6 +8374,10 @@
         "placement":{
           "shape":"Placement",
           "documentation":"<p>The instance placement settings that define where the build and test instances that Image Builder launches during image creation run. These settings don't affect instances that you launch from the output image.</p>"
+        },
+        "parentInstance":{
+          "shape":"ParentInstanceConfiguration",
+          "documentation":"<p>The Amazon EC2 Auto Scaling group that Image Builder takes the build instance from, instead of launching a new instance. This applies only to the build phase.</p> <p>To use this feature, the execution role for the build must have permissions to describe the Auto Scaling group, tag the instance while it's still in the group, and detach it from the group. For more information, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/userguide/infra-config-parent-instance.html\">Build on an instance from an Auto Scaling group</a> in the <i>EC2 Image Builder User Guide</i>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

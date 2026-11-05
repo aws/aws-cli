@@ -2,13 +2,15 @@
 
 The following ``get-deployment-instance`` example displays information about a deployment instance that is associated with the specified deployment. ::
 
-    aws deploy get-deployment-instance --deployment-id d-QA4G4F9EX --instance-id i-902e9fEX
+    aws deploy get-deployment-instance \
+        --deployment-id d-QA4G4F9EX \
+        --instance-id i-902e9fEX
 
 Output::
 
     {
         "instanceSummary": {
-            "instanceId": "arn:aws:ec2:us-east-1:80398EXAMPLE:instance/i-902e9fEX",
+            "instanceId": "arn:aws:ec2:us-west-2:80398EXAMPLE:instance/i-902e9fEX",
             "lifecycleEvents": [
                 {
                     "status": "Succeeded",
@@ -56,3 +58,5 @@ Output::
             "status": "Failed"
         }
     }
+
+For more information, see `View instance details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

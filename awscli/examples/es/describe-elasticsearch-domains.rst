@@ -11,17 +11,17 @@ Output::
         "DomainStatusList": [{
                 "DomainId": "123456789012/cli-example-1",
                 "DomainName": "cli-example-1",
-                "ARN": "arn:aws:es:us-east-1:123456789012:domain/cli-example-1",
+                "ARN": "arn:aws:es:us-west-2:123456789012:domain/cli-example-1",
                 "Created": true,
                 "Deleted": false,
-                "Endpoint": "search-cli-example-1-1a2a3a4a5a6a7a8a9a0a.us-east-1.es.amazonaws.com",
+                "Endpoint": "search-cli-example-1-1a2a3a4a5a6a7a8a9a0a.us-west-2.es.amazonaws.com",
                 "Processing": false,
                 "UpgradeProcessing": false,
                 "ElasticsearchVersion": "7.4",
                 "ElasticsearchClusterConfig": {
                     "InstanceType": "c5.large.elasticsearch",
                     "InstanceCount": 1,
-                     "DedicatedMasterEnabled": true,
+                    "DedicatedMasterEnabled": true,
                     "ZoneAwarenessEnabled": false,
                     "DedicatedMasterType": "c5.large.elasticsearch",
                     "DedicatedMasterCount": 3,
@@ -34,7 +34,7 @@ Output::
                     "VolumeType": "gp2",
                     "VolumeSize": 10
                 },
-                "AccessPolicies": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:*\",\"Resource\":\"arn:aws:es:us-east-1:123456789012:domain/cli-example-1/*\"}]}",
+                "AccessPolicies": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:*\",\"Resource\":\"arn:aws:es:us-west-2:123456789012:domain/cli-example-1/*\"}]}",
                 "SnapshotOptions": {
                     "AutomatedSnapshotStartHour": 0
                 },
@@ -43,7 +43,7 @@ Output::
                 },
                 "EncryptionAtRestOptions": {
                     "Enabled": true,
-                    "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/1a2a3a4a-1a2a-1a2a-1a2a-1a2a3a4a5a6a"
+                    "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 },
                 "NodeToNodeEncryptionOptions": {
                     "Enabled": true
@@ -72,7 +72,7 @@ Output::
             {
                 "DomainId": "123456789012/cli-example-2",
                 "DomainName": "cli-example-2",
-                "ARN": "arn:aws:es:us-east-1:123456789012:domain/cli-example-2",
+                "ARN": "arn:aws:es:us-west-2:123456789012:domain/cli-example-2",
                 "Created": true,
                 "Deleted": false,
                 "Processing": true,
@@ -90,7 +90,7 @@ Output::
                     "VolumeType": "gp2",
                     "VolumeSize": 10
                 },
-                "AccessPolicies": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:*\",\"Resource\":\"arn:aws:es:us-east-1:123456789012:domain/cli-example-2/*\"}]}",
+                "AccessPolicies": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:*\",\"Resource\":\"arn:aws:es:us-west-2:123456789012:domain/cli-example-2/*\"}]}",
                 "SnapshotOptions": {
                     "AutomatedSnapshotStartHour": 0
                 },

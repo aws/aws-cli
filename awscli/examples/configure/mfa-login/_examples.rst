@@ -1,6 +1,6 @@
-**To create a new profile with temporary MFA credentials**
+**Example 1: To create a new profile with temporary MFA credentials**
 
-The following ``mfa-login`` command creates a new profile with temporary credentials obtained using MFA authentication. ::
+The following ``mfa-login`` example creates a new profile with temporary credentials obtained using MFA authentication. ::
 
     aws configure mfa-login
 
@@ -13,11 +13,15 @@ Output::
     Credentials will expire at 2023-05-19 18:06:10 UTC
     To use these credentials, specify --profile session-12345 when running AWS CLI commands
 
-**To update an existing profile with temporary MFA credentials**
+For more information, see `AWS Multi-factor authentication in IAM <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html>`__ in the *IAM User Guide*.
 
-The following ``mfa-login`` command updates an existing profile with temporary credentials obtained using MFA authentication. ::
+**Example 2: To update an existing profile with temporary MFA credentials**
 
-    aws configure mfa-login --profile myprofile --update-profile mytemp
+The following ``mfa-login`` example updates an existing profile with temporary credentials obtained using MFA authentication. ::
+
+    aws configure mfa-login \
+        --profile myprofile \
+        --update-profile mytemp
 
 Output::
 
@@ -26,9 +30,11 @@ Output::
     Credentials will expire at 2023-05-19 18:06:10 UTC
     To use these credentials, specify --profile mytemp when running AWS CLI commands
 
-**To create credentials when no default profile exists**
+For more information, see `AWS Multi-factor authentication in IAM <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html>`__ in the *IAM User Guide*.
 
-If you don't have a default profile configured, the ``mfa-login`` command will prompt you for your AWS credentials first. ::
+**Example 3: To create credentials when no default profile exists**
+
+The following ``mfa-login`` example prompts you for your AWS credentials first if you don't have a default profile configured. ::
 
     aws configure mfa-login
 
@@ -45,3 +51,5 @@ Output::
     To use these credentials, specify --profile session-12345 when running AWS CLI commands
 
 **Note:** This command currently supports only hardware or software based one-time password (OTP) authenticators. Passkeys and U2F devices are not currently supported.
+
+For more information, see `AWS Multi-factor authentication in IAM <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html>`__ in the *IAM User Guide*.

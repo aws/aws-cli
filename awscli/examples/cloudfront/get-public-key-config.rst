@@ -1,13 +1,12 @@
 **To get a CloudFront public key configuration**
 
-The following example gets metadata about the CloudFront public key with the ID
+The following ``get-public-key-config`` example gets metadata about the CloudFront public key with the ID
 ``KDFB19YGCR002``, including its ``ETag``. The public key ID is returned in the
 `create-public-key <create-public-key.html>`_ and `list-public-keys
-<list-public-keys.html>`_ commands.
+<list-public-keys.html>`_ commands. ::
 
-::
-
-    aws cloudfront get-public-key-config --id KDFB19YGCR002
+    aws cloudfront get-public-key-config \
+        --id KDFB19YGCR002
 
 Output::
 
@@ -20,3 +19,5 @@ Output::
             "Comment": "example public key"
         }
     }
+
+For more information, see `Use field-level encryption to help protect sensitive data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`__ in the *Amazon CloudFront Developer Guide*.

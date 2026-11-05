@@ -3,7 +3,7 @@
 The following ``delete-gateway`` example deletes a gateway. ::
 
     aws iotsitewise delete-gateway \
-        --gateway-id a1b2c3d4-5678-90ab-cdef-1a1a1EXAMPLE
+        --gateway-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 This command produces no output.
 

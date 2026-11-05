@@ -1,14 +1,15 @@
 name: 'Check stale community PRs.'
 on: workflow_dispatch
       
-permissions:
-  pull-requests: write
+permissions: {}
 
 jobs:
   stale-implementation-stage:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
-      - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
         with:
           debug-only: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -27,8 +28,10 @@ jobs:
           close-pr-label: closed-for-staleness
   stale-review-stage:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
-      - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
         with:
           debug-only: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -46,7 +49,7 @@ jobs:
           labels-to-add-when-unstale: responded
           exempt-pr-labels: responded,maintainers # Forces PRs to be skipped if these are not removed by maintainers.
           close-pr-label: DONTUSE
-      - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
         with:
           debug-only: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}

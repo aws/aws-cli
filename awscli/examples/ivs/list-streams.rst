@@ -7,7 +7,7 @@ The following ``list-streams`` example lists all live streams for your AWS accou
 Output::
 
     {
-       "streams": [
+        "streams": [
             {
                 "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",
                 "state": "LIVE",

@@ -12,7 +12,7 @@ Output::
         "FunctionVersion": "3",
         "Name": "LIVE",
         "AliasArn": "arn:aws:lambda:us-west-2:123456789012:function:my-function:LIVE",
-        "RevisionId": "594f41fb-b85f-4c20-95c7-6ca5f2a92c93",
+        "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "Description": "alias for live version of function"
     }
 

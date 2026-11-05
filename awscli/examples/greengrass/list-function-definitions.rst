@@ -9,36 +9,38 @@ Output::
     {
         "Definitions": [
             {
-                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/017970a5-8952-46dd-b1c1-020b3ae8e960",
+                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "CreationTimestamp": "2018-10-17T04:30:32.884Z",
-                "Id": "017970a5-8952-46dd-b1c1-020b3ae8e960",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "LastUpdatedTimestamp": "2018-10-17T04:30:32.884Z",
-                "LatestVersion": "4380b302-790d-4ed8-92bf-02e88afecb15",
-                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/017970a5-8952-46dd-b1c1-020b3ae8e960/versions/4380b302-790d-4ed8-92bf-02e88afecb15"
+                "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             },
             {
-                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/063f5d1a-1dd1-40b4-9b51-56f8993d0f85",
+                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "CreationTimestamp": "2019-06-18T16:21:21.431Z",
-                "Id": "063f5d1a-1dd1-40b4-9b51-56f8993d0f85",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "LastUpdatedTimestamp": "2019-06-18T16:21:21.431Z",
-                "LatestVersion": "9748fda7-1589-4fcc-ac94-f5559e88678b",
-                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/063f5d1a-1dd1-40b4-9b51-56f8993d0f85/versions/9748fda7-1589-4fcc-ac94-f5559e88678b"
+                "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444"
             },
             {
-                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/6598e653-a262-440c-9967-e2697f64da7b",
+                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                 "CreationTimestamp": "2019-06-18T16:24:16.123Z",
-                "Id": "6598e653-a262-440c-9967-e2697f64da7b",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                 "LastUpdatedTimestamp": "2019-06-18T16:24:16.123Z",
-                "LatestVersion": "38bc6ccd-98a2-4ce7-997e-16c84748fae4",
-                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/6598e653-a262-440c-9967-e2697f64da7b/versions/38bc6ccd-98a2-4ce7-997e-16c84748fae4"
+                "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE66666",
+                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE55555/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE66666"
             },
             {
-                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/c668df84-fad2-491b-95f4-655d2cad7885",
+                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE77777",
                 "CreationTimestamp": "2019-06-18T16:14:17.784Z",
-                "Id": "c668df84-fad2-491b-95f4-655d2cad7885",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE77777",
                 "LastUpdatedTimestamp": "2019-06-18T16:14:17.784Z",
-                "LatestVersion": "37dd68c4-a64f-40ba-aa13-71fecc3ebded",
-                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/c668df84-fad2-491b-95f4-655d2cad7885/versions/37dd68c4-a64f-40ba-aa13-71fecc3ebded"
+                "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE88888",
+                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/functions/a1b2c3d4-5678-90ab-cdef-EXAMPLE77777/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE88888"
             }
         ]
     }
+
+For more information, see `Run Lambda functions on the AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/lambda-functions.html>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

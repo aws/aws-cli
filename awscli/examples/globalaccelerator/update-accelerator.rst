@@ -3,14 +3,14 @@
 The following ``update-accelerator`` example modifies an accelerator to change the accelerator name to ``ExampleAcceleratorNew``. You must specify the ``US-West-2 (Oregon)`` Region to create or update accelerators. ::
 
     aws globalaccelerator update-accelerator \
-        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
+        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --name ExampleAcceleratorNew
 
 Output::
 
     {
         "Accelerator": {
-            "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh",
+            "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "IpAddressType": "IPV4",
             "Name": "ExampleAcceleratorNew",
             "Enabled": true,

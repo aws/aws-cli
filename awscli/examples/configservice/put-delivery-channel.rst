@@ -1,15 +1,18 @@
 **To create a delivery channel**
 
-The following command provides the settings for the delivery channel as JSON code::
+The following ``put-delivery-channel`` example provides the settings for the delivery channel as JSON code. ::
 
-    aws configservice put-delivery-channel --delivery-channel file://deliveryChannel.json
+    aws configservice put-delivery-channel \
+        --delivery-channel file://deliveryChannel.json
 
-The ``deliveryChannel.json`` file specifies the delivery channel attributes::
+The ``deliveryChannel.json`` file specifies the delivery channel attributes.
+
+Contents of ``deliveryChannel.json``::
 
     {
         "name": "default",
-        "s3BucketName": "config-bucket-123456789012",
-        "snsTopicARN": "arn:aws:sns:us-east-1:123456789012:config-topic",
+        "s3BucketName": "amzn-s3-demo-bucket",
+        "snsTopicARN": "arn:aws:sns:us-west-2:123456789012:config-topic",
         "configSnapshotDeliveryProperties": {
             "deliveryFrequency": "Twelve_Hours"
         }
@@ -27,16 +30,18 @@ This example sets the following attributes:
 
   If you specify a bucket that belongs to another AWS account, that bucket must have policies that grant access permissions to AWS Config. For more information, see `Permissions for the Amazon S3 Bucket`__.
 
-.. __: http://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy.html
+.. __: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy.html
 
 - ``snsTopicARN`` - The Amazon Resource Name (ARN) of the Amazon SNS topic to which AWS Config sends notifications about configuration changes.
 
   If you choose a topic from another account, the topic must have policies that grant access permissions to AWS Config. For more information, see `Permissions for the Amazon SNS Topic`__.
 
-.. __: http://docs.aws.amazon.com/config/latest/developerguide/sns-topic-policy.html
+.. __: https://docs.aws.amazon.com/config/latest/developerguide/sns-topic-policy.html
 
 - ``configSnapshotDeliveryProperties`` - Contains the ``deliveryFrequency`` attribute, which sets how often AWS Config delivers configuration snapshots and how often it invokes evaluations for periodic Config rules.
 
-If the command succeeds, AWS Config returns no output. To verify the settings of your delivery channel, run the `describe-delivery-channels`__ command.
+This command produces no output. To verify the settings of your delivery channel, run the `describe-delivery-channels`__ command.
 
-.. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-delivery-channels.html
+.. __: https://docs.aws.amazon.com/cli/latest/reference/configservice/describe-delivery-channels.html
+
+For more information, see `Working with the Delivery Channel <https://docs.aws.amazon.com/config/latest/developerguide/manage-delivery-channel.html>`__ in the *AWS Config Developer Guide*.

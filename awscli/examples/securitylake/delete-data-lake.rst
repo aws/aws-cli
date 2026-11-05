@@ -7,4 +7,4 @@ The following ``delete-data-lake`` example disables your data lake in the specif
 
 This command produces no output.
 
-For more information, see `Disabling Amazon Security Lake <https://docs.aws.amazon.com/securityhub/latest/userguide/disable-security-lake.html>`__ in the *Amazon Security Lake User Guide*.
+For more information, see `Disabling Amazon Security Lake <https://docs.aws.amazon.com/security-lake/latest/userguide/disable-security-lake.html>`__ in the *Amazon Security Lake User Guide*.

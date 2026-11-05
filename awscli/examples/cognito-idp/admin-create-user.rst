@@ -16,7 +16,7 @@ Output::
             "Attributes": [
                 {
                     "Name": "sub",
-                    "Value": "7325c1de-b05b-4f84-b321-9adc6e61f4a2"
+                    "Value": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 },
                 {
                     "Name": "phone_number",
@@ -33,3 +33,5 @@ Output::
             "UserStatus": "FORCE_CHANGE_PASSWORD"
         }
     }
+
+For more information, see `Creating user accounts as administrator <https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-create-user-accounts.html>`__ in the *Amazon Cognito Developer Guide*.

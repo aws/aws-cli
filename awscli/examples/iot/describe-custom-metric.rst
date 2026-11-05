@@ -9,11 +9,11 @@ Output::
 
     {
         "metricName": "myCustomMetric",
-        "metricArn": "arn:aws:iot:us-east-1:1234564789012:custommetric/myCustomMetric",
+        "metricArn": "arn:aws:iot:us-west-2:1234564789012:custommetric/myCustomMetric",
         "metricType": "number",
         "displayName": "My custom metric",
-        "creationDate": 2020-11-17T23:02:12.879000-09:00,
-        "lastModifiedDate": 2020-11-17T23:02:12.879000-09:00
+        "creationDate": "2020-11-17T23:02:12.879000-09:00",
+        "lastModifiedDate": "2020-11-17T23:02:12.879000-09:00"
     }
 
 For more information, see `Custom metrics <https://docs.aws.amazon.com/iot/latest/developerguide/dd-detect-custom-metrics.html>`__ in the *AWS IoT Core Developer Guide*.

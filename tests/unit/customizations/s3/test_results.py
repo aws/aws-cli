@@ -176,12 +176,41 @@ class TestResultSubscribers(unittest.TestCase):
             error='PreconditionFailed',
         )
         precondition_failed_future = self.get_failed_transfer_future(precondition_failed)
+        precondition_failed_future.meta.call_args.extra_args = {
+            'IfNoneMatch': '*'
+        }
         subscriber.on_done(precondition_failed_future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
         self.assertEqual(
             result,
             SkipFileResult(transfer_type=mock.ANY, src=mock.ANY, dest=mock.ANY)
+        )
+
+    def test_on_done_precondition_failed_without_if_none_match(self):
+        subscriber = self.get_result_subscriber(DoneResultSubscriber)
+        precondition_failed = HTTPClientError(
+            request=mock.Mock(),
+            response={'Error': {'Code': 'PreconditionFailed'}},
+            error='PreconditionFailed',
+        )
+        precondition_failed_future = self.get_failed_transfer_future(
+            precondition_failed
+        )
+        precondition_failed_future.meta.call_args.extra_args = {
+            'IfMatch': '"etag"'
+        }
+        subscriber.on_done(precondition_failed_future)
+        result = self.get_queued_result()
+        self.assert_result_queue_is_empty()
+        self.assertEqual(
+            result,
+            FailureResult(
+                transfer_type=mock.ANY,
+                src=mock.ANY,
+                dest=mock.ANY,
+                exception=precondition_failed,
+            ),
         )
 
 

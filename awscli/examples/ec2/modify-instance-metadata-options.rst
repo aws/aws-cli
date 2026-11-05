@@ -45,7 +45,7 @@ For more information, see `Instance metadata <https://docs.aws.amazon.com/AWSEC2
 
 **Example 3: To enable instance metadata IPv6 endpoint for your instance**
 
-The following ``modify-instance-metadata-options`` example shows you how to turn on the IPv6 endpoint for the instance metadata service. By default, the IPv6 endpoint is disabled. This is true even if you have launched an instance into an IPv6-only subnet. The IPv6 endpoint for IMDS is only accessible on instances built on the Nitro System.  ::
+The following ``modify-instance-metadata-options`` example turns on the IPv6 endpoint for the instance metadata service. By default, the IPv6 endpoint is disabled. This is true even if you have launched an instance into an IPv6-only subnet. The IPv6 endpoint for IMDS is only accessible on instances built on the Nitro System. ::
 
     aws ec2 modify-instance-metadata-options \
         --instance-id i-1234567898abcdef0 \
@@ -61,7 +61,7 @@ Output::
             "HttpTokens": "required",
             "HttpPutResponseHopLimit": 1,
             "HttpEndpoint": "enabled",
-            HttpProtocolIpv6": "enabled"
+            "HttpProtocolIpv6": "enabled"
         }
     }
 

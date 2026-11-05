@@ -10,8 +10,8 @@ Output::
     {
         "actionExecutionDetails": [
             {
-                "pipelineExecutionId": "EXAMPLE0-adfc-488e-bf4c-1111111720d3",
-                "actionExecutionId": "EXAMPLE4-2ee8-4853-bd6a-111111158148",
+                "pipelineExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "actionExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "pipelineVersion": 12,
                 "stageName": "Deploy",
                 "actionName": "Deploy",
@@ -33,7 +33,7 @@ Output::
                         "ApplicationName": "my-application",
                         "DeploymentGroupName": "my-deployment-group"
                     },
-                    "region": "us-east-1",
+                    "region": "us-west-2",
                     "inputArtifacts": [
                         {
                             "name": "SourceArtifact",
@@ -56,8 +56,8 @@ Output::
                 }
             },
             {
-                "pipelineExecutionId": "EXAMPLE0-adfc-488e-bf4c-1111111720d3",
-                "actionExecutionId": "EXAMPLE5-abb4-4192-9031-11111113a7b0",
+                "pipelineExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "actionExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "pipelineVersion": 12,
                 "stageName": "Source",
                 "actionName": "Source",
@@ -81,7 +81,7 @@ Output::
                         "PollForSourceChanges": "false",
                         "RepositoryName": "my-repo"
                     },
-                    "region": "us-east-1",
+                    "region": "us-west-2",
                     "inputArtifacts": [],
                     "namespace": "SourceVariables"
                 },
@@ -103,13 +103,14 @@ Output::
                     "outputVariables": {
                         "AuthorDate": "2020-05-08T17:45:43Z",
                         "BranchName": "production",
-                        "CommitId": "EXAMPLEad99dcd35914c00b7fbea139951111111",
+                        "CommitId": "1111111ad99dcd35914c00b7fbea13995EXAMPLE",
                         "CommitMessage": "Edited template.yml",
                         "CommitterDate": "2020-05-08T17:45:43Z",
                         "RepositoryName": "my-repo"
                     }
                 }
-            },
-    . . . .
+            }
+        ]
+    }
 
-For more information, see `View action executions (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html#pipelines-action-executions-cli>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `View action executions (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html>`__ in the *AWS CodePipeline User Guide*.

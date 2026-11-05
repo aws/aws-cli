@@ -1,6 +1,6 @@
 **To list IAM users**
 
-The following ``list-users`` command lists the IAM users in the current account. ::
+The following ``list-users`` example lists the IAM users in the current account. ::
 
     aws iam list-users
 
@@ -25,4 +25,4 @@ Output::
         ]
     }
 
-For more information, see `Listing IAM users <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_manage.html#id_users_manage_list>`__ in the *AWS IAM User Guide*.
+For more information, see `Listing IAM users <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_manage.html>`__ in the *AWS IAM User Guide*.

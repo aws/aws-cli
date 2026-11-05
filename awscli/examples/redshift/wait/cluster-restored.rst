@@ -5,4 +5,6 @@ The following ``wait cluster-restored`` example pauses and resumes only after th
     aws redshift wait cluster-restored \
         --cluster-identifier mycluster
 
-This command does not produce any output.
+This command produces no output.
+
+For more information, see `Amazon Redshift snapshots and backups <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html>`__ in the *Amazon Redshift Cluster Management Guide*.

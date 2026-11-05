@@ -8,12 +8,10 @@ The following ``list-tags-for-resource`` example list all tags for an AWS IoT Th
 Output::
 
     {
-       "tags": [ 
-          { 
-             "key": "Type",
-             "value": "Residential"
-          }
-       ]
+        "tags": [
+            {
+                "key": "Type",
+                "value": "Residential"
+            }
+        ]
     }
-
-For more information, see `Tagging Your AWS IoT Things Graph Resources <https://docs.aws.amazon.com/thingsgraph/latest/ug/tagging-tg.html>`__ in the *AWS IoT Things Graph User Guide*.

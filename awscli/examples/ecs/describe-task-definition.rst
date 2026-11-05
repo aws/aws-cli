@@ -9,7 +9,7 @@ Output::
 
     {
         "taskDefinition": {
-            "taskDefinitionArn": "arn:aws:ecs:us-east-1:012345678910:task-definition/hello_world:8",
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/hello_world:8",
             "containerDefinitions": [
                 {
                     "cpu": 10,
@@ -57,9 +57,9 @@ Output::
             "EC2"
         ],
         "registeredAt": "2024-06-21T11:15:12.669000-05:00",
-        "registeredBy": "arn:aws:sts::012345678910:assumed-role/demo-role/jane-doe"
+        "registeredBy": "arn:aws:sts::123456789012:assumed-role/demo-role/jane-doe"
         },
         "tags": []
     }
 
-For more information, see `Amazon ECS Task Definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.

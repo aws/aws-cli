@@ -8,20 +8,24 @@ The following ``list-log-sources`` example lists the Amazon Security Lake log so
 Output::
 
     {
-        "account": "123456789012",
-        "region": "xy-region-1",
         "sources": [
             {
-                   "awsLogSource": {
-                    "sourceName": "VPC_FLOW",
-                    "sourceVersion": "2.0"
-                }
-            },
-            {
-                "awsLogSource": {
-                    "sourceName": "SH_FINDINGS",
-                    "sourceVersion": "2.0"
-                }
+                "account": "123456789012",
+                "region": "xy-region-1",
+                "sources": [
+                    {
+                        "awsLogSource": {
+                            "sourceName": "VPC_FLOW",
+                            "sourceVersion": "2.0"
+                        }
+                    },
+                    {
+                        "awsLogSource": {
+                            "sourceName": "SH_FINDINGS",
+                            "sourceVersion": "2.0"
+                        }
+                    }
+                ]
             }
         ]
     }

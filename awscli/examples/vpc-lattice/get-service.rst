@@ -8,11 +8,11 @@ The following ``get-service`` example gets information about the specified servi
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE",
         "authType": "AWS_IAM",
         "createdAt": "2023-05-05T21:35:29.339Z",
         "dnsEntry": {
-            "domainName": "my-lattice-service-0285b53b2eEXAMPLE.7d67968.vpc-lattice-svcs.us-east-2.on.aws",
+            "domainName": "my-lattice-service-0285b53b2eEXAMPLE.7d67968.vpc-lattice-svcs.us-west-2.on.aws",
             "hostedZoneId": "Z09127221KTH2CFUOHIZH"
         },
         "id": "svc-0285b53b2eEXAMPLE",

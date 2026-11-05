@@ -1,6 +1,6 @@
 **To list the stream processors in your account**
 
-The following ``list-stream-processors`` command lists the stream processors in your account and the state of each. ::
+The following ``list-stream-processors`` example lists the stream processors in your account and the state of each. ::
 
     aws rekognition list-stream-processors 
 

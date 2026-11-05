@@ -10,7 +10,7 @@ Output::
     {
         "TelemetryConfigurations": [
             {
-                "AccountIdentifier": "111111111111",
+                "AccountIdentifier": "123456789012",
                 "TelemetryConfigurationState": {
                     "Logs": "NotApplicable",
                     "Metrics": "Disabled",

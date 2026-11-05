@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes a tag from the monitor in the specified account. ::
 
     aws networkflowmonitor untag-resource \
-        --resource-arn arn:aws:networkflowmonitor:us-east-1:123456789012:monitor/Demo \
+        --resource-arn arn:aws:networkflowmonitor:us-west-2:123456789012:monitor/Demo \
         --tag-keys stack  
 
 This command produces no output.

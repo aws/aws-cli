@@ -28,8 +28,7 @@ Output::
                 "AllowedValues": "0,1",
                 "IsModifiable": false,
                 "ApplyMethod": "pending-reboot"
-            },
-            ...some output truncated...
+            }
         ]
     }
 

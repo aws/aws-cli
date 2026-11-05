@@ -4,7 +4,14 @@ The following ``import-client-vpn-client-certificate-revocation-list`` example i
 
     aws ec2 import-client-vpn-client-certificate-revocation-list \
         --certificate-revocation-list file:///path/to/crl.pem \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde
+        --client-vpn-endpoint-id cvpn-endpoint-123456789012abcde
+
+Contents of ``crl.pem``::
+
+    -----BEGIN X509 CRL-----
+    MIIBpzCBkAIBATANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQDDAlFWEFNUExFQ0EX
+    EXAMPLECRLDATAEXAMPLECRLDATAEXAMPLECRLDATAEXAMPLECRLDATAEXAMPLE=
+    -----END X509 CRL-----
 
 Output::
 

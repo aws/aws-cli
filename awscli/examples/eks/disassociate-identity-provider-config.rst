@@ -1,4 +1,4 @@
-**Disassociate identity provider to your Amazon EKS Cluster**
+**To disassociate an identity provider from your Amazon EKS Cluster**
 
 The following ``disassociate-identity-provider-config`` example disassociates an identity provider to your Amazon EKS Cluster. ::
 
@@ -10,7 +10,7 @@ Output::
 
     {
         "update": {
-            "id": "5f78d14e-c57b-4857-a3e4-cf664ae20949",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "status": "InProgress",
             "type": "DisassociateIdentityProviderConfig",
             "params": [
@@ -24,4 +24,4 @@ Output::
         }
     }
 
-For more information, see `Authenticate users for your cluster from an OpenID Connect identity provider - Disassociate an OIDC identity provider from your cluster <https://docs.aws.amazon.com/eks/latest/userguide/authenticate-oidc-identity-provider.html#disassociate-oidc-identity-provider>`__ in the *Amazon EKS User Guide*.
+For more information, see `Authenticate users for your cluster from an OpenID Connect identity provider - Disassociate an OIDC identity provider from your cluster <https://docs.aws.amazon.com/eks/latest/userguide/disassociate-oidc-identity-provider.html>`__ in the *Amazon EKS User Guide*.

@@ -559,18 +559,25 @@
       "members":{
         "AuthType":{
           "shape":"AuthType",
-          "documentation":"<p>The type of authentication used when calling the external application.</p>"
+          "documentation":"<p>The type of authentication that Connect Customer uses to call the external application endpoint. You must specify an authentication type for <code>A2A_SERVER</code> applications. Valid values:</p> <ul> <li> <p> <code>API_KEY</code>: Connect Customer sends an API key that is stored in the Secrets Manager secret that you specify in <code>CredentialProviderIdentifier</code>.</p> </li> <li> <p> <code>CONNECT_JWT</code>: Connect Customer issues a short-lived, signed JSON Web Token (JWT). This authentication type doesn't require a stored credential.</p> </li> </ul>"
         },
         "CredentialProviderIdentifier":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the Secrets Manager secret that stores the credentials. The secret must be accessible to Connect Customer.</p>"
+          "documentation":"<p>The ARN of the Secrets Manager secret that stores the credentials. The secret must be accessible to Connect Customer.</p> <p>You must specify this ARN when <code>AuthType</code> is <code>API_KEY</code>. Don't specify it when <code>AuthType</code> is <code>CONNECT_JWT</code>.</p>"
+        },
+        "AudienceOverride":{
+          "shape":"Identifier",
+          "documentation":"<p>The value that Connect Customer uses as the audience (<code>aud</code>) claim of the JSON Web Token (JWT) that it issues. You can specify this parameter only when <code>AuthType</code> is <code>CONNECT_JWT</code>. If you don't specify it, the audience is the <code>AccessUrl</code> of the application. The value can't contain <code>connect.amazonaws.com</code>.</p>"
         }
       },
-      "documentation":"<p>Contains the authentication settings that Connect Customer uses to call an external application endpoint. The configuration includes the authentication type and credential location.</p>"
+      "documentation":"<p>Contains the authentication settings that Connect Customer uses to call an external application endpoint.</p>"
     },
     "AuthType":{
       "type":"string",
-      "enum":["API_KEY"]
+      "enum":[
+        "API_KEY",
+        "CONNECT_JWT"
+      ]
     },
     "Boolean":{"type":"boolean"},
     "ClientAssociationMetadata":{

@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `Actions <https://docs.aws.amazon.com/fis/latest/userguide/actions.html>`__ in the *AWS Fault Injection Simulator User Guide*.
+For more information, see `AWS FIS Actions reference <https://docs.aws.amazon.com/fis/latest/userguide/fis-actions-reference.html>`__ in the *AWS Fault Injection Simulator User Guide*.

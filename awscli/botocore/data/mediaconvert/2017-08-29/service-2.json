@@ -2772,9 +2772,19 @@
     },
     "Av1RateControlMode": {
       "type": "string",
-      "documentation": "'With AV1 outputs, for rate control mode, MediaConvert supports only quality-defined variable bitrate (QVBR). You can''t use CBR or VBR.'",
+      "documentation": "'With AV1 outputs, for rate control mode, MediaConvert supports quality-defined variable bitrate (QVBR) and constant bitrate (CBR). You can''t use VBR.'",
       "enum": [
+        "CBR",
         "QVBR"
+      ]
+    },
+    "Av1SceneChangeDetect": {
+      "type": "string",
+      "documentation": "Optional. Use this setting to have the service insert I-frames at scene changes that it automatically detects. For AV1, scene change detection is disabled by default. Choose Enabled to insert I-frames at detected scene changes, which can improve video quality. If this output uses QVBR, you can instead choose Transition detection for further video quality improvement. For more information about QVBR, see https://docs.aws.amazon.com/console/mediaconvert/cbr-vbr-qvbr.",
+      "enum": [
+        "DISABLED",
+        "ENABLED",
+        "TRANSITION_DETECTION"
       ]
     },
     "Av1Settings": {
@@ -2789,6 +2799,11 @@
           "shape": "Av1BitDepth",
           "locationName": "bitDepth",
           "documentation": "Specify the Bit depth. You can choose 8-bit or 10-bit."
+        },
+        "Bitrate": {
+          "shape": "__integerMin1000Max1152000000",
+          "locationName": "bitrate",
+          "documentation": "Specify the average bitrate in bits per second. Required when Rate control mode is CBR."
         },
         "FilmGrainSynthesis": {
           "shape": "Av1FilmGrainSynthesis",
@@ -2838,17 +2853,32 @@
         "QvbrSettings": {
           "shape": "Av1QvbrSettings",
           "locationName": "qvbrSettings",
-          "documentation": "Settings for quality-defined variable bitrate encoding with the H.265 codec. Use these settings only when you set QVBR for Rate control mode."
+          "documentation": "Settings for quality-defined variable bitrate encoding with the AV1 codec. Use these settings only when you set QVBR for Rate control mode."
         },
         "RateControlMode": {
           "shape": "Av1RateControlMode",
           "locationName": "rateControlMode",
-          "documentation": "'With AV1 outputs, for rate control mode, MediaConvert supports only quality-defined variable bitrate (QVBR). You can''t use CBR or VBR.'"
+          "documentation": "'With AV1 outputs, for rate control mode, MediaConvert supports quality-defined variable bitrate (QVBR) and constant bitrate (CBR). You can''t use VBR.'"
+        },
+        "SceneChangeDetect": {
+          "shape": "Av1SceneChangeDetect",
+          "locationName": "sceneChangeDetect",
+          "documentation": "Optional. Use this setting to have the service insert I-frames at scene changes that it automatically detects. For AV1, scene change detection is disabled by default. Choose Enabled to insert I-frames at detected scene changes, which can improve video quality. If this output uses QVBR, you can instead choose Transition detection for further video quality improvement. For more information about QVBR, see https://docs.aws.amazon.com/console/mediaconvert/cbr-vbr-qvbr."
         },
         "Slices": {
           "shape": "__integerMin1Max32",
           "locationName": "slices",
           "documentation": "Specify the number of slices per picture. This value must be 1, 2, 4, 8, 16, or 32. For progressive pictures, this value must be less than or equal to the number of macroblock rows. For interlaced pictures, this value must be less than or equal to half the number of macroblock rows."
+        },
+        "SlidingWindowMs": {
+          "shape": "__integerMin1000Max3000",
+          "locationName": "slidingWindowMs",
+          "documentation": "Optional. Specify the duration, in milliseconds, of the sliding window over which MediaConvert enforces your Peak bitrate. When you specify a Peak bitrate but omit this value, MediaConvert uses a default sliding window of 1000."
+        },
+        "SlidingWindowPeakBitrate": {
+          "shape": "__integerMin1000Max1152000000",
+          "locationName": "slidingWindowPeakBitrate",
+          "documentation": "Optional. Specify an instantaneous peak bitrate ceiling, in bits/second, that MediaConvert enforces over the sliding window set by Peak bitrate window. For example, enter fifty megabits per second as 50000000. Applies in the QVBR rate control mode. When you specify a value below Max bitrate, MediaConvert raises it to Max bitrate."
         },
         "SpatialAdaptiveQuantization": {
           "shape": "Av1SpatialAdaptiveQuantization",
@@ -3735,6 +3765,11 @@
           "shape": "CmafCodecSpecification",
           "locationName": "codecSpecification",
           "documentation": "Specification to use (RFC-6381 or the default RFC-4281) during m3u8 playlist generation."
+        },
+        "DashAdaptationSetGrouping": {
+          "shape": "__listOfDashAdaptationSetGrouping",
+          "locationName": "dashAdaptationSetGrouping",
+          "documentation": "Specify additional criteria for partitioning video outputs into separate AdaptationSets. These criteria are applied on top of the grouping produced by DashManifestStyle."
         },
         "DashIFrameTrickPlayNameModifier": {
           "shape": "__stringMin1Max256",
@@ -4985,6 +5020,13 @@
       "type": "structure",
       "members": {}
     },
+    "DashAdaptationSetGrouping": {
+      "type": "string",
+      "documentation": "Specify additional criteria for partitioning video outputs into separate AdaptationSets. These criteria are applied on top of the grouping produced by DashManifestStyle.",
+      "enum": [
+        "CODEC"
+      ]
+    },
     "DashAdditionalManifest": {
       "type": "structure",
       "members": {
@@ -5042,6 +5084,11 @@
           "shape": "__string",
           "locationName": "baseUrl",
           "documentation": "A partial URI prefix that will be put in the manifest (.mpd) file at the top level BaseURL element. Can be used if streams are delivered from a different URL than the manifest file."
+        },
+        "DashAdaptationSetGrouping": {
+          "shape": "__listOfDashAdaptationSetGrouping",
+          "locationName": "dashAdaptationSetGrouping",
+          "documentation": "Specify additional criteria for partitioning video outputs into separate AdaptationSets. These criteria are applied on top of the grouping produced by DashManifestStyle."
         },
         "DashIFrameTrickPlayNameModifier": {
           "shape": "__stringMin1Max256",
@@ -7544,6 +7591,16 @@
           "locationName": "slices",
           "documentation": "Number of slices per picture. Must be less than or equal to the number of macroblock rows for progressive pictures, and less than or equal to half the number of macroblock rows for interlaced pictures."
         },
+        "SlidingWindowMs": {
+          "shape": "__integerMin1000Max3000",
+          "locationName": "slidingWindowMs",
+          "documentation": "Optional. Specify the duration, in milliseconds, of the sliding window over which MediaConvert enforces your Peak bitrate. When you specify a Peak bitrate but omit this value, MediaConvert uses a default sliding window of 1000."
+        },
+        "SlidingWindowPeakBitrate": {
+          "shape": "__integerMin1000Max1152000000",
+          "locationName": "slidingWindowPeakBitrate",
+          "documentation": "Optional. Specify an instantaneous peak bitrate ceiling, in bits/second, that MediaConvert enforces over the sliding window set by Peak bitrate window. For example, enter fifty megabits per second as 50000000. Applies in the VBR, CBR, and QVBR rate control modes. When you specify a value below Max bitrate, MediaConvert raises it to Max bitrate."
+        },
         "SlowPal": {
           "shape": "H264SlowPal",
           "locationName": "slowPal",
@@ -8063,6 +8120,16 @@
           "shape": "__integerMin1Max32",
           "locationName": "slices",
           "documentation": "Number of slices per picture. Must be less than or equal to the number of macroblock rows for progressive pictures, and less than or equal to half the number of macroblock rows for interlaced pictures."
+        },
+        "SlidingWindowMs": {
+          "shape": "__integerMin1000Max3000",
+          "locationName": "slidingWindowMs",
+          "documentation": "Optional. Specify the duration, in milliseconds, of the sliding window over which MediaConvert enforces your Peak bitrate. When you specify a Peak bitrate but omit this value, MediaConvert uses a default sliding window of 1000."
+        },
+        "SlidingWindowPeakBitrate": {
+          "shape": "__integerMin1000Max1466400000",
+          "locationName": "slidingWindowPeakBitrate",
+          "documentation": "Optional. Specify an instantaneous peak bitrate ceiling, in bits/second, that MediaConvert enforces over the sliding window set by Peak bitrate window. For example, enter fifty megabits per second as 50000000. Applies in the VBR, CBR, and QVBR rate control modes. When you specify a value below Max bitrate, MediaConvert raises it to Max bitrate."
         },
         "SlowPal": {
           "shape": "H265SlowPal",
@@ -11992,6 +12059,16 @@
           "locationName": "sceneChangeDetect",
           "documentation": "Enable this setting to insert I-frames at scene changes that the service automatically detects. This improves video quality and is enabled by default."
         },
+        "SlidingWindowMs": {
+          "shape": "__integerMin1000Max3000",
+          "locationName": "slidingWindowMs",
+          "documentation": "Optional. Specify the duration, in milliseconds, of the sliding window over which MediaConvert enforces your Peak bitrate. When you specify a Peak bitrate but omit this value, MediaConvert uses a default sliding window of 1000."
+        },
+        "SlidingWindowPeakBitrate": {
+          "shape": "__integerMin1000Max300000000",
+          "locationName": "slidingWindowPeakBitrate",
+          "documentation": "Optional. Specify an instantaneous peak bitrate ceiling, in bits/second, that MediaConvert enforces over the sliding window set by Peak bitrate window. For example, enter fifty megabits per second as 50000000. Applies in the VBR and CBR rate control modes. When you specify a value below Max bitrate, MediaConvert raises it to Max bitrate."
+        },
         "SlowPal": {
           "shape": "Mpeg2SlowPal",
           "locationName": "slowPal",
@@ -12414,7 +12491,7 @@
         "Filter": {
           "shape": "NoiseReducerFilter",
           "locationName": "filter",
-          "documentation": "Use Noise reducer filter to select one of the following spatial image filtering functions. To use this setting, you must also enable Noise reducer. * Bilateral preserves edges while reducing noise. * Mean (softest), Gaussian, Lanczos, and Sharpen (sharpest) do convolution filtering. * Conserve does min/max noise reduction. * Spatial does frequency-domain filtering based on JND principles. * Temporal optimizes video quality for complex motion."
+          "documentation": "Use Noise reducer filter to select one of the following spatial image filtering functions. To use this setting, you must also enable Noise reducer. * Bilateral preserves edges while reducing noise. * Mean (softest), Gaussian, Lanczos, and Sharpen (sharpest) do convolution filtering. * Conserve does min/max noise reduction. * Spatial does frequency-domain filtering based on JND principles. * Temporal optimizes video quality for complex motion. * Perceptual exploits perceptual masking, avoiding encoding bits spent on imperceptible detail. * None disables noise reduction, including the perceptual filter that MediaConvert otherwise applies by default for AVC, HEVC, AV1, MPEG-2, VP8, and VP9 outputs. MediaConvert doesn't apply that default to mezzanine and archival outputs (AVC-Intra, XAVC, Apple ProRes, VC3, Uncompressed), to frame capture outputs, or to outputs that use Dolby Vision, which doesn't support any noise reducer."
         },
         "FilterSettings": {
           "shape": "NoiseReducerFilterSettings",
@@ -12436,7 +12513,7 @@
     },
     "NoiseReducerFilter": {
       "type": "string",
-      "documentation": "Use Noise reducer filter to select one of the following spatial image filtering functions. To use this setting, you must also enable Noise reducer. * Bilateral preserves edges while reducing noise. * Mean (softest), Gaussian, Lanczos, and Sharpen (sharpest) do convolution filtering. * Conserve does min/max noise reduction. * Spatial does frequency-domain filtering based on JND principles. * Temporal optimizes video quality for complex motion.",
+      "documentation": "Use Noise reducer filter to select one of the following spatial image filtering functions. To use this setting, you must also enable Noise reducer. * Bilateral preserves edges while reducing noise. * Mean (softest), Gaussian, Lanczos, and Sharpen (sharpest) do convolution filtering. * Conserve does min/max noise reduction. * Spatial does frequency-domain filtering based on JND principles. * Temporal optimizes video quality for complex motion. * Perceptual exploits perceptual masking, avoiding encoding bits spent on imperceptible detail. * None disables noise reduction, including the perceptual filter that MediaConvert otherwise applies by default for AVC, HEVC, AV1, MPEG-2, VP8, and VP9 outputs. MediaConvert doesn't apply that default to mezzanine and archival outputs (AVC-Intra, XAVC, Apple ProRes, VC3, Uncompressed), to frame capture outputs, or to outputs that use Dolby Vision, which doesn't support any noise reducer.",
       "enum": [
         "BILATERAL",
         "MEAN",
@@ -12445,7 +12522,9 @@
         "SHARPEN",
         "CONSERVE",
         "SPATIAL",
-        "TEMPORAL"
+        "TEMPORAL",
+        "PERCEPTUAL",
+        "NONE"
       ]
     },
     "NoiseReducerFilterSettings": {
@@ -16369,6 +16448,11 @@
       "min": 1000,
       "max": 288000000
     },
+    "__integerMin1000Max3000": {
+      "type": "integer",
+      "min": 1000,
+      "max": 3000
+    },
     "__integerMin1000Max30000": {
       "type": "integer",
       "min": 1000,
@@ -16781,6 +16865,12 @@
       "type": "list",
       "member": {
         "shape": "ColorConversion3DLUTSetting"
+      }
+    },
+    "__listOfDashAdaptationSetGrouping": {
+      "type": "list",
+      "member": {
+        "shape": "DashAdaptationSetGrouping"
       }
     },
     "__listOfDashAdditionalManifest": {

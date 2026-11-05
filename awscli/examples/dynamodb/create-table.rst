@@ -52,7 +52,7 @@ For more information, see `Basic Operations for Tables <https://docs.aws.amazon.
 
 **Example 2: To create a table in On-Demand Mode**
 
-The following example creates a table called ``MusicCollection`` using on-demand mode, rather than provisioned throughput mode. This is useful for tables with unpredictable workloads. ::
+The following ``create-table`` example creates a table called ``MusicCollection`` using on-demand mode, rather than provisioned throughput mode. This is useful for tables with unpredictable workloads. ::
 
     aws dynamodb create-table \
         --table-name MusicCollection \
@@ -106,14 +106,14 @@ For more information, see `Basic Operations for Tables <https://docs.aws.amazon.
 
 **Example 3: To create a table and encrypt it with a Customer Managed CMK**
 
-The following example creates a table named ``MusicCollection`` and encrypts it using a customer managed CMK. ::
+The following ``create-table`` example creates a table named ``MusicCollection`` and encrypts it using a customer managed CMK. ::
 
     aws dynamodb create-table \
         --table-name MusicCollection \
         --attribute-definitions AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S \
         --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
-        --sse-specification Enabled=true,SSEType=KMS,KMSMasterKeyId=abcd1234-abcd-1234-a123-ab1234a1b234
+        --sse-specification Enabled=true,SSEType=KMS,KMSMasterKeyId=a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
@@ -154,7 +154,7 @@ Output::
             "SSEDescription": {
                 "Status": "ENABLED",
                 "SSEType": "KMS",
-                "KMSMasterKeyArn": "arn:aws:kms:us-west-2:123456789012:key/abcd1234-abcd-1234-a123-ab1234a1b234"
+                "KMSMasterKeyArn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             }
         }
     }
@@ -163,15 +163,14 @@ For more information, see `Basic Operations for Tables <https://docs.aws.amazon.
 
 **Example 4: To create a table with a Local Secondary Index**
 
-The following example uses the specified attributes and key schema to create a table named ``MusicCollection`` with a Local Secondary Index named ``AlbumTitleIndex``. ::
+The following ``create-table`` example uses the specified attributes and key schema to create a table named ``MusicCollection`` with a Local Secondary Index named ``AlbumTitleIndex``. ::
 
     aws dynamodb create-table \
         --table-name MusicCollection \
         --attribute-definitions AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S AttributeName=AlbumTitle,AttributeType=S \
         --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
-        --local-secondary-indexes \
-            "[
+        --local-secondary-indexes "[
                 {
                     \"IndexName\": \"AlbumTitleIndex\",
                     \"KeySchema\": [
@@ -257,16 +256,14 @@ For more information, see `Basic Operations for Tables <https://docs.aws.amazon.
 
 **Example 5: To create a table with a Global Secondary Index**
 
-The following example creates a table named ``GameScores`` with a Global Secondary Index called ``GameTitleIndex``. The base table has a partition key of ``UserId`` and a sort key of ``GameTitle``, allowing you to find an individual user's best score for a specific game efficiently, whereas the GSI has a partition key of ``GameTitle`` and a sort key of ``TopScore``, allowing you to quickly find the overall highest score for a particular game. ::
+The following ``create-table`` example creates a table named ``GameScores`` with a Global Secondary Index called ``GameTitleIndex``. The base table has a partition key of ``UserId`` and a sort key of ``GameTitle``, allowing you to find an individual user's best score for a specific game efficiently, whereas the GSI has a partition key of ``GameTitle`` and a sort key of ``TopScore``, allowing you to quickly find the overall highest score for a particular game. ::
 
     aws dynamodb create-table \
         --table-name GameScores \
         --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S AttributeName=TopScore,AttributeType=N \
-        --key-schema AttributeName=UserId,KeyType=HASH \
-                    AttributeName=GameTitle,KeyType=RANGE \
+        --key-schema AttributeName=UserId,KeyType=HASH AttributeName=GameTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
-        --global-secondary-indexes \
-            "[
+        --global-secondary-indexes "[
                 {
                     \"IndexName\": \"GameTitleIndex\",
                     \"KeySchema\": [
@@ -361,7 +358,7 @@ For more information, see `Basic Operations for Tables <https://docs.aws.amazon.
 
 **Example 6: To create a table with multiple Global Secondary Indexes at once**
 
-The following example creates a table named ``GameScores`` with two Global Secondary Indexes. The GSI schemas are passed via a file, rather than on the command line. ::
+The following ``create-table`` example creates a table named ``GameScores`` with two Global Secondary Indexes. The GSI schemas are passed via a file, rather than on the command line. ::
 
     aws dynamodb create-table \
         --table-name GameScores \
@@ -518,7 +515,7 @@ For more information, see `Basic Operations for Tables <https://docs.aws.amazon.
 
 **Example 7: To create a table with Streams enabled**
 
-The following example creates a table called ``GameScores`` with DynamoDB Streams enabled. Both new and old images of each item will be written to the stream. ::
+The following ``create-table`` example creates a table called ``GameScores`` with DynamoDB Streams enabled. Both new and old images of each item will be written to the stream. ::
 
     aws dynamodb create-table \
         --table-name GameScores \
@@ -576,7 +573,7 @@ For more information, see `Basic Operations for Tables <https://docs.aws.amazon.
 
 **Example 8: To create a table with Keys-Only Stream enabled**
 
-The following example creates a table called ``GameScores`` with DynamoDB Streams enabled. Only the key attributes of modified items are written to the stream. ::
+The following ``create-table`` example creates a table called ``GameScores`` with DynamoDB Streams enabled. Only the key attributes of modified items are written to the stream. ::
 
     aws dynamodb create-table \
         --table-name GameScores \
@@ -635,7 +632,7 @@ For more information, see `Change data capture for DynamoDB Streams <https://doc
 
 **Example 9: To create a table with the Standard Infrequent Access class**
 
-The following example creates a table called ``GameScores`` and assigns the Standard-Infrequent Access (DynamoDB Standard-IA) table class. This table class is optimized for storage being the dominant cost. ::
+The following ``create-table`` example creates a table called ``GameScores`` and assigns the Standard-Infrequent Access (DynamoDB Standard-IA) table class. This table class is optimized for storage being the dominant cost. ::
     
     aws dynamodb create-table \
         --table-name GameScores \
@@ -692,7 +689,7 @@ For more information, see `Table classes <https://docs.aws.amazon.com/amazondyna
 
 **Example 10: To Create a table with Delete Protection enabled**
 
-The following example creates a table called ``GameScores`` and enables deletion protection. ::
+The following ``create-table`` example creates a table called ``GameScores`` and enables deletion protection. ::
 
     aws dynamodb create-table \
         --table-name GameScores \

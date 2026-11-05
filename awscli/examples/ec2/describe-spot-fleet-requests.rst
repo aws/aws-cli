@@ -1,132 +1,133 @@
-**To describe your Spot fleet requests**
+**Example 1: To describe your Spot fleet requests**
 
-This example describes all of your Spot fleet requests.
+The following ``describe-spot-fleet-requests`` example describes all of your Spot fleet requests. ::
 
-Command::
-
-  aws ec2 describe-spot-fleet-requests
+    aws ec2 describe-spot-fleet-requests
 
 Output::
 
-  {
-    "SpotFleetRequestConfigs": [
-        {
-            "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE",
-            "SpotFleetRequestConfig": {
-                "TargetCapacity": 20,
-                "LaunchSpecifications": [
-                    {
-                        "EbsOptimized": false,
-                        "NetworkInterfaces": [
-                            {
-                                "SubnetId": "subnet-a61dafcf",
-                                "DeviceIndex": 0,
-                                "DeleteOnTermination": false,
-                                "AssociatePublicIpAddress": true,
-                                "SecondaryPrivateIpAddressCount": 0
-                            }
-                        ],
-                        "InstanceType": "cc2.8xlarge",
-                        "ImageId": "ami-1a2b3c4d"
-                    },
-                    {
-                        "EbsOptimized": false,
-                        "NetworkInterfaces": [
-                            {
-                                "SubnetId": "subnet-a61dafcf",
-                                "DeviceIndex": 0,
-                                "DeleteOnTermination": false,
-                                "AssociatePublicIpAddress": true,
-                                "SecondaryPrivateIpAddressCount": 0
-                            }
-                        ],
-                        "InstanceType": "r3.8xlarge",
-                        "ImageId": "ami-1a2b3c4d"
-                    }
-                ],
-                "SpotPrice": "0.05",
-                "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role"
+    {
+        "SpotFleetRequestConfigs": [
+            {
+                "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE",
+                "SpotFleetRequestConfig": {
+                    "TargetCapacity": 20,
+                    "LaunchSpecifications": [
+                        {
+                            "EbsOptimized": false,
+                            "NetworkInterfaces": [
+                                {
+                                    "SubnetId": "subnet-a61dafcf",
+                                    "DeviceIndex": 0,
+                                    "DeleteOnTermination": false,
+                                    "AssociatePublicIpAddress": true,
+                                    "SecondaryPrivateIpAddressCount": 0
+                                }
+                            ],
+                            "InstanceType": "cc2.8xlarge",
+                            "ImageId": "ami-1a2b3c4d"
+                        },
+                        {
+                            "EbsOptimized": false,
+                            "NetworkInterfaces": [
+                                {
+                                    "SubnetId": "subnet-a61dafcf",
+                                    "DeviceIndex": 0,
+                                    "DeleteOnTermination": false,
+                                    "AssociatePublicIpAddress": true,
+                                    "SecondaryPrivateIpAddressCount": 0
+                                }
+                            ],
+                            "InstanceType": "r3.8xlarge",
+                            "ImageId": "ami-1a2b3c4d"
+                        }
+                    ],
+                    "SpotPrice": "0.05",
+                    "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role"
+                },
+                "SpotFleetRequestState": "active"
             },
-            "SpotFleetRequestState": "active"
-        },  
-        {
-            "SpotFleetRequestId": "sfr-306341ed-9739-402e-881b-ce47bEXAMPLE",
-            "SpotFleetRequestConfig": {
-                "TargetCapacity": 20,
-                "LaunchSpecifications": [
-                    {
-                        "EbsOptimized": false,
-                        "NetworkInterfaces": [
-                            {
-                                "SubnetId": "subnet-6e7f829e",
-                                "DeviceIndex": 0,
-                                "DeleteOnTermination": false,
-                                "AssociatePublicIpAddress": true,
-                                "SecondaryPrivateIpAddressCount": 0
-                            }
-                        ],
-                        "InstanceType": "m3.medium",
-                        "ImageId": "ami-1a2b3c4d"
-                    }
-                ],
-                "SpotPrice": "0.05",
-                "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role"
-            },
-            "SpotFleetRequestState": "active"
-        }
-    ]
-  }
+            {
+                "SpotFleetRequestId": "sfr-306341ed-9739-402e-881b-ce47bEXAMPLE",
+                "SpotFleetRequestConfig": {
+                    "TargetCapacity": 20,
+                    "LaunchSpecifications": [
+                        {
+                            "EbsOptimized": false,
+                            "NetworkInterfaces": [
+                                {
+                                    "SubnetId": "subnet-6e7f829e",
+                                    "DeviceIndex": 0,
+                                    "DeleteOnTermination": false,
+                                    "AssociatePublicIpAddress": true,
+                                    "SecondaryPrivateIpAddressCount": 0
+                                }
+                            ],
+                            "InstanceType": "m3.medium",
+                            "ImageId": "ami-1a2b3c4d"
+                        }
+                    ],
+                    "SpotPrice": "0.05",
+                    "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role"
+                },
+                "SpotFleetRequestState": "active"
+            }
+        ]
+    }
 
-**To describe a Spot fleet request**
+For more information, see `Describe a Spot Fleet request, its instances, and event history <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.
 
-This example describes the specified Spot fleet request.
+**Example 2: To describe a Spot fleet request**
 
-Command::
+The following ``describe-spot-fleet-requests`` example describes the specified Spot fleet request. ::
 
-  aws ec2 describe-spot-fleet-requests --spot-fleet-request-ids sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE
+    aws ec2 describe-spot-fleet-requests \
+        --spot-fleet-request-ids sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE
 
 Output::
 
-  {
-    "SpotFleetRequestConfigs": [
-        {
-            "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE",
-            "SpotFleetRequestConfig": {
-                "TargetCapacity": 20,
-                "LaunchSpecifications": [
-                    {
-                        "EbsOptimized": false,
-                        "NetworkInterfaces": [
-                            {
-                                "SubnetId": "subnet-a61dafcf",
-                                "DeviceIndex": 0,
-                                "DeleteOnTermination": false,
-                                "AssociatePublicIpAddress": true,
-                                "SecondaryPrivateIpAddressCount": 0
-                            }
-                        ],
-                        "InstanceType": "cc2.8xlarge",
-                        "ImageId": "ami-1a2b3c4d"
-                    },
-                    {
-                        "EbsOptimized": false,
-                        "NetworkInterfaces": [
-                            {
-                                "SubnetId": "subnet-a61dafcf",
-                                "DeviceIndex": 0,
-                                "DeleteOnTermination": false,
-                                "AssociatePublicIpAddress": true,
-                                "SecondaryPrivateIpAddressCount": 0
-                            }
-                        ],
-                        "InstanceType": "r3.8xlarge",
-                        "ImageId": "ami-1a2b3c4d"
-                    }
-                ],
-                "SpotPrice": "0.05",
-                "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role"
-            },
-            "SpotFleetRequestState": "active"
-        }
-    ]
-  }
+    {
+        "SpotFleetRequestConfigs": [
+            {
+                "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE",
+                "SpotFleetRequestConfig": {
+                    "TargetCapacity": 20,
+                    "LaunchSpecifications": [
+                        {
+                            "EbsOptimized": false,
+                            "NetworkInterfaces": [
+                                {
+                                    "SubnetId": "subnet-a61dafcf",
+                                    "DeviceIndex": 0,
+                                    "DeleteOnTermination": false,
+                                    "AssociatePublicIpAddress": true,
+                                    "SecondaryPrivateIpAddressCount": 0
+                                }
+                            ],
+                            "InstanceType": "cc2.8xlarge",
+                            "ImageId": "ami-1a2b3c4d"
+                        },
+                        {
+                            "EbsOptimized": false,
+                            "NetworkInterfaces": [
+                                {
+                                    "SubnetId": "subnet-a61dafcf",
+                                    "DeviceIndex": 0,
+                                    "DeleteOnTermination": false,
+                                    "AssociatePublicIpAddress": true,
+                                    "SecondaryPrivateIpAddressCount": 0
+                                }
+                            ],
+                            "InstanceType": "r3.8xlarge",
+                            "ImageId": "ami-1a2b3c4d"
+                        }
+                    ],
+                    "SpotPrice": "0.05",
+                    "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role"
+                },
+                "SpotFleetRequestState": "active"
+            }
+        ]
+    }
+
+For more information, see `Describe a Spot Fleet request, its instances, and event history <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-spot-fleet.html>`__ in the *Amazon EC2 User Guide*.

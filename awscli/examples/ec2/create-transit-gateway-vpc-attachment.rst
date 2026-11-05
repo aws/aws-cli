@@ -14,7 +14,7 @@ Output::
             "TransitGatewayAttachmentId": "tgw-attach-0a34fe6b4fEXAMPLE",
             "TransitGatewayId": "tgw-0262a0e521EXAMPLE",
             "VpcId": "vpc-07e8ffd50fEXAMPLE",
-            "VpcOwnerId": "111122223333",
+            "VpcOwnerId": "123456789012",
             "State": "pending",
             "SubnetIds": [
                 "subnet-0752213d59EXAMPLE"
@@ -27,7 +27,7 @@ Output::
         }
     }
 
-For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#create-vpc-attachment>`__ in the *Transit Gateways Guide*.
+For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/create-vpc-attachment.html>`__ in the *Transit Gateways Guide*.
 
 **Example 2: To associate a transit gateway with multiple subnets in a VPC**
 
@@ -45,7 +45,7 @@ Output::
             "TransitGatewayAttachmentId": "tgw-attach-0e141e0bebEXAMPLE",
             "TransitGatewayId": "tgw-02f776b1a7EXAMPLE",
             "VpcId": "vpc-3EXAMPLE",
-            "VpcOwnerId": "111122223333",
+            "VpcOwnerId": "123456789012",
             "State": "pending",
             "SubnetIds": [
                 "subnet-6EXAMPLE",
@@ -59,4 +59,4 @@ Output::
         }
     }
 
-For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#create-vpc-attachment>`__ in the *Transit Gateways Guide*.
+For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/create-vpc-attachment.html>`__ in the *Transit Gateways Guide*.

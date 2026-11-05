@@ -1,11 +1,10 @@
 **To purge a queue**
 
-This example deletes all messages in the specified queue.
+The following ``purge-queue`` example deletes all messages in the specified queue. ::
 
-Command::
+    aws sqs purge-queue \
+        --queue-url https://sqs.us-west-2.amazonaws.com/80398EXAMPLE/MyNewQueue
 
-  aws sqs purge-queue --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyNewQueue
+This command produces no output.
 
-Output::
-
-  None.
+For more information, see `Purging messages from an queue using the Amazon SQS console <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-using-purge-queue.html>`__ in the *Amazon Simple Queue Service Developer Guide*.

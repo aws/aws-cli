@@ -6572,6 +6572,10 @@
           "shape":"ProcessingInput",
           "documentation":"<p>The processing input source.</p>"
         },
+        "jobName":{
+          "shape":"DatasetExportJobNameInput",
+          "documentation":"<p>An optional name for the export job. When omitted, one will be created based on type of job and start time.</p>"
+        },
         "errorReportLocation":{
           "shape":"ExportErrorReportLocation",
           "documentation":"<p>The location where the error report will be written on failure.</p>"
@@ -7387,6 +7391,20 @@
       "max":36,
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "DatasetExportJobName":{
+      "type":"string",
+      "documentation":"&lt;p&gt;An optional name for a dataset export job. When omitted on CreateDatasetExportJob, one will be created based on type of job and start time.&lt;/p&gt;",
+      "max":350,
+      "min":1,
+      "pattern":"[^\\x00-\\x1f\\x7f]+"
+    },
+    "DatasetExportJobNameInput":{
+      "type":"string",
+      "documentation":"&lt;p&gt;An optional name for a dataset export job. When omitted on CreateDatasetExportJob, one will be created based on type of job and start time.&lt;/p&gt;",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\x00-\\x1f\\x7f]+"
     },
     "DatasetExportJobStatus":{
       "type":"string",
@@ -9075,6 +9093,10 @@
         "workspaceName":{
           "shape":"WorkspaceName",
           "documentation":"<p>The name of the workspace that contains the dataset export job.</p>"
+        },
+        "jobName":{
+          "shape":"DatasetExportJobName",
+          "documentation":"<p>The name of the dataset export job.</p>"
         },
         "status":{
           "shape":"DatasetExportJobStatus",
@@ -10917,6 +10939,10 @@
         "jobId":{
           "shape":"DatasetExportJobId",
           "documentation":"&lt;p&gt;The unique identifier for the dataset export job.&lt;/p&gt;"
+        },
+        "jobName":{
+          "shape":"DatasetExportJobName",
+          "documentation":"&lt;p&gt;The name of the dataset export job.&lt;/p&gt;"
         },
         "status":{
           "shape":"DatasetExportJobStatus",

@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "e2973046-43f8-4252-a4b4-9EXAMPLE69ce",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "LoadBalancer-1",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1571678786.071,
@@ -25,7 +25,7 @@ Output::
                 "statusChangedAt": 1571679087.57
             },
             {
-                "id": "2d742a18-0e7f-48c8-9705-3EXAMPLEf98a",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "LoadBalancer-1",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1571678782.784,
@@ -40,7 +40,7 @@ Output::
                 "statusChangedAt": 1571678798.465
             },
             {
-                "id": "6c700fcc-4246-40ab-952b-1EXAMPLEdac2",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "LoadBalancer-1",
                 "resourceType": "LoadBalancer",
                 "createdAt": 1571678775.297,
@@ -53,8 +53,8 @@ Output::
                 "operationType": "AttachInstancesToLoadBalancer",
                 "status": "Succeeded",
                 "statusChangedAt": 1571678842.806
-            },
-            ...
             }
         ]
     }
+
+For more information, see `Distribute web traffic with Lightsail load balancers <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-lightsail-load-balancers.html>`__ in the *Amazon Lightsail User Guide*.

@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags for a replication instance. ::
 
     aws dms list-tags-for-resource \
-        --resource-arn arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE
+        --resource-arn arn:aws:dms:us-west-2:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE
 
 Output::
 

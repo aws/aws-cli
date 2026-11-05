@@ -1,6 +1,6 @@
 **To delete a stream processor**
 
-The following ``delete-stream-processor`` command deletes the specified stream processor. ::
+The following ``delete-stream-processor`` example deletes the specified stream processor. ::
 
     aws rekognition delete-stream-processor \
         --name my-stream-processor

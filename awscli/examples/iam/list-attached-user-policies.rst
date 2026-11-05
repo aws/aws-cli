@@ -1,6 +1,6 @@
 **To list all managed policies that are attached to the specified user**
 
-This command returns the names and ARNs of the managed policies for the IAM user named ``Bob`` in the AWS account. ::
+The following ``list-attached-user-policies`` example returns the names and ARNs of the managed policies for the IAM user named ``Bob`` in the AWS account. ::
 
     aws iam list-attached-user-policies \
         --user-name Bob

@@ -8,7 +8,7 @@ The following ``list-snapshots-in-recycle-bin`` example lists information about 
 Output::
 
     {
-        "SnapshotRecycleBinInfo": [
+        "Snapshots": [
             {
                 "Description": "Monthly data backup snapshot",
                 "RecycleBinEnterTime": "2022-12-01T13:00:00.000Z",

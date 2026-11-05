@@ -11,7 +11,7 @@ Output::
     {
         "imageDetails": [
             {
-                "registryId": "012345678910",
+                "registryId": "123456789012",
                 "repositoryName": "cluster-autoscaler",
                 "imageDigest": "sha256:4a1c6567c38904384ebc64e35b7eeddd8451110c299e3368d2210066487d97e5",
                 "imageTags": [
@@ -22,3 +22,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing image details in Amazon ECR <https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-info.html>`__ in the *Amazon ECR User Guide*.

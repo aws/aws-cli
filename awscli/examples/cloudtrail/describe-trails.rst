@@ -12,25 +12,27 @@ Output::
             {
                 "IncludeGlobalServiceEvents": true, 
                 "Name": "Trail1", 
-                "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1", 
+                "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/Trail1", 
                 "LogFileValidationEnabled": false, 
                 "IsMultiRegionTrail": false, 
                 "S3BucketName": "amzn-s3-demo-bucket", 
                 "CloudWatchLogsRoleArn": "arn:aws:iam::123456789012:role/CloudTrail_CloudWatchLogs_Role", 
-                "CloudWatchLogsLogGroupArn": "arn:aws:logs:us-east-1:123456789012:log-group:CloudTrail:*", 
+                "CloudWatchLogsLogGroupArn": "arn:aws:logs:us-west-2:123456789012:log-group:CloudTrail:*", 
                 "SnsTopicName": "my-topic", 
-                "HomeRegion": "us-east-1"
+                "HomeRegion": "us-west-2"
             }, 
             {
                 "IncludeGlobalServiceEvents": true, 
                 "Name": "Trail2", 
                 "S3KeyPrefix": "my-prefix", 
-                "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail2", 
+                "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/Trail2", 
                 "LogFileValidationEnabled": false, 
                 "IsMultiRegionTrail": false, 
                 "S3BucketName": "amzn-s3-demo-bucket2", 
-                "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/4c5ae5ac-3c13-421e-8335-c7868ef6a769", 
-                "HomeRegion": "us-east-1"
+                "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+                "HomeRegion": "us-west-2"
             }
         ]
     }
+
+For more information, see `Managing trails with the AWS CLI <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-additional-cli-commands.html>`__ in the *AWS CloudTrail User Guide*.

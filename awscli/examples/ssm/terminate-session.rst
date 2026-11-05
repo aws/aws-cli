@@ -1,6 +1,6 @@
 **To end a Session Manager session**
 
-This ``terminate-session`` example permanently ends a session that was created by the user "Shirley-Rodriguez" and closes the data connection between the Session Manager client and SSM Agent on the instance. ::
+The following ``terminate-session`` example permanently ends a session that was created by the user "Shirley-Rodriguez" and closes the data connection between the Session Manager client and SSM Agent on the instance. ::
 
     aws ssm terminate-session \
         --session-id "Shirley-Rodriguez-07a16060613c408b5"

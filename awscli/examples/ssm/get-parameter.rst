@@ -14,7 +14,7 @@ Output::
             "Value": "Veni",
             "Version": 1,
             "LastModifiedDate": 1530018761.888,
-            "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MyStringParameter"
+            "ARN": "arn:aws:ssm:us-west-2:123456789012:parameter/MyStringParameter",
             "DataType": "text"
         }
     }
@@ -35,10 +35,10 @@ Output::
         "Parameter": {
             "Name": "MySecureStringParameter",
             "Type": "SecureString",
-            "Value": "16679b88-310b-4895-a943-e0764EXAMPLE",
+            "Value": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Version": 2,
             "LastModifiedDate": 1582155479.205,
-            "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MySecureStringParameter"
+            "ARN": "arn:aws:ssm:us-west-2:123456789012:parameter/MySecureStringParameter",
             "DataType": "text"
         }
     }
@@ -62,7 +62,7 @@ Output::
             "Version": 2,
             "Selector": ":label",
             "LastModifiedDate": "2021-07-12T09:49:15.865000-07:00",
-            "ARN": "arn:aws:ssm:us-west-2:786973925828:parameter/MyParameter",
+            "ARN": "arn:aws:ssm:us-west-2:123456789111:parameter/MyParameter",
             "DataType": "text"
         }
     }
@@ -86,7 +86,7 @@ Output::
             "Version": 2,
             "Selector": ":2",
             "LastModifiedDate": "2021-07-12T09:49:15.865000-07:00",
-            "ARN": "arn:aws:ssm:us-west-2:786973925828:parameter/MyParameter",
+            "ARN": "arn:aws:ssm:us-west-2:123456789111:parameter/MyParameter",
             "DataType": "text"
         }
     }

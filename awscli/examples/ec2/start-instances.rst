@@ -1,10 +1,9 @@
 **To start an Amazon EC2 instance**
 
-This example starts the specified Amazon EBS-backed instance.
+The following ``start-instances`` example starts the specified Amazon EBS-backed instance. ::
 
-Command::
-
-  aws ec2 start-instances --instance-ids i-1234567890abcdef0
+    aws ec2 start-instances \
+        --instance-ids i-1234567890abcdef0
 
 Output::
 
@@ -24,7 +23,4 @@ Output::
         ]
     }
 
-For more information, see `Stop and Start Your Instance`_ in the *Amazon Elastic Compute Cloud User Guide*.
-
-.. _`Stop and Start Your Instance`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html
-
+For more information, see `Stop and start Amazon EC2 instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html>`__ in the *Amazon EC2 User Guide*.

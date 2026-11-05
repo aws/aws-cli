@@ -10,3 +10,5 @@ Output::
     {
         "Status": "Enabled"
     }
+
+For more information, see `Configuring fast, secure file transfers using Amazon S3 Transfer Acceleration <https://docs.aws.amazon.com/AmazonS3/latest/userguide/transfer-acceleration.html>`__ in the *Amazon S3 User Guide*.

@@ -1,6 +1,6 @@
 **To create an instance profile**
 
-The following ``create-instance-profile`` command creates an instance profile named ``Webserver``. ::
+The following ``create-instance-profile`` example creates an instance profile named ``Webserver``. ::
 
     aws iam create-instance-profile \
         --instance-profile-name Webserver

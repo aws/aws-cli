@@ -3,7 +3,7 @@
 The following ``update-gateway`` example updates a gateway's name. ::
 
     aws iotsitewise update-gateway \
-        --gateway-id a1b2c3d4-5678-90ab-cdef-1a1a1EXAMPLE \
+        --gateway-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --gateway-name ExampleCorpGateway1
 
 This command produces no output.

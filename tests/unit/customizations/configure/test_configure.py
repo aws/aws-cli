@@ -365,6 +365,51 @@ class TestInteractivePrompter(unittest.TestCase):
         )
         self.assertTrue(self.stdout.flush.called)
 
+    @mock.patch('awscli.customizations.configure.sso.PTKPrompt.get_value')
+    def test_region_uses_completions_when_interactive(self, mock_ptk):
+        mock_ptk.return_value = 'us-west-2'
+        prompter = configure.InteractivePrompter()
+        with mock.patch.object(prompter, '_is_interactive', return_value=True):
+            response = prompter.get_value(
+                current_value='us-east-1',
+                config_name='region',
+                prompt_text='Default region name',
+            )
+        self.assertEqual(response, 'us-west-2')
+        self.mock_raw_input.assert_not_called()
+        _, kwargs = mock_ptk.call_args
+        self.assertIn('us-west-2', kwargs['completions'])
+        self.assertEqual(
+            kwargs['prompt_fmt'], 'Default region name [us-east-1]: '
+        )
+
+    @mock.patch('awscli.customizations.configure.sso.PTKPrompt.get_value')
+    def test_region_with_completions_enter_returns_none(self, mock_ptk):
+        mock_ptk.return_value = ''
+        prompter = configure.InteractivePrompter()
+        with mock.patch.object(prompter, '_is_interactive', return_value=True):
+            response = prompter.get_value(
+                current_value='us-east-1',
+                config_name='region',
+                prompt_text='Default region name',
+            )
+        self.assertIsNone(response)
+
+    @mock.patch('awscli.customizations.configure.sso.PTKPrompt.get_value')
+    def test_region_falls_back_to_input_when_not_interactive(self, mock_ptk):
+        self.mock_raw_input.return_value = 'us-west-2'
+        prompter = configure.InteractivePrompter()
+        with mock.patch.object(
+            prompter, '_is_interactive', return_value=False
+        ):
+            response = prompter.get_value(
+                current_value=None,
+                config_name='region',
+                prompt_text='Default region name',
+            )
+        self.assertEqual(response, 'us-west-2')
+        mock_ptk.assert_not_called()
+
 
 class TestConfigValueMasking(unittest.TestCase):
     def test_config_value_is_masked(self):

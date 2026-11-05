@@ -11,8 +11,8 @@ Output::
         "tlsCertificates": [
             {
                 "name": "example-com",
-                "arn": "arn:aws:lightsail:us-west-2:111122223333:LoadBalancerTlsCertificate/d7bf4643-6a02-4cd4-b3c4-fEXAMPLE9b4d",
-                "supportCode": "6EXAMPLE3362/arn:aws:acm:us-west-2:333322221111:certificate/9af8e32c-a54e-4a67-8c63-cEXAMPLEb314",
+                "arn": "arn:aws:lightsail:us-west-2:123456789012:LoadBalancerTlsCertificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "supportCode": "6EXAMPLE3362/arn:aws:acm:us-west-2:123456789111:certificate/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "createdAt": 1571678025.3,
                 "location": {
                     "availabilityZone": "all",
@@ -46,3 +46,5 @@ Output::
             }
         ]
     }
+
+For more information, see `SSL/TLS certificates in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-tls-ssl-certificates-in-lightsail-https.html>`__ in the *Amazon Lightsail User Guide*.

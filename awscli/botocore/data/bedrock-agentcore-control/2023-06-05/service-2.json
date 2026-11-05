@@ -649,6 +649,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -2698,6 +2699,46 @@
       "documentation":"<p>Creates or updates a resource-based policy for a resource with the specified resourceArn.</p> <note> <p>This feature is currently available only for AgentCore Runtime and Gateway.</p> </note>",
       "idempotent":true
     },
+    "ResetTokenVaultKeyMaterial":{
+      "name":"ResetTokenVaultKeyMaterial",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/reset-token-vault-key-material",
+        "responseCode":200
+      },
+      "input":{"shape":"ResetTokenVaultKeyMaterialRequest"},
+      "output":{"shape":"ResetTokenVaultKeyMaterialResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Resets the key material for a token vault whose customer managed KMS key has been deleted, and re-encrypts the token vault with an Amazon Web Services managed key so that you can use the token vault again.</p> <important> <p>This operation can't be undone. The reset permanently deletes the OAuth2 access tokens and refresh tokens stored in the token vault, including tokens obtained through all supported flows. After the reset, your agents must complete these flows again to get new tokens, and for user-delegated flows your users must authorize access again. The reset doesn't delete your credential providers or their configuration.</p> </important> <p>You can reset a token vault only if its customer managed key has been deleted. If the key still exists, including when it's disabled or scheduled for deletion, this operation returns a <code>ValidationException</code>. To use the token vault again, enable the key or cancel its scheduled deletion in KMS. To switch to a different key, use <code>SetTokenVaultCMK</code>.</p>"
+    },
+    "RotatePaymentConnectorCredentials":{
+      "name":"RotatePaymentConnectorCredentials",
+      "http":{
+        "method":"POST",
+        "requestUri":"/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}/rotate-credentials",
+        "responseCode":202
+      },
+      "input":{"shape":"RotatePaymentConnectorCredentialsRequest"},
+      "output":{"shape":"RotatePaymentConnectorCredentialsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Replaces the service-managed credentials of a payment connector with newly issued credentials.</p> <p>Use this operation only for payment connectors with a <code>provisionMode</code> of <code>QUICK_CREATE</code>. For payment connectors with a <code>provisionMode</code> of <code>MANUAL</code>, call <code>UpdatePaymentCredentialProvider</code> instead after rotating credentials with the payment provider directly.</p> <p>The rotation finishes before the response is returned, and only one rotation runs at a time for a given payment connector. When it succeeds, the new credential is in effect and the payment connector stays in the <code>READY</code> state. When it fails, an error is returned, the payment connector and its existing credential are left unchanged, and you can retry the request.</p> <p>Rotation replaces the credential on the connector's credential provider, so every payment connector that uses that provider is affected. Replace any copy of the previous credential that you use outside AgentCore.</p>",
+      "idempotent":true
+    },
     "SetTokenVaultCMK":{
       "name":"SetTokenVaultCMK",
       "http":{
@@ -2712,6 +2753,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -3022,7 +3064,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates an existing gateway.</p>",
+      "documentation":"<p>Updates an existing gateway.</p> <p>Replaces the entire gateway configuration. Any optional field that you omit, including fields in <code>protocolConfiguration</code>, is reset. For information about retrieving the current configuration, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetGateway.html\">GetGateway</a>.</p>",
       "idempotent":true
     },
     "UpdateGatewayRateLimit":{
@@ -3369,6 +3411,7 @@
       "errors":[
         {"shape":"UnauthorizedException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
@@ -3776,6 +3819,28 @@
     "AllowedClientsList":{
       "type":"list",
       "member":{"shape":"AllowedClient"},
+      "min":1
+    },
+    "AllowedPort":{
+      "type":"structure",
+      "members":{
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>A single port that is reachable through the runtime's session URL.</p>"
+        },
+        "portRange":{
+          "shape":"PortRange",
+          "documentation":"<p>An inclusive range of ports that are reachable through the runtime's session URL.</p>"
+        }
+      },
+      "documentation":"<p>A port or port range that is reachable through the runtime's session URL. Specify exactly one of <code>port</code> or <code>portRange</code>.</p>",
+      "union":true
+    },
+    "AllowedPorts":{
+      "type":"list",
+      "member":{"shape":"AllowedPort"},
+      "documentation":"<p>Additional ports on the AgentCore Runtime that are reachable through the runtime's session URL. The list can contain up to five non-overlapping entries.</p>",
+      "max":5,
       "min":1
     },
     "AllowedQueryParameters":{
@@ -4663,6 +4728,31 @@
       },
       "documentation":"<p>A certificate to install in the browser or code interpreter.</p>"
     },
+    "CertificateBucketOwnerAccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "CertificateConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3CertificateConfiguration",
+          "documentation":"<p>The Amazon S3 location of the PEM-encoded private CA certificate.</p>"
+        },
+        "secretsManager":{
+          "shape":"SecretsManagerCertificateConfiguration",
+          "documentation":"<p>The Amazon Web Services Secrets Manager location of the PEM-encoded private CA certificate.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a private certificate authority (CA) certificate that the gateway uses to verify TLS connections to the target endpoint. Use this when the target presents a certificate issued by a private CA that is not trusted by default. Specify exactly one certificate source. The configuration is a reference only and never contains the certificate content.</p>",
+      "union":true
+    },
+    "CertificateConfigurationList":{
+      "type":"list",
+      "member":{"shape":"CertificateConfiguration"},
+      "max":1,
+      "min":1
+    },
     "CertificateLocation":{
       "type":"structure",
       "members":{
@@ -4674,11 +4764,36 @@
       "documentation":"<p>The location from which to retrieve a certificate.</p>",
       "union":true
     },
+    "CertificateS3Uri":{
+      "type":"string",
+      "pattern":"s3://.{1,2043}"
+    },
+    "CertificateSecretArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:.+"
+    },
     "Certificates":{
       "type":"list",
       "member":{"shape":"Certificate"},
       "max":200,
       "min":1
+    },
+    "CircuitBreakerConfiguration":{
+      "type":"structure",
+      "members":{
+        "mode":{
+          "shape":"CircuitBreakerMode",
+          "documentation":"<p>Specifies whether you want the circuit breaker turned on. To turn it off, set this value to <code>DISABLED</code>. The default is <code>ENABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether the circuit breaker monitors failures for the targets in a fallback chain.</p>"
+    },
+    "CircuitBreakerMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "ClaimMatchOperatorType":{
       "type":"string",
@@ -5015,6 +5130,29 @@
       },
       "documentation":"<p>Coinbase CDP configuration output with secret ARNs.</p>"
     },
+    "CoinbaseCdpRotationTargets":{
+      "type":"structure",
+      "required":["secrets"],
+      "members":{
+        "secrets":{
+          "shape":"CoinbaseCdpSecrets",
+          "documentation":"<p>The secrets to rotate. Specify at least one value. Each secret that you specify is rotated independently.</p> <ul> <li> <p> <code>API_KEY</code> - The API key that the payment connector uses to call Coinbase CDP. Rotate it as routine maintenance, or if you suspect that it is compromised.</p> </li> <li> <p> <code>WALLET_SECRET</code> - The wallet secret that signs transactions. Rotate it only if it is lost or compromised. Coinbase CDP allows one wallet secret per project, so it is replaced in place and signing can be briefly interrupted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the service-managed Coinbase CDP secrets to rotate.</p>"
+    },
+    "CoinbaseCdpSecret":{
+      "type":"string",
+      "enum":[
+        "API_KEY",
+        "WALLET_SECRET"
+      ]
+    },
+    "CoinbaseCdpSecrets":{
+      "type":"list",
+      "member":{"shape":"CoinbaseCdpSecret"},
+      "min":1
+    },
     "ComponentConfiguration":{
       "type":"structure",
       "required":["configuration"],
@@ -5060,6 +5198,12 @@
       "documentation":"<p>The compute configuration for a capacity provider. This structure defines the type and settings of the compute resources used to launch instances.</p>",
       "union":true
     },
+    "ConcreteModelId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9\\-._/@:]*"
+    },
     "ConcurrentModificationException":{
       "type":"structure",
       "required":["message"],
@@ -5083,15 +5227,19 @@
         "matchPaths":{
           "shape":"MatchPaths",
           "documentation":"<p>A condition that matches on the request path.</p>"
+        },
+        "matchModels":{
+          "shape":"MatchModels",
+          "documentation":"<p>A condition that matches on the model requested in an inference request.</p>"
         }
       },
-      "documentation":"<p>A condition that determines when a gateway rule applies. Conditions can match on principals or request paths.</p>",
+      "documentation":"<p>A condition that determines when a gateway rule applies. Conditions can match on principals, request paths, or the requested model.</p>",
       "union":true
     },
     "Conditions":{
       "type":"list",
       "member":{"shape":"Condition"},
-      "max":2,
+      "max":3,
       "min":0
     },
     "ConfigurationBundleAction":{
@@ -5695,7 +5843,10 @@
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>Configuration for HTTP request headers that will be passed through to the runtime.</p>"
         },
-        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
+        "protocolConfiguration":{
+          "shape":"ProtocolConfiguration",
+          "documentation":"<p>The protocol configuration for the AgentCore Runtime, including the protocol, port, and path on which the agent server is available.</p>"
+        },
         "lifecycleConfiguration":{
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The life cycle configuration for the AgentCore Runtime.</p>"
@@ -5719,6 +5870,10 @@
         "platformVersion":{
           "shape":"PlatformVersion",
           "documentation":"<p>The version of the runtime platform to use for the AgentCore Runtime.</p>"
+        },
+        "allowedPorts":{
+          "shape":"AllowedPorts",
+          "documentation":"<p>The additional ports on the AgentCore Runtime that are reachable through the runtime's session URL. Specify one to five non-overlapping entries, each containing either a single port or an inclusive port range. Ports must be between <code>8000</code> and <code>12000</code>, excluding the reserved port <code>8443</code>.</p>"
         }
       }
     },
@@ -6815,6 +6970,10 @@
         "privateEndpoint":{
           "shape":"PrivateEndpoint",
           "documentation":"<p>The private endpoint configuration for the gateway target. Use this to connect the gateway to private resources in your VPC.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target. Use this to have the gateway trust a private CA when it establishes TLS connections to the target endpoint. Provide each certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can specify only one certificate authority configuration in this list.</p>"
         }
       }
     },
@@ -6894,6 +7053,10 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the created gateway target.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target.</p>"
         }
       }
     },
@@ -7619,7 +7782,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure the idempotency of the request. The AWS SDK automatically generates this token, so you don't need to provide it in most cases. If you retry a request with the same client token, the service returns the same response without creating a duplicate policy.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure the idempotency of the request. The Amazon Web Services SDK automatically generates this token, so you don't need to provide it in most cases. If you retry a request with the same client token, the service returns the same response without creating a duplicate policy.</p>",
           "idempotencyToken":true
         }
       }
@@ -7926,6 +8089,17 @@
         "CognitoOauth2"
       ]
     },
+    "CredentialRotationConfig":{
+      "type":"structure",
+      "members":{
+        "coinbaseCDP":{
+          "shape":"CoinbaseCdpRotationTargets",
+          "documentation":"<p>The credentials to rotate for a Coinbase CDP payment connector.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the service-managed credentials to rotate. Provide the member that matches the payment connector's <code>type</code>.</p>",
+      "union":true
+    },
     "CredentialsProviderConfiguration":{
       "type":"structure",
       "members":{
@@ -8174,6 +8348,10 @@
         "memoryRecordSchema":{
           "shape":"MemoryRecordSchema",
           "documentation":"<p>Schema for metadata fields on records generated by this strategy.</p>"
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) configuration for memory records generated by this strategy. Set <code>recordExpiryDurationDays</code> to the number of days after which records expire. If not specified, records generated by this strategy do not expire.</p>"
         }
       },
       "documentation":"<p>Input for creating a custom memory strategy.</p>"
@@ -8808,10 +8986,15 @@
     "DeleteConfigurationBundleResponse":{
       "type":"structure",
       "required":[
+        "bundleArn",
         "bundleId",
         "status"
       ],
       "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted configuration bundle.</p>"
+        },
         "bundleId":{
           "shape":"ConfigurationBundleId",
           "documentation":"<p>The unique identifier of the deleted configuration bundle.</p>"
@@ -9216,7 +9399,7 @@
       "members":{
         "clientToken":{
           "shape":"DeleteMemoryInputClientTokenString",
-          "documentation":"<p>A client token is used for keeping track of idempotent requests. It can contain a session id which can be around 250 chars, combined with a unique AWS identifier.</p>",
+          "documentation":"<p>A client token is used for keeping track of idempotent requests. It can contain a session id which can be around 250 chars, combined with a unique Amazon Web Services identifier.</p>",
           "idempotencyToken":true,
           "location":"querystring",
           "locationName":"clientToken"
@@ -9680,10 +9863,10 @@
     },
     "DimensionKey":{
       "type":"string",
-      "documentation":"<p>A dimension key specifying the scope dimension for rate limiting.</p> <p>Allowed values: <code>targetName</code>, <code>toolName</code>, <code>qualifiedModelId</code>, or context-path expressions: <code>$.context.iam.principal</code>, <code>$.context.iam.sourceIdentity</code>, <code>$.context.jwt.&lt;claim&gt;</code> where <code>&lt;claim&gt;</code> is a JWT claim name (for example, <code>$.context.jwt.sub</code>). Validated server-side to enforce allowed prefixes and patterns.</p>",
-      "max":80,
+      "documentation":"<p>A dimension key specifying the scope dimension for rate limiting.</p> <p>Allowed values: <code>targetName</code>, <code>toolName</code>, <code>qualifiedModelId</code>, or trusted context-path expressions: <code>$.context.iam.principal</code>, <code>$.context.iam.sourceIdentity</code>, <code>$.context.jwt.&lt;claim&gt;</code> where <code>&lt;claim&gt;</code> is a JWT claim name (for example, <code>$.context.jwt.sub</code>).</p> <p>For caller-supplied custom context, you can use only fixed field pointers: <code>$.context.request.header.&lt;HTTP-header-name&gt;</code> and <code>$.context.request.body.&lt;simple-dotted-field-path&gt;</code>. These pointers aren't general JSONPath expressions. The server rejects recursion, filters, bracket notation, and wildcards. It also validates each value to enforce allowed prefixes and patterns.</p>",
+      "max":128,
       "min":1,
-      "pattern":"(targetName|toolName|qualifiedModelId|\\$\\.context\\.iam\\.principal|\\$\\.context\\.iam\\.sourceIdentity|\\$\\.context\\.jwt\\.[a-zA-Z_][a-zA-Z0-9_\\-\\.]{0,61}[a-zA-Z0-9_])"
+      "pattern":"(targetName|toolName|qualifiedModelId|\\$\\.context\\.iam\\.principal|\\$\\.context\\.iam\\.sourceIdentity|\\$\\.context\\.jwt\\.[a-zA-Z_][a-zA-Z0-9_\\-\\.]{0,61}[a-zA-Z0-9_]|\\$\\.context\\.request\\.header\\.[a-zA-Z0-9!#$%&'+\\.\\^_`|~\\-]+|\\$\\.context\\.request\\.body\\.[a-zA-Z_][a-zA-Z0-9_\\-]*(\\.[a-zA-Z_][a-zA-Z0-9_\\-]*)*)"
     },
     "DimensionKeys":{
       "type":"list",
@@ -9691,6 +9874,22 @@
       "documentation":"<p>An ordered list of dimension key names defining the scope of a limit.</p>",
       "max":10,
       "min":1
+    },
+    "DimensionRatingScale":{
+      "type":"structure",
+      "members":{
+        "numerical":{
+          "shape":"NumericalScaleDefinitions",
+          "documentation":"<p> The numerical rating scale with defined score values and descriptions for quantitative evaluation of the dimension. </p>"
+        },
+        "categorical":{
+          "shape":"CategoricalScaleDefinitions",
+          "documentation":"<p> The categorical rating scale with named categories and definitions for qualitative evaluation of the dimension. </p>"
+        }
+      },
+      "documentation":"<p> The rating scale for one dimension of an LLM-as-a-judge evaluator, supporting either a numerical or a categorical scale. </p>",
+      "sensitive":true,
+      "union":true
     },
     "DimensionValue":{
       "type":"string",
@@ -10081,6 +10280,10 @@
         "memoryRecordSchema":{
           "shape":"MemoryRecordSchema",
           "documentation":"<p>Schema for metadata fields on records generated by this strategy.</p>"
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) configuration for memory records generated by this strategy. Set <code>recordExpiryDurationDays</code> to the number of days after which records expire. If not specified, records generated by this strategy do not expire.</p>"
         }
       },
       "documentation":"<p>Input for creating an episodic memory strategy.</p>"
@@ -10247,6 +10450,10 @@
       },
       "documentation":"<p>Contains configurations to override the default reflection step for the episodic memory strategy.</p>"
     },
+    "ErrorStatusCodePattern":{
+      "type":"string",
+      "pattern":"[4-5]([0-9]{2}|XX)"
+    },
     "EvaluationConfigDescription":{
       "type":"string",
       "max":200,
@@ -10257,6 +10464,48 @@
     "EvaluationConfigName":{
       "type":"string",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "EvaluationDimension":{
+      "type":"structure",
+      "required":[
+        "dimensionName",
+        "dimensionInstruction",
+        "dimensionRatingScale"
+      ],
+      "members":{
+        "dimensionName":{
+          "shape":"EvaluationDimensionName",
+          "documentation":"<p> The name of the dimension. This name is unique within the evaluator and identifies the dimension's results. </p>"
+        },
+        "dimensionInstruction":{
+          "shape":"EvaluationDimensionInstruction",
+          "documentation":"<p> The instruction to the evaluator model for this dimension, describing what the model should judge when scoring the dimension. </p>"
+        },
+        "dimensionRatingScale":{
+          "shape":"DimensionRatingScale",
+          "documentation":"<p> The rating scale for this dimension, which can be numerical or categorical. A dimension's rating scale cannot itself be multi-dimensional. </p>"
+        }
+      },
+      "documentation":"<p> A single dimension of an LLM-as-a-judge evaluator, defining what the evaluator model should judge for that dimension and how it should be scored. </p>"
+    },
+    "EvaluationDimensionInstruction":{
+      "type":"string",
+      "documentation":"<p> The instruction to the evaluator model for one dimension of an LLM-as-a-judge evaluator, describing what the model should judge for that dimension. </p>",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "EvaluationDimensionName":{
+      "type":"string",
+      "documentation":"<p> The name of a dimension in an LLM-as-a-judge evaluator. </p>",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "EvaluationDimensions":{
+      "type":"list",
+      "member":{"shape":"EvaluationDimension"},
+      "documentation":"<p> The list of dimensions for an LLM-as-a-judge evaluator that uses a multi-dimensional rating scale. An evaluator can have up to 50 dimensions. </p>",
+      "max":50,
+      "min":1
     },
     "EvaluatorArn":{
       "type":"string",
@@ -10478,6 +10727,104 @@
         "LLM_INFERRED",
         "STRICTLY_CONSISTENT"
       ]
+    },
+    "Fallback":{
+      "type":"structure",
+      "required":["targetFallback"],
+      "members":{
+        "triggerOn":{
+          "shape":"FallbackTriggers",
+          "documentation":"<p>The status codes and errors from the route's target that cause the gateway to send the request to the first fallback target. If you omit <code>triggerOn</code>, the gateway falls back on <code>5XX</code> status codes and on the <code>CONNECTION_ERROR</code>, <code>FIRST_BYTE_TIMEOUT</code>, and <code>UNROUTABLE</code> errors. If you specify <code>triggerOn</code>, only the status codes and errors that you list trigger a fallback.</p>"
+        },
+        "firstByteTimeoutMilliseconds":{
+          "shape":"FallbackFirstByteTimeoutMillisecondsInteger",
+          "documentation":"<p>The maximum time, in milliseconds, from sending the request to the route's target until the first byte of the response body arrives. If the time expires, the gateway abandons the request and treats it as a <code>FIRST_BYTE_TIMEOUT</code> error. If you don't specify a value, no timeout is enforced.</p>"
+        },
+        "circuitBreaker":{
+          "shape":"CircuitBreakerConfiguration",
+          "documentation":"<p>Specifies whether the gateway temporarily stops sending your requests to a failing target. The circuit breaker tracks each combination of target and model separately. With the circuit breaker enabled, the gateway skips one or more targets and models that fail repeatedly, and your requests go to the next target in the chain. The gateway always tries the last remaining target in the chain. The gateway enables the circuit breaker by default.</p>"
+        },
+        "targetFallback":{
+          "shape":"FallbackTargetFallbackList",
+          "documentation":"<p>The ordered list of fallback targets. The gateway tries each target in order until a response doesn't match that target's triggers, and returns that response to the caller. If every target fails, the gateway returns the last response. You can specify up to two fallback targets. Each combination of target and model, including the route's target, can appear only once.</p>"
+        }
+      },
+      "documentation":"<p>The fallback configuration for a route to an inference target. Defines an ordered list of fallback targets to try when a request to the route's target fails, and the conditions that trigger a fallback. A fallback can occur only before the gateway sends the first byte of the response to the caller. After a streaming response starts, the gateway doesn't fall back.</p>"
+    },
+    "FallbackError":{
+      "type":"string",
+      "enum":[
+        "CONNECTION_ERROR",
+        "FIRST_BYTE_TIMEOUT",
+        "UNROUTABLE"
+      ]
+    },
+    "FallbackFirstByteTimeoutMillisecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":900000,
+      "min":50
+    },
+    "FallbackTarget":{
+      "type":"structure",
+      "required":["targetName"],
+      "members":{
+        "targetName":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the gateway target to fall back to. The target must be an inference target.</p>"
+        },
+        "model":{
+          "shape":"ConcreteModelId",
+          "documentation":"<p>The model ID to send to this fallback target. If you don't specify a model, the gateway sends the model from the original request.</p>"
+        },
+        "triggerOn":{
+          "shape":"FallbackTriggers",
+          "documentation":"<p>The status codes and errors from this target that cause the gateway to send the request to the next fallback target. This setting isn't inherited from the route. If you omit it, the gateway uses the default triggers: <code>5XX</code> status codes and the <code>CONNECTION_ERROR</code>, <code>FIRST_BYTE_TIMEOUT</code>, and <code>UNROUTABLE</code> errors.</p>"
+        },
+        "firstByteTimeoutMilliseconds":{
+          "shape":"FallbackTargetFirstByteTimeoutMillisecondsInteger",
+          "documentation":"<p>The maximum time, in milliseconds, from sending the request to this target until the first byte of the response body arrives. This setting isn't inherited from the route. If you don't specify a value, no timeout is enforced.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target to send the request to when the previous target in the fallback chain fails. Includes the target name, the model to send, and the conditions that trigger a fallback from this target to the next one.</p>"
+    },
+    "FallbackTargetFallbackList":{
+      "type":"list",
+      "member":{"shape":"FallbackTarget"},
+      "max":2,
+      "min":1
+    },
+    "FallbackTargetFirstByteTimeoutMillisecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":900000,
+      "min":50
+    },
+    "FallbackTriggers":{
+      "type":"structure",
+      "members":{
+        "statusCodes":{
+          "shape":"FallbackTriggersStatusCodesList",
+          "documentation":"<p>The HTTP status codes returned by the target that trigger a fallback. You can specify the following:</p> <ul> <li> <p>An exact status code – A three-digit code, such as <code>429</code>.</p> </li> <li> <p>A class of status codes – The first digit followed by <code>XX</code>, such as <code>5XX</code>, which matches every code from 500 to 599.</p> </li> </ul> <p>Only 4XX and 5XX codes are supported. Throttling by the gateway itself doesn't trigger a fallback.</p>"
+        },
+        "errors":{
+          "shape":"FallbackTriggersErrorsList",
+          "documentation":"<p>The errors that trigger a fallback. You can specify the following:</p> <ul> <li> <p> <code>CONNECTION_ERROR</code> – The gateway couldn't connect to the target because the connection was refused, reset, or timed out. The request didn't reach the target.</p> </li> <li> <p> <code>FIRST_BYTE_TIMEOUT</code> – The target accepted the connection but didn't return the first byte of the response within <code>firstByteTimeoutMilliseconds</code>. The gateway abandons the request before any of the response reaches you.</p> </li> <li> <p> <code>UNROUTABLE</code> – The gateway couldn't route the request to the target, for example because the target doesn't exist or doesn't support the request path. These errors don't count toward the circuit breaker.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The conditions that trigger a fallback to the next target. A fallback occurs if the response matches any of the specified status codes or errors.</p>"
+    },
+    "FallbackTriggersErrorsList":{
+      "type":"list",
+      "member":{"shape":"FallbackError"},
+      "max":3,
+      "min":1
+    },
+    "FallbackTriggersStatusCodesList":{
+      "type":"list",
+      "member":{"shape":"ErrorStatusCodePattern"},
+      "max":10,
+      "min":1
     },
     "FilesystemConfiguration":{
       "type":"structure",
@@ -10712,7 +11059,7 @@
       "type":"string",
       "max":170,
       "min":1,
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:policy-engine\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9_]{10}"
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:policy-engine\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9_]{10}"
     },
     "GatewayPolicyEngineConfiguration":{
       "type":"structure",
@@ -11067,6 +11414,10 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the gateway target.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target.</p>"
         }
       },
       "documentation":"<p>The gateway target.</p>"
@@ -11247,7 +11598,10 @@
           "shape":"AgentRuntimeArtifact",
           "documentation":"<p>The artifact of the AgentCore Runtime.</p>"
         },
-        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
+        "protocolConfiguration":{
+          "shape":"ProtocolConfiguration",
+          "documentation":"<p>The protocol configuration for the AgentCore Runtime, including the protocol, port, and path on which the agent server is available.</p>"
+        },
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Environment variables set in the AgentCore Runtime environment.</p>"
@@ -11275,6 +11629,10 @@
         "platformVersion":{
           "shape":"PlatformVersion",
           "documentation":"<p>The version of the runtime platform used by the AgentCore Runtime.</p>"
+        },
+        "allowedPorts":{
+          "shape":"AllowedPorts",
+          "documentation":"<p>The additional ports on the AgentCore Runtime that are reachable through the runtime's session URL.</p>"
         }
       }
     },
@@ -12367,6 +12725,10 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the gateway target.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target.</p>"
         }
       }
     },
@@ -12670,6 +13032,10 @@
           "shape":"PaymentConnectorType",
           "documentation":"<p>The type of the payment connector, which determines the payment provider integration.</p>"
         },
+        "provisionMode":{
+          "shape":"PaymentConnectorProvisionMode",
+          "documentation":"<p>Specifies how the payment connector was provisioned. Payment connectors that were created before this field was available return <code>MANUAL</code>.</p> <ul> <li> <p> <code>MANUAL</code> - You provided the credential provider configurations, so you own the credentials. Rotate them with the payment provider, then call <code>UpdatePaymentCredentialProvider</code>.</p> </li> <li> <p> <code>QUICK_CREATE</code> - AgentCore provisioned the credential provider for you, so the credentials are service-managed. You can rotate them with <code>RotatePaymentConnectorCredentials</code>.</p> </li> </ul>"
+        },
         "credentialProviderConfigurations":{
           "shape":"CredentialsProviderConfigurations",
           "documentation":"<p>The credential provider configurations for the payment connector.</p>"
@@ -12689,6 +13055,10 @@
         "authorizationUrl":{
           "shape":"PaymentConnectorAuthorizationUrl",
           "documentation":"<p>The URL that the user must open to complete OAuth consent. This field is only present when the payment connector status is <code>PENDING_AUTHENTICATION</code>.</p>"
+        },
+        "credentialsUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector's current service-managed credentials took effect. It is first set when the credentials are provisioned and is updated by each rotation. This field is present only for payment connectors with a <code>provisionMode</code> of <code>QUICK_CREATE</code>.</p>"
         }
       }
     },
@@ -14086,7 +14456,7 @@
         },
         "oauth":{
           "shape":"OAuthCredentialProvider",
-          "documentation":"<p>Use OAuth credentials for outbound authentication to the gateway.</p>"
+          "documentation":"<p>Use OAuth credentials for outbound authentication to the gateway.</p> <p>The <code>AUTHORIZATION_CODE</code> grant type is not supported for outbound authentication from a harness to an AgentCore Gateway, even when <code>defaultReturnUrl</code> is specified.</p>"
         }
       },
       "documentation":"<p>Authentication method for calling a Gateway.</p>",
@@ -14189,7 +14559,7 @@
           "documentation":"<p>The behavior when the Lambda function times out, returns an error, or returns an invalid response. The default is <code>DENY</code>.</p>"
         }
       },
-      "documentation":"<p>The configuration for an AWS Lambda hook target.</p>"
+      "documentation":"<p>The configuration for an Amazon Web Services Lambda hook target.</p>"
     },
     "HarnessHookLambdaTargetTimeoutSecondsInteger":{
       "type":"integer",
@@ -14220,7 +14590,7 @@
       "members":{
         "lambda":{
           "shape":"HarnessHookLambdaTarget",
-          "documentation":"<p>A Lambda hook target that invokes an AWS Lambda function synchronously and waits for its response.</p>"
+          "documentation":"<p>A Lambda hook target that invokes an Amazon Web Services Lambda function synchronously and waits for its response.</p>"
         },
         "sns":{
           "shape":"HarnessHookSnsTarget",
@@ -14271,7 +14641,7 @@
     },
     "HarnessLambdaFunctionArn":{
       "type":"string",
-      "documentation":"<p>The ARN of an AWS Lambda function.</p>",
+      "documentation":"<p>The ARN of an Amazon Web Services Lambda function.</p>",
       "max":2048,
       "min":20,
       "pattern":"arn:aws(-[^:]+)?:lambda:[a-z0-9-]+:[0-9]{12}:function:.+"
@@ -14334,7 +14704,7 @@
         },
         "encryptionKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>Customer-managed KMS key. Defaults to AWS-owned key. Not updatable after creation.</p>"
+          "documentation":"<p>Customer-managed KMS key. Defaults to Amazon Web Services-owned key. Not updatable after creation.</p>"
         }
       },
       "documentation":"<p>Configuration for managed memory creation.</p>"
@@ -14499,7 +14869,7 @@
         },
         "awsSkills":{
           "shape":"HarnessSkillAwsSkillsSource",
-          "documentation":"<p>AWS Skills baked into the harness's underlying Runtime.</p>"
+          "documentation":"<p>Amazon Web Services Skills baked into the harness's underlying Runtime.</p>"
         }
       },
       "documentation":"<p>A skill available to the agent.</p>",
@@ -14513,7 +14883,7 @@
           "documentation":"<p>Optionally filter allowed skills with glob syntax, e.g., ['core-skills/*'].</p>"
         }
       },
-      "documentation":"<p>Passed to show that AWS Skills should be included.</p>"
+      "documentation":"<p>Passed to show that Amazon Web Services Skills should be included.</p>"
     },
     "HarnessSkillGitAuth":{
       "type":"structure",
@@ -15221,7 +15591,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"/[a-zA-Z0-9\\-\\._/]+"
+      "pattern":"/[a-zA-Z0-9\\-\\._/{}]+"
     },
     "InferenceProviderTargetConfiguration":{
       "type":"structure",
@@ -17373,6 +17743,10 @@
         "streamingConfiguration":{
           "shape":"StreamingConfiguration",
           "documentation":"<p>The streaming configuration for the MCP gateway. This configuration controls whether response streaming is enabled for the gateway.</p>"
+        },
+        "disableMcpListToolsPagination":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the gateway disables pagination for the Model Context Protocol (MCP) <code>tools/list</code> operation. When set to <code>true</code>, the gateway returns the complete list of tools in a single response without a pagination cursor. When set to <code>false</code> or omitted, the gateway returns tools in paginated responses. For information about changing this value on an existing gateway, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_UpdateGateway.html\">UpdateGateway</a>.</p>"
         }
       },
       "documentation":"<p>The configuration for a Model Context Protocol (MCP) gateway. This structure defines how the gateway implements the MCP protocol.</p>"
@@ -17429,6 +17803,45 @@
         }
       },
       "documentation":"<p>Configuration for a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resource gateway and resource configuration on your behalf using a service-linked role.</p>"
+    },
+    "MatchModelEntry":{
+      "type":"structure",
+      "required":["value"],
+      "members":{
+        "value":{
+          "shape":"ModelPattern",
+          "documentation":"<p>The model ID or pattern to match. With the <code>StringLike</code> operator, you can use <code>*</code> and <code>?</code> as wildcards, for example <code>anthropic.claude-*</code>.</p>"
+        },
+        "operator":{
+          "shape":"MatchOperator",
+          "documentation":"<p>The operator to use when comparing the requested model to the value:</p> <ul> <li> <p> <code>StringEquals</code> – Requires an exact match.</p> </li> <li> <p> <code>StringLike</code> – Supports wildcard patterns using <code>*</code> and <code>?</code>. This is the default.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A model ID or pattern to match against the requested model, and the operator to use for the comparison.</p>"
+    },
+    "MatchModels":{
+      "type":"structure",
+      "required":["anyOf"],
+      "members":{
+        "anyOf":{
+          "shape":"MatchModelsAnyOfList",
+          "documentation":"<p>A list of model entries. The condition is met if the requested model matches any of the entries.</p>"
+        }
+      },
+      "documentation":"<p>A condition that matches inference requests based on the requested model.</p>"
+    },
+    "MatchModelsAnyOfList":{
+      "type":"list",
+      "member":{"shape":"MatchModelEntry"},
+      "max":100,
+      "min":1
+    },
+    "MatchOperator":{
+      "type":"string",
+      "enum":[
+        "StringEquals",
+        "StringLike"
+      ]
     },
     "MatchPathPattern":{
       "type":"string",
@@ -17551,7 +17964,7 @@
         },
         "mcpToolSchema":{
           "shape":"McpToolSchemaConfiguration",
-          "documentation":"<p>The tool schema configuration for the MCP server target. Supported only when the credential provider is configured with an authorization code grant type. Dynamic tool discovery/synchronization will be disabled when target is configured with mcpToolSchema.</p>"
+          "documentation":"<p>A static tool list for the MCP server target. It is supported for all credential providers. Dynamic tool discovery/synchronization will be disabled when a target is configured with mcpToolSchema.</p>"
         },
         "listingMode":{
           "shape":"ListingMode",
@@ -17795,6 +18208,10 @@
         "memoryRecordSchema":{
           "shape":"MemoryRecordSchema",
           "documentation":"<p>Schema for metadata fields on records generated by this strategy.</p>"
+        },
+        "recordExpiryDurationDays":{
+          "shape":"RecordExpiryDurationDays",
+          "documentation":"<p>The effective record expiry (long-term memory time-to-live), in days, for memory records generated by this strategy. New records expire this many days after they are created. If not set, records generated by this strategy do not expire.</p>"
         }
       },
       "documentation":"<p>Contains information about a memory strategy.</p>"
@@ -18069,9 +18486,9 @@
     },
     "ModelPattern":{
       "type":"string",
-      "max":256,
+      "max":2048,
       "min":1,
-      "pattern":"[a-zA-Z0-9\\-\\._\\*\\?@]+(/[a-zA-Z0-9\\-\\._\\*\\?@]+)*"
+      "pattern":"[a-zA-Z0-9\\-\\._\\*\\?@:]+(/[a-zA-Z0-9\\-\\._\\*\\?@:]+)*"
     },
     "ModifyConsolidationConfiguration":{
       "type":"structure",
@@ -18165,6 +18582,10 @@
         "memoryRecordSchema":{
           "shape":"MemoryRecordSchema",
           "documentation":"<p>Updated metadata schema for records generated by this strategy.</p>"
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>Updates or removes the record expiry (long-term memory time-to-live) for this strategy. Set <code>recordExpiryDurationDays</code> to configure or update the number of days after which records expire, or set <code>action</code> to <code>REMOVE</code> to remove a previously configured time-to-live so that newer records no longer expire. The change applies only to records created after the update.</p>"
         }
       },
       "documentation":"<p>Input for modifying a memory strategy.</p>"
@@ -18298,7 +18719,7 @@
       "type":"list",
       "member":{"shape":"NamespaceKeyEntry"},
       "max":5,
-      "min":1
+      "min":0
     },
     "NamespaceRegexPattern":{
       "type":"string",
@@ -18683,6 +19104,21 @@
       "documentation":"<p>Contains the output configuration for an OAuth2 provider.</p>",
       "union":true
     },
+    "OnBehalfOfAuthenticationConfig":{
+      "type":"structure",
+      "required":["clientAuthenticationMethod"],
+      "members":{
+        "clientAuthenticationMethod":{
+          "shape":"OnBehalfOfClientAuthenticationMethod",
+          "documentation":"<p>The client authentication method to use during the on-behalf-of token exchange. The <code>NO_CLIENT</code> option omits the <code>clientId</code> and <code>clientSecret</code> during the on-behalf-of token exchange with the identity provider.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the client authentication method to use for the on-behalf-of token exchange.</p>"
+    },
+    "OnBehalfOfClientAuthenticationMethod":{
+      "type":"string",
+      "enum":["NO_CLIENT"]
+    },
     "OnBehalfOfTokenExchangeConfigType":{
       "type":"structure",
       "required":["grantType"],
@@ -18694,6 +19130,10 @@
         "tokenExchangeGrantTypeConfig":{
           "shape":"TokenExchangeGrantTypeConfigType",
           "documentation":"<p>Configuration specific to the TOKEN_EXCHANGE grant type (RFC 8693).</p>"
+        },
+        "onBehalfOfAuthenticationConfig":{
+          "shape":"OnBehalfOfAuthenticationConfig",
+          "documentation":"<p>Specify the client authentication configuration to use for the on-behalf-of token exchange. With this configuration, you override the provider level client authentication method for the on-behalf-of exchange with the identity provider. If you don't specify this configuration, we use the provider level client authentication method.</p>"
         }
       },
       "documentation":"<p>Configuration for on-behalf-of token exchange.</p>"
@@ -18989,6 +19429,10 @@
         "type":{
           "shape":"PaymentConnectorType",
           "documentation":"<p>The type of the payment connector, which determines the payment provider integration.</p>"
+        },
+        "provisionMode":{
+          "shape":"PaymentConnectorProvisionMode",
+          "documentation":"<p>Specifies how the payment connector was provisioned. Payment connectors that were created before this field was available return <code>MANUAL</code>.</p> <ul> <li> <p> <code>MANUAL</code> - You provided the credential provider configurations, so you own the credentials.</p> </li> <li> <p> <code>QUICK_CREATE</code> - AgentCore provisioned the credential provider for you, so the credentials are service-managed and you can rotate them with <code>RotatePaymentConnectorCredentials</code>.</p> </li> </ul>"
         },
         "status":{
           "shape":"PaymentConnectorStatus",
@@ -19733,6 +20177,31 @@
         "IGNORE_ALL_FINDINGS"
       ]
     },
+    "Port":{
+      "type":"integer",
+      "documentation":"<p>A port between <code>8000</code> and <code>12000</code>. Port <code>8443</code> is reserved and cannot be used.</p>",
+      "box":true,
+      "max":12000,
+      "min":8000
+    },
+    "PortRange":{
+      "type":"structure",
+      "required":[
+        "from",
+        "to"
+      ],
+      "members":{
+        "from":{
+          "shape":"Port",
+          "documentation":"<p>The first port in the inclusive range.</p>"
+        },
+        "to":{
+          "shape":"Port",
+          "documentation":"<p>The last port in the inclusive range.</p>"
+        }
+      },
+      "documentation":"<p>An inclusive range of ports. The value of <code>from</code> must be less than or equal to the value of <code>to</code>.</p>"
+    },
     "PortalUrlType":{
       "type":"string",
       "max":2000,
@@ -19840,6 +20309,14 @@
         "serverProtocol":{
           "shape":"ServerProtocol",
           "documentation":"<p>The server protocol for the agent runtime. This field specifies which protocol the agent runtime uses to communicate with clients.</p>"
+        },
+        "port":{
+          "shape":"ServerPort",
+          "documentation":"<p>The port on which the agent server listens. The port must be between <code>8000</code> and <code>12000</code>, excluding the reserved port <code>8443</code>. When this field is omitted, the default is <code>8080</code> for <code>HTTP</code> and <code>AGUI</code>, <code>8000</code> for <code>MCP</code>, and <code>9000</code> for <code>A2A</code>.</p>"
+        },
+        "path":{
+          "shape":"ServerPath",
+          "documentation":"<p>The path on which the agent server accepts requests. The path must begin with <code>/</code>. When this field is omitted, the default is <code>/invocations</code> for <code>HTTP</code> and <code>AGUI</code>, <code>/mcp</code> for <code>MCP</code>, and <code>/</code> for <code>A2A</code>.</p>"
         }
       },
       "documentation":"<p>The protocol configuration for an agent runtime. This structure defines how the agent runtime communicates with clients.</p>"
@@ -19942,6 +20419,10 @@
         "categorical":{
           "shape":"CategoricalScaleDefinitions",
           "documentation":"<p> The categorical rating scale with named categories and definitions for qualitative evaluation. </p>"
+        },
+        "multiDimensional":{
+          "shape":"EvaluationDimensions",
+          "documentation":"<p> A list of dimensions that lets an LLM-as-a-judge evaluator score several dimensions of the same target in a single evaluation. Each dimension has its own instruction and rating scale, and produces its own result. </p>"
         }
       },
       "documentation":"<p> The rating scale that defines how evaluators should score agent performance, supporting both numerical and categorical scales. </p>",
@@ -19962,6 +20443,31 @@
       "type":"string",
       "max":64,
       "min":1
+    },
+    "RecordExpiryAction":{
+      "type":"string",
+      "documentation":"<p>The action to apply to a strategy's record expiry (long-term memory time-to-live) configuration. <code>REMOVE</code> removes a previously configured time-to-live; newer records no longer have a time-to-live set and do not expire.</p>",
+      "enum":["REMOVE"]
+    },
+    "RecordExpiryDurationDays":{
+      "type":"integer",
+      "box":true,
+      "min":31
+    },
+    "RecordExpirySpecification":{
+      "type":"structure",
+      "members":{
+        "recordExpiryDurationDays":{
+          "shape":"RecordExpiryDurationDays",
+          "documentation":"<p>The duration, in days, after which memory records generated by this strategy expire. The minimum is 31 days.</p>"
+        },
+        "action":{
+          "shape":"RecordExpiryAction",
+          "documentation":"<p>The action to apply to the existing record expiry (long-term memory time-to-live) configuration. Set to <code>REMOVE</code> to remove a previously configured time-to-live so that newer records no longer expire. This value is not applicable on create paths.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the record expiry (long-term memory time-to-live) for a memory strategy. Provide exactly one of <code>recordExpiryDurationDays</code> or <code>action</code>. Set <code>recordExpiryDurationDays</code> to configure or update the time-to-live, or set <code>action</code> to <code>REMOVE</code> to remove a previously configured time-to-live.</p>",
+      "union":true
     },
     "RecordIdentifier":{
       "type":"string",
@@ -20304,6 +20810,38 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ResetTokenVaultKeyMaterialRequest":{
+      "type":"structure",
+      "required":["tokenVaultId"],
+      "members":{
+        "tokenVaultId":{
+          "shape":"TokenVaultIdType",
+          "documentation":"<p>The unique identifier of the token vault to reset. To reset your account's default token vault, specify <code>default</code>.</p>"
+        }
+      }
+    },
+    "ResetTokenVaultKeyMaterialResponse":{
+      "type":"structure",
+      "required":[
+        "tokenVaultId",
+        "kmsConfiguration",
+        "lastModifiedDate"
+      ],
+      "members":{
+        "tokenVaultId":{
+          "shape":"TokenVaultIdType",
+          "documentation":"<p>The ID of the token vault.</p>"
+        },
+        "kmsConfiguration":{
+          "shape":"KmsConfiguration",
+          "documentation":"<p>The KMS configuration for the token vault after the reset. The token vault uses an Amazon Web Services managed key.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the token vault was last modified.</p>"
+        }
+      }
+    },
     "Resource":{
       "type":"structure",
       "members":{
@@ -20480,6 +21018,64 @@
       "max":2000,
       "min":125
     },
+    "RotatePaymentConnectorCredentialsRequest":{
+      "type":"structure",
+      "required":[
+        "paymentManagerId",
+        "paymentConnectorId",
+        "credentialsToRotate"
+      ],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector whose credentials you want to rotate.</p>",
+          "location":"uri",
+          "locationName":"paymentConnectorId"
+        },
+        "credentialsToRotate":{
+          "shape":"CredentialRotationConfig",
+          "documentation":"<p>The credentials to rotate. Specify the member that matches the payment connector's <code>type</code>. Each credential that you select is rotated independently.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "RotatePaymentConnectorCredentialsResponse":{
+      "type":"structure",
+      "required":[
+        "paymentConnectorId",
+        "paymentManagerId",
+        "lastUpdatedAt",
+        "status"
+      ],
+      "members":{
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector was last updated, which is when the rotation completed.</p>"
+        },
+        "status":{
+          "shape":"PaymentConnectorStatus",
+          "documentation":"<p>The current status of the payment connector, which is <code>READY</code> after a successful rotation.</p>"
+        }
+      }
+    },
     "RouteToTargetAction":{
       "type":"structure",
       "members":{
@@ -20566,6 +21162,21 @@
     "S3BucketUri":{
       "type":"string",
       "pattern":"s3://.{1,2043}"
+    },
+    "S3CertificateConfiguration":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"CertificateS3Uri",
+          "documentation":"<p>The URI of the Amazon S3 object that contains the PEM-encoded certificate.</p>"
+        },
+        "bucketOwnerAccountId":{
+          "shape":"CertificateBucketOwnerAccountId",
+          "documentation":"<p>The account ID of the Amazon S3 bucket owner. This ID is used for cross-account access to the bucket.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a PEM-encoded private CA certificate stored as an Amazon S3 object.</p>"
     },
     "S3Configuration":{
       "type":"structure",
@@ -20867,6 +21478,17 @@
         "EXTERNAL"
       ]
     },
+    "SecretsManagerCertificateConfiguration":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"CertificateSecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that contains the PEM-encoded certificate.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a PEM-encoded private CA certificate stored in an Amazon Web Services Secrets Manager secret.</p>"
+    },
     "SecretsManagerLocation":{
       "type":"structure",
       "required":["secretArn"],
@@ -21016,7 +21638,11 @@
           "shape":"NamespacesList",
           "documentation":"<p>The namespaceTemplates associated with the semantic memory strategy.</p>"
         },
-        "memoryRecordSchema":{"shape":"MemoryRecordSchema"}
+        "memoryRecordSchema":{"shape":"MemoryRecordSchema"},
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) configuration for memory records generated by this strategy. Set <code>recordExpiryDurationDays</code> to the number of days after which records expire. If not specified, records generated by this strategy do not expire.</p>"
+        }
       },
       "documentation":"<p>Input for creating a semantic memory strategy.</p>"
     },
@@ -21094,6 +21720,20 @@
         }
       },
       "documentation":"<p>The server definition for an MCP descriptor. Contains the schema version and inline content for the MCP server configuration.</p>"
+    },
+    "ServerPath":{
+      "type":"string",
+      "documentation":"<p>The path on which the agent server accepts requests. The path must begin with <code>/</code> and can contain up to 2,048 characters.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"/[A-Za-z0-9\\-._~/%]*"
+    },
+    "ServerPort":{
+      "type":"integer",
+      "documentation":"<p>A port between <code>8000</code> and <code>12000</code>. Port <code>8443</code> is reserved and cannot be used.</p>",
+      "box":true,
+      "max":12000,
+      "min":8000
     },
     "ServerProtocol":{
       "type":"string",
@@ -21312,7 +21952,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure the idempotency of the request. The AWS SDK automatically generates this token, so you don't need to provide it in most cases. If you retry a request with the same client token, the service returns the same response without starting a duplicate generation.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure the idempotency of the request. The Amazon Web Services SDK automatically generates this token, so you don't need to provide it in most cases. If you retry a request with the same client token, the service returns the same response without starting a duplicate generation.</p>",
           "idempotencyToken":true
         }
       }
@@ -21434,6 +22074,14 @@
         "targetName":{
           "shape":"TargetName",
           "documentation":"<p>The name of the target to route requests to.</p>"
+        },
+        "model":{
+          "shape":"ConcreteModelId",
+          "documentation":"<p>The model ID to send to the target. Supported only for inference targets. If you don't specify a model, the gateway sends the model from the original request.</p>"
+        },
+        "fallback":{
+          "shape":"Fallback",
+          "documentation":"<p>The fallback configuration for this route. Supported only for inference targets.</p>"
         }
       },
       "documentation":"<p>A static route to a single gateway target.</p>"
@@ -21816,6 +22464,10 @@
         "memoryRecordSchema":{
           "shape":"MemoryRecordSchema",
           "documentation":"<p>Schema for metadata fields on records generated by this strategy.</p>"
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) configuration for memory records generated by this strategy. Set <code>recordExpiryDurationDays</code> to the number of days after which records expire. If not specified, records generated by this strategy do not expire.</p>"
         }
       },
       "documentation":"<p>Input for creating a summary memory strategy.</p>"
@@ -22103,11 +22755,23 @@
     "TargetTrafficSplitEntry":{
       "type":"structure",
       "required":[
+        "targetName",
         "name",
-        "weight",
-        "targetName"
+        "weight"
       ],
       "members":{
+        "targetName":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the target to route traffic to.</p>"
+        },
+        "model":{
+          "shape":"ConcreteModelId",
+          "documentation":"<p>The model ID to send to the target for this variant. Supported only for inference targets. If you don't specify a model, the gateway sends the model from the original request.</p>"
+        },
+        "fallback":{
+          "shape":"Fallback",
+          "documentation":"<p>The fallback configuration for this variant. Supported only for inference targets.</p>"
+        },
         "name":{
           "shape":"TargetTrafficSplitEntryNameString",
           "documentation":"<p>The name of this traffic split variant.</p>"
@@ -22115,10 +22779,6 @@
         "weight":{
           "shape":"TargetTrafficSplitEntryWeightInteger",
           "documentation":"<p>The percentage of traffic to route to this variant.</p>"
-        },
-        "targetName":{
-          "shape":"TargetName",
-          "documentation":"<p>The name of the target to route traffic to.</p>"
         },
         "description":{
           "shape":"TargetTrafficSplitEntryDescriptionString",
@@ -22655,7 +23315,10 @@
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>The updated configuration for HTTP request headers that will be passed through to the runtime.</p>"
         },
-        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
+        "protocolConfiguration":{
+          "shape":"ProtocolConfiguration",
+          "documentation":"<p>The updated protocol configuration for the AgentCore Runtime, including the protocol, port, and path on which the agent server is available.</p>"
+        },
         "lifecycleConfiguration":{
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The updated life cycle configuration for the AgentCore Runtime.</p>"
@@ -22679,6 +23342,10 @@
         "platformVersion":{
           "shape":"PlatformVersion",
           "documentation":"<p>The updated version of the runtime platform to use for the AgentCore Runtime.</p>"
+        },
+        "allowedPorts":{
+          "shape":"AllowedPorts",
+          "documentation":"<p>The updated additional ports on the AgentCore Runtime that are reachable through the runtime's session URL. Specify one to five non-overlapping entries, each containing either a single port or an inclusive port range. Ports must be between <code>8000</code> and <code>12000</code>, excluding the reserved port <code>8443</code>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -22852,7 +23519,8 @@
       "type":"structure",
       "required":[
         "bundleId",
-        "parentVersionIds"
+        "parentVersionIds",
+        "commitMessage"
       ],
       "members":{
         "clientToken":{
@@ -23562,6 +24230,10 @@
         "privateEndpoint":{
           "shape":"PrivateEndpoint",
           "documentation":"<p>The private endpoint configuration for the gateway target. Use this to connect the gateway to private resources in your VPC.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target. Use this to have the gateway trust a private CA when it establishes TLS connections to the target endpoint. Provide each certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can specify only one certificate authority configuration in this list. To remove a previously configured certificate authority, omit this field on update.</p>"
         }
       }
     },
@@ -23638,6 +24310,10 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the updated gateway target.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target.</p>"
         }
       }
     },
@@ -23779,7 +24455,7 @@
       "members":{
         "clientToken":{
           "shape":"UpdateMemoryInputClientTokenString",
-          "documentation":"<p>A client token is used for keeping track of idempotent requests. It can contain a session id which can be around 250 chars, combined with a unique AWS identifier.</p>",
+          "documentation":"<p>A client token is used for keeping track of idempotent requests. It can contain a session id which can be around 250 chars, combined with a unique Amazon Web Services identifier.</p>",
           "idempotencyToken":true
         },
         "memoryId":{
@@ -24994,6 +25670,10 @@
         "memoryRecordSchema":{
           "shape":"MemoryRecordSchema",
           "documentation":"<p>Schema for metadata fields on records generated by this strategy.</p>"
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) configuration for memory records generated by this strategy. Set <code>recordExpiryDurationDays</code> to the number of days after which records expire. If not specified, records generated by this strategy do not expire.</p>"
         }
       },
       "documentation":"<p>Input for creating a user preference memory strategy.</p>"

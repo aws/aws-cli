@@ -2,10 +2,10 @@
 
 The following ``modify-rule`` example updates the actions and conditions for the specified rule. ::
 
-  aws elbv2 modify-rule \
-    --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067 \
-    --conditions Field=path-pattern,Values='/images/*'
-    --rule-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/9683b2d02a6cabee
+    aws elbv2 modify-rule \
+        --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067 \
+        --conditions Field=path-pattern,Values='/images/*' \
+        --rule-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/9683b2d02a6cabee
 
 Output::
 
@@ -32,3 +32,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Edit a listener rule for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-rule.html>`__ in the *Application Load Balancers Guide*.

@@ -1,4 +1,4 @@
-**List identity providers associated to an Amazon EKS Cluster**
+**To list identity providers associated to an Amazon EKS Cluster**
 
 The following ``list-identity-provider-configs`` example lists identity provider associated to an Amazon EKS Cluster. ::
 

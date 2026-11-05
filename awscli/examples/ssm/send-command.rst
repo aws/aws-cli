@@ -12,7 +12,7 @@ Output::
 
     {
         "Command": {
-            "CommandId": "92853adf-ba41-4cd6-9a88-142d1EXAMPLE",
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DocumentName": "AWS-RunShellScript",
             "DocumentVersion": "",
             "Comment": "echo HelloWorld",
@@ -62,7 +62,47 @@ The following ``send-command`` example retrieves the IP information about an ins
         --comment "IP config" \
         --parameters "commands=ifconfig"
 
-See example 1 for sample output.
+Output::
+
+    {
+        "Command": {
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "DocumentName": "AWS-RunShellScript",
+            "DocumentVersion": "",
+            "Comment": "IP config",
+            "ExpiresAfter": 1550181014.717,
+            "Parameters": {
+                "commands": [
+                    "ifconfig"
+                ]
+            },
+            "InstanceIds": [
+                "i-1234567890abcdef0"
+            ],
+            "Targets": [],
+            "RequestedDateTime": 1550173814.717,
+            "Status": "Pending",
+            "StatusDetails": "Pending",
+            "OutputS3BucketName": "",
+            "OutputS3KeyPrefix": "",
+            "MaxConcurrency": "50",
+            "MaxErrors": "0",
+            "TargetCount": 1,
+            "CompletedCount": 0,
+            "ErrorCount": 0,
+            "DeliveryTimedOutCount": 0,
+            "ServiceRole": "",
+            "NotificationConfig": {
+                "NotificationArn": "",
+                "NotificationEvents": [],
+                "NotificationType": ""
+            },
+            "CloudWatchOutputConfig": {
+                "CloudWatchLogGroupName": "",
+                "CloudWatchOutputEnabled": false
+            }
+        }
+    }
 
 For more information, see `Running Commands Using Systems Manager Run Command <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html>`__ in the *AWS Systems Manager User Guide*.
 
@@ -75,7 +115,52 @@ The following ``send-command`` example runs a command on instances that have the
         --document-name "AWS-RunShellScript" \
         --parameters "commands=ifconfig"
 
-See example 1 for sample output.
+Output::
+
+    {
+        "Command": {
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
+            "DocumentName": "AWS-RunShellScript",
+            "DocumentVersion": "",
+            "Comment": "",
+            "ExpiresAfter": 1550181014.717,
+            "Parameters": {
+                "commands": [
+                    "ifconfig"
+                ]
+            },
+            "InstanceIds": [],
+            "Targets": [
+                {
+                    "Key": "tag:ENV",
+                    "Values": [
+                        "Dev"
+                    ]
+                }
+            ],
+            "RequestedDateTime": 1550173814.717,
+            "Status": "Pending",
+            "StatusDetails": "Pending",
+            "OutputS3BucketName": "",
+            "OutputS3KeyPrefix": "",
+            "MaxConcurrency": "50",
+            "MaxErrors": "0",
+            "TargetCount": 0,
+            "CompletedCount": 0,
+            "ErrorCount": 0,
+            "DeliveryTimedOutCount": 0,
+            "ServiceRole": "",
+            "NotificationConfig": {
+                "NotificationArn": "",
+                "NotificationEvents": [],
+                "NotificationType": ""
+            },
+            "CloudWatchOutputConfig": {
+                "CloudWatchLogGroupName": "",
+                "CloudWatchOutputEnabled": false
+            }
+        }
+    }
 
 For more information, see `Running Commands Using Systems Manager Run Command <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html>`__ in the *AWS Systems Manager User Guide*.
 
@@ -89,9 +174,51 @@ The following ``send-command`` example runs a command that sends SNS notificatio
         --comment "IP config" \
         --parameters "commands=ifconfig" \
         --service-role-arn "arn:aws:iam::123456789012:role/SNS_Role" \
-        --notification-config "NotificationArn=arn:aws:sns:us-east-1:123456789012:SNSTopicName,NotificationEvents=All,NotificationType=Command"
+        --notification-config "NotificationArn=arn:aws:sns:us-west-2:123456789012:SNSTopicName,NotificationEvents=All,NotificationType=Command"
 
-See example 1 for sample output.
+Output::
+
+    {
+        "Command": {
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+            "DocumentName": "AWS-RunShellScript",
+            "DocumentVersion": "",
+            "Comment": "IP config",
+            "ExpiresAfter": 1550181014.717,
+            "Parameters": {
+                "commands": [
+                    "ifconfig"
+                ]
+            },
+            "InstanceIds": [
+                "i-1234567890abcdef0"
+            ],
+            "Targets": [],
+            "RequestedDateTime": 1550173814.717,
+            "Status": "Pending",
+            "StatusDetails": "Pending",
+            "OutputS3BucketName": "",
+            "OutputS3KeyPrefix": "",
+            "MaxConcurrency": "50",
+            "MaxErrors": "0",
+            "TargetCount": 1,
+            "CompletedCount": 0,
+            "ErrorCount": 0,
+            "DeliveryTimedOutCount": 0,
+            "ServiceRole": "arn:aws:iam::123456789012:role/SNS_Role",
+            "NotificationConfig": {
+                "NotificationArn": "arn:aws:sns:us-west-2:123456789012:SNSTopicName",
+                "NotificationEvents": [
+                    "All"
+                ],
+                "NotificationType": "Command"
+            },
+            "CloudWatchOutputConfig": {
+                "CloudWatchLogGroupName": "",
+                "CloudWatchOutputEnabled": false
+            }
+        }
+    }
 
 For more information, see `Running Commands Using Systems Manager Run Command <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html>`__ in the *AWS Systems Manager User Guide*.
 
@@ -108,7 +235,47 @@ The following ``send-command`` example runs a command that outputs command detai
         --output-s3-key-prefix "runcommand" \
         --cloud-watch-output-config "CloudWatchOutputEnabled=true,CloudWatchLogGroupName=CWLGroupName"
 
-See example 1 for sample output.
+Output::
+
+    {
+        "Command": {
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
+            "DocumentName": "AWS-RunShellScript",
+            "DocumentVersion": "",
+            "Comment": "IP config",
+            "ExpiresAfter": 1550181014.717,
+            "Parameters": {
+                "commands": [
+                    "ifconfig"
+                ]
+            },
+            "InstanceIds": [
+                "i-1234567890abcdef0"
+            ],
+            "Targets": [],
+            "RequestedDateTime": 1550173814.717,
+            "Status": "Pending",
+            "StatusDetails": "Pending",
+            "OutputS3BucketName": "s3-bucket-name",
+            "OutputS3KeyPrefix": "runcommand",
+            "MaxConcurrency": "50",
+            "MaxErrors": "0",
+            "TargetCount": 1,
+            "CompletedCount": 0,
+            "ErrorCount": 0,
+            "DeliveryTimedOutCount": 0,
+            "ServiceRole": "",
+            "NotificationConfig": {
+                "NotificationArn": "",
+                "NotificationEvents": [],
+                "NotificationType": ""
+            },
+            "CloudWatchOutputConfig": {
+                "CloudWatchLogGroupName": "CWLGroupName",
+                "CloudWatchOutputEnabled": true
+            }
+        }
+    }
 
 For more information, see `Running Commands Using Systems Manager Run Command <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html>`__ in the *AWS Systems Manager User Guide*.
 
@@ -121,7 +288,58 @@ The following ``send-command`` example runs a command on instances with two diff
         --parameters commands=["echo helloWorld"] \
         --targets Key=tag:Env,Values=Dev Key=tag:Role,Values=WebServers
 
-See example 1 for sample output.
+Output::
+
+    {
+        "Command": {
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE66666",
+            "DocumentName": "AWS-RunPowerShellScript",
+            "DocumentVersion": "",
+            "Comment": "",
+            "ExpiresAfter": 1550181014.717,
+            "Parameters": {
+                "commands": [
+                    "echo helloWorld"
+                ]
+            },
+            "InstanceIds": [],
+            "Targets": [
+                {
+                    "Key": "tag:Env",
+                    "Values": [
+                        "Dev"
+                    ]
+                },
+                {
+                    "Key": "tag:Role",
+                    "Values": [
+                        "WebServers"
+                    ]
+                }
+            ],
+            "RequestedDateTime": 1550173814.717,
+            "Status": "Pending",
+            "StatusDetails": "Pending",
+            "OutputS3BucketName": "",
+            "OutputS3KeyPrefix": "",
+            "MaxConcurrency": "50",
+            "MaxErrors": "0",
+            "TargetCount": 0,
+            "CompletedCount": 0,
+            "ErrorCount": 0,
+            "DeliveryTimedOutCount": 0,
+            "ServiceRole": "",
+            "NotificationConfig": {
+                "NotificationArn": "",
+                "NotificationEvents": [],
+                "NotificationType": ""
+            },
+            "CloudWatchOutputConfig": {
+                "CloudWatchLogGroupName": "",
+                "CloudWatchOutputEnabled": false
+            }
+        }
+    }
 
 For more information, see `Running Commands Using Systems Manager Run Command <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html>`__ in the *AWS Systems Manager User Guide*.
 
@@ -134,7 +352,53 @@ The following ``send-command`` example runs a command on instances that have the
         --parameters commands=["echo helloWorld"] \
         --targets Key=tag:Env,Values=Dev,Test
 
-See example 1 for sample output.
+Output::
+
+    {
+        "Command": {
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE77777",
+            "DocumentName": "AWS-RunPowerShellScript",
+            "DocumentVersion": "",
+            "Comment": "",
+            "ExpiresAfter": 1550181014.717,
+            "Parameters": {
+                "commands": [
+                    "echo helloWorld"
+                ]
+            },
+            "InstanceIds": [],
+            "Targets": [
+                {
+                    "Key": "tag:Env",
+                    "Values": [
+                        "Dev",
+                        "Test"
+                    ]
+                }
+            ],
+            "RequestedDateTime": 1550173814.717,
+            "Status": "Pending",
+            "StatusDetails": "Pending",
+            "OutputS3BucketName": "",
+            "OutputS3KeyPrefix": "",
+            "MaxConcurrency": "50",
+            "MaxErrors": "0",
+            "TargetCount": 0,
+            "CompletedCount": 0,
+            "ErrorCount": 0,
+            "DeliveryTimedOutCount": 0,
+            "ServiceRole": "",
+            "NotificationConfig": {
+                "NotificationArn": "",
+                "NotificationEvents": [],
+                "NotificationType": ""
+            },
+            "CloudWatchOutputConfig": {
+                "CloudWatchLogGroupName": "",
+                "CloudWatchOutputEnabled": false
+            }
+        }
+    }
 
 For more information, see `Running Commands Using Systems Manager Run Command <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html>`__ in the *AWS Systems Manager User Guide*.
 
@@ -143,9 +407,50 @@ For more information, see `Running Commands Using Systems Manager Run Command <h
 The following ``send-command`` example runs a shared document on a target instance. ::
 
     aws ssm send-command \
-        --document-name "arn:aws:ssm:us-east-1:123456789012:document/ExampleDocument" \
+        --document-name "arn:aws:ssm:us-west-2:123456789012:document/ExampleDocument" \
         --targets "Key=instanceids,Values=i-1234567890abcdef0"
 
-See example 1 for sample output.
+Output::
+
+    {
+        "Command": {
+            "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE88888",
+            "DocumentName": "arn:aws:ssm:us-west-2:123456789012:document/ExampleDocument",
+            "DocumentVersion": "",
+            "Comment": "",
+            "ExpiresAfter": 1550181014.717,
+            "Parameters": {},
+            "InstanceIds": [],
+            "Targets": [
+                {
+                    "Key": "instanceids",
+                    "Values": [
+                        "i-1234567890abcdef0"
+                    ]
+                }
+            ],
+            "RequestedDateTime": 1550173814.717,
+            "Status": "Pending",
+            "StatusDetails": "Pending",
+            "OutputS3BucketName": "",
+            "OutputS3KeyPrefix": "",
+            "MaxConcurrency": "50",
+            "MaxErrors": "0",
+            "TargetCount": 0,
+            "CompletedCount": 0,
+            "ErrorCount": 0,
+            "DeliveryTimedOutCount": 0,
+            "ServiceRole": "",
+            "NotificationConfig": {
+                "NotificationArn": "",
+                "NotificationEvents": [],
+                "NotificationType": ""
+            },
+            "CloudWatchOutputConfig": {
+                "CloudWatchLogGroupName": "",
+                "CloudWatchOutputEnabled": false
+            }
+        }
+    }
 
 For more information, see `Using shared SSM documents <https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-using-shared.html>`__ in the *AWS Systems Manager User Guide*.

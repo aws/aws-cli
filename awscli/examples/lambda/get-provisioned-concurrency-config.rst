@@ -15,3 +15,5 @@ Output::
         "Status": "READY",
         "LastModified": "2019-12-31T20:28:49+0000"
     }
+
+For more information, see `Configuring provisioned concurrency for an Event Function <https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html>`__ in the *AWS Lambda Developer Guide*.

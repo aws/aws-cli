@@ -13,19 +13,19 @@ Output::
         "digest": "sha256:c54bxmpl742dcc26f7fa1f10e37550ddd8f251f418277c0a58e895b801ed28cf",
         "id": "1234567",
         "name": "cram-to-bam",
-        "outputUri": "s3://omics-artifacts-01d6xmpl4e72dd32/workflow-output/",
+        "outputUri": "s3://amzn-s3-demo-bucket/workflow-output/",
         "parameters": {
-            "ref_dict": "s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.dict",
-            "ref_fasta_index": "s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.fasta.fai",
-            "ref_fasta": "s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.fasta",
+            "ref_dict": "s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.dict",
+            "ref_fasta_index": "s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.fasta.fai",
+            "ref_fasta": "s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.fasta",
             "sample_name": "NA12878",
-            "input_cram": "s3://omics-artifacts-01d6xmpl4e72dd32/NA12878.cram"
+            "input_cram": "s3://amzn-s3-demo-bucket/NA12878.cram"
         },
         "resourceDigests": {
-            "s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.fasta.fai": "etag:f76371b113734a56cde236bc0372de0a",
-            "s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.dict": "etag:3884c62eb0e53fa92459ed9bff133ae6",
-            "s3://omics-artifacts-01d6xmpl4e72dd32/Homo_sapiens_assembly38.fasta": "etag:e307d81c605fb91b7720a08f00276842-388",
-            "s3://omics-artifacts-01d6xmpl4e72dd32/NA12878.cram": "etag:a9f52976381286c6143b5cc681671ec6"
+            "s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.fasta.fai": "etag:f76371b113734a56cde236bc0372de0a",
+            "s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.dict": "etag:3884c62eb0e53fa92459ed9bff133ae6",
+            "s3://amzn-s3-demo-bucket/Homo_sapiens_assembly38.fasta": "etag:e307d81c605fb91b7720a08f00276842-388",
+            "s3://amzn-s3-demo-bucket/NA12878.cram": "etag:a9f52976381286c6143b5cc681671ec6"
         },
         "roleArn": "arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ",
         "startedBy": "arn:aws:iam::123456789012:user/laptop-2020",

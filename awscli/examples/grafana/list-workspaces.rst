@@ -16,7 +16,7 @@ Output::
                 },
                 "created": "2022-04-04T16:20:21.796000-07:00",
                 "description": "to test tags",
-                "endpoint": "g-949e7b44df.grafana-workspace.us-east-1.amazonaws.com",
+                "endpoint": "g-949e7b44df.grafana-workspace.us-west-2.amazonaws.com",
                 "grafanaVersion": "8.2",
                 "id": "g-949e7b44df",
                 "modified": "2022-04-04T16:20:21.796000-07:00",
@@ -34,7 +34,7 @@ Output::
                 },
                 "created": "2022-04-20T10:22:15.115000-07:00",
                 "description": "ww",
-                "endpoint": "g-bffa51ed1b.grafana-workspace.us-east-1.amazonaws.com",
+                "endpoint": "g-bffa51ed1b.grafana-workspace.us-west-2.amazonaws.com",
                 "grafanaVersion": "8.2",
                 "id": "g-bffa51ed1b",
                 "modified": "2022-04-20T10:22:15.115000-07:00",
@@ -46,3 +46,5 @@ Output::
             }
         ]
     }
+
+For more information, see `What is Amazon Managed Grafana? <https://docs.aws.amazon.com/grafana/latest/userguide/what-is-Amazon-Managed-Service-Grafana.html>`__ in the *Amazon Managed Grafana User Guide*.

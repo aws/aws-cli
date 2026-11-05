@@ -8,42 +8,40 @@ The following ``get-comment-reactions`` example lists all emoji reactions to a c
 Output::
 
     {
-        "reactionsForComment": {
-            [
-               {
-                   "reaction": {
-                        "emoji:"??",
-                        "shortCode": "thumbsup",
-                        "unicode": "U+1F44D"
-                    },
-                    "users": [
-                        "arn:aws:iam::123456789012:user/Li_Juan",
-                        "arn:aws:iam::123456789012:user/Mary_Major",
-                        "arn:aws:iam::123456789012:user/Jorge_Souza"
-                    ]
+        "reactionsForComment": [
+            {
+                "reaction": {
+                    "emoji": "??",
+                    "shortCode": "thumbsup",
+                    "unicode": "U+1F44D"
                 },
-                {
-                    "reaction": {
-                        "emoji": "??",
-                        "shortCode": "thumbsdown",
-                        "unicode": "U+1F44E"
-                    },
-                    "users": [
-                        "arn:aws:iam::123456789012:user/Nikhil_Jayashankar"
-                    ]
+                "reactionUsers": [
+                    "arn:aws:iam::123456789012:user/Li_Juan",
+                    "arn:aws:iam::123456789012:user/Mary_Major",
+                    "arn:aws:iam::123456789012:user/Jorge_Souza"
+                ]
+            },
+            {
+                "reaction": {
+                    "emoji": "??",
+                    "shortCode": "thumbsdown",
+                    "unicode": "U+1F44E"
                 },
-                {
-                    "reaction": {
-                        "emoji": "??",
-                        "shortCode": "confused",
-                        "unicode": "U+1F615"
-                    },
-                    "users": [
-                        "arn:aws:iam::123456789012:user/Saanvi_Sarkar"
-                    ]
-                }
-            ]
-        }
+                "reactionUsers": [
+                    "arn:aws:iam::123456789012:user/Nikhil_Jayashankar"
+                ]
+            },
+            {
+                "reaction": {
+                    "emoji": "??",
+                    "shortCode": "confused",
+                    "unicode": "U+1F615"
+                },
+                "reactionUsers": [
+                    "arn:aws:iam::123456789012:user/Saanvi_Sarkar"
+                ]
+            }
+        ]
     }
 
 For more information, see `Comment on a commit in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-commit-comment.html#how-to-commit-comment-cli-commit-emoji-view>`__ in the *AWS CodeCommit User Guide*.

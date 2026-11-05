@@ -1,6 +1,6 @@
 **To list CloudFront distributions**
 
-The following example gets a list of the CloudFront distributions in your AWS account. ::
+The following ``list-distributions`` example gets a list of the CloudFront distributions in your AWS account. ::
 
     aws cloudfront list-distributions
 
@@ -22,8 +22,8 @@ Output::
                         "Quantity": 1,
                         "Items": [
                             {
-                                "Id": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
-                                "DomainName": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+                                "Id": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
+                                "DomainName": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
                                 "OriginPath": "",
                                 "CustomHeaders": {
                                     "Quantity": 0
@@ -44,7 +44,7 @@ Output::
                         "Quantity": 0
                     },
                     "DefaultCacheBehavior": {
-                        "TargetOriginId": "amzn-s3-demo-bucket.s3.us-east-1.amazonaws.com",
+                        "TargetOriginId": "amzn-s3-demo-bucket.s3.us-west-2.amazonaws.com",
                         "TrustedSigners": {
                             "Enabled": false,
                             "Quantity": 0
@@ -77,7 +77,7 @@ Output::
                             "Quantity": 0
                         },
                         "FieldLevelEncryptionId": "",
-                        "CachePolicyId": "658327ea-f89d-4fab-a63d-7e886EXAMPLE"
+                        "CachePolicyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                     },
                     "CacheBehaviors": {
                         "Quantity": 0
@@ -108,3 +108,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Configure distributions <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-working-with.html>`__ in the *Amazon CloudFront Developer Guide*.

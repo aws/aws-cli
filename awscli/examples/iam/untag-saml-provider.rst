@@ -1,6 +1,6 @@
 **To remove a tag from a SAML provider**
 
-The following ``untag-saml-provider`` command removes any tag with the key name 'Department' from the specified instance profile. ::
+The following ``untag-saml-provider`` example removes any tag with the key name 'Department' from the specified SAML provider. ::
 
     aws iam untag-saml-provider \
         --saml-provider-arn arn:aws:iam::123456789012:saml-provider/ADFS \

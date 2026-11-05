@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Update a service instance <https://docs.aws.amazon.com/proton/latest/adminguide/ag-svc-instance-update.html>`__ in the *The AWS Proton Administrator Guide* or `Update a service instance <https://docs.aws.amazon.com/proton/latest/userguide/ug-svc-instance-update.html>`__ in the *The AWS Proton User Guide*.
+For more information, see `Update a service instance <https://docs.aws.amazon.com/proton/latest/adminguide/ag-svc-instance-update.html>`__ in the *The AWS Proton Administrator Guide* or `Update a service instance <https://docs.aws.amazon.com/proton/latest/userguide/ag-svc-instance-update.html>`__ in the *The AWS Proton User Guide*.

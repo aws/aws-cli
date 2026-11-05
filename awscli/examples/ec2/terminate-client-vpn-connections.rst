@@ -3,13 +3,13 @@
 The following ``terminate-client-vpn-connections`` example terminates the specified connection to the Client VPN endpoint. ::
 
     aws ec2 terminate-client-vpn-connections \
-        --client-vpn-endpoint-id vpn-endpoint-123456789123abcde \
+        --client-vpn-endpoint-id vpn-endpoint-123456789abcabcde \
         --connection-id cvpn-connection-04edd76f5201e0cb8
 
 Output::
 
     {
-        "ClientVpnEndpointId": "vpn-endpoint-123456789123abcde",
+        "ClientVpnEndpointId": "vpn-endpoint-123456789abcabcde",
         "ConnectionStatuses": [
             {
                 "ConnectionId": "cvpn-connection-04edd76f5201e0cb8",

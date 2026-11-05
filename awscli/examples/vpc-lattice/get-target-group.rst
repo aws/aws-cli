@@ -8,7 +8,7 @@ The following ``get-target-group`` example gets information about the specified 
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:targetgroup/tg-0eaa4b9ab4EXAMPLE",
         "config": {
             "healthCheck": {
                 "enabled": true,
@@ -33,7 +33,7 @@ Output::
         "lastUpdatedAt": "2023-05-06T04:41:04.122Z",
         "name": "my-target-group",
         "serviceArns": [
-            "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE"
+            "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE"
         ],
         "status": "ACTIVE",
         "type": "INSTANCE"

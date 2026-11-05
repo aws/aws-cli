@@ -3,7 +3,7 @@
 The following ``get-service-last-accessed-details-with-entities`` example retrieves a report that contains details about IAM users and other entities that accessed the specified service. To generate a report, use the ``generate-service-last-accessed-details`` command. To get a list of services accessed with namespaces, use ``get-service-last-accessed-details``. ::
 
     aws iam get-service-last-accessed-details-with-entities \
-        --job-id 78b6c2ba-d09e-6xmp-7039-ecde30b26916 \
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --service-namespace lambda
 
 Output::

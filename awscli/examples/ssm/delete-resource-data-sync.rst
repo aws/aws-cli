@@ -1,7 +1,10 @@
 **To delete a resource data sync**
 
-This example deletes a resource data sync. There is no output if the command succeeds.
+The following ``delete-resource-data-sync`` example deletes a resource data sync. ::
 
-Command::
+    aws ssm delete-resource-data-sync \
+        --sync-name "ssm-resource-data-sync"
 
-  aws ssm delete-resource-data-sync --sync-name "ssm-resource-data-sync"
+This command produces no output.
+
+For more information, see `Creating a resource data sync for Inventory <https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-create-resource-data-sync.html>`__ in the *AWS Systems Manager User Guide*.

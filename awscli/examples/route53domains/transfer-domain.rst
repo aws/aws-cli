@@ -1,6 +1,6 @@
 **To transfer a domain to Amazon Route 53**
 
-The following ``transfer-domain`` command transfers a domain to Route 53, with the parameters provided by the JSON-formatted file ``C:\temp\transfer-domain.json``. 
+The following ``transfer-domain`` example transfers a domain to Route 53, with the parameters provided by the JSON-formatted file ``C:\temp\transfer-domain.json``. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
@@ -8,7 +8,7 @@ This command runs only in the ``us-east-1`` Region. If your default region is se
         --region us-east-1 \
         --cli-input-json file://C:\temp\transfer-domain.json
 
-Contents of ``transfer-domain.json``::
+Contents of ``C:\temp\transfer-domain.json``::
 
     {
         "DomainName": "example.com",
@@ -76,7 +76,7 @@ Contents of ``transfer-domain.json``::
 Output::
 
     {
-        "OperationId": "b114c44a-9330-47d1-a6e8-a0b11example"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 To confirm that the operation succeeded, you can run ``get-operation-detail``. For more information, see `get-operation-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-operation-detail.html>`__ .

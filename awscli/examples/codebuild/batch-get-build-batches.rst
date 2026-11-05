@@ -3,15 +3,15 @@
 The following ``batch-get-build-batches`` example gets information about build batches in CodeBuild with the specified IDs. ::
 
     aws codebuild batch-get-build-batches \
-        --ids codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE
+        --ids codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "buildBatches": [
             {
-                "id": "codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE",
-                "arn": "arn:aws:codebuild:us-west-2:123456789012:build-batch/codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE",
+                "id": "codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "arn": "arn:aws:codebuild:us-west-2:123456789012:build-batch/codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "startTime": "2020-11-03T21:52:20.775000+00:00",
                 "endTime": "2020-11-03T21:56:59.784000+00:00",
                 "currentPhase": "SUCCEEDED",
@@ -106,7 +106,7 @@ Output::
                         "identifier": "DOWNLOAD_SOURCE",
                         "ignoreFailure": false,
                         "currentBuildSummary": {
-                            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:379737d8-bc35-48ec-97fd-776d27545315",
+                            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                             "requestedOn": "2020-11-03T21:52:21.394000+00:00",
                             "buildStatus": "SUCCEEDED",
                             "primaryArtifact": {
@@ -121,7 +121,7 @@ Output::
                         "dependsOn": [],
                         "ignoreFailure": false,
                         "currentBuildSummary": {
-                            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:dd785171-ed84-4bb6-8ede-ceeb86e54bdb",
+                            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                             "requestedOn": "2020-11-03T21:52:57.604000+00:00",
                             "buildStatus": "SUCCEEDED",
                             "primaryArtifact": {
@@ -138,7 +138,7 @@ Output::
                         ],
                         "ignoreFailure": false,
                         "currentBuildSummary": {
-                            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:97cf7bd4-5313-4786-8243-4aef350a1267",
+                            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                             "requestedOn": "2020-11-03T21:54:18.474000+00:00",
                             "buildStatus": "SUCCEEDED",
                             "primaryArtifact": {
@@ -155,7 +155,7 @@ Output::
                         ],
                         "ignoreFailure": false,
                         "currentBuildSummary": {
-                            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:60a194cd-0d03-4337-9db1-d41476a17d27",
+                            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/codebuild-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE55555",
                             "requestedOn": "2020-11-03T21:55:39.203000+00:00",
                             "buildStatus": "SUCCEEDED",
                             "primaryArtifact": {
@@ -171,4 +171,4 @@ Output::
         "buildBatchesNotFound": []
     }
 
-For more information, see `Batch builds in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/batch-build.html>`)__ in the *AWS CodeBuild User Guide*.
+For more information, see `Run builds in batches <https://docs.aws.amazon.com/codebuild/latest/userguide/batch-build.html>`__ in the *AWS CodeBuild User Guide*.

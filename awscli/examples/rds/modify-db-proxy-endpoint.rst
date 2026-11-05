@@ -9,10 +9,10 @@ The following ``modify-db-proxy-endpoint`` example modifies a DB proxy endpoint 
 Output::
 
     {
-    "DBProxyEndpoint": 
+        "DBProxyEndpoint":
         {
             "DBProxyEndpointName": "proxyEndpoint",
-            "DBProxyEndpointArn": "arn:aws:rds:us-east-1:123456789012:db-proxy-endpoint:prx-endpoint-0123a01b12345c0ab",
+            "DBProxyEndpointArn": "arn:aws:rds:us-west-2:123456789012:db-proxy-endpoint:prx-endpoint-0123a01b12345c0ab",
             "DBProxyName": "proxyExample",
             "Status": "available",
             "VpcId": "vpc-1234567",
@@ -20,14 +20,14 @@ Output::
                 "sg-1234"
             ],
             "VpcSubnetIds": [
-                "subnetgroup1", 
-                "subnetgroup2" 
+                "subnetgroup1",
+                "subnetgroup2"
             ],
-            "Endpoint": "proxyEndpoint.endpoint.proxyExample-ab0cd1efghij.us-east-1.rds.amazonaws.com",
+            "Endpoint": "proxyEndpoint.endpoint.proxyExample-ab0cd1efghij.us-west-2.rds.amazonaws.com",
             "CreatedDate": "2023-04-05T16:09:33.452000+00:00",
             "TargetRole": "READ_WRITE",
-            "IsDefault": "false"
+            "IsDefault": false
         }
     }
 
-For more information, see `Modifying a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-endpoints.html#rds-proxy-endpoints.ModifyingEndpoint>`__ in the *Amazon RDS User Guide* and `Modifying a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-endpoints.html#rds-proxy-endpoints.ModifyingEndpoint>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Modifying a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-endpoints.ModifyingEndpoint.html>`__ in the *Amazon RDS User Guide* and `Modifying a proxy endpoint <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-endpoints.ModifyingEndpoint.html>`__ in the *Amazon Aurora User Guide*.

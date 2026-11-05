@@ -23,6 +23,7 @@ from botocore.exceptions import (
     NoCredentialsError,
 )
 from botocore.session import Session
+from s3transfer.checksums import FullObjectChecksum
 from s3transfer.constants import GB
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.utils import CallArgs, OSUtils
@@ -154,6 +155,10 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.assertEqual(self.expected_path, crt_request.path)
         self.assertEqual(self.expected_host, crt_request.headers.get("host"))
         self.assertIsNone(crt_request.headers.get("Authorization"))
+        # A GET has no body, so it is sent without a Content-Length header,
+        # just as botocore sends it.
+        self.assertIsNone(crt_request.headers.get("Content-Length"))
+        self.assertIsNone(crt_request.body_stream)
 
     def test_delete_request(self):
         callargs = CallArgs(
@@ -170,6 +175,9 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.assertEqual(self.expected_path, crt_request.path)
         self.assertEqual(self.expected_host, crt_request.headers.get("host"))
         self.assertIsNone(crt_request.headers.get("Authorization"))
+        # Botocore sets a zero Content-Length on bodyless non-GET requests.
+        self.assertEqual("0", crt_request.headers.get("Content-Length"))
+        self.assertIsNone(crt_request.body_stream)
 
     def _create_crt_response_error(
         self, status_code, body, operation_name=None, headers=None
@@ -529,6 +537,28 @@ class TestBotocoreCRTCredentialsWrapper:
 
 
 @requires_crt()
+class TestCRTTransferMeta(unittest.TestCase):
+    def setUp(self):
+        self.transfer_meta = s3transfer.crt.CRTTransferMeta()
+
+    def test_etag(self):
+        self.assertIsNone(self.transfer_meta.etag)
+        self.transfer_meta.provide_object_etag('"etag"')
+        self.assertEqual(self.transfer_meta.etag, '"etag"')
+
+    def test_full_object_checksum(self):
+        self.assertIsNone(self.transfer_meta.full_object_checksum)
+        checksum = FullObjectChecksum('crc32', 'abc123==')
+        self.transfer_meta.provide_full_object_checksum(checksum)
+        self.assertIs(self.transfer_meta.full_object_checksum, checksum)
+
+    def test_full_object_checksum_unavailable(self):
+        self.assertFalse(self.transfer_meta.full_object_checksum_unavailable)
+        self.transfer_meta.mark_full_object_checksum_unavailable()
+        self.assertTrue(self.transfer_meta.full_object_checksum_unavailable)
+
+
+@requires_crt()
 class TestCRTTransferFuture(unittest.TestCase):
     def setUp(self):
         self.mock_s3_request = mock.Mock(awscrt.s3.S3RequestType)
@@ -808,6 +838,16 @@ class TestCreateS3CRTClient:
     def test_always_enables_s3express(self, mock_s3_crt_client):
         s3transfer.crt.create_s3_crt_client('us-west-2')
         assert mock_s3_crt_client.call_args[1]['enable_s3express'] is True
+
+    def test_connect_timeout_defaults_to_crt_default(self, mock_s3_crt_client):
+        s3transfer.crt.create_s3_crt_client('us-west-2')
+        assert mock_s3_crt_client.call_args[1]['connect_timeout_ms'] is None
+
+    def test_connect_timeout(self, mock_s3_crt_client):
+        s3transfer.crt.create_s3_crt_client(
+            'us-west-2', connect_timeout_ms=5_000
+        )
+        assert mock_s3_crt_client.call_args[1]['connect_timeout_ms'] == 5_000
 
     def test_empty_verify_value_raises(self, mock_s3_crt_client):
         with pytest.raises(InvalidConfigError):

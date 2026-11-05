@@ -3,7 +3,7 @@
 The following ``get-generated-policy`` example retrieves the policy that was generated using the `StartPolicyGeneration` API in your AWS account. ::
 
     aws accessanalyzer get-generated-policy \
-        --job-id c557dc4a-0338-4489-95dd-739014860ff9
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -21,18 +21,18 @@ Output::
                     "trailProperties": [
                         {
                             "allRegions": true,
-                            "cloudTrailArn": "arn:aws:cloudtrail:us-west-2:111122223333:trail/my-trail",
+                            "cloudTrailArn": "arn:aws:cloudtrail:us-west-2:123456789012:trail/my-trail",
                             "regions": []
                         }
                     ]
                 },
                 "isComplete": false,
-                "principalArn": "arn:aws:iam::111122223333:role/Admin"
+                "principalArn": "arn:aws:iam::123456789012:role/Admin"
             }
         },
         "jobDetails": {
             "completedOn": "2024-02-14T22:47:01+00:00",
-            "jobId": "c557dc4a-0338-4489-95dd-739014860ff9",
+            "jobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "startedOn": "2024-02-14T22:44:41+00:00",
             "status": "SUCCEEDED"
         }

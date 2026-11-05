@@ -9,10 +9,10 @@ Output::
 
     {
         "Canary": {
-            "Id": "a1b2c3d4-5678-90ab-cdef-example11111",
+            "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Name": "demo_canary",
             "Code": {
-                "SourceLocationArn": "arn:aws:lambda:us-east-1:123456789012:layer:cwsyn-demo_canary-a1b2c3d4-5678-90ab-cdef-example111118:1",
+                "SourceLocationArn": "arn:aws:lambda:us-west-2:123456789012:layer:cwsyn-demo_canary-a1b2c3d4-5678-90ab-cdef-example111118:1",
                 "Handler": "pageLoadBlueprint.handler"
             },
             "ExecutionRoleArn": "arn:aws:iam::123456789012:role/demo_canary_role",
@@ -35,8 +35,8 @@ Output::
                 "LastModified": "2024-10-15T18:55:40.540000+05:30",
                 "LastStarted": "2024-10-15T18:55:40.540000+05:30"
             },
-            "ArtifactS3Location": "cw-syn-results-123456789012-us-east-1/canary/us-east-1/demo_canary-a12-a123bc456789",
-            "EngineArn": "arn:aws:lambda:us-east-1:123456789012:function:cwsyn-demo_canary-a1b2c3d4-5678-90ab-cdef-example111118:1",
+            "ArtifactS3Location": "cw-syn-results-123456789012-us-west-2/canary/us-west-2/demo_canary-a12-a123bc456789",
+            "EngineArn": "arn:aws:lambda:us-west-2:123456789012:function:cwsyn-demo_canary-a1b2c3d4-5678-90ab-cdef-example111118:1",
             "RuntimeVersion": "syn-nodejs-puppeteer-9.1",
             "Tags": {
                 "blueprint": "heartbeat"

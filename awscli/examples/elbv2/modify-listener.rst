@@ -51,7 +51,7 @@ Output::
                             "Host": "#{host}",
                             "Path": "/#{path}",
                             "Query": "#{query}",
-                            "StatusCode": "HTTP_302",
+                            "StatusCode": "HTTP_302"
                         }
                     }
                 ]
@@ -87,9 +87,9 @@ Output::
                     {
                         "CertificateArn": "arn:aws:iam::123456789012:server-certificate/my-new-server-cert"
                     }
-                ],
+                ]
             }
         ]
     }
 
-For more information, see `Listener rules <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#listener-rules>`__ in the *Application Load Balancers User Guide*.
+For more information, see `Listener rules <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-rules.html>`__ in the *Application Load Balancers User Guide*.

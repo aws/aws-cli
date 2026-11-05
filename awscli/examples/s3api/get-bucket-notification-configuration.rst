@@ -1,17 +1,22 @@
-The following command retrieves the notification configuration for a bucket named ``amzn-s3-demo-bucket``::
+**To retrieve the notification configuration of a bucket**
 
-  aws s3api get-bucket-notification-configuration --bucket amzn-s3-demo-bucket
+The following ``get-bucket-notification-configuration`` example retrieves the notification configuration for a bucket named ``amzn-s3-demo-bucket``. ::
+
+    aws s3api get-bucket-notification-configuration \
+        --bucket amzn-s3-demo-bucket
 
 Output::
 
-  {
-      "TopicConfigurations": [
-          {
-              "Id": "YmQzMmEwM2EjZWVlI0NGItNzVtZjI1MC00ZjgyLWZDBiZWNl",
-              "TopicArn": "arn:aws:sns:us-west-2:123456789012:my-notification-topic",
-              "Events": [
-                  "s3:ObjectCreated:*"
-              ]
-          }
-      ]
-  }
+    {
+        "TopicConfigurations": [
+            {
+                "Id": "YmQzMmEwM2EjZWVlI0NGItNzVtZjI1MC00ZjgyLWZDBiZWNl",
+                "TopicArn": "arn:aws:sns:us-west-2:123456789012:my-notification-topic",
+                "Events": [
+                    "s3:ObjectCreated:*"
+                ]
+            }
+        ]
+    }
+
+For more information, see `Amazon S3 Event Notifications <https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html>`__ in the *Amazon S3 User Guide*.

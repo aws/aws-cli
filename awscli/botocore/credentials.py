@@ -819,12 +819,20 @@ class BaseAssumeRoleCredentialFetcher(CachedCredentialFetcher):
         self._assume_kwargs['RoleSessionName'] = self._role_session_name
         self._using_default_session_name = True
 
+    def _cache_key_args(self):
+        """Return the arguments that should participate in the cache key.
+
+        Subclasses can override this to include additional caller-provided
+        arguments
+        """
+        return self._assume_kwargs
+
     def _create_cache_key(self):
         """Create a predictable cache key for the current configuration.
 
         The cache key is intended to be compatible with file names.
         """
-        args = deepcopy(self._assume_kwargs)
+        args = deepcopy(self._cache_key_args())
 
         # The role session name gets randomly generated, so we don't want it
         # in the hash.
@@ -992,6 +1000,11 @@ class AssumeRoleWithWebIdentityCredentialFetcher(
             cache=cache,
             expiry_window_seconds=expiry_window_seconds,
         )
+
+    def _cache_key_args(self):
+        args = dict(self._assume_kwargs)
+        args['WebIdentityToken'] = self._web_identity_token_loader()
+        return args
 
     def _get_credentials(self):
         """Get credentials by calling assume role."""
@@ -2547,10 +2560,13 @@ class LoginCredentialFetcher:
         config = botocore.config.Config(
             signature_version=botocore.UNSIGNED,
         )
-        client = self._client_creator(
-            'signin',
-            config=config,
-        )
+        client_kwargs = {'config': config}
+        # The token's signInRegion overrides the configured region.
+        # Tokens from older logins do not have it.
+        sign_in_region = token.get('signInRegion')
+        if sign_in_region:
+            client_kwargs['region_name'] = sign_in_region
+        client = self._client_creator('signin', **client_kwargs)
 
         client.meta.events.register(
             'before-call.signin.CreateOAuth2Token',

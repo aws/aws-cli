@@ -30,7 +30,7 @@ The following ``create-automation-rule`` example creates an automation rule in t
 Output::
 
     {
-        "RuleArn": "arn:aws:securityhub:us-east-1:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+        "RuleArn": "arn:aws:securityhub:us-west-2:123456789012:automation-rule/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
-For more information, see `Creating automation rules <https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html#create-automation-rules>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Creating automation rules <https://docs.aws.amazon.com/securityhub/latest/userguide/create-automation-rules.html>`__ in the *AWS Security Hub User Guide*.

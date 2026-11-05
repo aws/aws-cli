@@ -59,10 +59,10 @@ def process_args(args):
     elif os.getenv('GITHUB_ACTIONS', 'false') == 'true':
         # Limiting parallelism in GitHub, to avoid the
         # 'Error: The operation was canceled.' issues in 2026
-        max_processes=3
+        max_processes = 3
     else:
-        max_processes=4
-    test_args += f'--numprocesses=auto --dist=loadfile --maxprocesses={max_processes} '
+        max_processes = 4
+    test_args += f'--numprocesses=auto --dist={args.dist} --maxprocesses={max_processes} '
     dirs = " ".join(args.test_dirs)
 
     return runner, test_args, dirs
@@ -105,6 +105,14 @@ if __name__ == "__main__":
         nargs='+',
         default=[],
         help=("Ignore a test subdirectory. Can be specified multiple times."),
+    )
+    parser.add_argument(
+        "--dist",
+        default="loadfile",
+        help=(
+            "The pytest-xdist distribution mode to use. Defaults to "
+            "loadfile, which runs all tests in a file on the same worker."
+        ),
     )
     parser.add_argument(
         "--tests-path",

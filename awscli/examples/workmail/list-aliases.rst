@@ -1,6 +1,6 @@
 **To list aliases for a member**
 
-The following ``list-aliases`` command lists aliases for the specified member (user or group). ::
+The following ``list-aliases`` example lists aliases for the specified member (user or group). ::
 
     aws workmail list-aliases \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \
@@ -14,3 +14,5 @@ Output::
             "exampleAlias1@site.awsapps.com"
         ]
     }
+
+For more information, see `Managing user aliases <https://docs.aws.amazon.com/workmail/latest/adminguide/managing_users.html>`__ in the *Amazon WorkMail Administrator Guide*.

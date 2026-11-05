@@ -2,13 +2,13 @@
 
 The following ``get-ipam-pool-cidrs`` example gets the CIDRs provisioned to an IPAM pool.
 
-(Linux)::
+Linux command. ::
 
     aws ec2 get-ipam-pool-cidrs \
         --ipam-pool-id ipam-pool-0533048da7d823723 \
         --filters 'Name=cidr,Values=10.*'
 
-(Windows)::
+Windows command. ::
 
     aws ec2 get-ipam-pool-cidrs ^
         --ipam-pool-id ipam-pool-0533048da7d823723 ^
@@ -17,8 +17,12 @@ The following ``get-ipam-pool-cidrs`` example gets the CIDRs provisioned to an I
 Output::
 
     {
-        "IpamPoolCidr": {
-            "Cidr": "10.0.0.0/24",
-            "State": "provisioned"
-        }
+        "IpamPoolCidrs": [
+            {
+                "Cidr": "10.0.0.0/24",
+                "State": "provisioned"
+            }
+        ]
     }
+
+For more information, see `Provision CIDRs to a pool <https://docs.aws.amazon.com/vpc/latest/ipam/prov-cidr-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

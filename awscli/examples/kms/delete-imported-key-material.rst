@@ -3,13 +3,13 @@
 The following ``delete-imported-key-material`` example deletes key material that had been imported into a KMS key. ::
 
     aws kms delete-imported-key-material \
-       --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 
 Output::
 
     {
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "KeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6"
     }
 

@@ -8,10 +8,10 @@ The following ``list-associated-approval-rule-templates-for-repository`` example
 Output::
 
     {
-      "approvalRuleTemplateNames": [
-        "2-approver-rule-for-main",
-        "1-approver-rule-for-all-pull-requests"
-      ]
+        "approvalRuleTemplateNames": [
+            "2-approver-rule-for-main",
+            "1-approver-rule-for-all-pull-requests"
+        ]
     }
 
 For more information, see `Manage Approval Rule Templates <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-manage-templates.html#list-associated-templates>`__ in the *AWS CodeCommit User Guide*.

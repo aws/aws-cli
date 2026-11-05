@@ -3,15 +3,15 @@
 The following ``list-custom-routing-endpoint-groups`` example lists the endpoint groups for a listener in a custom routing accelerator. ::
 
     aws globalaccelerator list-custom-routing-endpoint-groups \
-        --listener-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234
+        --listener-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/abcdef1234
 
 Output::
 
     {
         "EndpointGroups": [
             {
-                "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234/endpoint-group/ab88888example",
-                "EndpointGroupRegion": "eu-central-1",
+                "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/listener/abcdef1234/endpoint-group/ab88888example",
+                "EndpointGroupRegion": "us-west-2",
                 "DestinationDescriptions": [
                     {
                         "FromPort": 80,
@@ -20,8 +20,8 @@ Output::
                             "TCP",
                             "UDP"
                         ]
-                    } 
-                ]
+                    }
+                ],
                 "EndpointDescriptions": [
                     {
                         "EndpointId": "subnet-abcd123example"

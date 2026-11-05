@@ -3,7 +3,7 @@
 The following ``list-command-invocations`` example lists all the invocations of a command. ::
 
     aws ssm list-command-invocations \
-        --command-id "ef7fdfd8-9b57-4151-a15c-db9a12345678" \
+        --command-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --details
 
 Output::
@@ -11,10 +11,10 @@ Output::
     {
         "CommandInvocations": [
             {
-                "CommandId": "ef7fdfd8-9b57-4151-a15c-db9a12345678",
+                "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "InstanceId": "i-02573cafcfEXAMPLE",
                 "InstanceName": "",
-                "Comment": "b48291dd-ba76-43e0-b9df-13e11ddaac26:6960febb-2907-4b59-8e1a-d6ce8EXAMPLE",
+                "Comment": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222:a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "DocumentName": "AWS-UpdateSSMAgent",
                 "DocumentVersion": "",
                 "RequestedDateTime": 1582136283.089,
@@ -30,10 +30,10 @@ Output::
                         "ResponseCode": 0,
                         "ResponseStartDateTime": 1582136283.419,
                         "ResponseFinishDateTime": 1582136283.51,
-                        "Output": "Updating amazon-ssm-agent from 2.3.842.0 to latest\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/ssm-agent-manifest.json\namazon-ssm-agent 2.3.842.0 has already been installed, update skipped\n",
+                        "Output": "Updating amazon-ssm-agent from 2.3.842.0 to latest\nSuccessfully downloaded https://s3.us-west-2.amazonaws.com/amazon-ssm-us-east-2/ssm-agent-manifest.json\namazon-ssm-agent 2.3.842.0 has already been installed, update skipped\n",
                         "StandardOutputUrl": "",
                         "StandardErrorUrl": "",
-                        "OutputS3Region": "us-east-2",
+                        "OutputS3Region": "us-west-2",
                         "OutputS3BucketName": "",
                         "OutputS3KeyPrefix": ""
                     }
@@ -50,10 +50,10 @@ Output::
                 }
             },
             {
-                "CommandId": "ef7fdfd8-9b57-4151-a15c-db9a12345678",
+                "CommandId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "InstanceId": "i-0471e04240EXAMPLE",
                 "InstanceName": "",
-                "Comment": "b48291dd-ba76-43e0-b9df-13e11ddaac26:6960febb-2907-4b59-8e1a-d6ce8EXAMPLE",
+                "Comment": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222:a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "DocumentName": "AWS-UpdateSSMAgent",
                 "DocumentVersion": "",
                 "RequestedDateTime": 1582136283.02,
@@ -69,12 +69,12 @@ Output::
                         "ResponseCode": 0,
                         "ResponseStartDateTime": 1582136283.812,
                         "ResponseFinishDateTime": 1582136295.031,
-                        "Output": "Updating amazon-ssm-agent from 2.3.672.0 to latest\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/ssm-agent-manifest.json\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent-updater/2.3.842.0/amazon-ssm-agent-updater-snap-amd64.tar.gz\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent/2.3.672.0/amazon-ssm-agent-snap-amd64.tar.gz\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent/2.3.842.0/amazon-ssm-agent-snap-amd64.tar.gz\nInitiating amazon-ssm-agent update to 2.3.842.0\namazon-ssm-agent updated successfully to 2.3.842.0",
+                        "Output": "Updating amazon-ssm-agent from 2.3.672.0 to latest\nSuccessfully downloaded https://s3.us-west-2.amazonaws.com/amazon-ssm-us-east-2/ssm-agent-manifest.json\nSuccessfully downloaded https://s3.us-west-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent-updater/2.3.842.0/amazon-ssm-agent-updater-snap-amd64.tar.gz\nSuccessfully downloaded https://s3.us-west-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent/2.3.672.0/amazon-ssm-agent-snap-amd64.tar.gz\nSuccessfully downloaded https://s3.us-west-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent/2.3.842.0/amazon-ssm-agent-snap-amd64.tar.gz\nInitiating amazon-ssm-agent update to 2.3.842.0\namazon-ssm-agent updated successfully to 2.3.842.0",
                         "StandardOutputUrl": "",
                         "StandardErrorUrl": "",
-                        "OutputS3Region": "us-east-2",
+                        "OutputS3Region": "us-west-2",
                         "OutputS3BucketName": "",
-                        "OutputS3KeyPrefix": "8bee3135-398c-4d31-99b6-e42d2EXAMPLE/i-0471e04240EXAMPLE/awsupdateSsmAgent"
+                        "OutputS3KeyPrefix": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444/i-0471e04240EXAMPLE/awsupdateSsmAgent"
                     }
                 ],
                 "ServiceRole": "",

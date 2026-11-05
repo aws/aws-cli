@@ -3,14 +3,14 @@
 The following ``create-phone-number-order`` example  creates a phone number order for the specified phone numbers. ::
 
     aws chime create-phone-number-order \
-        --product-type VoiceConnector \ 
+        --product-type VoiceConnector \
         --e164-phone-numbers "+12065550100" "+12065550101" "+12065550102"
 
 Output::
 
     {
         "PhoneNumberOrder": {
-            "PhoneNumberOrderId": "abc12345-de67-89f0-123g-h45i678j9012",
+            "PhoneNumberOrderId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "ProductType": "VoiceConnector",
             "Status": "Processing",
             "OrderedPhoneNumbers": [
@@ -19,12 +19,12 @@ Output::
                     "Status": "Processing"
                 },
                 {
-                   "E164PhoneNumber": "+12065550101",
-                   "Status": "Processing"
+                    "E164PhoneNumber": "+12065550101",
+                    "Status": "Processing"
                 },
                 {
-                  "E164PhoneNumber": "+12065550102",
-                  "Status": "Processing"
+                    "E164PhoneNumber": "+12065550102",
+                    "Status": "Processing"
                 }
             ],
             "CreatedTimestamp": "2019-08-09T21:35:21.427Z",

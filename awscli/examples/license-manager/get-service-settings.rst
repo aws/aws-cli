@@ -4,7 +4,9 @@ The following ``get-service-settings`` example displays the service settings for
 
     aws license-manager get-service-settings
 
-The following shows example output if cross-account resource discovery is disabled. ::
+The following shows example output if cross-account resource discovery is disabled.
+
+Output::
 
     {
         "OrganizationConfiguration": {
@@ -13,7 +15,9 @@ The following shows example output if cross-account resource discovery is disabl
         "EnableCrossAccountsDiscovery": false
     }
 
-The following shows example output if cross-account resource discovery is enabled. ::
+The following shows example output if cross-account resource discovery is enabled.
+
+Output::
 
     {
         "S3BucketArn": "arn:aws:s3:::aws-license-manager-service-c22d6279-35c4-47c4-bb",
@@ -22,3 +26,5 @@ The following shows example output if cross-account resource discovery is enable
         },
         "EnableCrossAccountsDiscovery": true
     }
+
+For more information, see `Settings in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/settings.html>`__ in the *AWS License Manager User Guide*.

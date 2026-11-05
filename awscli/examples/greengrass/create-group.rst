@@ -8,11 +8,11 @@ The following ``create-group`` example creates a group named ``cli-created-group
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/groups/4e22bd92-898c-436b-ade5-434d883ff749",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/groups/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreationTimestamp": "2019-06-25T18:07:17.688Z",
-        "Id": "4e22bd92-898c-436b-ade5-434d883ff749",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LastUpdatedTimestamp": "2019-06-25T18:07:17.688Z",
         "Name": "cli-created-group"
     }
 
-For more information, see `Overview of the AWS IoT Greengrass Group Object Model <https://docs.aws.amazon.com/greengrass/latest/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Deploy AWS IoT Greengrass groups to an AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.

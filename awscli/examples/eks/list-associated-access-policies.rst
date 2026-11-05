@@ -4,7 +4,7 @@ The following ``list-associated-access-policies`` example returns the list of ac
 
     aws eks list-associated-access-policies \
         --cluster-name eks-customer \
-        --principal-arn arn:aws:iam::111122223333:role/Admin
+        --principal-arn arn:aws:iam::123456789012:role/Admin
 
 Output::
 
@@ -21,7 +21,7 @@ Output::
             }
         ],
         "clusterName": "eks-customer",
-        "principalArn": "arn:aws:iam::111122223333:role/Admin"
+        "principalArn": "arn:aws:iam::123456789012:role/Admin"
     }
 
 For more information, see `Grant IAM users access to Kubernetes with EKS access entries <https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html>`__ in the *Amazon EKS User Guide*.

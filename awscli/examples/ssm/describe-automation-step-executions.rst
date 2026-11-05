@@ -3,7 +3,7 @@
 The following ``describe-automation-step-executions`` example displays details about the steps of an Automation execution. ::
 
     aws ssm describe-automation-step-executions \
-        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE
+        --automation-execution-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -24,7 +24,7 @@ Output::
                         "running"
                     ]
                 },
-                "StepExecutionId": "95e70479-cf20-4d80-8018-7e4e2EXAMPLE",
+                "StepExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "OverriddenParameters": {}
             }
         ]
@@ -35,7 +35,32 @@ Output::
 The following ``describe-automation-step-executions`` example displays details about a specific step of an Automation execution. ::
 
     aws ssm describe-automation-step-executions \
-        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE \
-        --filters Key=StepExecutionId,Values=95e70479-cf20-4d80-8018-7e4e2EXAMPLE
+        --automation-execution-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --filters Key=StepExecutionId,Values=a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
+
+Output::
+
+    {
+        "StepExecutions": [
+            {
+                "StepName": "startInstances",
+                "Action": "aws:changeInstanceState",
+                "ExecutionStartTime": 1583737234.134,
+                "ExecutionEndTime": 1583737234.672,
+                "StepStatus": "Success",
+                "Inputs": {
+                    "DesiredState": "\"running\"",
+                    "InstanceIds": "[\"i-0cb99161f6EXAMPLE\"]"
+                },
+                "Outputs": {
+                    "InstanceStates": [
+                        "running"
+                    ]
+                },
+                "StepExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "OverriddenParameters": {}
+            }
+        ]
+    }
 
 For more information, see `Running an Automation Workflow Step by Step (Command Line) <https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-working-executing-manually.html#automation-working-executing-manually-commandline>`__ in the *AWS Systems Manager User Guide*.

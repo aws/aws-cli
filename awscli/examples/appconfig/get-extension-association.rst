@@ -3,7 +3,6 @@
 The following ``get-extension-association`` example displays information about an extension association. ::
 
     aws appconfig get-extension-association \
-        --region us-west-2 \
         --extension-association-id a1b2c3d4
 
 Output::

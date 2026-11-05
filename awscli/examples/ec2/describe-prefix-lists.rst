@@ -1,21 +1,21 @@
 **To describe prefix lists**
 
-This example lists all available prefix lists for the region.
+The following ``describe-prefix-lists`` example lists all available prefix lists for the region. ::
 
-Command::
-
-  aws ec2 describe-prefix-lists
+    aws ec2 describe-prefix-lists
 
 Output::
 
-  {
-    "PrefixLists": [
-      {
-        "PrefixListName": "com.amazonaws.us-east-1.s3", 
-        "Cidrs": [
-          "54.231.0.0/17"
-        ], 
-        "PrefixListId": "pl-63a5400a"
-      }
-    ]
-  }
+    {
+        "PrefixLists": [
+            {
+                "PrefixListName": "com.amazonaws.us-west-2.s3",
+                "Cidrs": [
+                    "54.231.0.0/17"
+                ],
+                "PrefixListId": "pl-63a5400a"
+            }
+        ]
+    }
+
+For more information, see `AWS-managed prefix lists <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-aws-managed-prefix-lists.html>`__ in the *Amazon VPC User Guide*.

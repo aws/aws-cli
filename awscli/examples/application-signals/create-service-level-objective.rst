@@ -35,53 +35,53 @@ Contents of ``sli-config.json``::
         "MetricThreshold": 200,
         "ComparisonOperator": "LessThanOrEqualTo"
     }
-    
+
 Output::
 
     {
         "Slo": {
-        "Arn": "arn:aws:application-signals:us-east-1:123456789101:slo/SLOName",
-        "Name": "SLOName",
-        "Description": "Description of your SLO",
-        "CreatedTime": "2024-12-27T08:16:09.032000+05:30",
-        "LastUpdatedTime": "2024-12-27T08:16:09.032000+05:30",
-        "Sli": {
-            "SliMetric": {
-                "MetricDataQueries": [
-                    {
-                        "Id": "m1",
-                        "MetricStat": {
-                            "Metric": {
-                                "Namespace": "AWS/EC2",
-                                "MetricName": "CPUUtilization",
-                                "Dimensions": [
-                                    {
-                                        "Name": "InstanceId",
-                                        "Value": "i-0e59876543234522"
-                                    }
-                                ]
+            "Arn": "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName",
+            "Name": "SLOName",
+            "Description": "Description of your SLO",
+            "CreatedTime": "2024-12-27T08:16:09.032000+05:30",
+            "LastUpdatedTime": "2024-12-27T08:16:09.032000+05:30",
+            "Sli": {
+                "SliMetric": {
+                    "MetricDataQueries": [
+                        {
+                            "Id": "m1",
+                            "MetricStat": {
+                                "Metric": {
+                                    "Namespace": "AWS/EC2",
+                                    "MetricName": "CPUUtilization",
+                                    "Dimensions": [
+                                        {
+                                            "Name": "InstanceId",
+                                            "Value": "i-0e59876543234522"
+                                        }
+                                    ]
+                                },
+                                "Period": 60,
+                                "Stat": "Average"
                             },
-                            "Period": 60,
-                            "Stat": "Average"
-                        },
-                        "ReturnData": true
+                            "ReturnData": true
+                        }
+                    ]
+                },
+                "MetricThreshold": 200.0,
+                "ComparisonOperator": "LessThanOrEqualTo"
+            },
+            "EvaluationType": "PeriodBased",
+            "Goal": {
+                "Interval": {
+                    "RollingInterval": {
+                        "DurationUnit": "DAY",
+                        "Duration": 7
                     }
-                ]
-            },
-            "MetricThreshold": 200.0,
-            "ComparisonOperator": "LessThanOrEqualTo"
-        },
-        "EvaluationType": "PeriodBased",
-        "Goal": {
-            "Interval": {
-                "RollingInterval": {
-                    "DurationUnit": "DAY",
-                    "Duration": 7
-                }
-            },
-            "AttainmentGoal": 99.0,
-            "WarningThreshold": 50.0
-          }
+                },
+                "AttainmentGoal": 99.0,
+                "WarningThreshold": 50.0
+            }
         }
     }
 

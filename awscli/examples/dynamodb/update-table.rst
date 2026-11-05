@@ -47,7 +47,7 @@ Output::
             "TableSizeBytes": 182,
             "ItemCount": 2,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
-            "TableId": "abcd0123-01ab-23cd-0123-abcdef123456",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED",
                 "LastUpdateToPayPerRequestDateTime": "2020-07-28T13:14:48.366000-07:00"
@@ -59,7 +59,7 @@ For more information, see `Updating a Table <https://docs.aws.amazon.com/amazond
 
 **Example 2: To create a global secondary index**
 
-The following example adds a global secondary index to the ``MusicCollection`` table. ::
+The following ``update-table`` example adds a global secondary index to the ``MusicCollection`` table. ::
 
     aws dynamodb update-table \
         --table-name MusicCollection \
@@ -129,7 +129,7 @@ Output::
             "TableSizeBytes": 182,
             "ItemCount": 2,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
-            "TableId": "abcd0123-01ab-23cd-0123-abcdef123456",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED",
                 "LastUpdateToPayPerRequestDateTime": "2020-07-28T13:14:48.366000-07:00"
@@ -165,7 +165,7 @@ For more information, see `Updating a Table <https://docs.aws.amazon.com/amazond
 
 **Example 3: To enable DynamoDB Streams on a table**
 
-The following command enables DynamoDB Streams on the ``MusicCollection`` table. ::
+The following ``update-table`` example enables DynamoDB Streams on the ``MusicCollection`` table. ::
 
     aws dynamodb update-table \
         --table-name MusicCollection \
@@ -211,7 +211,7 @@ Output::
             "TableSizeBytes": 182,
             "ItemCount": 2,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
-            "TableId": "abcd0123-01ab-23cd-0123-abcdef123456",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED",
                 "LastUpdateToPayPerRequestDateTime": "2020-07-28T13:14:48.366000-07:00"
@@ -277,7 +277,7 @@ For more information, see `Updating a Table <https://docs.aws.amazon.com/amazond
 
 **Example 4: To enable server-side encryption**
 
-The following example enables server-side encryption on the ``MusicCollection`` table. ::
+The following ``update-table`` example enables server-side encryption on the ``MusicCollection`` table. ::
 
     aws dynamodb update-table \
         --table-name MusicCollection \
@@ -323,7 +323,7 @@ Output::
             "TableSizeBytes": 182,
             "ItemCount": 2,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection",
-            "TableId": "abcd0123-01ab-23cd-0123-abcdef123456",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED",
                 "LastUpdateToPayPerRequestDateTime": "2020-07-28T13:14:48.366000-07:00"

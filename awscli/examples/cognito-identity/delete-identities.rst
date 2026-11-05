@@ -1,13 +1,14 @@
 **To delete identity pool**
 
-This example deletes an identity pool.
+The following ``delete-identities`` example deletes the specified identity. ::
 
-Command::
-
-  aws cognito-identity delete-identities --identity-ids-to-delete "us-west-2:11111111-1111-1111-1111-111111111111"
+    aws cognito-identity delete-identities \
+        --identity-ids-to-delete "us-west-2:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
-  {
-    "UnprocessedIdentityIds": []
-  }
+    {
+        "UnprocessedIdentityIds": []
+    }
+
+For more information, see `Amazon Cognito identity pools <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html>`__ in the *Amazon Cognito Developer Guide*.

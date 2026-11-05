@@ -6,13 +6,13 @@ The following ``list-entitlements`` example displays a list of all entitlements 
 
 Output::
 
-   {
-       "Entitlements": [
-           {
-               "EntitlementArn": "arn:aws:mediaconnect:us-west-2:111122223333:entitlement:1-11aa22bb11aa22bb-3333cccc4444:MyEntitlement",
-               "EntitlementName": "MyEntitlement"
-           }
-       ]
-   }
+    {
+        "Entitlements": [
+            {
+                "EntitlementArn": "arn:aws:mediaconnect:us-west-2:123456789012:entitlement:1-11aa22bb11aa22bb-3333cccc4444:MyEntitlement",
+                "EntitlementName": "MyEntitlement"
+            }
+        ]
+    }
 
-For more information, see `ListEntitlements <https://docs.aws.amazon.com/mediaconnect/latest/api/v1-entitlements.html>`__ in the *AWS Elemental MediaConnect API Reference*.
+For more information, see `Managing entitlements in MediaConnect <https://docs.aws.amazon.com/mediaconnect/latest/ug/entitlements.html>`__ in the *AWS Elemental MediaConnect User Guide*.

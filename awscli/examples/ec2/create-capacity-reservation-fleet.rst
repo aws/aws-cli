@@ -3,12 +3,12 @@
 The following ``create-capacity-reservation-fleet`` example creates a Capacity Reservation Fleet for the instance type specified in the request, up to the specified total target capacity. The number of instances for which the Capacity Reservation Fleet reserves capacity depends on the total target capacity and instance type weights that you specify in the request. Specify the instance types to use and a priority for each of the designated instance types. ::
 
     aws ec2 create-capacity-reservation-fleet \
-    --total-target-capacity 24 \
-    --allocation-strategy prioritized \
-    --instance-match-criteria open \
-    --tenancy default \
-    --end-date 2022-12-31T23:59:59.000Z \
-    --instance-type-specifications file://instanceTypeSpecification.json
+        --total-target-capacity 24 \
+        --allocation-strategy prioritized \
+        --instance-match-criteria open \
+        --tenancy default \
+        --end-date 2022-12-31T23:59:59.000Z \
+        --instance-type-specifications file://instanceTypeSpecification.json
 
 Contents of ``instanceTypeSpecification.json``::
 
@@ -17,7 +17,7 @@ Contents of ``instanceTypeSpecification.json``::
             "InstanceType": "m5.xlarge",
             "InstancePlatform": "Linux/UNIX",
             "Weight": 3.0,
-            "AvailabilityZone":"us-east-1a",
+            "AvailabilityZone":"us-west-2a",
             "EbsOptimized": true,
             "Priority" : 1
         }
@@ -26,7 +26,7 @@ Contents of ``instanceTypeSpecification.json``::
 Output::
 
     {
-        "Status": "submitted", 
+        "State": "submitted", 
         "TotalFulfilledCapacity": 0.0, 
         "CapacityReservationFleetId": "crf-abcdef01234567890", 
         "TotalTargetCapacity": 24

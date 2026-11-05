@@ -8,7 +8,7 @@ The following ``enable-image`` example enables the specified AMI. ::
 Output::
 
     {
-        "Return": "true"
+        "Return": true
     }
 
 For more information, see `Disable an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/disable-an-ami.html>`__ in the *Amazon EC2 User Guide*.

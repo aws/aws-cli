@@ -655,13 +655,20 @@ class RuleSet:
     """Collection of rules to derive a routable service endpoint."""
 
     def __init__(
-        self, version, parameters, rules, partitions, documentation=None
+        self,
+        version,
+        parameters,
+        rules,
+        partitions,
+        documentation=None,
+        serviceId=None,
     ):
         self.version = version
         self.parameters = self._ingest_parameter_spec(parameters)
         self.rules = [RuleCreator.create(**rule) for rule in rules]
         self.rule_lib = RuleSetStandardLibary(partitions)
         self.documentation = documentation
+        self.service_id = serviceId
 
     def _ingest_parameter_spec(self, parameters):
         return {

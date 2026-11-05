@@ -11,7 +11,7 @@ Output::
 
     {
         "DiskImageFormat": "vmdk",
-        "ExportImageTaskId": "export-ami-1234567890abcdef0"
+        "ExportImageTaskId": "export-ami-1234567890abcdef0",
         "ImageId": "ami-1234567890abcdef0",
         "RoleName": "vmimport",
         "Progress": "0",
@@ -22,3 +22,5 @@ Output::
         "Status": "active",
         "StatusMessage": "validating"
     }
+
+For more information, see `Export a VM from an Amazon Machine Image (AMI) using VM Import/Export <https://docs.aws.amazon.com/vm-import/latest/userguide/vmexport_image.html>`__ in the *VM Import/Export User Guide*.

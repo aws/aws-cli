@@ -9,7 +9,7 @@ Output::
     {
         "monitors": [
             {
-                "monitorArn": "arn:aws:networkflowmonitor:us-east-1:123456789012:monitor/Demo",
+                "monitorArn": "arn:aws:networkflowmonitor:us-west-2:123456789012:monitor/Demo",
                 "monitorName": "Demo",
                 "monitorStatus": "ACTIVE"
             }

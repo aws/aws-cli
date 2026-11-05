@@ -1,6 +1,6 @@
 **To get a list of annotation import jobs**
 
-The following ``list-annotation-import-jobs`` gets a list of annotation import jobs. ::
+The following ``list-annotation-import-jobs`` example gets a list of annotation import jobs. ::
 
     aws omics list-annotation-import-jobs
 
@@ -11,7 +11,7 @@ Output::
             {
                 "creationTime": "2022-11-30T01:39:41.478294Z",
                 "destinationName": "gff_ann_store",
-                "id": "18a9e792-xmpl-4869-a105-e5b602900444",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "roleArn": "arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ",
                 "runLeftNormalization": false,
                 "status": "COMPLETED",
@@ -20,7 +20,7 @@ Output::
             {
                 "creationTime": "2022-11-30T00:45:58.007838Z",
                 "destinationName": "my_ann_store",
-                "id": "4e9eafc8-xmpl-431e-a0b2-3bda27cb600a",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "roleArn": "arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ",
                 "runLeftNormalization": false,
                 "status": "FAILED",

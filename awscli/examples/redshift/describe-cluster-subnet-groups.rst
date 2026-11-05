@@ -1,34 +1,29 @@
-Get a Description of All Cluster Subnet Groups
-----------------------------------------------
+**To get a description of all cluster subnet groups**
 
-This example returns a description of all cluster subnet groups.  By default, the output is in JSON format.
+The following ``describe-cluster-subnet-groups`` example returns a description of all cluster subnet groups.  By default, the output is in JSON format. ::
 
-Command::
+    aws redshift describe-cluster-subnet-groups
 
-   aws redshift describe-cluster-subnet-groups
-
-Result::
+Output::
 
     {
-       "ClusterSubnetGroups": [
-          {
-             "Subnets": [
-                {
-                   "SubnetStatus": "Active",
-                   "SubnetIdentifier": "subnet-763fdd1c",
-                   "SubnetAvailabilityZone": {
-                      "Name": "us-east-1a"
-                   }
-                }
-             ],
-             "VpcId": "vpc-7e3fdd14",
-             "SubnetGroupStatus": "Complete",
-             "Description": "My subnet group",
-             "ClusterSubnetGroupName": "mysubnetgroup"
-          }
-       ],
-       "ResponseMetadata": {
-          "RequestId": "37fa8c89-6990-11e2-8f75-ab4018764c77"
-       }
+        "ClusterSubnetGroups": [
+            {
+                "Subnets": [
+                    {
+                        "SubnetStatus": "Active",
+                        "SubnetIdentifier": "subnet-763fdd1c",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2a"
+                        }
+                    }
+                ],
+                "VpcId": "vpc-7e3fdd14",
+                "SubnetGroupStatus": "Complete",
+                "Description": "My subnet group",
+                "ClusterSubnetGroupName": "mysubnetgroup"
+            }
+        ]
     }
 
+For more information, see `Subnets for Redshift resources <https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-cluster-subnet-groups.html>`__ in the *Amazon Redshift Management Guide*.

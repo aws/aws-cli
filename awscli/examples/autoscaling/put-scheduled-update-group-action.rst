@@ -1,6 +1,6 @@
 **Example 1: To add a scheduled action to an Auto Scaling group**
 
-This example adds the specified scheduled action to the specified Auto Scaling group. ::
+The following ``put-scheduled-update-group-action`` example adds the specified scheduled action to the specified Auto Scaling group. ::
 
     aws autoscaling put-scheduled-update-group-action \
         --auto-scaling-group-name my-asg \
@@ -16,7 +16,7 @@ For more examples, see `Scheduled scaling <https://docs.aws.amazon.com/autoscali
 
 **Example 2: To specify a recurring schedule**
 
-This example creates a scheduled action to scale on a recurring schedule that is scheduled to execute at 00:30 hours on the first of January, June, and December every year. ::
+The following ``put-scheduled-update-group-action`` example creates a scheduled action to scale on a recurring schedule that is scheduled to execute at 00:30 hours on the first of January, June, and December every year. ::
 
     aws autoscaling put-scheduled-update-group-action \
         --auto-scaling-group-name my-asg \

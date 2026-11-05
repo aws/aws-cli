@@ -4,7 +4,7 @@ The following ``get-contact-attributes`` example retrieves the attributes that w
 
     aws connect get-contact-attributes \
         --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
-        --initial-contact-id 12345678-1111-2222-800e-a2b3c4d5f6g7
+        --initial-contact-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 

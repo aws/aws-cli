@@ -1,6 +1,6 @@
 **To search for faces in a collection that match faces detected in a video**
 
-The following ``start-face-search`` command starts a job to search for faces in a collection that match faces detected in the specified video file in an Amazon S3 bucket. ::
+The following ``start-face-search`` example starts a job to search for faces in a collection that match faces detected in the specified video file in an Amazon S3 bucket. ::
 
     aws rekognition start-face-search \
         --video "S3Object={Bucket=MyVideoS3Bucket,Name=MyVideoFile.mpg}" \

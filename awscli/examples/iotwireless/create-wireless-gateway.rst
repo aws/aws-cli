@@ -10,8 +10,8 @@ The following ``create-wireless-gateway`` example creates a wireless LoRaWAN dev
 Output::
 
     {
-        "Arn": "arn:aws:iotwireless:us-east-1:123456789012:WirelessGateway/12345678-a1b2-3c45-67d8-e90fa1b2c34d", 
-        "Id": "12345678-a1b2-3c45-67d8-e90fa1b2c34d"
+        "Arn": "arn:aws:iotwireless:us-west-2:123456789012:WirelessGateway/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111", 
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
 For more information, see `Connecting devices and gateways to AWS IoT Core for LoRaWAN <https://docs.aws.amazon.com/iot/latest/developerguide/connect-iot-lorawan.html>`__ in the *AWS IoT Developers Guide*.

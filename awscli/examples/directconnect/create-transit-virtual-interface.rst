@@ -4,7 +4,7 @@ The following ``create-transit-virtual-interface`` example creates a transit vir
 
     aws directconnect create-transit-virtual-interface \
         --connection-id dxlag-fEXAMPLE \
-        --new-transit-virtual-interface "virtualInterfaceName=Example Transit Virtual Interface,vlan=126,asn=65110,mtu=1500,authKey=0xzxgA9YoW9h58u8SvEXAMPLE,amazonAddress=192.168.1.1/30,customerAddress=192.168.1.2/30,addressFamily=ipv4,directConnectGatewayId=8384da05-13ce-4a91-aada-5a1baEXAMPLE,tags=[{key=Tag,value=Example}]"
+        --new-transit-virtual-interface "virtualInterfaceName=Example Transit Virtual Interface,vlan=126,asn=65110,mtu=1500,authKey=0xzxgA9YoW9h58u8SvEXAMPLE,amazonAddress=192.168.1.1/30,customerAddress=192.168.1.2/30,addressFamily=ipv4,directConnectGatewayId=a1b2c3d4-5678-90ab-cdef-EXAMPLE11111,tags=[{key=Tag,value=Example}]"
 
 Output::
 
@@ -28,7 +28,7 @@ Output::
             "mtu": 1500,
             "jumboFrameCapable": true,
             "virtualGatewayId": "",
-            "directConnectGatewayId": "8384da05-13ce-4a91-aada-5a1baEXAMPLE",
+            "directConnectGatewayId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "routeFilterPrefixes": [],
             "bgpPeers": [
                 {
@@ -43,7 +43,7 @@ Output::
                     "awsDeviceV2": "loc1-26wz6vEXAMPLE"
                 }
             ],
-            "region": "sa-east-1",
+            "region": "us-west-2",
             "awsDeviceV2": "loc1-26wz6vEXAMPLE",
             "tags": [
                 {
@@ -54,4 +54,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Transit Virtual Interface to the Direct Connect Gateway <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-vif.html#create-transit-vif>`__ in the *AWS Direct Connect User Guide*.
+For more information, see `Creating a Transit Virtual Interface to the Direct Connect Gateway <https://docs.aws.amazon.com/directconnect/latest/UserGuide/create-vif.html>`__ in the *AWS Direct Connect User Guide*.

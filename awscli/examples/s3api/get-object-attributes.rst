@@ -17,4 +17,4 @@ Output::
         "ObjectSize": 405
     }
 
-For more information, see `GetObjectAttributes <https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObjectAttributes.html>`__ in the Amazon S3 API Reference.
+For more information, see `Working with object metadata <https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingMetadata.html>`__ in the *Amazon S3 User Guide*.

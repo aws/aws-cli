@@ -14,4 +14,4 @@ Output::
         "AnalysisReportId": "report-0234d3ed98e28fb17"
     }
 
-For more information about creating performance analysis reports, see `Creating a performance analysis report in Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.UsingDashboard.CreatingPerfAnlysisReport.html>`__ in the *Amazon RDS User Guide* and `Creating a performance analysis report in Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.UsingDashboard.CreatingPerfAnlysisReport.html>`__ in the *Amazon Aurora User Guide*.
+For more information about creating performance analysis reports, see `AWS CLI examples for Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.API.Examples.html>`__ in the *Amazon RDS User Guide* and `AWS CLI examples for Performance Insights <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.API.Examples.html>`__ in the *Amazon Aurora User Guide*.

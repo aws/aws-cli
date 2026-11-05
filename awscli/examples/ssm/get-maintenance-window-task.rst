@@ -4,16 +4,16 @@ The following ``get-maintenance-window-task`` example retrieves details about th
 
     aws ssm get-maintenance-window-task \
         --window-id mw-0c5ed765acEXAMPLE \
-        --window-task-id 0e842a8d-2d44-4886-bb62-af8dcEXAMPLE
+        --window-task-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "ServiceRoleArn": "arn:aws:iam::111222333444:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM",
+        "ServiceRoleArn": "arn:aws:iam::123456789012:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM",
         "MaxErrors": "1",
         "TaskArn": "AWS-RunPowerShellScript",
         "MaxConcurrency": "1",
-        "WindowTaskId": "0e842a8d-2d44-4886-bb62-af8dcEXAMPLE",
+        "WindowTaskId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "TaskParameters": {},
         "Priority": 1,
         "TaskInvocationParameters": {
@@ -38,7 +38,7 @@ Output::
         "Targets": [
             {
                 "Values": [
-                    "84c818da-b619-4d3d-9651-946f3EXAMPLE"
+                    "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                 ],
                 "Key": "WindowTargetIds"
             }

@@ -1,37 +1,34 @@
-Modify the Subnets in a Cluster Subnet Group
---------------------------------------------
+**To modify the subnets in a cluster subnet group**
 
-This example shows how to modify the list of subnets in a cache subnet group.  By default, the output is in JSON format.
+The following ``modify-cluster-subnet-group`` example modifies the list of subnets in a cluster subnet group. By default, the output is in JSON format. ::
 
-Command::
+    aws redshift modify-cluster-subnet-group \
+        --cluster-subnet-group-name mysubnetgroup \
+        --subnet-ids subnet-763fdd1 subnet-ac830e9
 
-   aws redshift modify-cluster-subnet-group --cluster-subnet-group-name mysubnetgroup --subnet-ids subnet-763fdd1 subnet-ac830e9
-
-Result::
+Output::
 
     {
-       "ClusterSubnetGroup":
-       {
-          "Subnets": [
-             {
-                "SubnetStatus": "Active",
-                "SubnetIdentifier": "subnet-763fdd1c",
-                "SubnetAvailabilityZone":
-                   { "Name": "us-east-1a" }
-             },
-             {
-                "SubnetStatus": "Active",
-                "SubnetIdentifier": "subnet-ac830e9",
-                "SubnetAvailabilityZone":
-                   { "Name": "us-east-1b" }
-             } ],
-          "VpcId": "vpc-7e3fdd14",
-          "SubnetGroupStatus": "Complete",
-          "Description": "My subnet group",
-          "ClusterSubnetGroupName": "mysubnetgroup"
-       },
-       "ResponseMetadata": {
-          "RequestId": "8da93e89-8372-f936-93a8-873918938197a"
-       }
+        "ClusterSubnetGroup":
+        {
+            "Subnets": [
+                {
+                    "SubnetStatus": "Active",
+                    "SubnetIdentifier": "subnet-763fdd1c",
+                    "SubnetAvailabilityZone":
+                        { "Name": "us-west-2a" }
+                },
+                {
+                    "SubnetStatus": "Active",
+                    "SubnetIdentifier": "subnet-ac830e9",
+                    "SubnetAvailabilityZone":
+                        { "Name": "us-west-2b" }
+                } ],
+            "VpcId": "vpc-7e3fdd14",
+            "SubnetGroupStatus": "Complete",
+            "Description": "My subnet group",
+            "ClusterSubnetGroupName": "mysubnetgroup"
+        }
     }
 
+For more information, see `Modifying a cluster subnet group <https://docs.aws.amazon.com/redshift/latest/mgmt/modify-cluster-subnet-group.html>`__ in the *Amazon Redshift Management Guide*.

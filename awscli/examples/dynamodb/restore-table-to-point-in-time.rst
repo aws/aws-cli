@@ -42,7 +42,7 @@ Output::
             "TableSizeBytes": 0,
             "ItemCount": 0,
             "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollectionRestore",
-            "TableId": "befd9e0e-1843-4dc6-a147-d6d00e85cb1f",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "BillingModeSummary": {
                 "BillingMode": "PROVISIONED"
             },
@@ -54,4 +54,4 @@ Output::
         }
     }
 
-For more information, see `Point-in-Time Recovery for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html>`__ in the *Amazon DynamoDB Developer Guide*.
+For more information, see `Point-in-time backups for DynamoDB <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Point-in-time-recovery.html>`__ in the *Amazon DynamoDB Developer Guide*.

@@ -45,7 +45,7 @@ Output::
             ],
             "HostedZoneId": "Z1PVIF0EXAMPLE",
             "StorageEncrypted": true,
-            "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/287364e4-33e3-4755-a3b0-a1b2c3d4e5f6",
+            "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "DbClusterResourceId": "cluster-BIZ77GDSA2XBSTNPFW1EXAMPLE",
             "DBClusterArn": "arn:aws:rds:us-west-2:123456789012:cluster:sample-cluster-clone",
             "AssociatedRoles": [],

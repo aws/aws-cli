@@ -9,7 +9,7 @@ Output::
     {
         "responsePlanSummaries": [
             {
-                "arn": "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan",
+                "arn": "arn:aws:ssm-incidents::123456789012:response-plan/Example-Response-Plan",
                 "displayName": "Example response plan",
                 "name": "Example-Response-Plan"
             }

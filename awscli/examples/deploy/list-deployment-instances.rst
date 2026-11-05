@@ -14,3 +14,5 @@ Output::
             "i-EXAMPLE22"
         ]
     }
+
+For more information, see `View instance details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

@@ -6,4 +6,6 @@ The following ``tag-resource`` example adds a ``department`` tag to a workflow w
         --resource-arn arn:aws:omics:us-west-2:123456789012:workflow/1234567 \
         --tags department=analytics
 
-For more information, see `Tagging resources in Amazon Omics <https://docs.aws.amazon.com/omics/latest/dev/workflows.html>`__ in the *Amazon Omics Developer Guide*.
+This command produces no output.
+
+For more information, see `Tagging resources in HealthOmics <https://docs.aws.amazon.com/omics/latest/dev/tagging.html>`__ in the *Amazon Omics Developer Guide*.

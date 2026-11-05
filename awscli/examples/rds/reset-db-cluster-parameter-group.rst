@@ -20,8 +20,7 @@ The following ``reset-db-cluster-parameter-group`` example resets the parameter 
 
     aws rds reset-db-cluster-parameter-group \
         --db-cluster-parameter-group-name mydbclpgy \
-        --parameters "ParameterName=max_connections,ApplyMethod=immediate" \
-                     "ParameterName=max_allowed_packet,ApplyMethod=immediate"
+        --parameters "ParameterName=max_connections,ApplyMethod=immediate" "ParameterName=max_allowed_packet,ApplyMethod=immediate"
 
 Output::
 

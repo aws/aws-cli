@@ -10,19 +10,19 @@ Output::
     {
         "EventsDetectionJobProperties": {
             "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-            "JobArn": "arn:aws:comprehend:us-west-2:111122223333:events-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+            "JobArn": "arn:aws:comprehend:us-west-2:123456789012:events-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
             "JobName": "events_job_1",
             "JobStatus": "IN_PROGRESS",
             "SubmitTime": "2023-06-12T18:45:56.054000+00:00",
             "InputDataConfig": {
-                "S3Uri": "s3://amzn-s3-demo-bucket/EventsData",
+                "S3Uri": "s3://amzn-s3-demo-bucket1/EventsData",
                 "InputFormat": "ONE_DOC_PER_LINE"
             },
             "OutputDataConfig": {
-                "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/111122223333-EVENTS-123456abcdeb0e11022f22a11EXAMPLE/output/"
+                "S3Uri": "s3://amzn-s3-demo-bucket2/testfolder/123456789012-EVENTS-123456abcdeb0e11022f22a11EXAMPLE/output/"
             },
             "LanguageCode": "en",
-            "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role",
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role",
             "TargetEventTypes": [
                 "BANKRUPTCY",
                 "EMPLOYMENT",

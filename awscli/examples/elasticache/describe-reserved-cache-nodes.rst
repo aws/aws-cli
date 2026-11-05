@@ -31,4 +31,4 @@ Output::
         ]
     }
 
-For more information, see `Managing Costs with Reserved Nodes <https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/reserved-nodes.html>`__ in the *Elasticache User Guide*.
+For more information, see `Reserved nodes <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/CacheNodes.Reserved.html>`__ in the *Elasticache User Guide*.

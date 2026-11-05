@@ -51,7 +51,7 @@ For more information, see `Viewing details for a standard <https://docs.aws.amaz
 The following ``list-security-control-definitions`` example lists the available security controls for the CIS AWS Foundations Benchmark v1.4.0. This example limits the results to three controls. ::
 
     aws securityhub list-security-control-definitions \
-        --standards-arn "arn:aws:securityhub:us-east-1::standards/cis-aws-foundations-benchmark/v/1.4.0" \
+        --standards-arn "arn:aws:securityhub:us-west-2::standards/cis-aws-foundations-benchmark/v/1.4.0" \
         --max-items 3
 
 Output::

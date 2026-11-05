@@ -14,3 +14,5 @@ Output::
             "Id": "ou-examplerootid111-exampleouid111"
         }
     }
+
+For more information, see `Viewing details of an organizational unit (OU) with AWS Organizations <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_view_ou.html>`__ in the *AWS Organizations User Guide*.

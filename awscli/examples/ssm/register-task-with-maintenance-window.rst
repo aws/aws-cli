@@ -7,7 +7,8 @@ The following ``register-task-with-maintenance-window`` example registers an Aut
         --window-id "mw-082dcd7649EXAMPLE" \
         --targets Key=InstanceIds,Values=i-1234520122EXAMPLE \
         --task-arn AWS-RestartEC2Instance \
-        --service-role-arn arn:aws:iam::111222333444:role/SSM --task-type AUTOMATION \
+        --service-role-arn arn:aws:iam::123456789012:role/SSM \
+        --task-type AUTOMATION \
         --task-invocation-parameters "{\"Automation\":{\"DocumentVersion\":\"\$LATEST\",\"Parameters\":{\"InstanceId\":[\"{{RESOURCE_ID}}\"]}}}" \
         --priority 0 \
         --max-concurrency 1 \
@@ -31,8 +32,8 @@ The following ``register-task-with-maintenance-window`` example registers a Lamb
         --cli-binary-format raw-in-base64-out \
         --window-id "mw-082dcd7649dee04e4" \
         --targets Key=InstanceIds,Values=i-12344d305eEXAMPLE \
-        --task-arn arn:aws:lambda:us-east-1:111222333444:function:SSMTestLAMBDA \
-        --service-role-arn arn:aws:iam::111222333444:role/SSM \
+        --task-arn arn:aws:lambda:us-west-2:123456789012:function:SSMTestLAMBDA \
+        --service-role-arn arn:aws:iam::123456789012:role/SSM \
         --task-type LAMBDA \
         --task-invocation-parameters '{"Lambda":{"Payload":"{\"InstanceId\":\"{{RESOURCE_ID}}\",\"targetType\":\"{{TARGET_TYPE}}\"}","Qualifier":"$LATEST"}}' \
         --priority 0 \
@@ -57,7 +58,7 @@ The following ``register-task-with-maintenance-window`` example registers a Run 
         --cli-binary-format raw-in-base64-out \
         --window-id "mw-082dcd7649dee04e4" \
         --targets "Key=InstanceIds,Values=i-12344d305eEXAMPLE" \
-        --service-role-arn "arn:aws:iam::111222333444:role/SSM" \
+        --service-role-arn "arn:aws:iam::123456789012:role/SSM" \
         --task-type "RUN_COMMAND" \
         --name "SSMInstallPowerShellModule" \
         --task-arn "AWS-InstallPowerShellModule" \
@@ -81,9 +82,9 @@ The following ``register-task-with-maintenance-window`` example registers a Step
     aws ssm register-task-with-maintenance-window \
         --cli-binary-format raw-in-base64-out \
         --window-id "mw-1234d787d6EXAMPLE" \
-        --targets Key=WindowTargetIds,Values=12347414-69c3-49f8-95b8-ed2dcEXAMPLE \
-        --task-arn arn:aws:states:us-east-1:111222333444:stateMachine:SSMTestStateMachine \
-        --service-role-arn arn:aws:iam::111222333444:role/MaintenanceWindows \
+        --targets Key=WindowTargetIds,Values=a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --task-arn arn:aws:states:us-west-2:123456789012:stateMachine:SSMTestStateMachine \
+        --service-role-arn arn:aws:iam::123456789012:role/MaintenanceWindows \
         --task-type STEP_FUNCTIONS \
         --task-invocation-parameters '{"StepFunctions":{"Input":"{\"InstanceId\":\"{{RESOURCE_ID}}\"}"}}' \
         --priority 0 \
@@ -106,9 +107,9 @@ The following ``register-task-with-maintenance-window`` example registers a task
 
     aws ssm register-task-with-maintenance-window \
         --cli-binary-format raw-in-base64-out \
-        --targets "Key=WindowTargetIds,Values=350d44e6-28cc-44e2-951f-4b2c9EXAMPLE" \
+        --targets "Key=WindowTargetIds,Values=a1b2c3d4-5678-90ab-cdef-EXAMPLE22222" \
         --task-arn "AWS-RunShellScript" \
-        --service-role-arn "arn:aws:iam::111222333444:role/MaintenanceWindowsRole" \
+        --service-role-arn "arn:aws:iam::123456789012:role/MaintenanceWindowsRole" \
         --window-id "mw-ab12cd34eEXAMPLE" \
         --task-type "RUN_COMMAND" \
         --task-parameters  "{\"commands\":{\"Values\":[\"df\"]}}" \

@@ -8,4 +8,4 @@ The following ``flush-stage-cache`` example flushes the cache of a stage. ::
 
 This command produces no output.
 
-For more information, see `Flush the API stage cache in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html#flush-api-caching>`_ in the *Amazon API Gateway Developer Guide*.
+For more information, see `Cache settings for REST APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html#flush-api-caching>`__ in the *Amazon API Gateway Developer Guide*.

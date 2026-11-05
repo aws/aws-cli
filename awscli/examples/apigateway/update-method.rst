@@ -25,7 +25,7 @@ Output::
         "methodIntegration": {
             "type": "AWS",
             "httpMethod": "POST",
-            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789111:function:hello-world/invocations",
+            "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789111:function:hello-world/invocations",
             "passthroughBehavior": "WHEN_NO_MATCH",
             "contentHandling": "CONVERT_TO_TEXT",
             "timeoutInMillis": 29000,
@@ -52,7 +52,7 @@ The following ``update-method`` example modifies the method to require IAM autho
 
 Output::
 
-     {
+    {
         "httpMethod": "GET",
         "authorizationType": "AWS_IAM",
         "apiKeyRequired": false,
@@ -65,7 +65,7 @@ Output::
         "methodIntegration": {
             "type": "AWS",
             "httpMethod": "POST",
-            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789111:function:hello-world/invocations",
+            "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789111:function:hello-world/invocations",
             "passthroughBehavior": "WHEN_NO_MATCH",
             "contentHandling": "CONVERT_TO_TEXT",
             "timeoutInMillis": 29000,
@@ -84,14 +84,15 @@ Output::
 
 The following ``update-method`` example modifies the method to required Lambda authorization. ::
 
-    aws apigateway update-method --rest-api-id 1234123412 \
+    aws apigateway update-method \
+        --rest-api-id 1234123412 \
         --resource-id a1b2c3 \
         --http-method GET \
         --patch-operations op="replace",path="/authorizationType",value="CUSTOM" op="replace",path="/authorizerId",value="e4f5g6"
 
 Output::
 
-     {
+    {
         "httpMethod": "GET",
         "authorizationType": "CUSTOM",
         "authorizerId" : "e4f5g6",
@@ -105,7 +106,7 @@ Output::
         "methodIntegration": {
             "type": "AWS",
             "httpMethod": "POST",
-            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789111:function:hello-world/invocations",
+            "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123456789111:function:hello-world/invocations",
             "passthroughBehavior": "WHEN_NO_MATCH",
             "contentHandling": "CONVERT_TO_TEXT",
             "timeoutInMillis": 29000,

@@ -3,7 +3,7 @@
 The following ``list-approval-rule-templates`` example lists all approval rule templates in the specified Region. If no AWS Region is specified as a parameter, the command returns approval rule templates for the region specified in the AWS CLI profile used to run the command. ::
 
     aws codecommit list-approval-rule-templates \
-        --region us-east-2
+        --region us-west-2
 
 Output::
 

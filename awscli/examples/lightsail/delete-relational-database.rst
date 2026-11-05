@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "3b0c41c1-053d-46f0-92a3-14f76141dc86",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Database-1",
                 "resourceType": "RelationalDatabase",
                 "createdAt": 1569875210.999,
@@ -24,7 +24,7 @@ Output::
                 "statusChangedAt": 1569875210.999
             },
             {
-                "id": "01ddeae8-a87a-4a4b-a1f3-092c71bf9180",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "resourceName": "Database-1",
                 "resourceType": "RelationalDatabase",
                 "createdAt": 1569875211.029,
@@ -39,7 +39,7 @@ Output::
                 "statusChangedAt": 1569875211.029
             },
             {
-                "id": "74d73681-30e8-4532-974e-1f23cd3f9f73",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "resourceName": "Database-1-FinalSnapshot-1569875210793",
                 "resourceType": "RelationalDatabaseSnapshot",
                 "createdAt": 1569875211.029,
@@ -55,3 +55,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Delete a Lightsail database and create a final snapshot <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-deleting-your-database.html>`__ in the *Amazon Lightsail User Guide*.

@@ -38,4 +38,4 @@ Output::
         }
     }
 
-For more information, see `Replication Across AWS Regions Using Global Datastore <https://docs.amazonaws.cn/en_us/AmazonElastiCache/latest/red-ug/Redis-Global-Datastore.html>`__ in the *Elasticache User Guide*.
+For more information, see `Replication across AWS Regions using global datastores <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Redis-Global-Datastore.html>`__ in the *Amazon ElastiCache User Guide*.

@@ -13,20 +13,20 @@ Output::
                 "operationType": "ENABLE_CONTROL",
                 "status": "IN_PROGRESS",
                 "statusMessage": "Operation is in progress.",
-                "operationIdentifier": "f9f43b45-db27-44df-89d8-f9129e3632XX",
-                "controlIdentifier": "arn:aws:controltower:us-east-1::control/SKIBWKYUQAAC",
+                "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "controlIdentifier": "arn:aws:controltower:us-west-2::control/SKIBWKYUQAAC",
                 "targetIdentifier": "arn:aws:organizations::123456789012:ou/o-yy67i3pfv2/ou-slt4-8abknXXX",
-                "enabledControlIdentifier": "arn:aws:controltower:us-east-1:123456789012:enabledcontrol/RWZFSHV2BBRU6JSE"
+                "enabledControlIdentifier": "arn:aws:controltower:us-west-2:123456789012:enabledcontrol/RWZFSHV2BBRU6JSE"
             },
             {
                 "startTime": "2024-02-19T19:21:09+00:00",
                 "operationType": "ENABLE_CONTROL",
                 "status": "IN_PROGRESS",
                 "statusMessage": "Operation is in progress",
-                "operationIdentifier": "171ee0b1-e926-486e-9775-005bd244ccXX",
-                "controlIdentifier": "arn:aws:controltower:us-east-1::control/PDKYAANJEWJE",
+                "operationIdentifier": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "controlIdentifier": "arn:aws:controltower:us-west-2::control/PDKYAANJEWJE",
                 "targetIdentifier": "arn:aws:organizations::123456789012:ou/o-yy67i3pfv2/ou-slt4-fl6miXXX",
-                "enabledControlIdentifier": "arn:aws:controltower:us-east-2:123456789012:enabledcontrol/XCNJARWZFSHV6JSE"
+                "enabledControlIdentifier": "arn:aws:controltower:us-west-2:123456789012:enabledcontrol/XCNJARWZFSHV6JSE"
             }
         ]
     }

@@ -12,7 +12,7 @@ Output::
         "dataLakes": [
             {
                 "createStatus": "COMPLETED",
-                "dataLakeArn": "arn:aws:securitylake:us-east-1:522481757177:data-lake/default",
+                "dataLakeArn": "arn:aws:securitylake:us-east-1:123456789012:data-lake/default",
                 "encryptionConfiguration": {
                     "kmsKeyId": "S3_MANAGED_KEY"
                 },
@@ -32,18 +32,18 @@ Output::
                     "regions": [
                         "ap-northeast-3"
                     ],
-                    "roleArn": "arn:aws:securitylake:ap-northeast-3:522481757177:data-lake/default"
+                    "roleArn": "arn:aws:securitylake:ap-northeast-3:123456789012:data-lake/default"
                 },
                 "s3BucketArn": "arn:aws:s3:::aws-security-data-lake-us-east-1-gnevt6s8z7bzby8oi3uiaysbr8v2ml",
                 "updateStatus": {
                     "exception": {},
-                    "requestId": "f20a6450-d24a-4f87-a6be-1d4c075a59c2",
+                    "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "status": "INITIALIZED"
                 }
             },
             {
                 "createStatus": "COMPLETED",
-                "dataLakeArn": "arn:aws:securitylake:us-east-2:522481757177:data-lake/default",
+                "dataLakeArn": "arn:aws:securitylake:us-east-2:123456789012:data-lake/default",
                 "encryptionConfiguration": {
                     "kmsKeyId": "S3_MANAGED_KEY"
                 },
@@ -63,12 +63,12 @@ Output::
                     "regions": [
                         "ap-northeast-3"
                     ],
-                    "roleArn": "arn:aws:securitylake:ap-northeast-3:522481757177:data-lake/default"
+                    "roleArn": "arn:aws:securitylake:ap-northeast-3:123456789012:data-lake/default"
                 },
                 "s3BucketArn": "arn:aws:s3:::aws-security-data-lake-us-east-2-cehuifzl5rwmhm6m62h7zhvtseogr9",
                 "updateStatus": {
                     "exception": {},
-                    "requestId": "f20a6450-d24a-4f87-a6be-1d4c075a59c2",
+                    "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                     "status": "INITIALIZED"
                 }
             }
@@ -79,10 +79,10 @@ For more information, see `Getting started with Amazon Security Lake <https://do
 
 **Example 2: To configure your data lake in a single Region**
 
-The following ``create-data-lake`` example enables Amazon Security Lake in a single AWS Region and configures your data lake. ::
+The following ``update-data-lake`` example configures your Amazon Security Lake data lake in a single AWS Region. ::
 
-    aws securitylake create-data-lake \
-        --configurations '[{"encryptionConfiguration": {"kmsKeyId":"1234abcd-12ab-34cd-56ef-1234567890ab"},"region":"us-east-2","lifecycleConfiguration": {"expiration":{"days":500},"transitions":[{"days":30,"storageClass":"GLACIER"}]}}]' \
+    aws securitylake update-data-lake \
+        --configurations '[{"encryptionConfiguration": {"kmsKeyId":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"},"region":"us-east-2","lifecycleConfiguration": {"expiration":{"days":500},"transitions":[{"days":30,"storageClass":"GLACIER"}]}}]' \
         --meta-store-manager-role-arn "arn:aws:iam:us-east-1:123456789012:role/service-role/AmazonSecurityLakeMetaStoreManager"
 
 Output::
@@ -91,9 +91,9 @@ Output::
         "dataLakes": [
             {
                 "createStatus": "COMPLETED",
-                "dataLakeArn": "arn:aws:securitylake:us-east-2:522481757177:data-lake/default",
+                "dataLakeArn": "arn:aws:securitylake:us-east-2:123456789012:data-lake/default",
                 "encryptionConfiguration": {
-                    "kmsKeyId": "1234abcd-12ab-34cd-56ef-1234567890ab"
+                    "kmsKeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                 },
                 "lifecycleConfiguration": {
                     "expiration": {
@@ -111,12 +111,12 @@ Output::
                     "regions": [
                         "ap-northeast-3"
                     ],
-                    "roleArn": "arn:aws:securitylake:ap-northeast-3:522481757177:data-lake/default"
+                    "roleArn": "arn:aws:securitylake:ap-northeast-3:123456789012:data-lake/default"
                 },
                 "s3BucketArn": "arn:aws:s3:::aws-security-data-lake-us-east-2-cehuifzl5rwmhm6m62h7zhvtseogr9",
                 "updateStatus": {
                     "exception": {},
-                    "requestId": "77702a53-dcbf-493e-b8ef-518e362f3003",
+                    "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                     "status": "INITIALIZED"
                 }
             }

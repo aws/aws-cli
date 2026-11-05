@@ -1,6 +1,6 @@
 **To create a resource discovery**
 
-In this example, you're a delegated IPAM admin who wants to create and share a resource discovery with the IPAM admin in another AWS Organization so that the admin in the other organization can manage and monitor the IP addresses of resources in your organization.
+The following ``create-ipam-resource-discovery`` example creates an IPAM resource discovery. In this example, you're a delegated IPAM admin who wants to create and share a resource discovery with the IPAM admin in another AWS Organization so that the admin in the other organization can manage and monitor the IP addresses of resources in your organization.
 
 Important
 
@@ -11,7 +11,7 @@ Important
 
 In this example, the operating Regions of the IPAM we're integrating with include ``us-west-1``, ``us-west-2``, and ``ap-south-1``. When we create the resource discovery, we want IPAM to discover the resource IP addresses in ``us-west-1`` and ``us-west-2`` but not ``ap-south-1``. So we are including only ``--operating-regions RegionName='us-west-1' RegionName='us-west-2'`` in the request.
 
-The following ``create-ipam-resource-discovery`` example creates an IPAM resource discovery. ::
+To create the resource discovery, use the following command. ::
 
     aws ec2 create-ipam-resource-discovery \
         --description 'Example-resource-discovery' \
@@ -23,9 +23,9 @@ Output::
 
     {
         "IpamResourceDiscovery":{
-            "OwnerId": "149977607591",
+            "OwnerId": "123456789012",
             "IpamResourceDiscoveryId": "ipam-res-disco-0257046d8aa78b8bc",
-            "IpamResourceDiscoveryArn": "arn:aws:ec2::149977607591:ipam-resource-discovery/ipam-res-disco-0257046d8aa78b8bc", 
+            "IpamResourceDiscoveryArn": "arn:aws:ec2::123456789012:ipam-resource-discovery/ipam-res-disco-0257046d8aa78b8bc", 
             "IpamResourceDiscoveryRegion": "us-east-1",
             "Description": "'Example-resource-discovery'",
             "OperatingRegions":[
@@ -41,6 +41,7 @@ Output::
                     "Value": "cc123"
                 }
             ]
+        }
     }
 
 Once you create a resource discovery, you may want to share it with another IPAM delegated admin, which you can do with `create-resource-share <https://docs.aws.amazon.com/cli/latest/reference/ram/create-resource-share.html>`__. For more information, see `Integrate IPAM with accounts outside of your organization <https://docs.aws.amazon.com/vpc/latest/ipam/enable-integ-ipam-outside-org.html>`__ in the *Amazon VPC IPAM User Guide*.

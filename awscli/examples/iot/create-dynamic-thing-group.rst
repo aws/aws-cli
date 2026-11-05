@@ -11,7 +11,7 @@ Output::
     {
         "thingGroupName": "RoomTooWarm",
         "thingGroupArn": "arn:aws:iot:us-west-2:123456789012:thinggroup/RoomTooWarm",
-        "thingGroupId": "9d52492a-fc87-43f4-b6e2-e571d2ffcad1",
+        "thingGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "indexName": "AWS_Things",
         "queryString": "attributes.temperature>60",
         "queryVersion": "2017-09-30"

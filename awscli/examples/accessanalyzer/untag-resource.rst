@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes tags from the specified resource in your AWS account. ::
 
     aws accessanalyzer untag-resource \
-        --resource-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account \
+        --resource-arn arn:aws:access-analyzer:us-west-2:123456789012:analyzer/ConsoleAnalyzer-account \
         --tag-keys Environment Purpose
 
 This command produces no output.

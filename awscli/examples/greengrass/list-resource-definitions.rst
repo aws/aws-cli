@@ -9,21 +9,23 @@ Output::
     {
         "Definitions": [
             {
-                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/ad8c101d-8109-4b0e-b97d-9cc5802ab658",
+                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "CreationTimestamp": "2019-06-19T16:40:59.261Z",
-                "Id": "ad8c101d-8109-4b0e-b97d-9cc5802ab658",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "LastUpdatedTimestamp": "2019-06-19T16:40:59.261Z",
-                "LatestVersion": "26e8829a-491a-464d-9c87-664bf6f6f2be",
-                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/ad8c101d-8109-4b0e-b97d-9cc5802ab658/versions/26e8829a-491a-464d-9c87-664bf6f6f2be"
+                "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             },
             {
-                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/c8bb9ebc-c3fd-40a4-9c6a-568d75569d38",
+                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "CreationTimestamp": "2019-06-19T21:51:28.212Z",
-                "Id": "c8bb9ebc-c3fd-40a4-9c6a-568d75569d38",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "LastUpdatedTimestamp": "2019-06-19T21:51:28.212Z",
-                "LatestVersion": "a5f94d0b-f6bc-40f4-bb78-7a1c5fe13ba1",
-                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/c8bb9ebc-c3fd-40a4-9c6a-568d75569d38/versions/a5f94d0b-f6bc-40f4-bb78-7a1c5fe13ba1",
+                "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
+                "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "Name": "MyGreengrassResources"
             }
         ]
     }
+
+For more information, see `Access local resources with Lambda functions and connectors <https://docs.aws.amazon.com/greengrass/v1/developerguide/access-local-resources.html>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

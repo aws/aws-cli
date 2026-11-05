@@ -41,6 +41,36 @@
       "documentation":"<p>Cancels a Gremlin query. See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/gremlin-api-status-cancel.html\">Gremlin query cancellation</a> for more information.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#cancelquery\">neptune-db:CancelQuery</a> IAM action in that cluster.</p>",
       "idempotent":true
     },
+    "CancelIndexRebuild":{
+      "name":"CancelIndexRebuild",
+      "http":{
+        "method":"POST",
+        "requestUri":"/storage/indexes/rebuilds/{rebuildId}/cancel",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelIndexRebuildInput"},
+      "output":{"shape":"CancelIndexRebuildOutput"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"CancelledByMaintenanceException"},
+        {"shape":"ClientTimeoutException"},
+        {"shape":"CancelledByUserException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"PreconditionsFailedException"},
+        {"shape":"ServerShutdownException"},
+        {"shape":"ReadOnlyViolationException"},
+        {"shape":"ConstraintViolationException"},
+        {"shape":"InvalidArgumentException"}
+      ],
+      "documentation":"<p>Cancels an in-progress index rebuild operation.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#cancelindexrebuild\">neptune-db:CancelIndexRebuild</a> IAM action in that cluster.</p>",
+      "idempotent":true
+    },
     "CancelLoaderJob":{
       "name":"CancelLoaderJob",
       "http":{
@@ -315,6 +345,7 @@
         {"shape":"QueryLimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"QueryLimitException"},
+        {"shape":"CancelledByMaintenanceException"},
         {"shape":"ClientTimeoutException"},
         {"shape":"CancelledByUserException"},
         {"shape":"IllegalArgumentException"},
@@ -348,6 +379,7 @@
         {"shape":"QueryLimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"QueryLimitException"},
+        {"shape":"CancelledByMaintenanceException"},
         {"shape":"ClientTimeoutException"},
         {"shape":"CancelledByUserException"},
         {"shape":"IllegalArgumentException"},
@@ -381,6 +413,7 @@
         {"shape":"QueryLimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"QueryLimitException"},
+        {"shape":"CancelledByMaintenanceException"},
         {"shape":"ClientTimeoutException"},
         {"shape":"CancelledByUserException"},
         {"shape":"IllegalArgumentException"},
@@ -415,6 +448,7 @@
         {"shape":"QueryLimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"QueryLimitException"},
+        {"shape":"CancelledByMaintenanceException"},
         {"shape":"ClientTimeoutException"},
         {"shape":"CancelledByUserException"},
         {"shape":"IllegalArgumentException"},
@@ -450,6 +484,7 @@
         {"shape":"QueryLimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"QueryLimitException"},
+        {"shape":"CancelledByMaintenanceException"},
         {"shape":"ClientTimeoutException"},
         {"shape":"CancelledByUserException"},
         {"shape":"IllegalArgumentException"},
@@ -517,6 +552,32 @@
         {"shape":"MissingParameterException"}
       ],
       "documentation":"<p>Gets the status of a specified Gremlin query.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#getquerystatus\">neptune-db:GetQueryStatus</a> IAM action in that cluster.</p> <p>Note that the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-data-condition-keys.html#iam-neptune-condition-keys\">neptune-db:QueryLanguage:Gremlin</a> IAM condition key can be used in the policy document to restrict the use of Gremlin queries (see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-data-condition-keys.html\">Condition keys available in Neptune IAM data-access policy statements</a>).</p>",
+      "readonly":true
+    },
+    "GetIndexRebuildStatus":{
+      "name":"GetIndexRebuildStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/storage/indexes/rebuilds/{rebuildId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetIndexRebuildStatusInput"},
+      "output":{"shape":"GetIndexRebuildStatusOutput"},
+      "errors":[
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ClientTimeoutException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"PreconditionsFailedException"},
+        {"shape":"ConstraintViolationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the status of an index rebuild operation.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#getindexrebuildstatus\">neptune-db:GetIndexRebuildStatus</a> IAM action in that cluster.</p>",
       "readonly":true
     },
     "GetLoaderJobStatus":{
@@ -835,6 +896,31 @@
       "documentation":"<p>Gets a stream for an RDF graph.</p> <p>With the Neptune Streams feature, you can generate a complete sequence of change-log entries that record every change made to your graph data as it happens. <code>GetSparqlStream</code> lets you collect these change-log entries for an RDF graph.</p> <p>The Neptune streams feature needs to be enabled on your Neptune DBcluster. To enable streams, set the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/parameters.html#parameters-db-cluster-parameters-neptune_streams\">neptune_streams</a> DB cluster parameter to <code>1</code>.</p> <p>See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/streams.html\">Capturing graph changes in real time using Neptune streams</a>.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#getstreamrecords\">neptune-db:GetStreamRecords</a> IAM action in that cluster.</p> <p>Note that the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-data-condition-keys.html#iam-neptune-condition-keys\">neptune-db:QueryLanguage:Sparql</a> IAM condition key can be used in the policy document to restrict the use of SPARQL queries (see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-data-condition-keys.html\">Condition keys available in Neptune IAM data-access policy statements</a>).</p>",
       "readonly":true
     },
+    "GetStorageInfo":{
+      "name":"GetStorageInfo",
+      "http":{
+        "method":"GET",
+        "requestUri":"/storage/info",
+        "responseCode":200
+      },
+      "output":{"shape":"GetStorageOutput"},
+      "errors":[
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ClientTimeoutException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"PreconditionsFailedException"},
+        {"shape":"ServerShutdownException"},
+        {"shape":"ConstraintViolationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Retrieves storage information for the Neptune database instance, including approximate total storage used and per-category size and entry counts. Storage categories include:</p> <ul> <li> <p> <i>Quad indexes</i> - the indexes that store graph data, for both RDF (SPARQL) and Property Graph (Gremlin/openCypher) models.</p> </li> <li> <p> <i>Dictionaries</i> - the term dictionaries, including total dictionary storage and the portion used by blob (large value) entries.</p> </li> <li> <p> <i>Undo logs</i> - the undo logs, reported as a total size and the number of entries in the undo log list.</p> </li> <li> <p> <i>Streams</i> - the change-log streams.</p> </li> <li> <p> <i>Schema</i> - the schema.</p> </li> <li> <p> <i>DFE statistics</i> - the DFE engine statistics.</p> </li> <li> <p> <i>System metadata</i> - internal system metadata.</p> </li> </ul> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#getstorageinfo\">neptune-db:GetStorageInfo</a> IAM action in that cluster.</p>",
+      "readonly":true
+    },
     "ListGremlinQueries":{
       "name":"ListGremlinQueries",
       "http":{
@@ -863,6 +949,30 @@
         {"shape":"MissingParameterException"}
       ],
       "documentation":"<p>Lists active Gremlin queries. See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/gremlin-api-status.html\">Gremlin query status API</a> for details about the output.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#getquerystatus\">neptune-db:GetQueryStatus</a> IAM action in that cluster.</p> <p>Note that the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-data-condition-keys.html#iam-neptune-condition-keys\">neptune-db:QueryLanguage:Gremlin</a> IAM condition key can be used in the policy document to restrict the use of Gremlin queries (see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-data-condition-keys.html\">Condition keys available in Neptune IAM data-access policy statements</a>).</p>",
+      "readonly":true
+    },
+    "ListIndexRebuilds":{
+      "name":"ListIndexRebuilds",
+      "http":{
+        "method":"GET",
+        "requestUri":"/storage/indexes/rebuilds",
+        "responseCode":200
+      },
+      "output":{"shape":"ListIndexRebuildsOutput"},
+      "errors":[
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ClientTimeoutException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"PreconditionsFailedException"},
+        {"shape":"ConstraintViolationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Retrieves a list of all index rebuild operation identifiers.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#listindexrebuilds\">neptune-db:ListIndexRebuilds</a> IAM action in that cluster.</p>",
       "readonly":true
     },
     "ListLoaderJobs":{
@@ -1074,6 +1184,36 @@
         {"shape":"MissingParameterException"}
       ],
       "documentation":"<p>Manages the generation and use of RDF graph statistics.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#managestatistics\">neptune-db:ManageStatistics</a> IAM action in that cluster.</p>",
+      "idempotent":true
+    },
+    "StartIndexRebuild":{
+      "name":"StartIndexRebuild",
+      "http":{
+        "method":"POST",
+        "requestUri":"/storage/indexes/rebuilds",
+        "responseCode":200
+      },
+      "input":{"shape":"StartIndexRebuildInput"},
+      "output":{"shape":"StartIndexRebuildOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"MemoryLimitExceededException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"PreconditionsFailedException"},
+        {"shape":"ServerShutdownException"},
+        {"shape":"ReadOnlyViolationException"},
+        {"shape":"ConstraintViolationException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Initiates an index rebuild operation to optimize storage and improve query performance. The rebuild operation reorganizes index to reclaim space and improve efficiency.</p> <p>When invoking this operation in a Neptune cluster that has IAM authentication enabled, the IAM user or role making the request must have a policy attached that allows the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/iam-dp-actions.html#startindexrebuild\">neptune-db:StartIndexRebuild</a> IAM action in that cluster.</p>",
       "idempotent":true
     },
     "StartLoaderJob":{
@@ -1296,6 +1436,40 @@
         }
       }
     },
+    "CancelIndexRebuildInput":{
+      "type":"structure",
+      "required":["rebuildId"],
+      "members":{
+        "rebuildId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the index rebuild job to cancel.</p>",
+          "location":"uri",
+          "locationName":"rebuildId"
+        }
+      }
+    },
+    "CancelIndexRebuildOutput":{
+      "type":"structure",
+      "required":[
+        "status",
+        "concurrency",
+        "writeBufferSize"
+      ],
+      "members":{
+        "status":{
+          "shape":"RebuildStatus",
+          "documentation":"<p>The status of the cancellation request.</p>"
+        },
+        "concurrency":{
+          "shape":"RebuildConcurrency",
+          "documentation":"<p>The concurrency of the rebuild being cancelled, echoed from the original <code>StartIndexRebuild</code> request.</p>"
+        },
+        "writeBufferSize":{
+          "shape":"WriteBufferSize",
+          "documentation":"<p>The <code>WriteBufferSize</code> of the rebuild being cancelled, echoed from the original <code>StartIndexRebuild</code> request.</p>"
+        }
+      }
+    },
     "CancelLoaderJobInput":{
       "type":"structure",
       "required":["loadId"],
@@ -1446,6 +1620,33 @@
           "documentation":"<p>The cancelation payload for the openCypher query.</p>"
         }
       }
+    },
+    "CancelledByMaintenanceException":{
+      "type":"structure",
+      "required":[
+        "detailedMessage",
+        "requestId",
+        "code"
+      ],
+      "members":{
+        "detailedMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message describing the problem.</p>"
+        },
+        "requestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the request in question.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The HTTP status code returned with the exception.</p>"
+        }
+      },
+      "documentation":"<p>Raised when a request is cancelled because the storage layer entered maintenance mode. This typically happens during a customer-initiated operation such as an index rebuild. It should be treated like <code>ConcurrentModificationException</code>.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
     },
     "CancelledByUserException":{
       "type":"structure",
@@ -1736,6 +1937,20 @@
         }
       },
       "documentation":"<p>The payload for DeleteStatistics.</p>"
+    },
+    "DictionariesInfo":{
+      "type":"structure",
+      "members":{
+        "total":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>The total size and entry count across all dictionary entries.</p>"
+        },
+        "blobs":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>The size and entry count for the blob (large value) dictionary entries.</p>"
+        }
+      },
+      "documentation":"<p>Contains dictionary storage metrics for the Neptune database, including total dictionary size and entry count, and the size and count for blob (large value) entries.</p>"
     },
     "Document":{
       "type":"structure",
@@ -2123,6 +2338,67 @@
         "queryEvalStats":{
           "shape":"QueryEvalStats",
           "documentation":"<p>The evaluation status of the Gremlin query.</p>"
+        }
+      }
+    },
+    "GetIndexRebuildStatusInput":{
+      "type":"structure",
+      "required":["rebuildId"],
+      "members":{
+        "rebuildId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the index rebuild job returned by the StartIndexRebuild operation.</p>",
+          "location":"uri",
+          "locationName":"rebuildId"
+        }
+      }
+    },
+    "GetIndexRebuildStatusOutput":{
+      "type":"structure",
+      "required":[
+        "status",
+        "scope",
+        "concurrency",
+        "writeBufferSize",
+        "startTime",
+        "progressPercentage"
+      ],
+      "members":{
+        "status":{
+          "shape":"RebuildStatus",
+          "documentation":"<p>The current status of the rebuild operation. See <code>RebuildStatus</code> for possible values: <code>PREPARING</code>, <code>REBUILDING</code>, <code>COMPLETED</code>, <code>FAILED</code>, <code>CANCELLING</code> or <code>CANCELLED</code>.</p>"
+        },
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>The scope of the rebuild operation. See <code>Scope</code> for possible values: <code>ALL</code>, <code>QUADS</code>, or <code>DICTIONARIES</code>.</p>"
+        },
+        "concurrency":{
+          "shape":"RebuildConcurrency",
+          "documentation":"<p>The concurrency in effect for this rebuild, as echoed from the original <code>StartIndexRebuild</code> request.</p>"
+        },
+        "writeBufferSize":{
+          "shape":"WriteBufferSize",
+          "documentation":"<p>The <code>WriteBufferSize</code> in effect for this rebuild, as echoed from the original <code>StartIndexRebuild</code> request.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp indicating when the index rebuild operation started.</p>"
+        },
+        "progressPercentage":{
+          "shape":"Integer",
+          "documentation":"<p>The percentage of the index rebuild operation that has been completed, expressed as an integer from 0 to 100.</p>"
+        },
+        "estimatedEndTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The estimated ISO-8601 timestamp for when the index rebuild operation will complete. The estimate may change as the operation progresses.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp indicating when the index rebuild operation completed. This field is only present when the operation has completed (status is <code>COMPLETED</code>, <code>FAILED</code>, or <code>CANCELLED</code>).</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the failure, if the rebuild operation failed. This field is only populated when the status is <code>FAILED</code>.</p>"
         }
       }
     },
@@ -2604,6 +2880,43 @@
         }
       }
     },
+    "GetStorageOutput":{
+      "type":"structure",
+      "members":{
+        "totalStorageBytesUsed":{
+          "shape":"Long",
+          "documentation":"<p>The approximate total amount of storage used by the Neptune database instance, in bytes.</p>"
+        },
+        "quads":{
+          "shape":"QuadsIndexesInfo",
+          "documentation":"<p>Contains information about the quad indexes, including counts and sizes for both RDF (SPARQL) and Property Graph (Gremlin/openCypher) data.</p>"
+        },
+        "dictionaries":{
+          "shape":"DictionariesInfo",
+          "documentation":"<p>Contains information about the dictionaries, including total dictionary storage and the portion used by blob entries. For additional details on the storage of the Neptune dictionary, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/feature-overview-storage.html#feature-overview-storage-billing\">Neptune Storage Billing</a>.</p>"
+        },
+        "undoLogs":{
+          "shape":"UndoLogsMetrics",
+          "documentation":"<p>Contains information about the undo logs. The <code>sizeInBytes</code> field represents the total size of the undo logs in bytes, and the <code>listSize</code> field represents the number of entries in the undo log list.</p>"
+        },
+        "streams":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Contains storage metrics for the Neptune change-log streams, including size in bytes and entry count.</p>"
+        },
+        "dfeStatistics":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Contains storage metrics for the Neptune DFE engine statistics, including size in bytes and entry count.</p>"
+        },
+        "schema":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Contains storage metrics for the Neptune schema, including size in bytes and entry count.</p>"
+        },
+        "internals":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Contains storage metrics for Neptune system metadata, including size in bytes and entry count.</p>"
+        }
+      }
+    },
     "GraphSummaryType":{
       "type":"string",
       "enum":[
@@ -2827,6 +3140,16 @@
         "queries":{
           "shape":"GremlinQueries",
           "documentation":"<p>A list of the current queries.</p>"
+        }
+      }
+    },
+    "ListIndexRebuildsOutput":{
+      "type":"structure",
+      "required":["rebuildIds"],
+      "members":{
+        "rebuildIds":{
+          "shape":"RebuildIdList",
+          "documentation":"<p>A list of unique identifiers for index rebuild operations. Use each ID with the GetIndexRebuildStatus operation to retrieve detailed status information.</p>"
         }
       }
     },
@@ -3595,6 +3918,46 @@
       },
       "documentation":"<p>Payload for the property graph summary response.</p>"
     },
+    "QuadsIndexesInfo":{
+      "type":"structure",
+      "members":{
+        "RDF":{
+          "shape":"QuadsInfo",
+          "documentation":"<p>Contains quad index information for the RDF (SPARQL) data model.</p>"
+        },
+        "PG":{
+          "shape":"QuadsInfo",
+          "documentation":"<p>Contains quad index information for the Property Graph (Gremlin/openCypher) data model.</p>"
+        }
+      },
+      "documentation":"<p>Contains storage information about quad indexes for both RDF and Property Graph data models.</p>"
+    },
+    "QuadsInfo":{
+      "type":"structure",
+      "members":{
+        "SPOG":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Size and count information for the SPOG quad index.</p>"
+        },
+        "POGS":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Size and count information for the POGS quad index.</p>"
+        },
+        "GPSO":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Size and count information for the GPSO quad index.</p>"
+        },
+        "OSGP":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Size and count information for the OSGP quad index. This index is optional. For details on how to enable it and evaluate the benefits and costs, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/feature-overview-data-model.html\">Neptune Data Model</a>.</p>"
+        },
+        "PZSOG":{
+          "shape":"StorageMetrics",
+          "documentation":"<p>Size and count information for the PZSOG quad index.</p>"
+        }
+      },
+      "documentation":"<p>Contains storage information about quad indexes.</p>"
+    },
     "QueryEvalStats":{
       "type":"structure",
       "members":{
@@ -3791,6 +4154,27 @@
       },
       "exception":true
     },
+    "RebuildConcurrency":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "RebuildIdList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "RebuildStatus":{
+      "type":"string",
+      "documentation":"<p>Indicates the current state of a rebuild operation.</p>",
+      "enum":[
+        "PREPARING",
+        "REBUILDING",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED",
+        "CANCELLING"
+      ]
+    },
     "RefreshStatisticsIdMap":{
       "type":"structure",
       "members":{
@@ -3802,6 +4186,34 @@
       "documentation":"<p>Statistics for <code>REFRESH</code> mode.</p>"
     },
     "ReportAsText":{"type":"blob"},
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "detailedMessage",
+        "requestId",
+        "code"
+      ],
+      "members":{
+        "detailedMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message describing the problem.</p>"
+        },
+        "requestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the request in question.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The HTTP status code returned with the exception.</p>"
+        }
+      },
+      "documentation":"<p>Raised when the specified resource could not be found. The resource might have been deleted or the identifier might be incorrect.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "S3BucketRegion":{
       "type":"string",
       "enum":[
@@ -3871,6 +4283,15 @@
       },
       "exception":true,
       "retryable":{"throttling":false}
+    },
+    "Scope":{
+      "type":"string",
+      "documentation":"<p>Specifies the scope of the storage rebuild operation.</p>",
+      "enum":[
+        "ALL",
+        "QUADS",
+        "DICTIONARIES"
+      ]
     },
     "ServerShutdownException":{
       "type":"structure",
@@ -3945,6 +4366,66 @@
     "SparqlRecordsList":{
       "type":"list",
       "member":{"shape":"SparqlRecord"}
+    },
+    "StartIndexRebuildInput":{
+      "type":"structure",
+      "members":{
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies the scope of the rebuild operation. Possible values are:</p> <ul> <li> <p> <code>ALL</code> - Rebuild all (quads and dictionaries). This is the default if not specified.</p> </li> <li> <p> <code>QUADS</code> - Rebuild only the quad indexes. </p> </li> <li> <p> <code>DICTIONARIES</code> - Rebuild only the dictionaries.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"scope"
+        },
+        "concurrency":{
+          "shape":"RebuildConcurrency",
+          "documentation":"<p>The number of concurrent indexes to rebuild in parallel. If not specified, defaults to <code>1</code>.</p> <p>Valid values are between <code>1</code> and the number of vCPUs available on the writer instance. If the value exceeds the available vCPUs, it is capped at the maximum instead of returning an <code>InvalidParameterException</code>. The effective (capped) value is returned in the response.</p> <p>Higher concurrency can shorten the overall rebuild, but also increases CPU and I/O load during the operation.</p>",
+          "location":"querystring",
+          "locationName":"concurrency"
+        },
+        "writeBufferSize":{
+          "shape":"WriteBufferSize",
+          "documentation":"<p>Controls the buffer size used for tracking concurrent write operations during the index rebuild. If your database has high write traffic during the rebuild, a larger buffer prevents the operation from failing due to buffer overflow. Possible values are:</p> <ul> <li> <p> <code>LOW</code> - Suitable for databases with light to moderate write activity. This is the default.</p> </li> <li> <p> <code>MEDIUM</code> - Recommended for databases with sustained write traffic or bulk loading.</p> </li> <li> <p> <code>HIGH</code> - Use when rebuilding indexes during heavy write workloads or continuous bulk data ingestion.</p> </li> </ul> <p>If your rebuild fails and you are actively writing data to the database, retry with a higher <code>writeBufferSize</code> value. For bulk load operations, consider using <code>HIGH</code>.</p>",
+          "location":"querystring",
+          "locationName":"writeBufferSize"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, the SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartIndexRebuildOutput":{
+      "type":"structure",
+      "required":[
+        "status",
+        "rebuildId",
+        "scope",
+        "concurrency",
+        "writeBufferSize"
+      ],
+      "members":{
+        "status":{
+          "shape":"RebuildStatus",
+          "documentation":"<p>The current status of the rebuild operation. See <code>RebuildStatus</code> for possible values.</p>"
+        },
+        "rebuildId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the index rebuild job. Use this ID with the GetIndexRebuildStatus operation to check the progress of the rebuild.</p>"
+        },
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>The scope of the rebuild operation that was requested. See <code>Scope</code> for possible values: <code>ALL</code>, <code>QUADS</code>, or <code>DICTIONARIES</code>.</p>"
+        },
+        "concurrency":{
+          "shape":"RebuildConcurrency",
+          "documentation":"<p>The effective concurrency used for this rebuild. This is the value supplied in the request, capped at the number of vCPUs on the writer instance.</p>"
+        },
+        "writeBufferSize":{
+          "shape":"WriteBufferSize",
+          "documentation":"<p>The <code>WriteBufferSize</code> applied to this rebuild. See the <code>WriteBufferSize</code> enum for possible values.</p>"
+        }
+      }
     },
     "StartLoaderJobInput":{
       "type":"structure",
@@ -4374,6 +4855,24 @@
       },
       "documentation":"<p>Information about the characteristic sets generated in the statistics.</p>"
     },
+    "StorageMetrics":{
+      "type":"structure",
+      "required":[
+        "sizeInBytes",
+        "count"
+      ],
+      "members":{
+        "sizeInBytes":{
+          "shape":"Long",
+          "documentation":"<p>Storage size in bytes.</p>"
+        },
+        "count":{
+          "shape":"Long",
+          "documentation":"<p>The number of entries.</p>"
+        }
+      },
+      "documentation":"<p>Contains storage size and entry count metrics.</p>"
+    },
     "StreamRecordsNotFoundException":{
       "type":"structure",
       "required":[
@@ -4517,6 +5016,24 @@
       "exception":true,
       "retryable":{"throttling":false}
     },
+    "UndoLogsMetrics":{
+      "type":"structure",
+      "required":[
+        "sizeInBytes",
+        "listSize"
+      ],
+      "members":{
+        "sizeInBytes":{
+          "shape":"Long",
+          "documentation":"<p>The total size of the undo logs in bytes.</p>"
+        },
+        "listSize":{
+          "shape":"Long",
+          "documentation":"<p>The number of entries in the undo log list.</p>"
+        }
+      },
+      "documentation":"<p>Contains storage metrics for the Neptune undo logs, including the total size in bytes and the number of entries in the undo log list.</p>"
+    },
     "UnsupportedOperationException":{
       "type":"structure",
       "required":[
@@ -4544,6 +5061,43 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "detailedMessage",
+        "requestId",
+        "code"
+      ],
+      "members":{
+        "detailedMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message describing the problem.</p>"
+        },
+        "requestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the request in question.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The HTTP status code returned with the exception.</p>"
+        }
+      },
+      "documentation":"<p>Raised when a parameter value is not valid or is malformed.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "WriteBufferSize":{
+      "type":"string",
+      "documentation":"<p>Controls the buffer size used during an index rebuild to track concurrent write operations. Larger values allow the rebuild to tolerate heavier concurrent write traffic.</p>",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
     }
   },
   "documentation":"<p><fullname>Neptune Data API</fullname> <p>The Amazon Neptune data API provides SDK support for more than 40 of Neptune's data operations, including data loading, query execution, data inquiry, and machine learning. It supports the Gremlin and openCypher query languages, and is available in all SDK languages. It automatically signs API requests and greatly simplifies integrating Neptune into your applications.</p></p>"

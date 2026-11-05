@@ -5,8 +5,7 @@ The following ``disassociate-link`` example disassociates the specified link fro
     aws networkmanager disassociate-link \
         --global-network-id global-network-01231231231231231 \
         --device-id device-07f6fd08867abc123 \
-        --link-id link-11112222aaaabbbb1 \
-        --region us-west-2
+        --link-id link-11112222aaaabbbb1
 
 Output::
 
@@ -19,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Device and Link Associations <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#device-link-association>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Associate or disassociate a device link using AWS Network Manager <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-device-link-associate.html>`__ in the *Transit Gateway Network Manager Guide*.

@@ -11,7 +11,7 @@ Output::
 
     {
         "TaggedResources": [
-			{
+            {
                 "Tag": {
                     "Key": "clustertagkey",
                     "Value": "clustertagvalue"

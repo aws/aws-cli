@@ -8,8 +8,7 @@ The following ``create-link`` example creates a link in the specified global net
         --type "broadband" \
         --bandwidth UploadSpeed=10,DownloadSpeed=20 \
         --provider "AnyCompany" \
-        --site-id site-444555aaabbb11223 \
-        --region us-west-2
+        --site-id site-444555aaabbb11223
 
 Output::
 
@@ -31,4 +30,4 @@ Output::
         }
     }
 
-For more information, see `Working with Links <https://docs.aws.amazon.com/vpc/latest/tgw/on-premises-networks.html#working-with-links>`__ in the *Transit Gateway Network Manager Guide*.
+For more information, see `Sites and links in AWS Global Networks for Transit Gateways <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-sites.html>`__ in the *Transit Gateway Network Manager Guide*.

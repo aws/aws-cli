@@ -8,8 +8,8 @@ The following ``start-bulk-deployment`` example starts a bulk deployment operati
 Output::
 
     {
-        "BulkDeploymentArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/bulk/deployments/870fb41b-6288-4e0c-bc76-a7ba4b4d3267",
-        "BulkDeploymentId": "870fb41b-6288-4e0c-bc76-a7ba4b4d3267"
+        "BulkDeploymentArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/bulk/deployments/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "BulkDeploymentId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
-For more information, see `Create Bulk Deployments for Groups <https://docs.aws.amazon.com/greengrass/latest/developerguide/bulk-deploy-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Create bulk deployments for groups <https://docs.aws.amazon.com/greengrass/v1/developerguide/bulk-deploy-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.

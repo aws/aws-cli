@@ -2,14 +2,15 @@
 
 The following ``update-container-agent`` example updates the container agent on the specified container instance in the default cluster. ::
 
-    aws ecs update-container-agent --cluster default --container-instance a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+    aws ecs update-container-agent \
+        --cluster default \
+        --container-instance a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "containerInstance": {
             "status": "ACTIVE",
-    ...
             "agentUpdateStatus": "PENDING",
             "versionInfo": {
                 "agentVersion": "1.0.0",
@@ -19,4 +20,4 @@ Output::
         }
     }
 
-For more information, see `Updating the Amazon ECS Container Agent <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Updating the Amazon ECS container agent <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html>`__ in the *Amazon ECS Developer Guide*.

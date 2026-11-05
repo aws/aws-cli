@@ -12,7 +12,7 @@ Output::
                 "TransitGatewayAttachmentId": "tgw-attach-0a08e88308EXAMPLE",
                 "TransitGatewayId": "tgw-0043d72bb4EXAMPLE",
                 "VpcId": "vpc-0f501f7ee8EXAMPLE",
-                "VpcOwnerId": "111122223333",
+                "VpcOwnerId": "123456789012",
                 "State": "available",
                 "SubnetIds": [
                     "subnet-045d586432EXAMPLE",
@@ -33,4 +33,4 @@ Output::
         ]
     }
 
-For more information, see `View your VPC attachments <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#view-vpc-attachment>`__ in the *Transit Gateways Guide*.
+For more information, see `View your VPC attachments <https://docs.aws.amazon.com/vpc/latest/tgw/view-vpc-attachment.html>`__ in the *Transit Gateways Guide*.

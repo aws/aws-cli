@@ -10,9 +10,9 @@ Output::
     {
         "QueryLoggingConfigs": [
             {
-                "Id": "964ff34e-ae03-4f06-80a2-9683cexample",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "HostedZoneId": "Z1OX3WQEXAMPLE",
-                "CloudWatchLogsLogGroupArn": "arn:aws:logs:us-east-1:111122223333:log-group:/aws/route53/example.com:*"
+                "CloudWatchLogsLogGroupArn": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/route53/example.com:*"
             }
         ]
     }

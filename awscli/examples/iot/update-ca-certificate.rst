@@ -8,4 +8,4 @@ The following ``update-ca-certificate`` example sets the specified CA certificat
 
 This command produces no output.
 
-For more information, see `UpdateCACertificate <https://docs.aws.amazon.com/iot/latest/apireference/API_UpdateCACertificate.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Manage your CA certificates <https://docs.aws.amazon.com/iot/latest/developerguide/manage-your-CA-certs.html>`__ in the *AWS IoT Core Developer Guide*.

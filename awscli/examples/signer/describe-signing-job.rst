@@ -33,3 +33,5 @@ Output::
         "requestedBy": "arn:aws:iam::123456789012:user/maria",
         "createdAt": 1568412036
     }
+
+For more information, see `Create a signing job for IoT in AWS Signer <https://docs.aws.amazon.com/signer/latest/developerguide/signing-jobs-iot.html>`__ in the *AWS Signer Developer Guide*.

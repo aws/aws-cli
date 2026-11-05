@@ -8,9 +8,9 @@ The Json output is printed on one line per file, but is formatted here for reada
     aws comprehend start-sentiment-detection-job \
         --job-name example-sentiment-detection-job \
         --language-code en \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/MovieData" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/MovieData" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role
 
 Contents of ``SampleMovieReview1.txt``::
 
@@ -28,11 +28,11 @@ Output::
 
     {
         "JobId": "0b5001e25f62ebb40631a9a1a7fde7b3",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:sentiment-detection-job/0b5001e25f62ebb40631a9a1a7fde7b3",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:sentiment-detection-job/0b5001e25f62ebb40631a9a1a7fde7b3",
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``output.txt`` with line of indents for readability::
+Contents of ``output.txt``::
 
     {
         "File": "SampleMovieReview1.txt",

@@ -4,8 +4,7 @@ The following ``modify-db-cluster-parameter-group`` example modifies the Amazon 
 
     aws docdb modify-db-cluster-parameter-group \
         --db-cluster-parameter-group-name custom3-6-param-grp \
-        --parameters ParameterName=audit_logs,ParameterValue=enabled,ApplyMethod=pending-reboot \
-                     ParameterName=ttl_monitor,ParameterValue=enabled,ApplyMethod=pending-reboot
+        --parameters ParameterName=audit_logs,ParameterValue=enabled,ApplyMethod=pending-reboot ParameterName=ttl_monitor,ParameterValue=enabled,ApplyMethod=pending-reboot
 
 Output::
 

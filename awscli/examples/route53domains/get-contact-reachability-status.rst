@@ -1,6 +1,6 @@
 **To determine whether the registrant contact has responded to a confirmation email**
 
-The following ``get-contact-reachability-status`` command returns information about whether the registrant contact for the specified domain
+The following ``get-contact-reachability-status`` example returns information about whether the registrant contact for the specified domain
 has responded to a confirmation email. 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::

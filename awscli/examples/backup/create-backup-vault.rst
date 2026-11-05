@@ -2,7 +2,7 @@
 
 The following ``create-backup-vault`` example creates a backup vault with the specified name. ::
 
-    aws backup create-backup-vault 
+    aws backup create-backup-vault \
         --backup-vault-name sample-vault
 
 This command produces no output.
@@ -14,4 +14,4 @@ Output::
         "CreationDate": 1568928338.385
     }
 
-For more information, see `Creating a Backup Vault <https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-vault.html>`__ in the *AWS Backup Developer Guide*.
+For more information, see `Backup vault creation and deletion <https://docs.aws.amazon.com/aws-backup/latest/devguide/create-a-vault.html>`__ in the *AWS Backup Developer Guide*.

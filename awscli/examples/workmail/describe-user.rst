@@ -1,6 +1,6 @@
 **To retrieve user information**
 
-The following ``describe-user`` command retrieves information about the specified user. ::
+The following ``describe-user`` example retrieves information about the specified user. ::
 
     aws workmail describe-user \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \
@@ -17,3 +17,5 @@ Output::
         "UserRole": "USER",
         "EnabledDate": 1532459261.827
     }
+
+For more information, see `Working with users <https://docs.aws.amazon.com/workmail/latest/adminguide/users_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

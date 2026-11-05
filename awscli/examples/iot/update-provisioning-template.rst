@@ -6,7 +6,7 @@ The following ``update-provisioning-template`` example modifies the description 
         --template-name widget-template \
         --enabled \
         --description "An updated provisioning template for widgets" \
-        --provisioning-role-arn arn:aws:iam::504350838278:role/Provision_role
+        --provisioning-role-arn arn:aws:iam::123456789012:role/Provision_role
 
 This command produces no output.
 

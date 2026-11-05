@@ -73,6 +73,19 @@ class TestShortLogEventsFormatter(BaseLogEventsFormatterTest):
             '2018-01-01T00:29:43 my message\u00e9\n', colorize=False
         )
 
+    def test_flushes_output_after_each_event(self):
+        output = mock.Mock()
+        self.FORMATTER_CLS(output, colorize=False).display_log_event(
+            self.log_event
+        )
+        self.assertEqual(
+            output.method_calls,
+            [
+                mock.call.write('2018-01-01T00:29:43 my message\n'),
+                mock.call.flush(),
+            ],
+        )
+
 
 class TestPrettyJSONLogEventsFormatter(BaseLogEventsFormatterTest):
     FORMATTER_CLS = PrettyJSONLogEventsFormatter

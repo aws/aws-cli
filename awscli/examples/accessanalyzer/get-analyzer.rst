@@ -9,9 +9,9 @@ Output::
 
     {
         "analyzer": {
-            "arn": "arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account",
+            "arn": "arn:aws:access-analyzer:us-west-2:123456789012:analyzer/ConsoleAnalyzer-account",
             "createdAt": "2019-12-03T07:28:17+00:00",
-            "lastResourceAnalyzed": "arn:aws:sns:us-west-2:111122223333:config-topic",
+            "lastResourceAnalyzed": "arn:aws:sns:us-west-2:123456789012:config-topic",
             "lastResourceAnalyzedAt": "2024-02-15T18:01:53.003000+00:00",
             "name": "ConsoleAnalyzer-account",
             "status": "ACTIVE",

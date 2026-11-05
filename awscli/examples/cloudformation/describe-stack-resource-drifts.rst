@@ -1,16 +1,18 @@
 **To get information about resources that drifted from the stack definition**
 
-The following command displays information about drifted resources for the specified stack. To initiate drift detection, use the ``detect-stack-drift`` command.::
+The following ``describe-stack-resource-drifts`` example displays information about drifted resources for the specified stack. To initiate drift detection, use the ``detect-stack-drift`` command. ::
 
     aws cloudformation describe-stack-resource-drifts \
         --stack-name my-stack
 
-The output shows an AWS Lambda function that was modified out-of-band::
+The output shows an AWS Lambda function that was modified out-of-band.
+
+Output::
 
     {
         "StackResourceDrifts": [
             {
-                "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/d0a825a0-e4cd-xmpl-b9fb-061c69e99204",
+                "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/my-stack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "LogicalResourceId": "function",
                 "PhysicalResourceId": "my-function-SEZV4XMPL4S5",
                 "ResourceType": "AWS::Lambda::Function",
@@ -35,3 +37,5 @@ The output shows an AWS Lambda function that was modified out-of-band::
             }
         ]
     }
+
+For more information, see `Detect drift on an entire CloudFormation stack <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-stack.html>`__ in the *AWS CloudFormation User Guide*.

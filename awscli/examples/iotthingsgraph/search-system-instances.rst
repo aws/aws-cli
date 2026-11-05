@@ -26,8 +26,8 @@ Output::
                 "greengrassGroupName": "ThingsGraphGrnGr",
                 "createdAt": 1549416462.049,
                 "updatedAt": 1549416722.361,
-                "greengrassGroupId": "01d04b07-2a51-467f-9d03-0c90b3cdcaaf",
-                "greengrassGroupVersionId": "7365aed7-2d3e-4d13-aad8-75443d45eb05"
+                "greengrassGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "greengrassGroupVersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             },
             {
                 "id": "urn:tdm:us-west-2/123456789012/default:Deployment:MockDeployment2",
@@ -37,8 +37,8 @@ Output::
                 "greengrassGroupName": "ThingsGraphGrnGr",
                 "createdAt": 1549572385.774,
                 "updatedAt": 1549572418.408,
-                "greengrassGroupId": "01d04b07-2a51-467f-9d03-0c90b3cdcaaf",
-                "greengrassGroupVersionId": "bfa70ab3-2bf7-409c-a4d4-bc8328ae5b86"
+                "greengrassGroupId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "greengrassGroupVersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
             },
             {
                 "id": "urn:tdm:us-west-2/123456789012/default:Deployment:Room215",
@@ -59,5 +59,3 @@ Output::
             }
         ]
     }
-
-For more information, see `Working with Systems and Flow Configurations <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-sysdeploy.html>`__ in the *AWS IoT Things Graph User Guide*.

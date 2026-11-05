@@ -1,6 +1,6 @@
 **To create an IP set for use in your web ACLs and rule groups**
 
-The following ``create-ip-set`` command creates an IP set with a single address range specification. ::
+The following ``create-ip-set`` example creates an IP set with a single address range specification. ::
 
     aws wafv2 create-ip-set \
         --name testip \
@@ -15,7 +15,7 @@ Output::
             "ARN":"arn:aws:wafv2:us-west-2:123456789012:regional/ipset/testip/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Description":"",
             "Name":"testip",
-            "LockToken":"447e55ac-0000-0000-0000-86b67c17f8b5",
+            "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }

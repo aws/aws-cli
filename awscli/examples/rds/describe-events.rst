@@ -18,7 +18,7 @@ Output::
                 ],
                 "Message": "Backing up DB instance",
                 "Date": "2018-07-31T23:09:23.983Z",
-                "SourceArn": "arn:aws:rds:us-east-1:123456789012:db:test-instance"
+                "SourceArn": "arn:aws:rds:us-west-2:123456789012:db:test-instance"
             },
             {
                 "SourceType": "db-instance",
@@ -28,7 +28,9 @@ Output::
                 ],
                 "Message": "Finished DB Instance backup",
                 "Date": "2018-07-31T23:15:13.049Z",
-                "SourceArn": "arn:aws:rds:us-east-1:123456789012:db:test-instance"
+                "SourceArn": "arn:aws:rds:us-west-2:123456789012:db:test-instance"
             }
         ]
     }
+
+For more information, see `Viewing Amazon RDS events <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ListEvents.html>`__ in the *Amazon RDS User Guide*.

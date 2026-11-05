@@ -22,4 +22,4 @@ Output::
         ]
     }
 
-For more information, see `GetResources <https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html>`__ in the *Resource Groups Tagging API Reference*.
+For more information, see `Finding resources to tag <https://docs.aws.amazon.com/tag-editor/latest/userguide/find-resources-to-tag.html>`__ in the *Tagging AWS Resources and Tag Editor User Guide*.

@@ -9,6 +9,13 @@ The following ``create-job`` example creates a simple AWS IoT job that sends a J
         --description "example job test" \
         --target-selection SNAPSHOT
 
+Contents of ``example-job.json``::
+
+    {
+        "operation": "customJob",
+        "otherInfo": "someValue"
+    }
+
 Output::
 
     {

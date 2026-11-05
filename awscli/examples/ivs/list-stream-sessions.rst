@@ -18,7 +18,6 @@ Output::
                 "hasErrorEvent": false,
                 "streamId": "mystream"
             }
-            ...
         ]
     }
     

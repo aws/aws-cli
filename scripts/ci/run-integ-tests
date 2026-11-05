@@ -31,4 +31,6 @@ def run(command):
 
 if __name__ == "__main__":
     with cd(os.path.join(REPO_ROOT, "tests")):
-        run(f"{REPO_ROOT}/scripts/ci/run-tests integration")
+        # Tests are grouped per file (see tests/integration/conftest.py) except for
+        # large offline test files, which are distributed per test.
+        run(f"{REPO_ROOT}/scripts/ci/run-tests --dist loadgroup integration")

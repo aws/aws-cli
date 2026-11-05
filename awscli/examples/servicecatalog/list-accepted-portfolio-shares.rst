@@ -27,3 +27,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Sharing and Importing Portfolios <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_portfolios_sharing.html>`__ in the *AWS Service Catalog Administrator Guide*.

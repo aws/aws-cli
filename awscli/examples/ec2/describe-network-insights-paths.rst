@@ -11,7 +11,7 @@ Output::
         "NetworkInsightsPaths": [
             {
                 "NetworkInsightsPathId": "nip-0b26f224f1d131fa8",
-                "NetworkInsightsPathArn": "arn:aws:ec2:us-east-1:123456789012:network-insights-path/nip-0b26f224f1d131fa8",
+                "NetworkInsightsPathArn": "arn:aws:ec2:us-west-2:123456789012:network-insights-path/nip-0b26f224f1d131fa8",
                 "CreatedDate": "2021-01-20T22:43:46.933Z",
                 "Source": "igw-0797cccdc9d73b0e5",
                 "Destination": "i-0495d385ad28331c7",

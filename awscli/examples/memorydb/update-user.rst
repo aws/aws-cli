@@ -1,6 +1,6 @@
 **To update a user**
 
-The following ``update-user`` modifies a user's access string. ::
+The following ``update-user`` example modifies a user's access string. ::
 
     aws memorydb update-user \
         --user-name my-user \
@@ -21,7 +21,7 @@ Output::
                 "Type": "password",
                 "PasswordCount": 2
             },
-            "ARN": "arn:aws:memorydb:us-east-1:491658xxxxxx:user/my-user"
+            "ARN": "arn:aws:memorydb:us-west-2:491658xxxxxx:user/my-user"
         }
     }
 

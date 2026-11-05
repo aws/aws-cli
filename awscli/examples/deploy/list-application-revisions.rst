@@ -4,9 +4,9 @@ The following ``list-application-revisions`` example displays information about 
 
     aws deploy list-application-revisions \
         --application-name WordPress_App \
-        --s-3-bucket CodeDeployDemoBucket \
+        --s3-bucket CodeDeployDemoBucket \
         --deployed exclude \
-        --s-3-key-prefix WordPress_ \
+        --s3-key-prefix WordPress_ \
         --sort-by lastUsedTime \
         --sort-order descending
 
@@ -34,3 +34,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View application revision details with CodeDeploy <https://docs.aws.amazon.com/codedeploy/latest/userguide/application-revisions-view-details.html>`__ in the *AWS CodeDeploy User Guide*.

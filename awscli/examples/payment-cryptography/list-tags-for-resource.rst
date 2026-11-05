@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example gets the tags for a key. ::
 
     aws payment-cryptography list-tags-for-resource \
-        --resource-arn arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h
+        --resource-arn arn:aws:payment-cryptography:us-west-2:123456789012:key/kwapwa6qaifllw2h
 
 Output::
 

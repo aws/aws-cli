@@ -2,7 +2,7 @@
 
 The following ``create-experiment-template`` example creates an experiment template in your AWS FIS account. ::
 
-    aws fis create-experiment-template \ 
+    aws fis create-experiment-template \
         --cli-input-json file://myfile.json
 
 Contents of ``myfile.json``::
@@ -75,4 +75,4 @@ Output::
         }
     }
 
-For more information, see `Create an experiment template <https://docs.aws.amazon.com/fis/latest/userguide/working-with-templates.html#create-template>`__ in the *AWS Fault Injection Simulator User Guide*.
+For more information, see `Create an experiment template <https://docs.aws.amazon.com/fis/latest/userguide/create-template.html>`__ in the *AWS Fault Injection Simulator User Guide*.

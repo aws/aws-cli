@@ -24,7 +24,7 @@ Contents of ``listener-config.json``::
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE/listener/listener-07cc7fb0abEXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE/listener/listener-07cc7fb0abEXAMPLE",
         "defaultAction": {
             "forward": {
                 "targetGroups": [
@@ -39,7 +39,7 @@ Output::
         "name": "my-service-listener",
         "port": 443,
         "protocol": "HTTPS",
-        "serviceArn": "arn:aws:vpc-lattice:us-east-2:123456789012:service/svc-0285b53b2eEXAMPLE",
+        "serviceArn": "arn:aws:vpc-lattice:us-west-2:123456789012:service/svc-0285b53b2eEXAMPLE",
         "serviceId": "svc-0285b53b2eEXAMPLE"
     }
 

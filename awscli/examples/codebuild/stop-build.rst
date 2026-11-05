@@ -2,7 +2,8 @@
 
 The following ``stop-build`` example stops the specified CodeBuild build. ::
 
-    aws codebuild stop-build --id my-demo-project:12345678-a1b2-c3d4-e5f6-11111EXAMPLE
+    aws codebuild stop-build \
+        --id my-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -20,7 +21,7 @@ Output::
                 "location": "codebuild-us-west-2-123456789012-input-bucket/my-source.zip",
                 "type": "S3"
             },
-            "id": "my-demo-project:1a2b3c4d-5678-90ab-cdef-11111EXAMPLE",
+            "id": "my-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "endTime": 1556906974.781,
             "phases": [
                 {
@@ -102,7 +103,7 @@ Output::
                 }
             ],
             "artifacts": {
-                "location": "arn:aws:s3:::artifacts-override/my-demo-project",
+                "location": "arn:aws:s3:::amzn-s3-demo-bucket/my-demo-project",
                 "encryptionDisabled": false,
                 "overrideArtifactName": true
             },
@@ -121,12 +122,12 @@ Output::
                 "imagePullCredentialsType": "CODEBUILD"
             },
             "logs": {
-                "streamName": "1a2b3c4d-5678-90ab-cdef-11111EXAMPLE",
-                "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEvent:group=/aws/codebuild/my-demo-project;stream=1a2b3c4d-5678-90ab-cdef-11111EXAMPLE",
+                "streamName": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEvent:group=/aws/codebuild/my-demo-project;stream=a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "groupName": "/aws/codebuild/my-demo-project"
             },
-            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/my-demo-project:1a2b3c4d-5678-90ab-cdef-11111EXAMPLE"
+            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/my-demo-project:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }
 
-For more information, see `Stop a Build (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/stop-build.html#stop-build-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Stop builds in AWS CodeBuild <https://docs.aws.amazon.com/codebuild/latest/userguide/stop-build.html#stop-build-cli>`__ in the *AWS CodeBuild User Guide*.

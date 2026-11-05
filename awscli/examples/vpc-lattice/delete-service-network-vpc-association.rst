@@ -8,7 +8,7 @@ The following ``delete-service-network-vpc-association`` example disassociates t
 Output::
 
     {
-        "arn": "arn:aws:vpc-lattice:us-east-2:123456789012:servicenetworkvpcassociation/snva-0821fc8631EXAMPLE",
+        "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:servicenetworkvpcassociation/snva-0821fc8631EXAMPLE",
         "id": "snva-0821fc8631EXAMPLE",
         "status": "DELETE_IN_PROGRESS"
     }

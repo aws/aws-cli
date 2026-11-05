@@ -4,13 +4,13 @@ The following ``create-monitor`` example creates a monitor named ``demo`` in the
 
     aws networkflowmonitor create-monitor \
         --monitor-name demo \
-        --local-resources type="AWS::EC2::VPC",identifier="arn:aws:ec2:us-east-1:123456789012:vpc/vpc-03ea55eeda25adbb0"  \
-        --scope-arn arn:aws:networkflowmonitor:us-east-1:123456789012:scope/e21cda79-30a0-4c12-9299-d8629d76d8cf
+        --local-resources type="AWS::EC2::VPC",identifier="arn:aws:ec2:us-west-2:123456789012:vpc/vpc-03ea55eeda25adbb0"  \
+        --scope-arn arn:aws:networkflowmonitor:us-west-2:123456789012:scope/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "monitorArn": "arn:aws:networkflowmonitor:us-east-1:123456789012:monitor/demo",
+        "monitorArn": "arn:aws:networkflowmonitor:us-west-2:123456789012:monitor/demo",
         "monitorName": "demo",
         "monitorStatus": "ACTIVE",
         "tags": {}

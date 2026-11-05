@@ -10,3 +10,5 @@ Output::
     {
         "isOptedOut": false
     }
+
+For more information, see `Managing Amazon SNS phone numbers and subscriptions <https://docs.aws.amazon.com/sns/latest/dg/sms_manage.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

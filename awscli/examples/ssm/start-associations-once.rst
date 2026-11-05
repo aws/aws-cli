@@ -3,7 +3,7 @@
 The following ``start-associations-once`` example run the specified association immediately and only once. There is no output if the command succeeds. ::
 
     aws ssm start-associations-once \
-        --association-id "8dfe3659-4309-493a-8755-0123456789ab"
+        --association-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
 

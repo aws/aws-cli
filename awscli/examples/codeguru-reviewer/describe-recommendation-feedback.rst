@@ -1,6 +1,6 @@
 **To view information about feedback on a recommendation**
 
-The following ``describe-recommendation-feedback`` displays information about feedback on a recommendation. This recommendation has one ``ThumbsUp`` reaction. ::
+The following ``describe-recommendation-feedback`` example displays information about feedback on a recommendation. This recommendation has one ``ThumbsUp`` reaction. ::
 
     aws codeguru-reviewer describe-recommendation-feedback \
         --code-review-arn arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:code-review:RepositoryAnalysis-my-repository-name-branch-abcdefgh12345678 \

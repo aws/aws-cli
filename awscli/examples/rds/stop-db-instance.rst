@@ -9,7 +9,9 @@ Output::
 
     {
         "DBInstance": {
-            "DBInstanceStatus": "stopping",
-            ...some output truncated...
+            "DBInstanceIdentifier": "test-instance",
+            "DBInstanceStatus": "stopping"
         }
     }
+
+For more information, see `Stopping an Amazon RDS DB instance temporarily <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_StopInstance.html>`__ in the *Amazon RDS User Guide*.

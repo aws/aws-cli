@@ -3,7 +3,7 @@
 The following ``list-provisioned-capacity`` example retrieves details for any provisioned capacity units for the specified account. ::
 
     aws glacier list-provisioned-capacity \
-        --account-id 111122223333
+        --account-id 123456789012
 
 Output::
 
@@ -16,3 +16,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Retrieving Amazon Glacier Archives <https://docs.aws.amazon.com/amazonglacier/latest/dev/downloading-an-archive-two-steps.html>`__ in the *Amazon Glacier Developer Guide*.

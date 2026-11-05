@@ -17,7 +17,7 @@ Output::
                 "AllocatedStorage": 20,
                 "Status": "available",
                 "Port": 3306,
-                "AvailabilityZone": "us-east-1f",
+                "AvailabilityZone": "us-west-2d",
                 "VpcId": "vpc-6594f31c",
                 "InstanceCreateTime": "2018-02-08T22:24:55.973Z",
                 "MasterUsername": "mysqladmin",
@@ -28,7 +28,7 @@ Output::
                 "PercentProgress": 100,
                 "StorageType": "gp2",
                 "Encrypted": false,
-                "DBSnapshotArn": "arn:aws:rds:us-east-1:123456789012:snapshot:mydbsnapshot",
+                "DBSnapshotArn": "arn:aws:rds:us-west-2:123456789012:snapshot:mydbsnapshot",
                 "IAMDatabaseAuthenticationEnabled": false,
                 "ProcessorFeatures": [],
                 "DbiResourceId": "db-AKIAIOSFODNN7EXAMPLE"
@@ -40,12 +40,11 @@ For more information, see `Creating a DB Snapshot <https://docs.aws.amazon.com/A
 
 **Example 2: To find the number of manual snapshots taken**
 
-The following ``describe-db-snapshots`` example uses the ``length`` operator in the ``--query`` option to return the number of manual snapshots that have been taken in a particular AWS Region. ::
+The following ``describe-db-snapshots`` example uses the ``length`` operator in the ``--query`` option to return the number of manual snapshots that have been taken in the current AWS Region. ::
 
     aws rds describe-db-snapshots \
         --snapshot-type manual \
-        --query "length(*[].{DBSnapshots:SnapshotType})" \
-        --region eu-central-1
+        --query "length(*[].{DBSnapshots:SnapshotType})"
 
 Output::
 

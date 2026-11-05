@@ -5,7 +5,7 @@ The following ``start-build`` example starts a build for the specified CodeBuild
     aws codebuild start-build \
         --project-name "my-demo-project" \
         --queued-timeout-in-minutes-override 5 \
-        --artifacts-override {"\"type\": \"S3\",\"location\": \"arn:aws:s3:::artifacts-override\",\"overrideArtifactName\":true"}
+        --artifacts-override {"\"type\": \"S3\",\"location\": \"arn:aws:s3:::amzn-s3-demo-bucket\",\"overrideArtifactName\":true"}
 
 Output::
 
@@ -51,16 +51,16 @@ Output::
             },
             "artifacts": {
                 "encryptionDisabled": false,
-                "location": "arn:aws:s3:::artifacts-override/my-demo-project",
+                "location": "arn:aws:s3:::amzn-s3-demo-bucket/my-demo-project",
                 "overrideArtifactName": true
             },
             "cache": {
                 "type": "NO_CACHE"
             },
-            "id": "my-demo-project::12345678-a1b2-c3d4-e5f6-11111EXAMPLE",
+            "id": "my-demo-project::a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "initiator": "my-aws-account-name",
-            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/my-demo-project::12345678-a1b2-c3d4-e5f6-11111EXAMPLE"
+            "arn": "arn:aws:codebuild:us-west-2:123456789012:build/my-demo-project::a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         }
     }
 
-For more information, see `Run a Build (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/run-build.html#run-build-cli>`_ in the *AWS CodeBuild User Guide*.
+For more information, see `Run a build (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/run-build-cli.html>`__ in the *AWS CodeBuild User Guide*.

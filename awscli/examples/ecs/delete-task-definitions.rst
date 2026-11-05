@@ -10,7 +10,7 @@ Output::
     {
     "taskDefinitions": [
         {
-            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/curltest:1",
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/curltest:1",
             "containerDefinitions": [
                 {
                     "name": "ctest",
@@ -33,7 +33,7 @@ Output::
                         "options": {
                             "awslogs-create-group": "true",
                             "awslogs-group": "/ecs/curltest",
-                            "awslogs-region": "us-east-1",
+                            "awslogs-region": "us-west-2",
                             "awslogs-stream-prefix": "ecs"
                         }
                     }
@@ -63,4 +63,4 @@ Output::
         "failures": []
     }
 
-For more information, see `Amazon ECS Task Definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Amazon ECS task definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.

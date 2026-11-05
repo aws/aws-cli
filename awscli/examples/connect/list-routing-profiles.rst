@@ -10,10 +10,10 @@ Output::
     {
         "RoutingProfileSummaryList": [
             {
-                "Id": "12345678-1111-2222-800e-a2b3c4d5f6g7",
-                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/routing-profile/12345678-1111-2222-800e-a2b3c4d5f6g7",
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "Arn": "arn:aws:connect:us-west-2:123456789012:instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/routing-profile/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Name": "Basic Routing Profile"
-            },
+            }
         ]
     }
 

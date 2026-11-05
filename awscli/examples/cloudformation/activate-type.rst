@@ -3,7 +3,6 @@
 The following ``activate-type`` example activates a public third-party extension, making it available for use in stack templates. ::
 
     aws cloudformation activate-type \
-        --region us-west-2 \
         --type RESOURCE \
         --type-name Example::Test::1234567890abcdef0 \
         --type-name-alias Example::Test::Alias

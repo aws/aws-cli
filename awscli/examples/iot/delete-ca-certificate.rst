@@ -7,4 +7,4 @@ The following ``delete-ca-certificate`` example deletes the CA certificate with 
 
 This command produces no output.
 
-For more information, see `DeleteCACertificate <https://docs.aws.amazon.com/iot/latest/apireference/API_DeleteCACertificate.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Manage your CA certificates <https://docs.aws.amazon.com/iot/latest/developerguide/manage-your-CA-certs.html>`__ in the *AWS IoT Developer Guide*.

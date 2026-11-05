@@ -3,7 +3,7 @@
 The following ``delete-response-plan`` example deletes the specified response plan. ::
 
     aws ssm-incidents delete-response-plan \
-        --arn "arn:aws:ssm-incidents::111122223333:response-plan/example-response"
+        --arn "arn:aws:ssm-incidents::123456789012:response-plan/example-response"
 
 This command produces no output.
 

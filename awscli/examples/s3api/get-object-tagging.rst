@@ -54,3 +54,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Tagging your objects <https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-tagging.html>`__ in the *Amazon S3 User Guide*.

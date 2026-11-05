@@ -10,9 +10,9 @@ Output::
     {
         "OpsItemSummaries": [
             {
-                "CreatedBy": "arn:aws:sts::111222333444:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
+                "CreatedBy": "arn:aws:sts::123456789012:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
                 "CreatedTime": "2020-03-14T17:02:46.375000-07:00",
-                "LastModifiedBy": "arn:aws:sts::111222333444:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
+                "LastModifiedBy": "arn:aws:sts::123456789012:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
                 "LastModifiedTime": "2020-03-14T17:02:46.375000-07:00",
                 "Source": "SSM",
                 "Status": "Open",
@@ -24,7 +24,7 @@ Output::
                         "Type": "SearchableString"
                     },
                     "/aws/resources": {
-                        "Value": "[{\"arn\":\"arn:aws:ssm:us-east-2:111222333444:maintenancewindow/mw-034093d322EXAMPLE\"}]",
+                        "Value": "[{\"arn\":\"arn:aws:ssm:us-west-2:123456789012:maintenancewindow/mw-034093d322EXAMPLE\"}]",
                         "Type": "SearchableString"
                     }
                 },
@@ -34,7 +34,7 @@ Output::
             {
                 "CreatedBy": "arn:aws:sts::1112223233444:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
                 "CreatedTime": "2020-02-26T11:43:15.426000-08:00",
-                "LastModifiedBy": "arn:aws:sts::111222333444:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
+                "LastModifiedBy": "arn:aws:sts::123456789012:assumed-role/OpsItem-CWE-Role/fbf77cbe264a33509569f23e4EXAMPLE",
                 "LastModifiedTime": "2020-02-26T11:43:15.426000-08:00",
                 "Source": "EC2",
                 "Status": "Open",
@@ -50,7 +50,7 @@ Output::
                         "Type": "SearchableString"
                     },
                     "/aws/resources": {
-                        "Value": "[{\"arn\":\"arn:aws:ec2:us-east-2:111222333444:instance/i-0beccfbc02EXAMPLE\"}]",
+                        "Value": "[{\"arn\":\"arn:aws:ec2:us-west-2:123456789012:instance/i-0beccfbc02EXAMPLE\"}]",
                         "Type": "SearchableString"
                     }
                 },

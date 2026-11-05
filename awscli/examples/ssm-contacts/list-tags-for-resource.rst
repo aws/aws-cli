@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags of the specified contact. ::
 
     aws ssm-contacts list-tags-for-resource \
-        --resource-arn "arn:aws:ssm-contacts:us-east-1:111122223333:contact/akuam"
+        --resource-arn "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam"
 
 Output::
 

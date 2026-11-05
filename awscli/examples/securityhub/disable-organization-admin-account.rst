@@ -3,7 +3,7 @@
 The following ``disable-organization-admin-account`` example revokes the specified account's assignment as a Security Hub administrator account for AWS Organizations. ::
 
     aws securityhub disable-organization-admin-account \
-        --admin-account-id 777788889999
+        --admin-account-id 123456789012
 
 This command produces no output.
 

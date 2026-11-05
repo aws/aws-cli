@@ -11,7 +11,7 @@ Output::
         "pipelineExecutionSummaries": [
             {
                 "lastUpdateTime": 1496380678.648,
-                "pipelineExecutionId": "7cf7f7cb-3137-539g-j458-d7eu3EXAMPLE",
+                "pipelineExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "startTime": 1496380258.243,
                 "status": "Succeeded"
             },
@@ -23,11 +23,11 @@ Output::
             },
             {
                 "lastUpdateTime": 1496946071.6456,
-                "pipelineExecutionId": "4992f7jf-7cf7-913k-k334-d7eu3EXAMPLE",
+                "pipelineExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "startTime": 1496945471.5645,
                 "status": "Succeeded"
             }
         ]
     }
 
-For more information, see `View execution history <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html#pipelines-executions-cli>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `View execution history <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-view-cli.html>`__ in the *AWS CodePipeline User Guide*.

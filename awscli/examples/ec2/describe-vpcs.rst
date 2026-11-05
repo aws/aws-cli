@@ -13,7 +13,7 @@ Output::
                 "DhcpOptionsId": "dopt-19edf471",
                 "State": "available",
                 "VpcId": "vpc-0e9801d129EXAMPLE",
-                "OwnerId": "111122223333",
+                "OwnerId": "123456789012",
                 "InstanceTenancy": "default",
                 "CidrBlockAssociationSet": [
                     {
@@ -37,45 +37,7 @@ Output::
                 "DhcpOptionsId": "dopt-19edf471",
                 "State": "available",
                 "VpcId": "vpc-06e4ab6c6cEXAMPLE",
-                "OwnerId": "222222222222",
-                "InstanceTenancy": "default",
-                "CidrBlockAssociationSet": [
-                    {
-                        "AssociationId": "vpc-cidr-assoc-00b17b4eddEXAMPLE",
-                        "CidrBlock": "10.0.0.0/16",
-                        "CidrBlockState": {
-                            "State": "associated"
-                        }
-                    }
-                ],
-                "IsDefault": false,
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": "Shared VPC"
-                    }
-                ]
-            }
-        ]
-    }  
-
-**Example 2: To describe a specified VPC**
-
-The following ``describe-vpcs`` example retrieves details for the specified VPC. ::
-
-    aws ec2 describe-vpcs \
-        --vpc-ids vpc-06e4ab6c6cEXAMPLE
-
-Output::
-
-    {
-        "Vpcs": [
-            {
-                "CidrBlock": "10.0.0.0/16",
-                "DhcpOptionsId": "dopt-19edf471",
-                "State": "available",
-                "VpcId": "vpc-06e4ab6c6cEXAMPLE",
-                "OwnerId": "111122223333",
+                "OwnerId": "123456789111",
                 "InstanceTenancy": "default",
                 "CidrBlockAssociationSet": [
                     {
@@ -96,3 +58,45 @@ Output::
             }
         ]
     }
+
+For more information, see `Configure a virtual private cloud <https://docs.aws.amazon.com/vpc/latest/userguide/configure-your-vpc.html>`__ in the *Amazon VPC User Guide*.
+
+**Example 2: To describe a specified VPC**
+
+The following ``describe-vpcs`` example retrieves details for the specified VPC. ::
+
+    aws ec2 describe-vpcs \
+        --vpc-ids vpc-06e4ab6c6cEXAMPLE
+
+Output::
+
+    {
+        "Vpcs": [
+            {
+                "CidrBlock": "10.0.0.0/16",
+                "DhcpOptionsId": "dopt-19edf471",
+                "State": "available",
+                "VpcId": "vpc-06e4ab6c6cEXAMPLE",
+                "OwnerId": "123456789012",
+                "InstanceTenancy": "default",
+                "CidrBlockAssociationSet": [
+                    {
+                        "AssociationId": "vpc-cidr-assoc-00b17b4eddEXAMPLE",
+                        "CidrBlock": "10.0.0.0/16",
+                        "CidrBlockState": {
+                            "State": "associated"
+                        }
+                    }
+                ],
+                "IsDefault": false,
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "Shared VPC"
+                    }
+                ]
+            }
+        ]
+    }
+
+For more information, see `Configure a virtual private cloud <https://docs.aws.amazon.com/vpc/latest/userguide/configure-your-vpc.html>`__ in the *Amazon VPC User Guide*.

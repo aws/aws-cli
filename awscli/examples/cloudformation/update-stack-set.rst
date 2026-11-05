@@ -10,5 +10,7 @@ The following ``update-stack-set`` example adds a tag with the key name ``Owner`
 Output::
 
     {
-        "OperationId": "e2b60321-6cab-xmpl-bde7-530c6f47950e"
+        "OperationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
+
+For more information, see `Update CloudFormation StackSets <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-update.html>`__ in the *AWS CloudFormation User Guide*.

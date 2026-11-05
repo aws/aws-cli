@@ -42,3 +42,5 @@ Output::
             "stabilityStatusAt": 1557129279.914
         }
     }
+
+For more information, see `Deploy Amazon ECS services using a third-party controller <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-external.html>`__ in the *Amazon ECS Developer Guide*.

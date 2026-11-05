@@ -7,7 +7,7 @@ The following ``create-unreferenced-merge-commit`` example creates a commit that
         --destination-commit-specifier main \
         --merge-option THREE_WAY_MERGE \
         --repository-name MyDemoRepo \
-        --name "Maria Garcia" \
+        --author-name "Maria Garcia" \
         --email "maria_garcia@example.com" \
         --commit-message "Testing the results of this merge."
 

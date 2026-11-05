@@ -1,6 +1,6 @@
-**Example 1: Enable task protection for ECS tasks**
+**Example 1: To enable task protection for ECS tasks**
 
-The following ``update-task-protection`` protects your ECS task from termination during scale-in from Deployments or Service AutoScaling. You can specify custom expiration period for task protection from 1 up to 2,880 minutes (48 hours). If you do not specify expiration period, enabling task protection default time is 2 hours. ::
+The following ``update-task-protection`` example protects your ECS task from termination during scale-in from Deployments or Service AutoScaling. You can specify custom expiration period for task protection from 1 up to 2,880 minutes (48 hours). If you do not specify expiration period, enabling task protection default time is 2 hours. ::
 
     aws ecs update-task-protection \
         --cluster ECS-project-update-cluster \
@@ -21,9 +21,9 @@ Output::
     "failures": []
     }
 
-**Example 2: Disable task protection for ECS tasks**
+**Example 2: To disable task protection for ECS tasks**
 
-The following ``update-task-protection`` disables the tasks protected from scale in from Deployments or Service AutoScaling. ::
+The following ``update-task-protection`` example disables the tasks protected from scale in from Deployments or Service AutoScaling. ::
 
     aws ecs update-task-protection \
         --cluster ECS-project-update-cluster \

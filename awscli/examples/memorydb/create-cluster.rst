@@ -26,7 +26,7 @@ Output::
             "ParameterGroupStatus": "in-sync",
             "SubnetGroupName": "my-sg",
             "TLSEnabled": true,
-            "ARN": "arn:aws:memorydb:us-east-1:49165xxxxxx:cluster/my-new-cluster",
+            "ARN": "arn:aws:memorydb:us-west-2:49165xxxxxx:cluster/my-new-cluster",
             "SnapshotRetentionLimit": 0,
             "MaintenanceWindow": "sat:10:00-sat:11:00",
             "SnapshotWindow": "07:30-08:30",

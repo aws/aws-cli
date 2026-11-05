@@ -1,4 +1,4 @@
-**To create a WebSocket API integration**
+**Example 1: To create a WebSocket API integration**
 
 The following ``create-integration`` example creates a mock integration for a WebSocket API. ::
 
@@ -23,7 +23,7 @@ Output::
 
 For more information, see `Set up a WebSocket API integration request in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-integration-requests.html>`__ in the *Amazon API Gateway Developer Guide*.
 
-**To create an HTTP API integration**
+**Example 2: To create an HTTP API integration**
 
 The following ``create-integration`` example creates an AWS Lambda integration for an HTTP API. ::
 

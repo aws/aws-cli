@@ -9,4 +9,4 @@ The following ``remove-tags-from-resource`` example removes tags from a patch ba
 
 This command produces no output.
 
-For more information, see `Tagging AWS Resources <https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html>`__ in the *AWS General Reference*.
+For more information, see `Working with Patch Manager resources using the AWS CLI <https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-cli-commands.html>`__ in the *AWS Systems Manager User Guide*.

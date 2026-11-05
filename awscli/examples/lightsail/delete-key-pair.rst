@@ -9,7 +9,7 @@ Output::
 
     {
         "operation": {
-            "id": "81621463-df38-4810-b866-6e801a15abbf",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "resourceName": "MyPersonalKeyPair",
             "resourceType": "KeyPair",
             "createdAt": 1569874626.466,
@@ -23,3 +23,5 @@ Output::
             "statusChangedAt": 1569874626.685
         }
     }
+
+For more information, see `Control secure instance connectivity with Lightsail SSH keys <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-managing-ssh-keys.html>`__ in the *Amazon Lightsail User Guide*.

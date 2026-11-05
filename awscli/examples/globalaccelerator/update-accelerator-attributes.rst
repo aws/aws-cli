@@ -3,7 +3,7 @@
 The following ``update-accelerator-attributes`` example updates an accelerator to enable flow logs. You must specify the ``US-West-2 (Oregon)`` Region to create or update accelerator attributes. ::
 
     aws globalaccelerator update-accelerator-attributes \
-        --accelerator-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
+        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --flow-logs-enabled \
         --flow-logs-s3-bucket flowlogs-abc \
         --flow-logs-s3-prefix bucketprefix-abc
@@ -12,9 +12,9 @@ Output::
 
     {
         "AcceleratorAttributes": {
-            "FlowLogsEnabled": true
-            "FlowLogsS3Bucket": flowlogs-abc
-            "FlowLogsS3Prefix": bucketprefix-abc
+            "FlowLogsEnabled": true,
+            "FlowLogsS3Bucket": "flowlogs-abc",
+            "FlowLogsS3Prefix": "bucketprefix-abc"
         }
     }
 

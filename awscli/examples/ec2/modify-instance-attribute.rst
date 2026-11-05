@@ -22,27 +22,27 @@ This command produces no output.
 
 The following ``modify-instance-attribute`` example sets the ``sourceDestCheck`` attribute of the specified instance to ``true``. The instance must be in a VPC. ::
 
-  aws ec2 modify-instance-attribute --instance-id i-1234567890abcdef0 --source-dest-check "{\"Value\": true}"
+    aws ec2 modify-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --source-dest-check "{\"Value\": true}"
 
 This command produces no output.
 
 **Example 4: To modify the deleteOnTermination attribute of the root volume**
 
-The following ``modify-instance-attribute`` example sets the ``deleteOnTermination`` attribute for the root volume of the specified Amazon EBS-backed instance to ``false``. By default, this attribute is ``true`` for the root volume.
+The following ``modify-instance-attribute`` example sets the ``deleteOnTermination`` attribute for the root volume of the specified Amazon EBS-backed instance to ``false``. By default, this attribute is ``true`` for the root volume. ::
 
-Command::
-
-  aws ec2 modify-instance-attribute \
-    --instance-id i-1234567890abcdef0 \
-    --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":false}}]"
+    aws ec2 modify-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":false}}]"
 
 This command produces no output.
 
 **Example 5: To modify the user data attached to an instance**
 
-The following ``modify-instance-attribute`` example adds the contents of the file ``UserData.txt`` as the UserData for the specified instance. 
+The following ``modify-instance-attribute`` example adds the contents of the file ``UserData.txt`` as the UserData for the specified instance.
 
-Contents of original file ``UserData.txt``::
+Contents of ``UserData.txt``::
 
     #!/bin/bash
     yum update -y
@@ -55,23 +55,22 @@ Linux/macOS version of the command::
 
     base64 UserData.txt > UserData.base64.txt
 
-This command produces no output.
-
 Windows version of the command::
 
     certutil -encode UserData.txt tmp.b64 && findstr /v /c:- tmp.b64 > UserData.base64.txt
 
-Output::
+The ``certutil`` command displays output similar to the following::
 
     Input Length = 67
     Output Length = 152
     CertUtil: -encode command completed successfully.
-    
-Now you can reference that file in the CLI command that follows::
+
+Now you can reference that file in the following CLI command. ::
 
     aws ec2 modify-instance-attribute \
         --instance-id=i-09b5a14dbca622e76 \
-        --attribute userData --value fileb://UserData.base64.txt
+        --attribute userData \
+        --value fileb://UserData.base64.txt
 
 This command produces no output.
 

@@ -3,17 +3,17 @@
 The following ``get-room`` example displays details about the specified chat room. ::
 
     aws chime get-room \
-        --account-id 12a3456b-7c89-012d-3456-78901e23fg45 \
-        --room-id abcd1e2d-3e45-6789-01f2-3g45h67i890j
+        --account-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --room-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
         "Room": {
-            "RoomId": "abcd1e2d-3e45-6789-01f2-3g45h67i890j",
+            "RoomId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "Name": "chatRoom",
-            "AccountId": "12a3456b-7c89-012d-3456-78901e23fg45",
-            "CreatedBy": "arn:aws:iam::111122223333:user/alejandro",
+            "AccountId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "CreatedBy": "arn:aws:iam::123456789012:user/alejandro",
             "CreatedTimestamp": "2019-12-02T22:29:31.549Z",
             "UpdatedTimestamp": "2019-12-02T22:29:31.549Z"
         }

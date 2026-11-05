@@ -1,6 +1,6 @@
 **To list assessment run agents**
 
-The following ``list-assessment-run-agents`` command lists the agents of the assessment run with the specified ARN. ::
+The following ``list-assessment-run-agents`` example lists the agents of the assessment run with the specified ARN. ::
 
     aws inspector list-assessment-run-agents \
         --assessment-run-arn arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE
@@ -164,5 +164,3 @@ Output::
             }
         ]
     }
-
-For more information, see `AWS Agents <https://docs.aws.amazon.com/inspector/latest/userguide/inspector_agents.html>`_ in the *Amazon Inspector User Guide*.

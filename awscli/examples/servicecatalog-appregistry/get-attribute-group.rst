@@ -9,7 +9,7 @@ Output::
 
     {
         "id": "01sj5xdwhbw54kejwnt09fnpcl",
-        "arn": "arn:aws:servicecatalog:us-west-2:813737243517:/attribute-groups/01sj5xdwhbw54kejwnt09fnpcl",
+        "arn": "arn:aws:servicecatalog:us-west-2:123456789012:/attribute-groups/01sj5xdwhbw54kejwnt09fnpcl",
         "name": "ExampleAttributeGroup",
         "attributes": "{\"SomeKey1\":\"SomeValue1\",\"SomeKey2\":\"SomeValue2\"}",
         "creationTime": "2023-02-28T20:38:01.389000+00:00",

@@ -2,8 +2,8 @@
 
 The following ``stop-automation-execution`` example stops an Automation document. ::
 
-    aws ssm stop-automation-execution 
-        --automation-execution-id "4105a4fc-f944-11e6-9d32-0a1b2EXAMPLE"
+    aws ssm stop-automation-execution \
+        --automation-execution-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
 

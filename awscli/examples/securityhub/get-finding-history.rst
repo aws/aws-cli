@@ -3,7 +3,7 @@
 The following ``get-finding-history`` example gets up to the last 90 days of history for the specified finding. In this example, the results are limited to two records of finding history. ::
 
     aws securityhub get-finding-history \
-        --finding-identifier Id="arn:aws:securityhub:us-east-1:123456789012:security-control/S3.17/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",ProductArn="arn:aws:securityhub:us-east-1::product/aws/securityhub"
+        --finding-identifier Id="arn:aws:securityhub:us-west-2:123456789012:security-control/S3.17/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",ProductArn="arn:aws:securityhub:us-west-2::product/aws/securityhub"
 
 Output::
 
@@ -11,14 +11,14 @@ Output::
         "Records": [
             {
                 "FindingIdentifier": {
-                    "Id": "arn:aws:securityhub:us-east-1:123456789012:security-control/S3.17/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-                    "ProductArn": "arn:aws:securityhub:us-east-1::product/aws/securityhub"
+                    "Id": "arn:aws:securityhub:us-west-2:123456789012:security-control/S3.17/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                    "ProductArn": "arn:aws:securityhub:us-west-2::product/aws/securityhub"
                 },
                 "UpdateTime": "2023-06-02T03:15:25.685000+00:00",
                 "FindingCreated": false,
                 "UpdateSource": {
                     "Type": "BATCH_IMPORT_FINDINGS",
-                    "Identity": "arn:aws:securityhub:us-east-1::product/aws/securityhub"
+                    "Identity": "arn:aws:securityhub:us-west-2::product/aws/securityhub"
                 },
                 "Updates": [
                     {
@@ -45,18 +45,18 @@ Output::
             },
             {
                 "FindingIdentifier": {
-                    "Id": "arn:aws:securityhub:us-east-1:123456789012:security-control/S3.17/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-                    "ProductArn": "arn:aws:securityhub:us-east-1::product/aws/securityhub"
+                    "Id": "arn:aws:securityhub:us-west-2:123456789012:security-control/S3.17/finding/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                    "ProductArn": "arn:aws:securityhub:us-west-2::product/aws/securityhub"
                 },
                 "UpdateTime": "2023-05-23T02:06:51.518000+00:00",
-                "FindingCreated": "true",
+                "FindingCreated": true,
                 "UpdateSource": {
                     "Type": "BATCH_IMPORT_FINDINGS",
-                    "Identity": "arn:aws:securityhub:us-east-1::product/aws/securityhub"
+                    "Identity": "arn:aws:securityhub:us-west-2::product/aws/securityhub"
                 },
                 "Updates": []
             }
         ]
     }
 
-For more information, see `Finding history <https://docs.aws.amazon.com/securityhub/latest/userguide/finding-view-details.html#finding-history>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Reviewing finding details and history in Security Hub CSPM <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-viewing.html>`__ in the *AWS Security Hub User Guide*.

@@ -1,6 +1,6 @@
 **To add or update a trigger in a repository**
 
-This example demonstrates how to update triggers named 'MyFirstTrigger' and 'MySecondTrigger' using an already-created JSON file (here named MyTriggers.json) that contains the structure of all the triggers for a repository named MyDemoRepo. To learn how to get the JSON for existing triggers, see the get-repository-triggers command. ::
+The following ``put-repository-triggers`` example updates triggers named ``MyFirstTrigger`` and ``MySecondTrigger`` using an already-created JSON file (here named ``MyTriggers.json``) that contains the structure of all the triggers for a repository named ``MyDemoRepo``. To learn how to get the JSON for existing triggers, see the ``get-repository-triggers`` command. ::
 
     aws codecommit put-repository-triggers \
         --repository-name MyDemoRepo \
@@ -12,7 +12,7 @@ Contents of ``MyTriggers.json``::
         "repositoryName": "MyDemoRepo", 
         "triggers": [
             {
-                "destinationArn": "arn:aws:sns:us-east-1:80398EXAMPLE:MyCodeCommitTopic", 
+                "destinationArn": "arn:aws:sns:us-west-2:80398EXAMPLE:MyCodeCommitTopic", 
                 "branches": [
                     "main", 
                     "preprod"
@@ -24,7 +24,7 @@ Contents of ``MyTriggers.json``::
                 ]
             },
             {
-                "destinationArn": "arn:aws:lambda:us-east-1:111111111111:function:MyCodeCommitPythonFunction", 
+                "destinationArn": "arn:aws:lambda:us-west-2:123456789012:function:MyCodeCommitPythonFunction", 
                 "branches": [], 
                 "name": "MySecondTrigger", 
                 "customData": "EXAMPLE", 
@@ -40,3 +40,5 @@ Output::
     {
         "configurationId": "6fa51cd8-35c1-EXAMPLE"
     }
+
+For more information, see `Edit triggers for an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-notify-edit.html>`__ in the *AWS CodeCommit User Guide*.

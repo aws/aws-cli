@@ -1,9 +1,9 @@
 **To retrieve subscription attributes for a topic**
 
-The following ``get-subscription-attributes`` displays the attributes of the specified subscription. You can get the ``subscription-arn`` from the output of the ``list-subscriptions`` command. ::
+The following ``get-subscription-attributes`` example displays the attributes of the specified subscription. You can get the ``subscription-arn`` from the output of the ``list-subscriptions`` command. ::
 
     aws sns get-subscription-attributes \
-        --subscription-arn "arn:aws:sns:us-west-2:123456789012:my-topic:8a21d249-4329-4871-acc6-7be709c6ea7f"
+        --subscription-arn "arn:aws:sns:us-west-2:123456789012:my-topic:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
@@ -14,7 +14,9 @@ Output::
             "RawMessageDelivery": "false",
             "ConfirmationWasAuthenticated": "false",
             "Owner": "123456789012",
-            "SubscriptionArn": "arn:aws:sns:us-west-2:123456789012:my-topic:8a21d249-4329-4871-acc6-7be709c6ea7f",
+            "SubscriptionArn": "arn:aws:sns:us-west-2:123456789012:my-topic:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "TopicArn": "arn:aws:sns:us-west-2:123456789012:my-topic"
         }
     }
+
+For more information, see `Creating a subscription to an Amazon SNS topic <https://docs.aws.amazon.com/sns/latest/dg/sns-create-subscribe-endpoint-to-topic.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

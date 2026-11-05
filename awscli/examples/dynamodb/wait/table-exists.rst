@@ -1,6 +1,6 @@
 **To wait for the existence of a table**
 
-The following ``wait`` example pauses and resumes only after it can confirm that the specified table exists. ::
+The following ``wait table-exists`` example pauses and resumes only after it can confirm that the specified table exists. ::
 
     aws dynamodb wait table-exists \
         --table-name MusicCollection

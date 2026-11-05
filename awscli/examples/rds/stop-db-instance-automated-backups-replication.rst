@@ -1,6 +1,6 @@
 **To stop replicating automated backups**
 
-The following ``stop-db-instance-automated-backups-replication`` ends replication of automated backups to the US West (Oregon) Region. Replicated backups are retained according to the set backup retention period. ::
+The following ``stop-db-instance-automated-backups-replication`` example ends replication of automated backups to the US West (Oregon) Region. Replicated backups are retained according to the set backup retention period. ::
 
     aws rds stop-db-instance-automated-backups-replication \
         --region us-west-2 \
@@ -35,4 +35,4 @@ Output::
         }
     }
 
-For more information, see `Stopping automated backup replication <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html#AutomatedBackups.StopReplicating>`__ in the *Amazon RDS User Guide*.
+For more information, see `Stopping automated backup replication <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AutomatedBackups.StopReplicating.html>`__ in the *Amazon RDS User Guide*.

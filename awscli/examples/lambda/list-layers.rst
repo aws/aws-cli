@@ -11,9 +11,9 @@ Output::
         "Layers": [
             {
                 "LayerName": "my-layer",
-                "LayerArn": "arn:aws:lambda:us-east-2:123456789012:layer:my-layer",
+                "LayerArn": "arn:aws:lambda:us-west-2:123456789012:layer:my-layer",
                 "LatestMatchingVersion": {
-                    "LayerVersionArn": "arn:aws:lambda:us-east-2:123456789012:layer:my-layer:2",
+                    "LayerVersionArn": "arn:aws:lambda:us-west-2:123456789012:layer:my-layer:2",
                     "Version": 2,
                     "Description": "My layer",
                     "CreatedDate": "2023-11-15T00:37:46.592+0000",

@@ -3,7 +3,7 @@
 The following ``untag-resource`` example untags an AWS Control Tower enabled control. ::
 
     aws controltower untag-resource \
-        --resource-arn "arn:aws:controltower:us-east-1:123456789012:enabledcontrol/2H2AWUG4SKG81855" \
+        --resource-arn "arn:aws:controltower:us-west-2:123456789012:enabledcontrol/2H2AWUG4SKG81855" \
         --tag-keys "TestTagKey"
 
 This command produces no output.

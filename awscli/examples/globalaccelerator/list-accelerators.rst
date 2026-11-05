@@ -1,4 +1,4 @@
-**To list your accelerators** 
+**To list your accelerators**
 
 The following ``list-accelerators`` example lists the accelerators in your AWS account. This account has two accelerators. ::
 
@@ -9,7 +9,7 @@ Output::
     {
         "Accelerators": [
             {
-                "AcceleratorArn": "arn:aws:globalaccelerator::012345678901:accelerator/5555abcd-abcd-5555-abcd-5555EXAMPLE1",
+                "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Name": "TestAccelerator",
                 "IpAddressType": "IPV4",
                 "Enabled": true,
@@ -28,7 +28,7 @@ Output::
                 "LastModifiedTime": 1569375641.0
             },
             {
-                "AcceleratorArn": "arn:aws:globalaccelerator::888888888888:accelerator/8888abcd-abcd-8888-abcd-8888EXAMPLE2",
+                "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Name": "ExampleAccelerator",
                 "IpAddressType": "IPV4",
                 "Enabled": true,
@@ -45,7 +45,7 @@ Output::
                 "Status": "DEPLOYED",
                 "CreatedTime": 1575585564.0,
                 "LastModifiedTime": 1579809243.0
-            },
+            }
         ]
     }
 

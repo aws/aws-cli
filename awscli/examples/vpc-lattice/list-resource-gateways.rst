@@ -9,13 +9,13 @@ Output::
     {
         "items": [
             {
-                "arn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourcegateway/rgw-0bba03f3d56060135",
+                "arn": "arn:aws:vpc-lattice:us-west-2:123456789012:resourcegateway/rgw-0bba03f3d56060135",
                 "createdAt": "2025-02-01T00:57:33.241000+00:00",
                 "id": "rgw-0bba03f3d56060135",
                 "ipAddressType": "IPV4",
                 "lastUpdatedAt": "2025-02-01T00:57:44.351000+00:00",
                 "name": "my-resource-gateway",
-                "seurityGroupIds": [
+                "securityGroupIds": [
                     "sg-087ffd596c5fe962c"
                 ],
                 "status": "ACTIVE",

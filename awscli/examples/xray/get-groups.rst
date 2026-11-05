@@ -1,9 +1,9 @@
 **To retrieve all groups**
 
-The following example displays details for all active group. ::
-   
-   aws xray get-groups
-   
+The following ``get-groups`` example displays details for all active groups. ::
+
+    aws xray get-groups
+
 Output::
 
     {

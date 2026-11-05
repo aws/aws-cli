@@ -3,16 +3,18 @@
 The following ``get-subscription-definition`` example retrieves information about the specified subscription definition. To retrieve the IDs of your subscription definitions, use the ``list-subscription-definitions`` command. ::
 
     aws greengrass get-subscription-definition \
-        --subscription-definition-id "70e49321-83d5-45d2-bc09-81f4917ae152"
+        --subscription-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     
 Output::
 
     {
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/subscriptions/70e49321-83d5-45d2-bc09-81f4917ae152",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/subscriptions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreationTimestamp": "2019-06-18T17:03:52.392Z",
-        "Id": "70e49321-83d5-45d2-bc09-81f4917ae152",
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LastUpdatedTimestamp": "2019-06-18T17:03:52.392Z",
-        "LatestVersion": "88ae8699-12ac-4663-ba3f-4d7f0519140b",
-        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/subscriptions/70e49321-83d5-45d2-bc09-81f4917ae152/versions/88ae8699-12ac-4663-ba3f-4d7f0519140b",
+        "LatestVersion": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "LatestVersionArn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/subscriptions/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "tags": {}
     }
+
+For more information, see `Deploy AWS IoT Greengrass groups to an AWS IoT Greengrass core <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html>`__ in the *AWS IoT Greengrass Developer Guide*.

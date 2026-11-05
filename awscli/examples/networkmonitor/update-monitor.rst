@@ -9,7 +9,7 @@ The following ``update-monitor`` example changes a monitor's ``aggregationPeriod
 Output::
 
     {
-        "monitorArn": "arn:aws:networkmonitor:region:012345678910:monitor/Example_NetworkMonitor",
+        "monitorArn": "arn:aws:networkmonitor:region:123456789012:monitor/Example_NetworkMonitor",
         "monitorName": "Example_NetworkMonitor",
         "state": "PENDING",
         "aggregationPeriod": 30,

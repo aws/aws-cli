@@ -1,66 +1,72 @@
-The following command lists all of the instances in a cluster with the cluster ID ``j-3C6XNQ39VR9WL``::
+**To list the instances in a cluster**
 
-  aws emr list-instances --cluster-id j-3C6XNQ39VR9WL
+The following ``list-instances`` example lists all of the instances in a cluster with the cluster ID ``j-3C6XNQ39VR9WL``. ::
+
+    aws emr list-instances \
+        --cluster-id j-3C6XNQ39VR9WL
+
+For a uniform instance group based cluster, the output looks like the following.
 
 Output::
 
-  For a uniform instance group based cluster
     {
-      "Instances": [
-           {
-              "Status": {
-                  "Timeline": {
-                      "ReadyDateTime": "2015-06-01T19:13:20.431000-0400",
-                      "CreationDateTime": "2015-06-01T19:05:49.263000-0400"
-                  },
-                  "State": "RUNNING",
-                  "StateChangeReason": {}
-              },
-              "Ec2InstanceId": "i-f19ecfee",
-              "PublicDnsName": "ec2-52-52-41-150.us-west-2.compute.amazonaws.com",
-              "PrivateDnsName": "ip-172-21-11-216.us-west-2.compute.internal",
-              "PublicIpAddress": "52.52.41.150",
-              "Id": "ci-3NNHQUQ2TWB6Y",
-              "PrivateIpAddress": "172.21.11.216"
-          },
-          {
-              "Status": {
-                  "Timeline": {
-                      "ReadyDateTime": "2015-06-01T19:13:20.431000-0400",
-                      "CreationDateTime": "2015-06-01T19:05:49.263000-0400"
-                  },
-                  "State": "RUNNING",
-                  "StateChangeReason": {}
-              },
-              "Ec2InstanceId": "i-1feee4c2",
-              "PublicDnsName": "ec2-52-63-246-32.us-west-2.compute.amazonaws.com",
-              "PrivateDnsName": "ip-172-31-24-130.us-west-2.compute.internal",
-              "PublicIpAddress": "52.63.246.32",
-              "Id": "ci-GAOCMKNKDCV7",
-              "PrivateIpAddress": "172.21.11.215"
-          },
-          {
-              "Status": {
-                  "Timeline": {
-                      "ReadyDateTime": "2015-06-01T19:13:20.431000-0400",
-                      "CreationDateTime": "2015-06-01T19:05:49.263000-0400"
-                  },
-                  "State": "RUNNING",
-                  "StateChangeReason": {}
-              },
-              "Ec2InstanceId": "i-15cfeee3",
-              "PublicDnsName": "ec2-52-25-246-63.us-west-2.compute.amazonaws.com",
-              "PrivateDnsName": "ip-172-31-24-129.us-west-2.compute.internal",
-              "PublicIpAddress": "52.25.246.63",
-              "Id": "ci-2W3TDFFB47UAD",
-              "PrivateIpAddress": "172.21.11.214"
-          }
-      ]
+        "Instances": [
+            {
+                "Status": {
+                    "Timeline": {
+                        "ReadyDateTime": "2015-06-01T19:13:20.431000-0400",
+                        "CreationDateTime": "2015-06-01T19:05:49.263000-0400"
+                    },
+                    "State": "RUNNING",
+                    "StateChangeReason": {}
+                },
+                "Ec2InstanceId": "i-f19ecfee",
+                "PublicDnsName": "ec2-52-52-41-150.us-west-2.compute.amazonaws.com",
+                "PrivateDnsName": "ip-172-21-11-216.us-west-2.compute.internal",
+                "PublicIpAddress": "52.52.41.150",
+                "Id": "ci-3NNHQUQ2TWB6Y",
+                "PrivateIpAddress": "172.21.11.216"
+            },
+            {
+                "Status": {
+                    "Timeline": {
+                        "ReadyDateTime": "2015-06-01T19:13:20.431000-0400",
+                        "CreationDateTime": "2015-06-01T19:05:49.263000-0400"
+                    },
+                    "State": "RUNNING",
+                    "StateChangeReason": {}
+                },
+                "Ec2InstanceId": "i-1feee4c2",
+                "PublicDnsName": "ec2-52-63-246-32.us-west-2.compute.amazonaws.com",
+                "PrivateDnsName": "ip-172-31-24-130.us-west-2.compute.internal",
+                "PublicIpAddress": "52.63.246.32",
+                "Id": "ci-GAOCMKNKDCV7",
+                "PrivateIpAddress": "172.21.11.215"
+            },
+            {
+                "Status": {
+                    "Timeline": {
+                        "ReadyDateTime": "2015-06-01T19:13:20.431000-0400",
+                        "CreationDateTime": "2015-06-01T19:05:49.263000-0400"
+                    },
+                    "State": "RUNNING",
+                    "StateChangeReason": {}
+                },
+                "Ec2InstanceId": "i-15cfeee3",
+                "PublicDnsName": "ec2-52-25-246-63.us-west-2.compute.amazonaws.com",
+                "PrivateDnsName": "ip-172-31-24-129.us-west-2.compute.internal",
+                "PublicIpAddress": "52.25.246.63",
+                "Id": "ci-2W3TDFFB47UAD",
+                "PrivateIpAddress": "172.21.11.214"
+            }
+        ]
     }
 
+For an instance fleet based cluster, the output looks like the following.
 
-  For a fleet based cluster:
-     {
+Output::
+
+    {
         "Instances": [
             {
                 "Status": {
@@ -87,3 +93,5 @@ Output::
             }
         ]
     }
+
+For more information, see `View Amazon EMR cluster status and details <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-manage-view-clusters.html>`__ in the *Amazon EMR Management Guide*.

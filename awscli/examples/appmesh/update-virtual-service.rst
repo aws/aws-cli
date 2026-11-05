@@ -25,10 +25,10 @@ Output::
         "virtualService": {
             "meshName": "app1",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualService/serviceA.svc.cluster.local",
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/app1/virtualService/serviceA.svc.cluster.local",
                 "createdAt": 1563810859.474,
                 "lastUpdatedAt": 1563820257.411,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "uid": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "version": 3
             },
             "spec": {

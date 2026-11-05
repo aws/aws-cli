@@ -1,6 +1,6 @@
 **To update the state of a container instance**
 
-The following ``update-container-instances-state`` updates the state of the specified container instance to ``DRAINING`` which will remove it from the cluster is it registered to. ::
+The following ``update-container-instances-state`` example updates the state of the specified container instance to ``DRAINING`` which will remove it from the cluster is it registered to. ::
 
     aws ecs update-container-instances-state \
         --container-instances 765936fadbdd46b5991a4bd70c2a43d4 \
@@ -11,7 +11,7 @@ Output::
     {
         "containerInstances": [
             {
-                "containerInstanceArn": "arn:aws:ecs:us-west-2:130757420319:container-instance/default/765936fadbdd46b5991a4bd70c2a43d4",
+                "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/default/765936fadbdd46b5991a4bd70c2a43d4",
                 "ec2InstanceId": "i-013d87ffbb4d513bf",
                 "version": 4390,
                 "versionInfo": {
@@ -267,3 +267,5 @@ Output::
         ],
         "failures": []
     }
+
+For more information, see `Draining Amazon ECS container instances <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-draining.html>`__ in the *Amazon ECS Developer Guide*.

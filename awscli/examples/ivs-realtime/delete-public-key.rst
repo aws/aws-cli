@@ -1,6 +1,6 @@
 **To delete a public key**
 
-The following ``delete-public-key`` deletes the specified public key. ::
+The following ``delete-public-key`` example deletes the specified public key. ::
 
     aws ivs-realtime delete-public-key \
         --arn arn:aws:ivs:us-west-2:123456789012:public-key/abcdABC1efg2

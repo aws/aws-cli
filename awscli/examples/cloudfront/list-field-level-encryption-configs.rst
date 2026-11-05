@@ -1,7 +1,7 @@
 **To list CloudFront field-level encryption configurations**
 
-The following example gets a list of the CloudFront field-level encryption
-configurations in your AWS account::
+The following ``list-field-level-encryption-configs`` example gets a list of the CloudFront field-level encryption
+configurations in your AWS account. ::
 
     aws cloudfront list-field-level-encryption-configs
 
@@ -40,3 +40,5 @@ Output::
             ]
         }
     }
+
+For more information, see `Use field-level encryption to help protect sensitive data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`__ in the *Amazon CloudFront Developer Guide*.

@@ -1,12 +1,12 @@
 **To start a migration**
 
-The following ``start-migration`` migrates your data from self-hosted Redis on Amazon EC2 to Amazon ElastiCache, using the Redis engine. ::
+The following ``start-migration`` example migrates your data from self-hosted Redis on Amazon EC2 to Amazon ElastiCache, using the Redis engine. ::
 
     aws elasticache start-migration \
-       --replication-group-id test \
-       --customer-node-endpoint-list "Address='test.g2xbih.ng.0001.usw2.cache.amazonaws.com',Port=6379"
-        
-Output ::
+        --replication-group-id test \
+        --customer-node-endpoint-list "Address='test.g2xbih.ng.0001.usw2.cache.amazonaws.com',Port=6379"
+
+Output::
 
     {
         "ReplicationGroup": {

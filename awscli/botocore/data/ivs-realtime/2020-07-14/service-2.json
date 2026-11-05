@@ -565,6 +565,22 @@
       "documentation":"<p>Gets information about AWS tags for the specified ARN.</p>",
       "readonly":true
     },
+    "RevokeConnectionToken":{
+      "name":"RevokeConnectionToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/RevokeConnectionToken",
+        "responseCode":200
+      },
+      "input":{"shape":"RevokeConnectionTokenRequest"},
+      "output":{"shape":"RevokeConnectionTokenResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Revokes the specified connection token so that it can no longer connect to a stage. This operation disconnects any participant currently connected with the revoked token.</p>"
+    },
     "StartComposition":{
       "name":"StartComposition",
       "http":{
@@ -1056,6 +1072,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ConnectionTokenId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+"
     },
     "CreateEncoderConfigurationRequest":{
       "type":"structure",
@@ -3327,6 +3349,20 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "RevokeConnectionTokenRequest":{
+      "type":"structure",
+      "required":["tokenId"],
+      "members":{
+        "tokenId":{
+          "shape":"ConnectionTokenId",
+          "documentation":"<p>The ID of the connection token to revoke.</p>"
+        }
+      }
+    },
+    "RevokeConnectionTokenResponse":{
+      "type":"structure",
+      "members":{}
     },
     "S3BucketName":{
       "type":"string",

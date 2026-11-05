@@ -1,12 +1,31 @@
 **To create a new version of a managed policy**
 
 
-This example creates a new ``v2`` version of the IAM policy whose ARN is ``arn:aws:iam::123456789012:policy/MyPolicy`` and makes it the default version. ::
+The following ``create-policy-version`` example creates a new ``v2`` version of the IAM policy whose ARN is ``arn:aws:iam::123456789012:policy/MyPolicy`` and makes it the default version. ::
 
     aws iam create-policy-version \
         --policy-arn arn:aws:iam::123456789012:policy/MyPolicy \
         --policy-document file://NewPolicyVersion.json \
         --set-as-default
+
+Contents of ``NewPolicyVersion.json``::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:GetObject",
+                    "s3:ListBucket"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::amzn-s3-demo-bucket",
+                    "arn:aws:s3:::amzn-s3-demo-bucket/*"
+                ]
+            }
+        ]
+    }
 
 Output::
 

@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes the tags Name and Project from an accelerator. ::
 
     aws globalaccelerator untag-resource \
-        --resource-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
+        --resource-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --tag-keys Key="Name" Key="Project"
 
 This command produces no output.

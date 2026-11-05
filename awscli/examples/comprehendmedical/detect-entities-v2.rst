@@ -8,14 +8,18 @@ The following ``detect-entities-v2`` example shows the detected entities and lab
 Output::
 
     {
-        "Id": 0,
-        "BeginOffset": 38,
-        "EndOffset": 47,
-        "Score": 0.9942955374717712,
-        "Text": "Clonidine",
-        "Category": "MEDICATION",
-        "Type": "GENERIC_NAME",
-        "Traits": []
+        "Entities": [
+            {
+                "Id": 0,
+                "BeginOffset": 38,
+                "EndOffset": 47,
+                "Score": 0.9942955374717712,
+                "Text": "Clonidine",
+                "Category": "MEDICATION",
+                "Type": "GENERIC_NAME",
+                "Traits": []
+            }
+        ]
     }
 
 For more information, see `Detect Entities Version 2  <https://docs.aws.amazon.com/comprehend/latest/dg/extracted-med-info-V2.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
@@ -36,14 +40,18 @@ Contents of ``medical_entities.txt``::
 Output::
 
     {
-        "Id": 0,
-        "BeginOffset": 38,
-        "EndOffset": 47,
-        "Score": 0.9942955374717712,
-        "Text": "Clonidine",
-        "Category": "MEDICATION",
-        "Type": "GENERIC_NAME",
-        "Traits": []
+        "Entities": [
+            {
+                "Id": 0,
+                "BeginOffset": 38,
+                "EndOffset": 47,
+                "Score": 0.9942955374717712,
+                "Text": "Clonidine",
+                "Category": "MEDICATION",
+                "Type": "GENERIC_NAME",
+                "Traits": []
+            }
+        ]
     }
 
 For more information, see `Detect Entities Version 2 <https://docs.aws.amazon.com/comprehend-medical/latest/dev/textanalysis-entitiesv2.html>`__ in the *Amazon Comprehend Medical Developer Guide*.

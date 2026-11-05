@@ -3,7 +3,7 @@
 The following ``update-portal`` example updates a web portal for a wind farm company. ::
 
     aws iotsitewise update-portal \
-        --portal-id a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE \
+        --portal-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --portal-name WindFarmPortal \
         --portal-description "A portal that contains wind farm projects for Example Corp." \
         --portal-contact-email support@example.com \

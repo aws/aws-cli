@@ -9,22 +9,22 @@ Output::
     {
         "Indexes": [
             {
-                "Arn": "arn:aws:resource-explorer-2:us-west-2:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111",
+                "Arn": "arn:aws:resource-explorer-2:us-west-2:123456789012:index/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Region": "us-west-2",
                 "Type": "AGGREGATOR"
             },
             {
-                "Arn": "arn:aws:resource-explorer-2:us-east-1:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222",
+                "Arn": "arn:aws:resource-explorer-2:us-east-1:123456789012:index/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "Region": "us-east-1",
                 "Type": "LOCAL"
             },
             {
-                "Arn": "arn:aws:resource-explorer-2:us-east-2:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE33333",
+                "Arn": "arn:aws:resource-explorer-2:us-east-2:123456789012:index/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "Region": "us-east-2",
                 "Type": "LOCAL"
             },
             {
-                "Arn": "arn:aws:resource-explorer-2:us-west-1:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE44444",
+                "Arn": "arn:aws:resource-explorer-2:us-west-1:123456789012:index/a1b2c3d4-5678-90ab-cdef-EXAMPLE44444",
                 "Region": "us-west-1",
                 "Type": "LOCAL"
             }

@@ -1,11 +1,11 @@
 **To retrieve a web ACL**
 
-The following ``get-web-acl`` retrieves the web ACL with the specified name, scope, and ID. You can get the ID for a web ACL from the commands ``create-web-acl`` and ``list-web-acls``. ::
+The following ``get-web-acl`` example retrieves the web ACL with the specified name, scope, and ID. You can get the ID for a web ACL from the commands ``create-web-acl`` and ``list-web-acls``. ::
 
     aws wafv2 get-web-acl \
         --name test01 \
         --scope REGIONAL \
-        --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
+        --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -22,7 +22,7 @@ Output::
                         }
                     },
                     "VisibilityConfig":{
-                       "SampledRequestsEnabled":true,
+                        "SampledRequestsEnabled":true,
                         "CloudWatchMetricsEnabled":true,
                         "MetricName":"testrule01"
                     },
@@ -83,7 +83,7 @@ Output::
             "ARN":"arn:aws:wafv2:us-west-2:123456789012:regional/webacl/test01/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Name":"test01"
         },
-        "LockToken":"e3db7e2c-d58b-4ee6-8346-6aec5511c6fb"
-    } 
+        "LockToken":"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
+    }
 
 For more information, see `Managing and Using a Web Access Control List (Web ACL) <https://docs.aws.amazon.com/waf/latest/developerguide/web-acl.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

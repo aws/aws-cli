@@ -1,23 +1,20 @@
 **To view discovered public IP addresses**
 
-In this example, you are an IPAM delegated admin and you want to view the IP addresses of resources discovered by IPAM. You can get the resource discovery ID with `describe-ipam-resource-discoveries <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipam-resource-discoveries.html>`__.
-
-The following ``get-ipam-discovered-public-addresses`` example shows the discovered public IP addresses for a resource discovery. ::
+The following ``get-ipam-discovered-public-addresses`` example shows the discovered public IP addresses for a resource discovery. In this example, you are an IPAM delegated admin and you want to view the IP addresses of resources discovered by IPAM. You can get the resource discovery ID with `describe-ipam-resource-discoveries <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipam-resource-discoveries.html>`__. ::
 
     aws ec2 get-ipam-discovered-public-addresses \
         --ipam-resource-discovery-id ipam-res-disco-0f4ef577a9f37a162 \
-        --address-region us-east-1 \
-        --region us-east-1
+        --address-region us-west-2
 
 Output::
 
     {
         "IpamDiscoveredPublicAddresses": [
             {
-               "IpamResourceDiscoveryId": "ipam-res-disco-0f4ef577a9f37a162",
-                "AddressRegion": "us-east-1",
+                "IpamResourceDiscoveryId": "ipam-res-disco-0f4ef577a9f37a162",
+                "AddressRegion": "us-west-2",
                 "Address": "54.208.155.7",
-                "AddressOwnerId": "320805250157",
+                "AddressOwnerId": "123456789012",
                 "AssociationStatus": "associated",
                 "AddressType": "ec2-public-ip",
                 "VpcId": "vpc-073b294916198ce49",
@@ -26,7 +23,7 @@ Output::
                 "NetworkInterfaceDescription": "",
                 "InstanceId": "i-07459a6fca5b35823",
                 "Tags": {},
-                "NetworkBorderGroup": "us-east-1c",
+                "NetworkBorderGroup": "us-west-2c",
                 "SecurityGroups": [
                     {
                         "GroupName": "launch-wizard-2",
@@ -37,9 +34,9 @@ Output::
             },
             {
                 "IpamResourceDiscoveryId": "ipam-res-disco-0f4ef577a9f37a162",
-                "AddressRegion": "us-east-1",
+                "AddressRegion": "us-west-2",
                 "Address": "44.201.251.218",
-                "AddressOwnerId": "470889052923",
+                "AddressOwnerId": "123456789111",
                 "AssociationStatus": "associated",
                 "AddressType": "ec2-public-ip",
                 "VpcId": "vpc-6c31a611",
@@ -48,7 +45,7 @@ Output::
                 "NetworkInterfaceDescription": "",
                 "InstanceId": "i-04ef786d9c4e03f41",
                 "Tags": {},
-                "NetworkBorderGroup": "us-east-1a",
+                "NetworkBorderGroup": "us-west-2a",
                 "SecurityGroups": [
                     {
                         "GroupName": "launch-wizard-32",
@@ -57,6 +54,7 @@ Output::
                 ],
                 "SampleTime": "2024-04-05T15:13:59.145000+00:00"
             }
+        ]
     }
 
 For more information, see `View public IP insights <https://docs.aws.amazon.com/vpc/latest/ipam/view-public-ip-insights.html>`__ in the *Amazon VPC IPAM User Guide*.

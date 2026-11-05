@@ -7,9 +7,9 @@ When the job is complete, ``output.tar.gz`` is placed at the location specified 
     aws comprehend start-targeted-sentiment-detection-job \
         --job-name targeted_movie_review_analysis1 \
         --language-code en \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/MovieData" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/MovieData" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role
 
 Contents of ``SampleMovieReview1.txt``::
 
@@ -27,11 +27,11 @@ Output::
 
     {
         "JobId": "0b5001e25f62ebb40631a9a1a7fde7b3",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:targeted-sentiment-detection-job/0b5001e25f62ebb40631a9a1a7fde7b3",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:targeted-sentiment-detection-job/0b5001e25f62ebb40631a9a1a7fde7b3",
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``SampleMovieReview1.txt.out`` with line indents for readability::
+Contents of ``SampleMovieReview1.txt.out``::
 
     {
         "Entities": [
@@ -88,7 +88,7 @@ Contents of ``SampleMovieReview1.txt.out`` with line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleMovieReview2.txt.out`` line indents for readability::
+Contents of ``SampleMovieReview2.txt.out``::
 
     {
         "Entities": [
@@ -239,7 +239,7 @@ Contents of ``SampleMovieReview2.txt.out`` line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleMovieReview3.txt.out`` with line indents for readability::
+Contents of ``SampleMovieReview3.txt.out``::
 
     {
         "Entities": [

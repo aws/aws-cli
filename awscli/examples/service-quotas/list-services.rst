@@ -1,6 +1,6 @@
 **To list the available services**
 
-The following command lists the services that are available in Service Quotas. ::
+The following ``list-services`` example lists the services that are available in Service Quotas. ::
 
     aws service-quotas list-services
 
@@ -19,10 +19,7 @@ Output::
             {
                 "ServiceCode": "acm",
                 "ServiceName": "AWS Certificate Manager (ACM)"
-            },     
-
-            ...truncated...
-
+            },
             {
                 "ServiceCode": "xray",
                 "ServiceName": "AWS X-Ray"
@@ -45,6 +42,7 @@ Output::
         "amplify",
         "apigateway",
         "application-autoscaling",
-            ...truncated...
         "xray"
-    ] 
+    ]
+
+For more information, see `Viewing service quotas <https://docs.aws.amazon.com/servicequotas/latest/userguide/gs-request-quota.html>`__ in the *Service Quotas User Guide*.

@@ -3,8 +3,7 @@
 The following ``get-link-associations`` example gets the link associations in the specified global network. ::
 
     aws networkmanager get-link-associations \
-        --global-network-id global-network-01231231231231231 \
-        --region us-west-2
+        --global-network-id global-network-01231231231231231
 
 Output::
 
@@ -18,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Associate or disassociate a device link using AWS Network Manager <https://docs.aws.amazon.com/network-manager/latest/tgwnm/nm-device-link-associate.html>`__ in the *AWS Global Networks for Transit Gateways User Guide*.

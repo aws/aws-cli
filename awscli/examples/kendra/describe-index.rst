@@ -1,6 +1,6 @@
 **To get information about an Amazon Kendra index**
 
-The following ``describe-index`` gets information about an Amazon Kendra index. You can view the configuration of an index, and read any error messages if the status shows an index "FAILED" to completely create. ::
+The following ``describe-index`` example gets information about an Amazon Kendra index. You can view the configuration of an index, and read any error messages if the status shows an index "FAILED" to completely create. ::
 
     aws kendra describe-index \
         --id exampleindex1
@@ -12,7 +12,7 @@ Output::
             "QueryCapacityUnits": 0,
             "StorageCapacityUnits": 0
         },
-        "CreatedAt": 2024-02-25T12:30:10+00:00,
+        "CreatedAt": "2024-02-25T12:30:10+00:00",
         "Description": "Example index 1 contains the first set of example documents",
         "DocumentMetadataConfigurations": [
             {

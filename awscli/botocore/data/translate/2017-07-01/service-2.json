@@ -4,8 +4,11 @@
     "apiVersion":"2017-07-01",
     "endpointPrefix":"translate",
     "jsonVersion":"1.1",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"Amazon Translate",
     "serviceId":"Translate",
     "signatureVersion":"v4",
@@ -375,6 +378,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>Another modification is being made. That modification must complete before you can make your change.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "ConflictException":{
@@ -383,6 +387,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>There was a conflict processing the request. Try your request again.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "ContentType":{
@@ -502,6 +507,7 @@
         }
       },
       "documentation":"<p>The confidence that Amazon Comprehend accurately detected the source language is low. If a low confidence level is acceptable for your application, you can use the language in the exception to call Amazon Translate again. For more information, see the <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/API_DetectDominantLanguage.html\">DetectDominantLanguage</a> operation in the <i>Amazon Comprehend Developer Guide</i>. </p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "Directionality":{
@@ -724,6 +730,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>An internal server error occurred. Retry your request.</p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -733,6 +740,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The filter specified for the operation is not valid. Specify a different filter.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "InvalidParameterValueException":{
@@ -741,6 +749,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The value of the parameter is not valid. Review the value of the parameter you are using to correct it, and then retry your operation.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "InvalidRequestException":{
@@ -749,6 +758,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p> The request that you made is not valid. Check your request to determine why it's not valid and then retry the request. </p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "JobDetails":{
@@ -830,6 +840,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The specified limit has been exceeded. Review your request and retry it with a quantity below the stated limit.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ListLanguagesRequest":{
@@ -1154,6 +1165,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The resource you are looking for has not been found. Review the resource you're looking for and see if a different resource will accomplish your needs before retrying the revised request.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "S3Uri":{
@@ -1167,6 +1179,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The Amazon Translate service is temporarily unavailable. Wait a bit and then retry your request.</p>",
+      "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
     },
@@ -1479,6 +1492,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p> The size of the text you submitted exceeds the size limit. Reduce the size of the text or use a smaller document and then retry your request. </p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "TextTranslationJobFilter":{
@@ -1580,6 +1594,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p> You have made too many requests within a short period of time. Wait for a short time and then try your request again.</p>",
+      "error":{"httpStatusCode":429},
       "exception":true
     },
     "TooManyTagsException":{
@@ -1589,6 +1604,7 @@
         "ResourceArn":{"shape":"ResourceArn"}
       },
       "documentation":"<p>You have added too many tags to this resource. The maximum is 50 tags.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "TranslateDocumentRequest":{
@@ -1757,6 +1773,7 @@
         }
       },
       "documentation":"<p>Requested display language code is not supported.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "UnsupportedLanguagePairException":{
@@ -1773,6 +1790,7 @@
         }
       },
       "documentation":"<p>Amazon Translate does not support translation from the language of the source text into the requested target language. For more information, see <a href=\"https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html\">Supported languages</a>. </p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "UntagResourceRequest":{

@@ -27,8 +27,8 @@ from s3transfer.manager import TransferManager
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
     ADAPTIVE_RETRY_MODE,
-    CRT_AUTO_RESOLVE_INSTANCE_FAMILIES,
     CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT,
+    MAX_CRT_CONNECT_TIMEOUT_MS,
     MAX_CRT_MAX_ATTEMPTS,
     MIN_CRT_MAX_ATTEMPTS,
     MINIMUM_TARGET_THROUGHPUT_GBPS,
@@ -85,6 +85,16 @@ def stub_configured_variables(session, *names):
     )
 
 
+def stub_endpoint_url(session, endpoint_url):
+    """Sets the endpoint resolved by botocore clients the session creates"""
+    session.create_client.return_value.meta.endpoint_url = endpoint_url
+
+
+def stub_client_config(session, **config_kwargs):
+    """Sets the config of botocore clients the session creates"""
+    session.create_client.return_value.meta.config = Config(**config_kwargs)
+
+
 @pytest.fixture
 def transfer_manager_factory():
     session = mock.Mock(Session)
@@ -92,6 +102,8 @@ def transfer_manager_factory():
     stub_configured_variables(session)
     session.get_default_client_config.return_value = None
     session.get_scoped_config.return_value = {}
+    stub_endpoint_url(session, 'https://s3.us-west-2.amazonaws.com')
+    stub_client_config(session)
     return TransferManagerFactory(session)
 
 
@@ -197,6 +209,8 @@ class TestTransferManagerFactory(unittest.TestCase):
         stub_configured_variables(self.session)
         self.session.get_default_client_config.return_value = None
         self.session.get_scoped_config.return_value = {}
+        stub_endpoint_url(self.session, 'https://s3.us-west-2.amazonaws.com')
+        stub_client_config(self.session)
         self.factory = TransferManagerFactory(self.session)
         self.params = {
             'region': 'us-west-2',
@@ -355,7 +369,11 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt'
         )
-        params = {'verify_ssl': DEFAULT_CA_BUNDLE}
+        params = {
+            'region': None,
+            'endpoint_url': None,
+            'verify_ssl': DEFAULT_CA_BUNDLE,
+        }
         stub_config_variables(self.session, region='config-region')
         transfer_manager = self.factory.create_transfer_manager(
             params, self.runtime_config
@@ -367,6 +385,28 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assertEqual(
             self.session.create_client.call_args[1]['region_name'],
             'config-region',
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_crt_manager_signs_for_us_east_1_without_region(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        params = {
+            'region': None,
+            'endpoint_url': None,
+            'verify_ssl': DEFAULT_CA_BUNDLE,
+        }
+        stub_config_variables(self.session)
+        transfer_manager = self.factory.create_transfer_manager(
+            params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(mock_crt_client.call_args[1]['region'], 'us-east-1')
+        self.assertIsNone(
+            self.session.create_client.call_args[1]['region_name']
         )
 
     @mock.patch('s3transfer.crt.S3Client')
@@ -406,6 +446,7 @@ class TestTransferManagerFactory(unittest.TestCase):
             preferred_transfer_client='crt'
         )
         self.params['endpoint_url'] = 'http://my.endpoint.com'
+        stub_endpoint_url(self.session, 'http://my.endpoint.com')
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config
         )
@@ -415,6 +456,40 @@ class TestTransferManagerFactory(unittest.TestCase):
             'http://my.endpoint.com',
         )
         self.assert_tls_disabled_for_crt_client(mock_crt_client)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_disables_tls_for_configured_http_endpoint_for_crt_manager(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        # The endpoint is configured outside of the endpoint_url parameter,
+        # such as through AWS_ENDPOINT_URL, and resolved by botocore.
+        stub_endpoint_url(self.session, 'http://localhost:4566')
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assert_tls_disabled_for_crt_client(mock_crt_client)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_uses_provided_botocore_client_endpoint_for_crt_manager(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        botocore_client = mock.Mock()
+        botocore_client.meta.endpoint_url = 'http://localhost:4566'
+        botocore_client.meta.config = Config()
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config, botocore_client=botocore_client
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assert_tls_disabled_for_crt_client(mock_crt_client)
+        # Only the request serializer's client is created.
+        self.assertEqual(self.session.create_client.call_count, 1)
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_uses_botocore_credentials_for_crt_manager(self, mock_crt_client):
@@ -604,7 +679,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         self.assert_expected_throughput_target_gbps(mock_crt_client, 100)
 
-    @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
+    @mock.patch('awscrt.s3.get_recommended_throughput_target_gbps')
     @mock.patch('s3transfer.crt.S3Client')
     def test_crt_recommended_target_throughput_default(
         self, mock_crt_client, mock_get_target_gbps
@@ -787,20 +862,14 @@ def auto_resolve_session():
     stub_configured_variables(session)
     session.get_default_client_config.return_value = None
     session.get_scoped_config.return_value = {}
+    stub_endpoint_url(session, 'https://s3.us-west-2.amazonaws.com')
+    stub_client_config(session)
     return session
 
 
 @pytest.fixture
-def auto_resolve_factory(auto_resolve_session, monkeypatch):
-    monkeypatch.setenv('AWS_CLI_AUTO_RESOLVE_CLIENT', 'crt')
+def auto_resolve_factory(auto_resolve_session):
     return TransferManagerFactory(auto_resolve_session)
-
-
-@pytest.fixture
-def mock_crt_get_ec2_instance_type():
-    with mock.patch('awscrt.s3.get_ec2_instance_type') as mock_instance_type:
-        mock_instance_type.return_value = None
-        yield mock_instance_type
 
 
 @pytest.fixture
@@ -818,7 +887,6 @@ def resolve_client_type(
     auto_resolve_factory,
     s3_params,
     mock_crt_is_optimized_for_system,
-    mock_crt_get_ec2_instance_type,
     mock_crt_recommended_throughput,
     mock_crt_lock_held,
 ):
@@ -832,29 +900,7 @@ def resolve_client_type(
 
 
 class TestAutoResolveCrtClient:
-    def test_resolves_to_crt_when_enabled(self, resolve_client_type):
-        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_when_env_var_unset(
-        self, resolve_client_type, monkeypatch
-    ):
-        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_when_env_var_is_other_value(
-        self, resolve_client_type, monkeypatch
-    ):
-        monkeypatch.setenv('AWS_CLI_AUTO_RESOLVE_CLIENT', 'classic')
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_optimized_system_resolves_to_crt_without_env_var(
-        self,
-        resolve_client_type,
-        monkeypatch,
-        mock_crt_is_optimized_for_system,
-    ):
-        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
-        mock_crt_is_optimized_for_system.return_value = True
+    def test_resolves_to_crt_by_default(self, resolve_client_type):
         assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
 
     def test_resolves_to_classic_when_max_bandwidth_configured(
@@ -925,64 +971,6 @@ class TestAutoResolveCrtClient:
         assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
 
 
-class TestAutoResolveCrtClientForInstanceFamily:
-    """Instance families rolled out to the crt client without the env var."""
-
-    @pytest.fixture(autouse=True)
-    def no_auto_resolve_env_var(self, auto_resolve_factory, monkeypatch):
-        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
-
-    @pytest.mark.parametrize(
-        'instance_family', sorted(CRT_AUTO_RESOLVE_INSTANCE_FAMILIES)
-    )
-    def test_resolves_to_crt_for_rolled_out_instance_families(
-        self,
-        resolve_client_type,
-        mock_crt_get_ec2_instance_type,
-        instance_family,
-    ):
-        mock_crt_get_ec2_instance_type.return_value = (
-            f'{instance_family}.2xlarge'
-        )
-        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_when_not_on_ec2(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type
-    ):
-        mock_crt_get_ec2_instance_type.return_value = None
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_for_instance_family_not_rolled_out(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type
-    ):
-        mock_crt_get_ec2_instance_type.return_value = 'm5.2xlarge'
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_instance_family_must_match_in_full(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type
-    ):
-        # 'g5' is rolled out but 'g5dn' is a different family, so a prefix
-        # match is not enough.
-        mock_crt_get_ec2_instance_type.return_value = 'g5dn.2xlarge'
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_for_unsupported_settings(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type
-    ):
-        mock_crt_get_ec2_instance_type.return_value = 'g5.2xlarge'
-        assert (
-            resolve_client_type(max_bandwidth=1024)
-            == constants.CLASSIC_TRANSFER_CLIENT
-        )
-
-    def test_warns_when_routed_away_for_classic_only_settings(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type, capsys
-    ):
-        mock_crt_get_ec2_instance_type.return_value = 'g5.2xlarge'
-        resolve_client_type(max_bandwidth=1024)
-        assert 'max_bandwidth' in capsys.readouterr().err
-
-
 class TestClassicOnlySettingsWarning:
     def test_warns_when_routed_away_for_max_bandwidth(
         self, resolve_client_type, capsys
@@ -1014,13 +1002,6 @@ class TestClassicOnlySettingsWarning:
         self, resolve_client_type, capsys
     ):
         resolve_client_type()
-        assert capsys.readouterr().err == ''
-
-    def test_does_not_warn_when_auto_resolve_disabled(
-        self, resolve_client_type, monkeypatch, capsys
-    ):
-        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
-        resolve_client_type(max_bandwidth=1024)
         assert capsys.readouterr().err == ''
 
     def test_does_not_warn_on_optimized_system(
@@ -1064,7 +1045,6 @@ def crt_s3_client_kwargs(
     auto_resolve_factory,
     s3_params,
     mock_crt_is_optimized_for_system,
-    mock_crt_get_ec2_instance_type,
     mock_crt_recommended_throughput,
     mock_crt_s3_client,
     mock_crt_process_lock,
@@ -1199,32 +1179,50 @@ class TestWarnUnsupportedSettings:
     'crt_is_optimized_for_system,crt_running_in_other_process,'
     'expected_transfer_manager_cls',
     [
-        (None, {}, False, False, TransferManager),
-        ('auto', {}, False, False, TransferManager),
         ('classic', {}, False, False, TransferManager),
         ('crt', {}, False, False, CRTTransferManager),
         # "default" is a supported alias for "classic"
         ('default', {}, False, False, TransferManager),
+        # Auto resolves to CRT when CRT is not optimized for system
+        (None, {}, False, False, CRTTransferManager),
+        ('auto', {}, False, False, CRTTransferManager),
         # Cases when CRT is optimized for system
         (None, {}, True, False, CRTTransferManager),
         ('auto', {}, True, False, CRTTransferManager),
         ('classic', {}, True, False, TransferManager),
         ('crt', {}, True, False, CRTTransferManager),
         # Cases when another AWS CLI process is running CRT
+        (None, {}, False, True, TransferManager),
+        ('auto', {}, False, True, TransferManager),
         (None, {}, True, True, TransferManager),
         ('auto', {}, True, True, TransferManager),
         ('classic', {}, True, True, TransferManager),
         ('crt', {}, True, True, CRTTransferManager),
         # S3 copies always default to classic transfer manager
+        (None, {'paths_type': 's3s3'}, False, False, TransferManager),
         (None, {'paths_type': 's3s3'}, True, False, TransferManager),
         ('auto', {'paths_type': 's3s3'}, True, False, TransferManager),
         ('classic', {'paths_type': 's3s3'}, True, False, TransferManager),
         ('crt', {'paths_type': 's3s3'}, True, False, TransferManager),
         # Streaming operations use requested transfer client
-        (None, {'is_stream': True}, False, False, TransferManager),
-        ('auto', {'is_stream': True}, False, False, TransferManager),
         ('classic', {'is_stream': True}, False, False, TransferManager),
         ('crt', {'is_stream': True}, False, False, CRTTransferManager),
+        # Auto falls back to classic for stream uploads unless CRT is
+        # optimized for system
+        (
+            'auto',
+            {'is_stream': True, 'paths_type': 'locals3'},
+            False,
+            False,
+            TransferManager,
+        ),
+        (
+            'auto',
+            {'is_stream': True, 'paths_type': 'locals3'},
+            True,
+            False,
+            CRTTransferManager,
+        ),
     ],
 )
 def test_transfer_manager_cls_resolution(
@@ -1253,6 +1251,7 @@ def test_transfer_manager_cls_resolution(
 @pytest.mark.parametrize(
     'preferred_transfer_client,crt_is_optimized_for_system',
     [
+        ('auto', False),
         ('auto', True),
         ('crt', False),
         ('crt', True),
@@ -1280,7 +1279,6 @@ def test_factory_always_acquires_crt_transfer_lock_for_crt_manager(
 @pytest.mark.parametrize(
     'preferred_transfer_client,crt_is_optimized_for_system',
     [
-        ('auto', False),
         ('classic', False),
         ('classic', True),
     ],
@@ -1324,8 +1322,8 @@ def _create_transfer_manager_from_factory(
     [
         ('classic', {}, False, 'Ad'),
         ('crt', {}, False, 'Ae'),
-        (None, {}, False, 'Af'),
-        ('auto', {}, False, 'Af'),
+        (None, {}, False, 'Ag'),
+        ('auto', {}, False, 'Ag'),
         (None, {}, True, 'Ag'),
         ('auto', {}, True, 'Ag'),
         # S3 copies always use the classic client.
@@ -1421,6 +1419,88 @@ class TestMaxAttempts:
         assert kwargs['retry_options'] == {'max_retries': 4}
 
 
+class TestConnectTimeout:
+    @pytest.fixture
+    def create_crt_manager(
+        self,
+        auto_resolve_factory,
+        s3_params,
+        mock_crt_is_optimized_for_system,
+        mock_crt_recommended_throughput,
+        mock_crt_s3_client,
+        mock_crt_process_lock,
+    ):
+        def _create(botocore_client=None):
+            return auto_resolve_factory._create_crt_transfer_manager(
+                s3_params, RuntimeConfig().build_config(), botocore_client
+            )
+
+        return _create
+
+    def test_uses_default_connect_timeout(self, crt_s3_client_kwargs):
+        assert crt_s3_client_kwargs()['connect_timeout_ms'] == 60_000
+
+    @pytest.mark.parametrize(
+        'connect_timeout,expected_ms',
+        [
+            (5, 5_000),
+            (1.5, 1_500),
+            (0.0001, 1),
+            (2**32, MAX_CRT_CONNECT_TIMEOUT_MS),
+        ],
+    )
+    def test_converts_connect_timeout_to_milliseconds(
+        self,
+        connect_timeout,
+        expected_ms,
+        crt_s3_client_kwargs,
+        auto_resolve_session,
+    ):
+        stub_client_config(
+            auto_resolve_session, connect_timeout=connect_timeout
+        )
+        assert crt_s3_client_kwargs()['connect_timeout_ms'] == expected_ms
+
+    def test_disabled_connect_timeout_uses_max_crt_timeout(
+        self, crt_s3_client_kwargs, auto_resolve_session
+    ):
+        stub_client_config(auto_resolve_session, connect_timeout=None)
+        assert (
+            crt_s3_client_kwargs()['connect_timeout_ms']
+            == MAX_CRT_CONNECT_TIMEOUT_MS
+        )
+
+    @pytest.mark.parametrize('connect_timeout', [-1, -0.5])
+    def test_rejects_negative_connect_timeout(
+        self, connect_timeout, crt_s3_client_kwargs, auto_resolve_session
+    ):
+        stub_client_config(
+            auto_resolve_session, connect_timeout=connect_timeout
+        )
+        with pytest.raises(InvalidTransferConfigError, match='timeout'):
+            crt_s3_client_kwargs()
+
+    def test_uses_connect_timeout_of_provided_botocore_client(
+        self, create_crt_manager, mock_crt_s3_client
+    ):
+        botocore_client = mock.Mock()
+        botocore_client.meta.endpoint_url = (
+            'https://s3.us-west-2.amazonaws.com'
+        )
+        botocore_client.meta.config = Config(connect_timeout=7)
+        create_crt_manager(botocore_client)
+        assert mock_crt_s3_client.call_args[1]['connect_timeout_ms'] == 7_000
+
+    def test_uses_connect_timeout_for_redirected_region_clients(
+        self, create_crt_manager, auto_resolve_session, mock_crt_s3_client
+    ):
+        stub_client_config(auto_resolve_session, connect_timeout=5)
+        transfer_manager = create_crt_manager()
+        transfer_manager.get_crt_client('eu-west-1')
+        assert mock_crt_s3_client.call_args[1]['region'] == 'eu-west-1'
+        assert mock_crt_s3_client.call_args[1]['connect_timeout_ms'] == 5_000
+
+
 class TestTargetThroughput:
     def test_targets_less_when_crt_has_no_recommendation(
         self, crt_s3_client_kwargs
@@ -1432,14 +1512,6 @@ class TestTargetThroughput:
     ):
         mock_crt_recommended_throughput.return_value = 50.0
         assert crt_s3_client_kwargs()['throughput_target_gbps'] == 50.0
-
-    def test_targets_less_on_ec2_hosts_crt_cannot_recommend_for(
-        self, crt_s3_client_kwargs, mock_crt_get_ec2_instance_type
-    ):
-        # Being on EC2 does not mean the crt client sized a pool for this
-        # host, so the instance type must not decide the throughput target.
-        mock_crt_get_ec2_instance_type.return_value = 't3.micro'
-        assert crt_s3_client_kwargs()['throughput_target_gbps'] == 4.0
 
     def test_configured_target_bandwidth_wins(self, crt_s3_client_kwargs):
         kwargs = crt_s3_client_kwargs(target_bandwidth=1_250_000_000)
@@ -1501,8 +1573,13 @@ class TestChunksizeExceedingCrtMemoryPool:
     def create_manager(self, auto_resolve_factory, s3_params):
         def _create(**kwargs):
             runtime_config = RuntimeConfig().build_config(**kwargs)
+            botocore_client = mock.Mock()
+            botocore_client.meta.endpoint_url = (
+                'https://s3.us-west-2.amazonaws.com'
+            )
+            botocore_client.meta.config = Config()
             return auto_resolve_factory.create_transfer_manager(
-                s3_params, runtime_config, mock.Mock()
+                s3_params, runtime_config, botocore_client
             )
 
         return _create

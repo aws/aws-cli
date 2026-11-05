@@ -1,6 +1,6 @@
 **To create a provisioning template version**
 
-The following example creates a version for the specified provisioning template. The body of the new version is supplied in the file ``template.json``. :: 
+The following ``create-provisioning-template-version`` example creates a version for the specified provisioning template. The body of the new version is supplied in the file ``template.json``. ::
 
     aws iot create-provisioning-template-version \
         --template-name widget-template \
@@ -55,7 +55,7 @@ Contents of ``template.json``::
                         "Statement": [{
                             "Effect": "Allow",
                             "Action":["iot:Publish"],
-                            "Resource": ["arn:aws:iot:us-east-1:123456789012:topic/foo/bar"]
+                            "Resource": ["arn:aws:iot:us-west-2:123456789012:topic/foo/bar"]
                         }]
                     }
                 }
@@ -72,7 +72,7 @@ Contents of ``template.json``::
 Output::
 
     {
-        "templateArn": "arn:aws:iot:us-east-1:123456789012:provisioningtemplate/widget-template",
+        "templateArn": "arn:aws:iot:us-west-2:123456789012:provisioningtemplate/widget-template",
         "templateName": "widget-template",
         "versionId": 2,
         "isDefaultVersion": false

@@ -17,3 +17,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Cluster versions for Amazon Redshift <https://docs.aws.amazon.com/redshift/latest/mgmt/cluster-versions.html>`__ in the *Amazon Redshift Management Guide*.

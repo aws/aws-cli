@@ -1797,6 +1797,16 @@
       "output":{"shape":"DeleteClientVpnEndpointResult"},
       "documentation":"<p>Deletes the specified Client VPN endpoint. You must disassociate all target networks before you can delete a Client VPN endpoint.</p>"
     },
+    "DeleteClientVpnEndpointAuthorizationPolicy":{
+      "name":"DeleteClientVpnEndpointAuthorizationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteClientVpnEndpointAuthorizationPolicyRequest"},
+      "output":{"shape":"DeleteClientVpnEndpointAuthorizationPolicyResult"},
+      "documentation":"<p>Deletes the authorization policy for a Client VPN endpoint.</p>"
+    },
     "DeleteClientVpnRoute":{
       "name":"DeleteClientVpnRoute",
       "http":{
@@ -2532,7 +2542,7 @@
       },
       "input":{"shape":"DeleteTransitGatewayRouteTableRequest"},
       "output":{"shape":"DeleteTransitGatewayRouteTableResult"},
-      "documentation":"<p>Deletes the specified transit gateway route table. If there are any route tables associated with the transit gateway route table, you must first run <a>DisassociateRouteTable</a> before you can delete the transit gateway route table. This removes any route tables associated with the transit gateway route table.</p>"
+      "documentation":"<p>Deletes the specified transit gateway route table. Before you can delete a transit gateway route table, you must disassociate all attachments from it by using <a>DisassociateTransitGatewayRouteTable</a> and wait for the disassociations to complete. You can't delete a transit gateway route table that is the default association route table or default propagation route table for the transit gateway. To change the default route tables, use <a>ModifyTransitGateway</a>.</p>"
     },
     "DeleteTransitGatewayRouteTableAnnouncement":{
       "name":"DeleteTransitGatewayRouteTableAnnouncement",
@@ -5581,6 +5591,16 @@
       "output":{"shape":"GetCapacityManagerMonitoredTagKeysResult"},
       "documentation":"<p> Retrieves the tag keys that are currently being monitored by EC2 Capacity Manager. Monitored tag keys are included as dimensions in capacity metric data, enabling you to group and filter metrics by tag values. </p>"
     },
+    "GetCapacityManagerSupportabilityScores":{
+      "name":"GetCapacityManagerSupportabilityScores",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityManagerSupportabilityScoresRequest"},
+      "output":{"shape":"GetCapacityManagerSupportabilityScoresResult"},
+      "documentation":"<p> Scores how well each instance type and Availability Zone combination can support a capacity request, based on current Amazon EC2 capacity. The response includes a score for each combination and an aggregate score for all combinations in the request. This action doesn't launch or reserve instances, and a score doesn't guarantee that a later launch will succeed. </p> <p> Call this action in the Region where you turned on Capacity Manager. A single request can include Availability Zones in any Region. Real-time supportability checks are available only to Amazon Web Services Support customers on the Unified Operations plan. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-manager-supportability.html\">Check supportability</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "GetCapacityReservationUsage":{
       "name":"GetCapacityReservationUsage",
       "http":{
@@ -5590,6 +5610,16 @@
       "input":{"shape":"GetCapacityReservationUsageRequest"},
       "output":{"shape":"GetCapacityReservationUsageResult"},
       "documentation":"<p>Gets usage information about a Capacity Reservation. If the Capacity Reservation is shared, it shows usage information for the Capacity Reservation owner and each Amazon Web Services account that is currently using the shared capacity. If the Capacity Reservation is not shared, it shows only the Capacity Reservation owner's usage.</p>"
+    },
+    "GetClientVpnEndpointAuthorizationPolicy":{
+      "name":"GetClientVpnEndpointAuthorizationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetClientVpnEndpointAuthorizationPolicyRequest"},
+      "output":{"shape":"GetClientVpnEndpointAuthorizationPolicyResult"},
+      "documentation":"<p>Describes the authorization policy for a Client VPN endpoint.</p>"
     },
     "GetCoipPoolUsage":{
       "name":"GetCoipPoolUsage",
@@ -5720,6 +5750,16 @@
       "input":{"shape":"GetImageBlockPublicAccessStateRequest"},
       "output":{"shape":"GetImageBlockPublicAccessStateResult"},
       "documentation":"<p>Gets the current state of <i>block public access for AMIs</i> at the account level in the specified Amazon Web Services Region.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-public-access-to-amis.html\">Block public access to your AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "GetImageFindings":{
+      "name":"GetImageFindings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetImageFindingsRequest"},
+      "output":{"shape":"GetImageFindingsResult"},
+      "documentation":"<p>Describes the Amazon Inspector vulnerability findings for the specified AMI.</p> <p>You can get findings for AMIs that you own, AMIs that are shared with you, and public AMIs. Amazon Inspector returns findings only for AMIs that it has scanned.</p>"
     },
     "GetInstanceMetadataDefaults":{
       "name":"GetInstanceMetadataDefaults",
@@ -6111,6 +6151,16 @@
       "output":{"shape":"GetSubnetCidrReservationsResult"},
       "documentation":"<p>Gets information about the subnet CIDR reservations.</p>"
     },
+    "GetTransitGatewayAttachmentNatConfiguration":{
+      "name":"GetTransitGatewayAttachmentNatConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTransitGatewayAttachmentNatConfigurationRequest"},
+      "output":{"shape":"GetTransitGatewayAttachmentNatConfigurationResult"},
+      "documentation":"<p>Describes the NAT configuration for the specified transit gateway attachment. Only the owner of the transit gateway can describe the NAT configuration.</p>"
+    },
     "GetTransitGatewayAttachmentPropagations":{
       "name":"GetTransitGatewayAttachmentPropagations",
       "http":{
@@ -6430,6 +6480,16 @@
       "input":{"shape":"ModifyClientVpnEndpointRequest"},
       "output":{"shape":"ModifyClientVpnEndpointResult"},
       "documentation":"<p>Modifies the specified Client VPN endpoint. Modifying the DNS server resets existing client connections.</p>"
+    },
+    "ModifyClientVpnEndpointAuthorizationPolicy":{
+      "name":"ModifyClientVpnEndpointAuthorizationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyClientVpnEndpointAuthorizationPolicyRequest"},
+      "output":{"shape":"ModifyClientVpnEndpointAuthorizationPolicyResult"},
+      "documentation":"<p>Creates or updates the authorization policy for a Client VPN endpoint. A Client VPN endpoint can have one authorization policy. If a policy already exists for the endpoint, the values that you specify replace the corresponding values in the existing policy, and values that you do not specify remain unchanged.</p>"
     },
     "ModifyDefaultCreditSpecification":{
       "name":"ModifyDefaultCreditSpecification",
@@ -6903,6 +6963,16 @@
       "input":{"shape":"ModifyTransitGatewayRequest"},
       "output":{"shape":"ModifyTransitGatewayResult"},
       "documentation":"<p>Modifies the specified transit gateway. When you modify a transit gateway, the modified options are applied to new transit gateway attachments only. Your existing transit gateway attachments are not modified.</p>"
+    },
+    "ModifyTransitGatewayAttachmentNatConfiguration":{
+      "name":"ModifyTransitGatewayAttachmentNatConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyTransitGatewayAttachmentNatConfigurationRequest"},
+      "output":{"shape":"ModifyTransitGatewayAttachmentNatConfigurationResult"},
+      "documentation":"<p>Modifies the NAT configuration for the specified transit gateway attachment. Use this operation to do the following:</p> <ul> <li> <p>Enable or disable NAT gateway support for the attachment.</p> </li> <li> <p>Specify whether the transit gateway installs routes for the NAT CIDRs.</p> </li> <li> <p>Replace the NAT gateway rules for the attachment.</p> </li> </ul> <p>Only the owner of the transit gateway can modify the NAT configuration.</p> <p>With NAT gateway support enabled, the transit gateway translates addresses in each rule's <code>MatchSourceCidr</code> range to the corresponding addresses in its <code>NatCidr</code> range.</p> <p>The transit gateway applies changes asynchronously. To check the result, use <code>GetTransitGatewayAttachmentNatConfiguration</code>.</p>"
     },
     "ModifyTransitGatewayMeteringPolicy":{
       "name":"ModifyTransitGatewayMeteringPolicy",
@@ -9721,6 +9791,47 @@
         "succeeded",
         "failed"
       ]
+    },
+    "AnalysisTransitGatewayPolicyTableEntry":{
+      "type":"structure",
+      "members":{
+        "RuleNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The rule number for the policy table entry. Entries are evaluated in ascending order of rule number.</p>",
+          "locationName":"ruleNumber"
+        },
+        "Protocol":{
+          "shape":"String",
+          "documentation":"<p>The protocol number. A value of <code>-1</code> means that the entry matches all protocols.</p>",
+          "locationName":"protocol"
+        },
+        "SourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The source CIDR block. If this value is not present, the entry matches any source address.</p>",
+          "locationName":"sourceCidr"
+        },
+        "DestinationCidr":{
+          "shape":"String",
+          "documentation":"<p>The destination CIDR block. If this value is not present, the entry matches any destination address.</p>",
+          "locationName":"destinationCidr"
+        },
+        "SourcePortRange":{
+          "shape":"PortRange",
+          "documentation":"<p>The source port range. If this value is not present, the entry matches any source port.</p>",
+          "locationName":"sourcePortRange"
+        },
+        "DestinationPortRange":{
+          "shape":"PortRange",
+          "documentation":"<p>The destination port range. If this value is not present, the entry matches any destination port.</p>",
+          "locationName":"destinationPortRange"
+        },
+        "TargetRouteTableId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the transit gateway route table to which the entry routes matching traffic.</p>",
+          "locationName":"targetRouteTableId"
+        }
+      },
+      "documentation":"<p>Describes an entry in a transit gateway policy table.</p>"
     },
     "ApplianceModeSupportValue":{
       "type":"string",
@@ -13178,6 +13289,19 @@
         "locationName":"item"
       }
     },
+    "CapacityAmount":{
+      "type":"integer",
+      "min":1
+    },
+    "CapacityAvailabilityZoneIdList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      },
+      "max":10,
+      "min":0
+    },
     "CapacityBlock":{
       "type":"structure",
       "members":{
@@ -13824,6 +13948,34 @@
         "disabled"
       ]
     },
+    "CapacityManagerSupportabilityScore":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p> The instance type. </p>",
+          "locationName":"instanceType"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p> The ID of the Availability Zone. </p>",
+          "locationName":"availabilityZoneId"
+        },
+        "Score":{
+          "shape":"SupportabilityScore",
+          "documentation":"<p> How well the combination can support the requested capacity right now. <code>high</code> means that the combination holds several times the requested amount. <code>medium</code> means that it can cover the request with little to spare. <code>low</code> means that it holds less than the requested amount. </p>",
+          "locationName":"score"
+        }
+      },
+      "documentation":"<p> The supportability score for a single instance type and Availability Zone combination. </p>"
+    },
+    "CapacityManagerSupportabilityScoreSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityManagerSupportabilityScore",
+        "locationName":"item"
+      }
+    },
     "CapacityManagerTagDimension":{
       "type":"structure",
       "members":{
@@ -14024,6 +14176,11 @@
           "shape":"ZeroSizePreference",
           "documentation":"<p> The zero-size preference configured for the interruptible Capacity Reservation. A value of <code>retain</code> keeps the interruptible Capacity Reservation active at zero capacity when you reduce its allocation to zero. A value of <code>default</code> cancels the interruptible Capacity Reservation when you reduce its allocation to zero. </p>",
           "locationName":"zeroSizePreference"
+        },
+        "LaunchStatus":{
+          "shape":"CapacityReservationLaunchStatus",
+          "documentation":"<note> <p>Only supported for UltraServers.</p> </note> <p>Indicates whether you can launch instances into the Capacity Reservation. A Capacity Reservation can have the following launch statuses:</p> <ul> <li> <p> <code>launchable</code> - You can launch instances into the Capacity Reservation.</p> </li> <li> <p> <code>unlaunchable</code> - You can't launch instances into the Capacity Reservation. For example, the Capacity Reservation is not active.</p> </li> </ul>",
+          "locationName":"launchStatus"
         }
       },
       "documentation":"<p>Describes a Capacity Reservation.</p>"
@@ -14302,6 +14459,21 @@
           "documentation":"<p>Information about the instance types for which to reserve the capacity.</p>",
           "locationName":"instanceTypeSpecificationSet"
         },
+        "InstanceRequirements":{
+          "shape":"InstanceRequirementsRequest",
+          "documentation":"<p>Reserved for internal use.</p>",
+          "locationName":"instanceRequirements"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>Reserved for internal use.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>Reserved for internal use.</p>",
+          "locationName":"availabilityZoneId"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags assigned to the Capacity Reservation Fleet.</p>",
@@ -14445,6 +14617,13 @@
         "RHEL with HA and SQL Server Standard",
         "RHEL with HA and SQL Server Enterprise",
         "Ubuntu Pro"
+      ]
+    },
+    "CapacityReservationLaunchStatus":{
+      "type":"string",
+      "enum":[
+        "launchable",
+        "unlaunchable"
       ]
     },
     "CapacityReservationModificationQuote":{
@@ -14743,6 +14922,13 @@
       "enum":[
         "default",
         "dedicated"
+      ]
+    },
+    "CapacityUnit":{
+      "type":"string",
+      "enum":[
+        "vcpus",
+        "instances"
       ]
     },
     "CarrierGateway":{
@@ -15158,6 +15344,25 @@
         "federated-authentication"
       ]
     },
+    "ClientVpnAuthorizationPolicyShadowMode":{
+      "type":"string",
+      "documentation":"<p>Indicates whether the authorization policy for a Client VPN endpoint is evaluated in shadow mode. Possible values include:</p> <ul> <li> <p> <code>enabled</code> - The authorization policy is evaluated and the results are logged, but access is not enforced.</p> </li> <li> <p> <code>disabled</code> - The authorization policy is enforced.</p> </li> </ul>",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
+    },
+    "ClientVpnAuthorizationPolicyStatus":{
+      "type":"string",
+      "documentation":"<p>Describes the state of an authorization policy for a Client VPN endpoint. Possible states include:</p> <ul> <li> <p> <code>creating</code> - The authorization policy is being created.</p> </li> <li> <p> <code>updating</code> - The authorization policy is being updated.</p> </li> <li> <p> <code>active</code> - The authorization policy has been applied to the Client VPN endpoint.</p> </li> <li> <p> <code>failed</code> - The authorization policy could not be applied to the Client VPN endpoint.</p> </li> <li> <p> <code>deleting</code> - The authorization policy is being deleted.</p> </li> </ul>",
+      "enum":[
+        "creating",
+        "updating",
+        "active",
+        "failed",
+        "deleting"
+      ]
+    },
     "ClientVpnAuthorizationRuleStatus":{
       "type":"structure",
       "members":{
@@ -15274,6 +15479,11 @@
           "shape":"ValueStringList",
           "documentation":"<p>The statuses returned by the client connect handler for posture compliance, if applicable.</p>",
           "locationName":"postureComplianceStatusSet"
+        },
+        "AuthorizationPolicyLastEvaluatedTime":{
+          "shape":"String",
+          "documentation":"<p>The date and time the authorization policy was last evaluated for the client connection, if applicable.</p>",
+          "locationName":"authorizationPolicyLastEvaluatedTime"
         }
       },
       "documentation":"<p>Describes a client connection.</p>"
@@ -15308,6 +15518,14 @@
         "failed-to-terminate",
         "terminating",
         "terminated"
+      ]
+    },
+    "ClientVpnDeviceTrustProviderType":{
+      "type":"string",
+      "enum":[
+        "crowdstrike",
+        "jamf",
+        "jumpcloud"
       ]
     },
     "ClientVpnEndpoint":{
@@ -15454,6 +15672,11 @@
           "shape":"TransitGatewayConfigurationDescribeEndpointStructure",
           "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint.</p>",
           "locationName":"transitGatewayConfiguration"
+        },
+        "DevicePostureOptions":{
+          "shape":"DevicePostureResponseOptions",
+          "documentation":"<p>The device trust providers configured for the Client VPN endpoint, if applicable.</p>",
+          "locationName":"devicePostureOptions"
         }
       },
       "documentation":"<p>Describes a Client VPN endpoint.</p>"
@@ -15597,6 +15820,59 @@
       "type":"list",
       "member":{
         "shape":"SecurityGroupId",
+        "locationName":"item"
+      }
+    },
+    "ClientVpnTrustProvider":{
+      "type":"structure",
+      "members":{
+        "TrustProviderType":{
+          "shape":"ClientVpnDeviceTrustProviderType",
+          "documentation":"<p>The type of the device trust provider. Possible values include:</p> <ul> <li> <p> <code>crowdstrike</code> - CrowdStrike device trust provider.</p> </li> <li> <p> <code>jamf</code> - Jamf device trust provider.</p> </li> <li> <p> <code>jumpcloud</code> - JumpCloud device trust provider.</p> </li> </ul>",
+          "locationName":"trustProviderType"
+        },
+        "TenantId":{
+          "shape":"String",
+          "documentation":"<p>The tenant ID associated with your device trust provider account.</p>",
+          "locationName":"tenantId"
+        },
+        "PublicSigningKeyUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the public signing key that is used to verify the identity token issued by the device trust provider.</p>",
+          "locationName":"publicSigningKeyUrl"
+        }
+      },
+      "documentation":"<p>Information about a device trust provider configured for a Client VPN endpoint.</p>"
+    },
+    "ClientVpnTrustProviderRequest":{
+      "type":"structure",
+      "members":{
+        "TrustProviderType":{
+          "shape":"ClientVpnDeviceTrustProviderType",
+          "documentation":"<p>The type of the device trust provider. Possible values include:</p> <ul> <li> <p> <code>crowdstrike</code> - CrowdStrike device trust provider.</p> </li> <li> <p> <code>jamf</code> - Jamf device trust provider.</p> </li> <li> <p> <code>jumpcloud</code> - JumpCloud device trust provider.</p> </li> </ul>"
+        },
+        "TenantId":{
+          "shape":"String",
+          "documentation":"<p>The tenant ID associated with your device trust provider account.</p>"
+        },
+        "PublicSigningKeyUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the public signing key that is used to verify the identity token issued by the device trust provider.</p>"
+        }
+      },
+      "documentation":"<p>Describes a device trust provider to configure for a Client VPN endpoint.</p>"
+    },
+    "ClientVpnTrustProviderRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"ClientVpnTrustProviderRequest",
+        "locationName":"item"
+      }
+    },
+    "ClientVpnTrustProviderSet":{
+      "type":"list",
+      "member":{
+        "shape":"ClientVpnTrustProvider",
         "locationName":"item"
       }
     },
@@ -15852,6 +16128,10 @@
         "CloudwatchLogStream":{
           "shape":"String",
           "documentation":"<p>The name of the CloudWatch Logs log stream to which the connection data is published.</p>"
+        },
+        "IncludeAuthorizationPolicyContext":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to include the authorization policy evaluation context in the connection logs for the Client VPN endpoint.</p>"
         }
       },
       "documentation":"<p>Describes the client connection logging options for the Client VPN endpoint.</p>"
@@ -15870,6 +16150,10 @@
         "CloudwatchLogStream":{
           "shape":"String",
           "documentation":"<p>The name of the Amazon CloudWatch Logs log stream to which connection logging data is published.</p>"
+        },
+        "IncludeAuthorizationPolicyContext":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the authorization policy evaluation context is included in the connection logs for the Client VPN endpoint.</p>"
         }
       },
       "documentation":"<p>Information about the client connection logging options for a Client VPN endpoint.</p>"
@@ -16195,7 +16479,7 @@
         },
         "CopyImageTags":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether to copy your user-defined AMI tags to the new AMI.</p> <p>The following tags are not be copied:</p> <ul> <li> <p>System tags (prefixed with <code>aws:</code>)</p> </li> <li> <p>For public and shared AMIs, user-defined tags that are attached by other Amazon Web Services accounts</p> </li> </ul> <p>Default: Your user-defined AMI tags are not copied.</p>"
+          "documentation":"<p>Specifies whether to copy your user-defined AMI tags to the new AMI.</p> <p>The following tags are not be copied:</p> <ul> <li> <p>System tags (prefixed with <code>aws:</code>)</p> </li> <li> <p>For public and shared AMIs, user-defined tags that are attached by other Amazon Web Services accounts, except tags with the <code>ec2:SharedTag/</code> prefix. For more information about tag sharing, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#sharing-tags\">Sharing tags</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> </ul> <p>Default: Your user-defined AMI tags are not copied.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -16761,6 +17045,18 @@
           "documentation":"<p>Information about the instance types for which to reserve the capacity.</p>",
           "locationName":"InstanceTypeSpecification"
         },
+        "InstanceRequirements":{
+          "shape":"InstanceRequirementsRequest",
+          "documentation":"<p>Reserved for internal use.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>Reserved for internal use.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>Reserved for internal use.</p>"
+        },
         "Tenancy":{
           "shape":"FleetCapacityReservationTenancy",
           "documentation":"<p>Indicates the tenancy of the Capacity Reservation Fleet. All Capacity Reservations in the Fleet inherit this tenancy. The Capacity Reservation Fleet can have one of the following tenancy settings:</p> <ul> <li> <p> <code>default</code> - The Capacity Reservation Fleet is created on hardware that is shared with other Amazon Web Services accounts.</p> </li> <li> <p> <code>dedicated</code> - The Capacity Reservations are created on single-tenant hardware that is dedicated to a single Amazon Web Services account.</p> </li> </ul>"
@@ -17081,6 +17377,10 @@
         "TransitGatewayConfiguration":{
           "shape":"TransitGatewayConfigurationInputStructure",
           "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint. Use this parameter to associate the endpoint with a Transit Gateway instead of a VPC. You cannot specify both <code>TransitGatewayConfiguration</code> and <code>VpcId</code>/<code>SecurityGroupIds</code>.</p>"
+        },
+        "DevicePostureOptions":{
+          "shape":"DevicePostureOptions",
+          "documentation":"<p>The device posture options for the Client VPN endpoint. Use this parameter to specify the device trust providers that the endpoint uses to evaluate the security posture of connecting devices.</p>"
         }
       }
     },
@@ -21979,7 +22279,7 @@
         },
         "VpcEndpointType":{
           "shape":"VpcEndpointType",
-          "documentation":"<p>The type of endpoint.</p> <p>Default: Gateway</p>"
+          "documentation":"<p>The type of endpoint.</p> <p>For more information about the types of VPC endpoints, see <a href=\"https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html#concepts-vpc-endpoints\">VPC endpoints</a> in the <i>Amazon Web Services PrivateLink User Guide</i>.</p> <p>Default: Gateway</p>"
         },
         "VpcId":{
           "shape":"VpcId",
@@ -22000,12 +22300,12 @@
         },
         "SubnetIds":{
           "shape":"VpcEndpointSubnetIdList",
-          "documentation":"<p>(Interface and Gateway Load Balancer endpoints) The IDs of the subnets in which to create endpoint network interfaces. For a Gateway Load Balancer endpoint, you can specify only one subnet.</p>",
+          "documentation":"<p>(Interface, Gateway Load Balancer endpoints, Resource, ServiceNetwork, and Tunnel endpoints only) The IDs of the subnets in which to create endpoint network interfaces. For a Gateway Load Balancer endpoint, you can specify only one subnet. For a <code>Tunnel</code> endpoint, the subnets must be in the Availability Zones of the resource gateway associated with the shared resource configuration. An endpoint network interface is created only in an Availability Zone that the resource gateway is also in.</p>",
           "locationName":"SubnetId"
         },
         "SecurityGroupIds":{
           "shape":"VpcEndpointSecurityGroupIdList",
-          "documentation":"<p>(Interface endpoint) The IDs of the security groups to associate with the endpoint network interfaces. If this parameter is not specified, we use the default security group for the VPC.</p>",
+          "documentation":"<p>(Interface, Resource, ServiceNetwork, and Tunnel endpoints only) The IDs of the security groups to associate with the endpoint network interfaces. If this parameter is not specified, we use the default security group for the VPC.</p>",
           "locationName":"SecurityGroupId"
         },
         "IpAddressType":{
@@ -22040,7 +22340,7 @@
         },
         "ResourceConfigurationArn":{
           "shape":"ResourceConfigurationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a resource configuration that will be associated with the VPC endpoint of type resource.</p>"
+          "documentation":"<p>(Resource and Tunnel endpoints only) The Amazon Resource Name (ARN) of a resource configuration associated with the VPC endpoint. The type of resource configuration depends on the endpoint type:</p> <ul> <li> <p>For a Resource endpoint, you can specify a resource configuration that is of type <code>SINGLE</code>, <code>GROUP</code>, or <code>ARN</code>. To reach a resource that belongs to a group, specify the parent <code>GROUP</code> resource configuration.</p> </li> <li> <p>For a Tunnel endpoint, you can specify a resource configuration that is of type <code>CIDR</code>.</p> </li> </ul> <p>For more information about the types of resource configurations, see <a href=\"https://docs.aws.amazon.com/vpc/latest/privatelink/resource-configuration.html\">Types of resource configurations</a> in the <i>Amazon Web Services PrivateLink User Guide</i>.</p> <p>This request fails if a VPC endpoint owned by a different Amazon Web Services account already exists on a resource gateway that is enabled for <code>ResourceGatewayCharges</code> payer responsibility.</p>"
         },
         "ServiceRegion":{
           "shape":"String",
@@ -22865,6 +23165,30 @@
           "shape":"CarrierGateway",
           "documentation":"<p>Information about the carrier gateway.</p>",
           "locationName":"carrierGateway"
+        }
+      }
+    },
+    "DeleteClientVpnEndpointAuthorizationPolicyRequest":{
+      "type":"structure",
+      "required":["ClientVpnEndpointId"],
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"ClientVpnEndpointId",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteClientVpnEndpointAuthorizationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ClientVpnAuthorizationPolicyStatus",
+          "documentation":"<p>The current state of the authorization policy.</p>",
+          "locationName":"status"
         }
       }
     },
@@ -28450,7 +28774,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>architecture</code> - The image architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code> | <code>x86_64_mac</code> | <code>arm64_mac</code>).</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean value that indicates whether the Amazon EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.snapshot-id</code> - The ID of the snapshot used for the Amazon EBS volume.</p> </li> <li> <p> <code>block-device-mapping.volume-size</code> - The volume size of the Amazon EBS volume, in GiB.</p> </li> <li> <p> <code>block-device-mapping.volume-type</code> - The volume type of the Amazon EBS volume (<code>io1</code> | <code>io2</code> | <code>gp2</code> | <code>gp3</code> | <code>sc1 </code>| <code>st1</code> | <code>standard</code>).</p> </li> <li> <p> <code>block-device-mapping.encrypted</code> - A Boolean that indicates whether the Amazon EBS volume is encrypted.</p> </li> <li> <p> <code>boot-mode</code> – The boot mode of the image (<code>legacy-bios</code> | <code>uefi</code> | <code>uefi-preferred</code>).</p> </li> <li> <p> <code>creation-date</code> - The time when the image was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>description</code> - The description of the image (provided during image creation).</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether enhanced networking with ENA is enabled.</p> </li> <li> <p> <code>free-tier-eligible</code> - A Boolean that indicates whether this image can be used under the Amazon Web Services Free Tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type (<code>ovm</code> | <code>xen</code>).</p> </li> <li> <p> <code>image-allowed</code> - A Boolean that indicates whether the image meets the criteria specified for Allowed AMIs.</p> </li> <li> <p> <code>image-id</code> - The ID of the image.</p> </li> <li> <p> <code>image-watermark.source-image-creation-time</code> - The creation date of the source AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.source-image-id</code> - The ID of the AMI to which the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.source-image-region</code> - The Region where the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.watermark-creation-time</code> - The date and time the watermark was attached to the AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.watermark-key</code> - The watermark identifier, in <code>accountId:watermarkName</code> format (for example, <code>123456789012:approvedAmi</code>).</p> </li> <li> <p> <code>image-type</code> - The image type (<code>machine</code> | <code>kernel</code> | <code>ramdisk</code>).</p> </li> <li> <p> <code>instance-type-specification.supported-instance-type</code> – The instance types that are compatible with the AMI, as specified by the AMI owner. Values can be individual instance types (for example, <code>t3.micro</code>) or wildcard patterns that match multiple instance types (for example, <code>t3.*</code>).</p> </li> <li> <p> <code>instance-type-specification.unsupported-instance-type</code> – The instance types that are not compatible with the AMI, as specified by the AMI owner. Values can be individual instance types (for example, <code>t3.micro</code>) or wildcard patterns that match multiple instance types (for example, <code>t3.*</code>).</p> </li> <li> <p> <code>is-public</code> - A Boolean that indicates whether the image is public.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>manifest-location</code> - The location of the image manifest.</p> </li> <li> <p> <code>name</code> - The name of the AMI (provided during image creation).</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>platform</code> - The platform. The only supported value is <code>windows</code>.</p> </li> <li> <p> <code>product-code</code> - The product code.</p> </li> <li> <p> <code>product-code.type</code> - The type of the product code (<code>marketplace</code>).</p> </li> <li> <p> <code>public-ssm-parameter-name</code> - The name of a public Systems Manager parameter associated with the AMI. The parameter must be in a trusted Amazon Web Services namespace under <code>aws/service/</code>. Returns all AMIs that have ever been associated with the parameter, including previous versions.</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-image-id</code> - The ID of the source AMI from which the AMI was created.</p> </li> <li> <p> <code>source-image-region</code> - The Region of the source AMI.</p> </li> <li> <p> <code>source-instance-id</code> - The ID of the instance that the AMI was created from if the AMI was created using CreateImage. This filter is applicable only if the AMI was created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> </li> <li> <p> <code>state</code> - The state of the image (<code>available</code> | <code>pending</code> | <code>failed</code>).</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - The message for the state change.</p> </li> <li> <p> <code>sriov-net-support</code> - A value of <code>simple</code> indicates that enhanced networking with the Intel 82599 VF interface is enabled.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type (<code>paravirtual</code> | <code>hvm</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>architecture</code> - The image architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code> | <code>x86_64_mac</code> | <code>arm64_mac</code>).</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean value that indicates whether the Amazon EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.snapshot-id</code> - The ID of the snapshot used for the Amazon EBS volume.</p> </li> <li> <p> <code>block-device-mapping.volume-size</code> - The volume size of the Amazon EBS volume, in GiB.</p> </li> <li> <p> <code>block-device-mapping.volume-type</code> - The volume type of the Amazon EBS volume (<code>io1</code> | <code>io2</code> | <code>gp2</code> | <code>gp3</code> | <code>sc1 </code>| <code>st1</code> | <code>standard</code>).</p> </li> <li> <p> <code>block-device-mapping.encrypted</code> - A Boolean that indicates whether the Amazon EBS volume is encrypted.</p> </li> <li> <p> <code>boot-mode</code> – The boot mode of the image (<code>legacy-bios</code> | <code>uefi</code> | <code>uefi-preferred</code>).</p> </li> <li> <p> <code>creation-date</code> - The time when the image was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>description</code> - The description of the image (provided during image creation).</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether enhanced networking with ENA is enabled.</p> </li> <li> <p> <code>free-tier-eligible</code> - A Boolean that indicates whether this image can be used under the Amazon Web Services Free Tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type (<code>ovm</code> | <code>xen</code>).</p> </li> <li> <p> <code>image-allowed</code> - A Boolean that indicates whether the image meets the criteria specified for Allowed AMIs.</p> </li> <li> <p> <code>image-id</code> - The ID of the image.</p> </li> <li> <p> <code>image-watermark.source-image-creation-time</code> - The creation date of the source AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.source-image-id</code> - The ID of the AMI to which the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.source-image-region</code> - The Region where the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.watermark-creation-time</code> - The date and time the watermark was attached to the AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.watermark-key</code> - The watermark identifier, in <code>accountId:watermarkName</code> format (for example, <code>123456789012:approvedAmi</code>).</p> </li> <li> <p> <code>image-type</code> - The image type (<code>machine</code> | <code>kernel</code> | <code>ramdisk</code>).</p> </li> <li> <p> <code>instance-type-specification.supported-instance-type</code> – The instance types that are compatible with the AMI, as specified by the AMI owner. Values can be individual instance types (for example, <code>t3.micro</code>) or wildcard patterns that match multiple instance types (for example, <code>t3.*</code>).</p> </li> <li> <p> <code>instance-type-specification.unsupported-instance-type</code> – The instance types that are not compatible with the AMI, as specified by the AMI owner. Values can be individual instance types (for example, <code>t3.micro</code>) or wildcard patterns that match multiple instance types (for example, <code>t3.*</code>).</p> </li> <li> <p> <code>is-public</code> - A Boolean that indicates whether the image is public.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>manifest-location</code> - The location of the image manifest.</p> </li> <li> <p> <code>name</code> - The name of the AMI (provided during image creation).</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>platform</code> - The platform. The only supported value is <code>windows</code>.</p> </li> <li> <p> <code>product-code</code> - The product code.</p> </li> <li> <p> <code>product-code.type</code> - The type of the product code (<code>marketplace</code>).</p> </li> <li> <p> <code>public-ssm-parameter-name</code> - The name of a public Systems Manager parameter associated with the AMI. The parameter must be in a trusted Amazon Web Services namespace under <code>aws/service/</code>. Returns all AMIs that have ever been associated with the parameter, including previous versions.</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>scan-result.critical-fix-available-since</code> - The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for a <code>critical</code> severity finding on the AMI.</p> </li> <li> <p> <code>scan-result.finding-scan-date</code> - The date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), of the most recent Amazon Inspector scan of the AMI.</p> </li> <li> <p> <code>scan-result.high-fix-available-since</code> - The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for a <code>high</code> severity finding on the AMI.</p> </li> <li> <p> <code>scan-result.highest-finding-severity-label</code> - The highest severity among the AMI's Amazon Inspector findings, whether or not a fix is available. The valid values are the following Amazon Inspector severity levels:</p> <ul> <li> <p> <code>informational</code> - CVSS score of 0.</p> </li> <li> <p> <code>low</code> - CVSS score of 0.1 to 3.9.</p> </li> <li> <p> <code>medium</code> - CVSS score of 4.0 to 6.9.</p> </li> <li> <p> <code>high</code> - CVSS score of 7.0 to 8.9.</p> </li> <li> <p> <code>critical</code> - CVSS score of 9.0 to 10.0.</p> </li> </ul> </li> <li> <p> <code>scan-result.informational-fix-available-since</code> - The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for an <code>informational</code> severity finding on the AMI.</p> </li> <li> <p> <code>scan-result.low-fix-available-since</code> - The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for a <code>low</code> severity finding on the AMI.</p> </li> <li> <p> <code>scan-result.medium-fix-available-since</code> - The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for a <code>medium</code> severity finding on the AMI.</p> </li> <li> <p> <code>source-image-id</code> - The ID of the source AMI from which the AMI was created.</p> </li> <li> <p> <code>source-image-region</code> - The Region of the source AMI.</p> </li> <li> <p> <code>source-instance-id</code> - The ID of the instance that the AMI was created from if the AMI was created using CreateImage. This filter is applicable only if the AMI was created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> </li> <li> <p> <code>state</code> - The state of the image (<code>available</code> | <code>pending</code> | <code>failed</code>).</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - The message for the state change.</p> </li> <li> <p> <code>sriov-net-support</code> - A value of <code>simple</code> indicates that enhanced networking with the Intel 82599 VF interface is enabled.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type (<code>paravirtual</code> | <code>hvm</code>).</p> </li> </ul>",
           "locationName":"Filter"
         }
       }
@@ -34154,7 +34478,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>service-region</code> - The Region of the service.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC in which the endpoint resides.</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-type</code> - The type of VPC endpoint (<code>Interface</code> | <code>Gateway</code> | <code>GatewayLoadBalancer</code> | <code>Resource</code> | <code>ServiceNetwork</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>service-region</code> - The Region of the service.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC in which the endpoint resides.</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-type</code> - The type of VPC endpoint (<code>Interface</code> | <code>Gateway</code> | <code>GatewayLoadBalancer</code> | <code>Resource</code> | <code>ServiceNetwork</code> | <code>Tunnel</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -34647,6 +34971,32 @@
         }
       },
       "documentation":"<p>Describes the options for an Amazon Web Services Verified Access device-identity based trust provider.</p>"
+    },
+    "DevicePostureOptions":{
+      "type":"structure",
+      "members":{
+        "TrustProviders":{
+          "shape":"ClientVpnTrustProviderRequestList",
+          "documentation":"<p>The device trust providers to configure for the Client VPN endpoint.</p>",
+          "locationName":"TrustProvider"
+        },
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether device posture evaluation is enabled for the Client VPN endpoint. Specify <code>false</code> to disable device posture, which clears the configured device trust providers.</p>"
+        }
+      },
+      "documentation":"<p>Describes the device posture options for a Client VPN endpoint. Device posture options specify the device trust providers that the endpoint uses to evaluate the security posture of connecting devices.</p>"
+    },
+    "DevicePostureResponseOptions":{
+      "type":"structure",
+      "members":{
+        "TrustProviders":{
+          "shape":"ClientVpnTrustProviderSet",
+          "documentation":"<p>The device trust providers configured for the Client VPN endpoint.</p>",
+          "locationName":"trustProviderSet"
+        }
+      },
+      "documentation":"<p>Information about the device posture options for a Client VPN endpoint.</p>"
     },
     "DeviceTrustProviderType":{
       "type":"string",
@@ -38499,6 +38849,16 @@
           "documentation":"<p>The transit gateway route table route.</p>",
           "locationName":"transitGatewayRouteTableRoute"
         },
+        "TransitGatewayPolicyTable":{
+          "shape":"AnalysisComponent",
+          "documentation":"<p>The transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTable"
+        },
+        "TransitGatewayPolicyTableEntry":{
+          "shape":"AnalysisTransitGatewayPolicyTableEntry",
+          "documentation":"<p>The transit gateway policy table entry.</p>",
+          "locationName":"transitGatewayPolicyTableEntry"
+        },
         "TransitGatewayAttachment":{
           "shape":"AnalysisComponent",
           "documentation":"<p>The transit gateway attachment.</p>",
@@ -40771,6 +41131,62 @@
         }
       }
     },
+    "GetCapacityManagerSupportabilityScoresRequest":{
+      "type":"structure",
+      "required":[
+        "MarketType",
+        "CapacityAmount",
+        "CapacityUnit",
+        "CapacityAvailabilityZoneIds"
+      ],
+      "members":{
+        "MarketType":{
+          "shape":"SupportabilityMarketType",
+          "documentation":"<p> The capacity market to score. </p>"
+        },
+        "CapacityAmount":{
+          "shape":"CapacityAmount",
+          "documentation":"<p> The amount of capacity that you need, in the unit that you specify for <code>CapacityUnit</code>. Each score is relative to this amount. </p>"
+        },
+        "CapacityUnit":{
+          "shape":"CapacityUnit",
+          "documentation":"<p> The unit for <code>CapacityAmount</code>. </p>"
+        },
+        "CapacityAvailabilityZoneIds":{
+          "shape":"CapacityAvailabilityZoneIdList",
+          "documentation":"<p> The IDs of the Availability Zones to score, such as <code>use1-az1</code>. You can specify Availability Zones in different Regions. You can specify up to 10 Availability Zones. </p>",
+          "locationName":"CapacityAvailabilityZoneId"
+        },
+        "InstanceTypes":{
+          "shape":"SupportabilityInstanceTypeList",
+          "documentation":"<p> The instance types to score. You can specify up to 50 instance types. </p> <p> Specify either <code>InstanceTypes</code> or <code>InstanceRequirementsWithMetadata</code>, but not both. </p>",
+          "locationName":"InstanceType"
+        },
+        "InstanceRequirementsWithMetadata":{
+          "shape":"InstanceRequirementsWithMetadataRequest",
+          "documentation":"<p> The attributes that the instance types must have, such as vCPU and memory ranges. Capacity Manager resolves the attributes into matching instance types and scores each one. </p> <p> Specify either <code>InstanceTypes</code> or <code>InstanceRequirementsWithMetadata</code>, but not both. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        }
+      }
+    },
+    "GetCapacityManagerSupportabilityScoresResult":{
+      "type":"structure",
+      "members":{
+        "AggregateScore":{
+          "shape":"SupportabilityScore",
+          "documentation":"<p> The score for all instance type and Availability Zone combinations in the request together. A <code>high</code> aggregate score with lower individual scores means that no single combination can support the full request, but the combinations together can. </p>",
+          "locationName":"aggregateScore"
+        },
+        "CapacityManagerSupportabilityScores":{
+          "shape":"CapacityManagerSupportabilityScoreSet",
+          "documentation":"<p> The score for each instance type and Availability Zone combination in the request. </p>",
+          "locationName":"capacityManagerSupportabilityScoreSet"
+        }
+      }
+    },
     "GetCapacityReservationUsageRequest":{
       "type":"structure",
       "required":["CapacityReservationId"],
@@ -40850,6 +41266,50 @@
           "shape":"InterruptionInfo",
           "documentation":"<p> Details about the interruption configuration and source reservation for interruptible Capacity Reservations. </p>",
           "locationName":"interruptionInfo"
+        }
+      }
+    },
+    "GetClientVpnEndpointAuthorizationPolicyRequest":{
+      "type":"structure",
+      "required":["ClientVpnEndpointId"],
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"ClientVpnEndpointId",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetClientVpnEndpointAuthorizationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>",
+          "locationName":"clientVpnEndpointId"
+        },
+        "PolicyDocument":{
+          "shape":"String",
+          "documentation":"<p>The authorization policy document, written in the Cedar policy language.</p>",
+          "locationName":"policyDocument"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A brief description of the authorization policy.</p>",
+          "locationName":"description"
+        },
+        "ShadowMode":{
+          "shape":"ClientVpnAuthorizationPolicyShadowMode",
+          "documentation":"<p>Specifies whether the authorization policy is evaluated in shadow mode. Possible values include:</p> <ul> <li> <p> <code>enabled</code> - The authorization policy is evaluated and the results are logged, but access is not enforced.</p> </li> <li> <p> <code>disabled</code> - The authorization policy is enforced.</p> </li> </ul>",
+          "locationName":"shadowMode"
+        },
+        "Status":{
+          "shape":"ClientVpnAuthorizationPolicyStatus",
+          "documentation":"<p>The current state of the authorization policy.</p>",
+          "locationName":"status"
         }
       }
     },
@@ -41303,6 +41763,55 @@
           "shape":"ManagedBy",
           "documentation":"<p>The entity that manages the state for block public access for AMIs. Possible values include:</p> <ul> <li> <p> <code>account</code> - The state is managed by the account.</p> </li> <li> <p> <code>declarative-policy</code> - The state is managed by a declarative policy and can't be modified by the account.</p> </li> </ul>",
           "locationName":"managedBy"
+        }
+      }
+    },
+    "GetImageFindingsEntrySet":{
+      "type":"list",
+      "member":{
+        "shape":"ImageFinding",
+        "locationName":"item"
+      }
+    },
+    "GetImageFindingsMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "GetImageFindingsRequest":{
+      "type":"structure",
+      "required":["ImageId"],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the AMI.</p>"
+        },
+        "MaxResults":{
+          "shape":"GetImageFindingsMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetImageFindingsResult":{
+      "type":"structure",
+      "members":{
+        "ImageFindings":{
+          "shape":"GetImageFindingsEntrySet",
+          "documentation":"<p>The Amazon Inspector findings for the AMI.</p>",
+          "locationName":"imageFindingSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -42981,6 +43490,45 @@
         }
       }
     },
+    "GetTransitGatewayAttachmentNatConfigurationRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetTransitGatewayAttachmentNatConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "NatGatewaySupport":{
+          "shape":"TransitGatewayAttachmentNatGatewaySupportState",
+          "documentation":"<p>The state of NAT gateway support for the attachment.</p>",
+          "locationName":"natGatewaySupport"
+        },
+        "NatSystemRouteSupport":{
+          "shape":"TransitGatewayAttachmentNatSystemRouteSupportValue",
+          "documentation":"<p>Specifies whether the transit gateway installs routes for the NAT CIDRs in the route tables to which the attachment propagates.</p>",
+          "locationName":"natSystemRouteSupport"
+        },
+        "NatGatewayRules":{
+          "shape":"TransitGatewayNatRuleList",
+          "documentation":"<p>The NAT gateway rules for the attachment.</p>",
+          "locationName":"natGatewayRuleSet"
+        }
+      }
+    },
     "GetTransitGatewayAttachmentPropagationsRequest":{
       "type":"structure",
       "required":["TransitGatewayAttachmentId"],
@@ -44653,6 +45201,11 @@
           "documentation":"<p>The watermarks attached to the AMI.</p>",
           "locationName":"imageWatermarkSet"
         },
+        "ScanResults":{
+          "shape":"ScanResults",
+          "documentation":"<p>The Amazon Inspector scan results for the AMI. This information is present only for AMIs that Amazon Inspector has scanned.</p> <p>When you share an AMI with other accounts, organizations, or organizational units (OUs), or make it public, its scan results are available to the accounts that can use the AMI.</p>",
+          "locationName":"scanResults"
+        },
         "InstanceTypeSpecification":{
           "shape":"InstanceTypeSpecification",
           "documentation":"<p>The instance type specification for the AMI, which defines which instance types are compatible with this image.</p>",
@@ -44893,6 +45446,11 @@
           "shape":"ImageWatermarkFilterResponseList",
           "documentation":"<p>The watermark criteria that an AMI must match to be allowed. An AMI is allowed if it carries at least one watermark that satisfies an ImageWatermarkFilter. A watermark satisfies a filter when all specified fields in the ImageWatermarkFilter match the corresponding values on the watermark of the AMI.</p> <p>Maximum: 50 values</p>",
           "locationName":"imageWatermarkSet"
+        },
+        "ScanResultCondition":{
+          "shape":"ScanResultCondition",
+          "documentation":"<p>The Amazon Inspector scan-result criteria that an AMI must meet to be allowed. The criteria can limit the highest finding severity, the number of days since Amazon Inspector last scanned the AMI, and the number of days since Amazon Inspector reported a fix as available.</p>",
+          "locationName":"scanResultCondition"
         }
       },
       "documentation":"<p>The criteria that are evaluated to determine which AMIs are discoverable and usable in your account for the specified Amazon Web Services Region.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html#how-allowed-amis-works\">How Allowed AMIs works</a> in the <i>Amazon EC2 User Guide</i>.</p>"
@@ -44934,6 +45492,10 @@
           "shape":"ImageWatermarkFilterRequestList",
           "documentation":"<p>The watermark criteria that an AMI must match to be allowed. An AMI is allowed if it carries at least one watermark that satisfies an ImageWatermarkFilter. A watermark satisfies a filter when all specified fields in the ImageWatermarkFilter match the corresponding values on the watermark of the AMI.</p> <p>Maximum: 50 values</p>",
           "locationName":"ImageWatermark"
+        },
+        "ScanResultCondition":{
+          "shape":"ScanResultConditionRequest",
+          "documentation":"<p>The Amazon Inspector scan-result criteria that an AMI must meet to be allowed. The criteria can limit the highest finding severity, the number of days since Amazon Inspector last scanned the AMI, and the number of days since Amazon Inspector reported a fix as available.</p>"
         }
       },
       "documentation":"<p>The criteria that are evaluated to determine which AMIs are discoverable and usable in your account for the specified Amazon Web Services Region.</p> <p>The <code>ImageCriteria</code> can include up to:</p> <ul> <li> <p>10 <code>ImageCriterion</code> </p> </li> </ul> <p>Each <code>ImageCriterion</code> can include up to:</p> <ul> <li> <p>200 values for <code>ImageProviders</code> </p> </li> <li> <p>50 values for <code>ImageNames</code> </p> </li> <li> <p>50 values for <code>MarketplaceProductCodes</code> </p> </li> <li> <p>50 values for <code>ImageWatermarks</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html#how-allowed-amis-works\">How Allowed AMIs works</a> in the <i>Amazon EC2 User Guide</i>.</p>"
@@ -44984,6 +45546,59 @@
       "type":"list",
       "member":{
         "shape":"ImageDiskContainer",
+        "locationName":"item"
+      }
+    },
+    "ImageFinding":{
+      "type":"structure",
+      "members":{
+        "FixAvailable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether a fix is available for the finding. This value is <code>true</code> when Amazon Inspector reports a full or partial fix for the finding.</p>",
+          "locationName":"fixAvailable"
+        },
+        "Score":{
+          "shape":"Double",
+          "documentation":"<p>The Amazon Inspector score for the finding.</p>",
+          "locationName":"score"
+        },
+        "FirstObservedAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), when Amazon Inspector first observed the finding.</p>",
+          "locationName":"firstObservedAt"
+        },
+        "UpdatedAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), when Amazon Inspector last updated the finding.</p>",
+          "locationName":"updatedAt"
+        },
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>The title of the finding.</p>",
+          "locationName":"title"
+        },
+        "Paths":{
+          "shape":"ImageFindingPathSet",
+          "documentation":"<p>The file paths in the AMI that are affected by the finding. Amazon EC2 returns up to 10 file paths for each finding.</p>",
+          "locationName":"pathSet"
+        },
+        "SeverityLabel":{
+          "shape":"SeverityLabel",
+          "documentation":"<p>The severity of the finding.</p> <p>The valid values are the following Amazon Inspector severity levels, which correspond to CVSS score ranges:</p> <ul> <li> <p> <code>informational</code> - CVSS score of 0.</p> </li> <li> <p> <code>low</code> - CVSS score of 0.1 to 3.9.</p> </li> <li> <p> <code>medium</code> - CVSS score of 4.0 to 6.9.</p> </li> <li> <p> <code>high</code> - CVSS score of 7.0 to 8.9.</p> </li> <li> <p> <code>critical</code> - CVSS score of 9.0 to 10.0.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-severity.html#findings-understanding-package-score\">Software package vulnerability severity</a> in the <i>Amazon Inspector User Guide</i>.</p>",
+          "locationName":"severityLabel"
+        },
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the Amazon EBS snapshot of the AMI in which the finding was detected.</p>",
+          "locationName":"snapshotId"
+        }
+      },
+      "documentation":"<p>Describes an Amazon Inspector vulnerability finding for an AMI.</p>"
+    },
+    "ImageFindingPathSet":{
+      "type":"list",
+      "member":{
+        "shape":"String",
         "locationName":"item"
       }
     },
@@ -48746,9 +49361,14 @@
           "shape":"ApplicationStatusSummary",
           "documentation":"<p>Reports the application-level health status for the instance.</p>",
           "locationName":"applicationStatus"
+        },
+        "PerformanceStatus":{
+          "shape":"PerformanceStatusSummary",
+          "documentation":"<p>Reports the performance-related health status for the instance. This information is returned only when performance status checks are enabled for the instance.</p>",
+          "locationName":"performanceStatus"
         }
       },
-      "documentation":"<p>Describes the status of an instance, including system status, instance status, attached EBS status, and application status.</p>"
+      "documentation":"<p>Describes the status of an instance, including system status, instance status, attached EBS status, application status, and performance status.</p>"
     },
     "InstanceStatusDetails":{
       "type":"structure",
@@ -50372,7 +50992,16 @@
         "r9gd.24xlarge",
         "r9gd.48xlarge",
         "r9gd.metal-48xl",
-        "m9g.medium"
+        "m9g.medium",
+        "t8i.nano",
+        "t8i.micro",
+        "t8i.small",
+        "t8i.medium",
+        "i8g.metal-48xl",
+        "r8gb.48xlarge",
+        "r8gb.metal-48xl",
+        "m9gd.medium",
+        "trn2u.48xlarge"
       ]
     },
     "InstanceTypeHypervisor":{
@@ -51767,6 +52396,9 @@
         "enable-in-progress",
         "enable-complete",
         "enable-failed",
+        "disable-in-progress",
+        "disable-complete",
+        "disable-failed",
         "delete-in-progress",
         "delete-complete",
         "delete-failed"
@@ -56885,6 +57517,16 @@
         "locationName":"item"
       }
     },
+    "MaxDaysSinceFixAvailableValue":{
+      "type":"integer",
+      "max":2147483647,
+      "min":0
+    },
+    "MaxDaysSinceLastFindingScanValue":{
+      "type":"integer",
+      "max":2147483647,
+      "min":0
+    },
     "MaxIpv4AddrPerInterface":{"type":"integer"},
     "MaxIpv6AddrPerInterface":{"type":"integer"},
     "MaxNetworkInterfaces":{"type":"integer"},
@@ -57117,7 +57759,17 @@
         "spot-total-count-inst",
         "spot-total-count-vcpu",
         "spot-interruption-rate-inst",
-        "spot-interruption-rate-vcpu"
+        "spot-interruption-rate-vcpu",
+        "capacity-total-requested-vcpu",
+        "capacity-total-fulfilled-vcpu",
+        "spot-capacity-total-requested-vcpu",
+        "spot-capacity-total-fulfilled-vcpu",
+        "capacity-request-fulfillment-rate",
+        "avg-inst-az-count-per-requested-vcpu",
+        "inst-az-fulfillment-rate",
+        "spot-capacity-request-fulfillment-rate",
+        "spot-avg-inst-az-count-per-requested-vcpu",
+        "spot-inst-az-fulfillment-rate"
       ]
     },
     "MetricDataResult":{
@@ -57595,6 +58247,47 @@
         }
       }
     },
+    "ModifyClientVpnEndpointAuthorizationPolicyRequest":{
+      "type":"structure",
+      "required":["ClientVpnEndpointId"],
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"ClientVpnEndpointId",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"String",
+          "documentation":"<p>The authorization policy document, written in the Cedar policy language. This parameter is required when you create the authorization policy for a Client VPN endpoint that does not already have one.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A brief description of the authorization policy.</p>"
+        },
+        "ShadowMode":{
+          "shape":"ClientVpnAuthorizationPolicyShadowMode",
+          "documentation":"<p>Specifies whether the authorization policy is evaluated in shadow mode. Possible values include:</p> <ul> <li> <p> <code>enabled</code> - The authorization policy is evaluated and the results are logged, but access is not enforced.</p> </li> <li> <p> <code>disabled</code> - The authorization policy is enforced.</p> </li> </ul> <p>The default value is <code>disabled</code>.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyClientVpnEndpointAuthorizationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ClientVpnAuthorizationPolicyStatus",
+          "documentation":"<p>The current state of the authorization policy.</p>",
+          "locationName":"status"
+        }
+      }
+    },
     "ModifyClientVpnEndpointRequest":{
       "type":"structure",
       "required":["ClientVpnEndpointId"],
@@ -57667,6 +58360,10 @@
         "TransitGatewayConfiguration":{
           "shape":"TransitGatewayConfigurationInputStructure",
           "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint. This option is currently not supported.</p>"
+        },
+        "DevicePostureOptions":{
+          "shape":"DevicePostureOptions",
+          "documentation":"<p>The device posture options for the Client VPN endpoint. Specifying this parameter replaces the entire device posture configuration for the endpoint. To disable device posture and remove all device trust providers, specify <code>false</code> for <code>Enabled</code>.</p>"
         }
       }
     },
@@ -59675,6 +60372,62 @@
           "shape":"TrafficMirrorSession",
           "documentation":"<p>Information about the Traffic Mirror session.</p>",
           "locationName":"trafficMirrorSession"
+        }
+      }
+    },
+    "ModifyTransitGatewayAttachmentNatConfigurationRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>"
+        },
+        "NatGatewaySupport":{
+          "shape":"TransitGatewayAttachmentNatGatewaySupportValue",
+          "documentation":"<p>Specifies whether to enable or disable NAT gateway support for the attachment. To enable NAT gateway support, the attachment must have at least one NAT gateway rule. You can't modify the NAT configuration while NAT gateway support is <code>enabling</code> or <code>disabling</code>. If you omit this parameter, the current value doesn't change.</p>"
+        },
+        "NatSystemRouteSupport":{
+          "shape":"TransitGatewayAttachmentNatSystemRouteSupportValue",
+          "documentation":"<p>Specifies whether the transit gateway installs routes for the NAT CIDRs in the route tables to which the attachment propagates. For VPC attachments, the transit gateway always installs these routes. You can enable or disable this option only for Amazon Web Services Direct Connect gateway attachments and Site-to-Site VPN attachments that use dynamic routing. For these attachments, the default is <code>enable</code>. If you omit this parameter, the current value doesn't change.</p>"
+        },
+        "NatGatewayRules":{
+          "shape":"TransitGatewayNatRuleRequestList",
+          "documentation":"<p>The NAT gateway rules for the attachment. The rules that you specify replace all existing NAT gateway rules for the attachment. You can specify up to 50 rules for an attachment. If you omit this parameter, the existing rules don't change. To remove all rules, use <code>ResetNatGatewayRules</code>.</p>",
+          "locationName":"NatGatewayRule"
+        },
+        "ResetNatGatewayRules":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to remove all NAT gateway rules from the attachment. If you omit this parameter, the transit gateway doesn't remove any rules. You can't specify this parameter together with <code>NatGatewayRules</code>. Because you can't enable NAT gateway support without rules, also set <code>NatGatewaySupport</code> to <code>disable</code> in the same request if NAT gateway support is currently enabled.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyTransitGatewayAttachmentNatConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "NatGatewaySupport":{
+          "shape":"TransitGatewayAttachmentNatGatewaySupportState",
+          "documentation":"<p>The state of NAT gateway support for the attachment.</p>",
+          "locationName":"natGatewaySupport"
+        },
+        "NatSystemRouteSupport":{
+          "shape":"TransitGatewayAttachmentNatSystemRouteSupportValue",
+          "documentation":"<p>Specifies whether the transit gateway installs routes for the NAT CIDRs in the route tables to which the attachment propagates.</p>",
+          "locationName":"natSystemRouteSupport"
+        },
+        "NatGatewayRules":{
+          "shape":"TransitGatewayNatRuleList",
+          "documentation":"<p>The NAT gateway rules for the attachment.</p>",
+          "locationName":"natGatewayRuleSet"
         }
       }
     },
@@ -63592,6 +64345,11 @@
           "documentation":"<p>The route in a transit gateway route table.</p>",
           "locationName":"transitGatewayRouteTableRoute"
         },
+        "TransitGatewayPolicyTableEntry":{
+          "shape":"AnalysisTransitGatewayPolicyTableEntry",
+          "documentation":"<p>The entry in a transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTableEntry"
+        },
         "Explanations":{
           "shape":"ExplanationList",
           "documentation":"<p>The explanation codes.</p>",
@@ -63893,6 +64651,27 @@
         "shape":"PerformanceFactorReferenceRequest",
         "locationName":"item"
       }
+    },
+    "PerformanceStatusSummary":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SummaryStatus",
+          "documentation":"<p>The current status.</p>",
+          "locationName":"status"
+        },
+        "ImpairedSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the performance status became impaired.</p>",
+          "locationName":"impairedSince"
+        },
+        "Remediation":{
+          "shape":"String",
+          "documentation":"<p>The recommended action to remediate the impaired instance, if one is available. This value is returned only when the instance is impaired.</p>",
+          "locationName":"remediation"
+        }
+      },
+      "documentation":"<p>Provides a summary of the performance status check results for an instance.</p>"
     },
     "Period":{
       "type":"integer",
@@ -69119,7 +69898,8 @@
         "ripe",
         "apnic",
         "arin",
-        "lacnic"
+        "lacnic",
+        "nicbr"
       ]
     },
     "RoleId":{"type":"string"},
@@ -70305,6 +71085,122 @@
         "sse-kms",
         "none"
       ]
+    },
+    "ScanResultCondition":{
+      "type":"structure",
+      "members":{
+        "MaxDaysSinceLastFindingScan":{
+          "shape":"MaxDaysSinceLastFindingScanValue",
+          "documentation":"<p>The maximum number of days that have elapsed since Amazon Inspector last scanned the AMI. For example, a value of <code>7</code> allows AMIs that were scanned within the last 7 days. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>",
+          "locationName":"maxDaysSinceLastFindingScan"
+        },
+        "MaximumSeverityLabel":{
+          "shape":"SeverityLabel",
+          "documentation":"<p>The maximum severity that an AMI's Amazon Inspector findings can have for the AMI to be allowed. Findings count whether or not a fix is available. For example, a value of <code>medium</code> allows AMIs whose highest severity is <code>informational</code>, <code>low</code>, or <code>medium</code>.</p> <p>The valid values are the following Amazon Inspector severity levels, which correspond to CVSS score ranges:</p> <ul> <li> <p> <code>informational</code> - CVSS score of 0.</p> </li> <li> <p> <code>low</code> - CVSS score of 0.1 to 3.9.</p> </li> <li> <p> <code>medium</code> - CVSS score of 4.0 to 6.9.</p> </li> <li> <p> <code>high</code> - CVSS score of 7.0 to 8.9.</p> </li> <li> <p> <code>critical</code> - CVSS score of 9.0 to 10.0.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-severity.html#findings-understanding-package-score\">Software package vulnerability severity</a> in the <i>Amazon Inspector User Guide</i>.</p> <p>A scanned AMI that has no findings meets this limit.</p> <p>AMIs that Amazon Inspector has not scanned are not allowed when you specify this condition.</p>",
+          "locationName":"maximumSeverityLabel"
+        },
+        "MaxDaysSinceInformationalFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for an <code>informational</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>informational</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>",
+          "locationName":"maxDaysSinceInformationalFixAvailable"
+        },
+        "MaxDaysSinceLowFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for a <code>low</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>low</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>",
+          "locationName":"maxDaysSinceLowFixAvailable"
+        },
+        "MaxDaysSinceMediumFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for a <code>medium</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>medium</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>",
+          "locationName":"maxDaysSinceMediumFixAvailable"
+        },
+        "MaxDaysSinceHighFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for a <code>high</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>high</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>",
+          "locationName":"maxDaysSinceHighFixAvailable"
+        },
+        "MaxDaysSinceCriticalFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for a <code>critical</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>critical</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>",
+          "locationName":"maxDaysSinceCriticalFixAvailable"
+        }
+      },
+      "documentation":"<p>The Amazon Inspector scan-result criteria that an AMI must meet to be allowed. The criteria can limit the highest finding severity. They can also limit, for each severity, the days since Amazon Inspector reported a fix as available.</p> <p>The severity limit applies to all findings, whether or not a fix is available. The day limits for each severity apply only to findings that have a fix available. A scanned AMI that has no fix-available finding of a given severity meets that severity's day limit. AMIs that Amazon Inspector has not scanned are not allowed when you specify this condition.</p>"
+    },
+    "ScanResultConditionRequest":{
+      "type":"structure",
+      "members":{
+        "MaxDaysSinceLastFindingScan":{
+          "shape":"MaxDaysSinceLastFindingScanValue",
+          "documentation":"<p>The maximum number of days that have elapsed since Amazon Inspector last scanned the AMI. For example, a value of <code>7</code> allows AMIs that were scanned within the last 7 days. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>"
+        },
+        "MaximumSeverityLabel":{
+          "shape":"SeverityLabel",
+          "documentation":"<p>The maximum severity that an AMI's Amazon Inspector findings can have for the AMI to be allowed. Findings count whether or not a fix is available. For example, a value of <code>medium</code> allows AMIs whose highest severity is <code>informational</code>, <code>low</code>, or <code>medium</code>.</p> <p>The valid values are the following Amazon Inspector severity levels, which correspond to CVSS score ranges:</p> <ul> <li> <p> <code>informational</code> - CVSS score of 0.</p> </li> <li> <p> <code>low</code> - CVSS score of 0.1 to 3.9.</p> </li> <li> <p> <code>medium</code> - CVSS score of 4.0 to 6.9.</p> </li> <li> <p> <code>high</code> - CVSS score of 7.0 to 8.9.</p> </li> <li> <p> <code>critical</code> - CVSS score of 9.0 to 10.0.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-severity.html#findings-understanding-package-score\">Software package vulnerability severity</a> in the <i>Amazon Inspector User Guide</i>.</p> <p>A scanned AMI that has no findings meets this limit.</p> <p>AMIs that Amazon Inspector has not scanned are not allowed when you specify this condition.</p>"
+        },
+        "MaxDaysSinceInformationalFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for an <code>informational</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>informational</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>"
+        },
+        "MaxDaysSinceLowFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for a <code>low</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>low</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>"
+        },
+        "MaxDaysSinceMediumFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for a <code>medium</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>medium</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>"
+        },
+        "MaxDaysSinceHighFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for a <code>high</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>high</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>"
+        },
+        "MaxDaysSinceCriticalFixAvailable":{
+          "shape":"MaxDaysSinceFixAvailableValue",
+          "documentation":"<p>The maximum number of days since Amazon Inspector reported a fix as available for a <code>critical</code> severity finding on the AMI. For example, a value of <code>7</code> does not allow an AMI if Amazon Inspector reported such a fix more than 7 days ago.</p> <p>A scanned AMI that has no <code>critical</code> severity finding with a fix available meets this limit. AMIs that Amazon Inspector has not scanned are not allowed.</p> <p>Constraints: Minimum value of 0. Maximum value of 2147483647.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Inspector scan-result criteria that an AMI must meet to be allowed. The criteria can limit the highest finding severity. They can also limit, for each severity, the days since Amazon Inspector reported a fix as available.</p> <p>The severity limit applies to all findings, whether or not a fix is available. The day limits for each severity apply only to findings that have a fix available. A scanned AMI that has no fix-available finding of a given severity meets that severity's day limit. AMIs that Amazon Inspector has not scanned are not allowed when you specify this condition.</p>"
+    },
+    "ScanResults":{
+      "type":"structure",
+      "members":{
+        "HighestFindingSeverityLabel":{
+          "shape":"SeverityLabel",
+          "documentation":"<p>The highest severity among the AMI's Amazon Inspector findings, whether or not a fix is available.</p> <p>The valid values are the following Amazon Inspector severity levels, which correspond to CVSS score ranges:</p> <ul> <li> <p> <code>informational</code> - CVSS score of 0.</p> </li> <li> <p> <code>low</code> - CVSS score of 0.1 to 3.9.</p> </li> <li> <p> <code>medium</code> - CVSS score of 4.0 to 6.9.</p> </li> <li> <p> <code>high</code> - CVSS score of 7.0 to 8.9.</p> </li> <li> <p> <code>critical</code> - CVSS score of 9.0 to 10.0.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-severity.html#findings-understanding-package-score\">Software package vulnerability severity</a> in the <i>Amazon Inspector User Guide</i>.</p> <p>This value is present only if the AMI has at least one finding.</p>",
+          "locationName":"highestFindingSeverityLabel"
+        },
+        "FindingScanDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), of the most recent Amazon Inspector scan of the AMI.</p>",
+          "locationName":"findingScanDate"
+        },
+        "InformationalFixAvailableSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for an <code>informational</code> severity finding on the AMI. This value is present only if the AMI has at least one <code>informational</code> severity finding with a fix available. Amazon Inspector recomputes this value on each scan.</p>",
+          "locationName":"informationalFixAvailableSince"
+        },
+        "LowFixAvailableSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for a <code>low</code> severity finding on the AMI. This value is present only if the AMI has at least one <code>low</code> severity finding with a fix available. Amazon Inspector recomputes this value on each scan.</p>",
+          "locationName":"lowFixAvailableSince"
+        },
+        "MediumFixAvailableSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for a <code>medium</code> severity finding on the AMI. This value is present only if the AMI has at least one <code>medium</code> severity finding with a fix available. Amazon Inspector recomputes this value on each scan.</p>",
+          "locationName":"mediumFixAvailableSince"
+        },
+        "HighFixAvailableSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for a <code>high</code> severity finding on the AMI. This value is present only if the AMI has at least one <code>high</code> severity finding with a fix available. Amazon Inspector recomputes this value on each scan.</p>",
+          "locationName":"highFixAvailableSince"
+        },
+        "CriticalFixAvailableSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The earliest date and time, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), at which Amazon Inspector reported a fix as available for a <code>critical</code> severity finding on the AMI. This value is present only if the AMI has at least one <code>critical</code> severity finding with a fix available. Amazon Inspector recomputes this value on each scan.</p>",
+          "locationName":"criticalFixAvailableSince"
+        }
+      },
+      "documentation":"<p>The Amazon Inspector scan results for an AMI. This information is present only for AMIs that Amazon Inspector has scanned.</p> <p>When you share an AMI with other accounts, organizations, or organizational units (OUs), or make it public, its scan results are available to the accounts that can use the AMI.</p> <p>The fix-available dates are specific to the AMI. Each date reflects when a fix became available for a finding on that AMI, not when the vendor released the fix. As a result, a date can be later than the vendor's release date, and AMIs with the same vulnerability can have different dates.</p>"
     },
     "Schedule":{
       "type":"string",
@@ -72228,6 +73124,16 @@
         "shape":"ServiceTypeDetail",
         "locationName":"item"
       }
+    },
+    "SeverityLabel":{
+      "type":"string",
+      "enum":[
+        "informational",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
     },
     "ShutdownBehavior":{
       "type":"string",
@@ -74533,6 +75439,31 @@
         "initializing"
       ]
     },
+    "SupportabilityInstanceTypeList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      },
+      "max":50,
+      "min":0
+    },
+    "SupportabilityMarketType":{
+      "type":"string",
+      "enum":[
+        "on-demand",
+        "spot"
+      ]
+    },
+    "SupportabilityScore":{
+      "type":"string",
+      "enum":[
+        "high",
+        "medium",
+        "low",
+        "unsupported"
+      ]
+    },
     "SupportedAdditionalProcessorFeature":{
       "type":"string",
       "enum":[
@@ -75707,6 +76638,11 @@
           "shape":"TagList",
           "documentation":"<p>The tags for the attachment.</p>",
           "locationName":"tagSet"
+        },
+        "NatGatewaySupport":{
+          "shape":"TransitGatewayAttachmentNatGatewaySupportState",
+          "documentation":"<p>The state of NAT gateway support for the attachment. Only the owner of the transit gateway receives this parameter.</p>",
+          "locationName":"natGatewaySupport"
         }
       },
       "documentation":"<p>Describes an attachment between a resource and a transit gateway.</p>"
@@ -75781,6 +76717,29 @@
         "shape":"TransitGatewayAttachment",
         "locationName":"item"
       }
+    },
+    "TransitGatewayAttachmentNatGatewaySupportState":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled",
+        "enabling",
+        "disabling"
+      ]
+    },
+    "TransitGatewayAttachmentNatGatewaySupportValue":{
+      "type":"string",
+      "enum":[
+        "enable",
+        "disable"
+      ]
+    },
+    "TransitGatewayAttachmentNatSystemRouteSupportValue":{
+      "type":"string",
+      "enum":[
+        "enable",
+        "disable"
+      ]
     },
     "TransitGatewayAttachmentPropagation":{
       "type":"structure",
@@ -76615,6 +77574,77 @@
         }
       },
       "documentation":"<p>Describes the members registered with the transit gateway multicast group.</p>"
+    },
+    "TransitGatewayNatRule":{
+      "type":"structure",
+      "members":{
+        "RuleNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The rule number.</p>",
+          "locationName":"ruleNumber"
+        },
+        "MatchSourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block of the source addresses to translate.</p>",
+          "locationName":"matchSourceCidr"
+        },
+        "NatCidr":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block that the transit gateway translates the source addresses to.</p>",
+          "locationName":"natCidr"
+        },
+        "State":{
+          "shape":"TransitGatewayNatRuleState",
+          "documentation":"<p>The state of the NAT gateway rule. The possible values are:</p> <ul> <li> <p> <code>pending</code> - The transit gateway is applying a change to the rule.</p> </li> <li> <p> <code>activated</code> - The rule is in effect because NAT gateway support is enabled for the attachment.</p> </li> <li> <p> <code>deactivated</code> - The rule isn't in effect because NAT gateway support is disabled for the attachment.</p> </li> </ul>",
+          "locationName":"state"
+        }
+      },
+      "documentation":"<p>Contains information about a NAT gateway rule for a transit gateway attachment, including the rule number, the source CIDR block, the translated CIDR block, and the state of the rule.</p>"
+    },
+    "TransitGatewayNatRuleList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayNatRule",
+        "locationName":"item"
+      },
+      "max":50,
+      "min":0
+    },
+    "TransitGatewayNatRuleRequest":{
+      "type":"structure",
+      "members":{
+        "RuleNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The rule number. Valid values are 1 to 32766. Each rule number must be unique within the request.</p>"
+        },
+        "MatchSourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block of the source addresses to translate. The CIDR block can't overlap the multicast range (<code>224.0.0.0/4</code>) or the link-local range (<code>169.254.0.0/16</code>).</p>"
+        },
+        "NatCidr":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block to translate the source addresses to. The CIDR block must be in a private (RFC 1918) or shared address space (RFC 6598) range, and must have the same prefix length as <code>MatchSourceCidr</code>. The CIDR blocks in the rules for an attachment can't overlap each other.</p>"
+        }
+      },
+      "documentation":"<p>Describes a NAT gateway rule to apply to a transit gateway attachment. A NAT gateway rule translates source addresses in the <code>MatchSourceCidr</code> range to the corresponding addresses in the <code>NatCidr</code> range.</p>"
+    },
+    "TransitGatewayNatRuleRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayNatRuleRequest",
+        "locationName":"item"
+      },
+      "max":50,
+      "min":0
+    },
+    "TransitGatewayNatRuleState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "activated",
+        "deactivated",
+        "deleting"
+      ]
     },
     "TransitGatewayNetworkInterfaceIdList":{
       "type":"list",
@@ -77503,7 +78533,8 @@
       "type":"string",
       "enum":[
         "static",
-        "propagated"
+        "propagated",
+        "system"
       ]
     },
     "TransitGatewayState":{
@@ -80904,7 +81935,7 @@
         },
         "VpcEndpointType":{
           "shape":"VpcEndpointType",
-          "documentation":"<p>The type of endpoint.</p>",
+          "documentation":"<p>The type of endpoint.</p> <p>For more information about the types of VPC endpoints, see <a href=\"https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html#concepts-vpc-endpoints\">VPC endpoints</a> in the <i>Amazon Web Services PrivateLink User Guide</i>.</p>",
           "locationName":"vpcEndpointType"
         },
         "VpcId":{
@@ -80934,12 +81965,12 @@
         },
         "SubnetIds":{
           "shape":"ValueStringList",
-          "documentation":"<p>(Interface endpoint) The subnets for the endpoint.</p>",
+          "documentation":"<p>(Interface, Gateway Load Balancer endpoints, Resource, ServiceNetwork, and Tunnel endpoints only) The subnets for the endpoint.</p>",
           "locationName":"subnetIdSet"
         },
         "Groups":{
           "shape":"GroupIdentifierSet",
-          "documentation":"<p>(Interface endpoint) Information about the security groups that are associated with the network interface.</p>",
+          "documentation":"<p>(Interface, Resource, ServiceNetwork, and Tunnel endpoints only) Information about the security groups that are associated with the network interface.</p>",
           "locationName":"groupSet"
         },
         "IpAddressType":{
@@ -80964,7 +81995,7 @@
         },
         "NetworkInterfaceIds":{
           "shape":"ValueStringList",
-          "documentation":"<p>(Interface endpoint) The network interfaces for the endpoint.</p>",
+          "documentation":"<p>(Interface, Gateway Load Balancer endpoints, Resource, ServiceNetwork, and Tunnel endpoints only) The network interfaces for the endpoint.</p>",
           "locationName":"networkInterfaceIdSet"
         },
         "DnsEntries":{

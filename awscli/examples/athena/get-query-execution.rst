@@ -10,8 +10,7 @@ Output::
     {
         "QueryExecution": {
             "QueryExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-            "Query": "select date, location, browser, uri, status from cloudfront_logs where method = 'GET
-    ' and status = 200 and location like 'SFO%' limit 10",
+            "Query": "select date, location, browser, uri, status from cloudfront_logs where method = 'GET' and status = 200 and location like 'SFO%' limit 10",
             "StatementType": "DML",
             "ResultConfiguration": {
                 "OutputLocation": "s3://amzn-s3-demo-bucket/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.csv"

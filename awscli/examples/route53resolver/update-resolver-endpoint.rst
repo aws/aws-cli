@@ -2,7 +2,7 @@
 
 The following ``update-resolver-endpoint`` example updates the name of a Resolver endpoint. Updating other values isn't supported. ::
 
-    aws route53resolver update-resolver-endpoint \ 
+    aws route53resolver update-resolver-endpoint \
         --resolver-endpoint-id rslvr-in-b5d45e32bdc445f09 \
         --name my-renamed-inbound-endpoint
 
@@ -12,7 +12,7 @@ Output::
         "ResolverEndpoint": {
             "Id": "rslvr-in-b5d45e32bdexample",
             "CreatorRequestId": "2020-01-02-18:48",
-            "Arn": "arn:aws:route53resolver:us-west-2:111122223333:resolver-endpoint/rslvr-in-b5d45e32bdexample",
+            "Arn": "arn:aws:route53resolver:us-west-2:123456789012:resolver-endpoint/rslvr-in-b5d45e32bdexample",
             "Name": "my-renamed-inbound-endpoint",
             "SecurityGroupIds": [
                 "sg-f62bexam"
@@ -26,3 +26,5 @@ Output::
             "ModificationTime": "2020-01-08T18:33:59.265Z"
         }
     }
+
+For more information, see `Managing inbound endpoints <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries-managing.html>`__ in the *Amazon Route 53 Developer Guide*.

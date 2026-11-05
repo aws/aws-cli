@@ -9,9 +9,9 @@ The Json output is printed on one line per input file, but is formatted here for
     aws comprehend start-entities-detection-job \
         --job-name entitiestest \
         --language-code en \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-example-role \
         --language-code en
 
 Contents of ``Sampletext1.txt``::
@@ -30,11 +30,11 @@ Output::
 
     {
         "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:entities-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:entities-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``output.txt`` with line indents for readability::
+Contents of ``output.txt``::
 
     {
     "Entities": [
@@ -172,11 +172,11 @@ The entity recognizer model was trained on customer support Feedbacks to recogni
 
     aws comprehend start-entities-detection-job \
         --job-name customentitiestest \
-        --entity-recognizer-arn "arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/entityrecognizer" \
+        --entity-recognizer-arn "arn:aws:comprehend:us-west-2:123456789012:entity-recognizer/entityrecognizer" \
         --language-code en \
-        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/jobdata/" \
-        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
-        --data-access-role-arn "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-IOrole" 
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket1/jobdata/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-bucket2/testfolder/" \
+        --data-access-role-arn "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-IOrole" 
 
 Contents of ``SampleFeedback1.txt``::
 
@@ -194,11 +194,11 @@ Output::
 
     {
         "JobId": "019ea9edac758806850fa8a79ff83021",
-        "JobArn": "arn:aws:comprehend:us-west-2:111122223333:entities-detection-job/019ea9edac758806850fa8a79ff83021",
+        "JobArn": "arn:aws:comprehend:us-west-2:123456789012:entities-detection-job/019ea9edac758806850fa8a79ff83021",
         "JobStatus": "SUBMITTED"
     }
 
-Contents of ``output.txt`` with line indents for readability::
+Contents of ``output.txt``::
 
     {
     "Entities": [

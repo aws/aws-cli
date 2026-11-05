@@ -12,7 +12,7 @@ Output::
         "ProgressEvent": {
             "TypeName": "AWS::Kinesis::Stream",
             "Identifier": "ResourceExample",
-            "RequestToken": "e48f26ff-d0f9-4ab8-a878-120db1edf111",
+            "RequestToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "Operation": "DELETE",
             "OperationStatus": "IN_PROGRESS",
             "EventTime": 1632950300.14

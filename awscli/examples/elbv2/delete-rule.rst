@@ -4,3 +4,7 @@ The following ``delete-rule`` example deletes the specified rule. ::
 
     aws elbv2 delete-rule \
         --rule-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/1291d13826f405c3
+
+This command produces no output.
+
+For more information, see `Delete a listener rule for your Application Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/delete-rule.html>`__ in the *Application Load Balancers Guide*.

@@ -1,4 +1,4 @@
-**Example 1: Reset the password for a service-specific credential attached to the user making the request**
+**Example 1: To reset the password for a service-specific credential attached to the user making the request**
 
 The following ``reset-service-specific-credential`` example generates a new cryptographically strong password for the specified service-specific credential attached to the user making the request. ::
 
@@ -19,7 +19,7 @@ Output::
         }
     }
 
-**Example 2: Reset the password for a service-specific credential attached to a specified user**
+**Example 2: To reset the password for a service-specific credential attached to a specified user**
 
 The following ``reset-service-specific-credential`` example generates a new cryptographically strong password for a service-specific credential attached to the specified user. ::
 

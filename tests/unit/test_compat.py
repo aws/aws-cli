@@ -14,6 +14,8 @@ import io
 import locale
 import os
 import signal
+import subprocess
+import sys
 
 import pytest
 
@@ -27,7 +29,13 @@ from awscli.compat import (
     set_preferred_output_encoding,
     validate_preferred_output_encoding,
 )
-from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
+from awscli.testutils import (
+    FileCreator,
+    if_windows,
+    mock,
+    skip_if_windows,
+    unittest,
+)
 
 
 class TestEnsureText(unittest.TestCase):
@@ -82,28 +90,35 @@ def test_compat_shell_quote_windows(input_string, expected_output):
 @pytest.mark.parametrize(
     "input_string, expected_output",
     (
-        ('', '""'),
+        ('', '^"^"'),
         ('foo', 'foo'),
-        ('foo bar', '"foo bar"'),
-        ('foo\tbar', '"foo\tbar"'),
-        ('"', '"\\""'),
+        ('foo bar', '^"foo bar^"'),
+        ('foo\tbar', '^"foo\tbar^"'),
+        ('"', '^"\\^"^"'),
         ('\\', '\\'),
         ('\\a', '\\a'),
         ('\\\\', '\\\\'),
-        ('\\"', '"\\\\\\""'),
-        ('foo&bar', '"foo&bar"'),
-        ('foo|bar', '"foo|bar"'),
-        ('foo>bar', '"foo>bar"'),
-        ('foo<bar', '"foo<bar"'),
-        ('foo^bar', '"foo^bar"'),
-        ('foo(bar)', '"foo(bar)"'),
-        ('foo,bar', '"foo,bar"'),
-        ('foo;bar', '"foo;bar"'),
-        ('foo=bar', '"foo=bar"'),
-        ('foo!bar', '"foo!bar"'),
-        ('foo%PATH%bar', 'foo%PATH%bar'),
+        ('\\"', '^"\\\\\\^"^"'),
+        ('foo&bar', '^"foo^&bar^"'),
+        ('foo|bar', '^"foo^|bar^"'),
+        ('foo>bar', '^"foo^>bar^"'),
+        ('foo<bar', '^"foo^<bar^"'),
+        ('foo^bar', '^"foo^^bar^"'),
+        ('foo(bar)', '^"foo^(bar^)^"'),
+        ('foo,bar', '^"foo,bar^"'),
+        ('foo;bar', '^"foo;bar^"'),
+        ('foo=bar', '^"foo=bar^"'),
+        ('foo!bar', '^"foo^!bar^"'),
+        ('foo%PATH%bar', 'foo^%PATH^%bar'),
+        ('%PATH:a=b%', '^"^%PATH^:a=b^%^"'),
+        ('arn:aws:s3:::bucket', 'arn^:aws^:s3^:^:^:bucket'),
         ('foo\\', 'foo\\'),
-        ('foo bar\\', '"foo bar\\\\"'),
+        ('foo bar\\', '^"foo bar\\\\^"'),
+        (
+            'foo" & echo pwned & echo "bar',
+            '^"foo\\^" ^& echo pwned ^& echo \\^"bar^"',
+        ),
+        ('"&echo pwned&"', '^"\\^"^&echo pwned^&\\^"^"'),
     ),
 )
 def test_compat_shell_quote_windows_for_cmd_exe(input_string, expected_output):
@@ -111,6 +126,51 @@ def test_compat_shell_quote_windows_for_cmd_exe(input_string, expected_output):
         compat_shell_quote(input_string, "win32", shell=True)
         == expected_output
     )
+
+
+@if_windows("Requires cmd.exe")
+@pytest.mark.parametrize(
+    "input_args",
+    (
+        [''],
+        ['foo bar'],
+        ['foo bar\\'],
+        ['{"a": "b c"}'],
+        ['arn:aws:s3:::bucket/key'],
+        ['foo&bar'],
+        ['foo|bar'],
+        ['foo>bar'],
+        ['foo<bar'],
+        ['(foo)'],
+        ['%PATH%'],
+        ['%PATH:a=b%'],
+        ['%PATH:~0,1%'],
+        ['%PATH:a=', 'b%'],
+        ['foo" & echo pwned & echo "bar'],
+        ['"&echo pwned&"'],
+        ['"|echo pwned|"'],
+        ['"^&echo pwned^&"'],
+        ['">pwned.txt"'],
+    ),
+)
+def test_compat_shell_quote_windows_round_trips_through_cmd_exe(
+    input_args, tmp_path
+):
+    print_argv = 'import sys; print(repr(sys.argv[1:]))'
+    command = ' '.join(
+        [
+            compat_shell_quote(sys.executable, "win32", shell=True),
+            '-c',
+            compat_shell_quote(print_argv, "win32", shell=True),
+        ]
+        + [compat_shell_quote(a, "win32", shell=True) for a in input_args]
+    )
+    result = subprocess.run(
+        command, shell=True, capture_output=True, text=True, cwd=tmp_path
+    )
+    assert result.stdout.splitlines() == [repr(input_args)]
+    assert result.stderr == ''
+    assert list(tmp_path.iterdir()) == []
 
 
 @pytest.mark.parametrize(

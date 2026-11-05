@@ -4,7 +4,7 @@ The following ``delete-resource-policy`` example deletes a resource policy from 
 
     aws ssm-incidents delete-resource-policy \
         --policy-id "be8b57191f0371f1c6827341aa3f0a03" \
-        --resource-arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan"
+        --resource-arn "arn:aws:ssm-incidents::123456789012:response-plan/Example-Response-Plan"
 
 This command produces no output.
 

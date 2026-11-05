@@ -2,13 +2,14 @@
 
 The following ``delete-event-subscription`` example deletes the specified event subscription. ::
 
-    aws rds delete-event-subscription --subscription-name my-instance-events
+    aws rds delete-event-subscription \
+        --subscription-name my-instance-events
 
 Output::
 
     {
         "EventSubscription": {
-            "EventSubscriptionArn": "arn:aws:rds:us-east-1:123456789012:es:my-instance-events",
+            "EventSubscriptionArn": "arn:aws:rds:us-west-2:123456789012:es:my-instance-events",
             "CustomerAwsId": "123456789012",
             "Enabled": false,
             "SourceIdsList": [
@@ -21,7 +22,9 @@ Output::
             ],
             "SubscriptionCreationTime": "2018-07-31 23:22:01.893",
             "CustSubscriptionId": "my-instance-events",
-            "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:interesting-events",
+            "SnsTopicArn": "arn:aws:sns:us-west-2:123456789012:interesting-events",
             "Status": "deleting"
         }
     }
+
+For more information, see `Deleting an Amazon RDS event notification subscription <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.Deleting.html>`__ in the *Amazon RDS User Guide*.

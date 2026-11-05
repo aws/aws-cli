@@ -36,4 +36,4 @@ Output::
         ]
     }
 
-For more information, see `Finding information about replicated backups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html#AutomatedBackups.Replicating.Describe>`__ in the *Amazon RDS User Guide*.
+For more information, see `Finding information about replicated backups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AutomatedBackups.Replicating.Describe.html>`__ in the *Amazon RDS User Guide*.

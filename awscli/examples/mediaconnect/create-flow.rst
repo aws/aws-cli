@@ -11,12 +11,12 @@ Output::
 
     {
         "Flow": {
-            "FlowArn": "arn:aws:mediaconnect:us-east-1:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:ExampleFlow",
+            "FlowArn": "arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:ExampleFlow",
             "AvailabilityZone": "us-west-2c",
             "EgressIp": "54.245.71.21",
             "Source": {
                 "IngestPort": 1055,
-                "SourceArn": "arn:aws:mediaconnect:us-east-1:123456789012:source:2-3aBC45dEF67hiJ89-c34de5fG678h:BackupSource",
+                "SourceArn": "arn:aws:mediaconnect:us-west-2:123456789012:source:2-3aBC45dEF67hiJ89-c34de5fG678h:BackupSource",
                 "Transport": {
                     "Protocol": "rtp",
                     "MaxBitrate": 80000000

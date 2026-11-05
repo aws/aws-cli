@@ -1,16 +1,16 @@
 **To delete faces from a collection**
 
-The following ``delete-faces`` command deletes the specified face from a collection. ::
+The following ``delete-faces`` example deletes the specified face from a collection. ::
 
     aws rekognition delete-faces \
-        --collection-id MyCollection
-        --face-ids '["0040279c-0178-436e-b70a-e61b074e96b0"]' 
+        --collection-id MyCollection \
+        --face-ids '["a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"]'
 
 Output::
 
     {
         "DeletedFaces": [
-            "0040279c-0178-436e-b70a-e61b074e96b0"
+            "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         ]
     }
 

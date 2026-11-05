@@ -49,6 +49,26 @@
       ],
       "documentation":"<p>Allows a caller to assume an IAM role decorated as the SAML user specified in the SAML assertion included in the request. This decoration allows Lake Formation to enforce access policies against the SAML users and groups. This API operation requires SAML federation setup in the caller’s account as it can only be called with valid SAML assertions. Lake Formation does not scope down the permission of the assumed role. All permissions attached to the role via the SAML federation setup will be included in the role session. </p> <p> This decorated role is expected to access data in Amazon S3 by getting temporary access from Lake Formation which is authorized via the virtual API <code>GetDataAccess</code>. Therefore, all SAML roles that can be assumed via <code>AssumeDecoratedRoleWithSAML</code> must at a minimum include <code>lakeformation:GetDataAccess</code> in their role policies. A typical IAM policy attached to such a role would include the following actions: </p> <ul> <li> <p>glue:*Database*</p> </li> <li> <p>glue:*Table*</p> </li> <li> <p>glue:*Partition*</p> </li> <li> <p>glue:*UserDefinedFunction*</p> </li> <li> <p>lakeformation:GetDataAccess</p> </li> </ul>"
     },
+    "AttachRLSPolicy":{
+      "name":"AttachRLSPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/AttachRLSPolicy"
+      },
+      "input":{"shape":"AttachRLSPolicyRequest"},
+      "output":{"shape":"AttachRLSPolicyResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Attaches a row-level security policy to a resource for a principal. When the principal queries the resource, Lake Formation applies the policy's filter expression so that only the permitted rows are returned.</p>"
+    },
     "BatchGrantPermissions":{
       "name":"BatchGrantPermissions",
       "http":{
@@ -206,6 +226,25 @@
       ],
       "documentation":"<p>Enforce Lake Formation permissions for the given databases, tables, and principals.</p>"
     },
+    "CreateRLSPolicy":{
+      "name":"CreateRLSPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateRLSPolicy"
+      },
+      "input":{"shape":"CreateRLSPolicyRequest"},
+      "output":{"shape":"CreateRLSPolicyResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Creates a row-level security (RLS) policy. A row-level security policy defines a filter expression that Lake Formation evaluates to determine which rows of a table a principal is allowed to see. The policy is created independently of any resource, and is later associated with a resource and principal using <code>AttachRLSPolicy</code>.</p>"
+    },
     "DeleteDataCellsFilter":{
       "name":"DeleteDataCellsFilter",
       "http":{
@@ -313,6 +352,24 @@
       ],
       "documentation":"<p>For a specific governed table, provides a list of Amazon S3 objects that will be written during the current transaction and that can be automatically deleted if the transaction is canceled. Without this call, no Amazon S3 objects are automatically deleted when a transaction cancels. </p> <p> The Glue ETL library function <code>write_dynamic_frame.from_catalog()</code> includes an option to automatically call <code>DeleteObjectsOnCancel</code> before writes. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/transactions-data-operations.html#rolling-back-writes\">Rolling Back Amazon S3 Writes</a>. </p>"
     },
+    "DeleteRLSPolicy":{
+      "name":"DeleteRLSPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteRLSPolicy"
+      },
+      "input":{"shape":"DeleteRLSPolicyRequest"},
+      "output":{"shape":"DeleteRLSPolicyResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes a row-level security policy. Any active attachments of the policy are automatically removed as part of the deletion, so you do not need to detach the policy first.</p>"
+    },
     "DeregisterResource":{
       "name":"DeregisterResource",
       "http":{
@@ -377,6 +434,24 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Returns the details of a single transaction.</p>"
+    },
+    "DetachRLSPolicy":{
+      "name":"DetachRLSPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DetachRLSPolicy"
+      },
+      "input":{"shape":"DetachRLSPolicyRequest"},
+      "output":{"shape":"DetachRLSPolicyResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Detaches a row-level security policy from a resource for a principal. After the policy is detached, its filter expression is no longer applied to the principal's queries on that resource.</p>"
     },
     "ExtendTransaction":{
       "name":"ExtendTransaction",
@@ -530,6 +605,23 @@
       ],
       "documentation":"<p>Retrieves statistics on the planning and execution of a query.</p>",
       "endpoint":{"hostPrefix":"query-"}
+    },
+    "GetRLSPolicy":{
+      "name":"GetRLSPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetRLSPolicy"
+      },
+      "input":{"shape":"GetRLSPolicyRequest"},
+      "output":{"shape":"GetRLSPolicyResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the definition of a row-level security policy, including its attachment columns and filter expression.</p>"
     },
     "GetResourceLFTags":{
       "name":"GetResourceLFTags",
@@ -738,6 +830,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"InternalServiceException"},
         {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieve the current list of resources and principals that are opt in to enforce Lake Formation permissions.</p>"
@@ -756,6 +849,40 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Returns a list of the principal permissions on the resource, filtered by the permissions of the caller. For example, if you are granted an ALTER permission, you are able to see only the principal permissions for ALTER.</p> <p>This operation returns only those permissions that have been explicitly granted. If both <code>Principal</code> and <code>Resource</code> parameters are provided, the response returns effective permissions rather than the explicitly granted permissions.</p> <p>For information about permissions, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html\">Security and Access Control to Metadata and Data</a>.</p>"
+    },
+    "ListRLSPolicies":{
+      "name":"ListRLSPolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRLSPolicies"
+      },
+      "input":{"shape":"ListRLSPoliciesRequest"},
+      "output":{"shape":"ListRLSPoliciesResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the row-level security policies in the Data Catalog.</p>"
+    },
+    "ListRLSPolicyAttachments":{
+      "name":"ListRLSPolicyAttachments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRLSPolicyAttachments"
+      },
+      "input":{"shape":"ListRLSPolicyAttachmentsRequest"},
+      "output":{"shape":"ListRLSPolicyAttachmentsResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the row-level security policy attachments in the Data Catalog. You can filter the results by resource, principal, or policy name.</p>"
     },
     "ListResources":{
       "name":"ListResources",
@@ -1010,6 +1137,25 @@
       ],
       "documentation":"<p>Updates the IAM Identity Center connection parameters.</p>"
     },
+    "UpdateRLSPolicy":{
+      "name":"UpdateRLSPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateRLSPolicy"
+      },
+      "input":{"shape":"UpdateRLSPolicyRequest"},
+      "output":{"shape":"UpdateRLSPolicyResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Updates the filter expression of an existing row-level security policy. The change applies to all attachments of the policy.</p>"
+    },
     "UpdateResource":{
       "name":"UpdateResource",
       "http":{
@@ -1218,6 +1364,39 @@
         }
       }
     },
+    "AttachRLSPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Resource"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the row-level security policy to attach.</p>"
+        },
+        "Resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource to which the row-level security policy is attached.</p>"
+        },
+        "Principal":{
+          "shape":"DataLakePrincipal",
+          "documentation":"<p>The principal to which the row-level security policy applies.</p>"
+        },
+        "Condition":{
+          "shape":"Condition",
+          "documentation":"<p>A Lake Formation condition, which applies to the row-level security policy attachment and contains an expression.</p>"
+        },
+        "SetDefault":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether this policy becomes the default row-level security policy for the resource. The default policy applies to all principals by default.</p>"
+        }
+      }
+    },
+    "AttachRLSPolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "AuditContext":{
       "type":"structure",
       "members":{
@@ -1366,6 +1545,21 @@
       },
       "documentation":"<p>A structure for the catalog object.</p>"
     },
+    "Column":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "Type":{
+          "shape":"ColumnTypeString",
+          "documentation":"<p>The data type of the column.</p>"
+        }
+      },
+      "documentation":"<p>A column in a table that a row-level security policy's filter expression can reference.</p>"
+    },
     "ColumnLFTag":{
       "type":"structure",
       "members":{
@@ -1384,9 +1578,20 @@
       "type":"list",
       "member":{"shape":"ColumnLFTag"}
     },
+    "ColumnList":{
+      "type":"list",
+      "member":{"shape":"Column"},
+      "documentation":"<p>A list of <code>Column</code> structures.</p>"
+    },
     "ColumnNames":{
       "type":"list",
       "member":{"shape":"NameString"}
+    },
+    "ColumnTypeString":{
+      "type":"string",
+      "max":131072,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "ColumnWildcard":{
       "type":"structure",
@@ -1590,6 +1795,32 @@
       }
     },
     "CreateLakeFormationOptInResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "CreateRLSPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "AttachmentColumns",
+        "FilterExpression"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>A unique name for the row-level security policy within the Data Catalog.</p>"
+        },
+        "AttachmentColumns":{
+          "shape":"ColumnList",
+          "documentation":"<p>The list of columns that the filter expression references. These columns define the shape of the data that the policy can be attached to.</p>"
+        },
+        "FilterExpression":{
+          "shape":"PredicateString",
+          "documentation":"<p>A filter predicate, written in a SQL-like syntax, that Lake Formation evaluates against each row. Only the rows for which the expression evaluates to true are returned to the principal.</p>"
+        }
+      }
+    },
+    "CreateRLSPolicyResponse":{
       "type":"structure",
       "members":{}
     },
@@ -1939,6 +2170,20 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteRLSPolicyRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the row-level security policy to delete.</p>"
+        }
+      }
+    },
+    "DeleteRLSPolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeregisterResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -2038,6 +2283,39 @@
       "max":2048,
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "DetachRLSPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Resource"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the row-level security policy to detach.</p>"
+        },
+        "Resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource from which the row-level security policy is detached.</p>"
+        },
+        "Principal":{
+          "shape":"DataLakePrincipal",
+          "documentation":"<p>The principal for which the row-level security policy is detached.</p>"
+        },
+        "Condition":{
+          "shape":"Condition",
+          "documentation":"<p>A Lake Formation condition, which applies to the row-level security policy attachment and contains an expression.</p>"
+        },
+        "RemoveDefault":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether to remove this policy as the default row-level security policy for the resource.</p>"
+        }
+      }
+    },
+    "DetachRLSPolicyResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DetailsMap":{
       "type":"structure",
@@ -2420,6 +2698,25 @@
         "QuerySubmissionTime":{
           "shape":"DateTime",
           "documentation":"<p>The time that the query was submitted.</p>"
+        }
+      }
+    },
+    "GetRLSPolicyRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the row-level security policy to retrieve.</p>"
+        }
+      }
+    },
+    "GetRLSPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "RLSPolicy":{
+          "shape":"RLSPolicy",
+          "documentation":"<p>An <code>RLSPolicy</code> structure containing the definition of the requested row-level security policy.</p>"
         }
       }
     },
@@ -3207,6 +3504,70 @@
         }
       }
     },
+    "ListRLSPoliciesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of row-level security policies to return in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListRLSPoliciesResponse":{
+      "type":"structure",
+      "members":{
+        "RLSPolicies":{
+          "shape":"RLSPolicyList",
+          "documentation":"<p>A list of <code>RLSPolicy</code> structures.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if not all row-level security policies have been returned.</p>"
+        }
+      }
+    },
+    "ListRLSPolicyAttachmentsRequest":{
+      "type":"structure",
+      "members":{
+        "Resource":{
+          "shape":"Resource",
+          "documentation":"<p>If specified, returns only the attachments for the given resource.</p>"
+        },
+        "Principal":{
+          "shape":"DataLakePrincipal",
+          "documentation":"<p>If specified, returns only the attachments for the given principal.</p>"
+        },
+        "PolicyName":{
+          "shape":"NameString",
+          "documentation":"<p>If specified, returns only the attachments for the row-level security policy with this name.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of attachments to return in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListRLSPolicyAttachmentsResponse":{
+      "type":"structure",
+      "members":{
+        "RLSPolicyAttachments":{
+          "shape":"RLSPolicyAttachmentList",
+          "documentation":"<p>A list of <code>RLSPolicyAttachment</code> structures.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if not all attachments have been returned.</p>"
+        }
+      }
+    },
     "ListResourcesRequest":{
       "type":"structure",
       "members":{
@@ -3647,6 +4008,83 @@
       ]
     },
     "RAMResourceShareArn":{"type":"string"},
+    "RLSPolicy":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog that contains the policy. By default, the account ID.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the row-level security policy.</p>"
+        },
+        "AttachmentColumns":{
+          "shape":"ColumnList",
+          "documentation":"<p>The list of columns that the filter expression references.</p>"
+        },
+        "FilterExpression":{
+          "shape":"PredicateString",
+          "documentation":"<p>The filter predicate, written in a SQL-like syntax, that determines which rows are returned to the principal.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes a row-level security policy, including the columns its filter expression references and the filter expression itself.</p>"
+    },
+    "RLSPolicyAttachment":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog that contains the attachment. By default, the account ID.</p>"
+        },
+        "PolicyName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the attached row-level security policy.</p>"
+        },
+        "Principal":{
+          "shape":"DataLakePrincipal",
+          "documentation":"<p>The principal to which the attached policy applies.</p>"
+        },
+        "Resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource to which the policy is attached.</p>"
+        },
+        "Condition":{
+          "shape":"Condition",
+          "documentation":"<p>A Lake Formation condition, which applies to the row-level security policy attachment and contains an expression.</p>"
+        },
+        "DefaultRLSPolicy":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether this attachment is the default row-level security policy for the resource.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the attachment of a row-level security policy to a resource for a principal.</p>"
+    },
+    "RLSPolicyAttachmentList":{
+      "type":"list",
+      "member":{"shape":"RLSPolicyAttachment"},
+      "documentation":"<p>A list of <code>RLSPolicyAttachment</code> structures.</p>"
+    },
+    "RLSPolicyList":{
+      "type":"list",
+      "member":{"shape":"RLSPolicy"},
+      "documentation":"<p>A list of <code>RLSPolicy</code> structures.</p>"
+    },
+    "RLSPolicyResource":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog that contains the policy. By default, the account ID.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the row-level security policy.</p>"
+        }
+      },
+      "documentation":"<p>A structure that identifies a row-level security policy as a resource, used when granting permissions on the policy.</p>"
+    },
     "RedshiftConnect":{
       "type":"structure",
       "required":["Authorization"],
@@ -3780,6 +4218,10 @@
         "LFTagExpression":{
           "shape":"LFTagExpressionResource",
           "documentation":"<p>LF-Tag expression resource. A logical expression composed of one or more LF-Tag key:value pairs.</p>"
+        },
+        "RLSPolicy":{
+          "shape":"RLSPolicyResource",
+          "documentation":"<p>A row-level security policy resource. Specify this when granting or revoking permissions on a row-level security policy.</p>"
         }
       },
       "documentation":"<p>A structure for the resource.</p>"
@@ -4528,6 +4970,24 @@
       }
     },
     "UpdateLakeFormationIdentityCenterConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateRLSPolicyRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the row-level security policy to update.</p>"
+        },
+        "FilterExpression":{
+          "shape":"PredicateString",
+          "documentation":"<p>The new filter predicate, written in a SQL-like syntax, that replaces the policy's current filter expression.</p>"
+        }
+      }
+    },
+    "UpdateRLSPolicyResponse":{
       "type":"structure",
       "members":{}
     },

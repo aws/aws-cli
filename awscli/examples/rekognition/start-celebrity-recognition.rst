@@ -1,6 +1,6 @@
 **To start the recognition of celebrities in a stored video**
 
-The following ``start-celebrity-recognition`` command starts a job to look for celebrities in the specified video file stored in an Amazon S3 bucket. ::
+The following ``start-celebrity-recognition`` example starts a job to look for celebrities in the specified video file stored in an Amazon S3 bucket. ::
 
     aws rekognition start-celebrity-recognition \
         --video "S3Object={Bucket=MyVideoS3Bucket,Name=MyVideoFile.mpg}"

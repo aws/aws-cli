@@ -3,13 +3,13 @@
 The following ``describe-accelerator`` example retrieves the details about the specified accelerator. ::
 
     aws globalaccelerator describe-accelerator \
-        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh
+        --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "Accelerator": {
-            "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh",
+            "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "IpAddressType": "IPV4",
             "Name": "ExampleAccelerator",
             "Enabled": true,

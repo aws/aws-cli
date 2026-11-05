@@ -1,6 +1,6 @@
 **To get details about the configuration recorder**
 
-The following command returns details about the default configuration recorder::
+The following ``describe-configuration-recorders`` example returns details about the default configuration recorder. ::
 
     aws configservice describe-configuration-recorders
 
@@ -19,3 +19,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Working with the configuration recorder <https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html>`__ in the *AWS Config Developer Guide*.

@@ -3,13 +3,13 @@
 The following ``describe-dataset`` example gets the properties of a flywheel dataset. ::
 
     aws comprehend describe-dataset \
-        --dataset-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity/dataset/example-dataset
+        --dataset-arn arn:aws:comprehend:us-west-2:123456789012:flywheel/flywheel-entity/dataset/example-dataset
 
 Output::
 
     {
         "DatasetProperties": {
-            "DatasetArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity/dataset/example-dataset",
+            "DatasetArn": "arn:aws:comprehend:us-west-2:123456789012:flywheel/flywheel-entity/dataset/example-dataset",
             "DatasetName": "example-dataset",
             "DatasetType": "TRAIN",
             "DatasetS3Uri": "s3://amzn-s3-demo-bucket/flywheel-entity/schemaVersion=1/12345678A123456Z/datasets/example-dataset/20230616T203710Z/",
@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Flywheel Overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in *Amazon Comprehend Developer Guide*.
+For more information, see `Flywheel overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in the *Amazon Comprehend Developer Guide*.

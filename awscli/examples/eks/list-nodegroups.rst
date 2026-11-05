@@ -1,4 +1,4 @@
-**List all the node groups in an Amazon EKS cluster**
+**To list all the node groups in an Amazon EKS cluster**
 
 The following ``list-nodegroups`` example list all the node groups in an Amazon EKS cluster. ::
 
@@ -13,3 +13,5 @@ Output::
             "my-eks-nodegroup"
         ]
     }
+
+For more information, see `Simplify node lifecycle with managed node groups <https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html>`__ in the *Amazon EKS User Guide*.

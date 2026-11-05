@@ -4,7 +4,7 @@ The following ``associate-resource`` example associates a canary with a group na
 
     aws synthetics associate-resource \
         --group-identifier demo_group \
-        --resource-arn arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary
+        --resource-arn arn:aws:synthetics:us-west-2:123456789012:canary:demo_canary
 
 This command produces no output.
 

@@ -12,14 +12,14 @@ Output::
             {
                 "completionTime": "2022-12-06T22:39:14.491Z",
                 "creationTime": "2022-12-06T22:37:18.612Z",
-                "destination": "s3://omics-artifacts-01d6xmpl4e72dd32/read-set-export/",
+                "destination": "s3://amzn-s3-demo-bucket/read-set-export/",
                 "id": "1234567890",
                 "sequenceStoreId": "1234567890",
                 "status": "COMPLETED"
             },
             {
                 "creationTime": "2022-12-06T22:38:04.871Z",
-                "destination": "s3://omics-artifacts-01d6xmpl4e72dd32/read-set-export/",
+                "destination": "s3://amzn-s3-demo-bucket/read-set-export/",
                 "id": "1234567890",
                 "sequenceStoreId": "1234567890",
                 "status": "IN_PROGRESS"

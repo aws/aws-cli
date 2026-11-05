@@ -2,7 +2,8 @@
 
 The following ``batch-get-on-premises-instances`` example gets information about two on-premises instances. ::
 
-    aws deploy batch-get-on-premises-instances --instance-names AssetTag12010298EX AssetTag23121309EX
+    aws deploy batch-get-on-premises-instances \
+        --instance-names AssetTag12010298EX AssetTag23121309EX
 
 Output::
 
@@ -34,3 +35,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Get information about multiple on-premises instances <https://docs.aws.amazon.com/codedeploy/latest/userguide/on-premises-instances-operations-view-details-multiple.html>`__ in the *AWS CodeDeploy User Guide*.

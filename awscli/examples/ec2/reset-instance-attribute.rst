@@ -1,23 +1,35 @@
-**To reset the sourceDestCheck attribute**
+**Example 1: To reset the sourceDestCheck attribute**
 
-This example resets the ``sourceDestCheck`` attribute of the specified instance. The instance must be in a VPC. If the command succeeds, no output is returned.
+The following ``reset-instance-attribute`` example resets the ``sourceDestCheck`` attribute of the specified instance. The instance must be in a VPC. ::
 
-Command::
+    aws ec2 reset-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --attribute sourceDestCheck
 
-  aws ec2 reset-instance-attribute --instance-id i-1234567890abcdef0 --attribute sourceDestCheck
+This command produces no output.
 
-**To reset the kernel attribute**
+For more information, see `NAT instances <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html>`__ in the *Amazon VPC User Guide*.
 
-This example resets the ``kernel`` attribute of the specified instance. The instance must be in the ``stopped`` state. If the command succeeds, no output is returned.
+**Example 2: To reset the kernel attribute**
 
-Command::
+The following ``reset-instance-attribute`` example resets the ``kernel`` attribute of the specified instance. The instance must be in the ``stopped`` state. ::
 
-  aws ec2 reset-instance-attribute --instance-id i-1234567890abcdef0 --attribute kernel
+    aws ec2 reset-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --attribute kernel
 
-**To reset the ramdisk attribute**
+This command produces no output.
 
-This example resets the ``ramdisk`` attribute of the specified instance. The instance must be in the ``stopped`` state. If the command succeeds, no output is returned.
+For more information, see `User provided kernels <https://docs.aws.amazon.com/linux/al2/ug/UserProvidedKernels.html>`__ in the *Amazon Linux 2 User Guide*.
 
-Command::
+**Example 3: To reset the ramdisk attribute**
 
-  aws ec2 reset-instance-attribute --instance-id i-1234567890abcdef0 --attribute ramdisk
+The following ``reset-instance-attribute`` example resets the ``ramdisk`` attribute of the specified instance. The instance must be in the ``stopped`` state. ::
+
+    aws ec2 reset-instance-attribute \
+        --instance-id i-1234567890abcdef0 \
+        --attribute ramdisk
+
+This command produces no output.
+
+For more information, see `User provided kernels <https://docs.aws.amazon.com/linux/al2/ug/UserProvidedKernels.html>`__ in the *Amazon Linux 2 User Guide*.

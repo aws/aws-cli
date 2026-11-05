@@ -136,6 +136,36 @@ def test_assert_all_signing_region_sets_have_length_one():
         )
 
 
+def test_endpoint_provider_parses_ruleset_with_service_id(partitions):
+    """A ruleset that defines a top-level ``serviceId`` field must parse
+    without raising and the id must round-trip onto the RuleSet."""
+    ruleset_data = {
+        'version': '1.0',
+        'serviceId': 'continuum-dataplane',
+        'parameters': {
+            'Region': {'builtIn': 'AWS::Region', 'required': True, 'type': 'String'},
+        },
+        'rules': [
+            {
+                'conditions': [],
+                'endpoint': {
+                    'url': 'https://continuum-dataplane.{Region}.api.aws',
+                    'properties': {},
+                    'headers': {},
+                },
+                'type': 'endpoint',
+            },
+        ],
+    }
+
+    endpoint_provider = EndpointProvider(ruleset_data, partitions)
+
+    assert endpoint_provider.ruleset.service_id == 'continuum-dataplane'
+
+    endpoint = endpoint_provider.resolve_endpoint(Region='us-east-1')
+    assert endpoint.url == 'https://continuum-dataplane.us-east-1.api.aws'
+
+
 def iter_all_test_cases():
     for service_name in ALL_SERVICES:
         test_data = get_endpoint_tests_for_service(service_name)

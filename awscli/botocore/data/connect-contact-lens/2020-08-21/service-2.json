@@ -62,6 +62,39 @@
       },
       "documentation":"<p>Provides the category rules that are used to automatically categorize contacts based on uttered keywords and phrases.</p>"
     },
+    "CategoriesAttributeAndCondition":{
+      "type":"structure",
+      "members":{
+        "TagConditions":{
+          "shape":"TagAndConditionList",
+          "documentation":"<p>A list of tag conditions. All of the tag conditions must be met for the condition to match.</p>"
+        }
+      },
+      "documentation":"<p>A list of tag conditions that the filter evaluates together using AND logic. A category segment matches only when the tags on its rule satisfy every tag condition in the list.</p>"
+    },
+    "CategoriesAttributeFilter":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"CategoriesAttributeOrConditionList",
+          "documentation":"<p>A list of conditions that the filter evaluates using OR logic. A category segment matches when at least one of the conditions in the list is met.</p>"
+        },
+        "AndCondition":{
+          "shape":"CategoriesAttributeAndCondition",
+          "documentation":"<p>A condition that the filter evaluates using AND logic. A category segment matches only when all of the tag conditions in the condition are met.</p>"
+        },
+        "TagCondition":{
+          "shape":"TagCondition",
+          "documentation":"<p>A single tag condition that a category segment must match. The category's rule must have the specified tag.</p>"
+        }
+      },
+      "documentation":"<p>A filter that matches category segments based on the tags assigned to the rules that create the categories. Provide exactly one of <code>OrConditions</code>, <code>AndCondition</code>, or <code>TagCondition</code>.</p>"
+    },
+    "CategoriesAttributeOrConditionList":{
+      "type":"list",
+      "member":{"shape":"CategoriesAttributeAndCondition"},
+      "max":25
+    },
     "CategoryDetails":{
       "type":"structure",
       "required":["PointsOfInterest"],
@@ -69,6 +102,10 @@
         "PointsOfInterest":{
           "shape":"PointsOfInterest",
           "documentation":"<p>The section of audio where the category rule was detected.</p>"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the rule that created the matched category.</p>"
         }
       },
       "documentation":"<p>Provides information about the category rule that was matched.</p>"
@@ -255,6 +292,10 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "ListFilter":{
+          "shape":"RealTimeContactAnalysisSegmentsFilter",
+          "documentation":"<p>A filter that limits the category segments returned by the operation. When provided, use <code>CategoriesAttributeFilter</code> to return only the category segments whose rules have tags that match the filter. This enforces tag-based access control on the categories that the caller can view.</p>"
         }
       }
     },
@@ -378,6 +419,16 @@
         "COMPLETED"
       ]
     },
+    "RealTimeContactAnalysisSegmentsFilter":{
+      "type":"structure",
+      "members":{
+        "CategoriesAttributeFilter":{
+          "shape":"CategoriesAttributeFilter",
+          "documentation":"<p>A filter applied to category segments based on the tags of the rules that create the matched categories.</p>"
+        }
+      },
+      "documentation":"<p>A filter that restricts the segments returned by <code>ListRealtimeContactAnalysisSegments</code>. It supports filtering category segments by the tags on the rules that create them, which enforces tag-based access control on the categories a caller can view.</p>"
+    },
     "RealtimeContactAnalysisSegment":{
       "type":"structure",
       "members":{
@@ -415,6 +466,12 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "RuleId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^\\S+$"
+    },
     "SentimentValue":{
       "type":"string",
       "enum":[
@@ -422,6 +479,45 @@
         "NEUTRAL",
         "NEGATIVE"
       ]
+    },
+    "TagAndConditionList":{
+      "type":"list",
+      "member":{"shape":"TagCondition"},
+      "max":25
+    },
+    "TagComparisonType":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "NOT_EQUALS"
+      ]
+    },
+    "TagCondition":{
+      "type":"structure",
+      "members":{
+        "TagKey":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key in the tag condition.</p>"
+        },
+        "TagValue":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value in the tag condition.</p>"
+        },
+        "ComparisonType":{
+          "shape":"TagComparisonType",
+          "documentation":"<p>The comparison operator for the tag condition. Valid values: <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p>"
+        }
+      },
+      "documentation":"<p>A tag condition that consists of a tag key, a tag value, and a comparison operator.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256
     },
     "ThrottlingException":{
       "type":"structure",

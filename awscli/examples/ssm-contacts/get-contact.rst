@@ -3,12 +3,12 @@
 The following ``get-contact`` example describes a contact. ::
 
     aws ssm-contacts get-contact \
-        --contact-id "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam"
+        --contact-id "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam"
 
 Output::
 
     {
-        "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+        "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
         "Alias": "akuam",
         "DisplayName": "Akua Mansa",
         "Type": "PERSONAL",
@@ -19,7 +19,7 @@ Output::
                     "Targets": [
                         {
                             "ChannelTargetInfo": {
-                                "ContactChannelId": "arn:aws:ssm-contacts:us-east-2:111122223333:contact-channel/akuam/beb25840-5ac8-4644-95cc-7a8de390fa65",
+                                "ContactChannelId": "arn:aws:ssm-contacts:us-west-2:123456789012:contact-channel/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                                 "RetryIntervalInMinutes": 1
                             }
                         }
@@ -30,7 +30,7 @@ Output::
                     "Targets": [
                         {
                             "ChannelTargetInfo": {
-                                "ContactChannelId": "arn:aws:ssm-contacts:us-east-2:111122223333:contact-channel/akuam/49f3c24d-5f9f-4638-ae25-3f49e04229ad",
+                                "ContactChannelId": "arn:aws:ssm-contacts:us-west-2:123456789012:contact-channel/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                                 "RetryIntervalInMinutes": 1
                             }
                         }
@@ -41,7 +41,7 @@ Output::
                     "Targets": [
                         {
                             "ChannelTargetInfo": {
-                                "ContactChannelId": "arn:aws:ssm-contacts:us-east-2:111122223333:contact-channel/akuam/77d4f447-f619-4954-afff-85551e369c2a",
+                                "ContactChannelId": "arn:aws:ssm-contacts:us-west-2:123456789012:contact-channel/akuam/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                                 "RetryIntervalInMinutes": 1
                             }
                         }
@@ -56,12 +56,12 @@ Output::
 The following ``get-contact`` example describes an escalation plan. ::
 
     aws ssm-contacts get-contact \
-    --contact-id "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation"
+        --contact-id "arn:aws:ssm-contacts:us-west-2:123456789012:contact/example_escalation"
 
 Output::
 
     {
-        "ContactArn": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/example_escalation",
+        "ContactArn": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/example_escalation",
         "Alias": "example_escalation",
         "DisplayName": "Example Escalation",
         "Type": "ESCALATION",
@@ -72,7 +72,7 @@ Output::
                     "Targets": [
                         {
                             "ContactTargetInfo": {
-                                "ContactId": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/akuam",
+                                "ContactId": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/akuam",
                                 "IsEssential": true
                             }
                         }
@@ -83,7 +83,7 @@ Output::
                     "Targets": [
                         {
                             "ContactTargetInfo": {
-                                "ContactId": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/alejr",
+                                "ContactId": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/alejr",
                                 "IsEssential": false
                             }
                         }
@@ -94,7 +94,7 @@ Output::
                     "Targets": [
                         {
                             "ContactTargetInfo": {
-                                "ContactId": "arn:aws:ssm-contacts:us-east-2:111122223333:contact/anasi",
+                                "ContactId": "arn:aws:ssm-contacts:us-west-2:123456789012:contact/anasi",
                                 "IsEssential": false
                             }
                         }

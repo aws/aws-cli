@@ -1,6 +1,6 @@
 **To list an AWS account's IAM users, groups, roles, and policies**
 
-The following ``get-account-authorization-details`` command returns information about all IAM users, groups, roles, and policies in the AWS account. ::
+The following ``get-account-authorization-details`` example returns information about all IAM users, groups, roles, and policies in the AWS account. ::
 
     aws iam get-account-authorization-details
 
@@ -78,10 +78,12 @@ Output::
         "GroupDetailList": [
             {
                 "GroupId": "AIDA1234567890EXAMPLE",
-                "AttachedManagedPolicies": {
-                    "PolicyName": "AdministratorAccess",
-                    "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
-                },
+                "AttachedManagedPolicies": [
+                    {
+                        "PolicyName": "AdministratorAccess",
+                        "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+                    }
+                ],
                 "GroupName": "Admins",
                 "Path": "/",
                 "Arn": "arn:aws:iam::123456789012:group/Admins",
@@ -90,10 +92,12 @@ Output::
             },
             {
                 "GroupId": "AIDA1234567890EXAMPLE",
-                "AttachedManagedPolicies": {
-                    "PolicyName": "PowerUserAccess",
-                    "PolicyArn": "arn:aws:iam::aws:policy/PowerUserAccess"
-                },
+                "AttachedManagedPolicies": [
+                    {
+                        "PolicyName": "PowerUserAccess",
+                        "PolicyArn": "arn:aws:iam::aws:policy/PowerUserAccess"
+                    }
+                ],
                 "GroupName": "Dev",
                 "Path": "/",
                 "Arn": "arn:aws:iam::123456789012:group/Dev",
@@ -109,7 +113,7 @@ Output::
                 "CreateDate": "2013-10-14T18:57:48Z",
                 "GroupPolicyList": [
                     {
-                        "PolicyName": "policygen-201310141157",
+                        "PolicyName": "policygen-20131014",
                         "PolicyDocument": {
                             "Version": "2012-10-17",
                             "Statement": [

@@ -3,19 +3,19 @@
 The following ``get-phone-number-order`` example displays the details of the specified phone number order. ::
 
     aws chime get-phone-number-order \
-        --phone-number-order-id abc12345-de67-89f0-123g-h45i678j9012
+        --phone-number-order-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
         "PhoneNumberOrder": {
-            "PhoneNumberOrderId": "abc12345-de67-89f0-123g-h45i678j9012",
+            "PhoneNumberOrderId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "ProductType": "VoiceConnector",
             "Status": "Partial",
             "OrderedPhoneNumbers": [
                 {
-                  "E164PhoneNumber": "+12065550100",
-                  "Status": "Acquired"
+                    "E164PhoneNumber": "+12065550100",
+                    "Status": "Acquired"
                 },
                 {
                     "E164PhoneNumber": "+12065550101",

@@ -49,3 +49,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Resolve conflicts in a pull request in an AWS CodeCommit repository <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-resolve-conflict-pull-request.html>`__ in the *AWS CodeCommit User Guide*.

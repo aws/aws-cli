@@ -8,7 +8,7 @@ The following ``get-index`` example displays the details for the Resource Explor
 Output::
 
     {
-        "Arn": "arn:aws:resource-explorer-2:us-east-1:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE11111",
+        "Arn": "arn:aws:resource-explorer-2:us-east-1:123456789012:index/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "CreatedAt": "2022-07-12T18:59:10.503000+00:00",
         "LastUpdatedAt": "2022-07-13T18:41:58.799000+00:00",
         "ReplicatingFrom": [
@@ -30,7 +30,7 @@ The following ``get-index`` example displays the details for the Resource Explor
 Output::
 
     {
-        "Arn": "arn:aws:resource-explorer-2:us-west-2:123456789012:index/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222",
+        "Arn": "arn:aws:resource-explorer-2:us-west-2:123456789012:index/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "CreatedAt": "2022-07-12T18:59:10.503000+00:00",
         "LastUpdatedAt": "2022-07-13T18:41:58.799000+00:00",
         "ReplicatingTo": [

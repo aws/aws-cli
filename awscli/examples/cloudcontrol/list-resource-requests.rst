@@ -12,7 +12,7 @@ Output::
             {
                 "TypeName": "AWS::Kinesis::Stream",
                 "Identifier": "Demo",
-                "RequestToken": "e1a6b86e-46bd-41ac-bfba-633abcdfdbd7",
+                "RequestToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "Operation": "CREATE",
                 "OperationStatus": "FAILED",
                 "EventTime": 1632950268.481,

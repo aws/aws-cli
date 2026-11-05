@@ -329,6 +329,28 @@
       "documentation":"<p>Returns a list of all of the worker configurations in this account and Region.</p>",
       "readonly":true
     },
+    "PauseConnector":{
+      "name":"PauseConnector",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/connectors/{connectorArn}/pause",
+        "responseCode":200
+      },
+      "input":{"shape":"PauseConnectorRequest"},
+      "output":{"shape":"PauseConnectorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Pauses the specified connector. The operation runs asynchronously. To track the pause, pass the connector operation ARN from the response to <code>DescribeConnectorOperation</code>.</p>",
+      "idempotent":true
+    },
     "RestartConnector":{
       "name":"RestartConnector",
       "http":{
@@ -348,6 +370,28 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Restarts the specified connector. By default, this operation restarts the connector and all of its tasks. This operation is asynchronous and returns a connector operation ARN that you can pass to <code>DescribeConnectorOperation</code> to track the state of the restart.</p>"
+    },
+    "ResumeConnector":{
+      "name":"ResumeConnector",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/connectors/{connectorArn}/resume",
+        "responseCode":200
+      },
+      "input":{"shape":"ResumeConnectorRequest"},
+      "output":{"shape":"ResumeConnectorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Resumes the specified paused connector. The operation runs asynchronously. To track the resume, pass the connector operation ARN from the response to <code>DescribeConnectorOperation</code>.</p>",
+      "idempotent":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -410,7 +454,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Updates the specified connector. For request body, specify only one parameter: either <code>capacity</code> or <code>connectorConfiguration</code>.</p>",
+      "documentation":"<p>Updates the specified connector. In the request body, you can update either the connector's worker setting or its connector configuration, but not both in the same request. To update the worker setting, specify one or more of <code>capacity</code>, <code>plugins</code>, <code>workerConfiguration</code>, or <code>useDefaultWorkerConfiguration</code>. To update the connector configuration, specify only <code>connectorConfiguration</code>.</p>",
       "idempotent":true
     }
   },
@@ -666,6 +710,12 @@
         "ROLLBACK_IN_PROGRESS",
         "ROLLBACK_FAILED",
         "ROLLBACK_COMPLETE",
+        "PAUSE_COMPLETE",
+        "PAUSE_FAILED",
+        "RESUME_COMPLETE",
+        "RESUME_FAILED",
+        "PAUSE_IN_PROGRESS",
+        "RESUME_IN_PROGRESS",
         "RESTART_IN_PROGRESS",
         "RESTART_COMPLETE",
         "RESTART_FAILED"
@@ -738,7 +788,9 @@
         "UPDATE_CONNECTOR_CONFIGURATION",
         "ISOLATE_CONNECTOR",
         "RESTORE_CONNECTOR",
-        "RESTART_CONNECTOR"
+        "RESTART_CONNECTOR",
+        "PAUSE_CONNECTOR",
+        "RESUME_CONNECTOR"
       ]
     },
     "ConnectorState":{
@@ -749,7 +801,10 @@
         "UPDATING",
         "DELETING",
         "FAILED",
-        "RESTARTING"
+        "PAUSED",
+        "RESTARTING",
+        "PAUSING",
+        "RESUMING"
       ]
     },
     "ConnectorSummary":{
@@ -1156,6 +1211,25 @@
         }
       },
       "documentation":"<p>A summary of the custom plugin.</p>"
+    },
+    "CustomPluginUpdate":{
+      "type":"structure",
+      "required":[
+        "customPluginArn",
+        "revision"
+      ],
+      "members":{
+        "customPluginArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom plugin.</p>"
+        },
+        "revision":{
+          "shape":"__longMin1",
+          "documentation":"<p>The revision of the custom plugin.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Details about a custom plugin to use when you update a connector via <code>UpdateConnector</code>.</p>"
     },
     "DeleteConnectorRequest":{
       "type":"structure",
@@ -1816,6 +1890,31 @@
       },
       "exception":true
     },
+    "PauseConnectorRequest":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector that you want to pause.</p>",
+          "location":"uri",
+          "locationName":"connectorArn"
+        }
+      }
+    },
+    "PauseConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation created to perform the pause.</p>"
+        }
+      }
+    },
     "Plugin":{
       "type":"structure",
       "required":["customPlugin"],
@@ -1836,6 +1935,17 @@
         }
       },
       "documentation":"<p>The description of the plugin.</p>"
+    },
+    "PluginUpdate":{
+      "type":"structure",
+      "required":["customPlugin"],
+      "members":{
+        "customPlugin":{
+          "shape":"CustomPluginUpdate",
+          "documentation":"<p>The custom plugin to use for the connector.</p>"
+        }
+      },
+      "documentation":"<p>A custom plugin to use when you update a connector via <code>UpdateConnector</code>.</p>"
     },
     "ProvisionedCapacity":{
       "type":"structure",
@@ -1915,6 +2025,31 @@
         "connectorOperationArn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation created to perform the restart.</p>"
+        }
+      }
+    },
+    "ResumeConnectorRequest":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector that you want to resume.</p>",
+          "location":"uri",
+          "locationName":"connectorArn"
+        }
+      }
+    },
+    "ResumeConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation created to perform the resume.</p>"
         }
       }
     },
@@ -2193,6 +2328,10 @@
           "shape":"ConnectorConfigurationUpdate",
           "documentation":"<p>A map of keys to values that represent the configuration for the connector.</p>"
         },
+        "skipHealthValidation":{
+          "shape":"__boolean",
+          "documentation":"<p>Specifies whether the update bypasses connector-level and task-level health checks. If <code>true</code>, the update skips the health checks. The update stays in effect even if the connector or its tasks are unhealthy, and Amazon MSK Connect doesn't roll it back. If <code>false</code> or not specified, the health checks run. If they fail, MSK Connect automatically rolls the connector back to its previous configuration, and the update doesn't take effect. To update a connector that is in the <code>PAUSED</code> state, you must set this parameter to <code>true</code>.</p>"
+        },
         "connectorArn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the connector that you want to update.</p>",
@@ -2204,6 +2343,18 @@
           "documentation":"<p>The current version of the connector that you want to update.</p>",
           "location":"querystring",
           "locationName":"currentVersion"
+        },
+        "plugins":{
+          "shape":"__listOfPluginUpdate",
+          "documentation":"<p><important> <p>Amazon MSK Connect does not currently support specifying multiple plugins as a list. To use more than one plugin for your connector, you can create a single custom plugin using a ZIP file that bundles multiple plugins together.</p> </important> <p>Specifies which plugin to use for the connector. You must specify a single-element list containing one <code>customPlugin</code> object. If you don't specify this parameter, the connector keeps its current plugin.</p></p>"
+        },
+        "workerConfiguration":{
+          "shape":"WorkerConfigurationUpdate",
+          "documentation":"<p>The worker configuration to use with the connector. Specify the Amazon Resource Name (ARN) and the revision of the worker configuration. You can't specify both <code>workerConfiguration</code> and <code>useDefaultWorkerConfiguration</code> in the same request. If you specify neither parameter, the connector keeps its current worker configuration.</p>"
+        },
+        "useDefaultWorkerConfiguration":{
+          "shape":"__boolean",
+          "documentation":"<p>Specifies whether to switch the connector to the default worker configuration that Amazon MSK Connect provides. If <code>true</code>, the connector stops using its custom worker configuration and uses the default worker configuration instead. If <code>false</code> or not specified, the connector keeps its current worker configuration. You can't specify both <code>useDefaultWorkerConfiguration</code> and <code>workerConfiguration</code> in the same request.</p>"
         }
       }
     },
@@ -2362,6 +2513,25 @@
       },
       "documentation":"<p>The summary of a worker configuration.</p>"
     },
+    "WorkerConfigurationUpdate":{
+      "type":"structure",
+      "required":[
+        "revision",
+        "workerConfigurationArn"
+      ],
+      "members":{
+        "revision":{
+          "shape":"__longMin1",
+          "documentation":"<p>The revision of the worker configuration.</p>",
+          "box":true
+        },
+        "workerConfigurationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the worker configuration.</p>"
+        }
+      },
+      "documentation":"<p>The worker configuration to use when you update a connector via <code>UpdateConnector</code>.</p>"
+    },
     "WorkerLogDelivery":{
       "type":"structure",
       "members":{
@@ -2401,7 +2571,22 @@
     "WorkerSetting":{
       "type":"structure",
       "members":{
-        "capacity":{"shape":"CapacityDescription"}
+        "capacity":{
+          "shape":"CapacityDescription",
+          "documentation":"<p>Specifies the compute capacity settings of the connector.</p>"
+        },
+        "plugins":{
+          "shape":"__listOfPluginDescription",
+          "documentation":"<p>Specifies which plugins the connector uses.</p>"
+        },
+        "workerConfiguration":{
+          "shape":"WorkerConfigurationDescription",
+          "documentation":"<p>Specifies which worker configuration the connector uses.</p>"
+        },
+        "useDefaultWorkerConfiguration":{
+          "shape":"__boolean",
+          "documentation":"<p>Specifies whether the connector uses the default worker configuration instead of a custom worker configuration.</p>"
+        }
       },
       "documentation":"<p>Details about worker setting of a connector</p>"
     },
@@ -2440,6 +2625,10 @@
     "__listOfPluginDescription":{
       "type":"list",
       "member":{"shape":"PluginDescription"}
+    },
+    "__listOfPluginUpdate":{
+      "type":"list",
+      "member":{"shape":"PluginUpdate"}
     },
     "__listOfWorkerConfigurationSummary":{
       "type":"list",

@@ -10,7 +10,7 @@ The following ``create-activation`` example creates a managed instance activatio
 Output::
 
     {
-        "ActivationId": "5743558d-563b-4457-8682-d16c3EXAMPLE",
+        "ActivationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "ActivationCode": "dRmgnYaFv567vEXAMPLE"
     }
 

@@ -10,7 +10,7 @@ Output::
     {
         "operations": [
             {
-                "id": "b99acae8-735b-4823-922f-30af580e3729",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "resourceName": "Database-Oregon-1-1566839359",
                 "resourceType": "RelationalDatabaseSnapshot",
                 "createdAt": 1569875293.58,
@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Delete unused Lightsail snapshots to avoid monthly charges <https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-deleting-snapshots.html>`__ in the *Amazon Lightsail User Guide*.

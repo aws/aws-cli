@@ -3,8 +3,8 @@
 The following ``update-flow-source`` example updates the source of an existing flow. ::
 
     aws mediaconnect update-flow-source \
-        --flow-arn arn:aws:mediaconnect:us-east-1:111122223333:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow \
-        --source-arn arn:aws:mediaconnect:us-east-1:111122223333:source:3-4aBC56dEF78hiJ90-4de5fG6Hi78Jk:ShowSource \
+        --flow-arn arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow \
+        --source-arn arn:aws:mediaconnect:us-west-2:123456789012:source:3-4aBC56dEF78hiJ90-4de5fG6Hi78Jk:ShowSource \
         --description 'Friday night show' \
         --ingest-port 3344 \
         --protocol rtp-fec \
@@ -13,7 +13,7 @@ The following ``update-flow-source`` example updates the source of an existing f
 Output::
 
     {
-        "FlowArn": "arn:aws:mediaconnect:us-east-1:111122223333:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow",
+        "FlowArn": "arn:aws:mediaconnect:us-west-2:123456789012:flow:1-23aBC45dEF67hiJ8-12AbC34DE5fG:AwardsShow",
         "Source": {
             "IngestIp": "34.210.136.56",
             "WhitelistCidr": "10.24.34.0/23",
@@ -23,7 +23,7 @@ Output::
             "IngestPort": 3344,
             "Name": "ShowSource",
             "Description": "Friday night show",
-            "SourceArn": "arn:aws:mediaconnect:us-east-1:111122223333:source:3-4aBC56dEF78hiJ90-4de5fG6Hi78Jk:ShowSource"
+            "SourceArn": "arn:aws:mediaconnect:us-west-2:123456789012:source:3-4aBC56dEF78hiJ90-4de5fG6Hi78Jk:ShowSource"
         }
     }
 

@@ -1,6 +1,6 @@
 **To delete a channel**
 
-The following ``delete-channel`` command deletes the channel named ``test``. ::
+The following ``delete-channel`` example deletes the channel named ``test``. ::
 
     aws mediapackage delete-channel \
         --id test    

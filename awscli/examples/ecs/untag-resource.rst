@@ -8,3 +8,4 @@ The following ``untag-resource`` example removes the listed tags from the specif
 
 This command produces no output.
 
+For more information, see `Tagging Amazon ECS resources <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html>`__ in the *Amazon ECS Developer Guide*.

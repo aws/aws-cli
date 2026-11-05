@@ -1,6 +1,6 @@
 **To create an invalidation for a CloudFront distribution**
 
-The following ``create-invalidation`` example creates an invalidation for the specified files in the specified CloudFront distribution::
+The following ``create-invalidation`` example creates an invalidation for the specified files in the specified CloudFront distribution. ::
 
     aws cloudfront create-invalidation \
         --distribution-id EDFDVBD6EXAMPLE \
@@ -27,7 +27,7 @@ Output::
         }
     }
 
-In the previous example, the AWS CLI automatically generated a random ``CallerReference``. To specify your own ``CallerReference``, or to avoid passing the invalidation parameters as command line arguments, you can use a JSON file. The following example creates an invalidation for two files, by providing the invalidation parameters in a JSON file named ``inv-batch.json``::
+In the previous example, the AWS CLI automatically generated a random ``CallerReference``. To specify your own ``CallerReference``, or to avoid passing the invalidation parameters as command line arguments, you can use a JSON file. The following example creates an invalidation for two files, by providing the invalidation parameters in a JSON file named ``inv-batch.json``. ::
 
     aws cloudfront create-invalidation \
         --distribution-id EDFDVBD6EXAMPLE \
@@ -66,3 +66,5 @@ Output::
             }
         }
     }
+
+For more information, see `Invalidate files to remove content <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html>`__ in the *Amazon CloudFront Developer Guide*.

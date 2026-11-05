@@ -12,8 +12,8 @@ Output::
 
     {
         "probeId": "probe-12345",
-        "probeArn": "arn:aws:networkmonitor:region:012345678910:probe/probe-12345",
-        "sourceArn": "arn:aws:ec2:region:012345678910:subnet/subnet-12345",
+        "probeArn": "arn:aws:networkmonitor:region:123456789012:probe/probe-12345",
+        "sourceArn": "arn:aws:ec2:region:123456789012:subnet/subnet-12345",
         "destination": "10.0.0.150",
         "destinationPort": 80,
         "protocol": "TCP",

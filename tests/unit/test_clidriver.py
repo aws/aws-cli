@@ -840,6 +840,34 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
+    def test_unknown_option_suggests_operation_option(self):
+        rc = self.driver.main(
+            ['ec2', 'describe-instances', '--instance-idz', 'i-123']
+        )
+        self.assertEqual(rc, 252)
+        self.assertIn(
+            'Maybe you meant:\n  * --instance-ids (instead of --instance-idz)',
+            self.stderr.getvalue(),
+        )
+
+    def test_unknown_option_suggests_global_option(self):
+        rc = self.driver.main(
+            ['ec2', 'describe-instances', '--regoin', 'us-west-2']
+        )
+        self.assertEqual(rc, 252)
+        self.assertIn(
+            '  * --region (instead of --regoin)', self.stderr.getvalue()
+        )
+
+    def test_unknown_option_does_not_suggest_undocumented_option(self):
+        # --marker is hidden because list-objects is paginated.
+        rc = self.driver.main(
+            ['s3api', 'list-objects', '--bucket', 'b', '--markr', 'x']
+        )
+        self.assertEqual(rc, 252)
+        self.assertIn('Unknown options: --markr, x', self.stderr.getvalue())
+        self.assertNotIn('Maybe you meant', self.stderr.getvalue())
+
     def test_idempotency_token_is_not_required_in_help_text(self):
         rc = self.driver.main(['servicecatalog', 'create-constraint'])
         self.assertEqual(rc, 252)

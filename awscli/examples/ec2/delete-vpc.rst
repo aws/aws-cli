@@ -1,7 +1,10 @@
 **To delete a VPC**
 
-This example deletes the specified VPC. If the command succeeds, no output is returned.
+The following ``delete-vpc`` example deletes the specified VPC. ::
 
-Command::
+    aws ec2 delete-vpc \
+        --vpc-id vpc-a01106c2
 
-  aws ec2 delete-vpc --vpc-id vpc-a01106c2
+This command produces no output.
+
+For more information, see `Delete your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/delete-vpc.html>`__ in the *Amazon VPC User Guide*.

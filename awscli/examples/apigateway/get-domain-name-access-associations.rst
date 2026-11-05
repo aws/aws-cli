@@ -9,10 +9,10 @@ Output::
     {
         "items": [
             {
-            "domainNameAccessAssociationArn": "arn:aws:apigateway:us-west-2:012345678910:/domainnameaccessassociations/domainname/my.private.domain.tld/vpcesource/vpce-abcd1234efg
+            "domainNameAccessAssociationArn": "arn:aws:apigateway:us-west-2:123456789222:/domainnameaccessassociations/domainname/my.private.domain.tld/vpcesource/vpce-abcd1234efg",
             "accessAssociationSource": "vpce-abcd1234efg",
             "accessAssociationSourceType": "VPCE",
-            "domainNameArn" : "arn:aws:apigateway:us-west-2:111122223333:/domainnames/private.example.com+abcd1234"
+            "domainNameArn": "arn:aws:apigateway:us-west-2:123456789111:/domainnames/private.example.com+abcd1234"
             }
         ]
     }
@@ -31,10 +31,10 @@ Output::
     {
         "items": [
             {
-            "domainNameAccessAssociationArn": "arn:aws:apigateway:us-west-2:012345678910:/domainnameaccessassociations/domainname/my.private.domain.tld/vpcesource/vpce-abcd1234efg
+            "domainNameAccessAssociationArn": "arn:aws:apigateway:us-west-2:123456789222:/domainnameaccessassociations/domainname/my.private.domain.tld/vpcesource/vpce-abcd1234efg",
             "accessAssociationSource": "vpce-abcd1234efg",
             "accessAssociationSourceType": "VPCE",
-            "domainNameArn" : "arn:aws:apigateway:us-west-2:111122223333:/domainnames/private.example.com+abcd1234"
+            "domainNameArn": "arn:aws:apigateway:us-west-2:123456789111:/domainnames/private.example.com+abcd1234"
             }
         ]
     }

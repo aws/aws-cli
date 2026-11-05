@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example displays the tags associated with a sink. ::
 
     aws oam list-tags-for-resource \
-        --resource-arn arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345
+        --resource-arn arn:aws:oam:us-west-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

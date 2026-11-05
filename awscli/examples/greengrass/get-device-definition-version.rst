@@ -1,10 +1,10 @@
 **To get a device definition version**
 
-The following ``get-device-definition-version`` example retrieves information about the specified version of the specified device definition. To retrieve the IDs of all versions of the device definition, use the ``list-device-definition-versions`` command. To retrieve the ID of the last version added to the device definition, use the ``get-device-definition`` command and check the ``LatestVersion`` property.  ::
+The following ``get-device-definition-version`` example retrieves information about the specified version of the specified device definition. To retrieve the IDs of all versions of the device definition, use the ``list-device-definition-versions`` command. To retrieve the ID of the last version added to the device definition, use the ``get-device-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-device-definition-version \
-        --device-definition-id "f9ba083d-5ad4-4534-9f86-026a45df1ccd" \
-        --device-definition-version-id "83c13984-6fed-447e-84d5-5b8aa45d5f71"
+        --device-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
+        --device-definition-version-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
 
 Output::
 
@@ -25,8 +25,10 @@ Output::
                 }
             ]
         },
-        "Version": "83c13984-6fed-447e-84d5-5b8aa45d5f71",
+        "Version": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
         "CreationTimestamp": "2019-09-11T00:15:09.838Z",
-        "Id": "f9ba083d-5ad4-4534-9f86-026a45df1ccd",
-        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/f9ba083d-5ad4-4534-9f86-026a45df1ccd/versions/83c13984-6fed-447e-84d5-5b8aa45d5f71"
+        "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
     }
+
+For more information, see `Create client devices in an AWS IoT Greengrass group <https://docs.aws.amazon.com/greengrass/v1/developerguide/device-group.html>`__ in the *AWS IoT Greengrass Developer Guide*.

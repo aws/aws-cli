@@ -1,6 +1,6 @@
 **To revoke a refresh token**
 
-The following ``revoke-token`` revokes the requested refresh token and associated access tokens. ::
+The following ``revoke-token`` example revokes the requested refresh token and associated access tokens. ::
 
     aws cognito-idp revoke-token \
         --token eyJjd123abcEXAMPLE \

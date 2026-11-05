@@ -1,6 +1,6 @@
 **To list the container instances that contain a specific attribute**
 
-The following example lists the attributes for container instances that have the ``stack=production`` attribute in the default cluster. ::
+The following ``list-attributes`` example lists the attributes for container instances that have the ``stack=production`` attribute in the default cluster. ::
 
     aws ecs list-attributes \
         --target-type container-instance \
@@ -14,7 +14,7 @@ Output::
         "attributes": [
             {
                 "name": "stack",
-                "targetId": "arn:aws:ecs:us-west-2:130757420319:container-instance/1c3be8ed-df30-47b4-8f1e-6e68ebd01f34",
+                "targetId": "arn:aws:ecs:us-west-2:123456789012:container-instance/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "value": "production"
             }
         ]

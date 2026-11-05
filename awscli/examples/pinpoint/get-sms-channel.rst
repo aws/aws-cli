@@ -3,8 +3,7 @@
 The following ``get-sms-channel`` example retrieves status and settings of the sms channel for an application. ::
 
     aws pinpoint get-sms-channel \
-        --application-id 6e0b7591a90841d2b5d93fa11143e5a7 \
-        --region us-east-1
+        --application-id 6e0b7591a90841d2b5d93fa11143e5a7
 
 Output::
 
@@ -22,3 +21,5 @@ Output::
             "Version": 1
         }
     }
+
+For more information, see `Managing the Amazon Pinpoint SMS channel <https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-manage.html>`__ in the *Amazon Pinpoint User Guide*.

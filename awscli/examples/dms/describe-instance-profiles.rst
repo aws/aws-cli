@@ -3,15 +3,15 @@
 The following ``describe-instance-profiles`` example retrieves the details of an instance profile identified by its ARN. ::
 
     aws dms describe-instance-profiles \
-        --filters Name=instance-profile-identifier,Values=arn:aws:dms:us-east-1:123456789012:instance-profile:EXAMPLEABCDEFGHIJKLMNOPQRS
+        --filters Name=instance-profile-identifier,Values=arn:aws:dms:us-west-2:123456789012:instance-profile:EXAMPLEABCDEFGHIJKLMNOPQRS
 
 Output::
 
     {
         "InstanceProfiles": [
             {
-                "InstanceProfileArn": "arn:aws:dms:us-east-1:123456789012:instance-profile:EXAMPLEABCDEFGHIJKLMNOPQRS",
-                "KmsKeyArn": "arn:aws:kms:us-east-1:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "InstanceProfileArn": "arn:aws:dms:us-west-2:123456789012:instance-profile:EXAMPLEABCDEFGHIJKLMNOPQRS",
+                "KmsKeyArn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "PubliclyAccessible": false,
                 "NetworkType": "IPV4",
                 "InstanceProfileName": "example-instance-profile",

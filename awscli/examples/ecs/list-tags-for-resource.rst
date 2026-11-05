@@ -23,3 +23,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Tagging Amazon ECS resources <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html>`__ in the *Amazon ECS Developer Guide*.

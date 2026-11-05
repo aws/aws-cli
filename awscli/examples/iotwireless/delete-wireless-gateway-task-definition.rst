@@ -3,7 +3,7 @@
 The following ``delete-wireless-gateway-task-definition`` example deletes the wireless gateway task definition that you created with the following ID. ::
 
     aws iotwireless delete-wireless-gateway-task-definition \
-        --id "12345678-a1b2-3c45-67d8-e90fa1b2c34d"
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 This command produces no output.
 

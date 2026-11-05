@@ -1,6 +1,6 @@
 **To update a CloudFront field-level encryption configuration**
 
-The following example updates the ``Comment`` field of the field-level
+The following ``update-field-level-encryption-config`` example updates the ``Comment`` field of the field-level
 encryption configuration with the ID ``C3KM2WVD605UAY`` by providing the
 parameters in a JSON file.
 
@@ -15,17 +15,14 @@ To get the ``ETag``, use the
 <get-field-level-encryption.html>`_ or
 `get-field-level-encryption-config
 <get-field-level-encryption-config.html>`_ command.
-Use the ``--if-match`` option to provide the configuration's ``ETag``.
-
-::
+Use the ``--if-match`` option to provide the configuration's ``ETag``. ::
 
     aws cloudfront update-field-level-encryption-config \
         --id C3KM2WVD605UAY \
         --if-match E2P4Z4VU7TY5SG \
         --field-level-encryption-config file://fle-config.json
 
-The file ``fle-config.json`` is a JSON document in the current directory that
-contains the following::
+Contents of ``fle-config.json``::
 
     {
         "CallerReference": "cli-example",
@@ -84,3 +81,5 @@ Output::
             }
         }
     }
+
+For more information, see `Use field-level encryption to help protect sensitive data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`__ in the *Amazon CloudFront Developer Guide*.

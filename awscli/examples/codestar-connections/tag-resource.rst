@@ -3,7 +3,7 @@
 The following ``tag-resource`` example associates a set of provided tags with a connection. Use this command to add or edit tags. ::
 
     aws codestar-connections tag-resource \
-        --resource-arn arn:aws:codestar-connections:us-east-1:123456789012:connection/aEXAMPLE-8aad-4d5d-8878-dfcab0bc441f \
+        --resource-arn arn:aws:codestar-connections:us-west-2:123456789012:connection/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --tags Key=Project,Value=ProjectA Key=IscontainerBased,Value=true
 
 This command produces no output.

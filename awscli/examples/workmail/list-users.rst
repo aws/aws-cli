@@ -1,6 +1,6 @@
 **To retrieve a list of users**
 
-The following ``list-users`` command retrieves summaries of the users in the specified organization. ::
+The following ``list-users`` example retrieves summaries of the users in the specified organization. ::
 
     aws workmail list-users \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27
@@ -25,3 +25,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Viewing a list of users <https://docs.aws.amazon.com/workmail/latest/adminguide/display_users.html>`__ in the *Amazon WorkMail Administrator Guide*.

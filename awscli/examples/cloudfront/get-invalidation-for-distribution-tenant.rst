@@ -21,7 +21,7 @@ Output::
                         "/more/invalidations"
                     ]
                 },
-                "CallerReference": "007ee5a6-d0a0-42be-bb61-e7b915969b48"
+                "CallerReference": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             }
         }
     }

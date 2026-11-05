@@ -6,21 +6,25 @@ The following ``set-stack-policy`` example disables updates for the specified re
         --stack-name my-stack \
         --stack-policy-body file://stack-policy.json
 
-Output::
+Contents of ``stack-policy.json``::
 
     {
-      "Statement" : [
-        {
-          "Effect" : "Allow",
-          "Action" : "Update:*",
-          "Principal": "*",
-          "Resource" : "*"
-        },
-        {
-          "Effect" : "Deny",
-          "Action" : "Update:*",
-          "Principal": "*",
-          "Resource" : "LogicalResourceId/bucket"
-        }
-      ]
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": "Update:*",
+                "Principal": "*",
+                "Resource": "*"
+            },
+            {
+                "Effect": "Deny",
+                "Action": "Update:*",
+                "Principal": "*",
+                "Resource": "LogicalResourceId/bucket"
+            }
+        ]
     }
+
+This command produces no output.
+
+For more information, see `Prevent updates to stack resources <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html>`__ in the *AWS CloudFormation User Guide*.

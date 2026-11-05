@@ -3,9 +3,9 @@
 The following ``disassociate-assets`` example disassociates a wind turbine asset from a wind farm asset. ::
 
     aws iotsitewise disassociate-assets \
-        --asset-id a1b2c3d4-5678-90ab-cdef-44444EXAMPLE \
-        --hierarchy-id a1b2c3d4-5678-90ab-cdef-77777EXAMPLE \
-        --child-asset-id a1b2c3d4-5678-90ab-cdef-33333EXAMPLE
+        --asset-id a1b2c3d4-5678-90ab-cdef-EXAMPLE44444 \
+        --hierarchy-id a1b2c3d4-5678-90ab-cdef-EXAMPLE77777 \
+        --child-asset-id a1b2c3d4-5678-90ab-cdef-EXAMPLE33333
 
 This command produces no output.
 

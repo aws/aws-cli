@@ -11,7 +11,7 @@ Output::
     {
         "FunctionName": "my-function",
         "LastModified": "2019-09-26T20:28:40.438+0000",
-        "RevisionId": "e52502d4-9320-4688-9cd6-152a6ab7490d",
+        "RevisionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "MemorySize": 256,
         "Version": "$LATEST",
         "Role": "arn:aws:iam::123456789012:role/service-role/my-function-role-uy3l9qyq",

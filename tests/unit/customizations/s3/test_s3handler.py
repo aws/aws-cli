@@ -10,12 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import os
+import signal
+import stat
 
+import pytest
 from botocore.exceptions import ClientError
 from s3transfer.manager import TransferManager
 
 from awscli.compat import queue
+from awscli.customizations.s3 import s3handler as s3handler_module
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import (
     CommandResultRecorder,
@@ -45,6 +50,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
     ExcludeAnnotationDirectiveSubscriber,
+    FullObjectChecksumUnavailableSubscriber,
     ProvideETagSubscriber,
     ProvideFullObjectChecksumSubscriber,
     ProvideLastModifiedTimeSubscriber,
@@ -748,6 +754,9 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         actual_subscribers = download_call_kwargs['subscribers']
         subscriber_types = [type(s) for s in actual_subscribers]
         self.assertIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
 
     def test_submit_without_full_object_checksum(self):
         fileinfo = self.create_file_info(self.key)
@@ -756,8 +765,11 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         actual_subscribers = download_call_kwargs['subscribers']
         subscriber_types = [type(s) for s in actual_subscribers]
         self.assertNotIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
 
-    def test_submit_with_composite_checksum_does_not_add_subscriber(self):
+    def test_submit_with_composite_checksum_marks_unavailable(self):
         fileinfo = self.create_file_info(
             self.key,
             associated_response_data={
@@ -770,6 +782,66 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         actual_subscribers = download_call_kwargs['subscribers']
         subscriber_types = [type(s) for s in actual_subscribers]
         self.assertNotIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+        self.assertIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def get_download_subscriber_types(self, associated_response_data):
+        fileinfo = self.create_file_info(
+            self.key, associated_response_data=associated_response_data
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        return [type(s) for s in download_call_kwargs['subscribers']]
+
+    def test_uncombinable_full_object_checksum_not_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {'ChecksumType': 'FULL_OBJECT', 'ChecksumSHA256': 'abc123=='}
+        )
+        self.assertNotIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def test_no_checksum_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {'Size': 100, 'ETag': '"foo"'}
+        )
+        self.assertIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def test_listed_full_object_checksum_not_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {
+                'Size': 100,
+                'ChecksumType': 'FULL_OBJECT',
+                'ChecksumAlgorithm': ['CRC64NVME'],
+            }
+        )
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def test_listed_composite_checksum_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {
+                'Size': 100,
+                'ChecksumType': 'COMPOSITE',
+                'ChecksumAlgorithm': ['CRC32'],
+            }
+        )
+        self.assertIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
+
+    def test_listed_checksum_without_type_not_marked_unavailable(self):
+        subscriber_types = self.get_download_subscriber_types(
+            {'Size': 100, 'ChecksumAlgorithm': ['CRC32']}
+        )
+        self.assertNotIn(
+            FullObjectChecksumUnavailableSubscriber, subscriber_types
+        )
 
 
 class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
@@ -1123,6 +1195,264 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.src, '-')
 
 
+class TestDownloadRequestSubmitterNoFollowLinks(
+    BaseTransferRequestSubmitterTest
+):
+    def setUp(self):
+        super().setUp()
+        # Drive qualified so that the root and the destinations built from it
+        # agree on Windows, where abspath adds the current drive.
+        self.root = os.path.abspath(os.path.join(os.sep, 'dest'))
+        self.cli_params['dest'] = self.root
+        self.cli_params['follow_symlinks'] = False
+        self.transfer_request_submitter = DownloadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params
+        )
+
+    def submit(self, dest, key, links=()):
+        with mock.patch(
+            'awscli.customizations.s3.s3handler.is_link',
+            side_effect=lambda p: p in links,
+        ):
+            return self.transfer_request_submitter.submit(
+                FileInfo(
+                    src=self.bucket + '/' + key,
+                    src_type='s3',
+                    dest=dest,
+                    dest_type='local',
+                    operation_name='download',
+                    compare_key=key,
+                )
+            )
+
+    def test_skips_link_in_parent_directory(self):
+        sub = os.path.join(self.root, 'sub')
+        dest = os.path.join(sub, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'sub/obj.txt', links=[sub]))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+        self.assertTrue(self.result_queue.empty())
+
+    def test_skips_link_in_parent_directory_with_trailing_separator(self):
+        sub = os.path.join(self.root, 'sub')
+        self.assertIsNone(self.submit(sub + os.sep, 'sub/', links=[sub]))
+
+    def test_skips_link_when_dest_root_is_filesystem_root(self):
+        self.cli_params['dest'] = os.sep
+        sub = os.path.join(self.root, 'sub')
+        dest = os.path.join(sub, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'dest/sub/obj.txt', links=[sub]))
+
+    @unittest.skipIf(
+        not hasattr(signal, 'SIGALRM'), 'Needs signal.alarm to stop a hang'
+    )
+    def test_terminates_when_dest_root_is_filesystem_root(self):
+        # 'sync s3://bucket /' produces destinations of the form '//key', and
+        # dirname('//') is '//' on POSIX, so without the fixpoint break the
+        # walk never reaches the root and loops forever.
+        self.cli_params['dest'] = os.sep
+        dest = os.sep * 2 + 'a' + os.sep + 'b'
+        with _time_limit(5):
+            self.submit(dest, 'a/b')
+
+    def test_skips_link_at_destination(self):
+        dest = os.path.join(self.root, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'obj.txt', links=[dest]))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+
+    def test_submits_when_nothing_is_a_link(self):
+        dest = os.path.join(self.root, 'sub', 'obj.txt')
+        self.assertIsNotNone(self.submit(dest, 'sub/obj.txt', links=[]))
+
+    def test_skips_link_at_the_destination_root(self):
+        dest = os.path.join(self.root, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'obj.txt', links=[self.root]))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+
+    def test_submits_when_dest_is_the_root_and_a_link_is_above_it(self):
+        # Single-file cp names the whole path, so there is nothing below the
+        # root to walk. Without the below-root guard the walk would continue
+        # past the root and reject a link anywhere above it, e.g. /var.
+        above = os.path.dirname(self.root)
+        self.cli_params['dest'] = self.root
+        self.assertIsNotNone(self.submit(self.root, 'obj.txt', links=[above]))
+
+    def test_skips_link_with_a_relative_destination_root(self):
+        # cli_params['dest'] is the raw user string while fileinfo.dest is
+        # absolute, so the root has to be resolved before they are compared.
+        # Without that, 'aws s3 sync s3://bucket dest' checks nothing.
+        self.cli_params['dest'] = 'dest'
+        sub = os.path.join(os.path.abspath('dest'), 'sub')
+        dest = os.path.join(sub, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'sub/obj.txt', links=[sub]))
+
+    def test_skips_deeply_nested_link(self):
+        sub = os.path.join(self.root, 'a', 'b', 'sub')
+        dest = os.path.join(sub, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'a/b/sub/obj.txt', links=[sub]))
+
+    def test_submits_when_a_link_is_above_the_destination_root(self):
+        # Paths above the destination are not part of the transfer and are
+        # commonly links, e.g. /tmp and /var on macOS.
+        above = os.path.dirname(self.root)
+        dest = os.path.join(self.root, 'obj.txt')
+        self.assertIsNotNone(self.submit(dest, 'obj.txt', links=[above]))
+
+    def test_submits_when_following_links(self):
+        self.cli_params['follow_symlinks'] = True
+        dest = os.path.join(self.root, 'sub', 'obj.txt')
+        sub = os.path.join(self.root, 'sub')
+        self.assertIsNotNone(self.submit(dest, 'sub/obj.txt', links=[sub]))
+
+    def test_checks_the_destination_root_then_each_directory_below_it(self):
+        sub = os.path.join(self.root, 'a', 'b')
+        dest = os.path.join(sub, 'obj.txt')
+        checked = []
+        with mock.patch(
+            'awscli.customizations.s3.s3handler.is_link',
+            side_effect=lambda p: checked.append(p) or False,
+        ):
+            self.transfer_request_submitter.submit(
+                FileInfo(
+                    src=self.bucket + '/a/b/obj.txt',
+                    src_type='s3',
+                    dest=dest,
+                    dest_type='local',
+                    operation_name='download',
+                    compare_key='a/b/obj.txt',
+                )
+            )
+        self.assertEqual(
+            checked,
+            [
+                self.root,
+                os.path.join(self.root, 'a'),
+                sub,
+                dest,
+            ],
+        )
+
+    def test_does_not_delete_source_object_for_skipped_move(self):
+        self.cli_params['is_move'] = True
+        sub = os.path.join(self.root, 'sub')
+        dest = os.path.join(sub, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'sub/obj.txt', links=[sub]))
+
+        # A submitted move attaches the subscriber that deletes the source
+        # object, so assert the skip path never builds one.
+        self.assertIsNotNone(self.submit(dest, 'sub/obj.txt', links=[]))
+        subscribers = self.transfer_manager.download.call_args[1][
+            'subscribers'
+        ]
+        self.assertTrue(
+            any(
+                isinstance(s, DeleteSourceObjectSubscriber)
+                for s in subscribers
+            )
+        )
+
+
+@contextlib.contextmanager
+def _time_limit(seconds):
+    """Fails instead of hanging if the body does not finish in time."""
+
+    def _raise(*args):
+        raise AssertionError('timed out, likely a non-terminating loop')
+
+    previous = signal.signal(signal.SIGALRM, _raise)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, previous)
+
+
+MOUNT_POINT_TAG = 0xA0000003
+
+
+@contextlib.contextmanager
+def windows_reparse_tag(tag):
+    """Fakes a Windows filesystem reporting a reparse tag for a path.
+
+    ``stat.IO_REPARSE_TAG_MOUNT_POINT`` only exists on Windows, so it is
+    created here to let these run everywhere. ``test_junction_tag_constant``
+    covers the real name, which this would otherwise hide.
+    """
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', True),
+        mock.patch.object(
+            s3handler_module.stat,
+            'IO_REPARSE_TAG_MOUNT_POINT',
+            MOUNT_POINT_TAG,
+            create=True,
+        ),
+        mock.patch('os.lstat', return_value=mock.Mock(st_reparse_tag=tag)),
+    ):
+        yield
+
+
+@pytest.mark.skipif(
+    not hasattr(stat, 'IO_REPARSE_TAG_MOUNT_POINT'),
+    reason='Reparse tags only exist on Windows',
+)
+def test_junction_tag_constant_matches_the_platform():
+    # Guards against a typo in the constant or attribute name, which
+    # is_link would otherwise swallow and report as "not a link".
+    assert stat.IO_REPARSE_TAG_MOUNT_POINT == MOUNT_POINT_TAG
+    assert hasattr(os.lstat(os.getcwd()), 'st_reparse_tag')
+
+
+def test_is_link_for_symlink():
+    with mock.patch('os.path.islink', return_value=True):
+        assert s3handler_module.is_link('anything')
+
+
+def test_is_link_for_plain_path():
+    with mock.patch('os.path.islink', return_value=False):
+        assert not s3handler_module.is_link('anything')
+
+
+def test_is_link_for_windows_junction():
+    # os.path.islink is False for a junction, so the reparse tag is what
+    # identifies it. Junctions need no elevation to create, unlike symlinks,
+    # so missing them would leave the easier vector open.
+    with windows_reparse_tag(MOUNT_POINT_TAG):
+        assert s3handler_module.is_link('junction')
+
+
+@pytest.mark.parametrize(
+    'tag',
+    [
+        0xA000000C,  # IO_REPARSE_TAG_SYMLINK, already covered by islink
+        0xA000001D,  # IO_REPARSE_TAG_APPEXECLINK, a Store app stub
+        0x9000001A,  # IO_REPARSE_TAG_CLOUD, a OneDrive placeholder
+    ],
+)
+def test_is_link_for_other_reparse_tags(tag):
+    with windows_reparse_tag(tag):
+        assert not s3handler_module.is_link('reparse-point')
+
+
+def test_is_link_for_missing_path():
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', True),
+        mock.patch('os.lstat', side_effect=OSError()),
+    ):
+        assert not s3handler_module.is_link('missing')
+
+
+def test_is_link_does_not_read_reparse_tag_off_windows():
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', False),
+        mock.patch('os.lstat') as lstat,
+    ):
+        assert not s3handler_module.is_link('path')
+        assert not lstat.called
+
+
 class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
         super(TestDownloadStreamRequestSubmitter, self).setUp()
@@ -1131,6 +1461,22 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter = DownloadStreamRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params
         )
+
+    def test_submits_when_a_link_shares_the_stream_dest_name(self):
+        # '-' resolves against the working directory like any other
+        # destination, so a link of that name must not cause a skip.
+        self.cli_params['follow_symlinks'] = False
+        self.cli_params['dest'] = self.filename
+        fileinfo = FileInfo(
+            src=self.bucket + '/' + self.key,
+            dest=self.filename,
+            compare_key=self.key,
+        )
+        with mock.patch(
+            'awscli.customizations.s3.s3handler.is_link', return_value=True
+        ):
+            future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.download.return_value, future)
 
     def test_can_submit(self):
         fileinfo = FileInfo(

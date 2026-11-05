@@ -3,14 +3,14 @@
 The following ``describe-client-vpn-authorization-rules`` example displays details about the authorization rules for the specified Client VPN endpoint. ::
 
     aws ec2 describe-client-vpn-authorization-rules \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde
+        --client-vpn-endpoint-id cvpn-endpoint-123456789abcabcde
 
 Output::
 
     {
         "AuthorizationRules": [
             {
-                "ClientVpnEndpointId": "cvpn-endpoint-123456789123abcde",
+                "ClientVpnEndpointId": "cvpn-endpoint-123456789abcabcde",
                 "GroupId": "",
                 "AccessAll": true,
                 "DestinationCidr": "0.0.0.0/0",

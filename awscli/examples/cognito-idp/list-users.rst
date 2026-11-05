@@ -16,7 +16,7 @@ Output::
                 "Attributes": [
                     {
                         "Name": "sub",
-                        "Value": "eaad0219-2117-439f-8d46-4db20e59268f"
+                        "Value": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                     },
                     {
                         "Name": "email",
@@ -33,7 +33,7 @@ Output::
                 "Attributes": [
                     {
                         "Name": "sub",
-                        "Value": "3b994cfd-0b07-4581-be46-3c82f9a70c90"
+                        "Value": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
                     },
                     {
                         "Name": "email",
@@ -50,7 +50,7 @@ Output::
                 "Attributes": [
                     {
                         "Name": "sub",
-                        "Value": "5929e0d1-4c34-42d1-9b79-a5ecacfe66f7"
+                        "Value": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
                     },
                     {
                         "Name": "email",
@@ -74,7 +74,7 @@ The following ``list-users`` example lists the attributes of three users who hav
 
     aws cognito-idp list-users \
         --user-pool-id us-west-2_EXAMPLE \
-        --max-items 3 
+        --max-items 3 \
         --query Users\[\*\].Attributes\[\?Value\.contains\(\@\,\'@example.com\'\)\]
 
 Output::

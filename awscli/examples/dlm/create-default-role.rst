@@ -1,6 +1,6 @@
 **To create the required IAM role for Amazon DLM**
 
-The following ``dlm create-default-role`` example creates the AWSDataLifecycleManagerDefaultRole default role for managing snapshots. ::
+The following ``create-default-role`` example creates the AWSDataLifecycleManagerDefaultRole default role for managing snapshots. ::
 
     aws dlm create-default-role \
         --resource-type snapshot

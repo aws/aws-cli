@@ -4,7 +4,7 @@ The following ``disassociate-resource-from-profile`` example disassociates a DNS
 
     aws route53profiles disassociate-resource-from-profile \
         --profile-id rp-4987774726example \
-        --resource-arn arn:aws:route53resolver:us-east-1:123456789012:firewall-rule-group/rslvr-frg-cfe7f72example
+        --resource-arn arn:aws:route53resolver:us-west-2:123456789012:firewall-rule-group/rslvr-frg-cfe7f72example
 
 Output::
 
@@ -16,10 +16,12 @@ Output::
             "Name": "test-resource-association",
             "OwnerId": "123456789012",
             "ProfileId": "rp-4987774726example",
-            "ResourceArn": "arn:aws:route53resolver:us-east-1:123456789012:firewall-rule-group/rslvr-frg-cfe7f72example",
+            "ResourceArn": "arn:aws:route53resolver:us-west-2:123456789012:firewall-rule-group/rslvr-frg-cfe7f72example",
             "ResourceProperties": "{\"priority\":105}",
             "ResourceType": "FIREWALL_RULE_GROUP",
             "Status": "DELETING",
             "StatusMessage": "Deleting the Profile to DNS Firewall rule group association"
         }
     }
+
+For more information, see `Disassociating a resource from an Amazon Route 53 Profile <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles-disassociate-resources.html>`__ in the *Amazon Route 53 Developer Guide*.

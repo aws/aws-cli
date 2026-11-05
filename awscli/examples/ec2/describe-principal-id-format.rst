@@ -26,9 +26,10 @@ Output::
                         "Deadline": "2016-12-15T00:00:00.000Z",
                         "Resource": "volume",
                         "UseLongIds": true
-                    },
+                    }
                 ]
-            },
-            ...
+            }
         ]
     }
+
+For more information, see `Manage your Amazon EC2 resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resources.html>`__ in the *Amazon EC2 User Guide*.

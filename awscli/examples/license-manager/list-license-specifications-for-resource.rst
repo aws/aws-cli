@@ -8,6 +8,11 @@ The following ``list-license-specifications-for-resource`` example lists the lic
 Output::
 
     {
-        "LicenseConfigurationArn": "arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-38b658717b87478aaa7c00883EXAMPLE"
+        "LicenseSpecifications": [
+            {
+                "LicenseConfigurationArn": "arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-38b658717b87478aaa7c00883EXAMPLE"
+            }
+        ]
     }
 
+For more information, see `Self-managed licenses in License Manager <https://docs.aws.amazon.com/license-manager/latest/userguide/license-configurations.html>`__ in the *AWS License Manager User Guide*.

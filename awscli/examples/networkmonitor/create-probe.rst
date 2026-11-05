@@ -4,13 +4,13 @@ The following ``create-probe`` example creates a probe that uses the ``TCP`` ``p
 
     aws networkmonitor create-probe \
         --monitor-name Example_NetworkMonitor \
-        --probe sourceArn=arn:aws:ec2:region:111122223333:subnet/subnet-id,destination=10.0.0.100,destinationPort=80,protocol=TCP,packetSize=56,tags={Name=Probe1}
+        --probe sourceArn=arn:aws:ec2:region:123456789012:subnet/subnet-id,destination=10.0.0.100,destinationPort=80,protocol=TCP,packetSize=56,tags={Name=Probe1}
 
 Output::
 
     {
         "probeId": "probe-12345",
-        "probeArn": "arn:aws:networkmonitor:region:111122223333:probe/probe-12345",
+        "probeArn": "arn:aws:networkmonitor:region:123456789012:probe/probe-12345",
         "destination": "10.0.0.100",
         "destinationPort": 80,
         "packetSize": 56,
@@ -30,13 +30,13 @@ The following ``create-probe`` example creates a probe that uses the ``ICMP`` ``
 
     aws networkmonitor create-probe \
         --monitor-name Example_NetworkMonitor \
-        --probe sourceArn=arn:aws:ec2:region:012345678910:subnet/subnet-id,destination=10.0.0.100,protocol=ICMP,packetSize=56,tags={Name=Probe1}
+        --probe sourceArn=arn:aws:ec2:region:123456789012:subnet/subnet-id,destination=10.0.0.100,protocol=ICMP,packetSize=56,tags={Name=Probe1}
 
 Output::
 
     {
         "probeId": "probe-12345",
-        "probeArn": "arn:aws:networkmonitor:region:111122223333:probe/probe-12345",
+        "probeArn": "arn:aws:networkmonitor:region:123456789012:probe/probe-12345",
         "destination": "10.0.0.100",
         "packetSize": 56,
         "addressFamily": "IPV4",

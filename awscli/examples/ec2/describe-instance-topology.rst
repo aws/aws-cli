@@ -2,8 +2,7 @@
 
 The following ``describe-instance-topology`` example describes the topology of all your instances that match the supported instance types for this command. ::
 
-    aws ec2 describe-instance-topology \
-        --region us-west-2
+    aws ec2 describe-instance-topology
 
 Output::
 

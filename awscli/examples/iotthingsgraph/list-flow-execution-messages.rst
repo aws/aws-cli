@@ -9,13 +9,11 @@ Output::
 
     {
         "messages": [
-            { 
-             "eventType": "EXECUTION_STARTED",
-             "messageId": "f6294f1e-b109-4bbe-9073-f451a2dda2da",
-             "payload": "Flow execution started",
-             "timestamp": 1559247540.656
+            {
+                "eventType": "EXECUTION_STARTED",
+                "messageId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "payload": "Flow execution started",
+                "timestamp": 1559247540.656
             }
         ]
     }
-
-For more information, see `Working with Flows <https://docs.aws.amazon.com/thingsgraph/latest/ug/iot-tg-workflows.html>`__ in the *AWS IoT Things Graph User Guide*.

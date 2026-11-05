@@ -1,16 +1,18 @@
 **To detect drift for a resource**
 
-The following ``detect-stack-resource-drift`` example checks a resource named ``MyFunction`` in a stack named ``MyStack`` for drift::
+The following ``detect-stack-resource-drift`` example checks a resource named ``MyFunction`` in a stack named ``MyStack`` for drift. ::
 
     aws cloudformation detect-stack-resource-drift \
-       --stack-name MyStack \
-       --logical-resource-id MyFunction
+        --stack-name MyStack \
+        --logical-resource-id MyFunction
 
-The output shows an AWS Lambda function that was modified out-of-band::
+The output shows an AWS Lambda function that was modified out-of-band.
+
+Output::
 
     {
         "StackResourceDrift": {
-            "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/MyStack/d0a825a0-e4cd-xmpl-b9fb-061c69e99204",
+            "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/MyStack/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "LogicalResourceId": "MyFunction",
             "PhysicalResourceId": "my-function-SEZV4XMPL4S5",
             "ResourceType": "AWS::Lambda::Function",
@@ -34,3 +36,5 @@ The output shows an AWS Lambda function that was modified out-of-band::
             "Timestamp": "2019-10-02T05:58:47.433Z"
         }
     }
+
+For more information, see `Detect drift on individual stack resources <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-resource.html>`__ in the *AWS CloudFormation User Guide*.

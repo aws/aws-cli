@@ -10,26 +10,26 @@ Output::
         "repositories": [
             {
                 "name": "npm-store",
-                "administratorAccount": "111122223333",
+                "administratorAccount": "123456789012",
                 "domainName": "my-domain",
-                "domainOwner": "111122223333",
-                "arn": "arn:aws:codeartifact:us-west-2:111122223333:repository/my-domain/npm-store",
+                "domainOwner": "123456789012",
+                "arn": "arn:aws:codeartifact:us-west-2:123456789012:repository/my-domain/npm-store",
                 "description": "Provides npm artifacts from npm, Inc."
             },
             {
                 "name": "target-repo",
-                "administratorAccount": "111122223333",
+                "administratorAccount": "123456789012",
                 "domainName": "my-domain",
-                "domainOwner": "111122223333",
-                "arn": "arn:aws:codeartifact:us-west-2:111122223333:repository/my-domain/target-repo",
+                "domainOwner": "123456789012",
+                "arn": "arn:aws:codeartifact:us-west-2:123456789012:repository/my-domain/target-repo",
                 "description": "test target repo"
             },
             {
                 "name": "test-repo2",
-                "administratorAccount": "111122223333",
+                "administratorAccount": "123456789012",
                 "domainName": "test-domain",
-                "domainOwner": "111122223333",
-                "arn": "arn:aws:codeartifact:us-west-2:111122223333:repository/test-domain/test-repo2",
+                "domainOwner": "123456789012",
+                "arn": "arn:aws:codeartifact:us-west-2:123456789012:repository/test-domain/test-repo2",
                 "description": "This is a test repository."
             }
         ]

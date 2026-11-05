@@ -35,7 +35,7 @@ Output::
                 "action": "CollectImageMetadata",
                 "status": "COMPLETED",
                 "inputs": "{\"instanceId\": \"i-1234567890abcdef0\"}",
-                "outputs": "{\"osVersion\": \"Amazon Linux 2023\", \"associationId\": \"a1b2c3d4-5678-90ab-cdef-EXAMPLEaaaaa\"}",
+                "outputs": "{\"osVersion\": \"Amazon Linux 2023\", \"associationId\": \"a1b2c3d4-5678-90ab-cdef-EXAMPLE22222\"}",
                 "startTime": "2026-09-09T19:14:51.818Z",
                 "endTime": "2026-09-09T19:16:26.267Z"
             },
@@ -44,7 +44,7 @@ Output::
                 "name": "RunSanitizeScript",
                 "action": "SanitizeInstance",
                 "status": "COMPLETED",
-                "outputs": "{\"status\": \"Success\", \"output\": \"Skipping cleanup\\n\", \"runCommandId\": \"a1b2c3d4-5678-90ab-cdef-EXAMPLEbbbbb\"}",
+                "outputs": "{\"status\": \"Success\", \"output\": \"Skipping cleanup\\n\", \"runCommandId\": \"a1b2c3d4-5678-90ab-cdef-EXAMPLE33333\"}",
                 "startTime": "2026-09-09T19:16:26.742Z",
                 "endTime": "2026-09-09T19:16:36.559Z"
             },

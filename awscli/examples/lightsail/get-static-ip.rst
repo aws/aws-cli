@@ -10,7 +10,7 @@ Output::
     {
         "staticIp": {
             "name": "StaticIp-1",
-            "arn": "arn:aws:lightsail:us-west-2:111122223333:StaticIp/2257cd76-1f0e-4ac0-82e2-2EXAMPLE23ad",
+            "arn": "arn:aws:lightsail:us-west-2:123456789012:StaticIp/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "supportCode": "6EXAMPLE3362/192.0.2.0",
             "createdAt": 1571071325.076,
             "location": {
@@ -22,3 +22,5 @@ Output::
             "isAttached": false
         }
     }
+
+For more information, see `Static IP addresses in Lightsail <https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-static-ip-addresses-in-amazon-lightsail.html>`__ in the *Amazon Lightsail User Guide*.

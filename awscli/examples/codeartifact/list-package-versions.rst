@@ -32,7 +32,7 @@ Output::
             },
             {
                 "version": "0.1.1",
-                "revision": "REVISION-SAMPLE-1-C7F4S5E9B772FC"",
+                "revision": "REVISION-SAMPLE-1-C7F4S5E9B772FC",
                 "status": "Published"
             },
             {

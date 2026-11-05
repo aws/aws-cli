@@ -6,6 +6,26 @@ The following ``put-container-policy`` example assigns a different policy to the
         --container-name LiveEvents \
         --policy file://LiveEventsContainerPolicy.json
 
-This command produces no output.
+Contents of ``LiveEventsContainerPolicy.json``::
 
-For more information, see `Editing a Container Policy <https://docs.aws.amazon.com/mediastore/latest/ug/policies-edit.html>`__ in the *AWS Elemental MediaStore User Guide*.
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "MediaStoreFullAccess",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::123456789012:root"
+                },
+                "Action": "mediastore:*",
+                "Resource": "arn:aws:mediastore:us-west-2:123456789012:container/LiveEvents/*",
+                "Condition": {
+                    "Bool": {
+                        "aws:SecureTransport": "true"
+                    }
+                }
+            }
+        ]
+    }
+
+This command produces no output.

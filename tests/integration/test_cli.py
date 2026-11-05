@@ -18,10 +18,12 @@ import tempfile
 import time
 
 import botocore.session
+from botocore.exceptions import ClientError
 
 from awscli.clidriver import create_clidriver
 from awscli.testutils import (
     BaseS3CLICommand,
+    ConsistencyWaiter,
     aws,
     random_bucket_name,
     skip_if_windows,
@@ -47,14 +49,53 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         session = botocore.session.get_session()
         client = session.create_client('s3', 'us-east-1')
         client.create_bucket(Bucket=bucket, ObjectOwnership='ObjectWriter')
-        time.sleep(5)
+        # S3 can intermittently reject DeleteBucket with OperationAborted
+        # while a conflicting operation on the bucket is still in progress.
+        self.addCleanup(
+            self._call_with_retry,
+            'OperationAborted',
+            client.delete_bucket,
+            backoff=2,
+            Bucket=bucket,
+        )
+        client.get_waiter('bucket_exists').wait(Bucket=bucket)
         client.delete_public_access_block(Bucket=bucket)
-        self.addCleanup(client.delete_bucket, Bucket=bucket)
+        # Deleting the public access block is eventually consistent, so
+        # wait until it is reported as gone.
+        ConsistencyWaiter(delay=2, max_attempts=30).wait(
+            self._public_access_block_deleted, client, bucket
+        )
         call_args = {'Bucket': bucket, 'Key': key, 'Body': content}
         if extra_args is not None:
             call_args.update(extra_args)
-        client.put_object(**call_args)
+        # Even after the public access block is reported as deleted, a
+        # PutObject with a public ACL can still briefly be denied.
+        self._call_with_retry('AccessDenied', client.put_object, **call_args)
         self.addCleanup(client.delete_object, Bucket=bucket, Key=key)
+
+    def _public_access_block_deleted(self, client, bucket):
+        try:
+            client.get_public_access_block(Bucket=bucket)
+        except ClientError as e:
+            code = e.response['Error']['Code']
+            if code == 'NoSuchPublicAccessBlockConfiguration':
+                return True
+            raise
+        return False
+
+    def _call_with_retry(
+        self, error_code, func, attempts=5, delay=5, backoff=1, **kwargs
+    ):
+        # Retry func on a ClientError with the given code, sleeping
+        # delay * backoff**attempt seconds between attempts.
+        for attempt in range(attempts):
+            try:
+                return func(**kwargs)
+            except ClientError as e:
+                code = e.response['Error']['Code']
+                if code != error_code or attempt == attempts - 1:
+                    raise
+                time.sleep(delay * backoff**attempt)
 
     def test_ec2_describe_instances(self):
         # Verify we can make a call and get output.

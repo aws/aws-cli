@@ -1,6 +1,6 @@
 **To update a CloudFront field-level encryption profile**
 
-The following example updates the field-level encryption profile with the ID
+The following ``update-field-level-encryption-profile`` example updates the field-level encryption profile with the ID
 ``PPK0UOSIF5WSV``. This example updates the profile's ``Name`` and ``Comment``,
 and adds a second ``FieldPatterns`` item, by providing the parameters in a JSON
 file.
@@ -15,17 +15,14 @@ To get the ``ETag``, use the
 <get-field-level-encryption-profile.html>`_ or
 `get-field-level-encryption-profile-config
 <get-field-level-encryption-profile-config.html>`_ command.
-Use the ``--if-match`` option to provide the profile's ``ETag``.
-
-::
+Use the ``--if-match`` option to provide the profile's ``ETag``. ::
 
     aws cloudfront update-field-level-encryption-profile \
         --id PPK0UOSIF5WSV \
         --if-match E1QQG65FS2L2GC \
         --field-level-encryption-profile-config file://fle-profile-config.json
 
-The file ``fle-profile-config.json`` is a JSON document in the current
-directory that contains the following::
+Contents of ``fle-profile-config.json``::
 
     {
         "Name": "ExampleFLEProfileUpdated",
@@ -79,3 +76,5 @@ Output::
             }
         }
     }
+
+For more information, see `Use field-level encryption to help protect sensitive data <https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html>`__ in the *Amazon CloudFront Developer Guide*.

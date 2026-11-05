@@ -1,6 +1,6 @@
 **Example 1: To list the Pod Identity associations in an EKS cluster**
 
-The following ``list-pod-identity-associations`` returns the list of Pod Identity associations associated with the EKS cluster named ``eks-customer`` in all namespaces and service accounts. ::
+The following ``list-pod-identity-associations`` example returns the list of Pod Identity associations associated with the EKS cluster named ``eks-customer`` in all namespaces and service accounts. ::
 
     aws eks list-pod-identity-associations \
         --cluster-name eks-customer
@@ -13,21 +13,21 @@ Output::
                 "clusterName": "eks-customer",
                 "namespace": "default",
                 "serviceAccount": "default",
-                "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-9njjin9gfghecgocd",
+                "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-9njjin9gfghecgocd",
                 "associationId": "a-9njjin9gfghecgocd"
             },
             {
                 "clusterName": "eks-customer",
                 "namespace": "kube-system",
                 "serviceAccount": "eks-customer",
-                "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-dvtacahdvjn01ffbc",
+                "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-dvtacahdvjn01ffbc",
                 "associationId": "a-dvtacahdvjn01ffbc"
             },
             {
                 "clusterName": "eks-customer",
                 "namespace": "kube-system",
                 "serviceAccount": "coredns",
-                "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-yrpsdroc4ei7k6xps",
+                "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-yrpsdroc4ei7k6xps",
                 "associationId": "a-yrpsdroc4ei7k6xps"
             }
         ]
@@ -37,7 +37,7 @@ For more information, see `Learn how EKS Pod Identity grants pods access to AWS 
 
 **Example 2: To list the Pod Identity associations in an EKS cluster based on namespace and service account**
 
-The following ``list-pod-identity-associations`` returns the list of Pod Identity associations in the EKS cluster based on namespace and service account. ::
+The following ``list-pod-identity-associations`` example returns the list of Pod Identity associations in the EKS cluster based on namespace and service account. ::
 
     aws eks list-pod-identity-associations \
         --cluster-name eks-customer \
@@ -52,7 +52,7 @@ Output::
                 "clusterName": "eks-customer",
                 "namespace": "kube-system",
                 "serviceAccount": "eks-customer",
-                "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-dvtacahdvjn01ffbc",
+                "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-dvtacahdvjn01ffbc",
                 "associationId": "a-dvtacahdvjn01ffbc"
             }
         ]

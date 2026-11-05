@@ -1,11 +1,11 @@
 **To update the EKS Pod Identity association**
 
-The following ``update-pod-identity-association`` example updates an EKS Pod Identity association by changing the associated IAM role from ``arn:aws:iam::111122223333:role/my-role`` to ``arn:aws:iam::111122223333:role/s3-role`` for association ID ``a-9njjin9gfghecgocd``. This API only allows updating the associated IAM role. ::
+The following ``update-pod-identity-association`` example updates an EKS Pod Identity association by changing the associated IAM role from ``arn:aws:iam::123456789012:role/my-role`` to ``arn:aws:iam::123456789012:role/s3-role`` for association ID ``a-9njjin9gfghecgocd``. This API only allows updating the associated IAM role. ::
 
     aws eks update-pod-identity-association \
         --cluster-name eks-customer \
         --association-id a-9njjin9gfghecgocd \
-        --role-arn arn:aws:iam::111122223333:role/s3-role
+        --role-arn arn:aws:iam::123456789012:role/s3-role
 
 Output::
 
@@ -14,8 +14,8 @@ Output::
             "clusterName": "eks-customer",
             "namespace": "default",
             "serviceAccount": "default",
-            "roleArn": "arn:aws:iam::111122223333:role/s3-role",
-            "associationArn": "arn:aws:eks:us-west-2:111122223333:podidentityassociation/eks-customer/a-9njjin9gfghecgocd",
+            "roleArn": "arn:aws:iam::123456789012:role/s3-role",
+            "associationArn": "arn:aws:eks:us-west-2:123456789012:podidentityassociation/eks-customer/a-9njjin9gfghecgocd",
             "associationId": "a-9njjin9gfghecgocd",
             "tags": {
                 "Key2": "value2",

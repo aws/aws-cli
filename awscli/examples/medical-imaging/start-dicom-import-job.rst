@@ -1,12 +1,12 @@
 **To start a dicom import job**
 
-The following ``start-dicom-import-job`` code example starts a dicom import job. ::
+The following ``start-dicom-import-job`` example starts a dicom import job. ::
 
     aws medical-imaging start-dicom-import-job \
         --job-name "my-job" \
         --datastore-id "12345678901234567890123456789012" \
-        --input-s3-uri "s3://medical-imaging-dicom-input/dicom_input/" \
-        --output-s3-uri "s3://medical-imaging-output/job_output/" \
+        --input-s3-uri "s3://amzn-s3-demo-bucket1/dicom_input/" \
+        --output-s3-uri "s3://amzn-s3-demo-bucket2/job_output/" \
         --data-access-role-arn "arn:aws:iam::123456789012:role/ImportJobDataAccessRole"
 
 Output::

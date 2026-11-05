@@ -2,19 +2,19 @@
 
 The following ``get-monitor`` example displays information about the monitor named ``demo`` in the specified account. ::
 
-    aws networkflowmonitor get-monitor \ 
+    aws networkflowmonitor get-monitor \
         --monitor-name Demo
 
 Output::
 
     {
-        "monitorArn": "arn:aws:networkflowmonitor:us-east-1:123456789012:monitor/Demo",
+        "monitorArn": "arn:aws:networkflowmonitor:us-west-2:123456789012:monitor/Demo",
         "monitorName": "Demo",
         "monitorStatus": "ACTIVE",
         "localResources": [
             {
                 "type": "AWS::EC2::VPC",
-                "identifier": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-03ea55eeda25adbb0"
+                "identifier": "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-03ea55eeda25adbb0"
             }
         ],
         "remoteResources": [],

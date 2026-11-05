@@ -6,7 +6,7 @@ When you run this command, you must use the ``number-of-bytes`` parameter to spe
 
 You don't specify a KMS key when you run this command. The random byte string is unrelated to any KMS key. 
 
-By default, AWS KMS generates the random number. However, if you specify a `custom key store <https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html>`__, the random byte string is generated in the AWS CloudHSM cluster associated with the custom key store.
+By default, AWS KMS generates the random number. However, if you specify a `custom key store <https://docs.aws.amazon.com/kms/latest/developerguide/keystore-cloudhsm.html>`__, the random byte string is generated in the AWS CloudHSM cluster associated with the custom key store.
 
 This example uses the following parameters and values:
 
@@ -24,11 +24,11 @@ This example uses the following parameters and values:
 
 This command produces no output.
 
-For more information, see `GenerateRandom <https://docs.aws.amazon.com/kms/latest/APIReference/API_GenerateRandom.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `AWS KMS cryptography essentials <https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#entropy-and-random-numbers>`__ in the *AWS Key Management Service Developer Guide*.
 
 **Example 2: To generate a 256-bit random number (Windows Command Prompt)**
 
-The following example uses the ``generate-random`` command to generate a 256-bit (32-byte), base64-encoded random byte string. The example decodes the byte string and saves it in the `random` file. This example is the same as the previous example, except that it uses the ``certutil`` utility in Windows to base64-decode the random byte string before saving it in a file. 
+The following ``generate-random`` example generates a 256-bit (32-byte), base64-encoded random byte string. The example decodes the byte string and saves it in the `random` file. This example is the same as the previous example, except that it uses the ``certutil`` utility in Windows to base64-decode the random byte string before saving it in a file. 
 
 First, generate a base64-encoded random byte string and saves it in a temporary file, ``ExampleRandom.base64``. ::
 
@@ -37,7 +37,7 @@ First, generate a base64-encoded random byte string and saves it in a temporary 
         --output text \
         --query Plaintext > ExampleRandom.base64
 
-Because the output of the ``generate-random`` command is saved in a file, this example produces no output.
+This command produces no output. The output of the ``generate-random`` command is saved in a file.
 
 Now use the ``certutil -decode`` command to decode the base64-encoded byte string in the ``ExampleRandom.base64`` file. Then, it saves the decoded byte string in the ``ExampleRandom`` file. ::
 
@@ -49,4 +49,4 @@ Output::
     Output Length = 12
     CertUtil: -decode command completed successfully.
 
-For more information, see `GenerateRandom <https://docs.aws.amazon.com/kms/latest/APIReference/API_GenerateRandom.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `AWS KMS cryptography essentials <https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#entropy-and-random-numbers>`__ in the *AWS Key Management Service Developer Guide*.

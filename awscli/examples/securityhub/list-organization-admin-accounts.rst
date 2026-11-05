@@ -7,9 +7,11 @@ The following ``list-organization-admin-accounts`` example lists the Security Hu
 Output::
 
     {
-        AdminAccounts": [
-            { "AccountId": "777788889999" },
-            { "Status": "ENABLED" }
+        "AdminAccounts": [
+            {
+                "AccountId": "123456789012",
+                "Status": "ENABLED"
+            }
         ]
     }
 

@@ -6,24 +6,24 @@ The following ``create-data-provider`` example creates a Microsoft SQL Server da
         --data-provider-name example-data-provider \
         --engine sqlserver \
         --description "Example data provider for documentation" \
-        --settings MicrosoftSqlServerSettings={ServerName=example-source-server.us-east-1.rds.amazonaws.com,Port=1433,DatabaseName=ExampleDatabase,SslMode=verify-full,CertificateArn=arn:aws:dms:us-east-1:123456789012:cert:EXAMPLEABCDEFGHIJKLMNOPQRS}
+        --settings MicrosoftSqlServerSettings={ServerName=example-source-server.us-west-2.rds.amazonaws.com,Port=1433,DatabaseName=ExampleDatabase,SslMode=verify-full,CertificateArn=arn:aws:dms:us-west-2:123456789012:cert:EXAMPLEABCDEFGHIJKLMNOPQRS}
 
 Output::
 
     {
         "DataProvider": {
             "DataProviderName": "example-data-provider",
-            "DataProviderArn": "arn:aws:dms:us-east-1:123456789012:data-provider:EXAMPLEABCDEFGHIJKLMNOPQRS",
+            "DataProviderArn": "arn:aws:dms:us-west-2:123456789012:data-provider:EXAMPLEABCDEFGHIJKLMNOPQRS",
             "DataProviderCreationTime": "2026-01-09T12:30:00.000000+00:00",
             "Description": "Example data provider for documentation",
             "Engine": "sqlserver",
             "Settings": {
                 "MicrosoftSqlServerSettings": {
-                    "ServerName": "example-source-server.us-east-1.rds.amazonaws.com",
+                    "ServerName": "example-source-server.us-west-2.rds.amazonaws.com",
                     "Port": 1433,
                     "DatabaseName": "ExampleDatabase",
                     "SslMode": "verify-full",
-                    "CertificateArn": "arn:aws:dms:us-east-1:123456789012:cert:EXAMPLEABCDEFGHIJKLMNOPQRS"
+                    "CertificateArn": "arn:aws:dms:us-west-2:123456789012:cert:EXAMPLEABCDEFGHIJKLMNOPQRS"
                 }
             }
         }
@@ -47,7 +47,7 @@ Output::
     {
         "DataProvider": {
             "DataProviderName": "example-virtual-data-provider",
-            "DataProviderArn": "arn:aws:dms:us-east-1:123456789012:data-provider:EXAMPLEABCDEFGHIJKLMNOPQRS",
+            "DataProviderArn": "arn:aws:dms:us-west-2:123456789012:data-provider:EXAMPLEABCDEFGHIJKLMNOPQRS",
             "DataProviderCreationTime": "2026-01-09T12:30:00.000000+00:00",
             "Description": "Example data provider for documentation",
             "Engine": "aurora-postgresql",

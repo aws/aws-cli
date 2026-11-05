@@ -1,6 +1,6 @@
 **To return a list of events**
 
-The following `describe-events`` returns a list of events. ::
+The following ``describe-events`` example returns a list of events. ::
 
     aws memorydb describe-events
 

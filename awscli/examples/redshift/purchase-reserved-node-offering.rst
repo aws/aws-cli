@@ -1,36 +1,32 @@
-Purchase a Reserved Node
-------------------------
+**To purchase a reserved node**
 
-This example shows how to purchase a reserved node offering. The ``reserved-node-offering-id`` is obtained by
-calling ``describe-reserved-node-offerings``.
+The following ``purchase-reserved-node-offering`` example purchases a reserved node offering. The ``reserved-node-offering-id`` is obtained by
+calling ``describe-reserved-node-offerings``. ::
 
-Command::
+    aws redshift purchase-reserved-node-offering \
+        --reserved-node-offering-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
-   aws redshift purchase-reserved-node-offering --reserved-node-offering-id ceb6a579-cf4c-4343-be8b-d832c45ab51c
-
-Result::
+Output::
 
     {
-       "ReservedNode": {
-          "OfferingType": "Heavy Utilization",
-          "FixedPrice": "",
-          "NodeType": "dw.hs1.xlarge",
-          "ReservedNodeId": "1ba8e2e3-bc01-4d65-b35d-a4a3e931547e",
-          "UsagePrice": "",
-          "RecurringCharges": [
-             {
-                "RecurringChargeAmount": "",
-                "RecurringChargeFrequency": "Hourly"
-             }
-          ],
-          "NodeCount": 1,
-          "State": "payment-pending",
-          "StartTime": "2013-02-13T17:08:39.051Z",
-          "Duration": 31536000,
-          "ReservedNodeOfferingId": "ceb6a579-cf4c-4343-be8b-d832c45ab51c"
-       },
-       "ResponseMetadata": {
-          "RequestId": "01bda7bf-7600-11e2-b605-2568d7396e7f"
-       }
+        "ReservedNode": {
+            "OfferingType": "Heavy Utilization",
+            "FixedPrice": 3000.0,
+            "NodeType": "dw.hs1.xlarge",
+            "ReservedNodeId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+            "UsagePrice": 0.0,
+            "RecurringCharges": [
+                {
+                    "RecurringChargeAmount": 0.114,
+                    "RecurringChargeFrequency": "Hourly"
+                }
+            ],
+            "NodeCount": 1,
+            "State": "payment-pending",
+            "StartTime": "2013-02-13T17:08:39.051Z",
+            "Duration": 31536000,
+            "ReservedNodeOfferingId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+        }
     }
 
+For more information, see `Purchasing a reserved node <https://docs.aws.amazon.com/redshift/latest/mgmt/purchase-reserved-node-offering-console.html>`__ in the *Amazon Redshift Management Guide*.

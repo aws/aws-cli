@@ -7,3 +7,5 @@ The following ``tag-resource`` example adds a metadata tag to the specified Amaz
         --tags Key=Team,Value=Alpha
 
 This command produces no output.
+
+For more information, see `Amazon SNS topic tagging <https://docs.aws.amazon.com/sns/latest/dg/sns-tags.html>`__ in the *Amazon Simple Notification Service Developer Guide*.

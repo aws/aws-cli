@@ -23,4 +23,10 @@ The following ``modify-capacity-reservation`` example modifies an existing capac
         --end-date-type limited \
         --end-date 2019-08-31T23:59:59Z
 
+Output::
+
+    {
+        "Return": true
+    }
+
 For more information, see `Modify a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-modify.html>`__ in the *Amazon EC2 User Guide*.

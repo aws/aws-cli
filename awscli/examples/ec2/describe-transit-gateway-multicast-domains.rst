@@ -12,7 +12,7 @@ Output::
             {
                 "TransitGatewayMulticastDomainId": "tgw-mcast-domain-000fb24d04EXAMPLE",
                 "TransitGatewayId": "tgw-0bf0bffefaEXAMPLE",
-                "TransitGatewayMulticastDomainArn": "arn:aws:ec2:us-east-1:123456789012:transit-gateway-multicast-domain/tgw-mcast-domain-000fb24d04EXAMPLE",
+                "TransitGatewayMulticastDomainArn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway-multicast-domain/tgw-mcast-domain-000fb24d04EXAMPLE",
                 "OwnerId": "123456789012",
                 "Options": {
                     "Igmpv2Support": "disable",
@@ -31,4 +31,4 @@ Output::
         ]
     }
 
-For more information, see `Managing multicast domains <https://docs.aws.amazon.com/vpc/latest/tgw/manage-domain.html>`__ in the *Transit Gateways Guide*.
+For more information, see `Multicast domains in AWS Transit Gateway <https://docs.aws.amazon.com/vpc/latest/tgw/multicast-domains-about.html>`__ in the *Transit Gateways Guide*.

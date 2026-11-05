@@ -3,7 +3,7 @@
 The following ``delete-replication-instance`` example deletes a replication instance. ::
 
     aws dms delete-replication-instance \
-        --replication-instance-arn arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE
+        --replication-instance-arn arn:aws:dms:us-west-2:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE
 
 Output::
 
@@ -20,7 +20,7 @@ Output::
                     "Status": "active"
                 }
             ],
-            "AvailabilityZone": "us-east-1e",
+            "AvailabilityZone": "us-west-2d",
             "ReplicationSubnetGroup": {
                 "ReplicationSubnetGroupIdentifier": "default",
                 "ReplicationSubnetGroupDescription": "default",
@@ -30,42 +30,28 @@ Output::
                     {
                         "SubnetIdentifier": "subnet-da327bf6",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1a"
-                        },
-                        "SubnetStatus": "Active"
-                    },
-                    {
-                        "SubnetIdentifier": "subnet-42599426",
-                        "SubnetAvailabilityZone": {
-                            "Name": "us-east-1d"
+                            "Name": "us-west-2a"
                         },
                         "SubnetStatus": "Active"
                     },
                     {
                         "SubnetIdentifier": "subnet-bac383e0",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1c"
-                        },
-                        "SubnetStatus": "Active"
-                    },
-                    {
-                        "SubnetIdentifier": "subnet-6746046b",
-                        "SubnetAvailabilityZone": {
-                            "Name": "us-east-1f"
+                            "Name": "us-west-2c"
                         },
                         "SubnetStatus": "Active"
                     },
                     {
                         "SubnetIdentifier": "subnet-d7c825e8",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1e"
+                            "Name": "us-west-2d"
                         },
                         "SubnetStatus": "Active"
                     },
                     {
                         "SubnetIdentifier": "subnet-cbfff283",
                         "SubnetAvailabilityZone": {
-                            "Name": "us-east-1b"
+                            "Name": "us-west-2b"
                         },
                         "SubnetStatus": "Active"
                     }
@@ -76,8 +62,8 @@ Output::
             "MultiAZ": true,
             "EngineVersion": "3.3.2",
             "AutoMinorVersionUpgrade": true,
-            "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/f7bc0f8e-1a3a-4ace-9faa-e8494fa3921a",
-            "ReplicationInstanceArn": "arn:aws:dms:us-east-1:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE",
+            "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "ReplicationInstanceArn": "arn:aws:dms:us-west-2:123456789012:rep:T3OM7OUB5NM2LCVZF7JPGJRNUE",
             "ReplicationInstancePublicIpAddress": "54.225.120.92",
             "ReplicationInstancePrivateIpAddress": "172.31.30.121",
             "ReplicationInstancePublicIpAddresses": [
@@ -89,7 +75,7 @@ Output::
                 "172.31.75.90"
             ],
             "PubliclyAccessible": true,
-            "SecondaryAvailabilityZone": "us-east-1b"
+            "SecondaryAvailabilityZone": "us-west-2b"
         }
     }
 

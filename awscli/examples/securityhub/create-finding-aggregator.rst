@@ -10,10 +10,13 @@ The following ``create-finding-aggregator`` example configures finding aggregati
 Output::
 
     {
-        "FindingAggregatorArn": "arn:aws:securityhub:us-east-1:222222222222:finding-aggregator/123e4567-e89b-12d3-a456-426652340000",
+        "FindingAggregatorArn": "arn:aws:securityhub:us-east-1:123456789012:finding-aggregator/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "FindingAggregationRegion": "us-east-1",
         "RegionLinkingMode": "SPECIFIED_REGIONS",
-        "Regions": "us-west-1,us-west-2"
+        "Regions": [
+            "us-west-1",
+            "us-west-2"
+        ]
     }
 
 For more information, see `Enabling finding aggregation <https://docs.aws.amazon.com/securityhub/latest/userguide/finding-aggregation-enable.html>`__ in the *AWS Security Hub User Guide*.

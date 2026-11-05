@@ -1,6 +1,6 @@
 **To change the status of an SSH public key**
 
-The following ``update-ssh-public-key`` command changes the status of the specified public key to ``Inactive``. ::
+The following ``update-ssh-public-key`` example changes the status of the specified public key to ``Inactive``. ::
 
     aws iam update-ssh-public-key \
         --user-name sofia \

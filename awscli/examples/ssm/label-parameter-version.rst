@@ -22,6 +22,14 @@ The following ``label-parameter-version`` example adds a label to the specified 
     aws ssm label-parameter-version \
         --name "MyStringParameter" \
         --labels "ProductionReady" \
-        --parameter-version "2" --labels "DevelopmentReady"
+        --parameter-version "2" \
+        --labels "DevelopmentReady"
+
+Output::
+
+    {
+        "InvalidLabels": [],
+        "ParameterVersion": 2
+    }
 
 For more information, see `Working with parameter labels <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-labels.html>`__ in the *AWS Systems Manager User Guide*.

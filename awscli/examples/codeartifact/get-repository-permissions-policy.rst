@@ -9,27 +9,10 @@ The following ``get-repository-permissions-policy`` example gets the permission 
 Output::
 
     {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Principal": {
-                    "AWS": "arn:aws:iam::111122223333:root"
-                },
-                "Action": [
-                    "codeartifact:DescribePackageVersion",
-                    "codeartifact:DescribeRepository",
-                    "codeartifact:GetPackageVersionReadme",
-                    "codeartifact:GetRepositoryEndpoint",
-                    "codeartifact:ListPackages",
-                    "codeartifact:ListPackageVersions",
-                    "codeartifact:ListPackageVersionAssets",
-                    "codeartifact:ListPackageVersionDependencies",
-                    "codeartifact:ReadFromRepository"
-                ],
-                "Resource": "*"
-            }
-        ]
+        "policy": {
+            "resourceArn": "arn:aws:codeartifact:us-west-2:123456789012:repository/test-domain/test-repo",
+            "document": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::123456789012:root\"},\"Action\":[\"codeartifact:DescribePackageVersion\",\"codeartifact:DescribeRepository\",\"codeartifact:GetPackageVersionReadme\",\"codeartifact:GetRepositoryEndpoint\",\"codeartifact:ListPackages\",\"codeartifact:ListPackageVersions\",\"codeartifact:ListPackageVersionAssets\",\"codeartifact:ListPackageVersionDependencies\",\"codeartifact:ReadFromRepository\"],\"Resource\":\"*\"}]}"
+        }
     }
 
 For more information, see `Read a policy <https://docs.aws.amazon.com/codeartifact/latest/ug/repo-policies.html#setting-a-policy>`__ in the *AWS CodeArtifact User Guide*.

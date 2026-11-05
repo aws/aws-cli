@@ -4,8 +4,10 @@ The following ``enable-sharing-with-aws-organization`` example enables resource 
 
     aws ram enable-sharing-with-aws-organization
 
-The following output indicates success. ::
+Output::
 
     {
         "returnValue": true
     }
+
+For more information, see `Sharing your AWS resources <https://docs.aws.amazon.com/ram/latest/userguide/getting-started-sharing.html>`__ in the *AWS RAM User Guide*.

@@ -13,7 +13,7 @@ Output::
             {
                 "format": "npm",
                 "package": "lodash"
-            }
+            },
             {
                 "format": "python",
                 "package": "test-package"

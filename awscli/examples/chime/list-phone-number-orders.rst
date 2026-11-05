@@ -9,7 +9,7 @@ Output::
     {
         "PhoneNumberOrders": [
             {
-                "PhoneNumberOrderId": "abc12345-de67-89f0-123g-h45i678j9012",
+                "PhoneNumberOrderId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "ProductType": "VoiceConnector",
                 "Status": "Partial",
                 "OrderedPhoneNumbers": [
@@ -28,9 +28,9 @@ Output::
                 ],
                 "CreatedTimestamp": "2019-08-09T21:35:21.427Z",
                 "UpdatedTimestamp": "2019-08-09T21:35:31.926Z"
-            }
+            },
             {
-                "PhoneNumberOrderId": "cba54321-ed76-09f5-321g-h54i876j2109",
+                "PhoneNumberOrderId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "ProductType": "BusinessCalling",
                 "Status": "Partial",
                 "OrderedPhoneNumbers": [

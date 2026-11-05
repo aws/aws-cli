@@ -1,4 +1,4 @@
-**Example: To disassociate a member account from an Amazon Inspector delegated administrator**
+**To disassociate a member account from an Amazon Inspector delegated administrator**
 
 The following ``disassociate-member`` example disassociates an AWS account from an Amazon Inspector delegated administrator. ::
 

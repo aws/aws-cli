@@ -3,7 +3,7 @@
 The following ``update-wireless-device`` example updates the properties of a wireless device registered to your AWS account. ::
 
     aws iotwireless update-wireless-device \
-        --id "1ffd32c8-8130-4194-96df-622f072a315f" \
+        --id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \
         --destination-name IoTWirelessDestination2 \
         --description "Using my first LoRaWAN device"
 

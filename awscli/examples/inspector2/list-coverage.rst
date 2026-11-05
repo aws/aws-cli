@@ -32,7 +32,7 @@ Output::
 
 The following ``list-coverage`` example lists your Lambda function resource type details. ::
 
-    aws inspector2 list-coverage
+    aws inspector2 list-coverage \
         --filter-criteria '{"resourceType":[{"comparison":"EQUALS","value":"AWS_LAMBDA_FUNCTION"}]}'
 
 Output::
@@ -59,3 +59,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Assessing Amazon Inspector coverage of your AWS environment <https://docs.aws.amazon.com/inspector/latest/user/assessing-coverage.html>`__ in the *Amazon Inspector User Guide*.

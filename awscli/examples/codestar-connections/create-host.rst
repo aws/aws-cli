@@ -5,14 +5,14 @@ The following ``create-host`` example shows how to create a host  to represent t
 A host created through the AWS CLI is in Pending status by default. After you create a host with the CLI, use the console or the CLI to set up the host to make its status Available. ::
 
     aws codestar-connections create-host \
-        --name MyHost \ 
-        --provider-type GitHubEnterpriseServer \ 
+        --name MyHost \
+        --provider-type GitHubEnterpriseServer \
         --provider-endpoint "https://my-instance.dev"
 
 Output::
 
     {
-        "HostArn": "arn:aws:codestar-connections:us-east-1:123456789012:host/My-Host-28aef605"
+        "HostArn": "arn:aws:codestar-connections:us-west-2:123456789012:host/My-Host-28aef605"
     }
 
 For more information, see `Create a host (CLI) <https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-host-create.html>`__ in the *Developer Tools console User Guide*.

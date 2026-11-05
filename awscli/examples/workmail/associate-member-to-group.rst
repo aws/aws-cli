@@ -1,6 +1,6 @@
 **To add a member to a group**
 
-The following ``associate-member-to-group`` command adds the specified member to a group. ::
+The following ``associate-member-to-group`` example adds the specified member to a group. ::
 
     aws workmail associate-member-to-group \
         --organization-id m-d281d0a2fd824be5b6cd3d3ce909fd27 \
@@ -8,3 +8,5 @@ The following ``associate-member-to-group`` command adds the specified member to
         --member-id S-1-1-11-1111111111-2222222222-3333333333-3333
 
 This command produces no output.
+
+For more information, see `Adding members to a group <https://docs.aws.amazon.com/workmail/latest/adminguide/add-group-users.html>`__ in the *Amazon WorkMail Administrator Guide*.

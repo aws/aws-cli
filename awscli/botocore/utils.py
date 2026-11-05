@@ -25,6 +25,7 @@ import re
 import secrets
 import socket
 import string
+import threading
 import time
 import uuid
 import warnings
@@ -1484,10 +1485,15 @@ class S3ExpressIdentityCache(IdentityCache):
     def __init__(self, client, credential_cls):
         self._client = client
         self._credential_cls = credential_cls
+        self._lock = threading.Lock()
 
     @functools.lru_cache(maxsize=100)
-    def get_credentials(self, bucket):
+    def _get_credentials_cached(self, bucket):
         return super().get_credentials(bucket=bucket)
+
+    def get_credentials(self, bucket):
+        with self._lock:
+            return self._get_credentials_cached(bucket)
 
     def build_refresh_callback(self, bucket):
         def refresher():
@@ -3998,7 +4004,7 @@ class JSONFileCache:
                 f"JSON serializable: {value}"
             )
         if not os.path.isdir(self._working_dir):
-            os.makedirs(self._working_dir)
+            os.makedirs(self._working_dir, exist_ok=True)
         with os.fdopen(
             os.open(full_key, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
         ) as f:

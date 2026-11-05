@@ -11,7 +11,7 @@ Output::
         "SnapshotId": "snap-01234567890abcdef",
         "Description": "Monthly data backup snapshot",
         "Encrypted": false,
-        "OwnerId": "111122223333",
+        "OwnerId": "123456789012",
         "Progress": "99%",
         "StartTime": "2021-12-01T13:00:00.000000+00:00",
         "State": "recovering",

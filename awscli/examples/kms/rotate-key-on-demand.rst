@@ -3,12 +3,12 @@
 The following ``rotate-key-on-demand`` example immediately initiates rotation of the key material for the specified KMS key. ::
 
     aws kms rotate-key-on-demand \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab"
+        "KeyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
-For more information, see `How to perform on-demand key rotation <https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html#rotating-keys-on-demand>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `How to perform on-demand key rotation <https://docs.aws.amazon.com/kms/latest/developerguide/rotating-keys-on-demand.html>`__ in the *AWS Key Management Service Developer Guide*.

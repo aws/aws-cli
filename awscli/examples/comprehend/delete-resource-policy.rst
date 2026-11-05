@@ -3,7 +3,7 @@
 The following ``delete-resource-policy`` example deletes a resource-based policy from an Amazon Comprehend resource. ::
 
     aws comprehend delete-resource-policy \
-        --resource-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier-1/version/1
+        --resource-arn arn:aws:comprehend:us-west-2:123456789012:document-classifier/example-classifier-1/version/1
 
 This command produces no output.
 

@@ -1357,7 +1357,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Update the details for the instance of IAM Identity Center that is owned by the Amazon Web Services account.</p> <p>In a single <code>UpdateInstance</code> request, you can perform only one of the following operations:</p> <ul> <li> <p>Update the encryption configuration of the instance by specifying <code>EncryptionConfiguration</code>.</p> </li> <li> <p>Enable permission sets for the instance by specifying <code>PermissionSetsEnabled</code>.</p> </li> </ul> <p>A request that specifies both <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> returns a <code>ValidationException</code>. To perform both operations, call <code>UpdateInstance</code> separately for each. The two calls can be made in parallel.</p>"
+      "documentation":"<p>Update the details for the instance of IAM Identity Center that is owned by the Amazon Web Services account.</p> <p>In a single <code>UpdateInstance</code> request, you can perform only one of the following operations:</p> <ul> <li> <p>Update the encryption configuration of the instance by specifying <code>EncryptionConfiguration</code>.</p> </li> <li> <p>Enable permission sets for the instance by specifying <code>PermissionSetsEnabled</code>.</p> </li> </ul> <p>If you specify both <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in a request, the request returns a <code>ValidationException</code>. To perform both operations, call <code>UpdateInstance</code> separately for each. You can make the two calls in parallel.</p>"
     },
     "UpdateInstanceAccessControlAttributeConfiguration":{
       "name":"UpdateInstanceAccessControlAttributeConfiguration",
@@ -3935,6 +3935,10 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
+        },
+        "RegionScope":{
+          "shape":"RegionScope",
+          "documentation":"<p>Specifies which Amazon Web Services Regions to list IAM Identity Center instances from. Valid values:</p> <ul> <li> <p> <code>CURRENT_REGION</code> - Lists only the instances in the Region that you call this API from.</p> </li> <li> <p> <code>ALL_REGIONS</code> - Lists the instances that the caller owns or that are shared with the caller across all Regions.</p> </li> </ul> <p>If you don't specify a value, the default is <code>CURRENT_REGION</code>.</p>"
         }
       }
     },
@@ -4684,6 +4688,13 @@
       "min":1,
       "pattern":"([a-z]+-){2,3}\\d"
     },
+    "RegionScope":{
+      "type":"string",
+      "enum":[
+        "CURRENT_REGION",
+        "ALL_REGIONS"
+      ]
+    },
     "RegionStatus":{
       "type":"string",
       "enum":[
@@ -5148,7 +5159,7 @@
         },
         "PermissionSetsEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Enables permission sets for this Identity Center instance. The only accepted value is <code>true </code>. After permission sets are enabled, they cannot be disabled.</p> <note> <p>You can't set <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in the same request. To configure both, make two separate <code>UpdateInstance</code> calls. These calls can be made in parallel.</p> </note>"
+          "documentation":"<p>Enables permission sets for this Identity Center instance. The only accepted value is <code>true </code>. After permission sets are enabled, they cannot be disabled.</p> <note> <p>You can't set <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in the same request. To configure both, make two separate <code>UpdateInstance</code> calls. You can make these calls in parallel.</p> </note>"
         }
       }
     },

@@ -1,25 +1,27 @@
 **To list the versions of a device definition**
 
-The following ``list-device-definition-versions`` example displays the device definition versions associated with the specified device definition.  ::
+The following ``list-device-definition-versions`` example displays the device definition versions associated with the specified device definition. ::
 
     aws greengrass list-device-definition-versions \
-        --device-definition-id "f9ba083d-5ad4-4534-9f86-026a45df1ccd"
+        --device-definition-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
         "Versions": [
             {
-                "Version": "83c13984-6fed-447e-84d5-5b8aa45d5f71",
+                "Version": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "CreationTimestamp": "2019-09-11T00:15:09.838Z",
-                "Id": "f9ba083d-5ad4-4534-9f86-026a45df1ccd",
-                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/f9ba083d-5ad4-4534-9f86-026a45df1ccd/versions/83c13984-6fed-447e-84d5-5b8aa45d5f71"
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222"
             },
             {
-                "Version": "3b5cc510-58c1-44b5-9d98-4ad858ffa795",
+                "Version": "a1b2c3d4-5678-90ab-cdef-EXAMPLE33333",
                 "CreationTimestamp": "2019-09-11T00:11:06.197Z",
-                "Id": "f9ba083d-5ad4-4534-9f86-026a45df1ccd",
-                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/f9ba083d-5ad4-4534-9f86-026a45df1ccd/versions/3b5cc510-58c1-44b5-9d98-4ad858ffa795"
+                "Id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "Arn": "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/devices/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111/versions/a1b2c3d4-5678-90ab-cdef-EXAMPLE33333"
             }
         ]
     }
+
+For more information, see `Overview of the AWS IoT Greengrass group object model <https://docs.aws.amazon.com/greengrass/v1/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Version 1 Developer Guide*.

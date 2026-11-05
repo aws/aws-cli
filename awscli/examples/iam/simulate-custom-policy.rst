@@ -1,6 +1,6 @@
 **Example 1: To simulate the effects of all IAM policies associated with an IAM user or role**
 
-The following ``simulate-custom-policy`` shows how to provide both the policy and define variable values and simulate an API call to see if it is allowed or denied. The following example shows a policy that enables database access only after a specified date and time. The simulation succeeds because the simulated actions and the specified ``aws:CurrentTime`` variable all match the requirements of the policy. ::
+The following ``simulate-custom-policy`` example shows how to provide both the policy and define variable values and simulate an API call to see if it is allowed or denied. The example uses a policy that enables database access only after a specified date and time. The simulation succeeds because the simulated actions and the specified ``aws:CurrentTime`` variable all match the requirements of the policy. ::
 
     aws iam simulate-custom-policy \
         --policy-input-list '{"Version":"2012-10-17","Statement":{"Effect":"Allow","Action":"dynamodb:*","Resource":"*","Condition":{"DateGreaterThan":{"aws:CurrentTime":"2018-08-16T12:00:00Z"}}}}' \

@@ -3,8 +3,8 @@
 The following ``create-db-cluster-snapshot`` example creates an Amazon DB cluster snapshot named sample-cluster-snapshot. ::
 
     aws docdb create-db-cluster-snapshot \
-       --db-cluster-identifier sample-cluster \
-       --db-cluster-snapshot-identifier sample-cluster-snapshot
+        --db-cluster-identifier sample-cluster \
+        --db-cluster-snapshot-identifier sample-cluster-snapshot
 
 Output::
 

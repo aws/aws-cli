@@ -1,6 +1,6 @@
 **To list all MFA devices for a specified user**
 
-This example returns details about the MFA device assigned to the IAM user ``Bob``. ::
+The following ``list-mfa-devices`` example returns details about the MFA device assigned to the IAM user ``Bob``. ::
 
     aws iam list-mfa-devices \
         --user-name Bob

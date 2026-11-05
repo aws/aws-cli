@@ -7,6 +7,10 @@ The following ``stop-pipeline-execution`` example defaults to waiting until in-p
         --pipeline-execution-id d-EXAMPLE \
         --reason "Stopping pipeline after the build action is done"
 
-This command returns no output.
+Output::
+
+    {
+        "pipelineExecutionId": "d-EXAMPLE"
+    }
 
 For more information, see `Stop a pipeline execution (CLI) <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-stop.html#pipelines-stop-cli>`__ in the *AWS CodePipeline User Guide*.

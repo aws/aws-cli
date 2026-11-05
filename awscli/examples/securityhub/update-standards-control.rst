@@ -3,7 +3,7 @@
 The following ``update-standards-control`` example disables the PCI.AutoScaling.1 control. ::
 
     aws securityhub update-standards-control \
-        --standards-control-arn "arn:aws:securityhub:us-west-1:123456789012:control/pci-dss/v/3.2.1/PCI.AutoScaling.1" \
+        --standards-control-arn "arn:aws:securityhub:us-west-2:123456789012:control/pci-dss/v/3.2.1/PCI.AutoScaling.1" \
         --control-status "DISABLED" \
         --disabled-reason "Not applicable for my service"
 
@@ -14,7 +14,7 @@ This command produces no output.
 The following ``update-standards-control`` example enables the PCI.AutoScaling.1 control. ::
 
     aws securityhub update-standards-control \
-        --standards-control-arn "arn:aws:securityhub:us-west-1:123456789012:control/pci-dss/v/3.2.1/PCI.AutoScaling.1" \
+        --standards-control-arn "arn:aws:securityhub:us-west-2:123456789012:control/pci-dss/v/3.2.1/PCI.AutoScaling.1" \
         --control-status "ENABLED"
 
 This command produces no output.

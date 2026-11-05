@@ -3,7 +3,7 @@
 The following ``get-organizations-access-report`` example displays a previously generated access report for an AWS Organizations entity. To generate a report, use the ``generate-organizations-access-report`` command. ::
 
     aws iam get-organizations-access-report \
-        --job-id a8b6c06f-aaa4-8xmp-28bc-81da71836359
+        --job-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -18,8 +18,9 @@ Output::
                 "ServiceName": "Alexa for Business",
                 "ServiceNamespace": "a4b",
                 "TotalAuthenticatedEntities": 0
-            },
-            ...
+            }
+        ],
+        "IsTruncated": false
     }
 
 For more information, see `Refining permissions in AWS using last accessed information <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html>`__ in the *AWS IAM User Guide*.

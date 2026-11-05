@@ -1,6 +1,6 @@
 **To get information about a Profile association**
 
-The following ``get-profile-association`` returns information about the specified Profile association. ::
+The following ``get-profile-association`` example returns information about the specified Profile association. ::
 
     aws route53profiles get-profile-association \
         --profile-association-id rpassoc-489ce212fexample
@@ -20,3 +20,5 @@ Output::
             "StatusMessage": "Created Profile Association"
         }
     }
+
+For more information, see `Viewing VPCs associated to an Amazon Route 53 Profile <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles-vpcs-editing.html>`__ in the *Amazon Route 53 Developer Guide*.

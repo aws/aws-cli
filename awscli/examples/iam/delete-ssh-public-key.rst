@@ -1,6 +1,6 @@
 **To delete an SSH public keys attached to an IAM user**
 
-The following ``delete-ssh-public-key`` command deletes the specified SSH public key attached to the IAM user ``sofia``. ::
+The following ``delete-ssh-public-key`` example deletes the specified SSH public key attached to the IAM user ``sofia``. ::
 
     aws iam delete-ssh-public-key \
         --user-name sofia \

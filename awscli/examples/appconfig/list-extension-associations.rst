@@ -1,9 +1,8 @@
 **To list all AWS AppConfig extension associations in your AWS account for an AWS Region**
 
-The following ``list-extension-associations`` example lists all AWS AppConfig extension associations for the current AWS account in a specific AWS Region. ::
+The following ``list-extension-associations`` example lists all AWS AppConfig extension associations for the current AWS account in the current AWS Region. ::
 
-    aws appconfig list-extension-associations \
-        --region us-west-2 
+    aws appconfig list-extension-associations
 
 Output::
 

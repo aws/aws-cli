@@ -5,12 +5,12 @@ The following ``get-public-key`` example downloads the public key of an asymmetr
 In addition to returning the public key, the output includes information that you need to use the public key safely outside of AWS KMS, including the key usage and supported encryption algorithms. ::
 
     aws kms get-public-key \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
     {
-        "KeyId": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyId": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "PublicKey": "jANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAl5epvg1/QtJhxSi2g9SDEVg8QV/...",
         "CustomerMasterKeySpec": "RSA_4096",
         "KeyUsage": "ENCRYPT_DECRYPT",
@@ -30,7 +30,7 @@ When you use the ``get-public-key`` command in the AWS CLI, it returns a DER-enc
 Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 
     aws kms get-public-key \
-        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --output text \
         --query PublicKey | base64 --decode > public_key.der
 

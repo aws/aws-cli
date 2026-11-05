@@ -22,7 +22,7 @@ Output::
         },
         "target": {
             "findingIds": [
-                "ef4826b8-e55a-44b9-b460-5c485355371b"
+                "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
             ]
         },
         "auditCheckToActionsMapping": {
@@ -33,7 +33,7 @@ Output::
         "actionsDefinition": [
             {
                 "name": "ResetPolicyVersionAction",
-                "id": "1ea0b415-bef1-4a01-bd13-72fb63c59afb",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "roleArn": "arn:aws:iam::123456789012:role/service-role/ReplacePolicyVersionRole",
                 "actionParams": {
                     "replaceDefaultPolicyVersionParams": {
@@ -44,4 +44,4 @@ Output::
         ]
     }
 
-For more information, see `DescribeAuditMitigationActionsTask (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html#dd-api-iot-DescribeAuditMitigationActionsTask>`__ in the *AWS IoT Developer Guide*.
+For more information, see `DescribeAuditMitigationActionsTask (Mitigation Action Commands) <https://docs.aws.amazon.com/iot/latest/developerguide/mitigation-action-commands.html>`__ in the *AWS IoT Developer Guide*.

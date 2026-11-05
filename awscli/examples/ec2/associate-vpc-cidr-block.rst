@@ -1,6 +1,6 @@
 **Example 1: To associate an Amazon-provided IPv6 CIDR block with a VPC**
 
-The following ``associate-vpc-cidr-block`` example associates an IPv6 CIDR block with the specified VPC.::
+The following ``associate-vpc-cidr-block`` example associates an IPv6 CIDR block with the specified VPC. ::
 
     aws ec2 associate-vpc-cidr-block \
         --amazon-provided-ipv6-cidr-block \
@@ -20,7 +20,9 @@ Output::
         "VpcId": "vpc-8EXAMPLE"
     }
 
-**Example 2:To associate an additional IPv4 CIDR block with a VPC**
+For more information, see `Add or remove a CIDR block from your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/add-ipv4-cidr.html>`__ in the *Amazon VPC User Guide*.
+
+**Example 2: To associate an additional IPv4 CIDR block with a VPC**
 
 The following ``associate-vpc-cidr-block`` example associates the IPv4 CIDR block ``10.2.0.0/16`` with the specified VPC. ::
 
@@ -40,3 +42,5 @@ Output::
         }, 
         "VpcId": "vpc-1EXAMPLE"
     }
+
+For more information, see `Add or remove a CIDR block from your VPC <https://docs.aws.amazon.com/vpc/latest/userguide/add-ipv4-cidr.html>`__ in the *Amazon VPC User Guide*.

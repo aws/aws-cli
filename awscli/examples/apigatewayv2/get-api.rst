@@ -19,3 +19,5 @@ Output::
             "department": "finance"
         }
     }
+
+For more information, see `Develop HTTP APIs in API Gateway <https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html>`__ in the *Amazon API Gateway Developer Guide*.

@@ -3,7 +3,7 @@
 The following ``create-client-vpn-route`` example adds a route to the internet (``0.0.0.0/0``) for the specified subnet of the Client VPN endpoint. ::
 
     aws ec2 create-client-vpn-route \
-        --client-vpn-endpoint-id cvpn-endpoint-123456789123abcde \
+        --client-vpn-endpoint-id cvpn-endpoint-123456789012abcde \
         --destination-cidr-block 0.0.0.0/0  \
         --target-vpc-subnet-id subnet-0123456789abcabca
 

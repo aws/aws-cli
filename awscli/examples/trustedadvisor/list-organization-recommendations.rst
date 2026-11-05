@@ -9,13 +9,13 @@ Output::
     {
         "organizationRecommendationSummaries": [
             {
-                "arn": "arn:aws:trustedadvisor:::organization-recommendation/9534ec9b-bf3a-44e8-8213-2ed68b39d9d5",
+                "arn": "arn:aws:trustedadvisor:::organization-recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "name": "Lambda Runtime Deprecation Warning",
                 "awsServices": [
                     "lambda"
                 ],
                 "checkArn": "arn:aws:trustedadvisor:::check/L4dfs2Q4C5",
-                "id": "9534ec9b-bf3a-44e8-8213-2ed68b39d9d5",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "lifecycleStage": "resolved",
                 "pillars": [
                     "security"
@@ -30,13 +30,13 @@ Output::
                 "type": "priority"
             },
             {
-                "arn": "arn:aws:trustedadvisor:::organization-recommendation/4ecff4d4-1bc1-4c99-a5b8-0fff9ee500d6",
+                "arn": "arn:aws:trustedadvisor:::organization-recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "name": "Lambda Runtime Deprecation Warning",
                 "awsServices": [
                     "lambda"
                 ],
                 "checkArn": "arn:aws:trustedadvisor:::check/L4dfs2Q4C5",
-                "id": "4ecff4d4-1bc1-4c99-a5b8-0fff9ee500d6",
+                "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
                 "lifecycleStage": "resolved",
                 "pillars": [
                     "security"
@@ -49,7 +49,7 @@ Output::
                 "source": "ta_check",
                 "status": "warning",
                 "type": "priority"
-            },
+            }
         ],
         "nextToken": "REDACTED"
     }
@@ -68,13 +68,13 @@ Output::
 
     {
         "organizationRecommendationSummaries": [{
-            "arn": "arn:aws:trustedadvisor:::organization-recommendation/9534ec9b-bf3a-44e8-8213-2ed68b39d9d5",
+            "arn": "arn:aws:trustedadvisor:::organization-recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "name": "Lambda Runtime Deprecation Warning",
             "awsServices": [
                 "lambda"
             ],
             "checkArn": "arn:aws:trustedadvisor:::check/L4dfs2Q4C5",
-            "id": "9534ec9b-bf3a-44e8-8213-2ed68b39d9d5",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "lifecycleStage": "resolved",
             "pillars": [
                 "security"
@@ -106,13 +106,13 @@ Output::
 
     {
         "organizationRecommendationSummaries": [{
-            "arn": "arn:aws:trustedadvisor:::organization-recommendation/4ecff4d4-1bc1-4c99-a5b8-0fff9ee500d6",
+            "arn": "arn:aws:trustedadvisor:::organization-recommendation/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "name": "Lambda Runtime Deprecation Warning",
             "awsServices": [
                 "lambda"
             ],
             "checkArn": "arn:aws:trustedadvisor:::check/L4dfs2Q4C5",
-            "id": "4ecff4d4-1bc1-4c99-a5b8-0fff9ee500d6",
+            "id": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
             "lifecycleStage": "resolved",
             "pillars": [
                 "security"

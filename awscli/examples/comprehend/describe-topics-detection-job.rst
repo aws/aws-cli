@@ -10,19 +10,19 @@ Output::
     {
         "TopicsDetectionJobProperties": {
             "JobId": "123456abcdeb0e11022f22a11EXAMPLE",
-            "JobArn": "arn:aws:comprehend:us-west-2:111122223333:topics-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
+            "JobArn": "arn:aws:comprehend:us-west-2:123456789012:topics-detection-job/123456abcdeb0e11022f22a11EXAMPLE",
             "JobName": "example_topics_detection",
             "JobStatus": "IN_PROGRESS",
             "SubmitTime": "2023-06-09T18:44:43.414000+00:00",
             "InputDataConfig": {
-                "S3Uri": "s3://amzn-s3-demo-bucket",
+                "S3Uri": "s3://amzn-s3-demo-bucket1",
                 "InputFormat": "ONE_DOC_PER_LINE"
             },
             "OutputDataConfig": {
-                "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/111122223333-TOPICS-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
+                "S3Uri": "s3://amzn-s3-demo-bucket2/testfolder/123456789012-TOPICS-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
             },
             "NumberOfTopics": 10,
-            "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-examplerole"
+            "DataAccessRoleArn": "arn:aws:iam::123456789012:role/service-role/AmazonComprehendServiceRole-examplerole"
         }
     }
 

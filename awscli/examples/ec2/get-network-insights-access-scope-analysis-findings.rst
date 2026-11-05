@@ -3,9 +3,7 @@
 The following ``get-network-insights-access-scope-analysis-findings`` example gets the selected scope analysis findings in your AWS account. ::
 
     aws ec2 get-network-insights-access-scope-analysis-findings \
-        --region us-east-1 \
-        --network-insights-access-scope-analysis-id nis \
-        --nis-123456789111 
+        --network-insights-access-scope-analysis-id nisa-123456789222
 
 Output::
 
@@ -20,7 +18,7 @@ Output::
                         "SequenceNumber": 1,
                         "Component": {
                             "Id": "eni-02e3d42d5cceca67d",
-                            "Arn": "arn:aws:ec2:us-east-1:936459623503:network-interface/eni-02e3d32d9cceca17d"
+                            "Arn": "arn:aws:ec2:us-west-2:123456789012:network-interface/eni-02e3d32d9cceca17d"
                         },
                         "OutboundHeader": {
                             "DestinationAddresses": [
@@ -31,7 +29,7 @@ Output::
                                 "16.0.0.0/4",
                                 "160.0.0.0/5",
                                 "168.0.0.0/6",
-                                "172.0.0.0/12"
+                                "172.0.0.0/12",
                                 "8.0.0.0/7"
                             ],
                             "DestinationPortRanges": [
@@ -50,9 +48,9 @@ Output::
                                     "To": 65535
                                 }
                             ]
-                        }, [etc]
-                    ]
-                }
+                        }
+                    }
+                ]
             }
         ]
     }

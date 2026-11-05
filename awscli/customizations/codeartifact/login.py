@@ -478,7 +478,7 @@ class NpmLogin(BaseLogin):
     @classmethod
     def get_scope(cls, namespace):
         # Regex for valid scope name
-        valid_scope_name = re.compile('^(@[a-z0-9-~][a-z0-9-._~]*)')
+        valid_scope_name = re.compile(r'\A@[a-z0-9-~][a-z0-9-._~]*\Z')
 
         if namespace is None:
             return namespace

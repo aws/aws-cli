@@ -1353,6 +1353,39 @@ class TestArtifactExporter(unittest.TestCase):
                 os.remove(zipfile_name)
             test_file_creator.remove_all()
 
+    def test_make_zip_skips_symlinked_directory_outside_root(self):
+        with tempfile.TemporaryDirectory() as rootdir:
+            source_root = os.path.join(rootdir, 'source')
+            outside_root = os.path.join(rootdir, 'outside')
+            os.mkdir(source_root)
+            os.mkdir(outside_root)
+            with open(os.path.join(source_root, 'index.js'), 'w') as f:
+                f.write('exports.handler = () => {};')
+            with open(os.path.join(outside_root, 'secret.txt'), 'w') as f:
+                f.write('secret')
+            try:
+                os.symlink(
+                    outside_root,
+                    os.path.join(source_root, 'linked-outside'),
+                    target_is_directory=True,
+                )
+                os.symlink(
+                    os.path.join(outside_root, 'secret.txt'),
+                    os.path.join(source_root, 'secret-link.txt'),
+                )
+            except (AttributeError, NotImplementedError, OSError) as e:
+                pytest.skip('Symlink creation is not available: %s' % e)
+
+            outfile = os.path.join(rootdir, 'artifact')
+            zipfile_name = make_zip(outfile, source_root)
+            try:
+                with closing(zipfile.ZipFile(zipfile_name, 'r')) as zf:
+                    files_in_zip = {info.filename for info in zf.infolist()}
+
+                self.assertEqual(files_in_zip, {'index.js'})
+            finally:
+                os.remove(zipfile_name)
+
     @mock.patch("shutil.copy")
     @mock.patch("tempfile.mkdtemp")
     def test_copy_to_temp_dir(self, mkdtemp_mock, copyfile_mock):

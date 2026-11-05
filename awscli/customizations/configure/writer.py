@@ -227,6 +227,16 @@ class ConfigFileWriter:
 
     def _update_subattributes(self, index, contents, values, starting_indent):
         index += 1
+        # ``current_indent`` is only assigned for lines that parse as an
+        # option, and ``i`` is only assigned if the loop below runs at all.
+        # Comments, blank lines, or a nested key with nothing after it would
+        # otherwise leave them unbound.  ``None`` never compares equal to
+        # ``starting_indent``, which keeps non-option lines from being
+        # mistaken for the end of the nested block, and seeding ``i`` with
+        # the nested key's own line means values are appended directly after
+        # it when there is nothing following.
+        current_indent = None
+        i = index - 1
         for i in range(index, len(contents)):
             line = contents[i]
             match = self.OPTION_REGEX.search(line)

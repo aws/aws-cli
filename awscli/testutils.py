@@ -77,6 +77,23 @@ def skip_if_windows(reason):
     return decorator
 
 
+def if_windows(reason):
+    """Decorator to skip tests should only be ran for windows.
+
+    Example usage:
+
+        @if_windows("Only supported on windows")
+        def test_some_windows_stuff(self):
+            self.assertEqual(...)
+
+    """
+
+    def decorator(func):
+        return unittest.skipIf(platform.system() != 'Windows', reason)(func)
+
+    return decorator
+
+
 def skip_if_case_sensitive():
     def decorator(func):
         return unittest.skipIf(

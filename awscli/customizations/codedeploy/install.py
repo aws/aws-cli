@@ -13,12 +13,15 @@
 
 import errno
 import os
-import shutil
 import sys
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import \
     validate_region, validate_s3_location, validate_instance
+
+# Open the config file in binary mode on Windows so its contents are
+# written byte-for-byte, without newline translation.
+_O_BINARY = getattr(os, 'O_BINARY', 0)
 
 
 class Install(BasicCommand):
@@ -111,7 +114,16 @@ class Install(BasicCommand):
             if e.errno != errno.EEXIST:
                 raise e
         if params.config_file != params.system.CONFIG_PATH:
-            shutil.copyfile(params.config_file, params.system.CONFIG_PATH)
+            with open(params.config_file, 'rb') as f:
+                contents = f.read()
+            fd = os.open(
+                params.system.CONFIG_PATH,
+                os.O_WRONLY | os.O_CREAT | os.O_TRUNC | _O_BINARY,
+                0o600,
+            )
+            with os.fdopen(fd, 'wb') as f:
+                os.chmod(params.system.CONFIG_PATH, 0o600)
+                f.write(contents)
         sys.stdout.write('DONE\n')
 
     def _install_agent(self, params):

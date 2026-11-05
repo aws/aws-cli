@@ -2,10 +2,18 @@
 CHANGELOG
 =========
 
+1.46.3
+======
+
+* bugfix:alias: Pass Windows external alias args to cmd.exe as literals
+* bugfix:codedeploy: Tighten file permissions for the on-premises instance configuration file written by ``aws deploy install``
+
+
 1.46.2
 ======
 
 * bugfix:``credentials``: Include the web identity token in the credential cache key to prevent collisions across different tokens for the same role.
+* bugfix:TLS: Removes the ``AAA Certificate Services`` root from the vendored CA bundle in response to the eMudhra/emSign CA incident. Sectigo used this root to cross-sign eMudhra intermediate CAs whose private keys were compromised. See `#10790 <https://github.com/aws/aws-cli/pull/10790>`__.
 
 
 1.46.1

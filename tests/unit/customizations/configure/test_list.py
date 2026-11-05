@@ -129,3 +129,48 @@ class TestConfigureListCommand(unittest.TestCase):
         rendered = stream.getvalue()
         self.assertRegex(
             rendered, r'profile\s+foo\s+manual\s+--profile')
+
+    def test_region_resolved_before_credentials(self):
+        class CredentialMutatingSession(FakeSession):
+            def get_credentials(self):
+                # Simulate credential resolution mutating config state (e.g.
+                # source profile traversal) after region has already been
+                # captured for display.
+                self.config_file_vars['region'] = 'us-west-1'
+                credentials = mock.Mock()
+                credentials.access_key = 'access_key'
+                credentials.secret_key = 'secret_key'
+                credentials.method = 'iam-role'
+                return credentials
+
+        session = CredentialMutatingSession(
+            all_variables={'config_file': '/config/location'},
+            config_file_vars={'region': 'us-east-1'})
+        session.session_var_map = {
+            'region': ('region', 'AWS_DEFAULT_REGION'),
+            'access_key': ('aws_access_key_id', 'AWS_ACCESS_KEY_ID'),
+            'secret_key': ('aws_secret_access_key', 'AWS_SECRET_ACCESS_KEY'),
+        }
+        session.full_config = {'profiles': {'default': {}}}
+        stream = StringIO()
+        self.configure_list = ConfigureListCommand(session, stream)
+        self.configure_list(args=[], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertRegex(
+            rendered, r'region\s+us-east-1\s+config-file\s+/config/location')
+
+    def test_region_from_aws_region_env_var(self):
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'},
+            environment_vars={'region': 'us-east-1'})
+        session.session_var_map = {
+            'region': ('region', ('AWS_DEFAULT_REGION', 'AWS_REGION')),
+        }
+        session.full_config = {'profiles': {'default': {}}}
+        stream = StringIO()
+        self.configure_list = ConfigureListCommand(session, stream)
+        with mock.patch.dict('os.environ', {'AWS_REGION': 'us-east-1'},
+                             clear=True):
+            self.configure_list(args=[], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertRegex(rendered, r'region\s+us-east-1\s+env\s+AWS_REGION')

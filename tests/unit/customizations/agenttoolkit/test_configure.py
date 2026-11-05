@@ -867,3 +867,41 @@ def test_auto_update_off_removes_hook_from_kiro_agents(tmp_path, state_file):
     assert f'  ✓ Kiro — {_collapse(agent_file)}: hook removed\n' in (
         stream.getvalue()
     )
+
+
+@pytest.mark.parametrize('yes', [True, False])
+def test_no_auto_update_flag_removes_hooks(tmp_path, state_file, yes):
+    configs = _hook_agent_configs(tmp_path, ['claude-code', 'kiro'])
+    agent_file = _kiro_default_agent(tmp_path)
+    settings = _hook_file(tmp_path, 'claude-code')
+    settings.write_text(json.dumps({'theme': 'dark'}))
+    _run(configs, yes=True)
+    assert hook_command('claude-code') in settings.read_text()
+    assert hook_command('kiro') in agent_file.read_text()
+
+    prompts = []
+    _, stream = _run(
+        configs,
+        yes=yes,
+        yes_no_return=True,
+        no_auto_update=True,
+        prompts=prompts,
+    )
+    output = stream.getvalue()
+    assert _auto_update_prompts(prompts) == []
+    assert not state.is_auto_update_enabled()
+    assert json.loads(settings.read_text()) == {'theme': 'dark'}
+    assert json.loads(agent_file.read_text()) == {'name': 'my-agent'}
+    assert not _hook_file(tmp_path, 'kiro').exists()
+    assert f'  ✓ Claude-Code — {_collapse(settings)}: hook removed\n' in output
+    assert f'  ✓ Kiro — {_collapse(agent_file)}: hook removed\n' in output
+    assert 'hook installed' not in output
+
+
+def test_no_auto_update_flag_without_hooks_prints_nothing(
+    tmp_path, state_file
+):
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    _, stream = _run(configs, yes=True, no_auto_update=True)
+    assert 'hook' not in stream.getvalue()
+    assert not _hook_file(tmp_path, 'claude-code').exists()

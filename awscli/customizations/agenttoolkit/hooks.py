@@ -289,7 +289,18 @@ def remove_kiro_agent_hooks(agent):
     """Remove the hook from every Kiro agent config that has it."""
     results = []
     for path in _kiro_agent_paths(agent):
-        if not _mentions_hook(path):
+        # A file that can't be read doesn't stop the other agents from being
+        # cleaned up.
+        try:
+            if not _mentions_hook(path):
+                continue
+        except FileNotFoundError:
+            # A dangling symlink can't hold the hook.
+            continue
+        except OSError:
+            # Directories raise PermissionError on Windows.
+            if not os.path.isdir(path):
+                results.append((HookAction.UNREADABLE, path))
             continue
         try:
             _, data = _read_json(path)

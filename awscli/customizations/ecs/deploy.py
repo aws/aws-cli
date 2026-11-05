@@ -449,7 +449,7 @@ class ECSClient:
     def get_service_details(self):
         cluster = self._args.cluster
 
-        if cluster is None or '':
+        if not cluster:
             cluster = 'default'
 
         try:

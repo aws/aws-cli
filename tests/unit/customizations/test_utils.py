@@ -267,3 +267,4 @@ class TestGetPolicyARNSuffix(unittest.TestCase):
         self.assertEqual("aws", utils.get_policy_arn_suffix("us-east-1"))
         self.assertEqual("aws", utils.get_policy_arn_suffix("sa-east-1"))
         self.assertEqual("aws", utils.get_policy_arn_suffix("ap-south-1"))
+        self.assertEqual("aws-eusc", utils.get_policy_arn_suffix("eusc-de-east-1"))

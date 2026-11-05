@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import shutil
 import sys
 
+from awscli.customizations.agenttoolkit import atomic
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     universal_first,
@@ -22,6 +22,7 @@ from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
     SKILL_NAME_ARG,
     resolve_agents,
+    skills_lock,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
@@ -69,10 +70,29 @@ class RemoveCommand(BasicCommand):
         ordered = universal_first(matches, get_id=lambda s: s.agent.config.id)
         for skill in ordered:
             skill_dir = os.path.dirname(skill.path)
-            if skill_dir in removed_paths:
+            # Resolve only the parent so a skills root shared by symlink is
+            # removed once, but a symlinked skill dir is not followed.
+            entry = os.path.join(
+                os.path.realpath(os.path.dirname(skill_dir)),
+                os.path.basename(skill_dir),
+            )
+            if entry in removed_paths:
                 continue
-            shutil.rmtree(skill_dir)
-            removed_paths.add(skill_dir)
+            with skills_lock(os.path.dirname(entry)):
+                # Delete any backup left by an interrupted update, or the
+                # next recovery would restore the removed skill.
+                atomic.recover(entry)
+                if not os.path.lexists(entry):
+                    # Another process removed it after it was listed.
+                    removed_paths.add(entry)
+                    continue
+                if os.path.islink(entry):
+                    # The target may be shared with other agents, so only
+                    # remove this agent's link to it.
+                    os.unlink(entry)
+                else:
+                    atomic.remove_dir(entry)
+            removed_paths.add(entry)
             self._stream.write(
                 f'Removed {skill.name} from {skill.agent.display_label}.\n'
             )

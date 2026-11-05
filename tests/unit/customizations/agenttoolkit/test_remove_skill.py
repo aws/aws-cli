@@ -11,17 +11,22 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import os
 from io import StringIO
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
+from awscli.customizations.agenttoolkit import atomic, utils
 from awscli.customizations.agenttoolkit.agents import SKILL_METADATA_FILENAME
 from awscli.customizations.agenttoolkit.remove_skill import RemoveCommand
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
     make_config,
     make_skill,
+    requires_symlinks,
+    skills_dir_entries,
+    unwritable_aws_cli_dir,
 )
 
 
@@ -186,3 +191,163 @@ def test_remove_invalid_client_rejected(tmp_path):
             configs,
             ['--skill-name', 'aws-serverless', '--agent', 'nonexistent'],
         )
+
+
+def test_remove_skill_recovers_hidden_skill_first(tmp_path):
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    os.rename(skill_dir, atomic._sibling(str(skill_dir), atomic._BACKUP))
+    rc, output = _run_remove(
+        [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+    )
+    assert rc == 0
+    assert 'Removed aws-s3' in output
+    assert skills_dir_entries(tmp_path / '.test-agent' / 'skills') == []
+
+
+def test_remove_skill_leaves_no_partial_directory(tmp_path):
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    skills = tmp_path / '.test-agent' / 'skills'
+    # Deletion is interrupted after the rename to the trash name.
+    with patch.object(atomic, '_remove_tree'):
+        rc, _ = _run_remove(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+        )
+    assert rc == 0
+    assert not (skills / 'aws-s3').exists()
+    [trash] = skills_dir_entries(skills)
+    assert trash.startswith('.aws-s3.aws-cli-trash-')
+    # The next command finishes the deletion.
+    with pytest.raises(ParamValidationError, match='not installed'):
+        _run_remove([make_config(tmp_path)], ['--skill-name', 'aws-s3'])
+    assert skills_dir_entries(skills) == []
+
+
+@requires_symlinks
+def test_remove_skill_from_skills_root_shared_by_symlink(tmp_path):
+    make_skill(tmp_path, '.agent-a', 'aws-s3')
+    (tmp_path / '.agent-b').mkdir()
+    (tmp_path / '.agent-b' / 'skills').symlink_to(
+        tmp_path / '.agent-a' / 'skills', target_is_directory=True
+    )
+    configs = [
+        make_config(
+            tmp_path,
+            id='a',
+            display_name='Agent A',
+            detection_path=str(tmp_path / '.agent-a'),
+        ),
+        make_config(
+            tmp_path,
+            id='b',
+            display_name='Agent B',
+            detection_path=str(tmp_path / '.agent-b'),
+        ),
+    ]
+    rc, output = _run_remove(configs, ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert output.count('Removed aws-s3') == 1
+    assert skills_dir_entries(tmp_path / '.agent-a' / 'skills') == []
+
+
+@requires_symlinks
+def test_remove_symlinked_skill_only_removes_link(tmp_path):
+    # The per-skill dir of agent B is a symlink to agent A's install, so
+    # removing it from agent B must not delete agent A's copy.
+    make_skill(tmp_path, '.agent-a', 'aws-s3')
+    target = tmp_path / '.agent-a' / 'skills' / 'aws-s3'
+    link = tmp_path / '.agent-b' / 'skills' / 'aws-s3'
+    link.parent.mkdir(parents=True)
+    link.symlink_to(target, target_is_directory=True)
+    configs = [
+        make_config(
+            tmp_path,
+            id='a',
+            display_name='Agent A',
+            detection_path=str(tmp_path / '.agent-a'),
+        ),
+        make_config(
+            tmp_path,
+            id='b',
+            display_name='Agent B',
+            detection_path=str(tmp_path / '.agent-b'),
+        ),
+    ]
+    rc, output = _run_remove(
+        configs, ['--skill-name', 'aws-s3', '--agent', 'b']
+    )
+    assert rc == 0
+    assert 'Removed aws-s3 from Agent B' in output
+    assert not os.path.lexists(link)
+    assert (target / 'SKILL.md').exists()
+
+
+def test_remove_skill_does_not_need_writable_aws_cli_dir(tmp_path):
+    make_skill(tmp_path, '.test-agent', 'aws-serverless')
+    with unwritable_aws_cli_dir(tmp_path):
+        rc, _ = _run_remove(
+            [make_config(tmp_path)], ['--skill-name', 'aws-serverless']
+        )
+    assert rc == 0
+    assert not (
+        tmp_path / '.test-agent' / 'skills' / 'aws-serverless'
+    ).exists()
+
+
+def test_remove_skill_deletes_leftover_backup(tmp_path):
+    # A backup left by an interrupted update must not be restored once the
+    # skill is removed.
+    make_skill(tmp_path, '.test-agent', 'aws-serverless')
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-serverless'
+    backup = atomic._sibling(str(skill_dir), atomic._BACKUP)
+    os.mkdir(backup)
+    with patch.object(utils, '_recover_interrupted_changes'):
+        rc, _ = _run_remove(
+            [make_config(tmp_path)], ['--skill-name', 'aws-serverless']
+        )
+    assert rc == 0
+    assert not os.path.exists(backup)
+    utils._recover_interrupted_changes(
+        [Mock(skills_path=str(skill_dir.parent))]
+    )
+    assert not skill_dir.exists()
+
+
+def test_remove_skill_locks_the_skills_directory(tmp_path):
+    make_skill(tmp_path, '.test-agent', 'aws-serverless')
+    skills = tmp_path / '.test-agent' / 'skills'
+    held = []
+
+    def remove_dir(path):
+        # Taking the lock again fails only if this process already holds it.
+        with pytest.raises(TimeoutError):
+            with utils.skills_lock(str(skills), timeout=0):
+                pass
+        held.append(path)
+        real_remove_dir(path)
+
+    real_remove_dir = atomic.remove_dir
+    with patch.object(atomic, 'remove_dir', side_effect=remove_dir):
+        rc, _ = _run_remove(
+            [make_config(tmp_path)], ['--skill-name', 'aws-serverless']
+        )
+    assert rc == 0
+    assert held == [os.path.join(os.path.realpath(skills), 'aws-serverless')]
+
+
+def test_remove_skill_already_removed_by_another_process(tmp_path):
+    make_skill(tmp_path, '.test-agent', 'aws-serverless')
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-serverless'
+    real_recover = atomic.recover
+
+    def recover(path):
+        # Another remove-skill finishes after this one listed the skill.
+        real_recover(path)
+        atomic.remove_dir(path)
+
+    with patch.object(atomic, 'recover', side_effect=recover):
+        rc, output = _run_remove(
+            [make_config(tmp_path)], ['--skill-name', 'aws-serverless']
+        )
+    assert rc == 0
+    assert not skill_dir.exists()

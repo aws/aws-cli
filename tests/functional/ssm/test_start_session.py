@@ -331,24 +331,15 @@ class TestSessionManager(BaseAWSCommandParamsTest):
     def test_start_session_when_get_plugin_version_fails(
         self, mock_check_output, mock_check_call
     ):
+        # The plugin is checked before the session is started: when it is
+        # not installed the command fails fast with the plugin-not-found
+        # error and no API calls are made.
         cmdline = 'ssm start-session --target instance-id'
         mock_check_output.side_effect = OSError(errno.ENOENT, 'some error')
-        self.parsed_responses = [
-            {
-                "SessionId": "session-id",
-                "TokenValue": "token-value",
-                "StreamUrl": "stream-url",
-            }
-        ]
-        self.run_cmd(cmdline, expected_rc=255)
-        self.assertEqual(self.operations_called[0][0].name,
-                         'StartSession')
-        self.assertEqual(self.operations_called[0][1],
-                         {'Target': 'instance-id'})
-        self.assertEqual(self.operations_called[1][0].name,
-                         'TerminateSession')
-        self.assertEqual(self.operations_called[1][1],
-                         {'SessionId': 'session-id'})
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self.assertEqual(self.operations_called, [])
+        self.assertIn('SessionManagerPlugin is not found', stderr)
+        mock_check_call.assert_not_called()
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):

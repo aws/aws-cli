@@ -137,10 +137,27 @@ class TableFormatter(FullyBufferedFormatter):
         if title is not None:
             self.table.new_section(title, indent_level=indent_level)
         if isinstance(current, list):
-            if isinstance(current[0], dict):
+            if all(isinstance(el, dict) for el in current):
                 self._build_sub_table_from_list(current, indent_level, title)
             else:
-                for item in current:
+                # The elements don't all share a shape, so a dict can't be
+                # rendered as a row alongside them.  Give it a section of
+                # its own, and start a new one for whatever follows it.
+                needs_new_section = False
+                for i, item in enumerate(current):
+                    if isinstance(item, dict):
+                        if i > 0:
+                            self.table.new_section(
+                                title, indent_level=indent_level
+                            )
+                        self._build_sub_table_from_dict(item, indent_level)
+                        needs_new_section = True
+                        continue
+                    if needs_new_section:
+                        self.table.new_section(
+                            title, indent_level=indent_level
+                        )
+                        needs_new_section = False
                     if self._scalar_type(item):
                         self.table.add_row([item])
                     elif all(self._scalar_type(el) for el in item):

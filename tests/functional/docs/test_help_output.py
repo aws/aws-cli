@@ -28,8 +28,10 @@ import pytest
 
 from awscli.alias import AliasLoader, register_alias_commands
 from awscli.clidriver import CLIOperationCaller
+from awscli.commands import CLICommand
 from awscli.compat import StringIO
 from awscli.customizations.configure.set import ConfigureSetCommand
+from awscli.lazy import LazyCommand
 from awscli.testutils import (
     BaseAWSHelpOutputTest,
     CapturedRenderer,
@@ -493,6 +495,117 @@ class TestHelpFlagOutput(BaseAWSHelpOutputTest):
                     rc = self.driver.main(args)
                 self.assertEqual(rc, 252)
                 self.assertIn(error, stderr.getvalue())
+
+
+class TestHelpFlagLazyCommands(BaseAWSHelpOutputTest):
+    # Lazy commands import their module only when the command runs or
+    # its help is rendered. --help must import the same modules as help.
+    def resolved_lazy_commands(self, args):
+        resolved = []
+        real_resolve = LazyCommand._resolve
+
+        def record(command):
+            if command._real is None:
+                resolved.append(command.name)
+            return real_resolve(command)
+
+        with mock.patch.object(
+            LazyCommand, '_resolve', autospec=True, side_effect=record
+        ):
+            create_clidriver().main(args)
+        return resolved
+
+    def test_help_flag_resolves_same_lazy_commands_as_help(self):
+        commands = [
+            [],
+            ['ec2'],
+            ['ec2', 'describe-instances'],
+            ['s3'],
+            ['s3', 'ls'],
+            ['configure', 'set'],
+        ]
+        for command in commands:
+            with self.subTest(command=command):
+                self.assertEqual(
+                    self.resolved_lazy_commands(command + ['--help']),
+                    self.resolved_lazy_commands(command + ['help']),
+                )
+
+    def test_service_help_flag_does_not_resolve_lazy_commands(self):
+        self.assertEqual(self.resolved_lazy_commands(['ec2', '--help']), [])
+
+    def test_lazy_command_help_flag_resolves_only_that_command(self):
+        self.assertEqual(
+            self.resolved_lazy_commands(['s3', 'ls', '--help']), ['s3']
+        )
+
+
+class FakePluginCommand(CLICommand):
+    """A plugin command that doesn't subclass BasicCommand."""
+
+    def __init__(self, name):
+        self._name = name
+        self._lineage = [self]
+        self.calls = []
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def lineage(self):
+        return self._lineage
+
+    @lineage.setter
+    def lineage(self, value):
+        self._lineage = value
+
+    def __call__(self, args, parsed_globals):
+        self.calls.append(args)
+        return 0
+
+
+class TestHelpFlagWithPlugins(BaseAWSHelpOutputTest):
+    # Plugin commands that don't subclass BasicCommand handle their own
+    # arguments, so they must still receive --help.
+    def add_plugin(self, event_name):
+        plugin = FakePluginCommand('myplugin')
+
+        def add_to_table(command_table, **kwargs):
+            command_table['myplugin'] = plugin
+
+        self.driver.session.register(event_name, add_to_table)
+        return plugin
+
+    def test_top_level_plugin_receives_help_flag(self):
+        plugin = self.add_plugin('building-command-table.main')
+        self.driver.main(['myplugin', '--foo', 'bar', '--help'])
+        self.assertEqual(plugin.calls, [['--foo', 'bar', '--help']])
+        self.assertEqual(self.renderer.rendered_contents, '')
+
+    def test_service_plugin_receives_help_flag(self):
+        plugin = self.add_plugin('building-command-table.ec2')
+        self.driver.main(['ec2', 'myplugin', '--help'])
+        self.assertEqual(plugin.calls, [['--help']])
+
+    def test_custom_command_plugin_receives_help_flag(self):
+        plugin = self.add_plugin('building-command-table.s3')
+        self.driver.main(['s3', 'myplugin', '--help'])
+        self.assertEqual(plugin.calls, [['--help']])
+
+    def test_plugin_receives_help_positional_unchanged(self):
+        plugin = self.add_plugin('building-command-table.main')
+        self.driver.main(['myplugin', 'help'])
+        self.assertEqual(plugin.calls, [['help']])
+
+    def test_plugin_args_unchanged_without_help_flag(self):
+        plugin = self.add_plugin('building-command-table.main')
+        self.driver.main(['myplugin', '--foo', 'bar'])
+        self.assertEqual(plugin.calls, [['--foo', 'bar']])
 
 
 class TestHelpFlagWithProfile(BaseAWSHelpOutputTest):

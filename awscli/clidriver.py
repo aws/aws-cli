@@ -52,7 +52,7 @@ from awscli.arguments import (
     ListArgument,
     UnknownArgumentError,
 )
-from awscli.commands import CLICommand
+from awscli.commands import CLICommand, call_command
 from awscli.compat import (
     default_pager,
     get_stderr_text_writer,
@@ -604,7 +604,7 @@ class CLIDriver:
             HISTORY_RECORDER.record('CLI_VERSION', self._cli_version(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             command = self._get_command(command_table, parsed_args)
-            return command(remaining, parsed_args)
+            return call_command(command, remaining, parsed_args)
         except BaseException as e:
             # when --version action executed default argparser prints out
             # version string and calls sys.exit(0)
@@ -683,6 +683,8 @@ class ServiceCommand(CLICommand):
 
     """
 
+    handles_help_flag = True
+
     def __init__(self, cli_name, session, service_name=None):
         # The cli_name is the name the user types, the name we show
         # in doc, etc.
@@ -759,7 +761,9 @@ class ServiceCommand(CLICommand):
         # The operation is only missing for "aws <service> --help",
         # which shows the same page as "aws <service> help".
         operation = parsed_args.operation or 'help'
-        return command_table[operation](remaining, parsed_globals)
+        return call_command(
+            command_table[operation], remaining, parsed_globals
+        )
 
     def _create_command_table(self):
         command_table = OrderedDict()
@@ -823,6 +827,7 @@ class ServiceOperation:
         'boolean': BooleanArgument,
     }
     DEFAULT_ARG_CLASS = CLIArgument
+    handles_help_flag = True
 
     def __init__(
         self, name, parent_name, operation_caller, operation_model, session
@@ -931,7 +936,9 @@ class ServiceOperation:
         )
         if maybe_parsed_subcommand is not None:
             new_args, subcommand_name = maybe_parsed_subcommand
-            return subcommand_table[subcommand_name](new_args, parsed_globals)
+            return call_command(
+                subcommand_table[subcommand_name], new_args, parsed_globals
+            )
         if getattr(parsed_globals, 'help', False):
             # Show help without parsing the operation's arguments, so
             # missing or invalid values can't prevent it and the

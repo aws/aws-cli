@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 import os
+import sys
 from unittest.mock import patch
 
 from awscli.customizations.agenttoolkit.agents import (
@@ -24,7 +25,7 @@ from awscli.customizations.agenttoolkit.agents import (
     get_detected_agents,
     get_detected_real_agents,
 )
-from awscli.testutils import skip_if_windows
+from awscli.testutils import if_windows, skip_if_windows
 from tests.unit.customizations.agenttoolkit.utils import (
     make_config,
     make_skill,
@@ -286,7 +287,7 @@ def test_configure_mcp_shell_command_runs_when_executable_present(tmp_path):
     assert action is McpConfigureAction.CONFIGURED
     assert detail == 'some-cli'
     run_mock.assert_called_once_with(
-        ['some-cli', 'mcp', 'add', 'aws-mcp'], check=True
+        ['/usr/local/bin/some-cli', 'mcp', 'add', 'aws-mcp'], check=True
     )
 
 
@@ -348,6 +349,33 @@ def test_agent_configs_sorted_alphabetically():
 
 def _get_agent_config(agent_id):
     return next(c for c in AGENT_CONFIGS if c.id == agent_id)
+
+
+@if_windows('Requires cmd.exe to run a .cmd file.')
+def test_codex_configure_mcp_runs_cmd_file_on_path(tmp_path, monkeypatch):
+    # npm installs Codex on Windows as codex.cmd, which is found on PATH
+    # through PATHEXT but cannot be started by its bare name.
+    codex_home = tmp_path / '.codex'
+    codex_home.mkdir()
+    monkeypatch.setenv('CODEX_HOME', str(codex_home))
+    bin_dir = tmp_path / 'bin'
+    bin_dir.mkdir()
+    args_path = tmp_path / 'args.json'
+    record_args = tmp_path / 'record_args.py'
+    record_args.write_text(
+        'import json, sys\n'
+        f'with open({str(args_path)!r}, "w") as f:\n'
+        '    json.dump(sys.argv[1:], f)\n'
+    )
+    (bin_dir / 'codex.cmd').write_text(
+        f'@"{sys.executable}" "{record_args}" %*\n'
+    )
+    monkeypatch.setenv('PATH', str(bin_dir))
+    codex = _get_agent_config('codex')
+    action, detail = codex.detect().configure_mcp_server()
+    assert action is McpConfigureAction.CONFIGURED
+    assert detail == 'codex'
+    assert json.loads(args_path.read_text()) == codex.mcp_shell_command[1:]
 
 
 def test_devin_config():

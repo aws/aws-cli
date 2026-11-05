@@ -2,7 +2,9 @@ import botocore.session
 
 from botocore.stub import Stubber
 from awscli.testutils import mock, unittest
-from awscli.customizations.cloudformation.deployer import Deployer, ChangeSetResult
+from awscli.customizations.cloudformation.deployer import (
+    ChangeSetResult, Deployer, _make_changeset_name
+)
 from awscli.customizations.cloudformation import exceptions
 
 
@@ -15,6 +17,14 @@ class TestDeployer(unittest.TestCase):
 
         self.changeset_prefix = "some-changeset-prefix"
         self.deployer = Deployer(client, self.changeset_prefix)
+
+    def test_make_changeset_name_uses_uuid(self):
+        uuid = "123e4567-e89b-12d3-a456-426614174000"
+        with mock.patch('awscli.customizations.cloudformation.deployer.uuid.uuid4',
+                        return_value=uuid):
+            self.assertEqual(
+                self.changeset_prefix + uuid,
+                _make_changeset_name(self.changeset_prefix))
 
     def test_has_stack_success(self):
         stack_name = "stack_name"

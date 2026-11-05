@@ -376,7 +376,7 @@ class HelpCommand:
 
     # Help commands render help already, so they don't need --help in
     # their arguments (see awscli.commands.call_command).
-    handles_help_flag = True
+    _HANDLES_HELP_FLAG = True
 
     def __init__(self, session, obj, command_table, arg_table):
         self.session = session

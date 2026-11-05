@@ -26,7 +26,7 @@ class LazyCommand(CLICommand):
     # Callers can't ask the real command whether it handles --help
     # without importing it. So this wrapper claims it, and __call__,
     # which imports the real command anyway, passes the decision on.
-    handles_help_flag = True
+    _HANDLES_HELP_FLAG = True
 
     def __init__(self, name, session, module_path, class_name):
         self._name = name

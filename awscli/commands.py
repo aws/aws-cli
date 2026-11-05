@@ -17,12 +17,12 @@ def call_command(command, args, parsed_globals):
 
     The main parser consumes ``--help`` as a global argument and sets
     ``parsed_globals.help``. Commands that check that value set
-    ``handles_help_flag = True``. Other commands, such as plugins and
+    ``_HANDLES_HELP_FLAG = True``. Other commands, such as plugins and
     external aliases, get ``--help`` added back to their arguments, as
     they received it before ``--help`` was a global argument.
     """
     if getattr(parsed_globals, 'help', False) and not getattr(
-        command, 'handles_help_flag', False
+        command, '_HANDLES_HELP_FLAG', False
     ):
         args = list(args) + ['--help']
     return command(args, parsed_globals)
@@ -36,9 +36,11 @@ class CLICommand:
 
     """
 
-    # Set to True if __call__ renders help when parsed_globals.help is
-    # set. Otherwise the command receives --help in its arguments.
-    handles_help_flag = False
+    # Internal to the CLI's command classes, which set it to True
+    # because their __call__ renders help when parsed_globals.help is
+    # set. Other commands, such as plugins, leave it unset and receive
+    # --help in their arguments.
+    _HANDLES_HELP_FLAG = False
 
     @property
     def name(self):

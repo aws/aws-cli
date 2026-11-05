@@ -98,13 +98,13 @@ class TestLazyCommandHelpFlag:
     def test_checking_help_flag_does_not_import(self, session):
         cmd = LazyCommand('cmd', session, 'some.module', 'MyCommand')
         with patch('importlib.import_module') as imp:
-            assert cmd.handles_help_flag
+            assert cmd._HANDLES_HELP_FLAG
         imp.assert_not_called()
 
     def test_passes_help_flag_to_real_command_that_needs_it(
         self, session, mock_module
     ):
-        mock_module.MyCommand.return_value.handles_help_flag = False
+        mock_module.MyCommand.return_value._HANDLES_HELP_FLAG = False
         cmd = LazyCommand('cmd', session, 'some.module', 'MyCommand')
         parsed_globals = Namespace(help=True)
         with patch('importlib.import_module', return_value=mock_module):
@@ -116,7 +116,7 @@ class TestLazyCommandHelpFlag:
     def test_does_not_pass_help_flag_to_real_command_that_handles_it(
         self, session, mock_module
     ):
-        mock_module.MyCommand.return_value.handles_help_flag = True
+        mock_module.MyCommand.return_value._HANDLES_HELP_FLAG = True
         cmd = LazyCommand('cmd', session, 'some.module', 'MyCommand')
         parsed_globals = Namespace(help=True)
         with patch('importlib.import_module', return_value=mock_module):

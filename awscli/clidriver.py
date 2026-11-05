@@ -683,7 +683,7 @@ class ServiceCommand(CLICommand):
 
     """
 
-    handles_help_flag = True
+    _HANDLES_HELP_FLAG = True
 
     def __init__(self, cli_name, session, service_name=None):
         # The cli_name is the name the user types, the name we show
@@ -827,7 +827,7 @@ class ServiceOperation:
         'boolean': BooleanArgument,
     }
     DEFAULT_ARG_CLASS = CLIArgument
-    handles_help_flag = True
+    _HANDLES_HELP_FLAG = True
 
     def __init__(
         self, name, parent_name, operation_caller, operation_model, session

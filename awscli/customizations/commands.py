@@ -55,7 +55,7 @@ class BasicCommand(CLICommand):
     """
 
     # __call__ renders this command's help when --help is given.
-    handles_help_flag = True
+    _HANDLES_HELP_FLAG = True
     # This is the name of your command, so if you want to
     # create an 'aws mycommand ...' command, the NAME would be
     # 'mycommand'

@@ -249,7 +249,7 @@ class BaseInternalAliasCommand(BaseAliasCommand):
     UNSUPPORTED_GLOBAL_PARAMETERS = ['debug', 'profile']
     # Internal aliases pass parsed_globals, including help, on to the
     # command they alias.
-    handles_help_flag = True
+    _HANDLES_HELP_FLAG = True
 
     def __init__(self, alias_name, alias_value, session):
         super(BaseInternalAliasCommand, self).__init__(alias_name, alias_value)

@@ -21,7 +21,7 @@ from awscli.commands import CLICommand, call_command
 class RecordingCommand(CLICommand):
     def __init__(self, handles_help_flag=None):
         if handles_help_flag is not None:
-            self.handles_help_flag = handles_help_flag
+            self._HANDLES_HELP_FLAG = handles_help_flag
         self.calls = []
 
     def __call__(self, args, parsed_globals):

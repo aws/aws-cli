@@ -42,6 +42,11 @@ def register_parse_global_args(cli):
         resolve_cli_connect_timeout,
         unique_id='resolve-cli-connect-timeout',
     )
+    cli.register(
+        'session-initialized',
+        resolve_apn_id,
+        unique_id='resolve-apn-id',
+    )
 
 
 def resolve_types(parsed_args, **kwargs):
@@ -133,3 +138,53 @@ def _update_default_client_config(session, arg_name, arg_value):
     if current_default_config is not None:
         new_default_config = current_default_config.merge(new_default_config)
     session.set_default_client_config(new_default_config)
+
+
+# Allowed characters for APN ID values: ASCII letters, digits,
+# underscore, and hyphen.  Simple set check avoids regex entirely.
+_APN_ID_ALLOWED_CHARS = frozenset(
+    'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' '0123456789' '_-'
+)
+
+
+def _is_valid_apn_id(value):
+    """Validate an APN ID value: 1-255 chars from the allowed set."""
+    if not value or len(value) > 255:
+        return False
+    return all(c in _APN_ID_ALLOWED_CHARS for c in value)
+
+
+def resolve_apn_id(parsed_args, session, **kwargs):
+    """Resolve the APN ID from CLI flag, env var, or config file.
+
+    Registered on 'session-initialized' so the profile is already set
+    and config file values are accessible.
+    """
+    apn_id = getattr(parsed_args, 'apn_id', None)
+    if apn_id is None:
+        apn_id = os.environ.get('AWS_APN_ID')
+    if apn_id is None:
+        try:
+            scoped_config = session.get_scoped_config()
+            apn_id = scoped_config.get('apn_id')
+        except Exception:
+            pass
+    if not apn_id:
+        return
+    if not _is_valid_apn_id(apn_id):
+        raise ParamValidationError(
+            "Bad value for --apn-id %r: must be 1-255 characters and may "
+            "only contain letters, digits, '_', and '-'." % apn_id
+        )
+    # Format defined by the AWS PRM onboarding guide:
+    # https://docs.aws.amazon.com/PRM/latest/aws-prm-onboarding-guide/user-agent-string.html
+    # The trailing '$' is a required end delimiter, not a regex anchor.
+    # The user provides the full identifier including the type prefix
+    # (e.g. "pc_PRODUCTCODE" or "ra_ATTRIBUTIONID").
+    marker = 'APN_1.1/%s$' % apn_id
+    existing = session.user_agent_extra or ''
+    if marker in existing.split():
+        return
+    session.user_agent_extra = (
+        '%s %s' % (existing, marker) if existing else marker
+    )

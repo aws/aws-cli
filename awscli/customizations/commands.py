@@ -17,7 +17,7 @@ from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.bcdoc import docevents
 from awscli.clidocs import OperationDocumentEventHandler
-from awscli.commands import CLICommand, call_command
+from awscli.commands import CLICommand, call_command, help_requested
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
@@ -162,7 +162,7 @@ class BasicCommand(CLICommand):
                 new_args,
                 parsed_globals,
             )
-        if getattr(parsed_globals, 'help', False):
+        if help_requested(parsed_globals):
             # Show help without parsing this command's arguments, so
             # missing or invalid values can't prevent it and the
             # command never runs.

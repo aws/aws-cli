@@ -15,7 +15,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from awscli.commands import CLICommand, call_command
+from awscli.commands import CLICommand, call_command, help_requested
 
 
 class RecordingCommand(CLICommand):
@@ -27,6 +27,24 @@ class RecordingCommand(CLICommand):
     def __call__(self, args, parsed_globals):
         self.calls.append(args)
         return 0
+
+
+class TestHelpRequested:
+    @pytest.mark.parametrize(
+        'parsed_globals, expected',
+        [
+            (Namespace(help=True), True),
+            (Namespace(help=False), False),
+            (Namespace(), False),
+            (None, False),
+            # A mock creates a truthy help attribute on access, but no
+            # one asked for help.
+            (Mock(), False),
+        ],
+        ids=['true', 'false', 'no-help-attribute', 'none', 'mock'],
+    )
+    def test_help_requested(self, parsed_globals, expected):
+        assert help_requested(parsed_globals) is expected
 
 
 class TestCallCommand:
@@ -56,6 +74,11 @@ class TestCallCommand:
         command = Mock(spec=['__call__'])
         call_command(command, [], Namespace(help=True))
         command.assert_called_once_with(['--help'], Namespace(help=True))
+
+    def test_mock_parsed_globals_does_not_add_help_flag(self):
+        command = RecordingCommand()
+        call_command(command, ['--foo'], Mock())
+        assert command.calls == [['--foo']]
 
     def test_does_not_modify_caller_args(self):
         command = RecordingCommand()

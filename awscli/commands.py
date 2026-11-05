@@ -12,6 +12,15 @@
 # language governing permissions and limitations under the License.
 
 
+def help_requested(parsed_globals):
+    """Return True if --help was given.
+
+    The main parser sets ``help`` to True or False. Anything else, such as
+    an attribute of a mock or another stand-in object, is not a request.
+    """
+    return getattr(parsed_globals, 'help', False) is True
+
+
 def call_command(command, args, parsed_globals):
     """Call a command, giving it ``--help`` if it needs it.
 
@@ -21,7 +30,7 @@ def call_command(command, args, parsed_globals):
     external aliases, get ``--help`` added back to their arguments, as
     they received it before ``--help`` was a global argument.
     """
-    if getattr(parsed_globals, 'help', False) and not getattr(
+    if help_requested(parsed_globals) and not getattr(
         command, '_HANDLES_HELP_FLAG', False
     ):
         args = list(args) + ['--help']

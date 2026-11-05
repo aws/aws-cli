@@ -52,7 +52,7 @@ from awscli.arguments import (
     ListArgument,
     UnknownArgumentError,
 )
-from awscli.commands import CLICommand, call_command
+from awscli.commands import CLICommand, call_command, help_requested
 from awscli.compat import (
     default_pager,
     get_stderr_text_writer,
@@ -619,7 +619,7 @@ class CLIDriver:
             )
 
     def _get_command(self, command_table, parsed_args):
-        if getattr(parsed_args, 'help', False) and parsed_args.command in (
+        if help_requested(parsed_args) and parsed_args.command in (
             None,
             'help',
         ):
@@ -754,7 +754,7 @@ class ServiceCommand(CLICommand):
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
         service_parser = self.create_parser(
-            help_mode=getattr(parsed_globals, 'help', False)
+            help_mode=help_requested(parsed_globals)
         )
         parsed_args, remaining = service_parser.parse_known_args(args)
         command_table = self._get_command_table()
@@ -939,7 +939,7 @@ class ServiceOperation:
             return call_command(
                 subcommand_table[subcommand_name], new_args, parsed_globals
             )
-        if getattr(parsed_globals, 'help', False):
+        if help_requested(parsed_globals):
             # Show help without parsing the operation's arguments, so
             # missing or invalid values can't prevent it and the
             # operation is never called.

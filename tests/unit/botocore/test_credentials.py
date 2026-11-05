@@ -3159,6 +3159,21 @@ class TestJSONCache(unittest.TestCase):
         self.cache['mykey'] = {'a': 'b'}
         self.assertEqual(self.cache['mykey'], {'a': 'b'})
 
+    @skip_if_windows('Cannot replace a file that is open on Windows.')
+    def test_write_does_not_modify_file_open_by_reader(self):
+        self.cache['mykey'] = {'foo': 'bar'}
+        filename = os.path.join(self.tempdir, 'mykey.json')
+        # A concurrent reader that opened the file before the write
+        # must still see the complete old contents, not a truncated file.
+        with open(filename) as reader:
+            self.cache['mykey'] = {'baz': 'qux'}
+            self.assertEqual(json.load(reader), {'foo': 'bar'})
+        self.assertEqual(self.cache['mykey'], {'baz': 'qux'})
+
+    def test_no_temp_files_left_after_write(self):
+        self.cache['mykey'] = {'foo': 'bar'}
+        self.assertEqual(os.listdir(self.tempdir), ['mykey.json'])
+
     @skip_if_windows('File permissions tests not supported on Windows.')
     def test_permissions_for_file_restricted(self):
         self.cache['mykey'] = {'foo': 'bar'}

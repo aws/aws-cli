@@ -25,6 +25,7 @@ import re
 import secrets
 import socket
 import string
+import tempfile
 import threading
 import time
 import uuid
@@ -4005,11 +4006,23 @@ class JSONFileCache:
             )
         if not os.path.isdir(self._working_dir):
             os.makedirs(self._working_dir, exist_ok=True)
-        with os.fdopen(
-            os.open(full_key, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
-        ) as f:
-            f.truncate()
-            f.write(file_content)
+        # Write to a temporary file and rename it over the cache entry so
+        # concurrent readers never see a partially written file.
+        temp_fd, temp_path = tempfile.mkstemp(
+            dir=self._working_dir, suffix='.tmp'
+        )
+        try:
+            with os.fdopen(temp_fd, 'w') as f:
+                f.write(file_content)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(temp_path, full_key)
+        except BaseException:
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
+            raise
 
     def _convert_cache_key(self, cache_key):
         full_path = os.path.join(self._working_dir, cache_key + '.json')

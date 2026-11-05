@@ -181,7 +181,9 @@ class TestGetOptionSuggestionCandidates(unittest.TestCase):
             'marker': hidden,
         }
         session = mock.Mock()
-        session.get_data.return_value = {'options': {'region': {}, 'debug': {}}}
+        session.get_data.return_value = {
+            'options': {'region': {}, 'debug': {}}
+        }
 
         candidates = get_option_suggestion_candidates(arg_table, session)
 

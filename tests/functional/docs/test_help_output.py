@@ -27,8 +27,8 @@ import os
 import pytest
 
 from awscli.alias import AliasLoader, register_alias_commands
-from awscli.compat import StringIO
 from awscli.clidriver import CLIOperationCaller
+from awscli.compat import StringIO
 from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.testutils import (
     BaseAWSHelpOutputTest,
@@ -318,9 +318,7 @@ class TestHelpFlagOutput(BaseAWSHelpOutputTest):
         )
         # Assert the operation-level title, not just a substring that
         # could also appear in the parent service's command listing.
-        self.assert_contains(
-            '*************\ndelete-object\n*************'
-        )
+        self.assert_contains('*************\ndelete-object\n*************')
 
     def test_help_flag_abbreviation(self):
         self.driver.main(['--hel'])
@@ -475,7 +473,9 @@ class TestHelpFlagOutput(BaseAWSHelpOutputTest):
         with mock.patch.object(
             ConfigureSetCommand, '_run_main', autospec=True, return_value=0
         ) as run_main:
-            rc = self.driver.main(['configure', 'set', 'test.key', '--', '--help'])
+            rc = self.driver.main(
+                ['configure', 'set', 'test.key', '--', '--help']
+            )
         self.assertEqual(rc, 0)
         parsed_args = run_main.call_args[0][1]
         self.assertEqual(parsed_args.value, '--help')
@@ -807,9 +807,7 @@ class TestAliases(BaseAWSHelpOutputTest):
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
-        self.event_emitter = self.driver.session.get_component(
-            'event_emitter'
-        )
+        self.event_emitter = self.driver.session.get_component('event_emitter')
         self.event_emitter.unregister(
             'building-command-table', unique_id='cli-alias-injector'
         )

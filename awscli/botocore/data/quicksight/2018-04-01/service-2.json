@@ -2559,6 +2559,23 @@
       ],
       "documentation":"<p>Provides a summary of a refresh schedule.</p>"
     },
+    "DescribeResourcePermissions":{
+      "name":"DescribeResourcePermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/account-resource-permissions"
+      },
+      "input":{"shape":"DescribeResourcePermissionsRequest"},
+      "output":{"shape":"DescribeResourcePermissionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes the service role configuration for your Amazon Quick Sight account.</p> <p>Call this operation in the Amazon Web Services Region where your Amazon Quick Sight account is registered (the home Region).</p>"
+    },
     "DescribeRoleCustomPermission":{
       "name":"DescribeRoleCustomPermission",
       "http":{
@@ -5273,6 +5290,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a refresh schedule for a dataset.</p>"
+    },
+    "UpdateResourcePermissions":{
+      "name":"UpdateResourcePermissions",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/account-resource-permissions"
+      },
+      "input":{"shape":"UpdateResourcePermissionsRequest"},
+      "output":{"shape":"UpdateResourcePermissionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the service role configuration that Amazon Quick Sight uses to access resources in your Amazon Web Services account. To use this operation, you must have the <code>quicksight:UpdateResourcePermissions</code> and <code>iam:PassRole</code> permissions.</p> <p>Call this operation in the Amazon Web Services Region where your Amazon Quick Sight account is registered (the home Region). You can switch from a role managed by Amazon Quick Sight to a customer-managed role, or replace one customer-managed role with another. You can't use this operation to switch back to a role managed by Amazon Quick Sight.</p>"
     },
     "UpdateRoleCustomPermission":{
       "name":"UpdateRoleCustomPermission",
@@ -24734,6 +24768,40 @@
         }
       }
     },
+    "DescribeResourcePermissionsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account whose service role configuration you want to describe.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DescribeResourcePermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "RoleType":{
+          "shape":"ServiceRoleType",
+          "documentation":"<p>The type of service role that Amazon Quick Sight uses for your account.</p>"
+        },
+        "CustomerManagedRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the customer-managed role that Amazon Quick Sight uses for your account. Amazon Quick Sight returns this value only when <code>RoleType</code> is <code>CUSTOMER_MANAGED</code>.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DescribeRoleCustomPermissionRequest":{
       "type":"structure",
       "required":[
@@ -37262,7 +37330,7 @@
       "members":{
         "KmsKeyArn":{
           "shape":"DataSourceKmsKeyArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used to encrypt the OneDrive certificate credentials. This field is required.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Key Management Service (KMS) key used to encrypt the OneDrive certificate credentials. This field is required.</p>"
         },
         "CertThumbprint":{
           "shape":"DataSourceCertThumbprint",
@@ -43029,6 +43097,14 @@
       },
       "documentation":"<p>The parameters for ServiceNow.</p>"
     },
+    "ServiceRoleType":{
+      "type":"string",
+      "documentation":"<p>The type of service role that Amazon Quick Sight uses to access resources in an Amazon Web Services account. Valid values:</p> <ul> <li> <p> <code>QUICKSIGHT_MANAGED</code>: Amazon Quick Sight manages the role.</p> </li> <li> <p> <code>CUSTOMER_MANAGED</code>: You manage the role and its permissions.</p> </li> </ul>",
+      "enum":[
+        "QUICKSIGHT_MANAGED",
+        "CUSTOMER_MANAGED"
+      ]
+    },
     "ServiceType":{
       "type":"string",
       "enum":[
@@ -43138,7 +43214,7 @@
       "members":{
         "KmsKeyArn":{
           "shape":"DataSourceKmsKeyArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used to encrypt the SharePoint certificate credentials. This field is required.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Key Management Service (KMS) key used to encrypt the SharePoint certificate credentials. This field is required.</p>"
         },
         "CertThumbprint":{
           "shape":"DataSourceCertThumbprint",
@@ -51800,6 +51876,52 @@
       "type":"list",
       "member":{"shape":"ResourcePermission"},
       "max":100
+    },
+    "UpdateResourcePermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "RoleType",
+        "CustomerManagedRoleArn"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account whose service role configuration you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "RoleType":{
+          "shape":"ServiceRoleType",
+          "documentation":"<p>The type of service role that you want Amazon Quick Sight to use. The only supported value for this operation is <code>CUSTOMER_MANAGED</code>. Requests that specify <code>QUICKSIGHT_MANAGED</code> are rejected.</p>"
+        },
+        "CustomerManagedRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the customer-managed role that you want Amazon Quick Sight to use. To use this operation, you must have the <code>iam:PassRole</code> permission for the role.</p> <p>Configure the role as follows:</p> <ul> <li> <p>The role must belong to the Amazon Web Services account specified by <code>AwsAccountId</code>.</p> </li> <li> <p>Configure the role trust policy to allow the Amazon Quick Sight service principal to call <code>sts:AssumeRole</code>.</p> </li> <li> <p>Attach a permissions policy that allows access to the resources that you want Amazon Quick Sight to use.</p> </li> <li> <p>To use features that rely on session tags, configure the role trust policy to allow the Amazon Quick Sight service principal to call <code>sts:TagSession</code>.</p> </li> </ul> <p>If the role doesn't exist or its trust policy doesn't allow <code>sts:AssumeRole</code>, the request returns an <code>AccessDeniedException</code>.</p> <p>When you call this operation, Amazon Quick Sight attempts to assume the role with session tags and records whether the attempt succeeds. If you later add or remove <code>sts:TagSession</code> from the trust policy, call this operation again with the same role ARN to refresh the stored capability.</p>"
+        }
+      }
+    },
+    "UpdateResourcePermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "RoleType":{
+          "shape":"ServiceRoleType",
+          "documentation":"<p>The type of service role that Amazon Quick Sight uses for your account after the update. This value is <code>CUSTOMER_MANAGED</code>.</p>"
+        },
+        "CustomerManagedRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the customer-managed role that Amazon Quick Sight uses for your account after the update.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
     },
     "UpdateRoleCustomPermissionRequest":{
       "type":"structure",

@@ -406,7 +406,7 @@
       },
       "input":{"shape":"CreateMembershipRequest"},
       "output":{"shape":"CreateMembershipResponse"},
-      "documentation":"<p>Creates a new membership, granting a user access to an agent space within an application.</p>"
+      "documentation":"<p>Creates a new membership, granting a user or group access to an agent space within an application.</p>"
     },
     "CreatePentest":{
       "name":"CreatePentest",
@@ -560,7 +560,7 @@
       },
       "input":{"shape":"DeleteMembershipRequest"},
       "output":{"shape":"DeleteMembershipResponse"},
-      "documentation":"<p>Deletes a membership, revoking a user's access to an agent space.</p>"
+      "documentation":"<p>Deletes a membership, revoking a user's or group's access to an agent space.</p>"
     },
     "DeletePrivateConnection":{
       "name":"DeletePrivateConnection",
@@ -3988,7 +3988,7 @@
         },
         "memberType":{
           "shape":"MembershipType",
-          "documentation":"<p>The type of member. Currently, only USER is supported.</p>"
+          "documentation":"<p>The type of member. Use USER for an individual user or GROUP for an IAM Identity Center group. All members of a group have access to the agent space.</p>"
         },
         "config":{
           "shape":"MembershipConfig",
@@ -5747,6 +5747,20 @@
         "GROUP"
       ]
     },
+    "GroupMetadata":{
+      "type":"structure",
+      "members":{
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the group.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the group.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about an IAM Identity Center group member, including the group display name and description.</p>"
+    },
     "HostAddress":{
       "type":"string",
       "documentation":"<p>The IP address or DNS name of a target resource.</p>"
@@ -7260,6 +7274,10 @@
         "user":{
           "shape":"UserMetadata",
           "documentation":"<p>The user metadata for the member.</p>"
+        },
+        "group":{
+          "shape":"GroupMetadata",
+          "documentation":"<p>The group metadata for the member.</p>"
         }
       },
       "documentation":"<p>Contains metadata about a member. This is a union type that contains member-type-specific metadata.</p>",
@@ -7344,13 +7362,17 @@
     "MembershipType":{
       "type":"string",
       "documentation":"<p>Type of membership.</p>",
-      "enum":["USER"]
+      "enum":[
+        "USER",
+        "GROUP"
+      ]
     },
     "MembershipTypeFilter":{
       "type":"string",
       "documentation":"<p>Filter for member type in list operations.</p>",
       "enum":[
         "USER",
+        "GROUP",
         "ALL"
       ]
     },

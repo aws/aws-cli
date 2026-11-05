@@ -2576,6 +2576,24 @@
       ],
       "documentation":"<p>Retrieves metadata for all runs of a given job definition.</p> <p> <code>GetJobRuns</code> returns the job runs in chronological order, with the newest jobs returned first.</p>"
     },
+    "GetJobUpgradeAnalysis":{
+      "name":"GetJobUpgradeAnalysis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetJobUpgradeAnalysisRequest"},
+      "output":{"shape":"GetJobUpgradeAnalysisResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the current status and results of an upgrade analysis.</p>",
+      "readonly":true
+    },
     "GetJobs":{
       "name":"GetJobs",
       "http":{
@@ -4393,6 +4411,25 @@
       ],
       "documentation":"<p>Starts a job run using a job definition.</p>"
     },
+    "StartJobUpgradeAnalysis":{
+      "name":"StartJobUpgradeAnalysis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartJobUpgradeAnalysisRequest"},
+      "output":{"shape":"StartJobUpgradeAnalysisResponse"},
+      "errors":[
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ValidationException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Resumes an analysis that is waiting for upgrade consent.</p>"
+    },
     "StartMLEvaluationTaskRun":{
       "name":"StartMLEvaluationTaskRun",
       "http":{
@@ -4544,6 +4581,24 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Sets the schedule state of the specified crawler to <code>NOT_SCHEDULED</code>, but does not stop the crawler if it is already running.</p>"
+    },
+    "StopJobUpgradeAnalysis":{
+      "name":"StopJobUpgradeAnalysis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopJobUpgradeAnalysisRequest"},
+      "output":{"shape":"StopJobUpgradeAnalysisResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Stops an in-progress upgrade analysis.</p>"
     },
     "StopMaterializedViewRefreshTaskRun":{
       "name":"StopMaterializedViewRefreshTaskRun",
@@ -5595,6 +5650,11 @@
       },
       "documentation":"<p>Specifies an Amazon Redshift target.</p>"
     },
+    "AnalysisType":{
+      "type":"string",
+      "documentation":"<p>The type of upgrade analysis. For auto-upgrade jobs, this value is <code>AUTO_UPGRADE</code>.</p>",
+      "enum":["AUTO_UPGRADE"]
+    },
     "AnnotationError":{
       "type":"structure",
       "members":{
@@ -5999,6 +6059,40 @@
         }
       },
       "documentation":"<p>Specifies configuration options for automatic data quality evaluation in Glue jobs. This structure enables automated data quality checks and monitoring during ETL operations, helping to ensure data integrity and reliability without manual intervention.</p>"
+    },
+    "AutoUpgradeMetadata":{
+      "type":"structure",
+      "members":{
+        "TargetVersion":{
+          "shape":"GlueVersionString",
+          "documentation":"<text>The target Glue runtime version the job is being upgraded to.</text>"
+        },
+        "SourceVersion":{
+          "shape":"GlueVersionString",
+          "documentation":"<text>The source Glue runtime version the job was running before auto-version was enabled.</text>"
+        },
+        "Status":{
+          "shape":"AutoUpgradeStatus",
+          "documentation":"<text>The current auto-upgrade lifecycle status (OBSERVING, UPGRADING, UPGRADE_SUCCEEDED, UPGRADE_FAILED, STOPPED, WAITING_FOR_CONSENT).</text>"
+        },
+        "AnalysisId":{
+          "shape":"IdString",
+          "documentation":"<text>The unique identifier of the auto-upgrade assessment analysis.</text>"
+        }
+      },
+      "documentation":"<text>The auto-upgrade assessment information for a job configured with glueVersion=auto.</text>"
+    },
+    "AutoUpgradeStatus":{
+      "type":"string",
+      "documentation":"<p>The current phase of the auto-upgrade lifecycle for a job configured with <code>GlueVersion=auto</code>.</p>",
+      "enum":[
+        "OBSERVING",
+        "UPGRADING",
+        "UPGRADE_SUCCEEDED",
+        "UPGRADE_FAILED",
+        "STOPPED",
+        "WAITING_FOR_CONSENT"
+      ]
     },
     "BackfillError":{
       "type":"structure",
@@ -17807,6 +17901,70 @@
         }
       }
     },
+    "GetJobUpgradeAnalysisRequest":{
+      "type":"structure",
+      "required":[
+        "analysisId",
+        "jobName"
+      ],
+      "members":{
+        "analysisId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the upgrade analysis to retrieve.</p>"
+        },
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the job associated with the analysis.</p>"
+        }
+      }
+    },
+    "GetJobUpgradeAnalysisResponse":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "analysisId",
+        "status",
+        "targetVersion"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the job associated with this analysis.</p>"
+        },
+        "analysisId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the upgrade analysis.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current status of the analysis.</p>"
+        },
+        "sourceVersion":{
+          "shape":"String",
+          "documentation":"<p>The Glue version the job was running before the upgrade, for example <code>4.0</code>.</p>"
+        },
+        "targetVersion":{
+          "shape":"String",
+          "documentation":"<p>The Glue version the job will be upgraded to, for example <code>6.0</code>.</p>"
+        },
+        "analysisType":{
+          "shape":"AnalysisType",
+          "documentation":"<p>The type of upgrade analysis. For auto-upgrade jobs, this value is <code>AUTO_UPGRADE</code>.</p>"
+        },
+        "autoUpgradeEvaluationSummary":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 URI of the terminal-state evaluation summary, available once the analysis reaches a terminal status (<code>SUCCEEDED</code> or <code>FAILED</code>).</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The reason the analysis did not complete.</p>"
+        },
+        "autoUpgradeEligibilitySummary":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 URI of the consent report summarizing upgrade assessment findings. Populated when the analysis reaches <code>WAITING_FOR_CONSENT</code> and remains available in all subsequent states.</p>"
+        }
+      }
+    },
     "GetJobsRequest":{
       "type":"structure",
       "members":{
@@ -19747,7 +19905,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^(\\w+\\.)+\\w+$"
+      "pattern":"^((\\w+\\.)+\\w+|auto)$"
     },
     "GovernedCatalogSource":{
       "type":"structure",
@@ -20522,6 +20680,13 @@
         "add-encryption-key",
         "remove-encryption-key"
       ]
+    },
+    "Id":{
+      "type":"string",
+      "documentation":"<p>The unique identifier of an upgrade analysis, in the format <code>ja-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code>.</p>",
+      "max":39,
+      "min":39,
+      "pattern":"ja-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "IdString":{
       "type":"string",
@@ -21556,6 +21721,10 @@
         "ProfileName":{
           "shape":"NameString",
           "documentation":"<p>The name of an Glue usage profile associated with the job.</p>"
+        },
+        "AutoUpgradeMetadata":{
+          "shape":"AutoUpgradeMetadata",
+          "documentation":"<text>The auto-upgrade assessment information for a job configured with glueVersion=auto. This field is null when the job is not configured to auto.</text>"
         }
       },
       "documentation":"<p>Specifies a job definition.</p>"
@@ -24252,6 +24421,13 @@
         }
       },
       "documentation":"<p>Specifies a target that uses MySQL.</p>"
+    },
+    "Name":{
+      "type":"string",
+      "documentation":"<p>The name of an Glue job.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "NameString":{
       "type":"string",
@@ -29780,6 +29956,37 @@
         }
       }
     },
+    "StartJobUpgradeAnalysisRequest":{
+      "type":"structure",
+      "required":["jobName"],
+      "members":{
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the job associated with the analysis to resume.</p>"
+        },
+        "analysisId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the upgrade analysis. The analysis must be in <code>WAITING_FOR_CONSENT</code> status.</p>"
+        },
+        "upgradeConsent":{
+          "shape":"UpgradeConsent",
+          "documentation":"<p>The customer's decision on whether to proceed with the upgrade.</p>"
+        }
+      }
+    },
+    "StartJobUpgradeAnalysisResponse":{
+      "type":"structure",
+      "members":{
+        "analysisId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the upgrade analysis.</p>"
+        },
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the job associated with this analysis.</p>"
+        }
+      }
+    },
     "StartMLEvaluationTaskRunRequest":{
       "type":"structure",
       "required":["TransformId"],
@@ -30149,6 +30356,19 @@
       "member":{"shape":"StatisticSummary"},
       "documentation":"<p>A list of <code>StatisticSummary</code>.</p>"
     },
+    "Status":{
+      "type":"string",
+      "documentation":"<p>The current status of an upgrade analysis. Possible values are <code>OBSERVING</code>, <code>WAITING_FOR_CONSENT</code>, <code>UPGRADING</code>, <code>SUCCEEDED</code>, <code>FAILED</code>, <code>TIMEOUT</code>, and <code>STOPPED</code>.</p>",
+      "enum":[
+        "OBSERVING",
+        "WAITING_FOR_CONSENT",
+        "UPGRADING",
+        "SUCCEEDED",
+        "FAILED",
+        "TIMEOUT",
+        "STOPPED"
+      ]
+    },
     "StatusDetails":{
       "type":"structure",
       "members":{
@@ -30238,6 +30458,27 @@
       }
     },
     "StopCrawlerScheduleResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "StopJobUpgradeAnalysisRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "analysisId"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the job associated with the analysis.</p>"
+        },
+        "analysisId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the analysis to stop.</p>"
+        }
+      }
+    },
+    "StopJobUpgradeAnalysisResponse":{
       "type":"structure",
       "members":{}
     },
@@ -33082,6 +33323,13 @@
     },
     "UpdatedAt":{"type":"timestamp"},
     "UpdatedTimestamp":{"type":"string"},
+    "UpgradeConsent":{
+      "type":"string",
+      "enum":[
+        "APPROVE",
+        "DECLINE"
+      ]
+    },
     "UpsertRedshiftTargetOptions":{
       "type":"structure",
       "members":{

@@ -215,6 +215,8 @@ class ConfigFileWriter(object):
 
     def _update_subattributes(self, index, contents, values, starting_indent):
         index += 1
+        current_indent = None
+        i = index - 1
         for i in range(index, len(contents)):
             line = contents[i]
             match = self.OPTION_REGEX.search(line)

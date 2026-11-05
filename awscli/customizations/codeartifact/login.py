@@ -42,10 +42,10 @@ class CommandFailedError(Exception):
     def __init__(self, called_process_error, auth_token):
         msg = str(called_process_error).replace(auth_token, '******')
         if called_process_error.stderr is not None:
-            msg +=(
-                f' Stderr from command:\n'
-                f'{called_process_error.stderr.decode(get_stderr_encoding())}'
-            )
+            stderr = called_process_error.stderr.decode(
+                get_stderr_encoding()
+            ).replace(auth_token, '******')
+            msg += f' Stderr from command:\n{stderr}'
         Exception.__init__(self, msg)
 
 

@@ -76,20 +76,31 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
 
     def override_required_args(self, argument_table, args, **kwargs):
         arg_name = '--' + self.name
+        value = None
         if arg_name in args:
             arg_location = args.index(arg_name)
             try:
-                # If the value of --generate-cli-skeleton is ``output``,
-                # do not force required arguments to be optional as
-                # ``--generate-cli-skeleton output`` validates commands
-                # as well as print out the sample output.
-                if args[arg_location + 1] == 'output':
-                    return
+                value = args[arg_location + 1]
             except IndexError:
-                pass
-            super(GenerateCliSkeletonArgument, self).override_required_args(
-                argument_table, args, **kwargs
-            )
+                value = None
+        else:
+            # argparse also accepts ``--generate-cli-skeleton=<value>``.
+            prefix = arg_name + '='
+            for arg in args:
+                if arg.startswith(prefix):
+                    value = arg[len(prefix):]
+                    break
+            else:
+                return
+        # If the value of --generate-cli-skeleton is ``output``,
+        # do not force required arguments to be optional as
+        # ``--generate-cli-skeleton output`` validates commands
+        # as well as print out the sample output.
+        if value == 'output':
+            return
+        super(GenerateCliSkeletonArgument, self).override_required_args(
+            argument_table, args, **kwargs
+        )
 
     def generate_skeleton(
         self, call_parameters, parsed_args, parsed_globals, **kwargs

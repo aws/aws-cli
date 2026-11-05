@@ -854,6 +854,45 @@ def test_kiro_agent_hooks_removed_from_every_agent(tmp_path):
     ]
 
 
+@requires_symlinks
+def test_kiro_remove_continues_past_unreadable_agent_file(tmp_path):
+    ours = {'hooks': {'agentSpawn': [_kiro_agent_handler()]}}
+    agent = _kiro_with_agents(
+        tmp_path, {'b.json': {'name': 'b', **ours}}, default='b'
+    )
+    agents_dir = tmp_path / '.kiro' / 'agents'
+    # Sorted before the agent with our hook.
+    os.symlink(tmp_path / 'missing.json', agents_dir / 'a.json')
+    (agents_dir / 'dir.json').mkdir()
+    assert remove_kiro_agent_hooks(agent) == [
+        (HookAction.REMOVED, str(agents_dir / 'b.json'))
+    ]
+    assert json.loads((agents_dir / 'b.json').read_text()) == {'name': 'b'}
+
+
+@pytest.mark.skipif(
+    os.name == 'nt' or os.geteuid() == 0,
+    reason='needs POSIX permissions and a non-root user',
+)
+def test_kiro_remove_reports_agent_file_it_cannot_read(tmp_path):
+    ours = {'hooks': {'agentSpawn': [_kiro_agent_handler()]}}
+    agent = _kiro_with_agents(
+        tmp_path,
+        {'a.json': {'name': 'a', **ours}, 'b.json': {'name': 'b', **ours}},
+        default='b',
+    )
+    agents_dir = tmp_path / '.kiro' / 'agents'
+    locked = agents_dir / 'a.json'
+    locked.chmod(0)
+    try:
+        assert remove_kiro_agent_hooks(agent) == [
+            (HookAction.UNREADABLE, str(locked)),
+            (HookAction.REMOVED, str(agents_dir / 'b.json')),
+        ]
+    finally:
+        locked.chmod(0o600)
+
+
 def test_kiro_agent_manual_entry_is_the_installed_entry():
     text = format_kiro_agent_manual_entry('~/x.json', indent='')
     first, rest = text.split('\n', 1)

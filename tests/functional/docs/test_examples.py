@@ -1066,21 +1066,26 @@ def extract_error_line(content, error_start, error_end):
 
 
 @pytest.fixture(scope="module")
-def command_validator():
-    # CLIDriver can take up a lot of resources so we'll just create one
-    # instance and use it for all the validation tests.
-    driver = create_clidriver()
+def driver():
+    # CLIDriver can take up a lot of resources (about 1 GB once every
+    # service and argument table is loaded), so we'll just create one
+    # instance and share it between all the tests.
+    return create_clidriver()
+
+
+@pytest.fixture(scope="module")
+def command_validator(driver):
     return CommandValidator(driver)
 
 
 @pytest.fixture(scope="module")
-def command_table():
-    return create_clidriver().subcommand_table
+def command_table(driver):
+    return driver.subcommand_table
 
 
 @pytest.fixture(scope="module")
-def global_options():
-    return set(create_clidriver().create_help_command().arg_table)
+def global_options(driver):
+    return set(driver.create_help_command().arg_table)
 
 
 @pytest.mark.parametrize("command, subcommand", EXAMPLE_COMMAND_TESTS)
@@ -1424,81 +1429,68 @@ def _assert_name_contains_only_allowed_characters(filename):
     assert ALLOWED_FILENAME_CHAR_REGEX.match(filename)
 
 
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_whitespace(example_file):
-    example = Example(example_file)
-    errors = check_whitespace(example)
-    _assert_follows_rule('whitespace', example, errors)
+def _assert_follows_rules(example, rules):
+    """Check several rules, and report the failures of all of them.
+
+    The rules are grouped into a few tests instead of one test per rule,
+    since every test item of every example file takes up memory in each
+    pytest worker.
+    """
+    failures = []
+    for rule, errors in rules:
+        try:
+            _assert_follows_rule(rule, example, errors)
+        except AssertionError as e:
+            failures.append(str(e))
+    if failures:
+        raise AssertionError('\n'.join(failures))
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_location(command_table, example_file):
+def test_example_layout(example_file):
+    # How the file is laid out and what its prose says.
     example = Example(example_file)
-    errors = check_location(example, command_table)
-    _assert_follows_rule('location', example, errors)
+    _assert_follows_rules(
+        example,
+        [
+            ('whitespace', check_whitespace(example)),
+            ('title', check_title(example)),
+            ('description', check_description(example)),
+            ('link', check_link(example)),
+        ],
+    )
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_title(example_file):
+def test_example_commands(command_table, global_options, example_file):
+    # Where the file is, and the commands that its examples run.
     example = Example(example_file)
-    errors = check_title(example)
-    _assert_follows_rule('title', example, errors)
+    _assert_follows_rules(
+        example,
+        [
+            ('location', check_location(example, command_table)),
+            ('command', check_command(example)),
+            (
+                'option-names',
+                check_option_names(example, command_table, global_options),
+            ),
+            ('command-name', check_command_name(example)),
+        ],
+    )
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_description(example_file):
+def test_example_content(command_table, example_file):
+    # The files, output and values that the examples show.
     example = Example(example_file)
-    errors = check_description(example)
-    _assert_follows_rule('description', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_command(example_file):
-    example = Example(example_file)
-    errors = check_command(example)
-    _assert_follows_rule('command', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_option_names(command_table, global_options, example_file):
-    example = Example(example_file)
-    errors = check_option_names(example, command_table, global_options)
-    _assert_follows_rule('option-names', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_command_name(example_file):
-    example = Example(example_file)
-    errors = check_command_name(example)
-    _assert_follows_rule('command-name', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_file_contents(example_file):
-    example = Example(example_file)
-    errors = check_file_contents(example)
-    _assert_follows_rule('file-contents', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_output(command_table, example_file):
-    example = Example(example_file)
-    errors = check_output(example, command_table)
-    _assert_follows_rule('output', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_link(example_file):
-    example = Example(example_file)
-    errors = check_link(example)
-    _assert_follows_rule('link', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_sanitization(example_file):
-    example = Example(example_file)
-    errors = check_sanitization(example)
-    _assert_follows_rule('sanitization', example, errors)
+    _assert_follows_rules(
+        example,
+        [
+            ('file-contents', check_file_contents(example)),
+            ('output', check_output(example, command_table)),
+            ('sanitization', check_sanitization(example)),
+        ],
+    )
 
 
 def test_example_style_exceptions_exist():

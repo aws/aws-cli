@@ -46,6 +46,17 @@ def _create_new_result_cls(name, extra_fields=None, base_cls=BaseResult):
     fields = list(base_cls._fields)
     if extra_fields:
         fields += extra_fields
+    # transfer_id disambiguates concurrent transfers that share the same
+    # (transfer_type, src, dest), e.g. the same file uploaded to the same
+    # destination more than once in a single invocation. It defaults to
+    # None so existing callers that don't provide one are unaffected.
+    if base_cls is BaseResult and 'transfer_id' not in fields:
+        fields += ['transfer_id']
+        return type(
+            name,
+            (namedtuple(name, fields, defaults=(None,)), base_cls),
+            {}
+        )
     return type(name, (namedtuple(name, fields), base_cls), {})
 
 
@@ -124,7 +135,8 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
             'transfer_type': self._transfer_type,
             'src': src,
             'dest': dest,
-            'total_transfer_size': future.meta.size
+            'total_transfer_size': future.meta.size,
+            'transfer_id': future.meta.transfer_id,
         }
         self._result_kwargs_cache[future.meta.transfer_id] = result_kwargs
 
@@ -250,6 +262,12 @@ class ResultRecorder(BaseResultHandler):
         for result_property in [result.transfer_type, result.src, result.dest]:
             if result_property is not None:
                 key_parts.append(ensure_text_type(result_property))
+        # transfer_id disambiguates two otherwise-identical concurrent
+        # transfers (same transfer_type/src/dest) so their progress and
+        # size accounting don't collide in the ongoing-transfer dicts.
+        transfer_id = getattr(result, 'transfer_id', None)
+        if transfer_id is not None:
+            key_parts.append(ensure_text_type(str(transfer_id)))
         return u':'.join(key_parts)
 
     def _pop_result_from_ongoing_dicts(self, result):

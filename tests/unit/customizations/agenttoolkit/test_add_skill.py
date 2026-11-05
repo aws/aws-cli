@@ -23,6 +23,8 @@ from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
     make_config,
     make_skill_zip,
+    requires_symlinks,
+    unwritable_aws_cli_dir,
 )
 
 
@@ -257,6 +259,7 @@ def test_add_skill_already_installed_message_not_duplicated(tmp_path):
     assert output.count('already installed') == 1
 
 
+@requires_symlinks
 def test_add_skill_into_symlinked_skills_dir(tmp_path):
     # User symlinks an agent's skills dir into a shared location so every
     # agent reads one source of truth. We follow the link and write into
@@ -297,6 +300,7 @@ def test_add_skill_already_installed_recommends_update(tmp_path):
     assert (skill_dir / 'SKILL.md').read_text() == 'old'
 
 
+@requires_symlinks
 def test_add_skill_skips_symlinked_existing_install(tmp_path):
     # The per-skill dir is a symlink to a previously-installed location.
     # We resolve it, see our marker, and skip (recommend update) without
@@ -356,3 +360,13 @@ def test_add_skill_zip_slip_rejected(tmp_path):
         AgentToolkitServiceError, match='path escapes skill directory'
     ):
         _run_add(configs, ['--skill-name', 'aws-s3'], zip_bytes=zip_bytes)
+
+
+def test_add_skill_does_not_need_writable_aws_cli_dir(tmp_path):
+    (tmp_path / '.test-agent' / 'skills').mkdir(parents=True)
+    with unwritable_aws_cli_dir(tmp_path):
+        rc, output = _run_add(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+        )
+    assert rc == 0
+    assert 'Installed aws-s3 (v1) to Test Agent' in output

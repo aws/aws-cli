@@ -126,7 +126,10 @@ class UpdateSkillCommand(BasicCommand):
             )
             return 0
 
-        self._install_version(client, skill_name, remote_version, outdated)
+        skipped = self._install_version(
+            client, skill_name, remote_version, outdated
+        )
+        self._write_skipped([(skill_name, *s) for s in skipped])
         return 0
 
     def _update_all_skills(self, agents, parsed_globals):
@@ -143,8 +146,7 @@ class UpdateSkillCommand(BasicCommand):
             agents_by_skill.setdefault(skill.name, []).append(skill.agent)
 
         client = self._create_client(parsed_globals)
-        updated_any = False
-        failed_any = False
+        updated, up_to_date, skipped, failed = [], [], [], []
         for skill_name in sorted(agents_by_skill):
             # One bad skill should not block updates to the remaining skills.
             try:
@@ -152,25 +154,56 @@ class UpdateSkillCommand(BasicCommand):
                     agents_by_skill[skill_name], client, skill_name
                 )
                 if not outdated:
+                    up_to_date.append(skill_name)
                     continue
-                self._install_version(
+                skill_skipped = self._install_version(
                     client, skill_name, remote_version, outdated
                 )
             except (AgentToolkitServiceError, ClientError) as e:
-                self._error_stream.write(
-                    f'  Failed to update {skill_name}: {e}\n'
-                )
-                failed_any = True
+                failed.append((skill_name, e))
                 continue
-            updated_any = True
+            if skill_skipped:
+                skipped.extend((skill_name, *s) for s in skill_skipped)
+            else:
+                updated.append(skill_name)
 
-        if failed_any:
-            return 1
-        if not updated_any:
+        if not (updated or skipped or failed):
             self._stream.write(
                 'All installed AWS skills are already up to date.\n'
             )
-        return 0
+            return 0
+        skipped_count = len({name for name, _, _ in skipped})
+        self._stream.write(
+            f'\n{len(updated)} updated, {skipped_count} skipped, '
+            f'{len(failed)} failed, {len(up_to_date)} already up to date.\n'
+        )
+        self._write_skipped(skipped)
+        self._write_failed(failed)
+        return 1 if failed else 0
+
+    def _write_skipped(self, skipped):
+        if not skipped:
+            return
+        self._stream.write('\nSkipped:\n')
+        for skill_name, skill_dir, reason in skipped:
+            self._stream.write(f'  {skill_name} at {skill_dir}: {reason}.\n')
+        self._stream.write(
+            'To install the AWS skill there, move the existing path aside and '
+            'run "aws agent-toolkit add-skill --skill-name <name>".\n'
+        )
+
+    def _write_failed(self, failed):
+        if not failed:
+            return
+        self._error_stream.write('\nFailed:\n')
+        for skill_name, error in failed:
+            self._error_stream.write(
+                f'  Failed to update {skill_name}: {error}\n'
+            )
+        self._error_stream.write(
+            'To retry, run "aws agent-toolkit update-skill --skill-name '
+            '<name>".\n'
+        )
 
     def _find_outdated(self, installed_agents, client, skill_name):
         remote_version = resolve_latest_version(client, skill_name)
@@ -186,7 +219,7 @@ class UpdateSkillCommand(BasicCommand):
         zip_bytes, checksum, version = get_skill_download(
             client, skill_name, version=remote_version
         )
-        install_skill(
+        return install_skill(
             skill_name,
             version,
             zip_bytes,

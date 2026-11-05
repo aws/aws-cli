@@ -829,3 +829,15 @@ class TestExternalAliasCommand(unittest.TestCase):
         self.subprocess_call.assert_called_with(
             'f () { ls "$1" }; f extra', shell=True
         )
+
+    def test_external_command_receives_help_flag(self):
+        # --help is parsed as a global argument, so the external
+        # command gets it back as an argument.
+        alias_value = '!f () { ls "$1" }; f'
+        alias_cmd = ExternalAliasCommand(
+            'alias-name', alias_value, invoker=self.subprocess_call
+        )
+        alias_cmd(['extra'], FakeParsedArgs(command='alias-name', help=True))
+        self.subprocess_call.assert_called_with(
+            'f () { ls "$1" }; f extra --help', shell=True
+        )

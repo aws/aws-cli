@@ -104,50 +104,6 @@ class CommandAction(argparse.Action):
         pass
 
 
-
-class _HelpFlagResolver(argparse.ArgumentParser):
-    """Minimal parser that detects --help (and abbreviations like --hel, --he).
-
-    This is used as a first pass before the real parse so that argparse
-    handles abbreviation matching consistently with all other flags.
-    """
-
-    def __init__(self):
-        super().__init__(add_help=False)
-        self.add_argument(
-            '--help', action='store_true', default=False, dest='help_flag'
-        )
-
-    def error(self, message):
-        raise ArgParseException(message)
-
-
-_HELP_RESOLVER = _HelpFlagResolver()
-
-
-def detect_help_flag(args):
-    """Detect and strip --help (and abbreviations) from args.
-
-    Returns (remaining_args, help_detected).  When --help is present the
-    flag is removed from the arg list but is *not* replaced with the
-    positional ``help`` token.  Callers are responsible for routing to
-    the appropriate help rendering.
-
-    --help is intercepted here rather than handled by argparse because
-    it must take priority over all other argument validation.  If --help
-    were a normal parser argument, a preceding value-taking flag (e.g.
-    ``--query --help``) could consume it as that flag's value, or the
-    parser could reject it due to missing required positional args.
-    By stripping it early, we guarantee that --help always renders help
-    regardless of what else is in the arg list.
-    """
-    try:
-        parsed, remaining = _HELP_RESOLVER.parse_known_args(args)
-    except ArgParseException:
-        return args, False
-    return remaining, parsed.help_flag
-
-
 class CLIArgParser(argparse.ArgumentParser):
     Formatter = argparse.RawTextHelpFormatter
 
@@ -205,6 +161,12 @@ class CLIArgParser(argparse.ArgumentParser):
 
 
 class MainArgParser(CLIArgParser):
+    """Parser for the global arguments and the command name.
+
+    With ``help_mode=True``, the command name and the values of global
+    options are optional, because rendering help uses neither.
+    """
+
     Formatter = argparse.RawTextHelpFormatter
 
     def __init__(
@@ -214,6 +176,7 @@ class MainArgParser(CLIArgParser):
         description,
         argument_table,
         prog=None,
+        help_mode=False,
     ):
         super().__init__(
             formatter_class=self.Formatter,
@@ -223,7 +186,41 @@ class MainArgParser(CLIArgParser):
             usage=USAGE,
             prog=prog,
         )
+        self._init_args = (
+            command_table,
+            version_string,
+            description,
+            argument_table,
+            prog,
+        )
+        self._help_mode = help_mode
         self._build(command_table, version_string, argument_table)
+
+    def parse_known_args(self, args, namespace=None):
+        try:
+            return super().parse_known_args(args, namespace)
+        except ArgParseException:
+            help_request = self._parse_help_request(args)
+            if help_request is None:
+                raise
+            return help_request
+
+    def _parse_help_request(self, args):
+        # --help shows help even when the other global arguments don't
+        # parse, such as "--query --help" leaving --query without a
+        # value, or "aws --help" having no command. Parse again with
+        # those parts optional, and use the result only if it asks for
+        # help. Otherwise the caller raises the original error.
+        if self._help_mode:
+            return None
+        help_parser = MainArgParser(*self._init_args, help_mode=True)
+        try:
+            parsed, remaining = help_parser.parse_known_args(args)
+        except ArgParseException:
+            return None
+        if not getattr(parsed, 'help', False):
+            return None
+        return parsed, remaining
 
     def _create_choice_help(self, choices):
         help_str = ''
@@ -235,6 +232,10 @@ class MainArgParser(CLIArgParser):
         for argument_name in argument_table:
             argument = argument_table[argument_name]
             argument.add_to_parser(self)
+        if self._help_mode:
+            for action in self._actions:
+                if action.option_strings and action.nargs is None:
+                    action.nargs = argparse.OPTIONAL
         self.add_argument(
             '--version',
             action="version",
@@ -242,24 +243,37 @@ class MainArgParser(CLIArgParser):
             help='Display the version of this tool',
         )
         self.add_argument(
-            'command', action=CommandAction, command_table=command_table
+            'command',
+            action=CommandAction,
+            command_table=command_table,
+            nargs=argparse.OPTIONAL if self._help_mode else None,
         )
 
 
 class ServiceArgParser(CLIArgParser):
-    def __init__(self, operations_table, service_name):
+    """Parser for a service's operation name.
+
+    With ``help_mode=True``, the operation name is optional so that
+    ``aws <service> --help`` can show the service's help.
+    """
+
+    def __init__(self, operations_table, service_name, help_mode=False):
         super().__init__(
             formatter_class=argparse.RawTextHelpFormatter,
             add_help=False,
             conflict_handler='resolve',
             usage=USAGE,
         )
+        self._help_mode = help_mode
         self._build(operations_table)
         self._service_name = service_name
 
     def _build(self, operations_table):
         self.add_argument(
-            'operation', action=CommandAction, command_table=operations_table
+            'operation',
+            action=CommandAction,
+            command_table=operations_table,
+            nargs=argparse.OPTIONAL if self._help_mode else None,
         )
 
 

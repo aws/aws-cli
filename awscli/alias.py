@@ -414,6 +414,11 @@ class ExternalAliasCommand(BaseAliasCommand):
         self._invoker = invoker
 
     def __call__(self, args, parsed_globals):
+        if getattr(parsed_globals, 'help', False):
+            # The main parser consumed --help as a global argument.
+            # Pass it on, because the external command decides what
+            # --help means, as it did before --help was global.
+            args = list(args) + ['--help']
         command_components = [self._alias_value[1:]]
         command_components.extend(
             compat_shell_quote(a, shell=True) for a in args

@@ -158,6 +158,11 @@ class BasicCommand(CLICommand):
             return self._subcommand_table[subcommand_name](
                 new_args, parsed_globals
             )
+        if getattr(parsed_globals, 'help', False):
+            # Show help without parsing this command's arguments, so
+            # missing or invalid values can't prevent it and the
+            # command never runs.
+            return self._display_help([], parsed_globals)
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 

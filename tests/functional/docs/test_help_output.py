@@ -28,10 +28,13 @@ import pytest
 
 from awscli.alias import AliasLoader, register_alias_commands
 from awscli.compat import StringIO
+from awscli.clidriver import CLIOperationCaller
+from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.testutils import (
     BaseAWSHelpOutputTest,
     CapturedRenderer,
     FileCreator,
+    create_clidriver,
     mock,
 )
 from tests import CLIRunner
@@ -396,6 +399,148 @@ class TestHelpFlagOutput(BaseAWSHelpOutputTest):
         self.assertEqual(rc, 252)
         self.assertIn('Found invalid choice', stderr.getvalue())
 
+    def assert_page_title(self, name):
+        stars = '*' * len(name)
+        self.assert_contains(f'{stars}\n{name}\n{stars}')
+
+    def render_with_new_driver(self, args):
+        # Use a new driver for each command so that running one
+        # command can't change the command tables used by another.
+        create_clidriver().main(args)
+        return self.renderer.rendered_contents
+
+    def test_help_flag_renders_same_page_as_help(self):
+        commands = [
+            [],
+            ['ec2'],
+            ['ec2', 'describe-instances'],
+            ['s3'],
+            ['s3', 'ls'],
+            ['configure', 'set'],
+            ['ec2', 'wait', 'instance-running'],
+        ]
+        for command in commands:
+            with self.subTest(command=command):
+                expected = self.render_with_new_driver(command + ['help'])
+                actual = self.render_with_new_driver(command + ['--help'])
+                self.assertEqual(actual, expected)
+
+    def test_help_flag_does_not_call_operation(self):
+        # --query is missing its value. --help must still render help
+        # rather than run the operation.
+        with mock.patch.object(CLIOperationCaller, 'invoke') as invoke:
+            self.driver.main(
+                [
+                    'ec2',
+                    'terminate-instances',
+                    '--instance-ids',
+                    'i-1',
+                    '--query',
+                    '--help',
+                ]
+            )
+        invoke.assert_not_called()
+        self.assert_page_title('terminate-instances')
+
+    def test_help_flag_after_global_flags_with_values(self):
+        self.driver.main(
+            [
+                '--endpoint-url',
+                'http://example.com',
+                'ec2',
+                'describe-instances',
+                '--query',
+                '--help',
+            ]
+        )
+        self.assert_page_title('describe-instances')
+
+    def test_help_flag_abbreviation_after_operation_args(self):
+        # Like other global options, abbreviations of --help take
+        # priority over abbreviations of the operation's own options,
+        # such as --health-check-arn here.
+        self.driver.main(
+            [
+                'shield',
+                'associate-health-check',
+                '--he',
+                'arn:aws:route53:::healthcheck/abc',
+                '--protection-id',
+                'p',
+            ]
+        )
+        self.assert_page_title('associate-health-check')
+
+    def test_help_flag_after_end_of_options_is_a_value(self):
+        with mock.patch.object(
+            ConfigureSetCommand, '_run_main', autospec=True, return_value=0
+        ) as run_main:
+            rc = self.driver.main(['configure', 'set', 'test.key', '--', '--help'])
+        self.assertEqual(rc, 0)
+        parsed_args = run_main.call_args[0][1]
+        self.assertEqual(parsed_args.value, '--help')
+        self.assertEqual(self.renderer.rendered_contents, '')
+
+    def test_missing_command_errors_without_help_flag(self):
+        cases = [
+            ([], 'the following arguments are required: command'),
+            (['ec2'], 'the following arguments are required: operation'),
+        ]
+        for args, error in cases:
+            with self.subTest(args=args):
+                stderr = StringIO()
+                with mock.patch('sys.stderr', stderr):
+                    rc = self.driver.main(args)
+                self.assertEqual(rc, 252)
+                self.assertIn(error, stderr.getvalue())
+
+
+class TestHelpFlagWithProfile(BaseAWSHelpOutputTest):
+    def setUp(self):
+        super().setUp()
+        self.files = FileCreator()
+        config_file = self.files.create_file(
+            'config', '[profile urlprof]\ncli_help_output = url\n'
+        )
+        self.environ['AWS_CONFIG_FILE'] = config_file
+        self.driver = create_clidriver()
+
+    def tearDown(self):
+        super().tearDown()
+        self.files.remove_all()
+
+    def assert_url_rendered(self, url_suffix):
+        contents = self.renderer.rendered_contents
+        self.assertTrue(contents.startswith('https://'), contents[:200])
+        self.assertTrue(contents.endswith(url_suffix), contents)
+
+    def test_top_level_help_flag_uses_profile(self):
+        self.driver.main(['--profile', 'urlprof', '--help'])
+        self.assert_url_rendered('/index.html')
+
+    def test_service_help_flag_uses_profile(self):
+        self.driver.main(['--profile', 'urlprof', 'ec2', '--help'])
+        self.assert_url_rendered('/reference/ec2/index.html')
+
+    def test_operation_help_flag_uses_profile(self):
+        self.driver.main(
+            ['--profile', 'urlprof', 'ec2', 'describe-instances', '--help']
+        )
+        self.assert_url_rendered('/reference/ec2/describe-instances.html')
+
+    def test_help_flag_uses_profile_when_global_value_missing(self):
+        self.driver.main(
+            [
+                '--profile',
+                'urlprof',
+                's3api',
+                'delete-object',
+                '--query',
+                '--help',
+            ]
+        )
+        self.assert_url_rendered('/reference/s3api/delete-object.html')
+
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):
@@ -699,6 +844,13 @@ class TestAliases(BaseAWSHelpOutputTest):
         self.add_subcommand_alias('ec2', 'regions', 'describe-regions')
         self.driver.main(['ec2', 'regions', '--help'])
         self.assert_contains('describe-regions')
+
+    def test_toplevel_alias_then_operation_help_flag(self):
+        self.add_alias('e', 'ec2')
+        self.driver.main(['e', 'describe-instances', '--help'])
+        self.assert_contains(
+            '******************\ndescribe-instances\n******************'
+        )
 
 
 class TestStreamingOutputHelp(BaseAWSHelpOutputTest):

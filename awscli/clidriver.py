@@ -34,14 +34,13 @@ from botocore.exceptions import ProfileNotFound
 from botocore.history import get_global_history_recorder
 
 from awscli import __version__
-from awscli.alias import AliasCommandInjector, AliasLoader, BaseAliasCommand
+from awscli.alias import AliasCommandInjector, AliasLoader
 from awscli.argparser import (
     ArgTableArgParser,
     FirstPassGlobalArgParser,
     MainArgParser,
     ServiceArgParser,
     SubCommandArgParser,
-    detect_help_flag,
     format_unknown_options_error,
     get_option_suggestion_candidates,
 )
@@ -592,11 +591,8 @@ class CLIDriver:
         command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
-        args, help_flag = detect_help_flag(args)
         parsed_args = None
         try:
-            if help_flag:
-                return self._route_help(args, command_table, parser)
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
@@ -607,7 +603,8 @@ class CLIDriver:
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record('CLI_VERSION', self._cli_version(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
-            return command_table[parsed_args.command](remaining, parsed_args)
+            command = self._get_command(command_table, parsed_args)
+            return command(remaining, parsed_args)
         except BaseException as e:
             # when --version action executed default argparser prints out
             # version string and calls sys.exit(0)
@@ -621,102 +618,17 @@ class CLIDriver:
                 parsed_globals=parsed_args,
             )
 
-    def _get_command_words(self, args, parser):
-        # Use the top-level parser to cleanly separate global flags
-        # (and their values) from positional command words.  This
-        # prevents flag values like "us-east-1" in "--region us-east-1"
-        # from being misinterpreted as unknown commands.
-        #
-        # If parsing fails (e.g. a trailing --query with no value
-        # because --help was stripped), fall back to extracting
-        # positional words by skipping flags and their values using
-        # the known argument table.
-        try:
-            parsed_globals, remaining = parser.parse_known_args(args)
-            return [parsed_globals.command] + remaining, parsed_globals
-        except BaseException:
-            return self._extract_positional_words(args), None
-
-    def _extract_positional_words(self, args):
-        # Best-effort extraction of positional (command) words from
-        # args when the parser can't handle them (e.g. a global flag
-        # is missing its value).  We skip flags and consume their
-        # values by checking the argument table.
-        arg_table = self._get_argument_table()
-        # Build a set of flags that consume a value (i.e. not boolean).
-        value_flags = set()
-        for arg_obj in arg_table.values():
-            if arg_obj.cli_type_name != 'boolean':
-                for opt in arg_obj.cli_name, arg_obj.py_name:
-                    value_flags.add(f'--{opt}')
-        positionals = []
-        skip_next = False
-        for arg in args:
-            if skip_next:
-                skip_next = False
-                continue
-            if arg.startswith('-'):
-                if arg in value_flags or '=' not in arg:
-                    # If it's a known value-taking flag without '=',
-                    # skip the next token (its value).
-                    if arg in value_flags and '=' not in arg:
-                        skip_next = True
-                continue
-            positionals.append(arg)
-        return positionals
-
-    def _route_help(self, args, command_table, parser):
-        # Follow the user's command path (e.g. "s3api delete-object") to
-        # find the deepest recognized command, then render its help
-        # directly.  This avoids injecting a bare 'help' token that
-        # could be consumed as a flag value.
-        if not args:
-            # No args at all (bare "aws --help"), show top-level help.
-            return self.create_help_command()([], None)
-        cmd_words, parsed_globals = self._get_command_words(args, parser)
-        current_cmd = None
-        for arg in cmd_words:
-            if arg.startswith('-'):
-                # Once we're past the top-level parse, any remaining
-                # flags are operation-level args — stop walking.
-                break
-            if arg in command_table:
-                current_cmd = command_table[arg]
-                command_table = getattr(
-                    current_cmd, 'subcommand_table', {}
-                )
-                if not command_table:
-                    # No further subcommands (e.g. we reached an
-                    # operation).  Stop scanning so remaining bare
-                    # words (positional param values) aren't
-                    # misinterpreted as commands.
-                    break
-            else:
-                # Bare word that isn't a known command — let the
-                # real parser produce the "invalid choice" error.
-                if current_cmd is not None:
-                    current_cmd([arg, 'help'], None)
-                else:
-                    parser.parse_known_args(args)
-                return
-        if current_cmd is None:
-            return self.create_help_command()([], None)
-        if isinstance(current_cmd, BaseAliasCommand):
-            # Alias commands don't have their own help pages.
-            # Invoke them with 'help' so the alias forwards it to
-            # the underlying command, matching "aws <alias> help".
-            if parsed_globals is None:
-                parsed_globals, _ = parser.parse_known_args(
-                    [current_cmd.name]
-                )
-            return current_cmd(['help'], parsed_globals)
-        if not hasattr(current_cmd, 'create_help_command'):
-            # current_cmd is itself a help command (e.g. "aws help --help"),
-            # just invoke it directly.
-            return current_cmd([], None)
-        help_cmd = current_cmd.create_help_command()
-        if help_cmd is not None:
-            return help_cmd([], None)
+    def _get_command(self, command_table, parsed_args):
+        if getattr(parsed_args, 'help', False) and parsed_args.command in (
+            None,
+            'help',
+        ):
+            # Create the top-level help now instead of using the one in
+            # the command table. That one was created before
+            # _handle_top_level_args applied --profile, so it would
+            # ignore the profile's cli_help_output setting.
+            return self.create_help_command()
+        return command_table[parsed_args.command]
 
     def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been
@@ -839,10 +751,15 @@ class ServiceCommand(CLICommand):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
-        service_parser = self.create_parser()
+        service_parser = self.create_parser(
+            help_mode=getattr(parsed_globals, 'help', False)
+        )
         parsed_args, remaining = service_parser.parse_known_args(args)
         command_table = self._get_command_table()
-        return command_table[parsed_args.operation](remaining, parsed_globals)
+        # The operation is only missing for "aws <service> --help",
+        # which shows the same page as "aws <service> help".
+        operation = parsed_args.operation or 'help'
+        return command_table[operation](remaining, parsed_globals)
 
     def _create_command_table(self):
         command_table = OrderedDict()
@@ -882,12 +799,14 @@ class ServiceCommand(CLICommand):
             name=self._name,
         )
 
-    def create_parser(self):
+    def create_parser(self, help_mode=False):
         command_table = self._get_command_table()
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
         return ServiceArgParser(
-            operations_table=command_table, service_name=self._name
+            operations_table=command_table,
+            service_name=self._name,
+            help_mode=help_mode,
         )
 
 
@@ -1013,6 +932,11 @@ class ServiceOperation:
         if maybe_parsed_subcommand is not None:
             new_args, subcommand_name = maybe_parsed_subcommand
             return subcommand_table[subcommand_name](new_args, parsed_globals)
+        if getattr(parsed_globals, 'help', False):
+            # Show help without parsing the operation's arguments, so
+            # missing or invalid values can't prevent it and the
+            # operation is never called.
+            return self.create_help_command()([], parsed_globals)
         operation_parser = self._create_operation_parser(
             self.arg_table, subcommand_table
         )

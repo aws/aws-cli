@@ -17,4 +17,4 @@ Output::
         ]
     }
 
-For more information, see `Omics Storage <https://docs.aws.amazon.com/omics/latest/dev/sequence-stores.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `HealthOmics Storage <https://docs.aws.amazon.com/omics/latest/dev/sequence-stores.html>`__ in the *AWS HealthOmics User Guide*.

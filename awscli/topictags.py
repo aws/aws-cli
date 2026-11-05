@@ -22,8 +22,6 @@
 import json
 import os
 
-import docutils.core
-
 
 class TopicTagDB:
     """This class acts like a database for the tags of all available topics.
@@ -182,7 +180,10 @@ class TopicTagDB:
 
     def _add_tag_and_values_from_content(self, topic_name, content):
         # Retrieves tags and values and adds from content of topic file
-        # to the dictionary.
+        # to the dictionary.  Imported here because docutils is only
+        # needed when the topic index is (re)generated or queried.
+        import docutils.core
+
         doctree = docutils.core.publish_doctree(content).asdom()
         fields = doctree.getElementsByTagName('field')
         for field in fields:

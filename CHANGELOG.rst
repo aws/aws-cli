@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.46.3
+======
+
+* bugfix:alias: Pass Windows external alias args to cmd.exe as literals
+* bugfix:codedeploy: Tighten file permissions for the on-premises instance configuration file written by ``aws deploy install``
+
+
 1.46.2
 ======
 

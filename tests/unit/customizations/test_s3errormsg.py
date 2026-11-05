@@ -84,3 +84,77 @@ class TestGetRegionFromEndpoint(unittest.TestCase):
         s3errormsg.enhance_error_msg(parsed)
         # Nothing should have changed
         self.assertEqual(parsed, expected)
+
+    def test_none_message_does_not_crash(self):
+        # Empty <Message></Message> parsed as None must not raise TypeError.
+        parsed = {
+            'Error': {
+                'Code': 'AccessDenied',
+                'Message': None,
+            }
+        }
+        # Should not raise TypeError
+        s3errormsg.enhance_error_msg(parsed)
+        # Message should remain None since no error pattern matched
+        self.assertIsNone(parsed['Error']['Message'])
+
+    def test_none_message_with_sigv4_code(self):
+        # None Message should not match sigv4 pattern.
+        parsed = {
+            'Error': {
+                'Code': 'AuthorizationHeaderMalformed',
+                'Message': None,
+            }
+        }
+        s3errormsg.enhance_error_msg(parsed)
+        # Should not have been enhanced (no match)
+        self.assertIsNone(parsed['Error']['Message'])
+
+    def test_none_message_with_kms_context(self):
+        # None Message should not match KMS sigv4 pattern.
+        parsed = {
+            'Error': {
+                'Code': 'InvalidArgument',
+                'Message': None,
+            }
+        }
+        s3errormsg.enhance_error_msg(parsed)
+        self.assertIsNone(parsed['Error']['Message'])
+
+    def test_none_code_does_not_crash(self):
+        # None Code should not crash PermanentRedirect check.
+        parsed = {
+            'Error': {
+                'Code': None,
+                'Message': 'Some error message.',
+            }
+        }
+        expected = copy.deepcopy(parsed)
+        s3errormsg.enhance_error_msg(parsed)
+        # Nothing should have changed
+        self.assertEqual(parsed, expected)
+
+    def test_empty_string_message_does_not_crash(self):
+        # Empty string Message should be handled without crashing.
+        parsed = {
+            'Error': {
+                'Code': 'AccessDenied',
+                'Message': '',
+            }
+        }
+        expected = copy.deepcopy(parsed)
+        s3errormsg.enhance_error_msg(parsed)
+        self.assertEqual(parsed, expected)
+
+    def test_permanent_redirect_with_none_message(self):
+        # PermanentRedirect with None Message should not crash.
+        parsed = {
+            'Error': {
+                'Code': 'PermanentRedirect',
+                'Message': None,
+                'Endpoint': 'myendpoint',
+            }
+        }
+        s3errormsg.enhance_error_msg(parsed)
+        # Should have enhanced the message despite None original
+        self.assertIn('myendpoint', parsed['Error']['Message'])

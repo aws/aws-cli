@@ -16,16 +16,28 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from awscli.customizations.agenttoolkit import state
 from awscli.customizations.agenttoolkit.agents import AgentConfig
+from awscli.customizations.agenttoolkit.utils import AgentToolkitServiceError
 from awscli.customizations.agenttoolkit.configure import (
+    AUTO_UPDATE_KEEP_PROMPT,
+    AUTO_UPDATE_PROMPT,
     ConfigureAgentToolkitCommand,
 )
 from awscli.customizations.exceptions import ConfigurationError
 from tests.unit.customizations.agenttoolkit.utils import (
     make_config,
     make_session,
+    make_skill,
     make_skill_zip,
 )
+
+
+@pytest.fixture(autouse=True)
+def state_file(tmp_path):
+    path = tmp_path / 'agent-toolkit-state' / 'state.json'
+    with patch.object(state, 'STATE_PATH', str(path)):
+        yield path
 
 
 def _make_agent_configs(tmp_path, count=2):
@@ -56,7 +68,14 @@ def _make_client(skills=None):
     return client
 
 
-def _run(agent_configs, yes_no_return=True, client=None, yes=False):
+def _run(
+    agent_configs,
+    yes_no_return=True,
+    client=None,
+    yes=False,
+    prompts=None,
+    no_auto_update=False,
+):
     stream = StringIO()
     session = make_session()
     if client is None:
@@ -66,6 +85,7 @@ def _run(agent_configs, yes_no_return=True, client=None, yes=False):
     )
     parsed_args = MagicMock()
     parsed_args.yes = yes
+    parsed_args.no_auto_update = no_auto_update
     with (
         patch(
             'awscli.customizations.agenttoolkit.configure.multiselect_choice',
@@ -74,9 +94,11 @@ def _run(agent_configs, yes_no_return=True, client=None, yes=False):
         patch(
             'awscli.customizations.agenttoolkit.configure.yes_no_choice',
             return_value=yes_no_return,
-        ),
+        ) as yes_no,
     ):
         rc = cmd._run_main(parsed_args, None)
+    if prompts is not None:
+        prompts.extend(c.args[0] for c in yes_no.call_args_list)
     return rc, stream
 
 
@@ -244,6 +266,7 @@ def test_yes_skips_all_prompts(tmp_path):
         )
         parsed_args = MagicMock()
         parsed_args.yes = True
+        parsed_args.no_auto_update = False
         cmd._run_main(parsed_args, None)
     multiselect_mock.assert_not_called()
     yes_no_mock.assert_not_called()
@@ -267,3 +290,269 @@ def test_skill_checksum_failure_reported(tmp_path):
     assert '[1/1] aws-bad' in stream.getvalue()
     skill_path = tmp_path / '.agent-0' / 'skills' / 'aws-bad'
     assert not skill_path.exists()
+
+
+def _auto_update_prompts(prompts):
+    return [
+        p
+        for p in prompts
+        if p in (AUTO_UPDATE_PROMPT, AUTO_UPDATE_KEEP_PROMPT)
+    ]
+
+
+def _write_state(state_file, data):
+    state_file.parent.mkdir(parents=True)
+    state_file.write_text(json.dumps(data))
+
+
+def _make_agent_with_skill(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    make_skill(tmp_path, '.agent-0', 'aws-serverless')
+    return configs
+
+
+def test_auto_update_prompt_mentions_core_skills():
+    assert 'new core AWS skills' in AUTO_UPDATE_PROMPT
+
+
+def test_auto_update_enabled_on_yes(tmp_path, state_file):
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _, stream = _run(configs, yes_no_return=True, prompts=prompts)
+    assert _auto_update_prompts(prompts) == [AUTO_UPDATE_PROMPT]
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': True
+    }
+    assert 'Automatic skill updates enabled.' in stream.getvalue()
+
+
+def test_auto_update_declined_writes_nothing(tmp_path, state_file):
+    configs = _make_agent_with_skill(tmp_path)
+    _, stream = _run(configs, yes_no_return=False)
+    assert not state_file.exists()
+    assert 'Automatic skill updates' not in stream.getvalue()
+
+
+def test_auto_update_enabled_without_prompt_on_yes_flag(tmp_path, state_file):
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _run(configs, yes=True, prompts=prompts)
+    assert prompts == []
+    assert state.is_auto_update_enabled()
+
+
+def test_auto_update_asks_to_keep_when_enabled(tmp_path, state_file):
+    _write_state(
+        state_file, {'agent_toolkit_auto_update': True, 'hint_dismissed': True}
+    )
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _, stream = _run(configs, yes_no_return=True, prompts=prompts)
+    assert _auto_update_prompts(prompts) == [AUTO_UPDATE_KEEP_PROMPT]
+    assert 'Automatic skill updates' not in stream.getvalue()
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': True,
+        'hint_dismissed': True,
+    }
+
+
+def test_auto_update_kept_does_not_rewrite_state(tmp_path, state_file):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _make_agent_with_skill(tmp_path)
+    with patch(
+        'awscli.customizations.agenttoolkit.configure.set_auto_update'
+    ) as set_auto_update:
+        _run(configs, yes_no_return=True)
+    assert not set_auto_update.called
+
+
+def test_auto_update_turned_off_on_no_when_enabled(tmp_path, state_file):
+    _write_state(
+        state_file, {'agent_toolkit_auto_update': True, 'hint_dismissed': True}
+    )
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _, stream = _run(configs, yes_no_return=False, prompts=prompts)
+    assert _auto_update_prompts(prompts) == [AUTO_UPDATE_KEEP_PROMPT]
+    assert 'Automatic skill updates turned off.' in stream.getvalue()
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': False,
+        'hint_dismissed': True,
+    }
+
+
+def test_auto_update_yes_flag_keeps_it_enabled(tmp_path, state_file):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _, stream = _run(configs, yes=True, prompts=prompts)
+    assert prompts == []
+    assert state.is_auto_update_enabled()
+    assert 'turned off' not in stream.getvalue()
+
+
+def test_no_auto_update_flag_with_yes_leaves_it_off(tmp_path, state_file):
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _, stream = _run(configs, yes=True, no_auto_update=True, prompts=prompts)
+    assert prompts == []
+    assert not state_file.exists()
+    assert not state.is_auto_update_enabled()
+    assert 'Automatic skill updates' not in stream.getvalue()
+
+
+def test_no_auto_update_flag_with_yes_turns_it_off(tmp_path, state_file):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _, stream = _run(configs, yes=True, no_auto_update=True, prompts=prompts)
+    assert prompts == []
+    assert not state.is_auto_update_enabled()
+    assert 'Automatic skill updates turned off.' in stream.getvalue()
+
+
+def test_no_auto_update_flag_skips_prompt_interactively(tmp_path, state_file):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _run(configs, yes_no_return=True, no_auto_update=True, prompts=prompts)
+    assert _auto_update_prompts(prompts) == []
+    assert not state.is_auto_update_enabled()
+
+
+def test_auto_update_prompted_again_when_previously_declined(
+    tmp_path, state_file
+):
+    _write_state(state_file, {'agent_toolkit_auto_update': False})
+    configs = _make_agent_with_skill(tmp_path)
+    prompts = []
+    _run(configs, yes_no_return=True, prompts=prompts)
+    assert _auto_update_prompts(prompts) == [AUTO_UPDATE_PROMPT]
+    assert state.is_auto_update_enabled()
+
+
+def test_auto_update_preserves_other_state_keys(tmp_path, state_file):
+    state_file.parent.mkdir(parents=True)
+    state_file.write_text(json.dumps({'hint_dismissed': True}))
+    configs = _make_agent_with_skill(tmp_path)
+    _run(configs, yes_no_return=True)
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': True,
+        'hint_dismissed': True,
+    }
+
+
+def test_auto_update_corrupt_state_file_is_replaced(tmp_path, state_file):
+    state_file.parent.mkdir(parents=True)
+    state_file.write_text('{ not valid json')
+    configs = _make_agent_with_skill(tmp_path)
+    rc, stream = _run(configs, yes_no_return=True)
+    assert rc == 0
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': True
+    }
+    assert 'Automatic skill updates enabled.' in stream.getvalue()
+
+
+def test_auto_update_write_failure_is_reported(tmp_path, state_file):
+    configs = _make_agent_with_skill(tmp_path)
+    with patch(
+        'awscli.customizations.agenttoolkit.configure.set_auto_update',
+        side_effect=state.StateFileError('/x/state.json: disk full'),
+    ):
+        rc, stream = _run(configs, yes_no_return=True)
+    assert rc == 0
+    assert (
+        'Could not save the automatic skill update setting to '
+        '/x/state.json: disk full\n' in stream.getvalue()
+    )
+    assert 'Automatic skill updates enabled' not in stream.getvalue()
+
+
+def test_auto_update_not_prompted_when_no_agents_selected(
+    tmp_path, state_file
+):
+    configs = _make_agent_with_skill(tmp_path)
+    stream = StringIO()
+    cmd = ConfigureAgentToolkitCommand(
+        make_session(),
+        stream=stream,
+        agent_configs=configs,
+        client=MagicMock(),
+    )
+    parsed_args = MagicMock()
+    parsed_args.yes = False
+    parsed_args.no_auto_update = False
+    with (
+        patch(
+            'awscli.customizations.agenttoolkit.configure.multiselect_choice',
+            return_value=[],
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.configure.yes_no_choice'
+        ) as yes_no,
+    ):
+        cmd._run_main(parsed_args, None)
+    assert not yes_no.called
+    assert not state_file.exists()
+
+
+def test_auto_update_not_prompted_when_skills_declined(tmp_path, state_file):
+    configs = _make_agent_configs(tmp_path, count=1)
+    client = _make_client(skills=[{'name': 'aws-serverless'}])
+    prompts = []
+    _run(configs, yes_no_return=False, client=client, prompts=prompts)
+    assert _auto_update_prompts(prompts) == []
+    assert not state_file.exists()
+
+
+def test_auto_update_not_enabled_when_all_installs_fail(tmp_path, state_file):
+    configs = _make_agent_configs(tmp_path, count=1)
+    client = _make_client(skills=[{'name': 'aws-bad'}])
+    prompts = []
+    with patch(
+        'awscli.customizations.agenttoolkit.configure.get_skill_download',
+        side_effect=AgentToolkitServiceError('download failed'),
+    ):
+        _run(configs, yes=True, client=client, prompts=prompts)
+    assert prompts == []
+    assert not state_file.exists()
+
+
+def test_auto_update_prompted_after_skills_installed(tmp_path, state_file):
+    configs = _make_agent_configs(tmp_path, count=1)
+    zip_bytes, checksum = make_skill_zip()
+    client = _make_client(skills=[{'name': 'aws-serverless'}])
+    prompts = []
+    with patch(
+        'awscli.customizations.agenttoolkit.configure.get_skill_download',
+        return_value=(zip_bytes, checksum, 'v1'),
+    ):
+        _run(configs, yes_no_return=True, client=client, prompts=prompts)
+    assert _auto_update_prompts(prompts) == [AUTO_UPDATE_PROMPT]
+    assert state.is_auto_update_enabled()
+
+
+def test_auto_update_keep_prompt_shown_without_installed_skills(
+    tmp_path, state_file
+):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _make_agent_configs(tmp_path, count=1)
+    prompts = []
+    _run(configs, yes_no_return=False, prompts=prompts)
+    assert _auto_update_prompts(prompts) == [AUTO_UPDATE_KEEP_PROMPT]
+    assert not state.is_auto_update_enabled()
+
+
+def test_no_auto_update_flag_applied_before_skill_fetch_fails(
+    tmp_path, state_file
+):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _make_agent_with_skill(tmp_path)
+    client = _make_client()
+    client.get_paginator.return_value.paginate.side_effect = RuntimeError(
+        'network down'
+    )
+    with pytest.raises(RuntimeError):
+        _run(configs, yes=True, no_auto_update=True, client=client)
+    assert not state.is_auto_update_enabled()

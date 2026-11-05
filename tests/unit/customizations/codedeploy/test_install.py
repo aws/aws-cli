@@ -11,7 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import os
+import stat
 import sys
+import tempfile
 from argparse import Namespace
 from socket import timeout
 
@@ -65,8 +68,29 @@ class TestInstall(unittest.TestCase):
         self.makedirs_patcher = mock.patch('os.makedirs')
         self.makedirs = self.makedirs_patcher.start()
 
-        self.copyfile_patcher = mock.patch('shutil.copyfile')
-        self.copyfile = self.copyfile_patcher.start()
+        self.config_open_patcher = mock.patch(
+            'awscli.customizations.codedeploy.install.open',
+            mock.mock_open(read_data=b'config-contents'),
+            create=True,
+        )
+        self.config_open = self.config_open_patcher.start()
+
+        self.os_open_patcher = mock.patch(
+            'awscli.customizations.codedeploy.install.os.open',
+            return_value=3,
+        )
+        self.os_open = self.os_open_patcher.start()
+
+        self.os_fdopen_patcher = mock.patch(
+            'awscli.customizations.codedeploy.install.os.fdopen',
+            mock.mock_open(),
+        )
+        self.os_fdopen = self.os_fdopen_patcher.start()
+
+        self.os_chmod_patcher = mock.patch(
+            'awscli.customizations.codedeploy.install.os.chmod'
+        )
+        self.os_chmod = self.os_chmod_patcher.start()
 
         self.open_patcher = mock.patch(
             'awscli.customizations.codedeploy.systems.open',
@@ -100,7 +124,10 @@ class TestInstall(unittest.TestCase):
         self.geteuid_patcher.stop()
         self.isfile_patcher.stop()
         self.makedirs_patcher.stop()
-        self.copyfile_patcher.stop()
+        self.config_open_patcher.stop()
+        self.os_open_patcher.stop()
+        self.os_fdopen_patcher.stop()
+        self.os_chmod_patcher.stop()
         self.open_patcher.stop()
 
     def test_install_throws_on_invalid_region(self):
@@ -177,10 +204,13 @@ class TestInstall(unittest.TestCase):
         self.assertIn('installer', self.args)
         self.assertEqual('install', self.args.installer)
         self.makedirs.assert_called_with('/etc/codedeploy-agent/conf')
-        self.copyfile.assset_called_with(
-            'codedeploy.onpremises.yml',
+        self.config_open.assert_called_with(self.config_file, 'rb')
+        self.os_open.assert_called_with(
             '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml',
+            mock.ANY,
+            0o600,
         )
+        self.os_fdopen().write.assert_called_with(b'config-contents')
         install.assert_called_with(self.args)
 
     @mock.patch.object(Windows, 'install')
@@ -195,12 +225,100 @@ class TestInstall(unittest.TestCase):
         self.assertIn('installer', self.args)
         self.assertEqual('codedeploy-agent.msi', self.args.installer)
         self.makedirs.assert_called_with(r'C:\ProgramData\Amazon\CodeDeploy')
-        self.copyfile.assset_called_with(
-            'conf.onpremises.yml',
+        self.config_open.assert_called_with(self.config_file, 'rb')
+        self.os_open.assert_called_with(
             r'C:\ProgramData\Amazon\CodeDeploy\conf.onpremises.yml',
+            mock.ANY,
+            0o600,
         )
+        self.os_fdopen().write.assert_called_with(b'config-contents')
         validate_administrator.assert_called_with()
         install.assert_called_with(self.args)
+
+    @mock.patch.object(Ubuntu, 'install')
+    def test_create_config_uses_restricted_permissions(self, install):
+        self.system.return_value = 'Linux'
+        self.linux_distribution.return_value = ('Ubuntu', '', '')
+        self.install._run_main(self.args, self.globals)
+        self.os_open.assert_called_with(
+            '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml',
+            os.O_WRONLY | os.O_CREAT | os.O_TRUNC | getattr(os, 'O_BINARY', 0),
+            0o600,
+        )
+
+    @mock.patch.object(Ubuntu, 'install')
+    def test_create_config_chmods_existing_file(self, install):
+        self.system.return_value = 'Linux'
+        self.linux_distribution.return_value = ('Ubuntu', '', '')
+        self.install._run_main(self.args, self.globals)
+        self.os_chmod.assert_called_with(
+            '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml', 0o600
+        )
+
+    @mock.patch.object(Ubuntu, 'install')
+    def test_create_config_skips_copy_when_source_is_destination(
+        self, install
+    ):
+        self.system.return_value = 'Linux'
+        self.linux_distribution.return_value = ('Ubuntu', '', '')
+        self.args.config_file = (
+            '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml'
+        )
+        self.isfile.return_value = True
+        self.args.override_config = True
+        self.install._run_main(self.args, self.globals)
+        self.assertFalse(self.config_open.called)
+        self.assertFalse(self.os_open.called)
+
+
+@unittest.skipIf(os.name != 'posix', 'POSIX file modes only')
+class TestInstallConfigFileMode(unittest.TestCase):
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        self.config_dir = os.path.join(self.tempdir, 'conf')
+        self.config_path = os.path.join(
+            self.config_dir, 'codedeploy.onpremises.yml'
+        )
+        self.source = os.path.join(self.tempdir, 'codedeploy.onpremises.yml')
+        with open(self.source, 'w') as f:
+            f.write('aws_secret_access_key: secret\n')
+        os.chmod(self.source, 0o600)
+        self.old_umask = os.umask(0o022)
+        self.params = Namespace(
+            config_file=self.source,
+            system=Namespace(
+                CONFIG_DIR=self.config_dir, CONFIG_PATH=self.config_path
+            ),
+        )
+        self.install = Install(mock.MagicMock())
+
+    def tearDown(self):
+        os.umask(self.old_umask)
+        for root, dirs, files in os.walk(self.tempdir, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+        os.rmdir(self.tempdir)
+
+    def _mode(self):
+        return stat.S_IMODE(os.stat(self.config_path).st_mode)
+
+    def test_new_config_file_is_owner_only(self):
+        self.install._create_config(self.params)
+        self.assertEqual(self._mode(), 0o600)
+        with open(self.config_path) as f:
+            self.assertEqual(f.read(), 'aws_secret_access_key: secret\n')
+
+    def test_existing_config_file_is_tightened(self):
+        os.makedirs(self.config_dir)
+        with open(self.config_path, 'w') as f:
+            f.write('old\n')
+        os.chmod(self.config_path, 0o644)
+        self.install._create_config(self.params)
+        self.assertEqual(self._mode(), 0o600)
+        with open(self.config_path) as f:
+            self.assertEqual(f.read(), 'aws_secret_access_key: secret\n')
 
 
 if __name__ == "__main__":

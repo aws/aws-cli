@@ -10,12 +10,35 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import collections
+import contextlib
+import datetime
+import logging
 import os
 import sys
 
-from botocore.exceptions import ClientError
+from botocore.config import Config
+from botocore.exceptions import ClientError, HTTPClientError
 
-from awscli.customizations.agenttoolkit.agents import AGENT_CONFIGS
+from awscli.customizations.agenttoolkit.agents import (
+    AGENT_CONFIGS,
+    SKILL_METADATA_FILENAME,
+)
+from awscli.customizations.agenttoolkit.filelock import file_lock
+from awscli.customizations.agenttoolkit.hooks import (
+    HOOK_ERROR_MESSAGE,
+    format_hook_message,
+    format_hook_output,
+)
+from awscli.customizations.agenttoolkit.state import (
+    StateFileError,
+    get_last_hook_run,
+    is_auto_update_enabled,
+    load_state,
+    parse_timestamp,
+    record_hook_run,
+    toolkit_dir,
+)
 from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
     SKILL_NAME_ARG,
@@ -23,14 +46,18 @@ from awscli.customizations.agenttoolkit.utils import (
     agents_with_skill,
     collect_installed_skills,
     create_client,
+    find_agent_config,
     get_skill_download,
     install_skill,
+    list_core_skills,
     read_installed_version,
     resolve_agents,
     resolve_latest_version,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
+
+LOG = logging.getLogger(__name__)
 
 UPDATE_SKILL_NAME_ARG = {**SKILL_NAME_ARG, 'required': False}
 
@@ -43,6 +70,122 @@ ALL_SKILLS_ARG = {
     'action': 'store_true',
     'required': False,
 }
+
+HOOK_ARG = {
+    'name': 'hook',
+    'help_text': (
+        'Run as an agent\'s session start hook: update all skills and '
+        'install new core skills, at most once a day, only when automatic '
+        'skill updates are turned on. The output is formatted for the '
+        'agent given with ``--agent``.'
+    ),
+    'action': 'store_true',
+    'required': False,
+}
+
+
+class _UpdateResults(
+    collections.namedtuple(
+        '_UpdateResults',
+        [
+            'updated',
+            'up_to_date',
+            'skipped',
+            'failed',
+            'installed',
+            'failed_installs',
+        ],
+    )
+):
+    """Outcome of updating every installed skill.
+
+    ``skipped`` holds ``(skill_name, skill_dir, reason)``, ``failed`` and
+    ``failed_installs`` hold ``(skill_name, error)`` for skills that could
+    not be updated or newly installed, and ``installed`` the new core
+    skills.
+    """
+
+    @classmethod
+    def empty(cls):
+        return cls([], [], [], [], [], [])
+
+    @property
+    def skipped_names(self):
+        return sorted({name for name, _, _ in self.skipped})
+
+    @property
+    def failed_names(self):
+        return [name for name, _ in self.failed]
+
+    @property
+    def failed_install_names(self):
+        return [name for name, _ in self.failed_installs]
+
+    def summary(self):
+        installed = (
+            f'{len(self.installed)} installed, ' if self.installed else ''
+        )
+        return (
+            f'{installed}{len(self.updated)} updated, '
+            f'{len(self.skipped_names)} skipped, '
+            f'{len(self.failed) + len(self.failed_installs)} failed, '
+            f'{len(self.up_to_date)} already up to date'
+        )
+
+
+# Agents stop a hook after 60 seconds and report it as an error. A failed
+# check is tried again after HOOK_RETRY_INTERVAL, so fail fast instead of
+# retrying.
+HOOK_CLIENT_CONFIG = Config(
+    connect_timeout=5, read_timeout=10, retries={'max_attempts': 1}
+)
+
+# Several sessions can start at once, and an agent may run more than one
+# hook at session start. Hook runs take turns, so a run that starts right
+# after another finds its skills roots already checked and does nothing.
+HOOK_LOCK_FILENAME = 'hook.lock'
+HOOK_LOCK_TIMEOUT = 30
+
+# A hook run checks a skills root again once this long has passed since its
+# last check, or sooner if that check failed. Each root is tracked on its own,
+# so a check through one agent covers every agent sharing the root.
+HOOK_CHECK_INTERVAL = datetime.timedelta(hours=24)
+HOOK_RETRY_INTERVAL = datetime.timedelta(hours=1)
+
+
+def _is_dropped_from_catalog(error):
+    """Whether ``error`` means the catalog no longer has the skill."""
+    return (
+        isinstance(error, ClientError)
+        and error.operation_name == 'GetLatestSkillVersion'
+        and error.response.get('ResponseMetadata', {}).get('HTTPStatusCode')
+        == 404
+    )
+
+
+def _is_check_due(last_run, now):
+    if last_run is None:
+        return True
+    checked = parse_timestamp(last_run['timestamp'])
+    if checked > now:
+        # The clock moved back, so the record can't be trusted.
+        return True
+    if last_run['is_successful']:
+        return now - checked >= HOOK_CHECK_INTERVAL
+    return now - checked >= HOOK_RETRY_INTERVAL
+
+
+def _root_succeeded(root, results):
+    """Whether no skill failed to update or install in skills ``root``."""
+    for name in results.failed_names:
+        # Still installed here, so its update was due here.
+        if os.path.exists(os.path.join(root, name, SKILL_METADATA_FILENAME)):
+            return False
+    for name in results.failed_install_names:
+        # Still missing here, so the install was meant for here.
+        if not os.path.lexists(os.path.join(root, name)):
+            return False
+    return True
 
 
 class UpdateSkillCommand(BasicCommand):
@@ -60,6 +203,7 @@ class UpdateSkillCommand(BasicCommand):
         UPDATE_SKILL_NAME_ARG,
         ALL_SKILLS_ARG,
         AGENT_ARG,
+        HOOK_ARG,
     ]
 
     def __init__(
@@ -86,7 +230,19 @@ class UpdateSkillCommand(BasicCommand):
         skill_name = parsed_args.skill_name
         update_all = getattr(parsed_args, 'all', False)
         agent_filter = getattr(parsed_args, 'agent', None)
+        hook = getattr(parsed_args, 'hook', False)
 
+        if hook:
+            if skill_name:
+                raise ParamValidationError(
+                    'Cannot use --skill-name together with --hook.'
+                )
+            agent_id = None
+            if agent_filter:
+                agent_id = find_agent_config(
+                    agent_filter, self._agent_configs
+                ).id
+            return self._run_hook(agent_id, parsed_globals)
         if update_all and skill_name:
             raise ParamValidationError(
                 'Cannot use --skill-name together with --all.'
@@ -104,8 +260,13 @@ class UpdateSkillCommand(BasicCommand):
             return self._update_all_skills(agents, parsed_globals)
         return self._update_one_skill(agents, parsed_globals, skill_name)
 
-    def _create_client(self, parsed_globals):
-        return self._client or create_client(self._session, parsed_globals)
+    def _create_client(self, parsed_globals, config=None):
+        # Kept so a hook run uses one client for updates and new skills.
+        if self._client is None:
+            self._client = create_client(
+                self._session, parsed_globals, config=config
+            )
+        return self._client
 
     def _update_one_skill(self, agents, parsed_globals, skill_name):
         installed_agents = agents_with_skill(agents, skill_name)
@@ -127,16 +288,140 @@ class UpdateSkillCommand(BasicCommand):
             return 0
 
         skipped = self._install_version(
-            client, skill_name, remote_version, outdated
+            client, skill_name, remote_version, outdated, self._stream
         )
         self._write_skipped([(skill_name, *s) for s in skipped])
         return 0
 
+    def _run_hook(self, agent_id, parsed_globals):
+        # A hook left behind after automatic updates were turned off does
+        # nothing.
+        if not is_auto_update_enabled():
+            return 0
+        with contextlib.ExitStack() as stack:
+            try:
+                stack.enter_context(
+                    file_lock(
+                        os.path.join(toolkit_dir(), HOOK_LOCK_FILENAME),
+                        timeout=HOOK_LOCK_TIMEOUT,
+                    )
+                )
+            except TimeoutError:
+                # Another run is still going and reports what it does.
+                return 0
+            except OSError as e:
+                LOG.debug('Could not lock the hook run: %s', e)
+            return self._run_hook_locked(agent_id, parsed_globals)
+
+    def _agents_due_for_check(self, agents):
+        """Return the agents with AWS skills whose skills root is due a check,
+        and those roots."""
+        now = datetime.datetime.now(datetime.timezone.utc)
+        state = load_state()
+        is_due_by_root = {}
+        due_agents = []
+        for agent in agents:
+            if not agent.get_installed_skills():
+                continue
+            root = os.path.realpath(agent.skills_path)
+            if root not in is_due_by_root:
+                is_due_by_root[root] = _is_check_due(
+                    get_last_hook_run(root, state), now
+                )
+            if is_due_by_root[root]:
+                due_agents.append(agent)
+        due_roots = [root for root, is_due in is_due_by_root.items() if is_due]
+        return due_agents, due_roots
+
+    def _run_hook_locked(self, agent_id, parsed_globals):
+        results = _UpdateResults.empty()
+        error = None
+        due_roots = []
+        try:
+            agents, due_roots = self._agents_due_for_check(
+                resolve_agents(agent_id, self._agent_configs)
+            )
+            if not agents:
+                return 0
+            if self._collect_updates(
+                agents, parsed_globals, None, results, HOOK_CLIENT_CONFIG
+            ):
+                self._install_new_core_skills(
+                    agents, self._create_client(parsed_globals), results
+                )
+        except Exception as e:
+            LOG.debug('Automatic skill update failed', exc_info=True)
+            error = e
+        # Skills updated before an error are still reported, so the agent
+        # loads them again.
+        message = format_hook_message(
+            results.updated,
+            results.installed,
+            results.skipped_names,
+            results.failed_names,
+            results.failed_install_names,
+        )
+        if error is None:
+            summary = results.summary()
+        else:
+            message = f'{message} {HOOK_ERROR_MESSAGE}'.lstrip()
+            summary = f'Could not check for updates: {error}'
+        self._stream.write(
+            format_hook_output(
+                agent_id,
+                message,
+                skills_updated=bool(results.updated or results.installed),
+            )
+        )
+        self._record_hook_runs(due_roots, results, error, summary)
+        if error is not None or results.failed or results.failed_installs:
+            return 1
+        return 0
+
+    def _record_hook_runs(self, roots, results, error, summary):
+        timestamp = datetime.datetime.now(datetime.timezone.utc)
+        for root in roots:
+            is_successful = error is None and _root_succeeded(root, results)
+            try:
+                record_hook_run(
+                    root,
+                    is_successful=is_successful,
+                    summary=summary,
+                    timestamp=timestamp,
+                )
+            except StateFileError as e:
+                LOG.debug('Could not record the hook run: %s', e)
+
     def _update_all_skills(self, agents, parsed_globals):
-        installed_skills = collect_installed_skills(agents)
-        if not installed_skills:
+        results = _UpdateResults.empty()
+        if not self._collect_updates(
+            agents, parsed_globals, self._stream, results
+        ):
             self._stream.write('No installed AWS skills found.\n')
             return 0
+        if not (results.updated or results.skipped or results.failed):
+            self._stream.write(
+                'All installed AWS skills are already up to date.\n'
+            )
+            return 0
+        self._stream.write(f'\n{results.summary()}.\n')
+        self._write_skipped(results.skipped)
+        self._write_failed(results.failed)
+        return 1 if results.failed else 0
+
+    def _collect_updates(
+        self, agents, parsed_globals, stream, results, client_config=None
+    ):
+        """Update every installed skill that is out of date.
+
+        Progress is written to ``stream`` if it is set. Each outcome is added
+        to the ``_UpdateResults`` in ``results`` as soon as it is known, so
+        it holds the skills already handled if an error is raised. Returns
+        ``False`` if no skills are installed.
+        """
+        installed_skills = collect_installed_skills(agents)
+        if not installed_skills:
+            return False
 
         # Group by name from the scan above. Asking each agent which skills it
         # has once per skill name would rescan every skills directory for every
@@ -145,8 +430,7 @@ class UpdateSkillCommand(BasicCommand):
         for skill in installed_skills:
             agents_by_skill.setdefault(skill.name, []).append(skill.agent)
 
-        client = self._create_client(parsed_globals)
-        updated, up_to_date, skipped, failed = [], [], [], []
+        client = self._create_client(parsed_globals, client_config)
         for skill_name in sorted(agents_by_skill):
             # One bad skill should not block updates to the remaining skills.
             try:
@@ -154,32 +438,89 @@ class UpdateSkillCommand(BasicCommand):
                     agents_by_skill[skill_name], client, skill_name
                 )
                 if not outdated:
-                    up_to_date.append(skill_name)
+                    results.up_to_date.append(skill_name)
                     continue
                 skill_skipped = self._install_version(
-                    client, skill_name, remote_version, outdated
+                    client, skill_name, remote_version, outdated, stream
                 )
             except (AgentToolkitServiceError, ClientError) as e:
-                failed.append((skill_name, e))
+                if _is_dropped_from_catalog(e):
+                    # Left as installed and not reported.
+                    continue
+                results.failed.append((skill_name, e))
                 continue
             if skill_skipped:
-                skipped.extend((skill_name, *s) for s in skill_skipped)
+                results.skipped.extend((skill_name, *s) for s in skill_skipped)
             else:
-                updated.append(skill_name)
+                results.updated.append(skill_name)
+        return True
 
-        if not (updated or skipped or failed):
-            self._stream.write(
-                'All installed AWS skills are already up to date.\n'
+    def _install_new_core_skills(self, agents, client, results):
+        """Install core skills missing from agents that have AWS skills.
+
+        Agents the customer never set up with the toolkit are left alone.
+        A core skill removed with ``remove-skill`` is installed again.
+        Outcomes are added to ``results`` like :meth:`_collect_updates`.
+        """
+        targets = [agent for agent in agents if agent.get_installed_skills()]
+        if not targets:
+            return
+        core_skills = list_core_skills(client)
+        for skill in sorted(core_skills, key=lambda s: s['name']):
+            skill_name = skill['name']
+            missing = self._agents_missing_skill(
+                targets, skill_name, results.skipped
             )
-            return 0
-        skipped_count = len({name for name, _, _ in skipped})
-        self._stream.write(
-            f'\n{len(updated)} updated, {skipped_count} skipped, '
-            f'{len(failed)} failed, {len(up_to_date)} already up to date.\n'
-        )
-        self._write_skipped(skipped)
-        self._write_failed(failed)
-        return 1 if failed else 0
+            if not missing:
+                continue
+            try:
+                zip_bytes, checksum, version = get_skill_download(
+                    client, skill_name, version=skill.get('skillVersion')
+                )
+                skill_skipped = install_skill(
+                    skill_name, version, zip_bytes, checksum, missing
+                )
+            except (
+                AgentToolkitServiceError,
+                ClientError,
+                HTTPClientError,
+            ) as e:
+                results.failed_installs.append((skill_name, e))
+                continue
+            results.skipped.extend((skill_name, *s) for s in skill_skipped)
+            if len(skill_skipped) < len(missing):
+                results.installed.append(skill_name)
+
+    def _agents_missing_skill(self, agents, skill_name, skipped):
+        """Return the agents to install ``skill_name`` into.
+
+        A directory of that name the toolkit did not install is added to
+        ``skipped`` without downloading anything.
+        """
+        missing = []
+        seen_roots = set()
+        for agent in agents:
+            root = os.path.realpath(agent.skills_path)
+            if root in seen_roots:
+                continue
+            seen_roots.add(root)
+            skill_dir = os.path.join(root, skill_name)
+            if os.path.exists(
+                os.path.join(skill_dir, SKILL_METADATA_FILENAME)
+            ):
+                continue
+            if os.path.lexists(skill_dir):
+                skipped.append(
+                    (
+                        skill_name,
+                        skill_dir,
+                        'a skill with this name exists that the AWS CLI '
+                        'did not install',
+                    )
+                )
+                continue
+            missing.append(agent)
+        return missing
 
     def _write_skipped(self, skipped):
         if not skipped:
@@ -215,7 +556,9 @@ class UpdateSkillCommand(BasicCommand):
                 outdated.append(agent)
         return remote_version, outdated
 
-    def _install_version(self, client, skill_name, remote_version, agents):
+    def _install_version(
+        self, client, skill_name, remote_version, agents, stream
+    ):
         zip_bytes, checksum, version = get_skill_download(
             client, skill_name, version=remote_version
         )
@@ -225,7 +568,7 @@ class UpdateSkillCommand(BasicCommand):
             zip_bytes,
             checksum,
             agents,
-            self._stream,
+            stream,
             action='Updated',
             overwrite_existing=True,
         )

@@ -68,6 +68,11 @@ def _write_state(path, state):
     write_file_atomic(path, content, prefix='.state-')
 
 
+def toolkit_dir():
+    """Directory holding the state file and other agent toolkit files."""
+    return os.path.dirname(_state_file())
+
+
 def update_state(mutate):
     """Apply ``mutate`` to the state and save it.
 
@@ -148,14 +153,14 @@ def _is_valid_hook_run(run):
 
 
 def get_last_hook_run(path, state=None):
-    """Return the last run recorded for the hook at ``path``, or ``None``."""
+    """Return the last check recorded for ``path``, or ``None``."""
     return get_last_hook_runs(state).get(_hook_key(path))
 
 
 def record_hook_run(path, is_successful, summary, timestamp=None):
-    """Record the outcome of an automatic update run by the hook at ``path``.
+    """Record the outcome of an automatic update check of ``path``.
 
-    :param path: Harness config file the hook is installed in.
+    :param path: Skills root the hook run checked.
     :param timestamp: Aware ``datetime`` of the run. Defaults to now.
     """
     if timestamp is None:

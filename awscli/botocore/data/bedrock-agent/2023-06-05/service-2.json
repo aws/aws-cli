@@ -5413,6 +5413,14 @@
       "min":0,
       "pattern":".*"
     },
+    "FieldType":{
+      "type":"string",
+      "documentation":"<p>The data type of a custom metadata field. Valid values:</p> <ul> <li> <p> <code>STRING</code> – The field holds a single string value.</p> </li> <li> <p> <code>STRING_LIST</code> – The field holds a list of string values.</p> </li> </ul>",
+      "enum":[
+        "STRING",
+        "STRING_LIST"
+      ]
+    },
     "FieldsForReranking":{
       "type":"list",
       "member":{"shape":"FieldForReranking"},
@@ -7788,6 +7796,10 @@
         "failureReasons":{
           "shape":"FailureReasons",
           "documentation":"<p>A list of reasons that the API operation on the knowledge base failed.</p>"
+        },
+        "metadataConfigurations":{
+          "shape":"MetadataConfigurations",
+          "documentation":"<p>The custom metadata field configurations of the knowledge base. Each configuration specifies whether its field is searchable (<code>ENABLED</code> or <code>DISABLED</code>).</p> <p>If the update fails, the knowledge base status becomes <code>UPDATE_UNSUCCESSFUL</code>, the field configurations revert to their previous values, and <code>failureReasons</code> describes the cause. You can retry the update from <code>UPDATE_UNSUCCESSFUL</code>.</p>"
         }
       },
       "documentation":"<p>Contains information about a knowledge base.</p>"
@@ -9053,6 +9065,29 @@
       "max":10,
       "min":1
     },
+    "MetadataConfiguration":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "searchability"
+      ],
+      "members":{
+        "name":{
+          "shape":"MetadataKeyName",
+          "documentation":"<p>The name of the custom metadata field.</p>"
+        },
+        "type":{
+          "shape":"FieldType",
+          "documentation":"<p>The data type of the custom metadata field. Valid values are <code>STRING</code> and <code>STRING_LIST</code>.</p>"
+        },
+        "searchability":{
+          "shape":"SearchableStatus",
+          "documentation":"<p>Specifies whether the custom metadata field is searchable. Valid values:</p> <ul> <li> <p> <code>ENABLED</code> – The field is searchable.</p> </li> <li> <p> <code>DISABLED</code> – The field is not searchable.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the configuration of a single custom metadata field in a knowledge base, including its name, data type, and whether the field is searchable.</p>"
+    },
     "MetadataConfigurationForReranking":{
       "type":"structure",
       "required":["selectionMode"],
@@ -9067,6 +9102,21 @@
         }
       },
       "documentation":"<p>Specifies how metadata fields should be handled during the reranking process.</p>"
+    },
+    "MetadataConfigurations":{
+      "type":"list",
+      "member":{"shape":"MetadataConfiguration"},
+      "documentation":"<p>A list of up to 30 custom metadata field configurations.</p>",
+      "max":30,
+      "min":0
+    },
+    "MetadataKeyName":{
+      "type":"string",
+      "documentation":"<p>The name of a custom metadata field.</p>",
+      "max":200,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_][a-zA-Z0-9_-]*",
+      "sensitive":true
     },
     "MetadataSourceType":{
       "type":"string",
@@ -11282,6 +11332,14 @@
       },
       "documentation":"<p>The endpoint information to connect to your Salesforce data source.</p>"
     },
+    "SearchableStatus":{
+      "type":"string",
+      "documentation":"<p>Specifies whether a custom metadata field is searchable. The knowledge base matches query text against the values of searchable fields.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "SecretArn":{
       "type":"string",
       "pattern":"arn:aws(|-cn|-us-gov):secretsmanager:[a-z0-9-]{1,20}:([0-9]{12}|):secret:[a-zA-Z0-9!/_+=.@-]{1,512}"
@@ -12787,6 +12845,10 @@
         "storageConfiguration":{
           "shape":"StorageConfiguration",
           "documentation":"<p>Specifies the configuration for the vector store used for the knowledge base. You must use the same configuration as when the knowledge base was created.</p>"
+        },
+        "metadataConfigurations":{
+          "shape":"MetadataConfigurations",
+          "documentation":"<p>Specifies up to 30 custom metadata field configurations for a managed knowledge base.</p> <p>The list that you specify replaces the existing configurations. The update removes any configuration that you leave out, and its field is no longer searchable. An empty list removes all configurations. If you don't specify a list, the existing configurations don't change.</p>"
         }
       }
     },

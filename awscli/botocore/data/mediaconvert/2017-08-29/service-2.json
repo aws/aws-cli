@@ -1158,12 +1158,12 @@
       },
       "errors": [
         {
-          "shape": "UnprocessableEntityException",
-          "documentation": "The input file was recognized but appears to be malformed or corrupt."
-        },
-        {
           "shape": "BadRequestException",
           "documentation": "The service can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The input file was recognized but appears to be malformed or corrupt."
         },
         {
           "shape": "InternalServerErrorException",
@@ -3360,6 +3360,11 @@
     "CaptionDescription": {
       "type": "structure",
       "members": {
+        "AudioSourceNames": {
+          "shape": "__listOf__stringMin1",
+          "locationName": "audioSourceNames",
+          "documentation": "Specifies the audio selector or audio selector group that MediaConvert uses to generate Smart subtitles. The audio selector you choose must exist in all inputs for the job. If MediaConvert can't detect speech in the audio, it can't generate subtitles. Required when source is SMART_SUBTITLE; not allowed otherwise."
+        },
         "CaptionSelectorName": {
           "shape": "__stringMin1",
           "locationName": "captionSelectorName",
@@ -3384,6 +3389,11 @@
           "shape": "__string",
           "locationName": "languageDescription",
           "documentation": "Specify a label for this set of output captions. For example, \"English\", \"Director commentary\", or \"track_2\". For streaming outputs, MediaConvert passes this information into destination manifests for display on the end-viewer's player device. For outputs in other output groups, the service ignores this setting."
+        },
+        "Source": {
+          "shape": "CaptionSource",
+          "locationName": "source",
+          "documentation": "Specify the source of the captions for this caption description. Choose Captions input source (INPUT_CAPTION_SELECTOR) to use a caption selector from your input. Choose Smart subtitling (SMART_SUBTITLE) to have MediaConvert and Elemental Inference generate subtitles automatically from an audio source that you specify."
         }
       },
       "documentation": "This object holds groups of settings related to captions for one output. For each output that has captions, include one instance of CaptionDescriptions."
@@ -3508,6 +3518,14 @@
         }
       },
       "documentation": "Use captions selectors to specify the captions data from your input that you use in your outputs. You can use up to 100 captions selectors per input."
+    },
+    "CaptionSource": {
+      "type": "string",
+      "documentation": "Specify the source of the captions for this caption description. Choose Captions input source (INPUT_CAPTION_SELECTOR) to use a caption selector from your input. Choose Smart subtitling (SMART_SUBTITLE) to have MediaConvert and Elemental Inference generate subtitles automatically from an audio source that you specify.",
+      "enum": [
+        "INPUT_CAPTION_SELECTOR",
+        "SMART_SUBTITLE"
+      ]
     },
     "CaptionSourceByteRateLimit": {
       "type": "string",
@@ -4755,6 +4773,11 @@
           "documentation": "Prevent duplicate jobs from being created and ensure idempotency for your requests. A client request token can be any string that includes up to 64 ASCII characters. If you reuse a client request token within one minute of a successful request, the API returns the job details of the original request instead. For more information see https://docs.aws.amazon.com/mediaconvert/latest/apireference/idempotency.html.",
           "idempotencyToken": true
         },
+        "ElementalInferenceSettings": {
+          "shape": "ElementalInferenceSettings",
+          "locationName": "elementalInferenceSettings",
+          "documentation": "The Elemental Inference settings used in this job."
+        },
         "HopDestinations": {
           "shape": "__listOfHopDestination",
           "locationName": "hopDestinations",
@@ -4843,6 +4866,11 @@
           "shape": "__string",
           "locationName": "description",
           "documentation": "Optional. A description of the job template you are creating."
+        },
+        "ElementalInferenceSettings": {
+          "shape": "ElementalInferenceSettings",
+          "locationName": "elementalInferenceSettings",
+          "documentation": "The Elemental Inference settings used in this job."
         },
         "HopDestinations": {
           "shape": "__listOfHopDestination",
@@ -6542,7 +6570,7 @@
         "Feeds": {
           "shape": "__listOfElementalInferenceFeed",
           "locationName": "feeds",
-          "documentation": "A list of Elemental Inference feeds used by this job."
+          "documentation": "A list of Elemental Inference feeds created during this job."
         }
       },
       "documentation": "The Elemental Inference configuration used in this job."
@@ -6551,7 +6579,8 @@
       "type": "string",
       "documentation": "Elemental Inference feature.",
       "enum": [
-        "SMART_CROP"
+        "SMART_CROP",
+        "SMART_SUBTITLE"
       ]
     },
     "ElementalInferenceFeed": {
@@ -6560,7 +6589,7 @@
         "Arn": {
           "shape": "__string",
           "locationName": "arn",
-          "documentation": "Feed ARN."
+          "documentation": "The ARN of an AWS Elemental Inference Feed."
         },
         "FeedManagementState": {
           "shape": "ElementalInferenceFeedManagementState",
@@ -6568,7 +6597,18 @@
           "documentation": "Elemental Inference Feed management state."
         }
       },
-      "documentation": "Elemental Inference Feed."
+      "documentation": "An AWS Elemental Inference Feed."
+    },
+    "ElementalInferenceFeedConfigurationSource": {
+      "type": "structure",
+      "members": {
+        "FeedArn": {
+          "shape": "__stringPatternArnAwsElementalInferenceFeedAZ0919",
+          "locationName": "feedArn",
+          "documentation": "The ARN of an Elemental Inference Feed."
+        }
+      },
+      "documentation": "The source of your Elemental Inference Feed configuration."
     },
     "ElementalInferenceFeedManagementState": {
       "type": "string",
@@ -6579,6 +6619,17 @@
         "PENDING_DELETION",
         "DELETED"
       ]
+    },
+    "ElementalInferenceSettings": {
+      "type": "structure",
+      "members": {
+        "FeedConfigurationSource": {
+          "shape": "ElementalInferenceFeedConfigurationSource",
+          "locationName": "feedConfigurationSource",
+          "documentation": "Optional. The source of your Elemental Inference Feed configuration. MediaConvert will reference this configuration source when you specify job settings which use Elemental Inference."
+        }
+      },
+      "documentation": "The Elemental Inference settings used in this job."
     },
     "EmbeddedConvert608To708": {
       "type": "string",
@@ -9664,6 +9715,11 @@
           "locationName": "elementalInferenceConfiguration",
           "documentation": "The Elemental Inference configuration used in this job."
         },
+        "ElementalInferenceSettings": {
+          "shape": "ElementalInferenceSettings",
+          "locationName": "elementalInferenceSettings",
+          "documentation": "The Elemental Inference settings used in this job."
+        },
         "ErrorCode": {
           "shape": "__integer",
           "locationName": "errorCode",
@@ -9863,7 +9919,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInput",
@@ -9952,6 +10008,11 @@
           "locationName": "description",
           "documentation": "An optional description you create for each job template."
         },
+        "ElementalInferenceSettings": {
+          "shape": "ElementalInferenceSettings",
+          "locationName": "elementalInferenceSettings",
+          "documentation": "The Elemental Inference settings used in this job."
+        },
         "HopDestinations": {
           "shape": "__listOfHopDestination",
           "locationName": "hopDestinations",
@@ -9995,8 +10056,8 @@
       },
       "documentation": "A job template is a pre-made set of encoding instructions that you can use to quickly create a job.",
       "required": [
-        "Settings",
-        "Name"
+        "Name",
+        "Settings"
       ]
     },
     "JobTemplateListBy": {
@@ -10039,7 +10100,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInputTemplate",
@@ -14572,6 +14633,11 @@
           "locationName": "description",
           "documentation": "The new description for the job template, if you are changing it."
         },
+        "ElementalInferenceSettings": {
+          "shape": "ElementalInferenceSettings",
+          "locationName": "elementalInferenceSettings",
+          "documentation": "The Elemental Inference settings used in this job."
+        },
         "HopDestinations": {
           "shape": "__listOfHopDestination",
           "locationName": "hopDestinations",
@@ -17443,6 +17509,10 @@
     "__stringPatternArnAwsAZ09EventsAZ090912ConnectionAZAZ09AF0936": {
       "type": "string",
       "pattern": "^arn:aws[a-z0-9-]*:events:[a-z0-9-]+:[0-9]{12}:connection/[a-zA-Z0-9-]+/[a-f0-9-]{36}$"
+    },
+    "__stringPatternArnAwsElementalInferenceFeedAZ0919": {
+      "type": "string",
+      "pattern": "^arn:aws:elemental-inference:.*:feed/[a-z0-9]{19}$"
     },
     "__stringPatternArnAwsUsGovAcm": {
       "type": "string",

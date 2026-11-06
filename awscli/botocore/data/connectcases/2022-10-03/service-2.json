@@ -14,6 +14,27 @@
     "uid":"connectcases-2022-10-03"
   },
   "operations":{
+    "BatchCreateRelatedItem":{
+      "name":"BatchCreateRelatedItem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cases:batchCreateRelatedItem",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchCreateRelatedItemRequest"},
+      "output":{"shape":"BatchCreateRelatedItemResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a comment and associates it with multiple cases in a single request. All cases must belong to the same domain. This operation supports only the Comment related item type.</p> <p>Each case is processed independently. If some cases fail, the remaining cases still receive the related item. To determine whether individual items failed, inspect the <code>failedItems</code> array in the response.</p> <p>The entire request fails, and no related items are created, in the following cases:</p> <ul> <li> <p>The specified domain doesn't exist.</p> </li> <li> <p>A reference ID doesn't match any case in the domain.</p> </li> <li> <p>The request contains duplicate case IDs.</p> </li> <li> <p>The content isn't comment content.</p> </li> </ul> <note> <p>This operation uses the same IAM action as <a href=\"https://docs.aws.amazon.com/cases/latest/APIReference/API_CreateRelatedItem.html\">CreateRelatedItem</a> (<code>cases:CreateRelatedItem</code>). You can use the <code>cases:IsBatchAction</code> condition key in IAM policies to allow or deny batch operations independently from single-case operations.</p> </note> <note> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </note> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
+      "idempotent":true
+    },
     "BatchGetCaseRule":{
       "name":"BatchGetCaseRule",
       "http":{
@@ -30,7 +51,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets a batch of case rules. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Gets a batch of case rules. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "readonly":true
     },
     "BatchGetField":{
@@ -72,6 +93,26 @@
       "documentation":"<p>Creates and updates a set of field options for a single select field in a Cases domain.</p>",
       "idempotent":true
     },
+    "BatchUpdateCase":{
+      "name":"BatchUpdateCase",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/cases:batchUpdateCase",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateCaseRequest"},
+      "output":{"shape":"BatchUpdateCaseResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates fields on multiple cases in a single request. All cases must belong to the same domain. Set the title, status, and customer ID through the top-level <code>title</code>, <code>status</code>, and <code>customerId</code> parameters, and set other fields through the <code>fields</code> array.</p> <p>Each case is processed independently. If some cases fail, the remaining cases are still updated. To determine whether individual cases failed, inspect the <code>failedCases</code> array in the response.</p> <p>The entire request fails, and no cases are updated, in the following cases:</p> <ul> <li> <p>The specified domain doesn't exist.</p> </li> <li> <p>A reference ID doesn't match any case in the domain.</p> </li> <li> <p>The request contains duplicate case IDs.</p> </li> <li> <p>The request doesn't specify any update. Provide at least one entry in <code>fields</code>, or a <code>title</code>, <code>status</code>, or <code>customerId</code>.</p> </li> <li> <p>A field identifier in <code>fields</code> doesn't resolve to a field in the domain, for example, an unknown field name.</p> </li> <li> <p>A field name contains a pipe (<code>|</code>) or comma (<code>,</code>) character.</p> </li> <li> <p> <code>fields</code> includes <code>title</code>, <code>status</code>, or <code>customerId</code>.</p> </li> </ul> <note> <p>This operation uses the same IAM action as <a href=\"https://docs.aws.amazon.com/cases/latest/APIReference/API_UpdateCase.html\">UpdateCase</a> (<code>cases:UpdateCase</code>). You can use the <code>cases:IsBatchAction</code> condition key in IAM policies to allow or deny batch operations independently from single-case operations.</p> </note> <note> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </note> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
+      "idempotent":true
+    },
     "CreateCase":{
       "name":"CreateCase",
       "http":{
@@ -89,7 +130,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>When creating a case from a template that has tag propagation configurations, the specified tags are automatically applied to the case.</p> <p>The following fields are required when creating a case:</p> <ul> <li> <p> <code>customer_id</code> - You must provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID</code> </p> </li> <li> <p> <code>title</code> </p> </li> </ul></p>",
+      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code>, you must also have the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the user ARN that you provide.</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>When creating a case from a template that has tag propagation configurations, the specified tags are automatically applied to the case.</p> <p>The following field is always required when creating a case:</p> <ul> <li> <p> <code>title</code> </p> </li> </ul> <p>The following field may be required depending on the template configuration:</p> <ul> <li> <p> <code>customer_id</code> - Required only if the template's <code>requiredFields</code> list includes <code>customer_id</code>. When required, provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account_ID:domains/your_profiles_domain_name/profiles/profile_ID</code>. When not required, the field is optional and can be omitted, added, changed, or removed after case creation.</p> </li> </ul></p>",
       "idempotent":true
     },
     "CreateCaseRule":{
@@ -110,7 +151,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a new case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Creates a new case rule. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "idempotent":true
     },
     "CreateDomain":{
@@ -130,7 +171,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a domain, which is a container for all case data, such as cases, fields, templates and layouts. Each Amazon Connect instance can be associated with only one Cases domain.</p> <important> <p>This will not associate your connect instance to Cases domain. Instead, use the Amazon Connect <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateIntegrationAssociation.html\">CreateIntegrationAssociation</a> API. You need specific IAM permissions to successfully associate the Cases domain. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/required-permissions-iam-cases.html#onboard-cases-iam\">Onboard to Cases</a>.</p> </important>",
+      "documentation":"<p>Creates a domain, which is a container for all case data, such as cases, fields, templates and layouts. Each Connect Customer instance can be associated with only one Cases domain.</p> <important> <p>This will not associate your connect instance to Cases domain. Instead, use the Connect Customer <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateIntegrationAssociation.html\">CreateIntegrationAssociation</a> API. You need specific IAM permissions to successfully associate the Cases domain. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/required-permissions-iam-cases.html#onboard-cases-iam\">Onboard to Cases</a>.</p> </important>",
       "idempotent":true
     },
     "CreateField":{
@@ -191,7 +232,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <p>There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Amazon Connect Cases quotas</a>.</p> <p> <b>Use cases</b> </p> <p>Following are examples of related items that you may want to associate with a case:</p> <ul> <li> <p>Related contacts, such as calls, chats, emails tasks</p> </li> <li> <p>Comments, for agent notes</p> </li> <li> <p>SLAs, to capture target resolution goals</p> </li> <li> <p>Cases, to capture related Amazon Connect Cases</p> </li> <li> <p>Files, such as policy documentation or customer-provided attachments</p> </li> <li> <p>Custom related items, which provide flexibility for you to define related items that such as bookings, orders, products, notices, and more</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>If you are associating a contact to a case by passing in <code>Contact</code> for a <code>type</code>, you must have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeContact.html\">DescribeContact</a> permission on the ARN of the contact that you provide in <code>content.contact.contactArn</code>.</p> </li> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>The <code>type</code> field is reserved for internal use only.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>",
+      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <p>There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> <p> <b>Use cases</b> </p> <p>Following are examples of related items that you may want to associate with a case:</p> <ul> <li> <p>Related contacts, such as calls, chats, emails tasks</p> </li> <li> <p>Comments, for agent notes</p> </li> <li> <p>SLAs, to capture target resolution goals</p> </li> <li> <p>Cases, to capture related Connect Customer Cases</p> </li> <li> <p>Files, such as policy documentation or customer-provided attachments</p> </li> <li> <p>Custom related items, which provide flexibility for you to define related items that such as bookings, orders, products, notices, and more</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>If you are associating a contact to a case by passing in <code>Contact</code> for a <code>type</code>, you must have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeContact.html\">DescribeContact</a> permission on the ARN of the contact that you provide in <code>content.contact.contactArn</code>.</p> </li> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
       "idempotent":true
     },
     "CreateTemplate":{
@@ -250,7 +291,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes a case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Deletes a case rule. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "idempotent":true
     },
     "DeleteDomain":{
@@ -270,7 +311,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes a Cases domain.</p> <note> <p>After deleting your domain you must disassociate the deleted domain from your Amazon Connect instance with another API call before being able to use Cases again with this Amazon Connect instance. See <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteIntegrationAssociation.html\">DeleteIntegrationAssociation</a>.</p> </note>",
+      "documentation":"<p>Deletes a Cases domain.</p> <note> <p>After deleting your domain you must disassociate the deleted domain from your Connect Customer instance with another API call before being able to use Cases again with this Connect Customer instance. See <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteIntegrationAssociation.html\">DeleteIntegrationAssociation</a>.</p> </note>",
       "idempotent":true
     },
     "DeleteField":{
@@ -291,7 +332,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Deletes a field from a cases template.</p> <p>After a field is deleted:</p> <ul> <li> <p>You can still retrieve the field by calling <code>BatchGetField</code>.</p> </li> <li> <p>You cannot update a deleted field by calling <code>UpdateField</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted fields are not included in the <code>ListFields</code> response.</p> </li> <li> <p>Calling <code>CreateCase</code> with a deleted field throws a <code>ValidationException</code> denoting which field identifiers in the request have been deleted.</p> </li> <li> <p>Calling <code>GetCase</code> with a deleted field identifier returns the deleted field's value if one exists.</p> </li> <li> <p>Calling <code>UpdateCase</code> with a deleted field ID throws a <code>ValidationException</code> if the case does not already contain a value for the deleted field. Otherwise it succeeds, allowing you to update or remove (using <code>emptyValue: {}</code>) the field's value from the case.</p> </li> <li> <p> <code>GetTemplate</code> does not return field IDs for deleted fields.</p> </li> <li> <p> <code>GetLayout</code> does not return field IDs for deleted fields.</p> </li> <li> <p>Calling <code>SearchCases</code> with the deleted field ID as a filter returns any cases that have a value for the deleted field that matches the filter criteria.</p> </li> <li> <p>Calling <code>SearchCases</code> with a <code>searchTerm</code> value that matches a deleted field's value on a case returns the case in the response.</p> </li> <li> <p>Calling <code>BatchPutFieldOptions</code> with a deleted field ID throw a <code>ValidationException</code>.</p> </li> <li> <p>Calling <code>GetCaseEventConfiguration</code> does not return field IDs for deleted fields.</p> </li> </ul>",
+      "documentation":"<p>Deletes a field from a Cases template.</p> <p>After a field is deleted:</p> <ul> <li> <p>You can still retrieve the field by calling <code>BatchGetField</code>.</p> </li> <li> <p>You cannot update a deleted field by calling <code>UpdateField</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted fields are not included in the <code>ListFields</code> response.</p> </li> <li> <p>Calling <code>CreateCase</code> with a deleted field throws a <code>ValidationException</code> denoting which field identifiers in the request have been deleted.</p> </li> <li> <p>Calling <code>GetCase</code> with a deleted field identifier returns the deleted field's value if one exists.</p> </li> <li> <p>Calling <code>UpdateCase</code> with a deleted field ID throws a <code>ValidationException</code> if the case does not already contain a value for the deleted field. Otherwise it succeeds, allowing you to update or remove (using <code>emptyValue: {}</code>) the field's value from the case.</p> </li> <li> <p> <code>GetTemplate</code> does not return field IDs for deleted fields.</p> </li> <li> <p> <code>GetLayout</code> does not return field IDs for deleted fields.</p> </li> <li> <p>Calling <code>SearchCases</code> with the deleted field ID as a filter returns any cases that have a value for the deleted field that matches the filter criteria.</p> </li> <li> <p>Calling <code>SearchCases</code> with a <code>searchTerm</code> value that matches a deleted field's value on a case returns the case in the response.</p> </li> <li> <p>Calling <code>BatchPutFieldOptions</code> with a deleted field ID throw a <code>ValidationException</code>.</p> </li> <li> <p>Calling <code>GetCaseEventConfiguration</code> does not return field IDs for deleted fields.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteLayout":{
@@ -311,7 +352,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes a layout from a cases template. You can delete up to 100 layouts per domain.</p> <p>After a layout is deleted:</p> <ul> <li> <p>You can still retrieve the layout by calling <code>GetLayout</code>.</p> </li> <li> <p>You cannot update a deleted layout by calling <code>UpdateLayout</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted layouts are not included in the <code>ListLayouts</code> response.</p> </li> </ul>",
+      "documentation":"<p>Deletes a layout from a Cases template. You can delete up to 100 layouts per domain.</p> <p>After a layout is deleted:</p> <ul> <li> <p>You can still retrieve the layout by calling <code>GetLayout</code>.</p> </li> <li> <p>You cannot update a deleted layout by calling <code>UpdateLayout</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted layouts are not included in the <code>ListLayouts</code> response.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteRelatedItem":{
@@ -350,7 +391,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes a cases template. You can delete up to 100 templates per domain.</p> <p>After a cases template is deleted:</p> <ul> <li> <p>You can still retrieve the template by calling <code>GetTemplate</code>.</p> </li> <li> <p>You cannot update the template. </p> </li> <li> <p>You cannot create a case by using the deleted template.</p> </li> <li> <p>Deleted templates are not included in the <code>ListTemplates</code> response.</p> </li> </ul>",
+      "documentation":"<p>Deletes a Cases template. You can delete up to 100 templates per domain.</p> <p>After a Cases template is deleted:</p> <ul> <li> <p>You can still retrieve the template by calling <code>GetTemplate</code>.</p> </li> <li> <p>You cannot update the template. </p> </li> <li> <p>You cannot create a case by using the deleted template.</p> </li> <li> <p>Deleted templates are not included in the <code>ListTemplates</code> response.</p> </li> </ul>",
       "idempotent":true
     },
     "GetCase":{
@@ -483,7 +524,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all case rules in a Cases domain. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Lists all case rules in a Cases domain. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "readonly":true
     },
     "ListCasesForContact":{
@@ -635,7 +676,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Adds case event publishing configuration. For a complete list of fields you can add to the event message, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html\">Create case fields</a> in the <i>Amazon Connect Administrator Guide</i> </p>"
+      "documentation":"<p>Adds case event publishing configuration. For a complete list of fields you can add to the event message, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html\">Create case fields</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
     },
     "SearchAllRelatedItems":{
       "name":"SearchAllRelatedItems",
@@ -653,7 +694,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Searches for related items across all cases within a domain. This is a global search operation that returns related items from multiple cases, unlike the case-specific <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchRelatedItems.html\">SearchRelatedItems</a> API.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find cases with similar issues across the domain. For example, search for all cases containing comments about \"product defect\" to identify patterns and existing solutions.</p> </li> <li> <p>Locate all cases associated with specific contacts or orders. For example, find all cases linked to a contactArn to understand the complete customer journey. </p> </li> <li> <p>Monitor SLA compliance across cases. For example, search for all cases with \"Active\" SLA status to prioritize remediation efforts.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>This API returns case identifiers, not complete case objects. To retrieve full case details, you must make additional calls to the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetCase.html\">GetCase</a> API for each returned case ID. </p> </li> <li> <p>This API searches across related items content, not case fields. Use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchCases.html\">SearchCases</a> API to search within case field values.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>",
+      "documentation":"<p>Searches for related items across all cases within a domain. This is a global search operation that returns related items from multiple cases, unlike the case-specific <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchRelatedItems.html\">SearchRelatedItems</a> API.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find cases with similar issues across the domain. For example, search for all cases containing comments about \"product defect\" to identify patterns and existing solutions.</p> </li> <li> <p>Locate all cases associated with specific contacts or orders. For example, find all cases linked to a contactArn to understand the complete customer journey. </p> </li> <li> <p>Monitor SLA compliance across cases. For example, search for all cases with \"Active\" SLA status to prioritize remediation efforts.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>This API returns case identifiers, not complete case objects. To retrieve full case details, you must make additional calls to the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetCase.html\">GetCase</a> API for each returned case ID. </p> </li> <li> <p>This API searches across related items content, not case fields. Use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchCases.html\">SearchCases</a> API to search within case field values.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
       "readonly":true
     },
     "SearchCases":{
@@ -746,7 +787,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input .</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p></p>"
+      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code>, you must also have the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the user ARN that you provide.</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input.</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p></p>"
     },
     "UpdateCaseRule":{
       "name":"UpdateCaseRule",
@@ -766,7 +807,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Updates a case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Updates a case rule. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "idempotent":true
     },
     "UpdateField":{
@@ -827,7 +868,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Updates the content of a related item associated with a case. The following related item types are supported:</p> <ul> <li> <p> <b>Comment</b> - Update the text content of an existing comment</p> </li> <li> <p> <b>Custom</b> - Update the fields of a custom related item. You can add, modify, and remove fields from a custom related item. There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Amazon Connect Cases quotas</a>.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>When updating a Custom related item, all existing and new fields, and their associated values should be included in the request. Fields not included as part of this request will be removed.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html#system-case-fields\">System case fields</a> cannot be used in a custom related item.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>",
+      "documentation":"<p>Updates the content of a related item associated with a case. The following related item types are supported:</p> <ul> <li> <p> <b>Comment</b> - Update the text content of an existing comment</p> </li> <li> <p> <b>Custom</b> - Update the fields of a custom related item. You can add, modify, and remove fields from a custom related item. There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>When updating a Custom related item, all existing and new fields, and their associated values should be included in the request. Fields not included as part of this request will be removed.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html#system-case-fields\">System case fields</a> cannot be used in a custom related item.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
       "idempotent":true
     },
     "UpdateTemplate":{
@@ -1017,6 +1058,130 @@
       },
       "documentation":"<p>Content specific to <code>BasicLayout</code> type. It configures fields in the top panel and More Info tab of agent application. </p>"
     },
+    "BatchCreateRelatedItemErrorEntry":{
+      "type":"structure",
+      "required":[
+        "caseIdentifier",
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "caseIdentifier":{
+          "shape":"CaseIdentifier",
+          "documentation":"<p>The identifiers of the case that the related item wasn't created for.</p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code. For possible values, see <code>failedItems</code>.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the error.</p>"
+        }
+      },
+      "documentation":"<p>Information about a related item that wasn't created.</p>"
+    },
+    "BatchCreateRelatedItemErrorEntryList":{
+      "type":"list",
+      "member":{"shape":"BatchCreateRelatedItemErrorEntry"}
+    },
+    "BatchCreateRelatedItemIdentifier":{
+      "type":"structure",
+      "required":["caseIdentifier"],
+      "members":{
+        "caseIdentifier":{
+          "shape":"CaseIdentifierUnion",
+          "documentation":"<p>The identifier of the case to associate the related item with. Specify either the case ID or the reference ID.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a case to associate the related item with in a <code>BatchCreateRelatedItem</code> request.</p>"
+    },
+    "BatchCreateRelatedItemRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "content",
+        "cases"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>"
+        },
+        "content":{
+          "shape":"RelatedItemInputContent",
+          "documentation":"<p>The content of the related item to be created. The same content is applied to every case in the request. Only comment content is supported for batch creation.</p>"
+        },
+        "cases":{
+          "shape":"BatchCreateRelatedItemRequestCasesList",
+          "documentation":"<p>The list of cases to associate the related item with. All cases must belong to the same domain.</p>"
+        },
+        "performedBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>The entity that created the related item.</p>"
+        },
+        "clientToken":{
+          "shape":"BatchCreateRelatedItemRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p> <p>If you retry a request with the same client token, the service returns the original response instead of processing the request again. If you reuse a client token with different request parameters, the request fails with a <code>ConflictException</code>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "BatchCreateRelatedItemRequestCasesList":{
+      "type":"list",
+      "member":{"shape":"BatchCreateRelatedItemIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "BatchCreateRelatedItemRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":0
+    },
+    "BatchCreateRelatedItemResponse":{
+      "type":"structure",
+      "required":[
+        "successfulItems",
+        "failedItems"
+      ],
+      "members":{
+        "successfulItems":{
+          "shape":"BatchCreateRelatedItemSuccessEntryList",
+          "documentation":"<p>The list of related items that were successfully created and associated with their cases.</p>"
+        },
+        "failedItems":{
+          "shape":"BatchCreateRelatedItemErrorEntryList",
+          "documentation":"<p>The list of related items that were not created. Each entry includes an error code and message. Possible error codes include:</p> <ul> <li> <p> <code>CASE_NOT_FOUND</code> - No case exists with the specified case ID.</p> </li> <li> <p> <code>VALIDATION_ERROR</code> - The request contains invalid input.</p> </li> <li> <p> <code>CONFLICT</code> - Another operation is in progress on the case, such as a concurrent update or a merge of the case into another case.</p> </li> <li> <p> <code>THROTTLED</code> - The request rate exceeded the allowed limit.</p> </li> <li> <p> <code>ACCESS_DENIED</code> - The caller lacks permission to perform the operation.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> - The request exceeded a service quota.</p> </li> <li> <p> <code>DOMAIN_NOT_FOUND</code> - The case domain was deleted while the request was being processed.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> - An unexpected error occurred on the server.</p> </li> </ul>"
+        }
+      }
+    },
+    "BatchCreateRelatedItemSuccessEntry":{
+      "type":"structure",
+      "required":[
+        "caseIdentifier",
+        "relatedItemId",
+        "relatedItemArn"
+      ],
+      "members":{
+        "caseIdentifier":{
+          "shape":"CaseIdentifier",
+          "documentation":"<p>The identifiers of the case that the related item is associated with.</p>"
+        },
+        "relatedItemId":{
+          "shape":"RelatedItemId",
+          "documentation":"<p>The unique identifier of the related item.</p>"
+        },
+        "relatedItemArn":{
+          "shape":"RelatedItemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the related item.</p>"
+        }
+      },
+      "documentation":"<p>Information about a related item that was created.</p>"
+    },
+    "BatchCreateRelatedItemSuccessEntryList":{
+      "type":"list",
+      "member":{"shape":"BatchCreateRelatedItemSuccessEntry"}
+    },
     "BatchGetCaseRuleRequest":{
       "type":"structure",
       "required":[
@@ -1176,6 +1341,136 @@
       "max":50,
       "min":0
     },
+    "BatchUpdateCaseErrorEntry":{
+      "type":"structure",
+      "required":[
+        "caseIdentifier",
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "caseIdentifier":{
+          "shape":"CaseIdentifier",
+          "documentation":"<p>The identifiers of the case that wasn't updated.</p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code. For possible values, see <code>failedCases</code>.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the error.</p>"
+        }
+      },
+      "documentation":"<p>Information about a case that wasn't updated.</p>"
+    },
+    "BatchUpdateCaseErrorEntryList":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateCaseErrorEntry"}
+    },
+    "BatchUpdateCaseIdentifier":{
+      "type":"structure",
+      "required":["caseIdentifier"],
+      "members":{
+        "caseIdentifier":{
+          "shape":"CaseIdentifierUnion",
+          "documentation":"<p>The identifier of the case to update. Specify either the case ID or the reference ID.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a case to update in a <code>BatchUpdateCase</code> request.</p>"
+    },
+    "BatchUpdateCaseRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "cases",
+        "fields"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>"
+        },
+        "cases":{
+          "shape":"BatchUpdateCaseRequestCasesList",
+          "documentation":"<p>The list of cases to update. All cases must belong to the same domain.</p>"
+        },
+        "fields":{
+          "shape":"BatchUpdateCaseRequestFieldsList",
+          "documentation":"<p>An array of objects, each with a <code>fieldIdentifier</code> and a <code>value</code>. You can identify each field by its ID or by its name; identifying a field by name is supported only in <code>BatchUpdateCase</code>. The same field values are applied to every case in the request. This field must be present, but can be an empty list when you provide the top-level <code>title</code>, <code>status</code>, or <code>customerId</code> parameters. Do not include <code>title</code>, <code>status</code>, or <code>customerId</code> in this list; set those values only through their top-level parameters. Duplicating them in <code>fields</code> results in a validation error.</p>"
+        },
+        "performedBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>The entity that performed the action.</p>"
+        },
+        "title":{
+          "shape":"CaseTitle",
+          "documentation":"<p>The title to apply to all cases in the request.</p>"
+        },
+        "status":{
+          "shape":"CaseStatus",
+          "documentation":"<p>The status to apply to all cases in the request.</p>"
+        },
+        "customerId":{
+          "shape":"CustomerProfileArn",
+          "documentation":"<p>The ARN of the customer profile to associate with all cases in the request.</p>"
+        },
+        "clientToken":{
+          "shape":"BatchUpdateCaseRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p> <p>If you retry a request with the same client token, the service returns the original response instead of processing the request again. If you reuse a client token with different request parameters, the request fails with a <code>ConflictException</code>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "BatchUpdateCaseRequestCasesList":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateCaseIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "BatchUpdateCaseRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":0
+    },
+    "BatchUpdateCaseRequestFieldsList":{
+      "type":"list",
+      "member":{"shape":"FieldValueInput"},
+      "max":220,
+      "min":0
+    },
+    "BatchUpdateCaseResponse":{
+      "type":"structure",
+      "required":[
+        "successfulCases",
+        "failedCases"
+      ],
+      "members":{
+        "successfulCases":{
+          "shape":"BatchUpdateCaseSuccessEntryList",
+          "documentation":"<p>The list of cases that were successfully updated.</p>"
+        },
+        "failedCases":{
+          "shape":"BatchUpdateCaseErrorEntryList",
+          "documentation":"<p>The list of cases that were not updated. Each entry includes an error code and message. Possible error codes include:</p> <ul> <li> <p> <code>CASE_NOT_FOUND</code> - No case exists with the specified case ID.</p> </li> <li> <p> <code>VALIDATION_ERROR</code> - The request contains invalid input.</p> </li> <li> <p> <code>CONFLICT</code> - Another operation is in progress on the case, such as a concurrent update or a merge of the case into another case.</p> </li> <li> <p> <code>THROTTLED</code> - The request rate exceeded the allowed limit.</p> </li> <li> <p> <code>ACCESS_DENIED</code> - The caller lacks permission to perform the operation.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> - The request exceeded a service quota.</p> </li> <li> <p> <code>DOMAIN_NOT_FOUND</code> - The case domain was deleted while the request was being processed.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> - An unexpected error occurred on the server.</p> </li> </ul>"
+        }
+      }
+    },
+    "BatchUpdateCaseSuccessEntry":{
+      "type":"structure",
+      "required":["caseIdentifier"],
+      "members":{
+        "caseIdentifier":{
+          "shape":"CaseIdentifier",
+          "documentation":"<p>The identifiers of the updated case.</p>"
+        }
+      },
+      "documentation":"<p>Information about a case that was updated.</p>"
+    },
+    "BatchUpdateCaseSuccessEntryList":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateCaseSuccessEntry"}
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -1200,7 +1495,7 @@
           "documentation":"<p>Combines multiple conditions with OR operator. At least one condition must be true for the compound condition to be true.</p>"
         }
       },
-      "documentation":"<p>Boolean condition for a rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Boolean condition for a rule. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "union":true
     },
     "BooleanConditionList":{
@@ -1230,7 +1525,7 @@
           "documentation":"<p>The value of the outer rule if the condition evaluates to true.</p>"
         }
       },
-      "documentation":"<p>Boolean operands for a condition. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Boolean operands for a condition. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "CaseArn":{
       "type":"string",
@@ -1293,7 +1588,41 @@
     "CaseId":{
       "type":"string",
       "max":500,
-      "min":1
+      "min":1,
+      "pattern":"[A-Za-z0-9\\-._/:#=+-]*"
+    },
+    "CaseIdentifier":{
+      "type":"structure",
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>The unique identifier of the case.</p>"
+        },
+        "referenceNumber":{
+          "shape":"ReferenceNumber",
+          "documentation":"<p>The reference number of the case. Reference numbers aren't guaranteed to be unique. <code>BatchUpdateCase</code> and <code>BatchCreateRelatedItem</code> don't return this value.</p>"
+        },
+        "referenceId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The reference ID of the case. Cases created before reference IDs were available don't have one.</p>"
+        }
+      },
+      "documentation":"<p>The identifiers of a case that a batch operation returns.</p>"
+    },
+    "CaseIdentifierUnion":{
+      "type":"structure",
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>The unique identifier of the case.</p>"
+        },
+        "referenceId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The reference ID of the case. Reference IDs are unique within a domain, and uniqueness isn't case sensitive.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a case by its case ID or its reference ID. Specify only one member.</p>",
+      "union":true
     },
     "CaseRuleArn":{
       "type":"string",
@@ -1321,7 +1650,7 @@
           "documentation":"<p>Whether a field is visible, based on values in other fields.</p>"
         }
       },
-      "documentation":"<p>Represents what rule type should take place, under what conditions. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Represents what rule type should take place, under what conditions. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "union":true
     },
     "CaseRuleError":{
@@ -1344,7 +1673,7 @@
           "documentation":"<p>Error message from getting a case rule.</p>"
         }
       },
-      "documentation":"<p>Error for batch describe case rules API failure. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Error for batch describe case rules API failure. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "CaseRuleId":{
       "type":"string",
@@ -1404,7 +1733,13 @@
           "documentation":"<p>Description of a case rule.</p>"
         }
       },
-      "documentation":"<p>Summary information of this case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Summary information of this case rule. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+    },
+    "CaseStatus":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\-\\s]+"
     },
     "CaseSummary":{
       "type":"structure",
@@ -1423,6 +1758,13 @@
         }
       },
       "documentation":"<p>Case summary information.</p>"
+    },
+    "CaseTitle":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"[\\s\\S]*",
+      "sensitive":true
     },
     "Channel":{
       "type":"string",
@@ -1488,7 +1830,7 @@
           "documentation":"<p>The list of conditions to combine using the logical operator.</p> <note> <p>For API users: A case rule can have a maximum of 5 conditions, spread across a maximum of 2 levels of nesting.</p> </note>"
         }
       },
-      "documentation":"<p>A compound condition that combines multiple boolean conditions using logical operators. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>A compound condition that combines multiple boolean conditions using logical operators. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "ConflictException":{
       "type":"structure",
@@ -1545,10 +1887,10 @@
       "members":{
         "contactArn":{
           "shape":"ContactArn",
-          "documentation":"<p>A unique identifier of a contact in Amazon Connect.</p>"
+          "documentation":"<p>A unique identifier of a contact in Connect Customer.</p>"
         }
       },
-      "documentation":"<p>An object that represents an Amazon Connect contact object. </p>"
+      "documentation":"<p>An object that represents an Connect Customer contact object. </p>"
     },
     "ContactArn":{
       "type":"string",
@@ -1565,7 +1907,7 @@
       "members":{
         "contactArn":{
           "shape":"ContactArn",
-          "documentation":"<p>A unique identifier of a contact in Amazon Connect.</p>"
+          "documentation":"<p>A unique identifier of a contact in Connect Customer.</p>"
         },
         "channel":{
           "shape":"Channel",
@@ -1576,7 +1918,7 @@
           "documentation":"<p>The difference between the <code>InitiationTimestamp</code> and the <code>DisconnectTimestamp</code> of the contact.</p>"
         }
       },
-      "documentation":"<p>An object that represents a content of an Amazon Connect contact object.</p>"
+      "documentation":"<p>An object that represents a content of an Connect Customer contact object.</p>"
     },
     "ContactFilter":{
       "type":"structure",
@@ -1587,7 +1929,7 @@
         },
         "contactArn":{
           "shape":"ContactArn",
-          "documentation":"<p>A unique identifier of a contact in Amazon Connect.</p>"
+          "documentation":"<p>A unique identifier of a contact in Connect Customer.</p>"
         }
       },
       "documentation":"<p>A filter for related items of type <code>Contact</code>.</p>"
@@ -1628,7 +1970,7 @@
         "performedBy":{"shape":"UserUnion"},
         "tags":{
           "shape":"MutableTags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -1906,7 +2248,7 @@
         },
         "requiredFields":{
           "shape":"RequiredFieldList",
-          "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
+          "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p> <p>To require a Customer Profile when creating cases, include <code>customer_id</code> in this list. If <code>customer_id</code> is omitted, the Customer Profile field is optional and can be added, changed, or removed after case creation.</p>"
         },
         "status":{
           "shape":"TemplateStatus",
@@ -2036,6 +2378,12 @@
       "member":{"shape":"FieldValue"},
       "max":50,
       "min":1
+    },
+    "CustomerProfileArn":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"[a-zA-Z0-9/_\\-:.]+"
     },
     "DeleteCaseRequest":{
       "type":"structure",
@@ -2274,7 +2622,7 @@
     "EmptyOperandValue":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>Represents an empty operand value. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Represents an empty operand value. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "EventBridgeConfiguration":{
       "type":"structure",
@@ -2420,6 +2768,21 @@
         }
       },
       "documentation":"<p>Object for unique identifier of a field.</p>"
+    },
+    "FieldIdentifierUnion":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"FieldId",
+          "documentation":"<p>The unique identifier of the field.</p>"
+        },
+        "name":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a field by its ID or by its name. Specify only one member. Identifying a field by name is supported only in <code>BatchUpdateCase</code>.</p>",
+      "union":true
     },
     "FieldItem":{
       "type":"structure",
@@ -2593,6 +2956,24 @@
       },
       "documentation":"<p>Object for case field values.</p>"
     },
+    "FieldValueInput":{
+      "type":"structure",
+      "required":[
+        "fieldIdentifier",
+        "value"
+      ],
+      "members":{
+        "fieldIdentifier":{
+          "shape":"FieldIdentifierUnion",
+          "documentation":"<p>The field to update, identified by field ID or field name.</p>"
+        },
+        "value":{
+          "shape":"FieldValueUnion",
+          "documentation":"<p>The value to set for the field.</p>"
+        }
+      },
+      "documentation":"<p>A field and the value to set for it.</p>"
+    },
     "FieldValueList":{
       "type":"list",
       "member":{"shape":"FieldValue"}
@@ -2640,10 +3021,10 @@
       "members":{
         "fileArn":{
           "shape":"FileArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a File in Amazon Connect.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a File in Connect Customer.</p>"
         }
       },
-      "documentation":"<p>An object that represents a content of an Amazon Connect file object.</p>"
+      "documentation":"<p>An object that represents a content of an Connect Customer file object.</p>"
     },
     "FileFilter":{
       "type":"structure",
@@ -2790,7 +3171,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -2843,10 +3224,10 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       },
-      "documentation":"<p>Detailed case rule information. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Detailed case rule information. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "GetDomainRequest":{
       "type":"structure",
@@ -2892,7 +3273,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -2932,7 +3313,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         },
         "deleted":{
           "shape":"Deleted",
@@ -3001,7 +3382,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         },
         "deleted":{
           "shape":"Deleted",
@@ -3073,7 +3454,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         },
         "status":{
           "shape":"TemplateStatus",
@@ -3280,7 +3661,7 @@
         },
         "contactArn":{
           "shape":"ContactArn",
-          "documentation":"<p>A unique identifier of a contact in Amazon Connect.</p>"
+          "documentation":"<p>A unique identifier of a contact in Connect Customer.</p>"
         },
         "maxResults":{
           "shape":"ListCasesForContactRequestMaxResultsInteger",
@@ -3507,7 +3888,7 @@
       "members":{
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -3593,7 +3974,7 @@
           "documentation":"<p>The field ID that this operand should take the value of.</p>"
         }
       },
-      "documentation":"<p>Represents the left hand operand in the condition. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Represents the left hand operand in the condition. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "union":true
     },
     "OperandTwo":{
@@ -3616,7 +3997,7 @@
           "documentation":"<p>Empty value type.</p>"
         }
       },
-      "documentation":"<p>Represents the right hand operand in the condition. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "documentation":"<p>Represents the right hand operand in the condition. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "union":true
     },
     "OperandTwoStringValueString":{
@@ -3690,6 +4071,18 @@
       "type":"structure",
       "members":{}
     },
+    "ReferenceId":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Za-z0-9\\-._/:#=+-]*"
+    },
+    "ReferenceNumber":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Za-z0-9\\-._/:#=+-]*"
+    },
     "RelatedItemArn":{
       "type":"string",
       "max":500,
@@ -3716,7 +4109,7 @@
         },
         "connectCase":{
           "shape":"ConnectCaseContent",
-          "documentation":"<p>Represents the Amazon Connect case to be created as a related item.</p>"
+          "documentation":"<p>Represents the Connect Customer case to be created as a related item.</p>"
         },
         "custom":{
           "shape":"CustomContent",
@@ -3747,7 +4140,7 @@
       "members":{
         "contact":{
           "shape":"Contact",
-          "documentation":"<p>Object representing a contact in Amazon Connect as an API request field.</p>"
+          "documentation":"<p>Object representing a contact in Connect Customer as an API request field.</p>"
         },
         "comment":{
           "shape":"CommentContent",
@@ -3763,7 +4156,7 @@
         },
         "connectCase":{
           "shape":"ConnectCaseInputContent",
-          "documentation":"<p>Represents the Amazon Connect case to be created as a related item.</p>"
+          "documentation":"<p>Represents the Connect Customer case to be created as a related item.</p>"
         },
         "custom":{
           "shape":"CustomInputContent",
@@ -3805,7 +4198,7 @@
         },
         "connectCase":{
           "shape":"ConnectCaseFilter",
-          "documentation":"<p>Represents the Amazon Connect case to be created as a related item.</p>"
+          "documentation":"<p>Represents the Connect Customer case to be created as a related item.</p>"
         },
         "custom":{
           "shape":"CustomFilter",
@@ -3840,7 +4233,7 @@
           "documentation":"<p>List of conditions for the required rule; the first condition to evaluate to true dictates the value of the rule.</p>"
         }
       },
-      "documentation":"<p>Required rule type, used to indicate whether a field is required. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Required rule type, used to indicate whether a field is required. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "RequiredField":{
       "type":"structure",
@@ -3982,7 +4375,7 @@
         "performedBy":{"shape":"UserUnion"},
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       },
       "documentation":"<p>A list of items that represent RelatedItems. This data type is similar to <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchRelatedItemsResponseItem.html\">SearchRelatedItemsResponseItem</a> except Search<b>All</b>RelatedItemsResponseItem has a caseId field.</p>"
@@ -4125,7 +4518,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       },
       "documentation":"<p>A list of items that represent cases.</p>"
@@ -4222,7 +4615,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         },
         "performedBy":{
           "shape":"UserUnion",
@@ -4268,7 +4661,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The service quota has been exceeded. For a list of service quotas, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Amazon Connect Service Quotas</a> in the <i>Amazon Connect Administrator Guide</i>.</p>",
+      "documentation":"<p>The service quota has been exceeded. For a list of service quotas, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Connect Customer Service Quotas</a> in the <i>Connect Customer Administrator Guide</i>.</p>",
       "error":{
         "httpStatusCode":402,
         "senderFault":true
@@ -4429,7 +4822,7 @@
         },
         "sortOrder":{
           "shape":"Order",
-          "documentation":"<p>A structured set of sort terms</p>"
+          "documentation":"<p>Whether results should be sorted in ascending or descending order.</p>"
         }
       },
       "documentation":"<p>A structured set of sort terms.</p>"
@@ -4508,7 +4901,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -4584,7 +4977,7 @@
           "documentation":"<p>Unique identifier of a field.</p>"
         }
       },
-      "documentation":"<p>An association representing a case rule acting upon a field. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>An association representing a case rule acting upon a field. In the Connect Customer admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "TemplateStatus":{
       "type":"string",
@@ -4894,7 +5287,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+          "documentation":"<p>A map of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         },
         "lastUpdatedUser":{
           "shape":"UserUnion",
@@ -4939,7 +5332,7 @@
         },
         "requiredFields":{
           "shape":"RequiredFieldList",
-          "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
+          "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p> <p>To require a Customer Profile when creating cases, include <code>customer_id</code> in this list. If <code>customer_id</code> is omitted, the Customer Profile field is optional and can be added, changed, or removed after case creation.</p>"
         },
         "status":{
           "shape":"TemplateStatus",
@@ -4969,7 +5362,7 @@
       "members":{
         "userArn":{
           "shape":"UserArn",
-          "documentation":"<p>Represents the Amazon Connect ARN of the user.</p>"
+          "documentation":"<p>Represents the Connect Customer ARN of the user.</p>"
         },
         "customEntity":{
           "shape":"CustomEntity",
@@ -5004,5 +5397,5 @@
       "min":0
     }
   },
-  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Cases.html\">Cases actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Cases.html\">Cases data types</a> </p> </li> </ul> <p>With Amazon Connect Cases, your agents can track and manage customer issues that require multiple interactions, follow-up tasks, and teams in your contact center. A case represents a customer issue. It records the issue, the steps and interactions taken to resolve the issue, and the outcome. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Amazon Connect Cases</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Cases.html\">Cases actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Cases.html\">Cases data types</a> </p> </li> </ul> <p>With Connect Customer Cases, your agents can track and manage customer issues that require multiple interactions, follow-up tasks, and teams in your contact center. A case represents a customer issue. It records the issue, the steps and interactions taken to resolve the issue, and the outcome. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Connect Customer Cases</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
 }

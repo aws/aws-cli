@@ -5478,6 +5478,10 @@
         "basicAuthenticationCredentials":{
           "shape":"BasicAuthenticationCredentials",
           "documentation":"<p>The basic authentication credentials of a connection.</p>"
+        },
+        "oAuth2Properties":{
+          "shape":"OAuth2PropertiesPatch",
+          "documentation":"<p>The OAuth2 properties, such as the client application, grant type, and token URL, that you want to update for a connection. Only the properties that you specify are updated; the connection keeps its existing values for the properties that you omit.</p>"
         }
       },
       "documentation":"<p>The authentication configuration patch of a connection. </p>"
@@ -21472,6 +21476,34 @@
         }
       },
       "documentation":"<p>The OAuth2 properties.</p>"
+    },
+    "OAuth2PropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "oAuth2GrantType":{
+          "shape":"OAuth2GrantType",
+          "documentation":"<p>The OAuth2 grant type of the OAuth2 properties to update.</p>"
+        },
+        "oAuth2ClientApplication":{
+          "shape":"OAuth2ClientApplication",
+          "documentation":"<p>The OAuth2 client application of the OAuth2 properties to update.</p>"
+        },
+        "tokenUrl":{
+          "shape":"OAuth2PropertiesPatchTokenUrlString",
+          "documentation":"<p>The OAuth2 token URL of the OAuth2 properties to update.</p>"
+        },
+        "tokenUrlParametersMap":{
+          "shape":"TokenUrlParametersMap",
+          "documentation":"<p>The OAuth2 token URL parameter map of the OAuth2 properties to update, for example the scope. If you specify an empty map, the existing parameters are kept.</p>"
+        }
+      },
+      "documentation":"<p>Contains the OAuth2 properties, such as the client application, grant type, and token URL, that you want to update for a connection.</p>"
+    },
+    "OAuth2PropertiesPatchTokenUrlString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
     },
     "OAuth2PropertiesTokenUrlString":{
       "type":"string",

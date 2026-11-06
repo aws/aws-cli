@@ -12,16 +12,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-import contextlib
 import datetime
 import getpass
 import json
 import logging
 import os
-import secrets
-import stat
 import subprocess
-import tempfile
 import threading
 import time
 from collections import namedtuple
@@ -1051,12 +1047,8 @@ def _get_credential_cache_config(profile_name, profile):
     ``credential_cache_location`` (the default ``~/.aws/cli/cache`` is used
     as before, see ``_select_credential_cache``) and with ``memory``, which
     ignores it. Otherwise it is the profile's ``credential_cache_location``
-    with ``~`` expanded. That directory is created if needed and checked to
-    be private to the current user (see ``_check_credential_cache_dir``).
-    On Windows, it must
-    also be under the user profile folder (see
-    ``_windows_cache_location_problem``); that is checked first, so a
-    refused directory isn't created.
+    with ``~`` expanded. It's used like the default folder: the
+    ``JSONFileCache`` creates it when it first writes.
     """
     credential_cache = profile.get('credential_cache')
     if (
@@ -1076,7 +1068,7 @@ def _get_credential_cache_config(profile_name, profile):
     location = profile.get('credential_cache_location')
     if location is None:
         # Unset or an explicit file with no location: the default
-        # ~/.aws/cli/cache is used as before, with no directory checks.
+        # ~/.aws/cli/cache is used as before.
         return credential_cache, None
     if not location.strip():
         raise InvalidConfigError(
@@ -1106,436 +1098,7 @@ def _get_credential_cache_config(profile_name, profile):
         if '$' in location or '%' in location:
             message += " Environment variables aren't expanded."
         raise InvalidConfigError(error_msg=message)
-    if os.name == 'nt':
-        _check_windows_cache_location(profile_name, location, expanded)
-    _check_credential_cache_dir(profile_name, location, expanded)
     return credential_cache, expanded
-
-
-def _windows_cache_location_problem(path, pathmod=os.path):
-    """Return why ``path`` can't hold a Windows credential cache, or None.
-
-    The CLI doesn't check owners or ACLs on Windows. It relies instead on
-    the default permissions of the user profile folder, which only that
-    user (and administrators) can access. So the directory must be the
-    user profile folder or under it, after following junctions and
-    symbolic links. Network (UNC) paths are refused too.
-
-    Returns a ``(reason, profile_dir)`` tuple, where ``reason`` is
-    ``'no-profile'``, ``'network'`` or ``'outside'``. ``pathmod`` is the
-    path module to use (``ntpath`` on Windows), so the logic can be tested
-    on any OS.
-    """
-    home = pathmod.expanduser('~')
-    if home.startswith('~') or not pathmod.isabs(home):
-        # expanduser leaves ~ unchanged when USERPROFILE and HOMEPATH are
-        # unset. Nothing can be shown to be under the profile then.
-        return 'no-profile', None
-    profile_dir = pathmod.realpath(home)
-    if pathmod.splitdrive(profile_dir)[1] in ('', '\\', '/'):
-        # A drive root (C:\) or a share root (\\server\share) isn't a user
-        # profile folder: other users can write to folders under it.
-        return 'no-profile', None
-    resolved = pathmod.realpath(path)
-    if _is_unc_path(resolved, pathmod):
-        return 'network', profile_dir
-    profile_key = pathmod.normcase(profile_dir)
-    resolved_key = pathmod.normcase(resolved)
-    try:
-        common = pathmod.commonpath([profile_key, resolved_key])
-    except ValueError:
-        # On different drives, or one path is relative.
-        return 'outside', profile_dir
-    if common != profile_key:
-        return 'outside', profile_dir
-    return None
-
-
-def _is_unc_path(path, pathmod):
-    # A path like \\server\share\dir, or its \\?\UNC\server\share form.
-    # splitdrive returns the \\server\share part as the drive for those.
-    drive = pathmod.normcase(pathmod.splitdrive(path)[0]).replace('/', '\\')
-    if not drive.startswith('\\\\'):
-        return False
-    # \\?\C: and \\.\C: are a local drive in device path form.
-    return not (len(drive) == 6 and drive[2] in '?.' and drive[5] == ':')
-
-
-def _check_windows_cache_location(profile_name, location, path):
-    problem = _windows_cache_location_problem(path)
-    if problem is None:
-        return
-    reason, profile_dir = problem
-    if reason == 'no-profile':
-        where = "can't be checked: your user profile folder can't be found"
-    elif reason == 'network':
-        where = 'is a network path'
-    else:
-        where = f'is outside your user profile folder ({profile_dir})'
-    raise InvalidConfigError(
-        error_msg=(
-            f'The credential_cache_location "{location}" in profile '
-            f'"{profile_name}" {where}. On Windows, use a folder under your '
-            'user profile.'
-        )
-    )
-
-
-def _credential_cache_dir_error(profile_name, location, reason):
-    return InvalidConfigError(
-        error_msg=(
-            f'The credential_cache_location "{location}" in profile '
-            f'"{profile_name}" {reason}. The directory must be private to '
-            'the current user.'
-        )
-    )
-
-
-def _posix_checks_apply():
-    # Windows has no POSIX owner or mode bits, so the owner, mode and link
-    # count checks are skipped there.
-    return os.name != 'nt' and hasattr(os, 'geteuid')
-
-
-def _private_dir_problem(st):
-    """Return why a directory isn't private to the current user, or None.
-
-    ``st`` is the ``lstat`` or ``fstat`` result for the directory.
-    """
-    if stat.S_ISLNK(st.st_mode):
-        return 'is a symbolic link'
-    if not stat.S_ISDIR(st.st_mode):
-        return 'is not a directory'
-    if _posix_checks_apply():
-        if st.st_uid != os.geteuid():
-            return 'is owned by another user'
-        if st.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
-            return 'can be written by other users'
-    return None
-
-
-def _make_private_dir(path):
-    # Set mode 0700 on a directory this process just created. Where it can,
-    # it opens the directory without following a symbolic link, so a link
-    # put in its place isn't followed.
-    nofollow = getattr(os, 'O_NOFOLLOW', 0)
-    directory = getattr(os, 'O_DIRECTORY', 0)
-    if nofollow and directory and hasattr(os, 'fchmod'):
-        fd = os.open(path, os.O_RDONLY | directory | nofollow)
-        try:
-            os.fchmod(fd, 0o700)
-        finally:
-            os.close(fd)
-    else:
-        os.chmod(path, 0o700)
-
-
-def _make_private_dirs(path):
-    """Create ``path`` and each missing parent with mode 0700.
-
-    Each missing component is created with its own ``mkdir`` and then set
-    to 0700, so the umask can't widen it. Directories that already exist
-    are left alone.
-    """
-    missing = []
-    current = path
-    while not os.path.lexists(current):
-        missing.append(current)
-        parent = os.path.dirname(current)
-        if parent == current:
-            break
-        current = parent
-    for directory in reversed(missing):
-        try:
-            os.mkdir(directory, 0o700)
-        except FileExistsError:
-            # Created by someone else in the meantime. Leave it alone; the
-            # leaf is checked after this.
-            continue
-        _make_private_dir(directory)
-
-
-def _check_credential_cache_dir(profile_name, location, path):
-    """Create the credential cache directory if needed and check it.
-
-    A missing directory, and each missing parent, is created with mode
-    0700. Existing parents are left alone. The directory must then be a
-    real directory, not a symbolic link. On POSIX, it must also be owned by
-    the current user, with no group or other write permission, so another
-    local user can't plant or replace cache files in it. The owner and
-    mode checks don't apply on Windows. The directory must also be
-    writable, so a bad location fails when the profile is loaded rather
-    than after the STS call.
-
-    ``location`` is the value as configured, used in error messages.
-    """
-    try:
-        st = os.lstat(path)
-    except FileNotFoundError:
-        try:
-            _make_private_dirs(path)
-        except OSError as e:
-            raise _credential_cache_dir_error(
-                profile_name,
-                location,
-                f'could not be created: {e.strerror or e}',
-            )
-        st = os.lstat(path)
-    problem = _private_dir_problem(st)
-    if problem is not None:
-        if stat.S_ISLNK(st.st_mode):
-            # Name the target, so a system link like macOS /tmp (to
-            # /private/tmp) is easy to replace with the real directory.
-            problem += f' (to {os.path.realpath(path)})'
-        raise _credential_cache_dir_error(profile_name, location, problem)
-    if not os.access(path, os.W_OK | os.X_OK):
-        raise _credential_cache_dir_error(
-            profile_name, location, 'is not writable by the current user'
-        )
-
-
-_CACHED_CREDENTIAL_KEYS = (
-    'AccessKeyId',
-    'SecretAccessKey',
-    'SessionToken',
-    'Expiration',
-)
-
-
-class _CacheDirNotPrivateError(OSError):
-    pass
-
-
-def _missing_cached_credential_key(value):
-    # Return the first expected key a cached response lacks, or None.
-    if not isinstance(value, dict):
-        return 'Credentials'
-    creds = value.get('Credentials')
-    if not isinstance(creds, dict):
-        return 'Credentials'
-    for key in _CACHED_CREDENTIAL_KEYS:
-        if not isinstance(creds.get(key), str):
-            return key
-    return None
-
-
-class _PrivateCredentialFileCache(JSONFileCache):
-    """A ``JSONFileCache`` for a ``credential_cache_location`` directory.
-
-    The directory is checked when the profile loads (see
-    ``_check_credential_cache_dir``), and checked again on every read and
-    write. Where the platform supports it, the directory is opened once
-    without following a symbolic link, checked through that handle, and
-    every read, temporary file and rename happens relative to it, so a
-    directory swapped in after the check is never used. Elsewhere, the path
-    is checked again just before each read and write.
-
-    This cache never follows a symbolic link at a cache file's path. Reads
-    ignore anything that isn't a private regular file owned by the current
-    user, isn't valid JSON, or lacks the expected credential keys; such an
-    entry is a cache miss. Writes go to a new private temporary file that
-    is renamed into place, so a planted file or link is replaced rather
-    than written through. A failed write is logged and skipped, so a
-    command never fails after the STS call just because its credentials
-    couldn't be cached. No message includes the cached values.
-    """
-
-    def __init__(self, working_dir, dumps_func=None):
-        super().__init__(working_dir, dumps_func)
-        # The value read by the last ``in`` check, so the ``[]`` that
-        # follows it returns the same value.
-        self._last_read = None
-
-    def _is_trusted(self, st):
-        if not stat.S_ISREG(st.st_mode):
-            return False
-        if _posix_checks_apply():
-            if st.st_uid != os.geteuid():
-                return False
-            # A hard link could make another entry's credentials, or a
-            # file shared with another path, look like this one.
-            if st.st_nlink != 1:
-                return False
-            if st.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
-                return False
-        return True
-
-    def _uses_dir_fd(self):
-        # os.replace isn't listed in os.supports_dir_fd, but it has the
-        # same dir_fd support as os.rename.
-        return bool(
-            getattr(os, 'O_DIRECTORY', 0)
-            and getattr(os, 'O_NOFOLLOW', 0)
-            and os.open in os.supports_dir_fd
-            and os.rename in os.supports_dir_fd
-            and os.unlink in os.supports_dir_fd
-        )
-
-    @contextlib.contextmanager
-    def _private_dir(self):
-        """Yield a handle on the checked cache directory.
-
-        Yields a directory file descriptor, or ``None`` where ``dir_fd``
-        isn't supported, after checking the path again. Raises ``OSError``
-        if the directory is missing or isn't private.
-        """
-        if not self._uses_dir_fd():
-            problem = _private_dir_problem(os.lstat(self._working_dir))
-            if problem is not None:
-                raise _CacheDirNotPrivateError(f'the directory {problem}')
-            yield None
-            return
-        dir_fd = os.open(
-            self._working_dir, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
-        )
-        try:
-            problem = _private_dir_problem(os.fstat(dir_fd))
-            if problem is not None:
-                raise _CacheDirNotPrivateError(f'the directory {problem}')
-            yield dir_fd
-        finally:
-            os.close(dir_fd)
-
-    def _read(self, cache_key):
-        """Return the cached value for ``cache_key``, or None on a miss."""
-        name = cache_key + '.json'
-        flags = (
-            os.O_RDONLY
-            | getattr(os, 'O_NOFOLLOW', 0)
-            | getattr(os, 'O_NONBLOCK', 0)
-        )
-        try:
-            with self._private_dir() as dir_fd:
-                if dir_fd is None:
-                    path = self._convert_cache_key(cache_key)
-                    if os.path.islink(path):
-                        return None
-                    fd = os.open(path, flags)
-                else:
-                    fd = os.open(name, flags, dir_fd=dir_fd)
-                with _fdopen_or_close(fd) as f:
-                    if not self._is_trusted(os.fstat(f.fileno())):
-                        logger.debug(
-                            'Ignoring the cache file %s in %s: it is not a '
-                            'private regular file.',
-                            name,
-                            self._working_dir,
-                        )
-                        return None
-                    value = json.load(f)
-        except FileNotFoundError:
-            return None
-        except OSError as e:
-            logger.debug(
-                'Ignoring the cache file %s in %s: %s',
-                name,
-                self._working_dir,
-                e.strerror or e,
-            )
-            return None
-        except ValueError:
-            logger.debug(
-                'Ignoring the cache file %s in %s: it is not valid JSON.',
-                name,
-                self._working_dir,
-            )
-            return None
-        missing = _missing_cached_credential_key(value)
-        if missing is not None:
-            logger.debug(
-                'Ignoring the cache file %s in %s: it has no valid %s.',
-                name,
-                self._working_dir,
-                missing,
-            )
-            return None
-        return value
-
-    def __contains__(self, cache_key):
-        value = self._read(cache_key)
-        self._last_read = None if value is None else (cache_key, value)
-        return value is not None
-
-    def __getitem__(self, cache_key):
-        last_read, self._last_read = self._last_read, None
-        if last_read is not None and last_read[0] == cache_key:
-            return last_read[1]
-        value = self._read(cache_key)
-        if value is None:
-            raise KeyError(cache_key)
-        return value
-
-    def __setitem__(self, cache_key, value):
-        self._last_read = None
-        try:
-            file_content = self._dumps(value)
-        except (TypeError, ValueError):
-            raise ValueError(
-                'Credentials cannot be cached: the value is not JSON '
-                'serializable.'
-            ) from None
-        try:
-            with self._private_dir() as dir_fd:
-                if dir_fd is None:
-                    self._write_by_path(cache_key, file_content)
-                else:
-                    self._write_in_dir(dir_fd, cache_key, file_content)
-        except OSError as e:
-            logger.warning(
-                'Unable to write credentials to the cache in %s: %s',
-                self._working_dir,
-                e,
-            )
-
-    def _write_in_dir(self, dir_fd, cache_key, file_content):
-        temp_name = f'.tmp-{secrets.token_hex(8)}.json'
-        fd = os.open(
-            temp_name,
-            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-            0o600,
-            dir_fd=dir_fd,
-        )
-        try:
-            with _fdopen_or_close(fd, 'w') as f:
-                f.write(file_content)
-            os.replace(
-                temp_name,
-                cache_key + '.json',
-                src_dir_fd=dir_fd,
-                dst_dir_fd=dir_fd,
-            )
-        except BaseException:
-            try:
-                os.unlink(temp_name, dir_fd=dir_fd)
-            except OSError:
-                pass
-            raise
-
-    def _write_by_path(self, cache_key, file_content):
-        # mkstemp creates the file with mode 0600 using O_CREAT, O_EXCL
-        # and (where available) O_NOFOLLOW.
-        fd, temp_path = tempfile.mkstemp(
-            dir=self._working_dir, prefix='.tmp-', suffix='.json'
-        )
-        try:
-            with _fdopen_or_close(fd, 'w') as f:
-                f.write(file_content)
-            os.replace(temp_path, self._convert_cache_key(cache_key))
-        except BaseException:
-            try:
-                os.remove(temp_path)
-            except OSError:
-                pass
-            raise
-
-
-def _fdopen_or_close(fd, *args):
-    # os.fdopen doesn't close ``fd`` when it raises, so close it here.
-    try:
-        return os.fdopen(fd, *args)
-    except BaseException:
-        os.close(fd)
-        raise
 
 
 def _select_credential_cache(
@@ -1545,18 +1108,18 @@ def _select_credential_cache(
 
     ``memory`` uses ``memory_cache`` (a ``dict`` owned by the provider), so
     nothing reaches the file cache. A ``credential_cache_location`` uses a
-    ``_PrivateCredentialFileCache`` in that directory. A profile that sets
-    neither key, or ``file`` with no location, uses the provider's injected
-    cache (``default_cache``), which is the behavior before these settings
-    existed. Where nothing was injected (``default_cache`` is the plain
-    ``dict`` default, as on a web identity source hop), an explicit
-    ``file`` still caches on disk, in a plain ``JSONFileCache`` in
-    ``~/.aws/cli/cache``.
+    plain ``JSONFileCache`` in that directory, like the default folder. A
+    profile that sets neither key, or ``file`` with no location, uses the
+    provider's injected cache (``default_cache``), which is the behavior
+    before these settings existed. Where nothing was injected
+    (``default_cache`` is the plain ``dict`` default, as on a web identity
+    source hop), an explicit ``file`` still caches on disk, in a plain
+    ``JSONFileCache`` in ``~/.aws/cli/cache``.
     """
     if credential_cache == _CREDENTIAL_CACHE_MEMORY:
         return memory_cache
     if credential_cache_location is not None:
-        return _PrivateCredentialFileCache(credential_cache_location)
+        return JSONFileCache(credential_cache_location)
     if credential_cache == _CREDENTIAL_CACHE_FILE and (
         default_cache is None or isinstance(default_cache, dict)
     ):

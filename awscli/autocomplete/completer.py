@@ -112,3 +112,28 @@ class BaseCompleter:
               and to stop consulting other completers for results.
         """
         raise NotImplementedError("complete")
+
+
+class BashCompleter(AutoCompleter):
+    def autocomplete(self, command_line, index=None):
+        completions = super().autocomplete(command_line, index)
+        print("\n".join([completion.name for completion in completions]))
+
+
+class FishCompleter(AutoCompleter):
+    def autocomplete(self, command_line, index=None):
+        completions = super().autocomplete(command_line, index)
+        print(
+            "\n".join(
+                [
+                    f"{completion.name}\t{completion.help_text or ''}"
+                    for completion in completions
+                ]
+            )
+        )
+
+
+SHELL_COMPLETERS: dict[str, type[AutoCompleter]] = {
+    'bash': BashCompleter,
+    'fish': FishCompleter,
+}

@@ -413,3 +413,69 @@ class TestDocumentRecursiveShape(BaseParamsDocumenterTest):
                 '  - **Foo** *(dict) --* This is a recursive structure.',
             ]
         )
+
+
+class TestDocumentUndocumentedMembers(BaseParamsDocumenterTest):
+    def setUp(self):
+        super().setUp()
+        self.add_shape(
+            {
+                'Structure': {
+                    'type': 'structure',
+                    'members': {'Member': {'shape': 'String'}},
+                }
+            }
+        )
+        self.add_shape_to_params('Foo', 'String', is_required=True)
+        self.add_shape_to_params('Bar', 'Structure')
+
+    def test_request_params_always_have_documentation_section(self):
+        self.request_params.document_params(
+            self.doc_structure, self.operation_model.input_shape
+        )
+        foo_section = self.doc_structure.get_section('Foo')
+        self.assertIn('param-documentation', foo_section.available_sections)
+        bar_section = self.doc_structure.get_section('Bar')
+        self.assertIn('param-documentation', bar_section.available_sections)
+        member_section = bar_section.get_section('Member')
+        self.assertIn('param-documentation', member_section.available_sections)
+
+    def test_undocumented_request_params_render_unchanged(self):
+        self.request_params.document_params(
+            self.doc_structure, self.operation_model.input_shape
+        )
+        self.assertEqual(
+            self.doc_structure.flush_structure().decode('utf-8'),
+            (
+                '\n'
+                ':type Foo: string\n'
+                ':param Foo: **[REQUIRED]** \n'
+                '\n'
+                '\n'
+                ':type Bar: dict\n'
+                ':param Bar: \n'
+                '\n'
+                '\n'
+                '  - **Member** *(string) --* \n'
+                '\n'
+                '  \n'
+                '\n'
+            ),
+        )
+
+    def test_request_params_handler_can_append_documentation(self):
+        def append_note(section, **kwargs):
+            section.get_section('Foo').get_section(
+                'param-documentation'
+            ).write('Appended note.')
+
+        self.event_emitter.register(
+            'docs.request-params.myservice.SampleOperation.complete-section',
+            append_note,
+        )
+        self.request_params.document_params(
+            self.doc_structure, self.operation_model.input_shape
+        )
+        self.assert_contains_lines_in_order(
+            [':type Foo: string', ':param Foo: **[REQUIRED]** Appended note.']
+        )

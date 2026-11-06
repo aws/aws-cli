@@ -14,6 +14,7 @@
 from botocore import model
 from botocore.compat import OrderedDict
 
+from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import (
     ParamShorthandDocGen,
     ParamShorthandParser,
@@ -27,7 +28,6 @@ from awscli.arguments import (
     create_argument_model_from_schema,
 )
 from awscli.testutils import mock, unittest
-from awscli.argparser import ArgTableArgParser
 
 
 class BaseArgProcessTest(unittest.TestCase):
@@ -85,7 +85,7 @@ class TestParamShorthand(BaseArgProcessTest):
     maxDiff = None
 
     def setUp(self):
-        super(TestParamShorthand, self).setUp()
+        super().setUp()
         self._shorthand = ParamShorthandParser()
 
     def parse_shorthand(self, cli_argument, value, event_name=None):
@@ -150,7 +150,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
 class TestParamShorthandCustomArguments(BaseArgProcessTest):
     def setUp(self):
-        super(TestParamShorthandCustomArguments, self).setUp()
+        super().setUp()
         self.shorthand = ParamShorthandParser()
 
     def test_list_structure_list_scalar_custom_arg(self):
@@ -215,7 +215,7 @@ class TestDocGen(BaseArgProcessTest):
     # flexible and allow the docs to slightly change without breaking these
     # tests.
     def setUp(self):
-        super(TestDocGen, self).setUp()
+        super().setUp()
         self.shorthand_documenter = ParamShorthandDocGen()
         self.service_name = 'foo'
         self.operation_name = 'bar'
@@ -520,7 +520,9 @@ class TestDocGen(BaseArgProcessTest):
             }
         )
         generated_example = self.get_generated_example_for(argument)
-        self.assertEqual('A={KeyName1={B=string},KeyName2={B=string}}', generated_example)
+        self.assertEqual(
+            'A={KeyName1={B=string},KeyName2={B=string}}', generated_example
+        )
 
 
 class TestArgumentPercentEscaping(BaseArgProcessTest):
@@ -549,13 +551,20 @@ class TestArgumentPercentEscaping(BaseArgProcessTest):
         self._test_percent_escaping('string', CLIArgument, 'Symbols: % ^ & *')
 
     def test_boolean_argument_escapes_percent(self):
-        self._test_percent_escaping('boolean', BooleanArgument, 'Symbols: % ^ & *')
+        self._test_percent_escaping(
+            'boolean', BooleanArgument, 'Symbols: % ^ & *'
+        )
 
     def test_cli_argument_escapes_url_encoded_percent(self):
-        self._test_percent_escaping('string', CLIArgument, 'File: test%28file%29.png')
+        self._test_percent_escaping(
+            'string', CLIArgument, 'File: test%28file%29.png'
+        )
 
     def test_boolean_argument_escapes_url_encoded_percent(self):
-        self._test_percent_escaping('boolean', BooleanArgument, 'File: test%28file%29.png')
+        self._test_percent_escaping(
+            'boolean', BooleanArgument, 'File: test%28file%29.png'
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

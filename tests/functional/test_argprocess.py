@@ -53,7 +53,7 @@ class BaseArgProcessTest(BaseCLIDriverTest):
 
 class TestURIParams(BaseArgProcessTest):
     def setUp(self):
-        super(TestURIParams, self).setUp()
+        super().setUp()
         self.uri_param = URIArgumentHandler(LOCAL_PREFIX_MAP.copy())
 
     def test_uri_param(self):
@@ -64,7 +64,7 @@ class TestURIParams(BaseArgProcessTest):
             )
             f.write(json_argument)
             f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, f'file://{f.name}')
         self.assertEqual(result, json_argument)
 
 
@@ -115,7 +115,7 @@ class TestParamShorthand(BaseArgProcessTest):
     maxDiff = None
 
     def setUp(self):
-        super(TestParamShorthand, self).setUp()
+        super().setUp()
         self._shorthand = ParamShorthandParser()
 
     def parse_shorthand(self, cli_argument, value, event_name=None):
@@ -379,7 +379,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
 class TestDocGen(BaseArgProcessTest):
     def setUp(self):
-        super(TestDocGen, self).setUp()
+        super().setUp()
         self.shorthand_documenter = ParamShorthandDocGen()
         self.service_name = 'foo'
         self.operation_name = 'bar'
@@ -432,12 +432,12 @@ class TestDocGen(BaseArgProcessTest):
 
     def test_can_gen_recursive_structure(self):
         argument = self.get_param_model('dynamodb.PutItem.Item')
-        generated_example = self.get_generated_example_for(argument)
+        self.get_generated_example_for(argument)
 
 
 class TestUnpackJSONParams(BaseArgProcessTest):
     def setUp(self):
-        super(TestUnpackJSONParams, self).setUp()
+        super().setUp()
         self.simplify = ParamShorthandParser()
 
     def test_json_with_spaces(self):
@@ -472,7 +472,7 @@ class TestUnpackJSONParams(BaseArgProcessTest):
 
 class TestJSONValueHeaderParams(BaseArgProcessTest):
     def setUp(self):
-        super(TestJSONValueHeaderParams, self).setUp()
+        super().setUp()
         self.p = self.get_param_model(
             'lex-runtime.PostContent.sessionAttributes'
         )

@@ -14,6 +14,7 @@
 import logging
 import os
 import shutil
+import stat
 import subprocess
 import tempfile
 from datetime import datetime, timedelta
@@ -1236,6 +1237,16 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         self._load_with_cache(cache)
         self.assertEqual(cache, {})
 
+    def test_credential_cache_location_writes_there(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        self.config['credential_cache'] = 'file'
+        self.config['credential_cache_location'] = tempdir
+        cache = {}
+        self._load_with_cache(cache)
+        self.assertEqual(cache, {})
+        self.assertEqual(len(os.listdir(tempdir)), 1)
+
     def test_credential_cache_invalid_value_raises(self):
         self.config['credential_cache'] = 'none'
         provider = credentials.AssumeRoleWithWebIdentityProvider(
@@ -1269,6 +1280,18 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
             },
         )
         self.assertEqual(cache, {})
+
+    def test_env_token_file_honors_profile_location(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        self.config['credential_cache_location'] = tempdir
+        cache = {}
+        self._load_with_cache(
+            cache,
+            env={'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt'},
+        )
+        self.assertEqual(cache, {})
+        self.assertEqual(len(os.listdir(tempdir)), 1)
 
     def test_env_token_file_without_profile_keys_uses_injected_cache(self):
         cache = {}
@@ -1306,6 +1329,20 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
                 InvalidConfigError, 'credential_cache'
             ):
                 provider.load()
+
+    def test_credential_cache_relative_location_raises(self):
+        self.config['credential_cache_location'] = 'relcache'
+        provider = credentials.AssumeRoleWithWebIdentityProvider(
+            load_config=self._load_config,
+            client_creator=self.create_client_creator(with_response={}),
+            cache={},
+            profile_name=self.profile_name,
+            token_loader_cls=self._mock_loader_cls('totally.a.token'),
+        )
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'credential_cache_location'
+        ):
+            provider.load()
 
     def test_credential_cache_memory_reused_in_process(self):
         # A second load from the same provider (one CLI command) hits the
@@ -3230,9 +3267,9 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         cache = self._load_with_cache_config()
         self.assertEqual(len(cache), 1)
 
-    def test_credential_cache_file_uses_injected_cache(self):
-        # An explicit file behaves as unset: the injected cache (the CLI's
-        # ~/.aws/cli/cache) is used.
+    def test_credential_cache_file_without_location_uses_injected_cache(self):
+        # An explicit file with no location behaves as unset: the injected
+        # cache (the CLI's ~/.aws/cli/cache) is used.
         class InjectedCache:
             # Stands in for the CLI's JSONFileCache: not a plain dict.
             def __init__(self):
@@ -3282,6 +3319,43 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         cache = self._load_with_cache_config(credential_cache='memory')
         self.assertEqual(cache, {})
 
+    def test_credential_cache_memory_ignores_location(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        location = os.path.join(tempdir, 'cache')
+        cache = self._load_with_cache_config(
+            credential_cache='memory', credential_cache_location=location
+        )
+        self.assertEqual(cache, {})
+        self.assertFalse(os.path.exists(location))
+
+    def test_credential_cache_location_writes_there(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        location = os.path.join(tempdir, 'custom', 'cache')
+        cache = self._load_with_cache_config(
+            credential_cache_location=location
+        )
+        self.assertEqual(cache, {})
+        files = os.listdir(location)
+        self.assertEqual(len(files), 1)
+        self.assertTrue(files[0].endswith('.json'))
+        with open(os.path.join(location, files[0])) as f:
+            cached = json.load(f)
+        self.assertEqual(cached['Credentials']['AccessKeyId'], 'foo')
+
+    def test_credential_cache_location_expands_user(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        with mock.patch('os.path.expanduser') as expanduser:
+            expanduser.return_value = tempdir
+            self._load_with_cache_config(
+                credential_cache='file',
+                credential_cache_location='~/role-cache',
+            )
+        expanduser.assert_any_call('~/role-cache')
+        self.assertEqual(len(os.listdir(tempdir)), 1)
+
     def test_credential_cache_invalid_value_raises(self):
         self.fake_config['profiles']['development']['credential_cache'] = (
             'disk'
@@ -3294,6 +3368,97 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         )
         with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
             provider.load()
+
+    def test_credential_cache_empty_location_raises(self):
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = ''
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'credential_cache_location'
+        ):
+            provider.load()
+
+    def test_credential_cache_relative_location_raises(self):
+        for location in ('relcache', './relcache', 'a/b'):
+            with self.subTest(location=location):
+                self.fake_config['profiles']['development'][
+                    'credential_cache_location'
+                ] = location
+                provider = credentials.AssumeRoleProvider(
+                    self.create_config_loader(),
+                    self.create_client_creator(with_response={}),
+                    cache={},
+                    profile_name='development',
+                )
+                with self.assertRaisesRegex(
+                    InvalidConfigError, 'credential_cache_location'
+                ):
+                    provider.load()
+
+    def test_credential_cache_unknown_user_location_raises(self):
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = '~nosuchuser/x'
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        # Pin expanduser's behavior for a user with no home directory.
+        with mock.patch('os.path.expanduser', side_effect=lambda p: p):
+            with self.assertRaisesRegex(
+                InvalidConfigError,
+                r'"~nosuchuser/x" in profile "development" could not be '
+                r'expanded: the home directory for that user can\'t be found\. '
+                r'Use an absolute path or a path that starts with ~/\.',
+            ):
+                provider.load()
+
+    def test_credential_cache_relative_location_writes_nothing(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = 'relcache'
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(
+                with_response=self._assume_role_response()
+            ),
+            cache={},
+            profile_name='development',
+        )
+        cwd = os.getcwd()
+        os.chdir(tempdir)
+        self.addCleanup(os.chdir, cwd)
+        with self.assertRaises(InvalidConfigError):
+            provider.load().get_frozen_credentials()
+        self.assertEqual(os.listdir(tempdir), [])
+
+    def test_credential_cache_memory_ignores_empty_location(self):
+        cache = self._load_with_cache_config(
+            credential_cache='memory', credential_cache_location=''
+        )
+        self.assertEqual(cache, {})
+
+    def test_credential_cache_memory_ignores_relative_location(self):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        cwd = os.getcwd()
+        os.chdir(tempdir)
+        self.addCleanup(os.chdir, cwd)
+        cache = self._load_with_cache_config(
+            credential_cache='memory', credential_cache_location='relcache'
+        )
+        self.assertEqual(cache, {})
+        self.assertEqual(os.listdir(tempdir), [])
 
     def test_credential_cache_memory_reused_in_process(self):
         # A second fetch in the same CLI command (a refresh) reads the
@@ -3382,6 +3547,157 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             r'valid\. Valid values are: file, memory\.',
         ):
             provider.load()
+
+    def test_credential_cache_env_var_location_says_not_expanded(self):
+        for location in ('$HOME/cache', '%USERPROFILE%\\cache'):
+            with self.subTest(location=location):
+                self.fake_config['profiles']['development'][
+                    'credential_cache_location'
+                ] = location
+                provider = credentials.AssumeRoleProvider(
+                    self.create_config_loader(),
+                    self.create_client_creator(with_response={}),
+                    cache={},
+                    profile_name='development',
+                )
+                with self.assertRaisesRegex(
+                    InvalidConfigError,
+                    "is not an absolute path.*Environment variables aren't "
+                    "expanded",
+                ):
+                    provider.load()
+
+    def test_credential_cache_relative_location_has_no_env_var_note(self):
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = 'relcache'
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        with self.assertRaises(InvalidConfigError) as e:
+            provider.load()
+        self.assertNotIn('Environment variables', str(e.exception))
+        # Same path hint as the message for an unknown ~user.
+        self.assertIn(
+            'Use an absolute path or a path that starts with ~/.',
+            str(e.exception),
+        )
+
+
+class TestCredentialCacheLocation(unittest.TestCase):
+    # A credential_cache_location directory is used like the default
+    # ~/.aws/cli/cache: a plain JSONFileCache, created if missing.
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.tempdir)
+        self.fake_config = {
+            'profiles': {
+                'development': {
+                    'role_arn': 'myrole',
+                    'source_profile': 'longterm',
+                },
+                'chained': {
+                    'role_arn': 'chainedrole',
+                    'source_profile': 'development',
+                },
+                'longterm': {
+                    'aws_access_key_id': 'akid',
+                    'aws_secret_access_key': 'skid',
+                },
+            }
+        }
+        self.client = mock.Mock()
+        self.client.assume_role.side_effect = self._assume_role
+
+    def _assume_role(self, **kwargs):
+        return {
+            'Credentials': {
+                'AccessKeyId': kwargs['RoleArn'],
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': (
+                    datetime.now(tzlocal()) + timedelta(hours=24)
+                ).isoformat(),
+            },
+        }
+
+    def load(self, profile_name='development'):
+        provider = credentials.AssumeRoleProvider(
+            lambda: self.fake_config,
+            mock.Mock(return_value=self.client),
+            cache={},
+            profile_name=profile_name,
+        )
+        return provider.load().get_frozen_credentials()
+
+    def cached_keys(self, location):
+        keys = []
+        for name in os.listdir(location):
+            with open(os.path.join(location, name)) as f:
+                keys.append(json.load(f)['Credentials']['AccessKeyId'])
+        return sorted(keys)
+
+    def test_missing_directory_is_created_on_write(self):
+        location = os.path.join(self.tempdir, 'a', 'b', 'cache')
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = location
+        self.load()
+        self.assertEqual(self.cached_keys(location), ['myrole'])
+
+    def test_cache_file_is_reused(self):
+        location = os.path.join(self.tempdir, 'cache')
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = location
+        self.load()
+        creds = self.load()
+        self.assertEqual(creds.access_key, 'myrole')
+        self.assertEqual(self.client.assume_role.call_count, 1)
+
+    @skip_if_windows('POSIX permissions only.')
+    def test_cache_file_mode_matches_default_cache(self):
+        location = os.path.join(self.tempdir, 'cache')
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = location
+        self.load()
+        (name,) = os.listdir(location)
+        mode = os.stat(os.path.join(location, name)).st_mode
+        self.assertEqual(stat.S_IMODE(mode), 0o600)
+
+    def test_each_role_chain_hop_uses_its_own_location(self):
+        profiles = self.fake_config['profiles']
+        source_dir = os.path.join(self.tempdir, 'source')
+        top_dir = os.path.join(self.tempdir, 'top')
+        profiles['development']['credential_cache_location'] = source_dir
+        profiles['chained']['credential_cache_location'] = top_dir
+        creds = self.load('chained')
+        self.assertEqual(creds.access_key, 'chainedrole')
+        self.assertEqual(self.cached_keys(source_dir), ['myrole'])
+        self.assertEqual(self.cached_keys(top_dir), ['chainedrole'])
+
+    def test_location_on_source_hop_only(self):
+        source_dir = os.path.join(self.tempdir, 'source')
+        self.fake_config['profiles']['development'][
+            'credential_cache_location'
+        ] = source_dir
+        self.load('chained')
+        self.assertEqual(self.cached_keys(source_dir), ['myrole'])
+
+    def test_memory_on_top_hop_with_location_on_source_hop(self):
+        profiles = self.fake_config['profiles']
+        source_dir = os.path.join(self.tempdir, 'source')
+        top_dir = os.path.join(self.tempdir, 'top')
+        profiles['development']['credential_cache_location'] = source_dir
+        profiles['chained']['credential_cache'] = 'memory'
+        profiles['chained']['credential_cache_location'] = top_dir
+        self.load('chained')
+        self.assertEqual(self.cached_keys(source_dir), ['myrole'])
+        self.assertFalse(os.path.exists(top_dir))
 
 
 class ProfileProvider:

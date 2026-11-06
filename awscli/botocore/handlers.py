@@ -1019,7 +1019,10 @@ def add_retry_headers(request, **kwargs):
     if not retries_context:
         return
     headers = request.headers
-    headers['amz-sdk-invocation-id'] = retries_context['invocation-id']
+    # The retries context may only contain the seeded ``max`` value when
+    # ``request-created`` is emitted outside of ``Endpoint._send_request``.
+    if 'invocation-id' in retries_context:
+        headers['amz-sdk-invocation-id'] = retries_context['invocation-id']
     sdk_retry_keys = ('ttl', 'attempt', 'max')
     sdk_request_headers = [
         f'{key}={retries_context[key]}'

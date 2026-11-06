@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.39.6
+======
+
+* api-change:``datazone``: Adds support for updating OAuth 2.0 connection settings with UpdateConnection.
+* api-change:``ssm``: AWS Systems Manager now provides two new APIs - RegisterDefaultHostManagementConfiguration and DeregisterDefaultHostManagementConfiguration - along with a new DefaultHostManagementConfiguration CloudFormation resource type.
+* api-change:``mediaconvert``: Smart subtitling uses AWS Elemental Inference to generate captions from your content's audio, in embedded, burn-in, DVB-Sub, IMSC, SMI, SRT, teletext, TTML, or WebVTT outputs. Also fixes HEVC passthrough writing an incomplete codecs string to DASH and HLS manifests.
+* api-change:``connectcases``: Amazon Connect Cases adds two Bulk Case Actions operations. BatchCreateRelatedItem adds a Comment-type related item to up to 100 cases per request, BatchUpdateCase updates fields (title, status, customer ID, custom) on up to 100 cases. Same domain, per-case success and failure results returned.
+* api-change:``connect``: Rules in Amazon Connect now support ending email contacts associated to a case based on case events.
+* api-change:``ram``: Adds support for using managed permission template parameters, discovering shared customer-managed permissions, and managing customer-managed permission deprecation.
+* api-change:``autoscaling``: Amazon EC2 Auto Scaling now lets you exclude managed resources from describe API responses using the new optional IncludeManagedResources parameter. Set this parameter to false to exclude managed resources from the response. By default, managed resources are included.
+* enhancement:help: Add a ``--help`` parameter that renders the same help as the ``help`` parameter on every command.
+* api-change:``lightsail``: Marking fields as sensitive in GetInstanceAccessDetails, CreateKeyPair, DownloadDefaultKeyPair, CreateBucketAccessKey, CreateContainerServiceRegistryLogin, and GetRelationalDatabase responses.
+* api-change:``glue``: Adds support for user-defined functions governed by AWS Lake Formation.
+* api-change:``athena``: Added support for Athena System Tables which writes Athena usage data to AWS S3 managed tables in Apache Iceberg format. Adds CreateSystemTableConfiguration, UpdateSystemTableConfiguration, DeleteSystemTableConfiguration, GetSystemTableConfiguration, and ListSystemTableStatuses.
+* api-change:``eks-auth``: Added workloadIdentityProviderArn to the AssumeRoleForPodIdentity API response.
+* api-change:``bedrock-agent``: Add support for configuring searchability for metadata fields via UpdateKnowledgeBase request for Managed Knowledge Base. Once a field is marked as searchable it can be queried via query text and is factored into Managed Knowledge Base's ranking algorithm.
+* enhancement:awscrt: Update awscrt to version 0.38.1
+
+
 2.39.5
 ======
 

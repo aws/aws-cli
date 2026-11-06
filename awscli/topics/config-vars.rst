@@ -294,39 +294,14 @@ in the AWS CLI config file:
   cached temporary credentials for this profile when ``credential_cache`` is
   ``file``. The value must be an absolute path or a path that starts with
   ``~/``; a relative path is an error, and environment variables are not
-  expanded. The directory must be private to you; see the checks below. With
-  ``credential_cache = memory``, this setting is ignored. This is an optional
-  parameter, and by default the value is ``~/.aws/cli/cache``.
+  expanded. With ``credential_cache = memory``, this setting is ignored. This
+  is an optional parameter, and by default the value is ``~/.aws/cli/cache``.
 
-When a profile sets ``credential_cache_location``, the AWS CLI checks that
-directory when it loads the profile, before it calls AWS STS. If the directory
-does not exist, it is created, along with any missing parent directories, with
-permissions that only you can access (mode ``700``). Parent directories that
-already exist are not changed. The directory must be a directory, not a
-symbolic link, and writable by you. If any check fails, the command fails with
-an error that names the profile, the directory and the reason. Cache files in
-that directory that are symbolic links are ignored, and new cache files
-replace them instead of writing through them. If the credentials can't be
-written to the cache after a successful ``AssumeRole`` call, the AWS CLI logs
-a warning and the command continues. These checks don't apply to the default
-``~/.aws/cli/cache``, which behaves as in earlier versions of the AWS CLI,
-whether the profile sets ``credential_cache = file`` or neither setting.
-
-On Linux and macOS, a ``credential_cache_location`` directory must also be
-owned by you and not writable by other users or your group. The AWS CLI checks
-the directory again each time it reads or writes a cache file. Cache files
-that are owned by another user, that other users or your group can write, that
-have more than one hard link, or that aren't valid cached credentials are
-ignored, and the AWS CLI gets new credentials instead.
-
-On Windows, a ``credential_cache_location`` directory must be your user
-profile folder (``%USERPROFILE%``) or a folder under it, after junctions and
-symbolic links are followed. The AWS CLI refuses other locations, including
-network (UNC) paths, with an error before it calls AWS STS. If your user
-profile folder is the root of a drive or a network share, every
-``credential_cache_location`` is refused. The AWS CLI doesn't check the owner
-or permissions of the directory or its files; the default permissions of your
-user profile folder keep them private to you.
+The AWS CLI uses a ``credential_cache_location`` directory the same way as
+the default ``~/.aws/cli/cache``. If the directory does not exist, it is
+created. Cache files are written the same way as in the default cache
+directory, readable only by you (mode ``600``). Choosing a directory that
+other users can't access is up to you.
 
 Switching a profile to ``credential_cache = memory`` does not delete the
 credentials it has already cached. To remove them, delete the files in the

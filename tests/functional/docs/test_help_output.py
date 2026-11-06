@@ -26,12 +26,17 @@ import os
 
 import pytest
 
-from awscli.alias import AliasLoader
+from awscli.alias import AliasLoader, register_alias_commands
+from awscli.clidriver import CLIOperationCaller
+from awscli.commands import CLICommand
 from awscli.compat import StringIO
+from awscli.customizations.configure.set import ConfigureSetCommand
+from awscli.lazy import LazyCommand
 from awscli.testutils import (
     BaseAWSHelpOutputTest,
     CapturedRenderer,
     FileCreator,
+    create_clidriver,
     mock,
 )
 from tests import CLIRunner
@@ -265,6 +270,389 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_not_contains('put-bucket-lifecycle\n')
         self.assert_not_contains('get-bucket-notification\n')
         self.assert_not_contains('put-bucket-notification\n')
+
+
+class TestHelpFlagOutput(BaseAWSHelpOutputTest):
+    """Test that --help flag produces the same output as the help subcommand."""
+
+    def test_top_level_help_flag(self):
+        self.driver.main(['--help'])
+        self.assert_contains('***\naws\n***')
+        self.assert_contains(
+            'The AWS Command Line Interface is a unified tool '
+            'to manage your AWS services.'
+        )
+
+    def test_service_help_flag(self):
+        self.driver.main(['ec2', '--help'])
+        self.assert_contains('***\nec2\n***')
+        self.assert_contains('===========\nDescription\n===========')
+        self.assert_contains('* describe-instances')
+
+    def test_operation_help_flag(self):
+        self.driver.main(['ec2', 'run-instances', '--help'])
+        self.assert_contains('*************\nrun-instances\n*************')
+        self.assert_contains('Launches the specified number of instances')
+
+    def test_custom_service_help_flag(self):
+        self.driver.main(['s3', '--help'])
+        self.assert_contains('high-level S3 commands')
+        self.assert_contains('* cp')
+
+    def test_custom_operation_help_flag(self):
+        self.driver.main(['s3', 'ls', '--help'])
+        self.assert_contains('List S3 objects')
+
+    def test_help_flag_takes_priority_over_missing_param_value(self):
+        # --query is a global arg unknown to the operation parser, so --help
+        # takes priority and renders operation help.
+        self.driver.main(
+            [
+                "s3api",
+                "delete-object",
+                "--bucket",
+                "b",
+                "--key",
+                "k",
+                "--query",
+                "--help",
+            ]
+        )
+        # Assert the operation-level title, not just a substring that
+        # could also appear in the parent service's command listing.
+        self.assert_contains('*************\ndelete-object\n*************')
+
+    def test_help_flag_abbreviation(self):
+        self.driver.main(['--hel'])
+        self.assert_contains('***\naws\n***')
+
+    def test_help_flag_with_operation_level_choices_param(self):
+        # --acl is an operation-level param with constrained choices.
+        # --help should render help, not error about invalid choice.
+        self.driver.main(['s3', 'cp', '--acl', '--help'])
+        self.assert_contains('cp')
+
+    def test_help_flag_with_operation_level_value_param(self):
+        # --expected-size takes a free-form value.
+        # --help should render help, not consume 'help' as the value.
+        self.driver.main(['s3', 'cp', '--expected-size', '--help'])
+        self.assert_contains('cp')
+
+    def test_help_flag_with_positional_args(self):
+        # Positional args should be ignored when --help is present.
+        self.driver.main(
+            ['s3', 'cp', 'localfile', 's3://bucket/key', '--help']
+        )
+        self.assert_contains('cp')
+
+    def test_help_flag_with_global_flag_value(self):
+        # Flag values (e.g. "us-east-1" for --region) must not be
+        # misinterpreted as unknown commands.
+        self.driver.main(['ec2', '--region', 'us-east-1', '--help'])
+        self.assert_contains('***\nec2\n***')
+
+    def test_help_flag_with_global_flag_before_service(self):
+        # --region before the service should not prevent --help from
+        # resolving the deepest command.
+        self.driver.main(
+            ['--region', 'us-west-2', 'ec2', 'describe-instances', '--help']
+        )
+        self.assert_contains(
+            '******************\ndescribe-instances\n******************'
+        )
+
+    def test_help_flag_before_modeled_operation(self):
+        # --help before the operation should still show operation help.
+        self.driver.main(['s3api', '--help', 'put-object'])
+        self.assert_contains('put-object')
+
+    def test_help_flag_before_modeled_service(self):
+        # --help before the service should still show the deepest
+        # recognized command's help.
+        self.driver.main(['--help', 's3api', 'put-object'])
+        self.assert_contains('put-object')
+
+    def test_help_flag_with_help_subcommand(self):
+        # "aws help --help" should collapse to top-level help,
+        # matching the behavior of other double-help forms.
+        self.driver.main(['help', '--help'])
+        self.assert_contains('***\naws\n***')
+
+    def test_help_flag_with_invalid_top_level_command(self):
+        stderr = StringIO()
+        with mock.patch('sys.stderr', stderr):
+            rc = self.driver.main(['fake-service', '--help'])
+        self.assertEqual(rc, 252)
+        self.assertIn('Found invalid choice', stderr.getvalue())
+
+    def test_help_flag_with_invalid_service_operation(self):
+        stderr = StringIO()
+        with mock.patch('sys.stderr', stderr):
+            rc = self.driver.main(['s3api', 'fake-command', '--help'])
+        self.assertEqual(rc, 252)
+        self.assertIn('Found invalid choice', stderr.getvalue())
+
+    def test_help_flag_with_invalid_custom_command_operation(self):
+        stderr = StringIO()
+        with mock.patch('sys.stderr', stderr):
+            rc = self.driver.main(['s3', 'fake-command', '--help'])
+        self.assertEqual(rc, 252)
+        self.assertIn('Found invalid choice', stderr.getvalue())
+
+    def assert_page_title(self, name):
+        stars = '*' * len(name)
+        self.assert_contains(f'{stars}\n{name}\n{stars}')
+
+    def render_with_new_driver(self, args):
+        # Use a new driver for each command so that running one
+        # command can't change the command tables used by another.
+        create_clidriver().main(args)
+        return self.renderer.rendered_contents
+
+    def test_help_flag_renders_same_page_as_help(self):
+        commands = [
+            [],
+            ['ec2'],
+            ['ec2', 'describe-instances'],
+            ['s3'],
+            ['s3', 'ls'],
+            ['configure', 'set'],
+            ['ec2', 'wait', 'instance-running'],
+        ]
+        for command in commands:
+            with self.subTest(command=command):
+                expected = self.render_with_new_driver(command + ['help'])
+                actual = self.render_with_new_driver(command + ['--help'])
+                self.assertEqual(actual, expected)
+
+    def test_help_flag_does_not_call_operation(self):
+        # --query is missing its value. --help must still render help
+        # rather than run the operation.
+        with mock.patch.object(CLIOperationCaller, 'invoke') as invoke:
+            self.driver.main(
+                [
+                    'ec2',
+                    'terminate-instances',
+                    '--instance-ids',
+                    'i-1',
+                    '--query',
+                    '--help',
+                ]
+            )
+        invoke.assert_not_called()
+        self.assert_page_title('terminate-instances')
+
+    def test_help_flag_after_global_flags_with_values(self):
+        self.driver.main(
+            [
+                '--endpoint-url',
+                'http://example.com',
+                'ec2',
+                'describe-instances',
+                '--query',
+                '--help',
+            ]
+        )
+        self.assert_page_title('describe-instances')
+
+    def test_help_flag_abbreviation_after_operation_args(self):
+        # Like other global options, abbreviations of --help take
+        # priority over abbreviations of the operation's own options,
+        # such as --health-check-arn here.
+        self.driver.main(
+            [
+                'shield',
+                'associate-health-check',
+                '--he',
+                'arn:aws:route53:::healthcheck/abc',
+                '--protection-id',
+                'p',
+            ]
+        )
+        self.assert_page_title('associate-health-check')
+
+    def test_help_flag_after_end_of_options_is_a_value(self):
+        with mock.patch.object(
+            ConfigureSetCommand, '_run_main', autospec=True, return_value=0
+        ) as run_main:
+            rc = self.driver.main(
+                ['configure', 'set', 'test.key', '--', '--help']
+            )
+        self.assertEqual(rc, 0)
+        parsed_args = run_main.call_args[0][1]
+        self.assertEqual(parsed_args.value, '--help')
+        self.assertEqual(self.renderer.rendered_contents, '')
+
+    def test_missing_command_errors_without_help_flag(self):
+        cases = [
+            ([], 'the following arguments are required: command'),
+            (['ec2'], 'the following arguments are required: operation'),
+        ]
+        for args, error in cases:
+            with self.subTest(args=args):
+                stderr = StringIO()
+                with mock.patch('sys.stderr', stderr):
+                    rc = self.driver.main(args)
+                self.assertEqual(rc, 252)
+                self.assertIn(error, stderr.getvalue())
+
+
+class TestHelpFlagLazyCommands(BaseAWSHelpOutputTest):
+    # Lazy commands import their module only when the command runs or
+    # its help is rendered. --help must import the same modules as help.
+    def resolved_lazy_commands(self, args):
+        resolved = []
+        real_resolve = LazyCommand._resolve
+
+        def record(command):
+            if command._real is None:
+                resolved.append(command.name)
+            return real_resolve(command)
+
+        with mock.patch.object(
+            LazyCommand, '_resolve', autospec=True, side_effect=record
+        ):
+            create_clidriver().main(args)
+        return resolved
+
+    def test_help_flag_resolves_same_lazy_commands_as_help(self):
+        commands = [
+            [],
+            ['ec2'],
+            ['ec2', 'describe-instances'],
+            ['s3'],
+            ['s3', 'ls'],
+            ['configure', 'set'],
+        ]
+        for command in commands:
+            with self.subTest(command=command):
+                self.assertEqual(
+                    self.resolved_lazy_commands(command + ['--help']),
+                    self.resolved_lazy_commands(command + ['help']),
+                )
+
+    def test_service_help_flag_does_not_resolve_lazy_commands(self):
+        self.assertEqual(self.resolved_lazy_commands(['ec2', '--help']), [])
+
+    def test_lazy_command_help_flag_resolves_only_that_command(self):
+        self.assertEqual(
+            self.resolved_lazy_commands(['s3', 'ls', '--help']), ['s3']
+        )
+
+
+class FakePluginCommand(CLICommand):
+    """A plugin command that doesn't subclass BasicCommand."""
+
+    def __init__(self, name):
+        self._name = name
+        self._lineage = [self]
+        self.calls = []
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def lineage(self):
+        return self._lineage
+
+    @lineage.setter
+    def lineage(self, value):
+        self._lineage = value
+
+    def __call__(self, args, parsed_globals):
+        self.calls.append(args)
+        return 0
+
+
+class TestHelpFlagWithPlugins(BaseAWSHelpOutputTest):
+    # Plugin commands that don't subclass BasicCommand handle their own
+    # arguments, so they must still receive --help.
+    def add_plugin(self, event_name):
+        plugin = FakePluginCommand('myplugin')
+
+        def add_to_table(command_table, **kwargs):
+            command_table['myplugin'] = plugin
+
+        self.driver.session.register(event_name, add_to_table)
+        return plugin
+
+    def test_top_level_plugin_receives_help_flag(self):
+        plugin = self.add_plugin('building-command-table.main')
+        self.driver.main(['myplugin', '--foo', 'bar', '--help'])
+        self.assertEqual(plugin.calls, [['--foo', 'bar', '--help']])
+        self.assertEqual(self.renderer.rendered_contents, '')
+
+    def test_service_plugin_receives_help_flag(self):
+        plugin = self.add_plugin('building-command-table.ec2')
+        self.driver.main(['ec2', 'myplugin', '--help'])
+        self.assertEqual(plugin.calls, [['--help']])
+
+    def test_custom_command_plugin_receives_help_flag(self):
+        plugin = self.add_plugin('building-command-table.s3')
+        self.driver.main(['s3', 'myplugin', '--help'])
+        self.assertEqual(plugin.calls, [['--help']])
+
+    def test_plugin_receives_help_positional_unchanged(self):
+        plugin = self.add_plugin('building-command-table.main')
+        self.driver.main(['myplugin', 'help'])
+        self.assertEqual(plugin.calls, [['help']])
+
+    def test_plugin_args_unchanged_without_help_flag(self):
+        plugin = self.add_plugin('building-command-table.main')
+        self.driver.main(['myplugin', '--foo', 'bar'])
+        self.assertEqual(plugin.calls, [['--foo', 'bar']])
+
+
+class TestHelpFlagWithProfile(BaseAWSHelpOutputTest):
+    def setUp(self):
+        super().setUp()
+        self.files = FileCreator()
+        config_file = self.files.create_file(
+            'config', '[profile urlprof]\ncli_help_output = url\n'
+        )
+        self.environ['AWS_CONFIG_FILE'] = config_file
+        self.driver = create_clidriver()
+
+    def tearDown(self):
+        super().tearDown()
+        self.files.remove_all()
+
+    def assert_url_rendered(self, url_suffix):
+        contents = self.renderer.rendered_contents
+        self.assertTrue(contents.startswith('https://'), contents[:200])
+        self.assertTrue(contents.endswith(url_suffix), contents)
+
+    def test_top_level_help_flag_uses_profile(self):
+        self.driver.main(['--profile', 'urlprof', '--help'])
+        self.assert_url_rendered('/index.html')
+
+    def test_service_help_flag_uses_profile(self):
+        self.driver.main(['--profile', 'urlprof', 'ec2', '--help'])
+        self.assert_url_rendered('/reference/ec2/index.html')
+
+    def test_operation_help_flag_uses_profile(self):
+        self.driver.main(
+            ['--profile', 'urlprof', 'ec2', 'describe-instances', '--help']
+        )
+        self.assert_url_rendered('/reference/ec2/describe-instances.html')
+
+    def test_help_flag_uses_profile_when_global_value_missing(self):
+        self.driver.main(
+            [
+                '--profile',
+                'urlprof',
+                's3api',
+                'delete-object',
+                '--query',
+                '--help',
+            ]
+        )
+        self.assert_url_rendered('/reference/s3api/delete-object.html')
 
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
@@ -532,6 +920,13 @@ class TestAliases(BaseAWSHelpOutputTest):
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
+        self.event_emitter = self.driver.session.get_component('event_emitter')
+        self.event_emitter.unregister(
+            'building-command-table', unique_id='cli-alias-injector'
+        )
+        register_alias_commands(
+            self.event_emitter, alias_filename=self.alias_file
+        )
 
     def tearDown(self):
         super().tearDown()
@@ -541,10 +936,32 @@ class TestAliases(BaseAWSHelpOutputTest):
         with open(self.alias_file, 'a+') as f:
             f.write(f'{alias_name} = {alias_value}\n')
 
+    def add_subcommand_alias(self, command, alias_name, alias_value):
+        with open(self.alias_file, 'a+') as f:
+            f.write(f'[command {command}]\n')
+            f.write(f'{alias_name} = {alias_value}\n')
+
     def test_alias_not_in_main_help(self):
         self.add_alias('my-alias', 'ec2 describe-regions')
         self.driver.main(['help'])
         self.assert_not_contains('my-alias')
+
+    def test_toplevel_alias_help_flag(self):
+        self.add_alias('whoami', 'sts get-caller-identity')
+        self.driver.main(['whoami', '--help'])
+        self.assert_contains('get-caller-identity')
+
+    def test_subcommand_alias_help_flag(self):
+        self.add_subcommand_alias('ec2', 'regions', 'describe-regions')
+        self.driver.main(['ec2', 'regions', '--help'])
+        self.assert_contains('describe-regions')
+
+    def test_toplevel_alias_then_operation_help_flag(self):
+        self.add_alias('e', 'ec2')
+        self.driver.main(['e', 'describe-instances', '--help'])
+        self.assert_contains(
+            '******************\ndescribe-instances\n******************'
+        )
 
 
 class TestStreamingOutputHelp(BaseAWSHelpOutputTest):

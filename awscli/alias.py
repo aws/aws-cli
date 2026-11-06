@@ -17,7 +17,7 @@ import subprocess
 
 from botocore.configloader import raw_config_parse
 
-from awscli.commands import CLICommand
+from awscli.commands import CLICommand, call_command
 from awscli.compat import compat_shell_quote
 from awscli.utils import emit_top_level_args_parsed_event
 
@@ -247,6 +247,9 @@ class BaseAliasCommand(CLICommand):
 
 class BaseInternalAliasCommand(BaseAliasCommand):
     UNSUPPORTED_GLOBAL_PARAMETERS = ['debug', 'profile']
+    # Internal aliases pass parsed_globals, including help, on to the
+    # command they alias.
+    _HANDLES_HELP_FLAG = True
 
     def __init__(self, alias_name, alias_value, session):
         super(BaseInternalAliasCommand, self).__init__(alias_name, alias_value)
@@ -389,7 +392,7 @@ class ServiceAliasCommand(BaseInternalAliasCommand):
                     self._alias_name,
                 )
                 command = self._shadow_proxy_command
-        return command(remaining, parsed_globals)
+        return call_command(command, remaining, parsed_globals)
 
 
 class ExternalAliasCommand(BaseAliasCommand):
@@ -481,6 +484,10 @@ class InternalAliasSubCommand(BaseInternalAliasCommand):
                 "Delegating to proxy sub-command with new alias args: %s",
                 alias_args,
             )
-            return self._proxied_sub_command(cmd_specific_args, parsed_globals)
+            return call_command(
+                self._proxied_sub_command, cmd_specific_args, parsed_globals
+            )
         else:
-            return self._command_object(cmd_specific_args, parsed_globals)
+            return call_command(
+                self._command_object, cmd_specific_args, parsed_globals
+            )

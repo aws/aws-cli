@@ -17,7 +17,7 @@ from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.bcdoc import docevents
 from awscli.clidocs import OperationDocumentEventHandler
-from awscli.commands import CLICommand
+from awscli.commands import CLICommand, call_command, help_requested
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
@@ -54,6 +54,8 @@ class BasicCommand(CLICommand):
 
     """
 
+    # __call__ renders this command's help when --help is given.
+    _HANDLES_HELP_FLAG = True
     # This is the name of your command, so if you want to
     # create an 'aws mycommand ...' command, the NAME would be
     # 'mycommand'
@@ -155,9 +157,16 @@ class BasicCommand(CLICommand):
         )
         if maybe_parsed_subcommand is not None:
             new_args, subcommand_name = maybe_parsed_subcommand
-            return self._subcommand_table[subcommand_name](
-                new_args, parsed_globals
+            return call_command(
+                self._subcommand_table[subcommand_name],
+                new_args,
+                parsed_globals,
             )
+        if help_requested(parsed_globals):
+            # Show help without parsing this command's arguments, so
+            # missing or invalid values can't prevent it and the
+            # command never runs.
+            return self._display_help([], parsed_globals)
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 

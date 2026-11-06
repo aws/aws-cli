@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from argparse import Namespace
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -90,6 +91,38 @@ class TestLazyCommandResolution:
             result = cmd.create_help_command()
         assert (
             result == mock_module.MyCommand.return_value.create_help_command()
+        )
+
+
+class TestLazyCommandHelpFlag:
+    def test_checking_help_flag_does_not_import(self, session):
+        cmd = LazyCommand('cmd', session, 'some.module', 'MyCommand')
+        with patch('importlib.import_module') as imp:
+            assert cmd._HANDLES_HELP_FLAG
+        imp.assert_not_called()
+
+    def test_passes_help_flag_to_real_command_that_needs_it(
+        self, session, mock_module
+    ):
+        mock_module.MyCommand.return_value._HANDLES_HELP_FLAG = False
+        cmd = LazyCommand('cmd', session, 'some.module', 'MyCommand')
+        parsed_globals = Namespace(help=True)
+        with patch('importlib.import_module', return_value=mock_module):
+            cmd(['arg1'], parsed_globals)
+        mock_module.MyCommand.return_value.assert_called_once_with(
+            ['arg1', '--help'], parsed_globals
+        )
+
+    def test_does_not_pass_help_flag_to_real_command_that_handles_it(
+        self, session, mock_module
+    ):
+        mock_module.MyCommand.return_value._HANDLES_HELP_FLAG = True
+        cmd = LazyCommand('cmd', session, 'some.module', 'MyCommand')
+        parsed_globals = Namespace(help=True)
+        with patch('importlib.import_module', return_value=mock_module):
+            cmd(['arg1'], parsed_globals)
+        mock_module.MyCommand.return_value.assert_called_once_with(
+            ['arg1'], parsed_globals
         )
 
 

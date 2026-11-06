@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import importlib
 
-from awscli.commands import CLICommand
+from awscli.commands import CLICommand, call_command
 
 
 class LazyCommand(CLICommand):
@@ -22,6 +22,11 @@ class LazyCommand(CLICommand):
     the actual module (and creates the real command object) when the command
     is invoked or its help is accessed.
     """
+
+    # Callers can't ask the real command whether it handles --help
+    # without importing it. So this wrapper claims it, and __call__,
+    # which imports the real command anyway, passes the decision on.
+    _HANDLES_HELP_FLAG = True
 
     def __init__(self, name, session, module_path, class_name):
         self._name = name
@@ -40,7 +45,7 @@ class LazyCommand(CLICommand):
         return self._real
 
     def __call__(self, args, parsed_globals):
-        return self._resolve()(args, parsed_globals)
+        return call_command(self._resolve(), args, parsed_globals)
 
     def create_help_command(self):
         return self._resolve().create_help_command()

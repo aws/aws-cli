@@ -797,10 +797,12 @@ def _parse_timestamp_with_tzinfo(value, tzinfo):
     """Parse timestamp with pluggable tzinfo options."""
     if isinstance(value, (int, float)):
         # Possibly an epoch time.
-        return datetime.datetime.fromtimestamp(value, tzinfo())
+        return datetime.datetime.fromtimestamp(value, tzinfo()).astimezone()
     else:
         try:
-            return datetime.datetime.fromtimestamp(float(value), tzinfo())
+            return datetime.datetime.fromtimestamp(
+                float(value), tzinfo()
+            ).astimezone()
         except (TypeError, ValueError):
             pass
     try:

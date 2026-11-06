@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
+import datetime
 import os
 import sys
 
@@ -282,6 +283,20 @@ class TestLSCommand(unittest.TestCase):
         }
 
         paginate.assert_called_with(**ref_call_args)
+
+    def test_last_mod_str_uses_utc_offset_at_that_time(self):
+        last_mod = datetime.datetime(
+            2026, 11, 4, 18, 0, 0, tzinfo=datetime.timezone.utc
+        )
+        expected = last_mod.astimezone()
+        stale_offset = int(-expected.utcoffset().total_seconds()) + 3600
+        ls_command = ListCommand(self.session)
+        with mock.patch('time.timezone', stale_offset):
+            with mock.patch('time.daylight', 0):
+                last_mod_str = ls_command._make_last_mod_str(
+                    '2026-11-04T23:00:00+05:00'
+                )
+        self.assertEqual(last_mod_str, expected.strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class CommandArchitectureTest(BaseAWSCommandParamsTest):

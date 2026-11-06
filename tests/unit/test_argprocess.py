@@ -732,9 +732,25 @@ class TestDocGen(BaseArgProcessTest):
         generated_example = self.get_generated_example_for(argument)
 
     def test_can_document_nested_structs(self):
-        argument = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')
+        argument = self.create_argument(
+            {
+                'A': {
+                    'type': 'structure',
+                    'members': {
+                        'B': {'type': 'string'},
+                        'C': {
+                            'type': 'structure',
+                            'members': {
+                                'D': {'type': 'string'},
+                                'E': {'type': 'integer'},
+                            },
+                        },
+                    },
+                },
+            }
+        )
         generated_example = self.get_generated_example_for(argument)
-        self.assertRegex(generated_example, r'Ebs={\w+=\w+')
+        self.assertIn('A={B=string,C={D=string,E=integer}}', generated_example)
 
     def test_can_document_nested_lists(self):
         argument = self.create_argument(

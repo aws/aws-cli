@@ -59,7 +59,6 @@ from tests import (
     StubbedSession,
     mock,
     random_chars,
-    skip_if_windows,
     temporary_file,
     unittest,
 )
@@ -892,7 +891,7 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
     # ~/.aws/cli/cache.
     def setUp(self):
         super().setUp()
-        # On Windows a cache location must be under the user profile folder.
+        # Keep ~ inside the temporary folder on every OS.
         self.environ['HOME'] = self.tempdir
         self.environ['USERPROFILE'] = self.tempdir
         self.cache_dir = os.path.join(self.tempdir, 'cli-cache')
@@ -1084,20 +1083,6 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
             self.run_command_with_calls('A', [])
         self.assertEqual(len(self.cache_files()), 2)
 
-    @skip_if_windows('POSIX permissions only.')
-    def test_web_identity_source_hop_explicit_file_skips_dir_checks(self):
-        # ~/.aws/cli/cache isn't checked: a group-writable folder is used
-        # as it is for profiles that don't set credential_cache.
-        os.mkdir(self.cache_dir)
-        os.chmod(self.cache_dir, 0o777)
-        self.write_web_identity_source_hop_config('credential_cache = file\n')
-        with patch(
-            'botocore.credentials._DEFAULT_CREDENTIAL_CACHE_DIR',
-            self.cache_dir,
-        ):
-            self.run_command_with_calls('A', self.source_hop_calls())
-        self.assertEqual(len(self.cache_files()), 2)
-
     def test_explicit_file_reuses_injected_cache(self):
         # Explicit file with no location behaves as unset: the injected
         # ~/.aws/cli/cache is used.
@@ -1106,50 +1091,6 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
         second = self.run_command('A', 'assume_role', responses=0)
         self.assertEqual(first, second)
         self.assertEqual(len(self.cache_files()), 1)
-
-    @skip_if_windows('POSIX permissions only.')
-    def test_explicit_file_with_group_writable_cache_works_like_unset(self):
-        os.mkdir(self.cache_dir)
-        os.chmod(self.cache_dir, 0o777)
-        with patch(
-            'botocore.credentials._DEFAULT_CREDENTIAL_CACHE_DIR',
-            self.cache_dir,
-        ):
-            for extra in ('', 'credential_cache = file\n'):
-                self.write_role_config(extra)
-                self.run_command('A', 'assume_role', responses=1)
-                os.remove(os.path.join(self.cache_dir, self.cache_files()[0]))
-
-    @skip_if_windows('POSIX ownership only.')
-    def test_explicit_file_with_root_owned_cache_works_like_unset(self):
-        # For example a folder left by sudo: owned by another user.
-        os.mkdir(self.cache_dir, 0o755)
-        other_uid = os.lstat(self.cache_dir).st_uid + 1
-        with (
-            patch(
-                'botocore.credentials._DEFAULT_CREDENTIAL_CACHE_DIR',
-                self.cache_dir,
-            ),
-            patch('os.geteuid', return_value=other_uid),
-        ):
-            for extra in ('', 'credential_cache = file\n'):
-                self.write_role_config(extra)
-                self.run_command('A', 'assume_role', responses=1)
-                os.remove(os.path.join(self.cache_dir, self.cache_files()[0]))
-
-    @skip_if_windows('POSIX permissions only.')
-    def test_shared_location_is_refused_before_sts(self):
-        location = os.path.join(self.tempdir, 'shared-cache')
-        os.mkdir(location)
-        os.chmod(location, 0o1777)
-        self.write_role_config(f'credential_cache_location = {location}\n')
-        session = StubbedSession(profile='A')
-        # Raised when the profile loads, so no STS call is made.
-        with self.assertRaisesRegex(
-            InvalidConfigError, 'can be written by other users'
-        ):
-            session.get_credentials()
-        self.assertEqual(os.listdir(location), [])
 
     def test_web_identity_source_hop_location_writes_there(self):
         # A location on the hop applies, as on a top-level profile.

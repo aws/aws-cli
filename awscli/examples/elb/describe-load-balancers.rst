@@ -102,7 +102,7 @@ For more information, see `What is a Classic Load Balancer? <https://docs.aws.am
 The following ``describe-load-balancers`` example describes the specified load balancer. ::
 
     aws elb describe-load-balancers \
-        --load-balancer-name my-load-balancer
+        --load-balancer-names my-load-balancer
 
 The following example response is for an HTTPS load balancer in a VPC.
 

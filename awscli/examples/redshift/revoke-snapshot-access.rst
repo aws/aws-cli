@@ -5,7 +5,7 @@ restore the snapshot ``my-snapshot-id``. By default, the output is in JSON
 format. ::
 
     aws redshift revoke-snapshot-access \
-        --snapshot-id my-snapshot-id \
+        --snapshot-identifier my-snapshot-id \
         --account-with-restore-access 123456789111
 
 Output::

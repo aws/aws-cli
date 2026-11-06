@@ -4,11 +4,11 @@ The following ``update-suite-definition`` example updates a device advisor test 
 
     aws iotdeviceadvisor update-suite-definition \
         --suite-definition-id 3hsn88h4p2g5 \
-        --suite-definition-configuration '{ \
-            "suiteDefinitionName": "TestSuiteName", \
-            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}], \
-            "intendedForQualification": false, \
-            "rootGroup": "{\"configuration\":{},\"tests\":[{\"name\":\"MQTT Connect\",\"configuration\":{\"EXECUTION_TIMEOUT\":120},\"tests\":[{\"name\":\"MQTT_Connect\",\"configuration\":{},\"test\":{\"id\":\"MQTT_Connect\",\"testCase\":null,\"version\":\"0.0.0\"}}]}]}", \
+        --suite-definition-configuration '{
+            "suiteDefinitionName": "TestSuiteName",
+            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}],
+            "intendedForQualification": false,
+            "rootGroup": "{\"configuration\":{},\"tests\":[{\"name\":\"MQTT Connect\",\"configuration\":{\"EXECUTION_TIMEOUT\":120},\"tests\":[{\"name\":\"MQTT_Connect\",\"configuration\":{},\"test\":{\"id\":\"MQTT_Connect\",\"testCase\":null,\"version\":\"0.0.0\"}}]}]}",
             "devicePermissionRoleArn": "arn:aws:iam::123456789012:role/Myrole"}'
 
 Output::
@@ -28,10 +28,10 @@ The following ``update-suite-definition`` example updates a device advisor quali
     aws iotdeviceadvisor update-suite-definition \
         --suite-definition-id txgsuolk2myj \
         --suite-definition-configuration '{
-            "suiteDefinitionName": "TestSuiteName", \
-            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}], \
-            "intendedForQualification": true, \
-            "rootGroup": "", \
+            "suiteDefinitionName": "TestSuiteName",
+            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}],
+            "intendedForQualification": true,
+            "rootGroup": "",
             "devicePermissionRoleArn": "arn:aws:iam::123456789012:role/Myrole"}'
 
 Output::

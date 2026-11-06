@@ -19,7 +19,9 @@ Contents of ``SAMLMetaData.xml``::
                 </ds:KeyInfo>
             </md:KeyDescriptor>
             <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>
             <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://adfs.example.com/adfs/ls/"/>
+            <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://adfs.example.com/adfs/ls/"/>
         </md:IDPSSODescriptor>
     </md:EntityDescriptor>
 

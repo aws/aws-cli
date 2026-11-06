@@ -3,11 +3,11 @@
 The following ``create-suite-definition`` example creates a device advisor test suite in the AWS IoT with the specified suite definition configuration. ::
 
     aws iotdeviceadvisor create-suite-definition \
-        --suite-definition-configuration '{ \
-            "suiteDefinitionName": "TestSuiteName", \
-            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}], \
-            "intendedForQualification": false, \
-            "rootGroup": "{\"configuration\":{},\"tests\":[{\"name\":\"MQTT Connect\",\"configuration\":{\"EXECUTION_TIMEOUT\":120},\"tests\":[{\"name\":\"MQTT_Connect\",\"configuration\":{},\"test\":{\"id\":\"MQTT_Connect\",\"testCase\":null,\"version\":\"0.0.0\"}}]}]}", \
+        --suite-definition-configuration '{
+            "suiteDefinitionName": "TestSuiteName",
+            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}],
+            "intendedForQualification": false,
+            "rootGroup": "{\"configuration\":{},\"tests\":[{\"name\":\"MQTT Connect\",\"configuration\":{\"EXECUTION_TIMEOUT\":120},\"tests\":[{\"name\":\"MQTT_Connect\",\"configuration\":{},\"test\":{\"id\":\"MQTT_Connect\",\"testCase\":null,\"version\":\"0.0.0\"}}]}]}",
             "devicePermissionRoleArn": "arn:aws:iam::123456789012:role/Myrole"}'
 
 Output::
@@ -26,11 +26,11 @@ For more information, see `Create a test suite definition <https://docs.aws.amaz
 The following ``create-suite-definition`` example creates a device advisor qualification test suite with the latest version in the AWS IoT with the specified suite definition configuration. ::
 
     aws iotdeviceadvisor create-suite-definition \
-        --suite-definition-configuration '{ \
-            "suiteDefinitionName": "TestSuiteName", \
-            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}], \
-            "intendedForQualification": true, \
-            "rootGroup": "", \
+        --suite-definition-configuration '{
+            "suiteDefinitionName": "TestSuiteName",
+            "devices": [{"thingArn":"arn:aws:iot:us-west-2:123456789012:thing/MyIotThing"}],
+            "intendedForQualification": true,
+            "rootGroup": "",
             "devicePermissionRoleArn": "arn:aws:iam::123456789012:role/Myrole"}'
 
 Output::

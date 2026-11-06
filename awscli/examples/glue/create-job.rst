@@ -5,13 +5,13 @@ The following ``create-job`` example creates a streaming job that runs a script 
     aws glue create-job \
         --name my-testing-job \
         --role AWSGlueServiceRoleDefault \
-        --command '{ \
-            "Name": "gluestreaming", \
-            "ScriptLocation": "s3://amzn-s3-demo-bucket/folder/" \
+        --command '{
+            "Name": "gluestreaming",
+            "ScriptLocation": "s3://amzn-s3-demo-bucket/folder/"
         }' \
-        --default-arguments '{ \
-            "--job-language":"scala", \
-            "--class":"GlueApp" \
+        --default-arguments '{
+            "--job-language":"scala",
+            "--class":"GlueApp"
         }' \
         --profile my-profile
 

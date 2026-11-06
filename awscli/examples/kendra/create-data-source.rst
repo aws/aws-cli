@@ -5,9 +5,9 @@ The following ``create-data-source`` example creates and configures an Amazon Ke
     aws kendra create-data-source \
         --name "example data source 1" \
         --description "Example data source 1 for example index 1 contains the first set of example documents" \
-        --tags '{"Key": "test resources", "Value": "kendra"}, {"Key": "test resources", "Value": "aws"}' \
+        --tags '[{"Key": "test resources", "Value": "kendra"}, {"Key": "test resources", "Value": "aws"}]' \
         --role-arn "arn:aws:iam::my-account-id:role/KendraRoleForS3TemplateConfigDataSource" \
-        --index-id exampleindex1 \
+        --index-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --language-code "es" \
         --schedule "0 0 18 ? * TUE,MON,WED,THU,FRI,SAT *" \
         --configuration file://s3schemaconfig.json \

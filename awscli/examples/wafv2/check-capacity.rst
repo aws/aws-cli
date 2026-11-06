@@ -1,10 +1,11 @@
 **To obtain the capacity used by a set of rules**
 
-The following ``check-capacity`` example retrieves the capacity requirements for a rule set that contains a rate-based rule statement, and an AND rule statement that contains nested rules. ::
+The following ``check-capacity`` example retrieves the capacity requirements for a rule set that contains a rate-based rule statement, and an AND rule statement that contains nested rules. The ``--cli-binary-format raw-in-base64-out`` option lets you specify the ``SearchString`` value as plain text instead of base64. ::
 
     aws wafv2 check-capacity \
         --scope REGIONAL \
-        --rules file://waf-rule-list.json
+        --rules file://waf-rule-list.json \
+        --cli-binary-format raw-in-base64-out
 
 Contents of ``waf-rule-list.json``::
 

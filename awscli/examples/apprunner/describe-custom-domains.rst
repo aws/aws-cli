@@ -8,9 +8,7 @@ The following ``describe-custom-domains`` example get descriptions and status of
 Contents of ``input.json``::
 
     {
-        "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
-        "DomainName": "example.com",
-        "EnableWWWSubdomain": true
+        "ServiceArn": "arn:aws:apprunner:us-west-2:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa"
     }
 
 Output::

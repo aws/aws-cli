@@ -399,7 +399,7 @@ class BaseIMDSRegionTest(unittest.TestCase):
         self._send = self._urllib3_patch.start()
         self._imds_responses = []
         self._send.side_effect = self.get_imds_response
-        self._region = 'us-mars-1a'
+        self._region = 'us-mars-1'
         self.environ = {}
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
@@ -462,6 +462,38 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
 
         expected_result = 'us-mars-1'
         self.assertEqual(result, expected_result)
+
+    def test_uses_placement_region_endpoint(self):
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
+        result = InstanceMetadataRegionFetcher().retrieve_region()
+        self.assertEqual(result, 'us-mars-1')
+        # The region must come from the placement/region endpoint, not the
+        # availability-zone endpoint.
+        region_request = self._send.call_args[0][0]
+        self.assertTrue(region_request.url.endswith('placement/region/'))
+
+    def test_local_zone_resolves_to_parent_region(self):
+        # For a Local Zone, placement/region returns the parent region
+        # directly. Deriving it from the AZ (e.g. stripping the last char of
+        # ``us-east-2-sbn-1a``) would yield the invalid ``us-east-2-sbn-1``.
+        self.add_imds_token_response()
+        self.add_get_region_imds_response(region='us-east-2')
+        result = InstanceMetadataRegionFetcher().retrieve_region()
+        self.assertEqual(result, 'us-east-2')
+
+    def test_falls_back_to_availability_zone(self):
+        # If placement/region is unavailable (older or third-party IMDS),
+        # fall back to deriving the region from the availability zone.
+        self.add_imds_token_response()
+        self.add_imds_response(status_code=404, body=b'')
+        self.add_get_region_imds_response(region='us-mars-1a')
+        result = InstanceMetadataRegionFetcher(num_attempts=1).retrieve_region()
+        self.assertEqual(result, 'us-mars-1')
+        # First the region endpoint is tried, then the AZ endpoint.
+        urls = [call[0][0].url for call in self._send.call_args_list]
+        self.assertTrue(urls[-2].endswith('placement/region/'))
+        self.assertTrue(urls[-1].endswith('placement/availability-zone/'))
 
     def test_includes_user_agent_header(self):
         user_agent = 'my-user-agent'
@@ -536,6 +568,9 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
 
     def test_exhaust_retries_on_region_request(self):
         self.add_imds_token_response()
+        # The region endpoint fails, and so does the availability-zone
+        # fallback, so no region can be resolved.
+        self.add_imds_response(status_code=400, body=b'')
         self.add_imds_response(status_code=400, body=b'')
         result = InstanceMetadataRegionFetcher(
             num_attempts=1

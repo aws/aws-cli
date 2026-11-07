@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 import os
+from threading import Event
 
 import awscrt.io
 import pytest
@@ -175,12 +176,21 @@ class TestPromptToolkitPrompterBuffer:
     def test_handle_args_with_spaces(self, app_runner, prompter):
         original_args = ['iam', 'create-role', '--description', 'With spaces']
         prompter.args = original_args
-        with app_runner.run_app_in_thread(
-            target=prompter.prompt_for_args, args=(original_args,)
-        ) as ctx:
-            assert prompter.input_buffer.document.text == (
-                "iam create-role --description 'With spaces' "
-            )
+        initialized = Event()
+        original_pre_run = prompter.pre_run
+
+        def initialize():
+            original_pre_run()
+            initialized.set()
+
+        with mock.patch.object(prompter, 'pre_run', initialize):
+            with app_runner.run_app_in_thread(
+                target=prompter.prompt_for_args, args=(original_args,)
+            ) as ctx:
+                assert initialized.wait(5), 'Prompt initialization did not finish'
+                assert prompter.input_buffer.document.text == (
+                    "iam create-role --description 'With spaces' "
+                )
         assert ctx.return_value == original_args
 
 
@@ -386,8 +396,14 @@ class TestDebugPanel(BasicPromptToolkitTest):
 
     def test_open_save_dialog_on_control_s(self, app_runner, prompter):
         prompter.app.debug = True
+        input_processed = Event()
+        app_runner.app.key_processor.after_key_press.add_handler(
+            lambda sender: input_processed.set()
+        )
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.ControlS)
+            # A redraw can finish before the key binding has been processed.
+            assert input_processed.wait(5), 'Control-S was not processed'
             self.assert_current_buffer_text(app_runner.app, 'prompt_debug.log')
 
     def test_can_save_log_file(self, app_runner, prompter, files):
@@ -437,11 +453,38 @@ class TestOutputPanel(BasicPromptToolkitTest):
     def test_output_panel_and_doc_panel_can_be_visible_together(
         self, app_runner
     ):
-        with app_runner.run_app_in_thread():
+        output_processed = Event()
+        doc_processed = Event()
+        output_binding = app_runner.app.key_bindings.get_bindings_for_keys(
+            (Keys.F5,)
+        )[-1]
+        doc_binding = app_runner.app.key_bindings.get_bindings_for_keys(
+            (Keys.F3,)
+        )[-1]
+        original_output_handler = output_binding.handler
+        original_doc_handler = doc_binding.handler
+
+        def toggle_output(event):
+            original_output_handler(event)
+            output_processed.set()
+
+        def toggle_doc(event):
+            original_doc_handler(event)
+            doc_processed.set()
+
+        with (
+            mock.patch.object(output_binding, 'handler', toggle_output),
+            mock.patch.object(doc_binding, 'handler', toggle_doc),
+            app_runner.run_app_in_thread(),
+        ):
             app_runner.feed_input(Keys.F5)
+            assert output_processed.wait(5), 'F5 was not processed'
+            app_runner._wait_until_app_is_done_updating()
             self.assert_buffer_is_visible(app_runner.app, 'output_buffer')
             self.assert_buffer_is_not_visible(app_runner.app, 'doc_buffer')
             app_runner.feed_input(Keys.F3)
+            assert doc_processed.wait(5), 'F3 was not processed'
+            app_runner._wait_until_app_is_done_updating()
             self.assert_buffer_is_visible(app_runner.app, 'doc_buffer')
             self.assert_buffer_is_visible(app_runner.app, 'output_buffer')
 

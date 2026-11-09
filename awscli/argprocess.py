@@ -14,6 +14,7 @@
 
 import logging
 import os
+import re
 
 from botocore.compat import OrderedDict, json
 from botocore.utils import is_json_value_header
@@ -432,7 +433,7 @@ class ParamShorthandParser(ParamShorthand):
         key_name = self._get_old_list_case_key(
             cli_argument, command_name, operation_name
         )
-        if key_name is not None and self._is_old_list_case_value(model, value):
+        if key_name is not None:
             # First special case is handling a list of structures
             # where bare values are assigned to a single member, such as:
             #
@@ -442,8 +443,7 @@ class ParamShorthandParser(ParamShorthand):
             #
             # [{"InstanceId": "id-1"}, {"InstanceId": "id-2"},
             #  {"InstanceId": "id-3"}]
-            new_values = [{key_name: v} for v in value]
-            return new_values
+            return self._parse_old_list_case(model, value, key_name)
         elif (
             model.type_name == 'structure'
             and len(model.members) == 1
@@ -460,15 +460,25 @@ class ParamShorthandParser(ParamShorthand):
             # {"Value": "shutdown"}
             return {'Value': value}
 
-    def _is_old_list_case_value(self, model, value):
-        if len(model.member.members) == 1:
+    def _parse_old_list_case(self, model, value, key_name):
+        members = model.member.members
+        if len(members) == 1:
             # The structure only has the one member, so every value is
             # assigned to it, even if it contains an "=" (e.g. base64).
-            return True
-        # The structure has other members, so values written with the
-        # regular key=value shorthand syntax must go through the regular
-        # shorthand parser. Only bare values use the deprecated case.
-        return all('=' not in v for v in value)
+            return [{key_name: v} for v in value]
+        # The structure has other members, so each value that starts with
+        # one of the member names followed by "=" uses the regular
+        # shorthand syntax. Any other value, including one that contains
+        # an "=" such as base64, is a bare value for the pinned member.
+        key_value = re.compile(
+            r'\s*(?:%s)\s*=' % '|'.join(re.escape(m) for m in members)
+        )
+        parsed = [
+            self._parser.parse(v) if key_value.match(v) else {key_name: v}
+            for v in value
+        ]
+        self._visitor.visit(parsed, model)
+        return parsed
 
     def _should_parse_as_shorthand(self, cli_argument, value):
         # We first need to make sure this is a parameter that qualifies

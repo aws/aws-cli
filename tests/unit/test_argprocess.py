@@ -188,6 +188,33 @@ class TestParamShorthand(BaseArgProcessTest):
             returned, [{"Bar": "foo", "Baz": True}, {"Bar": "baz"}]
         )
 
+    def test_flattens_marked_multi_member_structure_list_with_equals(self):
+        # Bare values that contain an "=" (e.g. base64 padding) but do not
+        # start with a member name are still assigned to the pinned member.
+        argument = self.create_structure_list_argument(
+            {'Bar': {'type': 'blob'}, 'Baz': {'type': 'boolean'}}
+        )
+        with self.patch_old_list_cases('Bar'):
+            returned = self.parse_shorthand(argument, ['aGk=', 'Zm9vYg=='])
+        self.assertEqual(returned, [{"Bar": "aGk="}, {"Bar": "Zm9vYg=="}])
+
+    def test_marked_multi_member_structure_list_accepts_mixed_values(self):
+        argument = self.create_structure_list_argument(
+            {'Bar': {'type': 'string'}, 'Baz': {'type': 'boolean'}}
+        )
+        with self.patch_old_list_cases('Bar'):
+            returned = self.parse_shorthand(
+                argument, ['foo', 'Bar=baz,Baz=true', 'Baz = false, Bar=qux']
+            )
+        self.assertEqual(
+            returned,
+            [
+                {"Bar": "foo"},
+                {"Bar": "baz", "Baz": True},
+                {"Bar": "qux", "Baz": False},
+            ],
+        )
+
     def test_does_not_flatten_multi_member_list_with_unknown_member(self):
         argument = self.create_structure_list_argument(
             {'Bar': {'type': 'string'}, 'Baz': {'type': 'boolean'}}

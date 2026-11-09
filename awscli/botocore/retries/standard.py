@@ -105,7 +105,14 @@ class MaxAttemptsSeeder:
         self._max_attempts = max_attempts
 
     def seed_max_attempts(self, request, **kwargs):
-        retries_context = request.context.setdefault('retries', {})
+        # The endpoint creates the retries context, with the invocation id,
+        # before it emits ``request-created``. A request that has no context
+        # did not come from the endpoint (for example one a test built and
+        # emitted itself), so leave it alone rather than create a partial
+        # context that ``add_retry_headers`` cannot complete.
+        retries_context = request.context.get('retries')
+        if retries_context is None:
+            return
         retries_context['max'] = self._max_attempts
 
 

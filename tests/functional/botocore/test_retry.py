@@ -455,7 +455,17 @@ class TestMaxAttemptsInRequestHeader(BaseSessionTest):
         headers = self._sdk_request_headers(config, [200])
         self.assertEqual(headers, [b'attempt=1; max=4'])
 
-    def test_seeder_adds_max_to_empty_context(self):
+    def test_seeder_adds_max_to_existing_context(self):
+        request = AWSRequest()
+        request.context['retries'] = {'invocation-id': 'abc-123'}
+        standard.MaxAttemptsSeeder(3).seed_max_attempts(request)
+        self.assertEqual(
+            request.context['retries'], {'invocation-id': 'abc-123', 'max': 3}
+        )
+
+    def test_seeder_skips_request_without_retries_context(self):
+        # The endpoint creates the context before ``request-created``; a
+        # request without one did not come from the endpoint.
         request = AWSRequest()
         standard.MaxAttemptsSeeder(3).seed_max_attempts(request)
-        self.assertEqual(request.context['retries'], {'max': 3})
+        self.assertNotIn('retries', request.context)

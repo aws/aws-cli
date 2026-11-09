@@ -13,6 +13,26 @@
     "uid":"signin-2023-01-01"
   },
   "operations":{
+    "CreateBearerToken":{
+      "name":"CreateBearerToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/token?x-amz-token-request-type=bearer",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateBearerTokenRequest"},
+      "output":{"shape":"CreateBearerTokenResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsError"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a bearer token that represents your IAM credentials and can be used to access a supported AWS service. By default, the token is valid for 12 hours.</p>",
+      "staticContextParams":{
+        "IsOAuthEndpoint":{"value":true}
+      }
+    },
     "CreateOAuth2Token":{
       "name":"CreateOAuth2Token",
       "http":{
@@ -336,6 +356,12 @@
       "max":512,
       "min":1
     },
+    "BearerTokenExpiresIn":{
+      "type":"integer",
+      "documentation":"<p>Token lifetime in seconds.</p>",
+      "box":true,
+      "min":1
+    },
     "BearerTokenType":{
       "type":"string",
       "documentation":"<p>Token type for access tokens. Currently supports &quot;Bearer&quot; as defined in RFC 6749.</p>",
@@ -419,6 +445,56 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "CreateBearerTokenRequest":{
+      "type":"structure",
+      "required":[
+        "grantType",
+        "resource"
+      ],
+      "members":{
+        "grantType":{
+          "shape":"ClientCredentialsGrantType",
+          "documentation":"<p>The grant type. Must be &quot;client_credentials&quot;.</p>",
+          "locationName":"grant_type"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The AWS service the bearer token is for. Example: &quot;ecr.amazonaws.com&quot;.</p>"
+        },
+        "durationSeconds":{
+          "shape":"TokenDuration",
+          "documentation":"<p>The requested token lifetime in seconds, from 300 (5 minutes) up to the maximum allowed for the service, currently 43200 (12 hours). If omitted, the token is valid for 12 hours.</p>",
+          "locationName":"duration"
+        }
+      },
+      "documentation":"<p>Input structure for CreateBearerToken operation</p>"
+    },
+    "CreateBearerTokenResponse":{
+      "type":"structure",
+      "required":[
+        "accessToken",
+        "tokenType",
+        "expiresIn"
+      ],
+      "members":{
+        "accessToken":{
+          "shape":"OAuthAccessToken",
+          "documentation":"<p>The bearer token. Present it to the AWS service named in the request.</p>",
+          "locationName":"access_token"
+        },
+        "tokenType":{
+          "shape":"BearerTokenType",
+          "documentation":"<p>The token type. Always &quot;Bearer&quot;.</p>",
+          "locationName":"token_type"
+        },
+        "expiresIn":{
+          "shape":"BearerTokenExpiresIn",
+          "documentation":"<p>Token lifetime in seconds.</p>",
+          "locationName":"expires_in"
+        }
+      },
+      "documentation":"<p>Output structure for CreateBearerToken operation</p> <p>Contains the bearer token, its type, and its lifetime.</p>"
     },
     "CreateOAuth2TokenRequest":{
       "type":"structure",
@@ -1312,6 +1388,12 @@
       "max":32,
       "min":12,
       "pattern":"(\\d{12}|o-[a-z0-9]{10}|r-[0-9a-z]{4,32})"
+    },
+    "TokenDuration":{
+      "type":"integer",
+      "documentation":"<p>Requested token lifetime in seconds, at least 300 (5 minutes).</p>",
+      "box":true,
+      "min":300
     },
     "TokenExchangeGrantType":{
       "type":"string",

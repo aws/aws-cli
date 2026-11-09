@@ -811,6 +811,25 @@
       ],
       "documentation":"<p>Operation to invoke a Harness.</p>"
     },
+    "InvokeWebSearch":{
+      "name":"InvokeWebSearch",
+      "http":{
+        "method":"POST",
+        "requestUri":"/web-search/{webSearchId}/invoke",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeWebSearchInput"},
+      "output":{"shape":"InvokeWebSearchOutput"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Searches the web and returns a ranked list of results. Each result includes a text extract from the page.</p> <p>You can filter the results by domain and by publication date.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeWebSearch</code> permission on the resource <code>arn:${Partition}:bedrock-agentcore:${Region}:aws:tool/web-search.v1</code>.</p>"
+    },
     "ListABTests":{
       "name":"ListABTests",
       "http":{
@@ -3615,6 +3634,34 @@
       "type":"structure",
       "members":{},
       "document":true
+    },
+    "DomainFilter":{
+      "type":"structure",
+      "members":{
+        "include":{
+          "shape":"DomainList",
+          "documentation":"<p>The domains to return results from. Results from other domains are not returned.</p>"
+        },
+        "exclude":{
+          "shape":"DomainList",
+          "documentation":"<p>The domains to never return results from.</p>"
+        }
+      },
+      "documentation":"<p>The domains to include in or exclude from the results. A root domain also matches its subdomains. For example, <code>example.com</code> also matches <code>docs.example.com</code>.</p>"
+    },
+    "DomainList":{
+      "type":"list",
+      "member":{"shape":"DomainName"},
+      "documentation":"<p>A list of domain names.</p>",
+      "max":100,
+      "min":1
+    },
+    "DomainName":{
+      "type":"string",
+      "documentation":"<p>A domain name, for example <code>example.com</code>.</p>",
+      "max":253,
+      "min":1,
+      "pattern":"[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*"
     },
     "DomainPattern":{
       "type":"string",
@@ -7715,6 +7762,56 @@
       "documentation":"<p>The streaming events returned by a harness invocation.</p>",
       "eventstream":true
     },
+    "InvokeWebSearchInput":{
+      "type":"structure",
+      "required":[
+        "webSearchId",
+        "searchQuery"
+      ],
+      "members":{
+        "webSearchId":{
+          "shape":"WebSearchId",
+          "documentation":"<p>The identifier of the web search tool to invoke. The Amazon Web Services-managed web search tool is <code>web-search.v1</code>.</p>",
+          "location":"uri",
+          "locationName":"webSearchId"
+        },
+        "searchQuery":{
+          "shape":"InvokeWebSearchInputSearchQueryString",
+          "documentation":"<p>The text to search for.</p>"
+        },
+        "maxResults":{
+          "shape":"InvokeWebSearchInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return. Defaults to 25.</p>"
+        },
+        "filters":{
+          "shape":"WebSearchFilters",
+          "documentation":"<p>The filters to apply to the search results.</p>"
+        }
+      },
+      "documentation":"<p>Request for the <code>InvokeWebSearch</code> operation.</p>"
+    },
+    "InvokeWebSearchInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":25,
+      "min":1
+    },
+    "InvokeWebSearchInputSearchQueryString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "InvokeWebSearchOutput":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"WebSearchResultList",
+          "documentation":"<p>The search results, in ranked order.</p>"
+        }
+      },
+      "documentation":"<p>Response for the <code>InvokeWebSearch</code> operation.</p>"
+    },
     "JwtKeyId":{
       "type":"string",
       "documentation":"<p>JWT Key ID (kid) from the JWT header.</p>",
@@ -10090,6 +10187,20 @@
       "documentation":"<p>Union type representing different proxy authentication methods. Currently supports HTTP Basic Authentication (username and password).</p>",
       "union":true
     },
+    "PublishedDateFilter":{
+      "type":"structure",
+      "members":{
+        "publishedAfter":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The earliest publication time of the results, inclusive.</p>"
+        },
+        "publishedBefore":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The latest publication time of the results, inclusive. A date without a time, such as one passed to the AWS CLI, means midnight UTC. To include a whole day, use the last second of that day, for example <code>2026-01-31T23:59:59Z</code>.</p>"
+        }
+      },
+      "documentation":"<p>A publication time range for the results. Both bounds are optional, and both are inclusive. If <code>publishedAfter</code> is later than <code>publishedBefore</code>, the request fails with a <code>ValidationException</code>.</p>"
+    },
     "RecommendationArn":{
       "type":"string",
       "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:recommendation/[0-9a-zA-Z_-]{1,48}-[0-9A-Z]{10}"
@@ -11066,6 +11177,25 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the error.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before you retry the request.</p>"
+        }
+      },
+      "documentation":"<p>The service can't handle the request right now. Retry the request. If the response includes <code>retryAfterSeconds</code>, wait that many seconds before you retry.</p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
     },
     "SessionFilter":{
       "type":"structure",
@@ -13110,6 +13240,55 @@
       "box":true,
       "max":3840,
       "min":320
+    },
+    "WebSearchFilters":{
+      "type":"structure",
+      "members":{
+        "domainFilter":{
+          "shape":"DomainFilter",
+          "documentation":"<p>The domains to include in or exclude from the results.</p>"
+        },
+        "publishedDateFilter":{
+          "shape":"PublishedDateFilter",
+          "documentation":"<p>The publication time range of the results.</p>"
+        }
+      },
+      "documentation":"<p>The filters to apply to a web search.</p>"
+    },
+    "WebSearchId":{
+      "type":"string",
+      "documentation":"<p>The identifier of a web search tool, for example <code>web-search.v1</code>.</p>",
+      "max":100,
+      "min":1,
+      "pattern":"[a-z0-9]+([.-][a-z0-9]+)*"
+    },
+    "WebSearchResult":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the page.</p>"
+        },
+        "url":{
+          "shape":"String",
+          "documentation":"<p>The URL of the page.</p>"
+        },
+        "text":{
+          "shape":"String",
+          "documentation":"<p>A text extract from the page.</p>"
+        },
+        "publishedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The time the page was published. This field is absent when the publication time is not known.</p>"
+        }
+      },
+      "documentation":"<p>A web search result.</p>"
+    },
+    "WebSearchResultList":{
+      "type":"list",
+      "member":{"shape":"WebSearchResult"},
+      "documentation":"<p>A list of web search results, in ranked order.</p>"
     },
     "WorkloadIdentityNameType":{
       "type":"string",

@@ -1701,7 +1701,9 @@
         "v100",
         "a10g",
         "h100",
-        "t4g"
+        "t4g",
+        "l40s",
+        "l4"
       ]
     },
     "AcceleratorNameSet":{
@@ -1905,6 +1907,11 @@
     "Attachments":{
       "type":"list",
       "member":{"shape":"Attachment"}
+    },
+    "AttestationPolicyStatus":{
+      "type":"string",
+      "documentation":"<p>The status of the attestation policy for a task that uses the <code>CONFIDENTIAL_SANDBOX</code> isolation mode.</p>",
+      "enum":["CONFIGURED"]
     },
     "Attribute":{
       "type":"structure",
@@ -6000,7 +6007,7 @@
           "documentation":"<p>The file type to use. Environment files are objects in Amazon S3. The only supported value is <code>s3</code>.</p>"
         }
       },
-      "documentation":"<p>A list of files containing the environment variables to pass to a container. You can specify up to ten environment files. The file must have a <code>.env</code> file extension. Each line in an environment file should contain an environment variable in <code>VARIABLE=VALUE</code> format. Lines beginning with <code>#</code> are treated as comments and are ignored.</p> <p>If there are environment variables specified using the <code>environment</code> parameter in a container definition, they take precedence over the variables contained within an environment file. If multiple environment files are specified that contain the same variable, they're processed from the top down. We recommend that you use unique variable names. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/use-environment-file.html\">Use a file to pass environment variables to a container</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Environment variable files are objects in Amazon S3 and all Amazon S3 security considerations apply. </p> <p>You must use the following platforms for the Fargate launch type:</p> <ul> <li> <p>Linux platform version <code>1.4.0</code> or later.</p> </li> <li> <p>Windows platform version <code>1.0.0</code> or later.</p> </li> </ul> <p>Consider the following when using the Fargate launch type:</p> <ul> <li> <p>The file is handled like a native Docker env-file.</p> </li> <li> <p>There is no support for shell escape handling.</p> </li> <li> <p>The container entry point interperts the <code>VARIABLE</code> values.</p> </li> </ul>"
+      "documentation":"<p>A list of files containing the environment variables to pass to a container. You can specify up to ten environment files. The file must have a <code>.env</code> file extension. Each line in an environment file should contain an environment variable in <code>VARIABLE=VALUE</code> format. Lines beginning with <code>#</code> are treated as comments and are ignored.</p> <p>If there are environment variables specified using the <code>environment</code> parameter in a container definition, they take precedence over the variables contained within an environment file. If multiple environment files are specified that contain the same variable, they're processed from the top down. We recommend that you use unique variable names. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/use-environment-file.html\">Use a file to pass environment variables to a container</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Environment variable files are objects in Amazon S3 and all Amazon S3 security considerations apply. </p> <p>You must use the following platforms for the Fargate launch type:</p> <ul> <li> <p>Linux platform version <code>1.4.0</code> or later.</p> </li> </ul> <p>Consider the following when using the Fargate launch type:</p> <ul> <li> <p>The file is handled like a native Docker env-file.</p> </li> <li> <p>There is no support for shell escape handling.</p> </li> <li> <p>The container entry point interperts the <code>VARIABLE</code> values.</p> </li> </ul>"
     },
     "EnvironmentFileType":{
       "type":"string",
@@ -6024,7 +6031,7 @@
           "documentation":"<p>The total amount, in GiB, of ephemeral storage to set for the task. The minimum supported value is <code>21</code> GiB and the maximum supported value is <code>200</code> GiB.</p>"
         }
       },
-      "documentation":"<p>The amount of ephemeral storage to allocate for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html\">Using data volumes in tasks</a> in the <i>Amazon ECS Developer Guide;</i>.</p> <note> <p>For tasks using the Fargate launch type, the task requires the following platforms:</p> <ul> <li> <p>Linux platform version <code>1.4.0</code> or later.</p> </li> <li> <p>Windows platform version <code>1.0.0</code> or later.</p> </li> </ul> </note>"
+      "documentation":"<p>The amount of ephemeral storage to allocate for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html\">Using data volumes in tasks</a> in the <i>Amazon ECS Developer Guide;</i>.</p> <note> <p>For tasks using the Fargate launch type, the task requires the following platforms:</p> <ul> <li> <p>Linux platform version <code>1.4.0</code> or later.</p> </li> </ul> </note>"
     },
     "ExcludedInstanceType":{
       "type":"string",
@@ -7520,6 +7527,10 @@
         "capacityReservations":{
           "shape":"CapacityReservationRequest",
           "documentation":"<p>Capacity reservation specifications. You can specify:</p> <ul> <li> <p>Capacity reservation preference</p> </li> <li> <p>Reservation resource group to be used for targeted capacity reservations</p> </li> </ul> <p>Amazon ECS will launch instances according to the specified criteria.</p>"
+        },
+        "nitroEnclavesEnabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether instances that this capacity provider launches have <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/amazon-ec2-nitro-sandboxes.html\">Nitro Sandbox</a> enabled. Enable this setting to run tasks that use the <code>ISOLATED_SANDBOX</code> or <code>CONFIDENTIAL_SANDBOX</code> isolation mode.</p> <p>When you enable this setting, the capacity provider must include at least one instance type that supports Nitro Sandbox. You can't enable this setting together with local storage (the <code>useLocalStorage</code> setting in <code>localStorageConfiguration</code>).</p> <p>The default value is <code>false</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/isolated-confidential-tasks.html\">Isolated and confidential tasks</a> in <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>The launch template configuration for Amazon ECS Managed Instances. This defines how Amazon ECS launches Amazon EC2 instances, including the instance profile for your tasks, network and storage configuration, capacity options, and instance requirements for flexible instance type selection.</p>"
@@ -7690,6 +7701,15 @@
         "host",
         "task",
         "none"
+      ]
+    },
+    "IsolationMode":{
+      "type":"string",
+      "documentation":"<p>The isolation mode determines how a task is isolated from other tasks on the same Amazon EC2 instance.</p>",
+      "enum":[
+        "SHARED",
+        "ISOLATED_SANDBOX",
+        "CONFIDENTIAL_SANDBOX"
       ]
     },
     "KernelCapabilities":{
@@ -9970,7 +9990,7 @@
         },
         "ephemeralStorage":{
           "shape":"EphemeralStorage",
-          "documentation":"<p>The amount of ephemeral storage to allocate for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html\">Using data volumes in tasks</a> in the <i>Amazon ECS Developer Guide</i>.</p> <note> <p>For tasks using the Fargate launch type, the task requires the following platforms:</p> <ul> <li> <p>Linux platform version <code>1.4.0</code> or later.</p> </li> <li> <p>Windows platform version <code>1.0.0</code> or later.</p> </li> </ul> </note>"
+          "documentation":"<p>The amount of ephemeral storage to allocate for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html\">Using data volumes in tasks</a> in the <i>Amazon ECS Developer Guide</i>.</p> <note> <p>For tasks using the Fargate launch type, the task requires the following platforms:</p> <ul> <li> <p>Linux platform version <code>1.4.0</code> or later.</p> </li> </ul> </note>"
         },
         "runtimePlatform":{
           "shape":"RuntimePlatform",
@@ -9979,6 +9999,10 @@
         "enableFaultInjection":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Enables fault injection when you register your task definition and allows for fault injection requests to be accepted from the task's containers. The default value is <code>false</code>.</p>"
+        },
+        "trustedExecutionConfiguration":{
+          "shape":"TrustedExecutionConfiguration",
+          "documentation":"<p>The trusted execution configuration for tasks that use this task definition, including the isolation mode and, if configured, an attestation policy.</p> <note> <p>Trusted execution is supported only for Amazon ECS Managed Instances.</p> </note>"
         }
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
@@ -11924,6 +11948,10 @@
         "fargateEphemeralStorage":{
           "shape":"TaskEphemeralStorage",
           "documentation":"<p>The Fargate ephemeral storage settings for the task.</p>"
+        },
+        "trustedExecutionSummary":{
+          "shape":"TrustedExecutionSummary",
+          "documentation":"<p>A summary of the trusted execution configuration for the task, including the isolation mode. This is a read-only view of the configuration that was set on the task definition.</p> <note> <p>Trusted execution is supported only for Amazon ECS Managed Instances.</p> </note>"
         }
       },
       "documentation":"<p>Details on a task in a cluster.</p>"
@@ -12034,6 +12062,10 @@
         "enableFaultInjection":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Enables fault injection and allows for fault injection requests to be accepted from the task's containers. The default value is <code>false</code>.</p>"
+        },
+        "trustedExecutionConfiguration":{
+          "shape":"TrustedExecutionConfiguration",
+          "documentation":"<p>The trusted execution configuration for tasks that use this task definition, including the isolation mode and, if configured, an attestation policy.</p> <note> <p>Trusted execution is supported only for Amazon ECS Managed Instances.</p> </note>"
         }
       },
       "documentation":"<p>The details of a task definition which describes the container and volume definitions of an Amazon Elastic Container Service task. You can specify which Docker images to use, the required resources, and other configurations related to launching the task definition through an Amazon ECS service or task.</p>"
@@ -12214,7 +12246,7 @@
         },
         "ephemeralStorage":{
           "shape":"EphemeralStorage",
-          "documentation":"<p>The ephemeral storage setting override for the task.</p> <note> <p>This parameter is only supported for tasks hosted on Fargate that use the following platform versions:</p> <ul> <li> <p>Linux platform version <code>1.4.0</code> or later.</p> </li> <li> <p>Windows platform version <code>1.0.0</code> or later.</p> </li> </ul> </note>"
+          "documentation":"<p>The ephemeral storage setting override for the task.</p> <note> <p>This parameter is only supported for tasks hosted on Fargate that use the following platform versions:</p> <ul> <li> <p>Linux platform version <code>1.4.0</code> or later.</p> </li> </ul> </note>"
         }
       },
       "documentation":"<p>The overrides that are associated with a task.</p>"
@@ -12476,6 +12508,36 @@
         "tcp",
         "udp"
       ]
+    },
+    "TrustedExecutionConfiguration":{
+      "type":"structure",
+      "required":["isolationMode"],
+      "members":{
+        "isolationMode":{
+          "shape":"IsolationMode",
+          "documentation":"<p>The isolation mode for tasks that use this task definition. The isolation mode determines how a task is isolated from other tasks on the same Amazon EC2 instance.</p> <ul> <li> <p> <code>SHARED</code>: The task shares the underlying Amazon EC2 instance with other tasks. This is the default isolation mode.</p> </li> <li> <p> <code>ISOLATED_SANDBOX</code>: The task runs in its own <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/amazon-ec2-nitro-sandboxes.html\">Nitro Sandbox</a>, which is a lightweight virtual machine that is isolated by the Amazon Web Services Nitro System. Each task's sandbox is isolated from every other task's sandbox on the same Amazon EC2 instance, so one task can't access another task's memory or storage. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/isolated-confidential-tasks.html\">Isolated and confidential tasks</a> in <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>CONFIDENTIAL_SANDBOX</code>: The task runs in its own <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/amazon-ec2-nitro-sandboxes.html\">Nitro Sandbox</a>, which is a lightweight virtual machine that is isolated by the Amazon Web Services Nitro System, with cryptographic attestation. The host can't access the sandbox's memory or storage, and only the approved workload can decrypt data that you encrypt with your Key Management Service key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/isolated-confidential-tasks.html\">Isolated and confidential tasks</a> in <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> </ul>"
+        },
+        "attestationPolicy":{
+          "shape":"String",
+          "documentation":"<p>The base64-encoded attestation policy envelope for the task. The policy specifies which containers are allowed to run and the runtime configuration that is cryptographically attested. This parameter is required when <code>isolationMode</code> is <code>CONFIDENTIAL_SANDBOX</code>.</p>"
+        }
+      },
+      "documentation":"<p>The trusted execution configuration for a task. This configuration controls the isolation mode and attestation policy. You set this configuration when you register a task definition.</p> <note> <p>Trusted execution is supported only for Amazon ECS Managed Instances.</p> </note>"
+    },
+    "TrustedExecutionSummary":{
+      "type":"structure",
+      "required":["isolationMode"],
+      "members":{
+        "isolationMode":{
+          "shape":"IsolationMode",
+          "documentation":"<p>The isolation mode that the task runs in. This value mirrors the <code>isolationMode</code> that was set in the task definition's <code>TrustedExecutionConfiguration</code>.</p> <ul> <li> <p> <code>SHARED</code>: The task shares the underlying Amazon EC2 instance with other tasks. This is the default isolation mode.</p> </li> <li> <p> <code>ISOLATED_SANDBOX</code>: The task runs in its own <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/amazon-ec2-nitro-sandboxes.html\">Nitro Sandbox</a>, which is a lightweight virtual machine that is isolated by the Amazon Web Services Nitro System. Each task's sandbox is isolated from every other task's sandbox on the same Amazon EC2 instance, so one task can't access another task's memory or storage. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/isolated-confidential-tasks.html\">Isolated and confidential tasks</a> in <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>CONFIDENTIAL_SANDBOX</code>: The task runs in its own <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/amazon-ec2-nitro-sandboxes.html\">Nitro Sandbox</a>, which is a lightweight virtual machine that is isolated by the Amazon Web Services Nitro System, with cryptographic attestation. The host can't access the sandbox's memory or storage, and only the approved workload can decrypt data that you encrypt with your Key Management Service key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/isolated-confidential-tasks.html\">Isolated and confidential tasks</a> in <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> </ul>"
+        },
+        "attestationPolicyStatus":{
+          "shape":"AttestationPolicyStatus",
+          "documentation":"<p>The status of the attestation policy for the task. This value is present only for tasks that use the <code>CONFIDENTIAL_SANDBOX</code> isolation mode.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the trusted execution configuration for a task. This is a read-only view of the isolation configuration that was set on the task definition. Use it to see a task's isolation configuration in the response to <code>DescribeTasks</code>, <code>RunTask</code>, or <code>StopTask</code> without calling <code>DescribeTaskDefinition</code>. This summary never includes the attestation policy itself.</p> <note> <p>Trusted execution is supported only for Amazon ECS Managed Instances.</p> </note>"
     },
     "Ulimit":{
       "type":"structure",

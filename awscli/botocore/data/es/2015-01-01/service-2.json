@@ -772,6 +772,23 @@
       ],
       "documentation":"<p>Schedules a service software update for an Amazon ES domain.</p>"
     },
+    "UpdateClone":{
+      "name":"UpdateClone",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2015-01-01/es/domain/{DomainName}/clone"
+      },
+      "input":{"shape":"UpdateCloneRequest"},
+      "output":{"shape":"UpdateCloneResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Manages a cloned blue/green upgrade that is in progress on a domain. Use it to shift a percentage of search traffic to the cloned cluster, to cut over to the cloned cluster or back to the primary cluster, or to change the retention period. Specify exactly one of <code>TrafficSplitOptions</code>, <code>CutoverOptions</code>, or <code>RetentionOptions</code> in each request.</p>"
+    },
     "UpdateElasticsearchDomainConfig":{
       "name":"UpdateElasticsearchDomainConfig",
       "http":{
@@ -1552,6 +1569,10 @@
         "InitiatedBy":{
           "shape":"InitiatedBy",
           "documentation":"<p>The IAM principal who initiated the configuration change.</p>"
+        },
+        "ClonedBlueGreenUpgradeDetails":{
+          "shape":"ClonedBlueGreenUpgradeDetails",
+          "documentation":"<p>Details about a cloned blue/green upgrade, when the change is one.</p>"
         }
       },
       "documentation":"<p>The progress details of a specific domain configuration change.</p>"
@@ -1560,6 +1581,56 @@
       "type":"string",
       "max":64,
       "min":1
+    },
+    "ClonedBlueGreenOptions":{
+      "type":"structure",
+      "members":{
+        "RetentionOptions":{
+          "shape":"RetentionOptions",
+          "documentation":"<p>How long to keep the cluster that you cut over from after cutover completes. When you start the upgrade, only <code>RetentionInHours</code> is accepted.</p>"
+        }
+      },
+      "documentation":"<p>Options for a cloned blue/green upgrade.</p>"
+    },
+    "ClonedBlueGreenScheduledAction":{
+      "type":"structure",
+      "members":{
+        "Action":{
+          "shape":"ClonedBlueGreenScheduledActionType",
+          "documentation":"<p>The action that the service takes.</p>"
+        },
+        "ScheduledTime":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The time at which the service takes the action.</p>"
+        }
+      },
+      "documentation":"<p>An action that the service takes automatically at a scheduled time during a cloned blue/green upgrade.</p>"
+    },
+    "ClonedBlueGreenScheduledActionType":{
+      "type":"string",
+      "documentation":"<p><code>AutomaticCutoverToPrimaryCluster</code> cuts the domain back over to the primary cluster if you haven't cut over by the scheduled time. <code>DeletePrimaryCluster</code> deletes the primary cluster when the retention period ends.</p>",
+      "enum":[
+        "AutomaticCutoverToPrimaryCluster",
+        "DeletePrimaryCluster"
+      ]
+    },
+    "ClonedBlueGreenUpgradeDetails":{
+      "type":"structure",
+      "members":{
+        "TrafficSplit":{
+          "shape":"TrafficPercents",
+          "documentation":"<p>The current split of search traffic between the primary and cloned clusters.</p>"
+        },
+        "ScheduledAction":{
+          "shape":"ClonedBlueGreenScheduledAction",
+          "documentation":"<p>The action that the service takes automatically if you don't act before the scheduled time.</p>"
+        },
+        "RetentionInHours":{
+          "shape":"IntegerClass",
+          "documentation":"<p>The retention period, in hours, for the cluster that you cut over from.</p>"
+        }
+      },
+      "documentation":"<p>The state of a cloned blue/green upgrade. Members that don't apply are omitted.</p>"
     },
     "CloudWatchLogsLogGroupArn":{
       "type":"string",
@@ -1877,6 +1948,52 @@
     "CreatedAt":{"type":"timestamp"},
     "CrossClusterSearchConnectionId":{"type":"string"},
     "CrossClusterSearchConnectionStatusMessage":{"type":"string"},
+    "CutoverOptions":{
+      "type":"structure",
+      "required":[
+        "Target",
+        "Status"
+      ],
+      "members":{
+        "Target":{
+          "shape":"CutoverTarget",
+          "documentation":"<p>The cluster that the domain is cutting over to.</p>"
+        },
+        "Status":{
+          "shape":"CutoverStatus",
+          "documentation":"<p>The status of the cutover.</p>"
+        }
+      },
+      "documentation":"<p>The cutover target and status for a cloned blue/green upgrade.</p>"
+    },
+    "CutoverRequestOptions":{
+      "type":"structure",
+      "required":["Target"],
+      "members":{
+        "Target":{
+          "shape":"CutoverTarget",
+          "documentation":"<p>The cluster to cut over to. <code>ClonedCluster</code> makes the cloned cluster serve the domain. <code>PrimaryCluster</code> keeps the primary cluster and ends the upgrade.</p>"
+        }
+      },
+      "documentation":"<p>The cutover to perform for a cloned blue/green upgrade.</p>"
+    },
+    "CutoverStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a cutover.</p>",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed"
+      ]
+    },
+    "CutoverTarget":{
+      "type":"string",
+      "documentation":"<p>The cluster to cut over to in a cloned blue/green upgrade.</p>",
+      "enum":[
+        "ClonedCluster",
+        "PrimaryCluster"
+      ]
+    },
     "DeleteElasticsearchDomainRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -2040,6 +2157,26 @@
         }
       },
       "documentation":"<p>Specifies the status of deployment strategy options for the specified Elasticsearch domain.</p>"
+    },
+    "DeploymentStrategyOverride":{
+      "type":"string",
+      "documentation":"<p>The deployment strategy override for an operation. The only valid value is <code>ClonedBlueGreen</code>.</p>",
+      "enum":["ClonedBlueGreen"]
+    },
+    "DeploymentStrategyOverrideOptions":{
+      "type":"structure",
+      "required":["DeploymentStrategy"],
+      "members":{
+        "DeploymentStrategy":{
+          "shape":"DeploymentStrategyOverride",
+          "documentation":"<p>The deployment strategy to use for this operation. The only valid value is <code>ClonedBlueGreen</code>, which creates a cloned cluster on the target version next to the primary cluster so that you can validate it and shift traffic to it before you cut over.</p>"
+        },
+        "ClonedBlueGreenOptions":{
+          "shape":"ClonedBlueGreenOptions",
+          "documentation":"<p>Options that apply when <code>DeploymentStrategy</code> is <code>ClonedBlueGreen</code>.</p>"
+        }
+      },
+      "documentation":"<p>Overrides the deployment strategy for a single operation, such as a version upgrade.</p>"
     },
     "DeploymentType":{
       "type":"string",
@@ -4439,6 +4576,29 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "RetentionAction":{
+      "type":"string",
+      "documentation":"<p>The action that ends the retention period. <code>RollbackToPrimaryCluster</code> moves the domain back to the primary cluster. <code>DeletePrimaryCluster</code> deletes the primary cluster.</p>",
+      "enum":[
+        "RollbackToPrimaryCluster",
+        "DeletePrimaryCluster"
+      ]
+    },
+    "RetentionOptions":{
+      "type":"structure",
+      "members":{
+        "RetentionInHours":{
+          "shape":"IntegerClass",
+          "documentation":"<p>The number of hours to keep the cluster that you cut over from. The retention period starts when cutover completes. The minimum is 1 hour. In an <code>UpdateClone</code> response after cutover completes, this value is the number of hours remaining in the retention period, rounded up.</p>"
+        },
+        "RetentionAction":{
+          "shape":"RetentionAction",
+          "documentation":"<p>Ends the retention period now. Valid only after cutover completes.</p>"
+        }
+      },
+      "documentation":"<p>Controls how long the cluster that you cut over from is kept after cutover completes. Specify exactly one of <code>RetentionInHours</code> or <code>RetentionAction</code>.</p>",
+      "union":true
+    },
     "RevokeVpcEndpointAccessRequest":{
       "type":"structure",
       "required":[
@@ -4804,9 +4964,143 @@
       "enum":["HOURS"]
     },
     "TotalNumberOfStages":{"type":"integer"},
+    "TrafficPercent":{
+      "type":"integer",
+      "documentation":"<p>A traffic percentage from 0 to 100.</p>",
+      "max":100,
+      "min":0
+    },
+    "TrafficPercents":{
+      "type":"structure",
+      "required":[
+        "PrimaryReadTrafficPercent",
+        "CloneReadTrafficPercent"
+      ],
+      "members":{
+        "PrimaryReadTrafficPercent":{
+          "shape":"TrafficPercent",
+          "documentation":"<p>The percentage of search traffic sent to the primary cluster.</p>"
+        },
+        "CloneReadTrafficPercent":{
+          "shape":"TrafficPercent",
+          "documentation":"<p>The percentage of search traffic sent to the cloned cluster.</p>"
+        }
+      },
+      "documentation":"<p>The split of search traffic between the primary and cloned clusters.</p>"
+    },
+    "TrafficSplitOptions":{
+      "type":"structure",
+      "required":[
+        "Current",
+        "Target",
+        "Status"
+      ],
+      "members":{
+        "Current":{
+          "shape":"TrafficPercents",
+          "documentation":"<p>The traffic split currently in effect.</p>"
+        },
+        "Target":{
+          "shape":"TrafficPercents",
+          "documentation":"<p>The requested traffic split.</p>"
+        },
+        "Status":{
+          "shape":"TrafficSplitStatus",
+          "documentation":"<p>The status of the traffic shift.</p>"
+        }
+      },
+      "documentation":"<p>The traffic split and status for a cloned blue/green upgrade.</p>"
+    },
+    "TrafficSplitRequestOptions":{
+      "type":"structure",
+      "required":[
+        "Strategy",
+        "CloneReadTrafficPercent"
+      ],
+      "members":{
+        "Strategy":{
+          "shape":"TrafficStrategy",
+          "documentation":"<p>The traffic shifting strategy. The only valid value is <code>ShiftReadTrafficPercent</code>.</p>"
+        },
+        "CloneReadTrafficPercent":{
+          "shape":"TrafficPercent",
+          "documentation":"<p>The percentage of search traffic, from 0 to 100, to send to the cloned cluster. The rest goes to the primary cluster.</p>"
+        }
+      },
+      "documentation":"<p>The traffic shift to perform for a cloned blue/green upgrade.</p>"
+    },
+    "TrafficSplitStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a traffic shift.</p>",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed"
+      ]
+    },
+    "TrafficStrategy":{
+      "type":"string",
+      "documentation":"<p>The strategy used to shift traffic between the primary and cloned clusters.</p>",
+      "enum":["ShiftReadTrafficPercent"]
+    },
     "UIntValue":{
       "type":"integer",
       "min":0
+    },
+    "UpdateCloneRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain that has a cloned blue/green upgrade in progress.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "TrafficSplitOptions":{
+          "shape":"TrafficSplitRequestOptions",
+          "documentation":"<p>Shifts a percentage of search traffic from the primary cluster to the cloned cluster.</p>"
+        },
+        "CutoverOptions":{
+          "shape":"CutoverRequestOptions",
+          "documentation":"<p>Cuts the domain over to the cloned cluster or back to the primary cluster.</p>"
+        },
+        "RetentionOptions":{
+          "shape":"RetentionOptions",
+          "documentation":"<p>Changes the retention period, or ends it after cutover completes.</p>"
+        }
+      },
+      "documentation":"<p>Container for the request parameters to the <code>UpdateClone</code> operation.</p>"
+    },
+    "UpdateCloneResponse":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ChangeId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>"
+        },
+        "ChangeId":{
+          "shape":"GUID",
+          "documentation":"<p>The unique identifier of the configuration change. Use it with <code>DescribeDomainChangeProgress</code> to track the change.</p>"
+        },
+        "CutoverOptions":{
+          "shape":"CutoverOptions",
+          "documentation":"<p>The requested cutover target and the status of the cutover.</p>"
+        },
+        "TrafficSplitOptions":{
+          "shape":"TrafficSplitOptions",
+          "documentation":"<p>The current and requested traffic split, and the status of the traffic shift.</p>"
+        },
+        "RetentionOptions":{
+          "shape":"RetentionOptions",
+          "documentation":"<p>The retention settings for the upgrade.</p>"
+        }
+      },
+      "documentation":"<p>Container for the response returned by the <code>UpdateClone</code> operation.</p>"
     },
     "UpdateElasticsearchDomainConfigRequest":{
       "type":"structure",
@@ -4986,6 +5280,10 @@
         "PerformCheckOnly":{
           "shape":"Boolean",
           "documentation":"<p> This flag, when set to True, indicates that an Upgrade Eligibility Check needs to be performed. This will not actually perform the Upgrade. </p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOverrideOptions",
+          "documentation":"<p>Overrides the deployment strategy for this upgrade. To run a cloned blue/green upgrade, set <code>DeploymentStrategy</code> to <code>ClonedBlueGreen</code>.</p>"
         }
       },
       "documentation":"<p> Container for request parameters to <code> <a>UpgradeElasticsearchDomain</a> </code> operation. </p>"
@@ -5001,6 +5299,10 @@
         "PerformCheckOnly":{
           "shape":"Boolean",
           "documentation":"<p> This flag, when set to True, indicates that an Upgrade Eligibility Check needs to be performed. This will not actually perform the Upgrade. </p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOverrideOptions",
+          "documentation":"<p>The deployment strategy override used for the upgrade.</p>"
         },
         "ChangeProgressDetails":{"shape":"ChangeProgressDetails"}
       },

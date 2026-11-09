@@ -293,6 +293,21 @@
       ],
       "documentation":"<p>Creates an Amazon SageMaker HyperPod cluster. SageMaker HyperPod is a capability of SageMaker for creating and managing persistent clusters for developing large machine learning models, such as large language models (LLMs) and diffusion models. To learn more, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod.html\">Amazon SageMaker HyperPod</a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
     },
+    "CreateClusterExtension":{
+      "name":"CreateClusterExtension",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateClusterExtensionRequest"},
+      "output":{"shape":"CreateClusterExtensionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Installs an extension, such as <code>sagemaker-observability</code>, on a SageMaker HyperPod cluster orchestrated by Slurm. The cluster must have <code>NodeProvisioningMode</code> set to <code>Continuous</code> and can have only one extension with a given name. To track the installation, call <code>DescribeClusterExtension</code>.</p>"
+    },
     "CreateClusterSchedulerConfig":{
       "name":"CreateClusterSchedulerConfig",
       "http":{
@@ -1261,6 +1276,21 @@
       ],
       "documentation":"<p>Delete a SageMaker HyperPod cluster.</p>"
     },
+    "DeleteClusterExtension":{
+      "name":"DeleteClusterExtension",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteClusterExtensionRequest"},
+      "output":{"shape":"DeleteClusterExtensionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Deletes an extension from a SageMaker HyperPod cluster. SageMaker HyperPod removes the extension's software from every node in the cluster. While SageMaker HyperPod removes the extension, its status is <code>Deleting</code>. After SageMaker HyperPod removes the extension from all nodes, it no longer appears in <code>ListClusterExtensions</code>, and <code>DescribeClusterExtension</code> returns a <code>ResourceNotFound</code> error.</p> <p>Deleting an extension doesn't delete data that the extension sent to other Amazon Web Services services, such as metrics in Amazon CloudWatch or Amazon Managed Service for Prometheus.</p>"
+    },
     "DeleteClusterSchedulerConfig":{
       "name":"DeleteClusterSchedulerConfig",
       "http":{
@@ -2060,6 +2090,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific event for a given HyperPod cluster. This functionality is only supported when the <code>NodeProvisioningMode</code> is set to <code>Continuous</code>.</p>"
+    },
+    "DescribeClusterExtension":{
+      "name":"DescribeClusterExtension",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeClusterExtensionRequest"},
+      "output":{"shape":"DescribeClusterExtensionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves information about an extension installed on a SageMaker HyperPod cluster. The information includes the extension's version, configuration, and status, and a summary of how many cluster nodes are running the current version and configuration of the extension.</p>",
+      "readonly":true
     },
     "DescribeClusterNode":{
       "name":"DescribeClusterNode",
@@ -3158,6 +3202,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Retrieves a list of event summaries for a specified HyperPod cluster. The operation supports filtering, sorting, and pagination of results. This functionality is only supported when the <code>NodeProvisioningMode</code> is set to <code>Continuous</code>.</p>"
+    },
+    "ListClusterExtensions":{
+      "name":"ListClusterExtensions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListClusterExtensionsRequest"},
+      "output":{"shape":"ListClusterExtensionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Lists the extensions installed on a SageMaker HyperPod cluster.</p>",
+      "readonly":true
     },
     "ListClusterNodes":{
       "name":"ListClusterNodes",
@@ -4520,6 +4578,20 @@
         {"shape":"ResourceLimitExceeded"}
       ],
       "documentation":"<p>Updates a SageMaker HyperPod cluster.</p>"
+    },
+    "UpdateClusterExtension":{
+      "name":"UpdateClusterExtension",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateClusterExtensionRequest"},
+      "output":{"shape":"UpdateClusterExtensionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Updates the configuration or the version of an extension installed on a SageMaker HyperPod cluster. SageMaker HyperPod applies the change to every node in the cluster. You can change the configuration, the version, or both in one request.</p> <ul> <li> <p> <b>Configuration:</b> You can change settings by sending <code>ConfigurationValues</code>. Settings that you include are changed. Settings that you omit keep their current values. A setting with the value <code>null</code> is removed and returns to its default value.</p> </li> <li> <p> <b>Version:</b> You can update to a later version. You can't update to an earlier version. To use an earlier version, delete the extension and create it again with that version.</p> </li> </ul> <p>You can't update an extension while it is being deleted.</p>"
     },
     "UpdateClusterSchedulerConfig":{
       "name":"UpdateClusterSchedulerConfig",
@@ -6614,6 +6686,20 @@
         }
       },
       "documentation":"<p>Specifies configurations for one or more training jobs that SageMaker runs to test the algorithm.</p>"
+    },
+    "AliasOperations":{
+      "type":"structure",
+      "members":{
+        "Add":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases to add to the pipeline version. If you assigned an alias to another version of the same pipeline, you must remove it from that version before you add it here.</p>"
+        },
+        "Remove":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases to remove from the pipeline version.</p>"
+        }
+      },
+      "documentation":"<p>The aliases to add to and remove from a pipeline version. An alias can't appear in both lists. After the update, the version can have up to 10 aliases.</p>"
     },
     "AmazonQSettings":{
       "type":"structure",
@@ -13553,6 +13639,56 @@
         }
       }
     },
+    "CreateClusterExtensionRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterArn",
+        "ExtensionName"
+      ],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster on which to install the extension. The cluster must use Slurm as the orchestrator and have <code>NodeProvisioningMode</code> set to <code>Continuous</code>.</p>"
+        },
+        "ExtensionName":{
+          "shape":"ExtensionName",
+          "documentation":"<p>The name of the extension to install, for example <code>sagemaker-observability</code>.</p>"
+        },
+        "ExtensionVersion":{
+          "shape":"ExtensionVersion",
+          "documentation":"<p>The version of the extension to install, in <code>MAJOR.MINOR.PATCH</code> format, for example <code>1.0.0</code>. If you don't specify a version, SageMaker HyperPod installs the latest available version of the extension.</p>"
+        },
+        "ConfigurationValues":{
+          "shape":"ExtensionConfigurationValues",
+          "documentation":"<p>The configuration settings for the extension, as a JSON object serialized as a string, for example <code>{\"metricsProvider\":{\"nodeMetrics\":{\"level\":\"ADVANCED\"}}}</code>. Each extension version defines which settings it accepts. SageMaker HyperPod validates the settings against that definition, and rejects the request if a setting is unknown or has an invalid value. Settings that you omit use the extension's default values. If you omit <code>ConfigurationValues</code>, all settings use their default values.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Custom tags for managing the extension as an Amazon Web Services resource. You can add tags to your extension in the same way you add them in other Amazon Web Services services that support tagging. To learn more about tagging Amazon Web Services resources in general, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html\">Tagging Amazon Web Services Resources User Guide</a>. To use this operation to add tags when you create an extension, you must have the <code>sagemaker:AddTags</code> permission.</p>"
+        },
+        "ClientToken":{
+          "shape":"CreateClusterExtensionRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide so that the operation completes no more than one time. This token is valid for 8 hours. If you retry the request with the same client token and the same parameters within this time, the API returns the Amazon Resource Name (ARN) of the extension that the original request created, without creating a duplicate. If you use the same client token with different parameters, the request fails.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateClusterExtensionRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "CreateClusterExtensionResponse":{
+      "type":"structure",
+      "required":["ExtensionArn"],
+      "members":{
+        "ExtensionArn":{
+          "shape":"ExtensionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extension that you created. Use this ARN to describe, update, or delete the extension.</p>"
+        }
+      }
+    },
     "CreateClusterRequest":{
       "type":"structure",
       "required":["ClusterName"],
@@ -15862,6 +15998,10 @@
         "ParallelismConfiguration":{
           "shape":"ParallelismConfiguration",
           "documentation":"<p>This is the configuration that controls the parallelism of the pipeline. If specified, it applies to all runs of this pipeline by default.</p>"
+        },
+        "PipelineVersionAliases":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases to assign to the first version of the pipeline. You can use an alias instead of a pipeline version ID to start an execution, describe the pipeline, or list its executions. Each alias can contain 1-128 letters, numbers, periods (.), hyphens (-), and underscores (_), and can't consist of numbers only. An alias must be unique within the pipeline, and a version can have up to 10 aliases.</p>"
         }
       }
     },
@@ -17526,6 +17666,33 @@
         "DestinationArn":{
           "shape":"AssociationEntityArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the destination.</p>"
+        }
+      }
+    },
+    "DeleteClusterExtensionRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterArn",
+        "ExtensionArn"
+      ],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster on which the extension is installed.</p>"
+        },
+        "ExtensionArn":{
+          "shape":"ExtensionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extension to delete.</p>"
+        }
+      }
+    },
+    "DeleteClusterExtensionResponse":{
+      "type":"structure",
+      "required":["ExtensionArn"],
+      "members":{
+        "ExtensionArn":{
+          "shape":"ExtensionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extension that is being deleted.</p>"
         }
       }
     },
@@ -19249,6 +19416,37 @@
         "EventDetails":{
           "shape":"ClusterEventDetail",
           "documentation":"<p>Detailed information about the requested cluster event, including event metadata for various resource types such as <code>Cluster</code>, <code>InstanceGroup</code>, <code>Instance</code>, and their associated attributes.</p>"
+        }
+      }
+    },
+    "DescribeClusterExtensionRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterArn",
+        "ExtensionArn"
+      ],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster on which the extension is installed.</p>"
+        },
+        "ExtensionArn":{
+          "shape":"ExtensionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extension to describe. <code>CreateClusterExtension</code> returns this ARN, and <code>ListClusterExtensions</code> lists it. If you delete an extension and create it again, the new extension has a new ARN.</p>"
+        }
+      }
+    },
+    "DescribeClusterExtensionResponse":{
+      "type":"structure",
+      "required":["ExtensionDetails"],
+      "members":{
+        "ExtensionDetails":{
+          "shape":"ExtensionDetails",
+          "documentation":"<p>The details of the extension.</p>"
+        },
+        "NodeSummary":{
+          "shape":"ExtensionNodeSummary",
+          "documentation":"<p>A summary of how many nodes in your cluster the extension targets, and how many of them run the extension's current version and configuration.</p>"
         }
       }
     },
@@ -22786,6 +22984,14 @@
         "MLflowConfig":{
           "shape":"MLflowConfiguration",
           "documentation":"<p> The MLflow configuration of the pipeline execution. </p>"
+        },
+        "PipelineVersionAliases":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases currently assigned to the pipeline version that the execution ran.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the execution uses. SageMaker returns this value only for executions of pipelines that AWS manages.</p>"
         }
       }
     },
@@ -22799,7 +23005,11 @@
         },
         "PipelineVersionId":{
           "shape":"PipelineVersionId",
-          "documentation":"<p>The ID of the pipeline version to describe.</p>"
+          "documentation":"<p>The ID of the pipeline version to describe. You can't specify this with <code>PipelineVersionAlias</code>.</p>"
+        },
+        "PipelineVersionAlias":{
+          "shape":"PipelineVersionAlias",
+          "documentation":"<p>The alias of the pipeline version to describe. You can't specify this with <code>PipelineVersionId</code>. If no version of the pipeline has this alias, the request fails with a <code>ResourceNotFound</code> error. If you specify neither, SageMaker describes the latest version of the pipeline.</p>"
         }
       }
     },
@@ -22859,6 +23069,10 @@
         "PipelineVersionDescription":{
           "shape":"PipelineVersionDescription",
           "documentation":"<p>The description of the pipeline version.</p>"
+        },
+        "PipelineVersionAliases":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases assigned to the pipeline version.</p>"
         }
       }
     },
@@ -26070,6 +26284,148 @@
         }
       }
     },
+    "ExtensionArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:extension/(sagemaker|eks|pcs)-[a-z0-9-]+/[a-z0-9-]+/[a-z0-9]+"
+    },
+    "ExtensionConfigurationValues":{
+      "type":"string",
+      "max":10240,
+      "min":1
+    },
+    "ExtensionDetails":{
+      "type":"structure",
+      "required":[
+        "ClusterArn",
+        "ExtensionArn",
+        "ExtensionName",
+        "ExtensionVersion",
+        "Status"
+      ],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster on which the extension is installed.</p>"
+        },
+        "ExtensionArn":{
+          "shape":"ExtensionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extension.</p>"
+        },
+        "ExtensionName":{
+          "shape":"ExtensionName",
+          "documentation":"<p>The name of the extension.</p>"
+        },
+        "ExtensionVersion":{
+          "shape":"ExtensionVersion",
+          "documentation":"<p>The version of the extension. While SageMaker HyperPod creates or updates the extension, some nodes might still run a different version. To see how many nodes run this version, see <code>NodeSummary</code>.</p>"
+        },
+        "Status":{
+          "shape":"ExtensionStatus",
+          "documentation":"<p>The status of the extension can be one of the following values:</p> <dl> <dt>Creating</dt> <dd> <p>SageMaker HyperPod is installing the extension on the cluster's nodes.</p> </dd> <dt>Active</dt> <dd> <p>The extension runs its current version and configuration on all of the cluster's nodes.</p> </dd> <dt>Updating</dt> <dd> <p>SageMaker HyperPod is applying a configuration change or version update to the cluster's nodes.</p> </dd> <dt>Degraded</dt> <dd> <p>The extension runs its current version and configuration on some of the cluster's nodes but not all of them. Or, at least one node recently reported that the extension is unhealthy.</p> </dd> <dt>CreateFailed</dt> <dd> <p>SageMaker HyperPod couldn't install the extension on any of the cluster's nodes.</p> </dd> <dt>UpdateFailed</dt> <dd> <p>SageMaker HyperPod couldn't apply the update on any of the cluster's nodes.</p> </dd> <dt>Deleting</dt> <dd> <p>SageMaker HyperPod is removing the extension from the cluster's nodes.</p> </dd> <dt>DeleteFailed</dt> <dd> <p>SageMaker HyperPod couldn't remove the extension from any of the cluster's nodes.</p> </dd> </dl>"
+        },
+        "ConfigurationValues":{
+          "shape":"ExtensionConfigurationValues",
+          "documentation":"<p>The configuration of the extension, as a JSON object serialized as a string. The configuration includes the default value of every setting that you didn't specify.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the extension was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the extension was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Details of an extension installed on a SageMaker HyperPod cluster.</p>"
+    },
+    "ExtensionName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-z]([a-z0-9]|-[a-z0-9])*"
+    },
+    "ExtensionNodeCount":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "ExtensionNodeSummary":{
+      "type":"structure",
+      "required":[
+        "TotalCount",
+        "ActiveCount"
+      ],
+      "members":{
+        "TotalCount":{
+          "shape":"ExtensionNodeCount",
+          "documentation":"<p>The number of nodes in your cluster that the extension targets. SageMaker HyperPod targets every running node in your cluster, including nodes that you add after you create the extension.</p>"
+        },
+        "ActiveCount":{
+          "shape":"ExtensionNodeCount",
+          "documentation":"<p>The number of nodes that are running the extension's current version and configuration. While SageMaker HyperPod creates or updates the extension, <code>ActiveCount</code> is lower than <code>TotalCount</code>.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an extension's installation across the nodes of a SageMaker HyperPod cluster.</p>"
+    },
+    "ExtensionStatus":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Active",
+        "CreateFailed",
+        "Updating",
+        "Deleting",
+        "DeleteFailed",
+        "Degraded",
+        "UpdateFailed"
+      ]
+    },
+    "ExtensionSummaries":{
+      "type":"list",
+      "member":{"shape":"ExtensionSummary"},
+      "max":100,
+      "min":0
+    },
+    "ExtensionSummary":{
+      "type":"structure",
+      "required":[
+        "ExtensionArn",
+        "ExtensionName",
+        "ExtensionVersion",
+        "Status"
+      ],
+      "members":{
+        "ExtensionArn":{
+          "shape":"ExtensionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extension.</p>"
+        },
+        "ExtensionName":{
+          "shape":"ExtensionName",
+          "documentation":"<p>The name of the extension.</p>"
+        },
+        "ExtensionVersion":{
+          "shape":"ExtensionVersion",
+          "documentation":"<p>The version of the extension.</p>"
+        },
+        "Status":{
+          "shape":"ExtensionStatus",
+          "documentation":"<p>The status of the extension. For the meaning of each status, see <code>ExtensionDetails</code>.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the extension was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an extension installed on a SageMaker HyperPod cluster.</p>"
+    },
+    "ExtensionVersion":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[0-9]+\\.[0-9]+\\.[0-9]+"
+    },
     "FSxLustreConfig":{
       "type":"structure",
       "required":[
@@ -27513,6 +27869,20 @@
         "PendingImport",
         "PendingDelete"
       ]
+    },
+    "HubContentStepMetadata":{
+      "type":"structure",
+      "members":{
+        "HubArn":{
+          "shape":"String2048",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hub that the step imported the content into.</p>"
+        },
+        "HubContentArn":{
+          "shape":"String2048",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hub content that was imported by this step execution.</p>"
+        }
+      },
+      "documentation":"<p>The hub and the hub content that a HubContent step imported.</p>"
     },
     "HubContentSupportStatus":{
       "type":"string",
@@ -32098,6 +32468,46 @@
         }
       }
     },
+    "ListClusterExtensionsRequest":{
+      "type":"structure",
+      "required":["ClusterArn"],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster whose extensions you want to list.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of extensions to return in the response. If you don't specify a value, SageMaker HyperPod returns up to 100 extensions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous <code>ListClusterExtensions</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of extensions, use the token in the next request. When you use the <code>CreationTimeAfter</code> or <code>CreationTimeBefore</code> filters, a response can contain fewer extensions than <code>MaxResults</code>, or none, and still include a <code>NextToken</code>. Continue until the response doesn't include a <code>NextToken</code>.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns extensions created at or after the specified time. Timestamps are formatted according to the ISO 8601 standard.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns extensions created at or before the specified time. The acceptable formats are the same as the timestamp formats for <code>CreationTimeAfter</code>.</p>"
+        }
+      }
+    },
+    "ListClusterExtensionsResponse":{
+      "type":"structure",
+      "required":["Extensions"],
+      "members":{
+        "Extensions":{
+          "shape":"ExtensionSummaries",
+          "documentation":"<p>The list of extensions installed on the cluster.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The next token specified for listing extensions on a SageMaker HyperPod cluster.</p>"
+        }
+      }
+    },
     "ListClusterNodesRequest":{
       "type":"structure",
       "required":["ClusterName"],
@@ -35081,6 +35491,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of pipeline executions to return in the response.</p>"
+        },
+        "PipelineVersionAlias":{
+          "shape":"PipelineVersionAlias",
+          "documentation":"<p>The alias of a pipeline version. The response includes only the executions of the version that has this alias when you make the request. If no version of the pipeline has this alias, the request fails with a <code>ResourceNotFound</code> error.</p>"
         }
       }
     },
@@ -35201,6 +35615,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of pipelines to return in the response.</p>"
+        },
+        "ManagedBy":{
+          "shape":"PipelineManagedBy",
+          "documentation":"<p>Filters the pipelines by who manages them. Specify <code>AWS</code> to return pipelines that AWS manages, or <code>CUSTOMER</code> to return pipelines that you created. If you don't specify a value, the response includes both.</p>"
         }
       }
     },
@@ -41236,6 +41654,10 @@
         "ForEach":{
           "shape":"ForEachStepMetadata",
           "documentation":"<p>The metadata for the ForEach step execution.</p>"
+        },
+        "HubContent":{
+          "shape":"HubContentStepMetadata",
+          "documentation":"<p>The metadata for the HubContent step execution.</p>"
         }
       },
       "documentation":"<p>Metadata for a step execution.</p>"
@@ -41266,6 +41688,10 @@
         "PipelineExecutionFailureReason":{
           "shape":"String3072",
           "documentation":"<p>A message generated by SageMaker Pipelines describing why the pipeline execution failed.</p>"
+        },
+        "PipelineVersionAliases":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases currently assigned to the pipeline version that the execution ran.</p>"
         }
       },
       "documentation":"<p>A pipeline execution summary.</p>"
@@ -41289,6 +41715,13 @@
         }
       },
       "documentation":"<p>Specifies the names of the experiment and trial created by a pipeline.</p>"
+    },
+    "PipelineManagedBy":{
+      "type":"string",
+      "enum":[
+        "AWS",
+        "CUSTOMER"
+      ]
     },
     "PipelineName":{
       "type":"string",
@@ -41399,9 +41832,25 @@
         "LastExecutedPipelineExecutionStatus":{
           "shape":"PipelineExecutionStatus",
           "documentation":"<p>The status of the most recent pipeline execution created from this pipeline version.</p>"
+        },
+        "PipelineVersionAliases":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases assigned to the pipeline version.</p>"
         }
       },
       "documentation":"<p>The version of the pipeline.</p>"
+    },
+    "PipelineVersionAlias":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._\\-]{1,128}"
+    },
+    "PipelineVersionAliasList":{
+      "type":"list",
+      "member":{"shape":"PipelineVersionAlias"},
+      "max":10,
+      "min":0
     },
     "PipelineVersionDescription":{
       "type":"string",
@@ -41446,6 +41895,10 @@
         "LastExecutionPipelineExecutionArn":{
           "shape":"PipelineExecutionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the most recent pipeline execution created from this pipeline version.</p>"
+        },
+        "PipelineVersionAliases":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases assigned to the pipeline version.</p>"
         }
       },
       "documentation":"<p>The summary of the pipeline version.</p>"
@@ -46612,11 +47065,19 @@
         },
         "PipelineVersionId":{
           "shape":"PipelineVersionId",
-          "documentation":"<p>The ID of the pipeline version to start execution from.</p>"
+          "documentation":"<p>The ID of the pipeline version to start execution from. You can't specify this with <code>PipelineVersionAlias</code>.</p>"
         },
         "MlflowExperimentName":{
           "shape":"MlflowExperimentEntityName",
           "documentation":"<p> The MLflow experiment name of the pipeline execution. </p>"
+        },
+        "PipelineVersionAlias":{
+          "shape":"PipelineVersionAlias",
+          "documentation":"<p>The alias of the pipeline version to start the execution from. You can't specify this with <code>PipelineVersionId</code>. If no version of the pipeline has this alias, the request fails with a <code>ResourceNotFound</code> error.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the execution uses. You must specify this parameter when you start an execution of a pipeline that AWS manages. You can't specify it for a pipeline that you create, because its executions use the pipeline's role.</p>"
         }
       }
     },
@@ -50613,6 +51074,52 @@
         }
       }
     },
+    "UpdateClusterExtensionRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterArn",
+        "ExtensionArn"
+      ],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster on which the extension is installed.</p>"
+        },
+        "ExtensionArn":{
+          "shape":"ExtensionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extension to update.</p>"
+        },
+        "ExtensionVersion":{
+          "shape":"ExtensionVersion",
+          "documentation":"<p>The version to update the extension to, in <code>MAJOR.MINOR.PATCH</code> format. The version must be later than the extension's current version. If you omit this parameter, the extension keeps its current version.</p>"
+        },
+        "ConfigurationValues":{
+          "shape":"ExtensionConfigurationValues",
+          "documentation":"<p>The configuration changes to apply, as a JSON object serialized as a string. Settings that you include are changed, settings that you omit are unchanged, and a setting with the value <code>null</code> returns to its default value. The resulting configuration must be valid for the target extension version. If you omit <code>ConfigurationValues</code>, the configuration is unchanged.</p>"
+        },
+        "ClientToken":{
+          "shape":"UpdateClusterExtensionRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide so that the request is idempotent. If you send the same update more than once, SageMaker HyperPod applies it once and doesn't return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateClusterExtensionRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "UpdateClusterExtensionResponse":{
+      "type":"structure",
+      "required":["ExtensionArn"],
+      "members":{
+        "ExtensionArn":{
+          "shape":"ExtensionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extension that is being updated. To track the update, call <code>DescribeClusterExtension</code>.</p>"
+        }
+      }
+    },
     "UpdateClusterRequest":{
       "type":"structure",
       "required":["ClusterName"],
@@ -51945,6 +52452,10 @@
         "ParallelismConfiguration":{
           "shape":"ParallelismConfiguration",
           "documentation":"<p>If specified, it applies to all executions of this pipeline by default.</p>"
+        },
+        "PipelineVersionAliases":{
+          "shape":"PipelineVersionAliasList",
+          "documentation":"<p>The aliases to assign to the new pipeline version that this update creates. You can specify aliases only when the update changes the pipeline definition. To change the aliases of an existing version, use <code>UpdatePipelineVersion</code>.</p> <p>An alias must be unique within the pipeline. To move an alias from an existing version to the new version, first remove the alias from the existing version with <code>UpdatePipelineVersion</code>.</p>"
         }
       }
     },
@@ -51983,6 +52494,10 @@
         "PipelineVersionDescription":{
           "shape":"PipelineVersionDescription",
           "documentation":"<p>The description of the pipeline version.</p>"
+        },
+        "PipelineVersionAliasOperations":{
+          "shape":"AliasOperations",
+          "documentation":"<p>The aliases to add to or remove from the pipeline version.</p>"
         }
       }
     },

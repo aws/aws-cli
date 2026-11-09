@@ -344,7 +344,6 @@ files to and from S3. Valid choices are:
     ``classic`` transfer client when any of the following are in use:
 
     * The ``max_bandwidth`` configuration value.
-    * A ``retry_mode`` configuration value of ``adaptive``.
     * Uploads whose source is a non-seekable stream, such as
       ``aws s3 cp - s3://bucket/key``.
 

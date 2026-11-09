@@ -5,7 +5,7 @@ The following ``put-signing-profile`` example creates a signing profile using th
     aws signer put-signing-profile \
         --profile-name MyProfile6 \
         --signing-material certificateArn=arn:aws:acm:us-west-2:123456789012:certificate/6a55389b-306b-4e8c-a95c-0123456789abc \
-        --platform AmazonFreeRTOS-TI-CC3220SF
+        --platform-id AmazonFreeRTOS-TI-CC3220SF
 
 Output::
 

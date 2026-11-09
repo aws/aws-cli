@@ -22,19 +22,19 @@ Contents of ``create-ota-update.json``::
         },
         "files": [
             {
-              "fileName": "firmware.bin",
-              "fileLocation": {
-                "stream": {
-                  "streamId": "004",
-                  "fileId":123
+                "fileName": "firmware.bin",
+                "fileLocation": {
+                    "stream": {
+                        "streamId": "004",
+                        "fileId": 123
+                    }
+                },
+                "codeSigning": {
+                    "awsSignerJobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 }
-              },
-              "codeSigning": {
-                "awsSignerJobId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
-              }
             }
-        ]
-        "roleArn": "arn:aws:iam:123456789012:role/service-role/my_ota_role"
+        ],
+        "roleArn": "arn:aws:iam::123456789012:role/service-role/my_ota_role"
     }
 
 Output::

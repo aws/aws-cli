@@ -12,6 +12,31 @@
 # language governing permissions and limitations under the License.
 
 
+def help_requested(parsed_globals):
+    """Return True if --help was given.
+
+    The main parser sets ``help`` to True or False. Anything else, such as
+    an attribute of a mock or another stand-in object, is not a request.
+    """
+    return getattr(parsed_globals, 'help', False) is True
+
+
+def call_command(command, args, parsed_globals):
+    """Call a command, giving it ``--help`` if it needs it.
+
+    The main parser consumes ``--help`` as a global argument and sets
+    ``parsed_globals.help``. Commands that check that value set
+    ``_HANDLES_HELP_FLAG = True``. Other commands, such as plugins and
+    external aliases, get ``--help`` added back to their arguments, as
+    they received it before ``--help`` was a global argument.
+    """
+    if help_requested(parsed_globals) and not getattr(
+        command, '_HANDLES_HELP_FLAG', False
+    ):
+        args = list(args) + ['--help']
+    return command(args, parsed_globals)
+
+
 class CLICommand:
     """Interface for a CLI command.
 
@@ -19,6 +44,12 @@ class CLICommand:
     (``aws ec2``, ``aws s3``, ``aws config``).
 
     """
+
+    # Internal to the CLI's command classes, which set it to True
+    # because their __call__ renders help when parsed_globals.help is
+    # set. Other commands, such as plugins, leave it unset and receive
+    # --help in their arguments.
+    _HANDLES_HELP_FLAG = False
 
     @property
     def name(self):

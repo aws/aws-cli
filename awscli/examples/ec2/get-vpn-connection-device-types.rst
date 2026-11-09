@@ -3,7 +3,7 @@
 The following ``get-vpn-connection-device-types`` example lists the gateway devices from Palo Alto Networks that have sample configuration files. ::
 
     aws ec2 get-vpn-connection-device-types \
-        --query "VpnConnectionDeviceTypes[?Vendor==`Palo Alto Networks`]"
+        --query "VpnConnectionDeviceTypes[?Vendor=='Palo Alto Networks']"
 
 Output::
 

@@ -4,7 +4,7 @@ The following ``modify-instance-event-window`` example modifies the time range o
 
     aws ec2 modify-instance-event-window \
         --instance-event-window-id iew-0abcdef1234567890 \
-        --time-range StartWeekDay=monday,StartHour=2,EndWeekDay=wednesday,EndHour=8
+        --time-ranges StartWeekDay=monday,StartHour=2,EndWeekDay=wednesday,EndHour=8
 
 Output::
 
@@ -46,7 +46,7 @@ The following ``modify-instance-event-window`` example modifies the time range o
 
     aws ec2 modify-instance-event-window \
         --instance-event-window-id iew-0abcdef1234567890 \
-        --time-range '[{"StartWeekDay": "monday", "StartHour": 2, "EndWeekDay": "wednesday", "EndHour": 8},
+        --time-ranges '[{"StartWeekDay": "monday", "StartHour": 2, "EndWeekDay": "wednesday", "EndHour": 8},
             {"StartWeekDay": "thursday", "StartHour": 2, "EndWeekDay": "friday", "EndHour": 8}]'
 
 Output::

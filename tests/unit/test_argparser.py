@@ -13,8 +13,11 @@
 from argparse import ArgumentParser
 
 from awscli.argparser import (
+    ArgParseException,
     CommandAction,
     FirstPassGlobalArgParser,
+    MainArgParser,
+    ServiceArgParser,
     format_unknown_options_error,
     get_option_suggestion_candidates,
 )
@@ -75,6 +78,98 @@ class TestPartialGlobalArgsParser(unittest.TestCase):
         self.assertEqual(remains, ['--foo', 'bar'])
 
 
+class TestMainArgParserHelp(unittest.TestCase):
+    def setUp(self):
+        argument_table = {
+            'help': CustomArgument('help', action='store_true'),
+            'query': CustomArgument('query'),
+            'region': CustomArgument('region'),
+        }
+        self.parser = MainArgParser(
+            command_table={'ec2': object()},
+            version_string='aws-cli/0.0.0',
+            description='',
+            argument_table=argument_table,
+        )
+
+    def test_help_parsed_like_other_global_args(self):
+        parsed, remaining = self.parser.parse_known_args(
+            ['ec2', '--region', 'us-west-2', 'describe-instances', '--help']
+        )
+        self.assertTrue(parsed.help)
+        self.assertEqual(parsed.command, 'ec2')
+        self.assertEqual(parsed.region, 'us-west-2')
+        self.assertEqual(remaining, ['describe-instances'])
+
+    def test_help_abbreviation(self):
+        parsed, _ = self.parser.parse_known_args(['ec2', '--he'])
+        self.assertTrue(parsed.help)
+
+    def test_command_not_required_with_help(self):
+        parsed, remaining = self.parser.parse_known_args(
+            ['--region', 'us-west-2', '--help']
+        )
+        self.assertTrue(parsed.help)
+        self.assertIsNone(parsed.command)
+        self.assertEqual(parsed.region, 'us-west-2')
+        self.assertEqual(remaining, [])
+
+    def test_command_required_without_help(self):
+        with self.assertRaisesRegex(
+            ArgParseException, 'the following arguments are required: command'
+        ):
+            self.parser.parse_known_args(['--region', 'us-west-2'])
+
+    def test_missing_option_value_allowed_with_help(self):
+        parsed, remaining = self.parser.parse_known_args(
+            ['ec2', 'describe-instances', '--query', '--help']
+        )
+        self.assertTrue(parsed.help)
+        self.assertIsNone(parsed.query)
+        self.assertEqual(parsed.command, 'ec2')
+        self.assertEqual(remaining, ['describe-instances'])
+
+    def test_missing_option_value_errors_without_help(self):
+        with self.assertRaisesRegex(
+            ArgParseException, 'argument --query: expected one argument'
+        ):
+            self.parser.parse_known_args(['ec2', '--query'])
+
+    def test_invalid_command_errors_with_help(self):
+        with self.assertRaisesRegex(ArgParseException, 'invalid choice'):
+            self.parser.parse_known_args(['fake-service', '--help'])
+
+    def test_help_after_end_of_options_is_not_help(self):
+        parsed, remaining = self.parser.parse_known_args(
+            ['ec2', '--', '--help']
+        )
+        self.assertFalse(parsed.help)
+        self.assertIn('--help', remaining)
+
+    def test_explicit_option_value_is_not_help(self):
+        parsed, _ = self.parser.parse_known_args(['ec2', '--query=--help'])
+        self.assertFalse(parsed.help)
+        self.assertEqual(parsed.query, '--help')
+
+
+class TestServiceArgParserHelp(unittest.TestCase):
+    def test_operation_required_by_default(self):
+        parser = ServiceArgParser({'describe-instances': object()}, 'ec2')
+        with self.assertRaisesRegex(
+            ArgParseException,
+            'the following arguments are required: operation',
+        ):
+            parser.parse_known_args([])
+
+    def test_operation_optional_in_help_mode(self):
+        parser = ServiceArgParser(
+            {'describe-instances': object()}, 'ec2', help_mode=True
+        )
+        parsed, remaining = parser.parse_known_args(['--unknown'])
+        self.assertIsNone(parsed.operation)
+        self.assertEqual(remaining, ['--unknown'])
+
+
 class TestGetOptionSuggestionCandidates(unittest.TestCase):
     def test_includes_documented_options_and_globals_only(self):
         # Suggest options and globals, excluding positional and hidden args.
@@ -86,7 +181,9 @@ class TestGetOptionSuggestionCandidates(unittest.TestCase):
             'marker': hidden,
         }
         session = mock.Mock()
-        session.get_data.return_value = {'options': {'region': {}, 'debug': {}}}
+        session.get_data.return_value = {
+            'options': {'region': {}, 'debug': {}}
+        }
 
         candidates = get_option_suggestion_candidates(arg_table, session)
 

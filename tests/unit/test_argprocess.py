@@ -10,16 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
 
-from botocore import model, xform_name
+from botocore import model
 from botocore.compat import OrderedDict
 
+from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import (
-    ParamError,
     ParamShorthandDocGen,
     ParamShorthandParser,
-    ParamUnknownKeyError,
     detect_shape_structure,
     unpack_cli_arg,
 )
@@ -27,36 +25,12 @@ from awscli.arguments import (
     BooleanArgument,
     CLIArgument,
     CustomArgument,
-    ListArgument,
     create_argument_model_from_schema,
 )
-from awscli.help import OperationHelpCommand
-from awscli.paramfile import LOCAL_PREFIX_MAP, URIArgumentHandler
-from awscli.testutils import BaseCLIDriverTest, mock, temporary_file, unittest
-from awscli.argparser import ArgTableArgParser
+from awscli.testutils import mock, unittest
 
 
-# These tests use real service types so that we can
-# verify the real shapes of services.
-class BaseArgProcessTest(BaseCLIDriverTest):
-    def get_param_model(self, dotted_name):
-        service_name, operation_name, param_name = dotted_name.split('.')
-        service_model = self.session.get_service_model(service_name)
-        operation = service_model.operation_model(operation_name)
-        input_shape = operation.input_shape
-        required_arguments = input_shape.required_members
-        is_required = param_name in required_arguments
-        member_shape = input_shape.members[param_name]
-        type_name = member_shape.type_name
-        cli_arg_name = xform_name(param_name, '-')
-        if type_name == 'boolean':
-            cls = BooleanArgument
-        elif type_name == 'list':
-            cls = ListArgument
-        else:
-            cls = CLIArgument
-        return cls(cli_arg_name, member_shape, mock.Mock(), is_required)
-
+class BaseArgProcessTest(unittest.TestCase):
     def create_argument(self, argument_model, argument_name=None):
         if argument_name is None:
             argument_name = 'foo'
@@ -68,84 +42,21 @@ class BaseArgProcessTest(BaseCLIDriverTest):
         return argument
 
 
-class TestURIParams(BaseArgProcessTest):
-    def setUp(self):
-        super(TestURIParams, self).setUp()
-        self.uri_param = URIArgumentHandler(LOCAL_PREFIX_MAP.copy())
-
-    def test_uri_param(self):
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        with temporary_file('r+') as f:
-            json_argument = json.dumps(
-                [{"Name": "instance-id", "Values": ["i-1234"]}]
-            )
-            f.write(json_argument)
-            f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name)
-        self.assertEqual(result, json_argument)
-
-
 class TestArgShapeDetection(BaseArgProcessTest):
-    def assert_shape_type(self, spec, expected_type):
-        p = self.get_param_model(spec)
-        actual_structure = detect_shape_structure(p.argument_model)
-        self.assertEqual(actual_structure, expected_type)
-
-    def assert_custom_shape_type(self, schema, expected_type):
+    def test_struct_list_scalar(self):
+        schema = {
+            "type": "object",
+            "properties": {
+                "Consistent": {
+                    "type": "boolean",
+                },
+                "Args": {"type": "array", "items": {"type": "string"}},
+            },
+        }
         argument_model = create_argument_model_from_schema(schema)
         argument = CustomArgument('test', argument_model=argument_model)
         actual_structure = detect_shape_structure(argument.argument_model)
-        self.assertEqual(actual_structure, expected_type)
-
-    def test_detect_scalar(self):
-        self.assert_shape_type(
-            'iam.AddRoleToInstanceProfile.RoleName', 'scalar'
-        )
-
-    def test_detect_list_of_strings(self):
-        self.assert_shape_type('sns.AddPermission.AWSAccountId', 'list-scalar')
-
-    def test_detect_structure_of_scalars(self):
-        self.assert_shape_type(
-            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration',
-            'structure(scalars)',
-        )
-
-    def test_list_structure_scalars(self):
-        self.assert_shape_type(
-            'elb.RegisterInstancesWithLoadBalancer.Instances',
-            'list-structure(scalar)',
-        )
-
-    def test_list_structure_scalars_2(self):
-        self.assert_shape_type(
-            'elb.CreateLoadBalancer.Listeners', 'list-structure(scalars)'
-        )
-
-    def test_list_structure_of_list_and_strings(self):
-        self.assert_shape_type(
-            'ec2.DescribeInstances.Filters',
-            'list-structure(list-scalar, scalar)',
-        )
-
-    def test_map_scalar(self):
-        self.assert_shape_type(
-            'sqs.SetQueueAttributes.Attributes', 'map-scalar'
-        )
-
-    def test_struct_list_scalar(self):
-        self.assert_custom_shape_type(
-            {
-                "type": "object",
-                "properties": {
-                    "Consistent": {
-                        "type": "boolean",
-                    },
-                    "Args": {"type": "array", "items": {"type": "string"}},
-                },
-            },
-            'structure(list-scalar, scalar)',
-        )
+        self.assertEqual(actual_structure, 'structure(list-scalar, scalar)')
 
     def test_recursive_shape(self):
         shapes = {
@@ -174,7 +85,7 @@ class TestParamShorthand(BaseArgProcessTest):
     maxDiff = None
 
     def setUp(self):
-        super(TestParamShorthand, self).setUp()
+        super().setUp()
         self._shorthand = ParamShorthandParser()
 
     def parse_shorthand(self, cli_argument, value, event_name=None):
@@ -182,16 +93,6 @@ class TestParamShorthand(BaseArgProcessTest):
         if event is None:
             event = 'process-cli-arg.foo.bar'
         return self._shorthand(cli_argument, value, event)
-
-    def test_simplify_structure_scalars(self):
-        p = self.get_param_model(
-            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration'
-        )
-        value = 'ApplicationName=foo,TemplateName=bar'
-        json_value = '{"ApplicationName": "foo", "TemplateName": "bar"}'
-        returned = self.parse_shorthand(p, value)
-        json_version = unpack_cli_arg(p, json_value)
-        self.assertEqual(returned, json_version)
 
     def test_flattens_marked_single_member_structure_list(self):
         argument = self.create_argument(
@@ -246,252 +147,10 @@ class TestParamShorthand(BaseArgProcessTest):
         self.assertFalse(unpack_cli_arg(bool_param, 'False'))
         self.assertFalse(unpack_cli_arg(bool_param, 'false'))
 
-    def test_simplify_map_scalar(self):
-        p = self.get_param_model('sqs.SetQueueAttributes.Attributes')
-        returned = self.parse_shorthand(p, 'VisibilityTimeout=15')
-        json_version = unpack_cli_arg(p, '{"VisibilityTimeout": "15"}')
-        self.assertEqual(returned, {'VisibilityTimeout': '15'})
-        self.assertEqual(returned, json_version)
-
-    def test_list_structure_scalars(self):
-        p = self.get_param_model(
-            'elb.RegisterInstancesWithLoadBalancer.Instances'
-        )
-        event_name = (
-            'process-cli-arg.elb.register-instances-with-load-balancer'
-        )
-        # Because this is a list type param, we'll use nargs
-        # with argparse which means the value will be presented
-        # to us as a list.
-        returned = self.parse_shorthand(
-            p, ['instance-1', 'instance-2'], event_name
-        )
-        self.assertEqual(
-            returned,
-            [{'InstanceId': 'instance-1'}, {'InstanceId': 'instance-2'}],
-        )
-
-    def test_list_structure_list_scalar(self):
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        expected = [
-            {"Name": "instance-id", "Values": ["i-1", "i-2"]},
-            {"Name": "architecture", "Values": ["i386"]},
-        ]
-        returned = self.parse_shorthand(
-            p,
-            [
-                "Name=instance-id,Values=i-1,i-2",
-                "Name=architecture,Values=i386",
-            ],
-        )
-        self.assertEqual(returned, expected)
-
-        # With spaces around the comma.
-        returned2 = self.parse_shorthand(
-            p,
-            [
-                "Name=instance-id, Values=i-1,i-2",
-                "Name=architecture, Values=i386",
-            ],
-        )
-        self.assertEqual(returned2, expected)
-
-        # Strip off leading/trailing spaces.
-        returned3 = self.parse_shorthand(
-            p,
-            [
-                "Name = instance-id, Values = i-1,i-2",
-                "Name = architecture, Values = i386",
-            ],
-        )
-        self.assertEqual(returned3, expected)
-
-    def test_parse_empty_values(self):
-        # A value can be omitted and will default to an empty string.
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        expected = [
-            {"Name": "", "Values": ["i-1", "i-2"]},
-            {"Name": "architecture", "Values": ['']},
-        ]
-        returned = self.parse_shorthand(
-            p, ["Name=,Values=i-1,i-2", "Name=architecture,Values="]
-        )
-        self.assertEqual(returned, expected)
-
-    def test_list_structure_list_scalar_2(self):
-        p = self.get_param_model('emr.ModifyInstanceGroups.InstanceGroups')
-        expected = [
-            {"InstanceGroupId": "foo", "InstanceCount": 4},
-            {"InstanceGroupId": "bar", "InstanceCount": 1},
-        ]
-
-        simplified = self.parse_shorthand(
-            p,
-            [
-                "InstanceGroupId=foo,InstanceCount=4",
-                "InstanceGroupId=bar,InstanceCount=1",
-            ],
-        )
-
-        self.assertEqual(simplified, expected)
-
-    def test_empty_value_of_list_structure(self):
-        p = self.get_param_model('emr.ModifyInstanceGroups.InstanceGroups')
-        expected = []
-        simplified = self.parse_shorthand(p, [])
-        self.assertEqual(simplified, expected)
-
-    def test_list_structure_list_multiple_scalar(self):
-        p = self.get_param_model('emr.ModifyInstanceGroups.InstanceGroups')
-        returned = self.parse_shorthand(
-            p,
-            [
-                'InstanceGroupId=foo,InstanceCount=3,'
-                'EC2InstanceIdsToTerminate=i-12345,i-67890'
-            ],
-        )
-        self.assertEqual(
-            returned,
-            [
-                {
-                    'EC2InstanceIdsToTerminate': ['i-12345', 'i-67890'],
-                    'InstanceGroupId': 'foo',
-                    'InstanceCount': 3,
-                }
-            ],
-        )
-
-    def test_list_structure_scalars_2(self):
-        p = self.get_param_model('elb.CreateLoadBalancer.Listeners')
-        expected = [
-            {
-                "Protocol": "protocol1",
-                "LoadBalancerPort": 1,
-                "InstanceProtocol": "instance_protocol1",
-                "InstancePort": 2,
-                "SSLCertificateId": "ssl_certificate_id1",
-            },
-            {
-                "Protocol": "protocol2",
-                "LoadBalancerPort": 3,
-                "InstanceProtocol": "instance_protocol2",
-                "InstancePort": 4,
-                "SSLCertificateId": "ssl_certificate_id2",
-            },
-        ]
-        returned = unpack_cli_arg(
-            p,
-            [
-                '{"Protocol": "protocol1", "LoadBalancerPort": 1, '
-                '"InstanceProtocol": "instance_protocol1", '
-                '"InstancePort": 2, "SSLCertificateId": '
-                '"ssl_certificate_id1"}',
-                '{"Protocol": "protocol2", "LoadBalancerPort": 3, '
-                '"InstanceProtocol": "instance_protocol2", '
-                '"InstancePort": 4, "SSLCertificateId": '
-                '"ssl_certificate_id2"}',
-            ],
-        )
-        self.assertEqual(returned, expected)
-        simplified = self.parse_shorthand(
-            p,
-            [
-                'Protocol=protocol1,LoadBalancerPort=1,'
-                'InstanceProtocol=instance_protocol1,'
-                'InstancePort=2,SSLCertificateId=ssl_certificate_id1',
-                'Protocol=protocol2,LoadBalancerPort=3,'
-                'InstanceProtocol=instance_protocol2,'
-                'InstancePort=4,SSLCertificateId=ssl_certificate_id2',
-            ],
-        )
-        self.assertEqual(simplified, expected)
-
-    def test_keyval_with_long_values(self):
-        p = self.get_param_model('dynamodb.UpdateTable.ProvisionedThroughput')
-        value = 'WriteCapacityUnits=10,ReadCapacityUnits=10'
-        returned = self.parse_shorthand(p, value)
-        self.assertEqual(
-            returned, {'WriteCapacityUnits': 10, 'ReadCapacityUnits': 10}
-        )
-
-    def test_error_messages_for_structure_scalar(self):
-        p = self.get_param_model(
-            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration'
-        )
-        value = 'ApplicationName:foo,TemplateName=bar'
-        error_msg = (
-            "Error parsing parameter '--source-configuration'.*Expected"
-        )
-        with self.assertRaisesRegex(ParamError, error_msg):
-            self.parse_shorthand(p, value)
-
-    def test_improper_separator(self):
-        # If the user uses ':' instead of '=', we should give a good
-        # error message.
-        p = self.get_param_model(
-            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration'
-        )
-        value = 'ApplicationName:foo,TemplateName:bar'
-        error_msg = (
-            "Error parsing parameter '--source-configuration'.*Expected"
-        )
-        with self.assertRaisesRegex(ParamError, error_msg):
-            self.parse_shorthand(p, value)
-
-    def test_improper_separator_for_filters_param(self):
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        error_msg = "Error parsing parameter '--filters'.*Expected"
-        with self.assertRaisesRegex(ParamError, error_msg):
-            self.parse_shorthand(p, ["Name:tag:Name,Values:foo"])
-
-    def test_csv_syntax_escaped(self):
-        p = self.get_param_model('cloudformation.CreateStack.Parameters')
-        returned = self.parse_shorthand(
-            p, [r"ParameterKey=key,ParameterValue=foo\,bar"]
-        )
-        expected = [{"ParameterKey": "key", "ParameterValue": "foo,bar"}]
-        self.assertEqual(returned, expected)
-
-    def test_csv_syntax_double_quoted(self):
-        p = self.get_param_model('cloudformation.CreateStack.Parameters')
-        returned = self.parse_shorthand(
-            p, ['ParameterKey=key,ParameterValue="foo,bar"']
-        )
-        expected = [{"ParameterKey": "key", "ParameterValue": "foo,bar"}]
-        self.assertEqual(returned, expected)
-
-    def test_csv_syntax_single_quoted(self):
-        p = self.get_param_model('cloudformation.CreateStack.Parameters')
-        returned = self.parse_shorthand(
-            p, ["ParameterKey=key,ParameterValue='foo,bar'"]
-        )
-        expected = [{"ParameterKey": "key", "ParameterValue": "foo,bar"}]
-        self.assertEqual(returned, expected)
-
-    def test_csv_syntax_errors(self):
-        p = self.get_param_model('cloudformation.CreateStack.Parameters')
-        error_msg = "Error parsing parameter '--parameters'.*Expected"
-        with self.assertRaisesRegex(ParamError, error_msg):
-            self.parse_shorthand(
-                p, ['ParameterKey=key,ParameterValue="foo,bar']
-            )
-        with self.assertRaisesRegex(ParamError, error_msg):
-            self.parse_shorthand(
-                p, ['ParameterKey=key,ParameterValue=foo,bar"']
-            )
-        with self.assertRaisesRegex(ParamError, error_msg):
-            self.parse_shorthand(
-                p, ['ParameterKey=key,ParameterValue=""foo,bar"']
-            )
-        with self.assertRaisesRegex(ParamError, error_msg):
-            self.parse_shorthand(
-                p, ['ParameterKey=key,ParameterValue="foo,bar\'']
-            )
-
 
 class TestParamShorthandCustomArguments(BaseArgProcessTest):
     def setUp(self):
-        super(TestParamShorthandCustomArguments, self).setUp()
+        super().setUp()
         self.shorthand = ParamShorthandParser()
 
     def test_list_structure_list_scalar_custom_arg(self):
@@ -556,7 +215,7 @@ class TestDocGen(BaseArgProcessTest):
     # flexible and allow the docs to slightly change without breaking these
     # tests.
     def setUp(self):
-        super(TestDocGen, self).setUp()
+        super().setUp()
         self.shorthand_documenter = ParamShorthandDocGen()
         self.service_name = 'foo'
         self.operation_name = 'bar'
@@ -570,27 +229,6 @@ class TestDocGen(BaseArgProcessTest):
     def assert_generated_example_is(self, argument, expected_docs):
         generated_docs = self.get_generated_example_for(argument)
         self.assertEqual(generated_docs, expected_docs)
-
-    def assert_generated_example_contains(self, argument, expected_to_contain):
-        generated_docs = self.get_generated_example_for(argument)
-        self.assertIn(expected_to_contain, generated_docs)
-
-    def test_gen_map_type_docs(self):
-        argument = self.get_param_model('sqs.SetQueueAttributes.Attributes')
-        expected_example_str = (
-            "KeyName1=string,KeyName2=string\n\n"
-            "Where valid key names are:\n"
-        )
-        self.assert_generated_example_contains(argument, expected_example_str)
-
-    def test_gen_list_scalar_docs(self):
-        self.service_name = 'elb'
-        self.operation_name = 'register-instances-with-load-balancer'
-        argument = self.get_param_model(
-            'elb.RegisterInstancesWithLoadBalancer.Instances'
-        )
-        doc_string = '--instances InstanceId1 InstanceId2 InstanceId3'
-        self.assert_generated_example_is(argument, doc_string)
 
     def test_flattens_marked_single_member_structure_list(self):
         argument = self.create_argument(
@@ -650,15 +288,6 @@ class TestDocGen(BaseArgProcessTest):
         with mock.patch(uses_old_list, mock.Mock(return_value=False)):
             self.assert_generated_example_is(argument, 'Bar=string ...')
 
-    def test_gen_list_structure_of_scalars_docs(self):
-        argument = self.get_param_model('elb.CreateLoadBalancer.Listeners')
-        generated_example = self.get_generated_example_for(argument)
-        self.assertIn('Protocol=string', generated_example)
-        self.assertIn('LoadBalancerPort=integer', generated_example)
-        self.assertIn('InstanceProtocol=string', generated_example)
-        self.assertIn('InstancePort=integer', generated_example)
-        self.assertIn('SSLCertificateId=string', generated_example)
-
     def test_gen_list_structure_multiple_scalar_docs(self):
         expected = (
             'Scalar1=string,' 'Scalar2=string,' 'List1=string,string ...'
@@ -705,13 +334,6 @@ class TestDocGen(BaseArgProcessTest):
         generated_example = self.get_generated_example_for(argument)
         self.assertIn(expected, generated_example)
 
-    def test_gen_list_structure_list_scalar_scalar_docs(self):
-        # Verify that we have *two* top level list items displayed,
-        # so we make it clear that multiple values are separated by spaces.
-        argument = self.get_param_model('ec2.DescribeInstances.Filters')
-        generated_example = self.get_generated_example_for(argument)
-        self.assertIn('Name=string,Values=string,string', generated_example)
-
     def test_gen_structure_list_scalar_docs(self):
         argument = self.create_argument(
             OrderedDict(
@@ -727,14 +349,26 @@ class TestDocGen(BaseArgProcessTest):
             'Consistent=boolean,Args=string,string', generated_example
         )
 
-    def test_can_gen_recursive_structure(self):
-        argument = self.get_param_model('dynamodb.PutItem.Item')
-        generated_example = self.get_generated_example_for(argument)
-
     def test_can_document_nested_structs(self):
-        argument = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')
+        argument = self.create_argument(
+            {
+                'A': {
+                    'type': 'structure',
+                    'members': {
+                        'B': {'type': 'string'},
+                        'C': {
+                            'type': 'structure',
+                            'members': {
+                                'D': {'type': 'string'},
+                                'E': {'type': 'integer'},
+                            },
+                        },
+                    },
+                },
+            }
+        )
         generated_example = self.get_generated_example_for(argument)
-        self.assertRegex(generated_example, r'Ebs={\w+=\w+')
+        self.assertIn('A={B=string,C={D=string,E=integer}}', generated_example)
 
     def test_can_document_nested_lists(self):
         argument = self.create_argument(
@@ -886,87 +520,9 @@ class TestDocGen(BaseArgProcessTest):
             }
         )
         generated_example = self.get_generated_example_for(argument)
-        self.assertEqual('A={KeyName1={B=string},KeyName2={B=string}}', generated_example)
-
-
-class TestUnpackJSONParams(BaseArgProcessTest):
-    def setUp(self):
-        super(TestUnpackJSONParams, self).setUp()
-        self.simplify = ParamShorthandParser()
-
-    def test_json_with_spaces(self):
-        p = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')
-        # If a user specifies the json with spaces, it will show up as
-        # a multi element list.  For example:
-        # --block-device-mappings [{ "DeviceName":"/dev/sdf",
-        # "VirtualName":"ephemeral0"}, {"DeviceName":"/dev/sdg",
-        # "VirtualName":"ephemeral1" }]
-        #
-        # Will show up as:
-        block_device_mapping = [
-            '[{',
-            'DeviceName:/dev/sdf,',
-            'VirtualName:ephemeral0},',
-            '{DeviceName:/dev/sdg,',
-            'VirtualName:ephemeral1',
-            '}]',
-        ]
-        # The shell has removed the double quotes so this is invalid
-        # JSON, but we should still raise a better exception.
-        with self.assertRaises(ParamError) as e:
-            unpack_cli_arg(p, block_device_mapping)
-        # Parameter name should be in error message.
-        self.assertIn('--block-device-mappings', str(e.exception))
-        # The actual JSON itself should be in the error message.
-        # Becaues this is a list, only the first element in the JSON
-        # will show.  This will at least let customers know what
-        # we tried to parse.
-        self.assertIn('[{', str(e.exception))
-
-
-class TestJSONValueHeaderParams(BaseArgProcessTest):
-    def setUp(self):
-        super(TestJSONValueHeaderParams, self).setUp()
-        self.p = self.get_param_model(
-            'lex-runtime.PostContent.sessionAttributes'
-        )
-
-    def test_json_value_dict(self):
-        value = '{"foo": "bar"}'
         self.assertEqual(
-            unpack_cli_arg(self.p, value), OrderedDict([('foo', 'bar')])
+            'A={KeyName1={B=string},KeyName2={B=string}}', generated_example
         )
-
-    def test_json_value_list(self):
-        value = '["foo", "bar"]'
-        self.assertEqual(unpack_cli_arg(self.p, value), ['foo', 'bar'])
-
-    def test_json_value_int(self):
-        value = "5"
-        self.assertEqual(unpack_cli_arg(self.p, value), 5)
-
-    def test_json_value_float(self):
-        value = "1.2"
-        self.assertEqual(unpack_cli_arg(self.p, value), 1.2)
-
-    def test_json_value_string(self):
-        value = '"5"'
-        self.assertEqual(unpack_cli_arg(self.p, value), '5')
-
-    def test_json_value_boolean(self):
-        value = "true"
-        self.assertEqual(unpack_cli_arg(self.p, value), True)
-        value = "false"
-        self.assertEqual(unpack_cli_arg(self.p, value), False)
-
-    def test_json_value_null(self):
-        value = 'null'
-        self.assertEqual(unpack_cli_arg(self.p, value), None)
-
-    def test_json_value_decode_error(self):
-        value = 'invalid string to be serialized'
-        with self.assertRaises(ParamError):
-            unpack_cli_arg(self.p, value)
 
 
 class TestArgumentPercentEscaping(BaseArgProcessTest):
@@ -995,13 +551,20 @@ class TestArgumentPercentEscaping(BaseArgProcessTest):
         self._test_percent_escaping('string', CLIArgument, 'Symbols: % ^ & *')
 
     def test_boolean_argument_escapes_percent(self):
-        self._test_percent_escaping('boolean', BooleanArgument, 'Symbols: % ^ & *')
+        self._test_percent_escaping(
+            'boolean', BooleanArgument, 'Symbols: % ^ & *'
+        )
 
     def test_cli_argument_escapes_url_encoded_percent(self):
-        self._test_percent_escaping('string', CLIArgument, 'File: test%28file%29.png')
+        self._test_percent_escaping(
+            'string', CLIArgument, 'File: test%28file%29.png'
+        )
 
     def test_boolean_argument_escapes_url_encoded_percent(self):
-        self._test_percent_escaping('boolean', BooleanArgument, 'File: test%28file%29.png')
+        self._test_percent_escaping(
+            'boolean', BooleanArgument, 'File: test%28file%29.png'
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

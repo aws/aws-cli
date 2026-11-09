@@ -52,7 +52,7 @@ from awscli.arguments import (
     ListArgument,
     UnknownArgumentError,
 )
-from awscli.commands import CLICommand
+from awscli.commands import CLICommand, call_command, help_requested
 from awscli.compat import (
     default_pager,
     get_stderr_text_writer,
@@ -96,7 +96,7 @@ LOG_FORMAT = (
 HISTORY_RECORDER = get_global_history_recorder()
 METADATA_FILENAME = 'metadata.json'
 INSTALL_FILENAME = 'install.json'
-_NO_AUTO_PROMPT_ARGS = ['help', '--version']
+_NO_AUTO_PROMPT_ARGS = ['help', '--help', '--version']
 _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
 _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
 # Don't remove this line.  The idna encoding
@@ -603,7 +603,8 @@ class CLIDriver:
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record('CLI_VERSION', self._cli_version(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
-            return command_table[parsed_args.command](remaining, parsed_args)
+            command = self._get_command(command_table, parsed_args)
+            return call_command(command, remaining, parsed_args)
         except BaseException as e:
             # when --version action executed default argparser prints out
             # version string and calls sys.exit(0)
@@ -616,6 +617,18 @@ class CLIDriver:
                 stderr=get_stderr_text_writer(),
                 parsed_globals=parsed_args,
             )
+
+    def _get_command(self, command_table, parsed_args):
+        if help_requested(parsed_args) and parsed_args.command in (
+            None,
+            'help',
+        ):
+            # Create the top-level help now instead of using the one in
+            # the command table. That one was created before
+            # _handle_top_level_args applied --profile, so it would
+            # ignore the profile's cli_help_output setting.
+            return self.create_help_command()
+        return command_table[parsed_args.command]
 
     def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been
@@ -669,6 +682,8 @@ class ServiceCommand(CLICommand):
     object that represents the ec2 service.
 
     """
+
+    _HANDLES_HELP_FLAG = True
 
     def __init__(self, cli_name, session, service_name=None):
         # The cli_name is the name the user types, the name we show
@@ -738,10 +753,17 @@ class ServiceCommand(CLICommand):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
-        service_parser = self.create_parser()
+        service_parser = self.create_parser(
+            help_mode=help_requested(parsed_globals)
+        )
         parsed_args, remaining = service_parser.parse_known_args(args)
         command_table = self._get_command_table()
-        return command_table[parsed_args.operation](remaining, parsed_globals)
+        # The operation is only missing for "aws <service> --help",
+        # which shows the same page as "aws <service> help".
+        operation = parsed_args.operation or 'help'
+        return call_command(
+            command_table[operation], remaining, parsed_globals
+        )
 
     def _create_command_table(self):
         command_table = OrderedDict()
@@ -781,12 +803,14 @@ class ServiceCommand(CLICommand):
             name=self._name,
         )
 
-    def create_parser(self):
+    def create_parser(self, help_mode=False):
         command_table = self._get_command_table()
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
         return ServiceArgParser(
-            operations_table=command_table, service_name=self._name
+            operations_table=command_table,
+            service_name=self._name,
+            help_mode=help_mode,
         )
 
 
@@ -803,6 +827,7 @@ class ServiceOperation:
         'boolean': BooleanArgument,
     }
     DEFAULT_ARG_CLASS = CLIArgument
+    _HANDLES_HELP_FLAG = True
 
     def __init__(
         self, name, parent_name, operation_caller, operation_model, session
@@ -911,7 +936,14 @@ class ServiceOperation:
         )
         if maybe_parsed_subcommand is not None:
             new_args, subcommand_name = maybe_parsed_subcommand
-            return subcommand_table[subcommand_name](new_args, parsed_globals)
+            return call_command(
+                subcommand_table[subcommand_name], new_args, parsed_globals
+            )
+        if help_requested(parsed_globals):
+            # Show help without parsing the operation's arguments, so
+            # missing or invalid values can't prevent it and the
+            # operation is never called.
+            return self.create_help_command()([], parsed_globals)
         operation_parser = self._create_operation_parser(
             self.arg_table, subcommand_table
         )

@@ -159,6 +159,21 @@
       ],
       "documentation":"<p>Gets an authentication token and the URL at which the notebook can be accessed. During programmatic access, <code>CreatePresignedNotebookUrl</code> must be called every 10 minutes to refresh the authentication token. For information about granting programmatic access, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/setting-up.html#setting-up-grant-programmatic-access\">Grant programmatic access</a>.</p>"
     },
+    "CreateSystemTableConfiguration":{
+      "name":"CreateSystemTableConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSystemTableConfigurationInput"},
+      "output":{"shape":"CreateSystemTableConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Enables system tables for the current account. System tables are enabled or disabled for the entire account: creating this configuration enables them. If a configuration already exists, use <a>UpdateSystemTableConfiguration</a> to update it.</p>"
+    },
     "CreateWorkGroup":{
       "name":"CreateWorkGroup",
       "http":{
@@ -246,6 +261,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes the prepared statement with the specified name from the specified workgroup.</p>"
+    },
+    "DeleteSystemTableConfiguration":{
+      "name":"DeleteSystemTableConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSystemTableConfigurationInput"},
+      "output":{"shape":"DeleteSystemTableConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disables system tables for the current account by deleting the account-level configuration. If the configuration doesn't exist, the operation succeeds without making any changes. The system table and previously published data are left intact.</p>",
+      "idempotent":true
     },
     "DeleteWorkGroup":{
       "name":"DeleteWorkGroup",
@@ -526,6 +557,23 @@
       ],
       "documentation":"<p>Gets the current status of a session.</p>"
     },
+    "GetSystemTableConfiguration":{
+      "name":"GetSystemTableConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSystemTableConfigurationInput"},
+      "output":{"shape":"GetSystemTableConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the account-level system tables configuration. Fails with a <code>ResourceNotFoundException</code> if system tables are not enabled for the account.</p>",
+      "readonly":true
+    },
     "GetTableMetadata":{
       "name":"GetTableMetadata",
       "http":{
@@ -758,6 +806,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists the sessions in a workgroup that are in an active state like <code>CREATING</code>, <code>CREATED</code>, <code>IDLE</code>, or <code>BUSY</code>. Newer sessions are listed first; older sessions are listed later.</p>"
+    },
+    "ListSystemTableStatuses":{
+      "name":"ListSystemTableStatuses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSystemTableStatusesInput"},
+      "output":{"shape":"ListSystemTableStatusesOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the system tables that the account-level configuration activates, along with whether each is currently enabled. Because system tables are enabled at the account level, every entry reflects the same account-wide state.</p>",
+      "readonly":true
     },
     "ListTableMetadata":{
       "name":"ListTableMetadata",
@@ -1028,6 +1092,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates a prepared statement.</p>"
+    },
+    "UpdateSystemTableConfiguration":{
+      "name":"UpdateSystemTableConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateSystemTableConfigurationInput"},
+      "output":{"shape":"UpdateSystemTableConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the account-level system tables configuration. If no configuration exists, use <a>CreateSystemTableConfiguration</a> to create one. Fields that you omit retain their current values.</p>",
+      "idempotent":true
     },
     "UpdateWorkGroup":{
       "name":"UpdateWorkGroup",
@@ -1835,6 +1916,50 @@
         }
       }
     },
+    "CreateSystemTableConfigurationInput":{
+      "type":"structure",
+      "required":["TableName"],
+      "members":{
+        "ClientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique case-sensitive string used to ensure the request to create the system table configuration is idempotent (executes only once). If another <code>CreateSystemTableConfiguration</code> request is received with the same client token but different parameters, the request fails with an <code>InvalidRequestException</code>.</p>",
+          "idempotencyToken":true
+        },
+        "TableName":{
+          "shape":"SystemTableName",
+          "documentation":"<p>The system table configuration to create. The only accepted value is <code>ALL</code>, the reserved keyword that enables all system tables for the account.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key to use for encrypting the system table data.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to add to the system table configuration.</p>"
+        }
+      }
+    },
+    "CreateSystemTableConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TableName":{
+          "shape":"SystemTableName",
+          "documentation":"<p>The system table configuration that was created. Always <code>ALL</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used for encrypting the system table data.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the system table configuration was created.</p>"
+        },
+        "LastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the system table configuration was last modified.</p>"
+        }
+      }
+    },
     "CreateWorkGroupInput":{
       "type":"structure",
       "required":["Name"],
@@ -2089,6 +2214,20 @@
       }
     },
     "DeletePreparedStatementOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteSystemTableConfigurationInput":{
+      "type":"structure",
+      "required":["TableName"],
+      "members":{
+        "TableName":{
+          "shape":"SystemTableName",
+          "documentation":"<p>The system table configuration to delete. The only accepted value is <code>ALL</code>.</p>"
+        }
+      }
+    },
+    "DeleteSystemTableConfigurationOutput":{
       "type":"structure",
       "members":{}
     },
@@ -2764,6 +2903,37 @@
         }
       }
     },
+    "GetSystemTableConfigurationInput":{
+      "type":"structure",
+      "required":["TableName"],
+      "members":{
+        "TableName":{
+          "shape":"SystemTableName",
+          "documentation":"<p>The system table configuration to retrieve. The only accepted value is <code>ALL</code>.</p>"
+        }
+      }
+    },
+    "GetSystemTableConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TableName":{
+          "shape":"SystemTableName",
+          "documentation":"<p>The system table configuration. Always <code>ALL</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used for encrypting the system table data.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the system table configuration was created.</p>"
+        },
+        "LastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the system table configuration was last modified.</p>"
+        }
+      }
+    },
     "GetTableMetadataInput":{
       "type":"structure",
       "required":[
@@ -2921,7 +3091,13 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"^arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:key/?[a-zA-Z_0-9+=,.@\\-_/]+$|^arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:alias/?[a-zA-Z_0-9+=,.@\\-_/]+$|^alias/[a-zA-Z0-9/_-]+$|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+      "pattern":"^(arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:key/?[a-zA-Z_0-9+=,.@\\-_/]+|arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:alias/?[a-zA-Z_0-9+=,.@\\-_/]+|alias/[a-zA-Z0-9/_-]+|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$"
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z\\-]*:kms:[a-z0-9\\-]+:\\d{12}:(key/(mrk-)?[0-9a-f\\-]+|alias/[a-zA-Z0-9/_\\-]+)$"
     },
     "ListApplicationDPUSizesInput":{
       "type":"structure",
@@ -3335,6 +3511,33 @@
         }
       }
     },
+    "ListSystemTableStatusesInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxSystemTableStatusesCount",
+          "documentation":"<p>Specifies the maximum number of results to return.</p>"
+        }
+      }
+    },
+    "ListSystemTableStatusesOutput":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"SystemTableStatusList",
+          "documentation":"<p>The list of system tables and their enablement status for the current account.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.</p>"
+        }
+      }
+    },
     "ListTableMetadataInput":{
       "type":"structure",
       "required":[
@@ -3602,6 +3805,12 @@
       "type":"integer",
       "box":true,
       "max":100,
+      "min":1
+    },
+    "MaxSystemTableStatusesCount":{
+      "type":"integer",
+      "box":true,
+      "max":50,
       "min":1
     },
     "MaxTableMetadataCount":{
@@ -4605,7 +4814,7 @@
         },
         "EngineConfiguration":{
           "shape":"EngineConfiguration",
-          "documentation":"<p>The engine configuration for the workgroup, which includes the minimum/maximum number of Data Processing Units (DPU) that queries should use when running in provisioned capacity. If not specified, Athena uses default values (Default value for min is 4 and for max is Minimum of 124 and allocated DPUs).</p> <p>To specify minimum and maximum DPU values for Capacity Reservations queries, the workgroup containing <code>EngineConfiguration</code> should have the following values: The name of the <code>Classifications</code> should be <code>athena-query-engine-properties</code>, with the only allowed properties as <code>max-dpu-count</code> and <code>min-dpu-count</code>.</p>"
+          "documentation":"<p>The engine configuration for the workgroup, which includes the minimum/maximum number of Data Processing Units (DPU) that queries should use when running in provisioned capacity. If not specified, Athena uses default values (Default value for min is 4 and for max is Minimum of 124 and allocated DPUs).</p> <p>To specify minimum and maximum DPU values for Capacity Reservations queries, the workgroup containing <code>EngineConfiguration</code> should have the following values: The name of the <code>Classifications</code> should be <code>athena-query-engine-properties</code>, with the only allowed properties as <code>max-dpu-count</code> and <code>min-dpu-count</code>.</p> <p> <b>Note:</b> When using StartQueryExecution, only the Classifications field applies. Do not specify the other fields (AdditionalConfigs, CoordinatorDpuSize, DefaultExecutorDpuSize, MaxConcurrentDpus, and SparkProperties), as these are used only with StartSession to configure Apache Spark-based sessions.</p>"
         }
       }
     },
@@ -4736,6 +4945,38 @@
     "SupportedDPUSizeList":{
       "type":"list",
       "member":{"shape":"Integer"}
+    },
+    "SystemTableName":{
+      "type":"string",
+      "enum":["ALL"]
+    },
+    "SystemTableStatus":{
+      "type":"structure",
+      "required":[
+        "TableName",
+        "Enabled"
+      ],
+      "members":{
+        "TableName":{
+          "shape":"SystemTableType",
+          "documentation":"<p>The name of the system table, such as <code>QUERY_EXECUTIONS</code>.</p>"
+        },
+        "Enabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether the system table is enabled for the account.</p>"
+        }
+      },
+      "documentation":"<p>The enablement status of a single system table. Because system tables are enabled at the account level, every status reflects the same account-wide state.</p>"
+    },
+    "SystemTableStatusList":{
+      "type":"list",
+      "member":{"shape":"SystemTableStatus"},
+      "max":50,
+      "min":0
+    },
+    "SystemTableType":{
+      "type":"string",
+      "enum":["QUERY_EXECUTIONS"]
     },
     "TableMetadata":{
       "type":"structure",
@@ -5139,6 +5380,41 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateSystemTableConfigurationInput":{
+      "type":"structure",
+      "required":["TableName"],
+      "members":{
+        "TableName":{
+          "shape":"SystemTableName",
+          "documentation":"<p>The system table configuration to update. The only accepted value is <code>ALL</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key to use for encrypting the system table data. The encryption key is immutable while the system table exists, so a change takes effect only after the table has been deleted.</p>"
+        }
+      }
+    },
+    "UpdateSystemTableConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TableName":{
+          "shape":"SystemTableName",
+          "documentation":"<p>The system table configuration. Always <code>ALL</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used for encrypting the system table data.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the system table configuration was created.</p>"
+        },
+        "LastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the system table configuration was last modified.</p>"
+        }
+      }
+    },
     "UpdateWorkGroupInput":{
       "type":"structure",
       "required":["WorkGroup"],
@@ -5255,6 +5531,10 @@
         "QueryResultsS3AccessGrantsConfiguration":{
           "shape":"QueryResultsS3AccessGrantsConfiguration",
           "documentation":"<p>Specifies whether Amazon S3 access grants are enabled for query results.</p>"
+        },
+        "SystemTableStatuses":{
+          "shape":"SystemTableStatusList",
+          "documentation":"<p>The read-only enablement status of each system table for the account. This field is returned by <a>GetWorkGroup</a> and is ignored on write.</p>"
         }
       },
       "documentation":"<p>The configuration of the workgroup, which includes the location in Amazon S3 where query and calculation results are stored, the encryption option, if any, used for query and calculation results, whether the Amazon CloudWatch Metrics are enabled for the workgroup and whether workgroup settings override query settings, and the data usage limits for the amount of data scanned per query or per workgroup. The workgroup settings override is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>. </p>"

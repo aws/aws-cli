@@ -300,7 +300,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceError"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists the tags for the specified resource.</p>"
     },
@@ -316,7 +317,9 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceError"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Adds the specified tags to the specified resource.</p>"
     },
@@ -332,7 +335,9 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceError"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Removes the specified tags from the specified resource.</p>"
     },
@@ -506,6 +511,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The time when the application was last modified.</p>"
         },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where the application was last modified.</p>"
+        },
         "IsService":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the application is a service.</p>",
@@ -596,7 +605,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>The request conflicts with the current state of the resource. Verify the application's current state and retry the request.</p>",
+      "documentation":"<p>The request conflicts with the current state of the resource. Verify the resource's current state and retry the request.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -1015,7 +1024,7 @@
       "type":"string",
       "max":1000,
       "min":1,
-      "pattern":"^(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+$)|(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+[\\w/!@#+=.-]+[\\w/!@#+=.,-]+$)"
+      "pattern":"^((\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+)|(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+[\\w/!@#+=.-]+[\\w/!@#+=.,-]+))$"
     },
     "DuplicateResourceException":{
       "type":"structure",
@@ -1272,6 +1281,10 @@
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The last modified time of the Application.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where the application was last modified.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -1812,6 +1825,12 @@
       "max":50,
       "min":0
     },
+    "RegionName":{
+      "type":"string",
+      "max":25,
+      "min":1,
+      "pattern":"[a-z]{2,4}(-[a-z0-9]+){1,3}"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -1859,7 +1878,7 @@
       "type":"string",
       "max":1000,
       "min":1,
-      "pattern":"^(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+$)|(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+[\\w/!@#+=.-]+[\\w/!@#+=.,-]+$)"
+      "pattern":"^((\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+)|(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+[\\w/!@#+=.-]+[\\w/!@#+=.,-]+))$"
     },
     "Subscription":{
       "type":"structure",
@@ -1885,8 +1904,7 @@
     "TagKey":{
       "type":"string",
       "max":128,
-      "min":1,
-      "pattern":"^(?!aws:)[a-zA-Z+-=._:/]+$"
+      "min":1
     },
     "TagKeyList":{
       "type":"list",

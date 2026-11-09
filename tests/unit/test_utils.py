@@ -399,7 +399,7 @@ class BaseIMDSRegionTest(unittest.TestCase):
         self._send = self._urllib3_patch.start()
         self._imds_responses = []
         self._send.side_effect = self.get_imds_response
-        self._region = 'us-mars-1a'
+        self._region = 'us-mars-1'
         self.environ = {}
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
@@ -472,6 +472,26 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
 
         headers = self._send.call_args[0][0].headers
         self.assertEqual(headers['User-Agent'], user_agent)
+
+    def test_requests_region_from_placement_region(self):
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
+
+        InstanceMetadataRegionFetcher().retrieve_region()
+
+        url = self._send.call_args[0][0].url
+        self.assertTrue(url.endswith('latest/meta-data/placement/region'))
+
+    def test_local_zone_returns_parent_region(self):
+        # In a Local Zone the availability zone is e.g. us-east-1-atl-2a,
+        # so the region has to come from placement/region rather than
+        # being derived from the availability zone.
+        self.add_imds_token_response()
+        self.add_get_region_imds_response(region='us-east-1')
+
+        result = InstanceMetadataRegionFetcher().retrieve_region()
+
+        self.assertEqual(result, 'us-east-1')
 
     def test_non_200_response_for_region_is_retried(self):
         # Response for role name that have a non 200 status code should

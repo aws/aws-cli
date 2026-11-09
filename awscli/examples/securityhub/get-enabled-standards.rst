@@ -3,7 +3,7 @@
 The following ``get-enabled-standards`` example retrieves information about the PCI DSS standard. ::
 
     aws securityhub get-enabled-standards \
-        --standards-subscription-arn "arn:aws:securityhub:us-west-2:123456789012:subscription/pci-dss/v/3.2.1"
+        --standards-subscription-arns "arn:aws:securityhub:us-west-2:123456789012:subscription/pci-dss/v/3.2.1"
 
 Output::
 

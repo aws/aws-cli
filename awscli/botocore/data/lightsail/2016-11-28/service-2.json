@@ -3171,7 +3171,7 @@
           "documentation":"<p>The ID of the access key.</p>"
         },
         "secretAccessKey":{
-          "shape":"NonEmptyString",
+          "shape":"SensitiveNonEmptyString",
           "documentation":"<p>The secret access key used to sign requests.</p> <p>You should store the secret access key in a safe location. We recommend that you delete the access key if the secret access key is compromised.</p>"
         },
         "status":{
@@ -4868,7 +4868,7 @@
           "documentation":"<p>The container service registry username to use to push container images to the container image registry of a Lightsail account.</p>"
         },
         "password":{
-          "shape":"string",
+          "shape":"SensitiveString",
           "documentation":"<p>The container service registry password to use to push container images to the container image registry of a Lightsail account</p>"
         },
         "expiresAt":{
@@ -5726,7 +5726,7 @@
           "documentation":"<p>A base64-encoded public key of the <code>ssh-rsa</code> type.</p>"
         },
         "privateKeyBase64":{
-          "shape":"Base64",
+          "shape":"SensitiveBase64",
           "documentation":"<p>A base64-encoded RSA private key.</p>"
         },
         "operation":{
@@ -7005,7 +7005,7 @@
           "documentation":"<p>A base64-encoded public key of the <code>ssh-rsa</code> type.</p>"
         },
         "privateKeyBase64":{
-          "shape":"Base64",
+          "shape":"SensitiveBase64",
           "documentation":"<p>A base64-encoded RSA private key.</p>"
         },
         "createdAt":{
@@ -9211,7 +9211,7 @@
           "documentation":"<p>The IPv6 address of the Amazon Lightsail instance.</p>"
         },
         "password":{
-          "shape":"string",
+          "shape":"SensitiveString",
           "documentation":"<p>For RDP access, the password for your Amazon Lightsail instance. Password will be an empty string if the password for your new instance is not ready yet. When you create an instance, it can take up to 15 minutes for the instance to be ready.</p> <note> <p>If you create an instance using any key pair other than the default (<code>LightsailDefaultKeyPair</code>), <code>password</code> will always be an empty string.</p> <p>If you change the Administrator password on the instance, Lightsail will continue to return the original password value. When accessing the instance using RDP, you need to manually enter the Administrator password after changing it from the default.</p> </note>"
         },
         "passwordData":{
@@ -9219,7 +9219,7 @@
           "documentation":"<p>For a Windows Server-based instance, an object with the data you can use to retrieve your password. This is only needed if <code>password</code> is empty and the instance is not new (and therefore the password is not ready yet). When you create an instance, it can take up to 15 minutes for the instance to be ready.</p>"
         },
         "privateKey":{
-          "shape":"string",
+          "shape":"SensitiveString",
           "documentation":"<p>For SSH access, the temporary private key. For OpenSSH clients (command line SSH), you should save this value to <code>tempkey</code>).</p>"
         },
         "protocol":{
@@ -10839,7 +10839,7 @@
       "type":"structure",
       "members":{
         "ciphertext":{
-          "shape":"string",
+          "shape":"SensitiveString",
           "documentation":"<p>The encrypted password. Ciphertext will be an empty string if access to your new instance is not ready yet. When you create an instance, it can take up to 15 minutes for the instance to be ready.</p> <note> <p>If you use the default key pair (<code>LightsailDefaultKeyPair</code>), the decrypted password will be available in the password field.</p> <p>If you are using a custom key pair, you need to use your own means of decryption.</p> <p>If you change the Administrator password on the instance, Lightsail will continue to return the original ciphertext value. When accessing the instance using RDP, you need to manually enter the Administrator password after changing it from the default.</p> </note>"
         },
         "keyPairName":{
@@ -10888,7 +10888,7 @@
       "type":"structure",
       "members":{
         "masterUserPassword":{
-          "shape":"string",
+          "shape":"SensitiveString",
           "documentation":"<p>The password for the master user of the database.</p>"
         },
         "engineVersion":{
@@ -11916,6 +11916,10 @@
           "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
         }
       }
+    },
+    "SensitiveBase64":{
+      "type":"string",
+      "sensitive":true
     },
     "SensitiveNonEmptyString":{
       "type":"string",

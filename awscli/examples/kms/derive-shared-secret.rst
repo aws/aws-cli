@@ -2,12 +2,12 @@
 
 The following ``derive-shared-secret`` example derives a shared secret using a key agreement algorithm.
 
-You must use an asymmetric NIST-recommended elliptic curve (ECC) or SM2 (China Regions only) KMS key pair with a ``KeyUsage`` value of ``KEY_AGREEMENT`` to call DeriveSharedSecret. ::
+You must use an asymmetric NIST-recommended elliptic curve (ECC) or SM2 (China Regions only) KMS key pair with a ``KeyUsage`` value of ``KEY_AGREEMENT`` to call DeriveSharedSecret. The ``public_key.der`` file contains the public key of the other party in DER format. ::
 
     aws kms derive-shared-secret \
         --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --key-agreement-algorithm ECDH \
-        --public-key "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvH3Yj0wbkLEpUl95Cv1cJVjsVNSjwGq3tCLnzXfhVwVvmzGN8pYj3U8nKwgouaHbBWNJYjP5VutbbkKS4Kv4GojwZBJyHN17kmxo8yTjRmjR15SKIQ8cqRA2uaERMLnpztIXdZp232PQPbWGxDyXYJ0aJ5EFSag"
+        --public-key fileb://public_key.der
 
 Output::
 

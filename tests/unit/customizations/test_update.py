@@ -777,11 +777,14 @@ class TestWindowsVerifyScript:
             command([], global_args())
         runner.assert_not_called()
 
-    def test_verify_subprocess_clears_psmodulepath(self, monkeypatch):
+    @pytest.mark.parametrize(
+        'name', ['PSModulePath', 'PSMODULEPATH', 'psmodulepath']
+    )
+    def test_verify_subprocess_clears_psmodulepath(self, monkeypatch, name):
         # The verification PowerShell invocation must not inherit PSModulePath;
         # inheriting it can break module resolution across PS5/PS7.
         # https://github.com/aws/aws-cli/issues/10532
-        monkeypatch.setenv('PSModulePath', 'C:\\inherited\\modules')
+        monkeypatch.setenv(name, 'C:\\inherited\\modules')
         captured = {}
 
         def fake_run(cmd, **kwargs):
@@ -793,7 +796,7 @@ class TestWindowsVerifyScript:
 
         command([], global_args())
 
-        assert 'PSModulePath' not in captured['env']
+        assert not [k for k in captured['env'] if k.upper() == 'PSMODULEPATH']
 
     def test_verification_matches_org_exactly(self, monkeypatch):
         # The signer check must gate on an exact match of the certificate's

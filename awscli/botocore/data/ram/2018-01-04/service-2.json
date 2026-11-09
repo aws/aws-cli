@@ -120,7 +120,8 @@
         {"shape":"MalformedArnException"},
         {"shape":"InvalidClientTokenException"},
         {"shape":"IdempotentParameterMismatchException"},
-        {"shape":"PermissionVersionsLimitExceededException"}
+        {"shape":"PermissionVersionsLimitExceededException"},
+        {"shape":"OperationNotPermittedException"}
       ],
       "documentation":"<p>Creates a new version of the specified customer managed permission. The new version is automatically set as the default version of the customer managed permission. New resource shares automatically use the default permission. Existing resource shares continue to use their original permission versions, but you can use <a>ReplacePermissionAssociations</a> to update them.</p> <p>If the specified customer managed permission already has the maximum of 5 versions, then you must delete one of the existing versions before you can create a new one.</p>"
     },
@@ -284,7 +285,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Retrieves the contents of a managed permission in JSON format.</p>"
+      "documentation":"<p>Retrieves the contents of a managed permission in JSON format.</p> <p>If the permission has template parameters, you can include the <code>permissionTemplateParameters</code> parameter in your request. The operation then renders the returned policy with the specified values in place of the template parameter placeholders. If you omit <code>permissionTemplateParameters</code>, the operation returns the raw policy template with <code>@{parameterName}</code> placeholders unchanged.</p>"
     },
     "GetResourcePolicies":{
       "name":"GetResourcePolicies",
@@ -681,6 +682,27 @@
       ],
       "documentation":"<p>Removes the specified tag key and value pairs from the specified resource share or managed permission.</p>"
     },
+    "UpdatePermission":{
+      "name":"UpdatePermission",
+      "http":{
+        "method":"POST",
+        "requestUri":"/updatepermission"
+      },
+      "input":{"shape":"UpdatePermissionRequest"},
+      "output":{"shape":"UpdatePermissionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"MalformedArnException"},
+        {"shape":"ServerInternalException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnknownResourceException"},
+        {"shape":"InvalidClientTokenException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"PermissionLimitExceededException"}
+      ],
+      "documentation":"<p>Updates the status of the specified customer managed permission.</p> <p>Setting the status to <code>DEPRECATED</code> prevents new resource share associations. Setting it to <code>ATTACHABLE</code> restores a previously deprecated permission. Existing resource shares that use the permission continue to function.</p>"
+    },
     "UpdateResourceShare":{
       "name":"UpdateResourceShare",
       "http":{
@@ -745,6 +767,10 @@
         "permissionArn":{
           "shape":"String",
           "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of the RAM permission to associate with the resource share. To find the ARN for a permission, use either the <a>ListPermissions</a> operation or go to the <a href=\"https://console.aws.amazon.com/ram/home#Permissions:\">Permissions library</a> page in the RAM console and then choose the name of the permission. The ARN is displayed on the detail page.</p>"
+        },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterInputList",
+          "documentation":"<p>Specifies the template parameter values for the permission being associated. You must provide values for all parameters declared in the permission template. This parameter is required only if the specified permission has template parameters.</p>"
         },
         "replace":{
           "shape":"Boolean",
@@ -833,7 +859,7 @@
         },
         "status":{
           "shape":"String",
-          "documentation":"<p>The current status of the association between the permission and the resource share. The following are the possible values:</p> <ul> <li> <p> <code>ATTACHABLE</code> – This permission or version can be associated with resource shares.</p> </li> <li> <p> <code>UNATTACHABLE</code> – This permission or version can't currently be associated with resource shares.</p> </li> <li> <p> <code>DELETING</code> – This permission or version is in the process of being deleted.</p> </li> <li> <p> <code>DELETED</code> – This permission or version is deleted.</p> </li> </ul>"
+          "documentation":"<p>The current status of the association between the permission and the resource share. The following are the possible values:</p> <ul> <li> <p> <code>ATTACHABLE</code> – This permission or version can be associated with resource shares.</p> </li> <li> <p> <code>UNATTACHABLE</code> – This permission or version can't currently be associated with resource shares.</p> </li> <li> <p> <code>DELETING</code> – This permission or version is in the process of being deleted.</p> </li> <li> <p> <code>DELETED</code> – This permission or version is deleted.</p> </li> <li> <p> <code>DEPRECATED</code> – The permission owner deprecated this permission. It can't be associated with new resource shares, but existing associations continue to function.</p> </li> </ul>"
         },
         "featureSet":{
           "shape":"PermissionFeatureSet",
@@ -846,6 +872,10 @@
         "resourceShareArn":{
           "shape":"String",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a resource share associated with this permission.</p>"
+        },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterList",
+          "documentation":"<p>The template parameter values provided when the permission was associated with this resource share. If the permission has no declared template parameters, this member doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>An object that describes a managed permission associated with a resource share.</p>"
@@ -913,6 +943,10 @@
           "shape":"Policy",
           "documentation":"<p>A string in JSON format string that contains the following elements of a resource-based policy:</p> <ul> <li> <p> <b>Effect</b>: must be set to <code>ALLOW</code>.</p> </li> <li> <p> <b>Action</b>: specifies the actions that are allowed by this customer managed permission. The list must contain only actions that are supported by the specified resource type. For a list of all actions supported by each resource type, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html\">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>Identity and Access Management User Guide</i>.</p> </li> <li> <p> <b>Condition</b>: (optional) specifies conditional parameters that must evaluate to true when a user attempts an action for that action to be allowed. For more information about the Condition element, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition.html\">IAM policies: Condition element</a> in the <i>Identity and Access Management User Guide</i>.</p> </li> </ul> <p>This template can't include either the <code>Resource</code> or <code>Principal</code> elements. Those are both filled in by RAM when it instantiates the resource-based policy on each resource shared using this managed permission. The <code>Resource</code> comes from the ARN of the specific resource that you are sharing. The <code>Principal</code> comes from the list of identities added to the resource share.</p>"
         },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterDeclarationList",
+          "documentation":"<p>Specifies a list of template parameter declarations for this permission. Each declaration defines a named placeholder that can be used in the policy template using the syntax <code>@{parameterName}</code>. Template parameters can only appear in Condition Key and Condition Value fields of the policy. When you associate this permission with a resource share, you must provide values for all declared parameters.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>"
@@ -951,6 +985,10 @@
           "shape":"Policy",
           "documentation":"<p>A string in JSON format string that contains the following elements of a resource-based policy:</p> <ul> <li> <p> <b>Effect</b>: must be set to <code>ALLOW</code>.</p> </li> <li> <p> <b>Action</b>: specifies the actions that are allowed by this customer managed permission. The list must contain only actions that are supported by the specified resource type. For a list of all actions supported by each resource type, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html\">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>Identity and Access Management User Guide</i>.</p> </li> <li> <p> <b>Condition</b>: (optional) specifies conditional parameters that must evaluate to true when a user attempts an action for that action to be allowed. For more information about the Condition element, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition.html\">IAM policies: Condition element</a> in the <i>Identity and Access Management User Guide</i>.</p> </li> </ul> <p>This template can't include either the <code>Resource</code> or <code>Principal</code> elements. Those are both filled in by RAM when it instantiates the resource-based policy on each resource shared using this managed permission. The <code>Resource</code> comes from the ARN of the specific resource that you are sharing. The <code>Principal</code> comes from the list of identities added to the resource share.</p>"
         },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterDeclarationList",
+          "documentation":"<p>Specifies a list of template parameter declarations for this version of the permission. Each declaration defines a named placeholder that can be used in the policy template. Because each version is independent, you can define the same or a different set of template parameters for each version.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>"
@@ -960,7 +998,10 @@
     "CreatePermissionVersionResponse":{
       "type":"structure",
       "members":{
-        "permission":{"shape":"ResourceSharePermissionDetail"},
+        "permission":{
+          "shape":"ResourceSharePermissionDetail",
+          "documentation":"<p>The details of the new permission version, including its <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a>, version number, status, and policy document.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
@@ -1002,6 +1043,10 @@
         "sources":{
           "shape":"SourceArnOrAccountList",
           "documentation":"<p>Specifies source constraints (accounts, ARNs, organization IDs, or organization paths) that limit when service principals can access resources in this resource share. When a service principal attempts to access a shared resource, validation is performed to ensure the request originates from one of the specified sources. This helps prevent confused deputy attacks by applying constraints on where service principals can access resources from.</p>"
+        },
+        "permissionTemplateParameters":{
+          "shape":"PermissionArnAndTemplateParametersList",
+          "documentation":"<p>Specifies the template parameter values for each permission being associated that has template parameters. Each entry maps a permission ARN to the parameter values to use when rendering the permission template for this resource share. You must provide values for all parameters declared in each permission template.</p>"
         },
         "resourceShareConfiguration":{
           "shape":"ResourceShareConfiguration",
@@ -1230,6 +1275,10 @@
         "permissionVersion":{
           "shape":"Integer",
           "documentation":"<p>Specifies the version number of the RAM permission to retrieve. If you don't specify this parameter, the operation retrieves the default version.</p> <p>To see the list of available versions, use <a>ListPermissionVersions</a>.</p>"
+        },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterInputList",
+          "documentation":"<p>Specifies the template parameter values to use when rendering the permission's policy template. Each entry supplies a parameter name and its values. When you provide this parameter, the response contains the rendered policy with the specified values in place of the template parameter placeholders.</p> <p>For <code>STRING</code> type parameters, provide a single value. For <code>STRING_LIST</code> type parameters, provide one or more values.</p> <p>You can specify this parameter only for permissions that declare template parameters. You must provide values for all parameters declared in the permission template.</p>"
         }
       }
     },
@@ -1556,6 +1605,14 @@
           "shape":"Boolean",
           "documentation":"<p>When <code>true</code>, specifies that you want to list only those associations with resource shares that use the default version of the specified managed permission.</p> <p>When <code>false</code> (the default value), lists associations with resource shares that use any version of the specified managed permission.</p>"
         },
+        "resourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>Specifies that you want to list only those associations with resource shares owned by a specific entity:</p> <ul> <li> <p> <code>SELF</code> – returns only associations with resource shares owned by the calling account.</p> </li> <li> <p> <code>OTHER-ACCOUNTS</code> – returns only associations with resource shares owned by other Amazon Web Services accounts.</p> </li> </ul> <p>If you don't specify this parameter, the default is <code>SELF</code>.</p>"
+        },
+        "resourceShareArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of the resource share for which you want to retrieve permission associations.</p>"
+        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
@@ -1617,6 +1674,10 @@
           "shape":"String",
           "documentation":"<p>Specifies that you want to list only those permissions that apply to the specified resource type. This parameter is not case sensitive.</p> <p>For example, to list only permissions that apply to Amazon EC2 subnets, specify <code>ec2:subnet</code>. You can use the <a>ListResourceTypes</a> operation to get the specific string required.</p>"
         },
+        "resourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>Specifies that you want to list only permissions owned by a specific entity:</p> <ul> <li> <p> <code>SELF</code> – returns only permissions owned by the calling account.</p> </li> <li> <p> <code>OTHER-ACCOUNTS</code> – returns only permissions shared with the calling account by other accounts.</p> </li> </ul>"
+        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
@@ -1628,6 +1689,10 @@
         "permissionType":{
           "shape":"PermissionTypeFilter",
           "documentation":"<p>Specifies that you want to list only permissions of this type:</p> <ul> <li> <p> <code>AWS</code> – returns only Amazon Web Services managed permissions.</p> </li> <li> <p> <code>LOCAL</code> – returns only customer managed permissions</p> </li> <li> <p> <code>ALL</code> – returns both Amazon Web Services managed permissions and customer managed permissions.</p> </li> </ul> <p>If you don't specify this parameter, the default is <code>All</code>.</p>"
+        },
+        "permissionStatus":{
+          "shape":"PermissionStatus",
+          "documentation":"<p>Specifies that you want to filter the results to include only permissions with the specified status. For example, use <code>ATTACHABLE</code> to list only permissions that can be associated with resource shares, or <code>DEPRECATED</code> to list only deprecated permissions.</p>"
         }
       }
     },
@@ -1934,6 +1999,24 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "PermissionArnAndTemplateParameters":{
+      "type":"structure",
+      "members":{
+        "permissionArn":{
+          "shape":"String",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of the permission to associate with the resource share.</p>"
+        },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterInputList",
+          "documentation":"<p>The list of template parameter values to assign for this permission. You must provide values for all parameters declared in the permission template.</p>"
+        }
+      },
+      "documentation":"<p>Contains a permission ARN and its associated template parameter values. The <a>CreateResourceShare</a> operation uses this structure when associating permissions that have template parameters.</p>"
+    },
+    "PermissionArnAndTemplateParametersList":{
+      "type":"list",
+      "member":{"shape":"PermissionArnAndTemplateParameters"}
+    },
     "PermissionArnList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -1968,8 +2051,87 @@
         "ATTACHABLE",
         "UNATTACHABLE",
         "DELETING",
-        "DELETED"
+        "DELETED",
+        "DEPRECATED"
       ]
+    },
+    "PermissionTemplateParameter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the template parameter.</p>"
+        },
+        "type":{
+          "shape":"PermissionTemplateParameterType",
+          "documentation":"<p>The type of the template parameter. This can be one of the following values:</p> <ul> <li> <p> <code>STRING</code> – A single string value.</p> </li> <li> <p> <code>STRING_LIST</code> – One or more string values.</p> </li> </ul>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the template parameter.</p>"
+        },
+        "values":{
+          "shape":"PermissionTemplateParameterValueList",
+          "documentation":"<p>The values assigned to this template parameter in the context of a permission association. This field is present only when the parameter has been assigned values (for example, in the response from <a>ListPermissionAssociations</a> or <a>ListResourceSharePermissions</a>).</p>"
+        }
+      },
+      "documentation":"<p>Contains the declaration of a template parameter for a customer managed permission. When returned in the context of a permission association, it also includes the values assigned to that parameter.</p>"
+    },
+    "PermissionTemplateParameterDeclaration":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the template parameter. This name is used as the placeholder in the policy template using the syntax <code>@{parameterName}</code>.</p>"
+        },
+        "type":{
+          "shape":"PermissionTemplateParameterType",
+          "documentation":"<p>The type of the template parameter. This can be one of the following values:</p> <ul> <li> <p> <code>STRING</code> – A single string value that is substituted directly into the template.</p> </li> <li> <p> <code>STRING_LIST</code> – One or more string values that expand to an array in the rendered policy.</p> </li> </ul>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the template parameter that helps consumers understand what value to provide.</p>"
+        }
+      },
+      "documentation":"<p>Describes a template parameter declaration for a customer managed permission. Each declaration defines a named placeholder that can be used in the permission's policy template.</p>"
+    },
+    "PermissionTemplateParameterDeclarationList":{
+      "type":"list",
+      "member":{"shape":"PermissionTemplateParameterDeclaration"},
+      "max":100
+    },
+    "PermissionTemplateParameterInput":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the template parameter to assign a value to. This must match a parameter name declared in the permission template.</p>"
+        },
+        "values":{
+          "shape":"PermissionTemplateParameterValueList",
+          "documentation":"<p>The values to assign to the template parameter. For <code>STRING</code> type parameters, provide a single value. For <code>STRING_LIST</code> type parameters, provide one or more values.</p>"
+        }
+      },
+      "documentation":"<p>Contains the name and values to assign to a template parameter when associating a permission template with a resource share.</p>"
+    },
+    "PermissionTemplateParameterInputList":{
+      "type":"list",
+      "member":{"shape":"PermissionTemplateParameterInput"}
+    },
+    "PermissionTemplateParameterList":{
+      "type":"list",
+      "member":{"shape":"PermissionTemplateParameter"}
+    },
+    "PermissionTemplateParameterType":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "STRING_LIST"
+      ]
+    },
+    "PermissionTemplateParameterValueList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "PermissionType":{
       "type":"string",
@@ -2059,7 +2221,10 @@
     "PromotePermissionCreatedFromPolicyResponse":{
       "type":"structure",
       "members":{
-        "permission":{"shape":"ResourceSharePermissionSummary"},
+        "permission":{
+          "shape":"ResourceSharePermissionSummary",
+          "documentation":"<p>The details of the promoted customer managed permission, including its <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a>, version, and status.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
@@ -2133,6 +2298,10 @@
           "shape":"String",
           "documentation":"<p>Specifies the ARN of the managed permission that you want to associate with resource shares in place of the one specified by <code>fromPerssionArn</code> and <code>fromPermissionVersion</code>.</p> <p>The operation always associates the version that is currently the default for the specified managed permission.</p>"
         },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterInputList",
+          "documentation":"<p>Specifies the template parameter values to apply when replacing the permission. You must provide values for all parameters declared in the target permission template. This parameter is required only if the target permission (<code>toPermissionArn</code>) has template parameters.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>"
@@ -2174,6 +2343,10 @@
         "toPermissionVersion":{
           "shape":"String",
           "documentation":"<p>The version of the managed permission that this background task is associating with the resource shares. This is always the version that is currently the default for this managed permission.</p>"
+        },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterList",
+          "documentation":"<p>The template parameter values to apply when replacing the permission. This field is present only if the target permission is a template with declared parameters.</p>"
         },
         "status":{
           "shape":"ReplacePermissionAssociationsWorkStatus",
@@ -2573,6 +2746,10 @@
           "shape":"String",
           "documentation":"<p>The permission's effect and actions in JSON format. The <code>effect</code> indicates whether the specified actions are allowed or denied. The <code>actions</code> list the operations to which the principal is granted or denied access.</p>"
         },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterDeclarationList",
+          "documentation":"<p>The list of template parameter declarations defined for this permission. Each declaration includes the parameter name, type, and description. This field is present only if the permission is a template with declared parameters.</p>"
+        },
         "creationTime":{
           "shape":"DateTime",
           "documentation":"<p>The date and time when the permission was created.</p>"
@@ -2595,11 +2772,15 @@
         },
         "status":{
           "shape":"PermissionStatus",
-          "documentation":"<p>The current status of the association between the permission and the resource share. The following are the possible values:</p> <ul> <li> <p> <code>ATTACHABLE</code> – This permission or version can be associated with resource shares.</p> </li> <li> <p> <code>UNATTACHABLE</code> – This permission or version can't currently be associated with resource shares.</p> </li> <li> <p> <code>DELETING</code> – This permission or version is in the process of being deleted.</p> </li> <li> <p> <code>DELETED</code> – This permission or version is deleted.</p> </li> </ul>"
+          "documentation":"<p>The current status of the association between the permission and the resource share. The following are the possible values:</p> <ul> <li> <p> <code>ATTACHABLE</code> – This permission or version can be associated with resource shares.</p> </li> <li> <p> <code>UNATTACHABLE</code> – This permission or version can't currently be associated with resource shares.</p> </li> <li> <p> <code>DELETING</code> – This permission or version is in the process of being deleted.</p> </li> <li> <p> <code>DELETED</code> – This permission or version is deleted.</p> </li> <li> <p> <code>DEPRECATED</code> – The permission owner deprecated this permission. It can't be associated with new resource shares, but existing associations continue to function.</p> </li> </ul>"
         },
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tag key and value pairs attached to the resource share.</p>"
+        },
+        "resourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>The owner of the permission. This can be one of the following values:</p> <ul> <li> <p> <code>SELF</code> – The permission is owned by the current account.</p> </li> <li> <p> <code>OTHER-ACCOUNTS</code> – The permission is owned by another account and shared with the current account.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Information about a RAM managed permission.</p>"
@@ -2655,9 +2836,17 @@
           "shape":"PermissionFeatureSet",
           "documentation":"<p>Indicates what features are available for this resource share. This parameter can have one of the following values:</p> <ul> <li> <p> <b>STANDARD</b> – A resource share that supports all functionality. These resource shares are visible to all principals you share the resource share with. You can modify these resource shares in RAM using the console or APIs. This resource share might have been created by RAM, or it might have been <b>CREATED_FROM_POLICY</b> and then promoted.</p> </li> <li> <p> <b>CREATED_FROM_POLICY</b> – The customer manually shared a resource by attaching a resource-based policy. That policy did not match any existing managed permissions, so RAM created this customer managed permission automatically on the customer's behalf based on the attached policy document. This type of resource share is visible only to the Amazon Web Services account that created it. You can't modify it in RAM unless you promote it. For more information, see <a>PromoteResourceShareCreatedFromPolicy</a>.</p> </li> <li> <p> <b>PROMOTING_TO_STANDARD</b> – This resource share was originally <code>CREATED_FROM_POLICY</code>, but the customer ran the <a>PromoteResourceShareCreatedFromPolicy</a> and that operation is still in progress. This value changes to <code>STANDARD</code> when complete.</p> </li> </ul>"
         },
+        "permissionTemplateParameters":{
+          "shape":"PermissionTemplateParameterList",
+          "documentation":"<p>The list of template parameters defined for this permission, including their names, types, descriptions, and values. This field is present only if the permission is a template with declared parameters. When returned in the context of a permission association, the values are also included.</p>"
+        },
         "tags":{
           "shape":"TagList",
           "documentation":"<p>A list of the tag key value pairs currently attached to the permission.</p>"
+        },
+        "resourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>The owner of the permission. This can be one of the following values:</p> <ul> <li> <p> <code>SELF</code> – The permission is owned by the current account.</p> </li> <li> <p> <code>OTHER-ACCOUNTS</code> – The permission is owned by another account and shared with the current account.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Information about an RAM permission.</p>"
@@ -2902,6 +3091,47 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdatePermissionRequest":{
+      "type":"structure",
+      "required":[
+        "permissionArn",
+        "status"
+      ],
+      "members":{
+        "permissionArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of the customer managed permission that you want to update.</p>"
+        },
+        "status":{
+          "shape":"UpdatePermissionStatus",
+          "documentation":"<p>Specifies the new status for the permission. This can be one of the following values:</p> <ul> <li> <p> <code>ATTACHABLE</code> – Restores a previously deprecated permission so it can be associated with resource shares again.</p> </li> <li> <p> <code>DEPRECATED</code> – Deprecates the permission so it can no longer be associated with new resource shares.</p> </li> </ul>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>"
+        }
+      }
+    },
+    "UpdatePermissionResponse":{
+      "type":"structure",
+      "members":{
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
+        },
+        "permissionStatus":{
+          "shape":"UpdatePermissionStatus",
+          "documentation":"<p>The updated status of the permission.</p>"
+        }
+      }
+    },
+    "UpdatePermissionStatus":{
+      "type":"string",
+      "enum":[
+        "ATTACHABLE",
+        "DEPRECATED"
+      ]
     },
     "UpdateResourceShareRequest":{
       "type":"structure",

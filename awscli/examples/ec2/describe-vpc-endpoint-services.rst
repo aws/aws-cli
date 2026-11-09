@@ -87,7 +87,7 @@ Output::
 The following ``describe-vpc-endpoint-services`` example lists the details of the Amazon S3 interface endpoint service. ::
 
     aws ec2 describe-vpc-endpoint-services \
-        --filter 'Name=service-type,Values=Interface' Name=service-name,Values=com.amazonaws.us-west-2.s3
+        --filters 'Name=service-type,Values=Interface' Name=service-name,Values=com.amazonaws.us-west-2.s3
 
 Output::
 

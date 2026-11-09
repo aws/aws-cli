@@ -3,7 +3,7 @@
 The following ``get-distribution-tenant`` example retrieves information about a CloudFront distribution tenant. ::
 
     aws cloudfront get-distribution-tenant \
-        --id dt_2wjDZi3hD1ivOXf6rpZJOSNE1AB
+        --identifier dt_2wjDZi3hD1ivOXf6rpZJOSNE1AB
 
 Output::
 

@@ -14,7 +14,7 @@ import pytest
 from botocore.config import Config
 from botocore.handlers import get_bearer_auth_supported_services
 
-from tests import create_session, mock
+from tests import ALL_SERVICES, create_session, mock
 
 # In the future, a service may have a list of credentials requirements where one
 # signature may fail and others may succeed. e.g. a service may want to use bearer
@@ -46,15 +46,11 @@ KNOWN_MIXED_AUTH_SCHEMES = {'aws.auth#sigv4', 'smithy.api#httpBearerAuth'}
 
 
 def _all_test_cases():
-    session = create_session()
-    loader = session.get_component('data_loader')
-
-    services = loader.list_available_services('service-2')
     auth_services = []
     auth_operations = []
 
-    for service in services:
-        service_model = session.get_service_model(service)
+    for service_model in ALL_SERVICES:
+        service = service_model.service_name
         signing_name = service_model.signing_name
         auth_config = service_model.metadata.get('auth', {})
         if signing_name in KNOWN_MIXED_AUTH_SERVICES:
@@ -62,11 +58,11 @@ def _all_test_cases():
                 # Skip service due to known mixed auth configurations.
                 continue
         if auth_config:
-            auth_services.append([service, auth_config])
+            auth_services.append((service, auth_config))
         for operation in service_model.operation_names:
             operation_model = service_model.operation_model(operation)
             if operation_model.auth:
-                auth_operations.append([service, operation_model])
+                auth_operations.append((service, operation_model))
     return auth_services, auth_operations
 
 
@@ -74,14 +70,9 @@ AUTH_SERVICES, AUTH_OPERATIONS = _all_test_cases()
 
 
 @pytest.mark.validates_models
-@pytest.mark.parametrize(
-    "auth_service, auth_config",
-    AUTH_SERVICES
-)
+@pytest.mark.parametrize("auth_service, auth_config", AUTH_SERVICES)
 def test_all_requirements_match_for_service(
-        auth_service,
-        auth_config,
-        record_property
+    auth_service, auth_config, record_property
 ):
     record_property("aws_service", auth_service)
     # Validates that all service-level signature types have the same requirements
@@ -91,7 +82,9 @@ def test_all_requirements_match_for_service(
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize("auth_service, operation_model", AUTH_OPERATIONS)
-def test_all_requirements_match_for_operation(auth_service, operation_model, record_property):
+def test_all_requirements_match_for_operation(
+    auth_service, operation_model, record_property
+):
     record_property("aws_service", operation_model.service_model.service_name)
     record_property("aws_operation", operation_model.name)
     # Validates that all operation-level signature types have the same requirements

@@ -426,6 +426,22 @@
       ],
       "documentation":"<p> Resend the form of authorization email for this operation. </p>"
     },
+    "RestoreDomain":{
+      "name":"RestoreDomain",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RestoreDomainRequest"},
+      "output":{"shape":"RestoreDomainResponse"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"DuplicateRequest"},
+        {"shape":"OperationLimitExceeded"},
+        {"shape":"UnsupportedTLD"}
+      ],
+      "documentation":"<p>Restores a domain that has expired, or was deleted, before it becomes available for others to register. The cost of restoring your domain is billed to your Amazon Web Services account.</p> <p>Not every TLD registry supports restoring domains, and the period during which a domain can be restored varies by TLD. To find out whether your domain can be restored and the period during which you can restore it, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html\">Domains that you can register with Amazon Route 53</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <important> <p>Restoring a domain typically costs more, and sometimes much more, than registering or renewing a domain. To get the restoration price for a domain before you restore it, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetDomainPrices.html\">GetDomainPrices</a>.</p> </important> <p>Restoration is asynchronous. The response includes an operation ID that you can use with <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to track the progress of the request. When the restoration succeeds, the domain reappears in the response to <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListDomains.html\">ListDomains</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-restore-expired.html\">Restoring an expired or deleted domain</a> in the <i>Amazon Route 53 Developer Guide</i>.</p>"
+    },
     "RetrieveDomainAuthCode":{
       "name":"RetrieveDomainAuthCode",
       "http":{
@@ -2379,6 +2395,31 @@
           "documentation":"<p> Operation ID. </p>"
         }
       }
+    },
+    "RestoreDomainRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain that you want to restore. The domain must have been registered to the Amazon Web Services account that submits the request.</p>"
+        },
+        "Consent":{
+          "shape":"Consent",
+          "documentation":"<p>Specifies the maximum price that you agree to pay to restore the domain name. This element is required if the domain has registry premium pricing, and optional if the domain is priced at the standard rate for its TLD. If you include it and the restoration price is more than <code>MaxPrice</code>, the request fails.</p>"
+        }
+      },
+      "documentation":"<p>A <code>RestoreDomain</code> request includes the name of the domain that you want to restore and, optionally, the maximum price that you agree to pay.</p>"
+    },
+    "RestoreDomainResponse":{
+      "type":"structure",
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>Identifier for tracking the progress of the request. To query the operation status, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a>.</p>"
+        }
+      },
+      "documentation":"<p>The <code>RestoreDomain</code> response includes the following element.</p>"
     },
     "RetrieveDomainAuthCodeRequest":{
       "type":"structure",

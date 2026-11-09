@@ -4,7 +4,7 @@ The following ``restore-db-instance-to-point-in-time`` example restores ``test-i
 
     aws rds restore-db-instance-to-point-in-time \
         --source-db-instance-identifier test-instance \
-        --target-db-instance restored-test-instance \
+        --target-db-instance-identifier restored-test-instance \
         --restore-time 2018-07-30T23:45:00.000Z
 
 Output::

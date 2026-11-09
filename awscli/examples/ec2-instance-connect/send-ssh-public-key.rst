@@ -10,7 +10,7 @@ The following ``send-ssh-public-key`` example sends the specified SSH public key
 
 Contents of ``my-rsa-key.pub``::
 
-    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCEXAMPLEKEY ec2-user@example
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1a2b3c4d5e6f7a8b9c0dEXAMPLEKEY ec2-user@example
 
 This command produces no output.
 

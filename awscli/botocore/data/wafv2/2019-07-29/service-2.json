@@ -1629,6 +1629,103 @@
       "member":{"shape":"Condition"},
       "min":1
     },
+    "ConnectedAccountArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of a connected account used for AI bot monetization settlement. You obtain this ARN from Payment preferences &gt; Connected accounts in the Amazon Web Services Billing and Cost Management console. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-connected-accounts.html\">Managing connected accounts</a>. The ARN is 56 to 140 characters.</p>",
+      "max":140,
+      "min":56,
+      "pattern":"^arn:aws(-[a-z]+)*:payments::[0-9]{12}:connectedaccount/[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}-[A-Za-z0-9]{6}$"
+    },
+    "ConnectedAccountChain":{
+      "type":"string",
+      "documentation":"<p>The blockchain network for a connected account. Production networks only. Test networks are not supported because connected accounts settle production payments only.</p> <p>Valid values:</p> <ul> <li> <p> <code>BASE</code> - Base mainnet.</p> </li> <li> <p> <code>SOLANA</code> - Solana mainnet.</p> </li> </ul>",
+      "enum":[
+        "BASE",
+        "SOLANA"
+      ]
+    },
+    "ConnectedAccountChainConfig":{
+      "type":"structure",
+      "required":[
+        "Chain",
+        "Prices"
+      ],
+      "members":{
+        "Chain":{
+          "shape":"ConnectedAccountChain",
+          "documentation":"<p>The blockchain network for receiving payments through the connected account. Test networks are not supported for connected accounts.</p> <p>Valid values:</p> <ul> <li> <p> <code>BASE</code> - Base mainnet.</p> </li> <li> <p> <code>SOLANA</code> - Solana mainnet.</p> </li> </ul>"
+        },
+        "Prices":{
+          "shape":"ConnectedAccountPrices",
+          "documentation":"<p>The price configuration for this network. Currently supports a single price entry in USDC.</p>"
+        }
+      },
+      "documentation":"<p>A per-network configuration for a connected account, specifying the blockchain network and the price per request. Unlike <code>PaymentNetwork</code>, you do not provide a wallet address; the receiving address is managed for the connected account.</p>"
+    },
+    "ConnectedAccountConfig":{
+      "type":"structure",
+      "required":[
+        "ConnectedAccountArn",
+        "PaymentNetworks"
+      ],
+      "members":{
+        "ConnectedAccountArn":{
+          "shape":"ConnectedAccountArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connected account that payments settle to. You obtain this ARN from Payment preferences &gt; Connected accounts in the Amazon Web Services Billing and Cost Management console. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-connected-accounts.html\">Managing connected accounts</a>. The connected account must be active and enabled for crypto settlement; otherwise the request is rejected. To use a connected account, you must have the <code>payments:GetConnectedAccount</code> permission on this ARN.</p>"
+        },
+        "PaymentNetworks":{
+          "shape":"ConnectedAccountPaymentNetworks",
+          "documentation":"<p>The per-network configurations for the connected account. You can specify 1 to 2 networks. Each entry specifies a blockchain network and the price for each request.</p>"
+        }
+      },
+      "documentation":"<p>A connected account configuration for AI bot monetization. Specifies the connected account that payments settle to and the per-network pricing. Settlement through a connected account is an alternative to the self-managed wallets in <code>CryptoConfig</code>; wallet addresses are managed for the connected account rather than configured by you. If the referenced connected account is not active or not enabled for crypto settlement, the <code>CreateWebACL</code>, <code>UpdateWebACL</code>, <code>CreateRuleGroup</code>, or <code>UpdateRuleGroup</code> request that includes it is rejected. Specifically, a request that references the account is rejected with <code>WAFInvalidOperationException</code> if the account or its crypto settlement capability isn't active, <code>WAFNonexistentItemException</code> if the ARN no longer exists, <code>AccessDeniedException</code> if you don't have <code>payments:GetConnectedAccount</code>, or <code>WAFInvalidParameterException</code> if the ARN is invalid or the partition is unsupported. Connected accounts are available only in the commercial Amazon Web Services partition.</p>"
+    },
+    "ConnectedAccountConfigs":{
+      "type":"list",
+      "member":{"shape":"ConnectedAccountConfig"},
+      "documentation":"<p>The list of connected account configurations for AI bot monetization. Currently must contain exactly one entry.</p>",
+      "max":1,
+      "min":1
+    },
+    "ConnectedAccountPaymentNetworks":{
+      "type":"list",
+      "member":{"shape":"ConnectedAccountChainConfig"},
+      "documentation":"<p>The per-network configurations for a connected account. Contains 1 to 2 entries.</p>",
+      "max":2,
+      "min":1
+    },
+    "ConnectedAccountPrice":{
+      "type":"structure",
+      "required":[
+        "Amount",
+        "Currency"
+      ],
+      "members":{
+        "Amount":{
+          "shape":"ConnectedAccountPriceAmount",
+          "documentation":"<p>The price per request as a decimal string in the specified currency. Valid values range from 0.01 to 999999.99 USDC, with up to two decimal places. Sub-cent amounts are not supported.</p>"
+        },
+        "Currency":{
+          "shape":"CryptoCurrency",
+          "documentation":"<p>The cryptocurrency for payment. Currently only <code>USDC</code> is supported.</p>"
+        }
+      },
+      "documentation":"<p>The price per request for a connected account payment network, specifying the amount and cryptocurrency.</p>"
+    },
+    "ConnectedAccountPriceAmount":{
+      "type":"string",
+      "documentation":"<p>The price per request for a connected account, as a decimal string. Valid values range from 0.01 to 999999.99 USDC, with up to two decimal places. Sub-cent amounts are not supported.</p>",
+      "max":9,
+      "min":1,
+      "pattern":"^([1-9][0-9]{0,5}(\\.[0-9]{1,2})?|0\\.(0[1-9]|[1-9][0-9]?))$"
+    },
+    "ConnectedAccountPrices":{
+      "type":"list",
+      "member":{"shape":"ConnectedAccountPrice"},
+      "documentation":"<p>The list of per-request prices for a connected account payment network. Currently must contain exactly one entry in <code>USDC</code>.</p>",
+      "max":1,
+      "min":1
+    },
     "ConsumedCapacity":{
       "type":"long",
       "min":0
@@ -5089,12 +5186,16 @@
           "shape":"CryptoConfig",
           "documentation":"<p>The cryptocurrency payment configuration, including the blockchain networks and wallet addresses where you receive payments.</p>"
         },
+        "ConnectedAccountConfigs":{
+          "shape":"ConnectedAccountConfigs",
+          "documentation":"<p>The connected account configurations for settling AI bot payments through a connected account with a supported third-party payment provider (Stripe), as an alternative to the self-managed wallets in <code>CryptoConfig</code>. You can provide <code>CryptoConfig</code>, <code>ConnectedAccountConfigs</code>, or both; however, a given blockchain network (chain) can be used by only one of them. Currently supports exactly one connected account.</p>"
+        },
         "CurrencyMode":{
           "shape":"CurrencyMode",
-          "documentation":"<p>Specifies whether the configuration uses real or test currency. Set to <code>REAL</code> to settle payments in USDC on production blockchain networks (Base, Solana). Set to <code>TEST</code> to settle on testnet networks (Base Sepolia, Solana Devnet) with tokens that have no monetary value. If not specified, defaults to <code>REAL</code>.</p>"
+          "documentation":"<p>Specifies whether the configuration uses real or test currency. If not specified, defaults to <code>REAL</code>. Connected account configurations support production settlement only; <code>TEST</code> is not supported when <code>ConnectedAccountConfigs</code> is present.</p> <p>Valid values:</p> <ul> <li> <p> <code>REAL</code> - Settle payments in USDC on production blockchain networks (Base, Solana).</p> </li> <li> <p> <code>TEST</code> - Settle on testnet networks (Base Sepolia, Solana Devnet) with tokens that have no monetary value.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>The monetization configuration for a web ACL or rule group. Specifies the cryptocurrency payment networks and currency mode for AI bot monetization. You must provide this configuration when any rule in the web ACL or rule group uses the <code>Monetize</code> action.</p>"
+      "documentation":"<p>The monetization configuration for a web ACL or rule group. Specifies the payment settlement options (self-managed crypto wallets in <code>CryptoConfig</code>, a connected account in <code>ConnectedAccountConfigs</code>, or both) and the currency mode for artificial intelligence (AI) bot monetization. You must provide this configuration when any rule in the web ACL or rule group uses the <code>Monetize</code> action.</p>"
     },
     "MonetizationFilter":{
       "type":"structure",
@@ -7970,7 +8071,7 @@
         },
         "MonetizationConfig":{
           "shape":"MonetizationConfig",
-          "documentation":"<p>The monetization configuration for the web ACL. Required when any rule in the web ACL uses the <code>Monetize</code> action. Specifies the cryptocurrency payment networks and currency mode for AI bot monetization.</p>"
+          "documentation":"<p>The monetization configuration for the web ACL. Required when any rule in the web ACL uses the <code>Monetize</code> action. Specifies the payment settlement options and currency mode for AI bot monetization.</p>"
         }
       },
       "documentation":"<p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, Amazon Web Services Verified Access instance, and Amazon Bedrock AgentCore Gateway. </p>"

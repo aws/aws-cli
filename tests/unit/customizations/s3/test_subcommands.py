@@ -588,6 +588,35 @@ class CommandParametersTest(unittest.TestCase):
                 cm.msg,
             )
 
+    def test_validate_tags_upload(self):
+        paths = [self.file_creator.rootdir, 's3://bucket/key']
+        parameters = {'tags': [['key1', 'value1']]}
+        cmd_params = CommandParameters('cp', parameters, '')
+        cmd_params.add_paths(paths)
+        self.assertEqual(cmd_params.parameters['paths_type'], 'locals3')
+
+    def test_validate_tags_download_error(self):
+        paths = ['s3://bucket/key', self.file_creator.rootdir]
+        parameters = {'tags': [['key1', 'value1']]}
+        cmd_params = CommandParameters('sync', parameters, '')
+        with self.assertRaises(ParamValidationError) as cm:
+            cmd_params.add_paths(paths)
+        self.assertIn(
+            'Expected tags parameter to be used with one of following path formats',
+            str(cm.exception),
+        )
+
+    def test_validate_tags_s3_to_s3_error(self):
+        paths = ['s3://bucket/key', 's3://bucket2/key']
+        parameters = {'tags': [['key1', 'value1']]}
+        cmd_params = CommandParameters('mv', parameters, '')
+        with self.assertRaises(ParamValidationError) as cm:
+            cmd_params.add_paths(paths)
+        self.assertIn(
+            'Expected tags parameter to be used with one of following path formats',
+            str(cm.exception),
+        )
+
     def test_validate_checksum_mode_move_error(self):
         paths = ['s3://bucket/key', 's3://bucket2/key']
         parameters = {'checksum_mode': 'ENABLED'}

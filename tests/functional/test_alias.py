@@ -10,7 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import os
+import sys
 
 from awscli.alias import AliasLoader, register_alias_commands
 from awscli.customizations.commands import BasicCommand
@@ -259,6 +261,24 @@ class TestAliases(BaseAWSCommandParamsTest):
         self.add_alias('mkdir', '!mkdir')
         self.run_cmd(['mkdir', directory_to_make])
         self.assertTrue(os.path.isdir(directory_to_make))
+
+    @skip_if_windows('cmd.exe strips the quotes around the alias paths')
+    def test_external_alias_receives_help_flag(self):
+        # --help is parsed as a global argument, but external aliases
+        # still receive it, as they did before.
+        output_file = os.path.join(self.files.rootdir, 'args.json')
+        script = self.files.create_file(
+            'record_args.py',
+            'import json, sys\n'
+            'with open(sys.argv[1], "w") as f:\n'
+            '    json.dump(sys.argv[2:], f)\n',
+        )
+        self.add_alias(
+            'record', f'!"{sys.executable}" "{script}" "{output_file}"'
+        )
+        self.run_cmd(['record', 'extra', '--help'])
+        with open(output_file) as f:
+            self.assertEqual(json.load(f), ['extra', '--help'])
 
     @skip_if_windows('Windows does not support BASH functions')
     def test_external_alias_with_wrapper_bash_function(self):

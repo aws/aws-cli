@@ -345,7 +345,7 @@ files to and from S3. Valid choices are:
 
     * The ``max_bandwidth`` configuration value.
     * A ``retry_mode`` configuration value of ``adaptive``.
-    * A ``max_attempts`` configuration value outside of ``2`` through ``64``.
+    * A ``max_attempts`` configuration value of ``1``.
     * Uploads whose source is a non-seekable stream, such as
       ``aws s3 cp - s3://bucket/key``.
 
@@ -391,10 +391,8 @@ files to and from S3. Valid choices are:
   * ``max_queue_size`` and ``max_bandwidth`` configuration values - Ignores
     these configuration values.
 
-  * ``max_attempts`` configuration value - Honors values from ``2`` through
-    ``64`` and ignores values outside of that range. The ``crt`` transfer
-    client cannot disable retries, so it cannot honor a value of ``1``, and it
-    rejects values of ``65`` or greater.
+  * ``max_attempts`` configuration value - Ignores a value of ``1``, because
+    the ``crt`` transfer client cannot disable retries.
 
   When a configured value is not supported by the transfer client being used,
   the AWS CLI emits a warning naming the values it is ignoring.

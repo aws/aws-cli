@@ -87,11 +87,14 @@ def patch_path_completer():
 
 
 class FakePathCompleter(PathCompleter):
+    # Only completes matching paths so that tests can also exercise the
+    # behavior of a prompt that has nothing to complete.
     def get_completions(self, document, complete_event):
         prefix_len = len(document.text)
         yield from [
-            Completion('file1'[prefix_len:], 0, display='file1'),
-            Completion('file2'[prefix_len:], 0, display='file2'),
+            Completion(path[prefix_len:], 0, display=path)
+            for path in ('file1', 'file2')
+            if path.startswith(document.text)
         ]
 
 
@@ -523,7 +526,7 @@ class BaseWizardApplicationTest:
         assert buffer.document.text == expected_text
 
     def assert_current_buffer(self, app, buffer_name):
-        assert app.layout.current_buffer.name, buffer_name
+        assert app.layout.current_buffer.name == buffer_name
 
     def assert_expected_buffer_completions(
         self, app, buffer_name, expected_completions
@@ -1793,6 +1796,21 @@ class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
         with app_runner.run_app_in_thread():
             app_runner.feed_input('rrrr')
             app_runner.feed_input(Keys.Tab)
+            self.assert_current_buffer(app_runner.app, 'second_prompt')
+
+    def test_switch_prompt_on_enter_if_no_completion_is_selected(
+        self,
+        make_stubbed_wizard_runner,
+        file_prompt_definition,
+        patch_path_completer,
+    ):
+        app_runner = make_stubbed_wizard_runner(file_prompt_definition)
+        with app_runner.run_app_in_thread():
+            # Typing shows completions, but none of them are selected until
+            # the user tabs through the completion menu.
+            app_runner.feed_input('fi')
+            app_runner.feed_input(Keys.Enter)
+            self.assert_buffer_text(app_runner.app, 'choose_file', 'fi')
             self.assert_current_buffer(app_runner.app, 'second_prompt')
 
 

@@ -26,7 +26,6 @@ from s3transfer.manager import TransferManager
 
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
-    ADAPTIVE_RETRY_MODE,
     CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT,
     MAX_CRT_CONNECT_TIMEOUT_MS,
     MAX_CRT_MAX_RETRIES,
@@ -910,11 +909,11 @@ class TestAutoResolveCrtClient:
             == constants.CLASSIC_TRANSFER_CLIENT
         )
 
-    def test_resolves_to_classic_for_adaptive_retry_mode(
+    def test_resolves_to_crt_for_adaptive_retry_mode(
         self, resolve_client_type, auto_resolve_session
     ):
         stub_config_variables(auto_resolve_session, retry_mode='adaptive')
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
 
     def test_resolves_to_crt_for_standard_retry_mode(
         self, resolve_client_type, auto_resolve_session
@@ -983,8 +982,6 @@ class TestClassicOnlySettingsWarning:
     def test_does_not_warn_for_adaptive_retry_mode(
         self, resolve_client_type, auto_resolve_session, capsys
     ):
-        # The crt transfer client will eventually support adaptive retries, so
-        # there is nothing for the user to act on.
         stub_config_variables(auto_resolve_session, retry_mode='adaptive')
         resolve_client_type()
         assert capsys.readouterr().err == ''
@@ -1124,12 +1121,11 @@ class TestWarnUnsupportedSettings:
             == ''
         )
 
-    def test_warns_for_adaptive_retry_mode_under_crt(
+    def test_does_not_warn_for_adaptive_retry_mode_under_crt(
         self, warn_unsupported_settings, auto_resolve_session
     ):
         stub_config_variables(auto_resolve_session, retry_mode='adaptive')
-        warning = warn_unsupported_settings(constants.CRT_TRANSFER_CLIENT)
-        assert f'retry_mode = {ADAPTIVE_RETRY_MODE}' in warning
+        assert warn_unsupported_settings(constants.CRT_TRANSFER_CLIENT) == ''
 
     def test_does_not_warn_for_supported_retry_mode(
         self, warn_unsupported_settings, auto_resolve_session
@@ -1371,6 +1367,43 @@ class TestMaxAttempts:
             preferred_transfer_client=constants.CRT_TRANSFER_CLIENT,
         )
         assert warning == ''
+
+    def test_maps_adaptive_retry_mode_to_crt_client(
+        self, crt_client_kwargs, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, retry_mode='adaptive')
+        assert crt_client_kwargs()['retry_options'] == {
+            'retry_mode': awscrt.s3.S3RetryMode.ADAPTIVE
+        }
+
+    def test_maps_adaptive_retry_mode_with_max_attempts(
+        self, crt_client_kwargs, auto_resolve_session
+    ):
+        stub_config_variables(
+            auto_resolve_session, retry_mode='adaptive', max_attempts=5
+        )
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        assert crt_client_kwargs()['retry_options'] == {
+            'retry_mode': awscrt.s3.S3RetryMode.ADAPTIVE,
+            'max_retries': 4,
+        }
+
+    def test_disabled_retries_take_precedence_over_adaptive(
+        self, crt_client_kwargs, auto_resolve_session
+    ):
+        stub_config_variables(
+            auto_resolve_session, retry_mode='adaptive', max_attempts=1
+        )
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        assert crt_client_kwargs()['retry_options'] == {
+            'retry_mode': awscrt.s3.S3RetryMode.NONE
+        }
+
+    def test_does_not_map_standard_retry_mode(
+        self, crt_client_kwargs, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, retry_mode='standard')
+        assert 'retry_options' not in crt_client_kwargs()
 
     def test_maps_configured_max_attempts_to_crt_client(
         self, crt_client_kwargs, auto_resolve_session
@@ -1699,8 +1732,12 @@ class TestMaxAttemptsBounds:
             retry_options={'max_retries': max_retries},
         )
 
-    def test_awscrt_accepts_none_retry_mode(self):
+    @pytest.mark.parametrize(
+        'retry_mode',
+        [awscrt.s3.S3RetryMode.NONE, awscrt.s3.S3RetryMode.ADAPTIVE],
+    )
+    def test_awscrt_accepts_retry_mode(self, retry_mode):
         create_s3_crt_client(
             region='us-west-2',
-            retry_options={'retry_mode': awscrt.s3.S3RetryMode.NONE},
+            retry_options={'retry_mode': retry_mode, 'max_retries': 4},
         )

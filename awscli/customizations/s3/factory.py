@@ -242,8 +242,6 @@ class TransferManagerFactory:
 
     def _get_unsupported_settings(self, params, runtime_config):
         unsupported = self._get_classic_only_settings(runtime_config)
-        if self._is_adaptive_retry_mode():
-            unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
         if self._is_non_seekable_stream_upload(params):
             unsupported.append('uploads from a non-seekable stream')
         return unsupported
@@ -302,9 +300,6 @@ class TransferManagerFactory:
         unsupported = self._get_unsupported_options(
             client_type, runtime_config
         )
-        if client_type == constants.CRT_TRANSFER_CLIENT:
-            if self._is_adaptive_retry_mode():
-                unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
         if not unsupported:
             return
         uni_print(
@@ -429,14 +424,17 @@ class TransferManagerFactory:
             # passed to opt into the CRT's dynamic part size calculation.
             kwargs['part_size'] = None
         max_attempts = self._resolve_max_attempts(runtime_config)
+        retry_options = {}
+        if self._is_adaptive_retry_mode():
+            retry_options['retry_mode'] = awscrt.s3.S3RetryMode.ADAPTIVE
         if max_attempts == 1:
-            kwargs['retry_options'] = {
-                'retry_mode': awscrt.s3.S3RetryMode.NONE
-            }
+            retry_options['retry_mode'] = awscrt.s3.S3RetryMode.NONE
         elif max_attempts is not None:
-            kwargs['retry_options'] = {
-                'max_retries': min(max_attempts - 1, MAX_CRT_MAX_RETRIES)
-            }
+            retry_options['max_retries'] = min(
+                max_attempts - 1, MAX_CRT_MAX_RETRIES
+            )
+        if retry_options:
+            kwargs['retry_options'] = retry_options
         return kwargs
 
     def _resolve_target_throughput(self, runtime_config):

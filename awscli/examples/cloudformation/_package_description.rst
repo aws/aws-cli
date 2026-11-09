@@ -55,6 +55,18 @@ command doesn't upload the artifacts. Use the ``--force-upload flag`` to skip th
 check and always upload the artifacts. The command uses MD5 checksums to compare
 files by default. If MD5 is not available in the environment, a SHA256 checksum is used.
 
+.. note::
+
+   For the ``AWS::CloudFormation::StackSet`` resource, the command also packages
+   local artifacts referenced inside the StackSet's template (for example, the
+   ``Code`` property of an ``AWS::Lambda::Function`` resource) and uploads them
+   to the single S3 bucket specified by ``--s3-bucket``. Some services, such as
+   AWS Lambda, require the artifact's S3 bucket to be in the same Region as the
+   resource. If your StackSet deploys stack instances to Regions other than the
+   bucket's Region, those stack instances can fail to create. For multi-Region
+   StackSets, reference artifacts in your StackSet's template by using S3
+   locations that are accessible from each target Region instead of local paths.
+
 .. warning::
 
    **Security considerations**

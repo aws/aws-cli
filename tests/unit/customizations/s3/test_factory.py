@@ -30,7 +30,6 @@ from awscli.customizations.s3.factory import (
     CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT,
     MAX_CRT_CONNECT_TIMEOUT_MS,
     MAX_CRT_MAX_RETRIES,
-    MIN_CRT_MAX_ATTEMPTS,
     MINIMUM_TARGET_THROUGHPUT_GBPS,
     ClientFactory,
     TransferManagerFactory,
@@ -1353,29 +1352,16 @@ def test_registers_transfer_client_feature_id(
 
 
 class TestMaxAttempts:
-    def test_resolves_to_classic_when_retries_disabled(
-        self, resolve_client_type, auto_resolve_session
+    def test_maps_disabled_retries_to_crt_none_retry_mode(
+        self, crt_client_kwargs, auto_resolve_session
     ):
         stub_config_variables(auto_resolve_session, max_attempts=1)
         stub_configured_variables(auto_resolve_session, 'max_attempts')
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+        assert crt_client_kwargs()['retry_options'] == {
+            'retry_mode': awscrt.s3.S3RetryMode.NONE
+        }
 
-    def test_resolves_to_crt_when_retries_enabled(
-        self, resolve_client_type, auto_resolve_session
-    ):
-        stub_config_variables(auto_resolve_session, max_attempts=2)
-        stub_configured_variables(auto_resolve_session, 'max_attempts')
-        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
-
-    def test_does_not_warn_when_falling_back_for_disabled_retries(
-        self, resolve_client_type, auto_resolve_session, capsys
-    ):
-        stub_config_variables(auto_resolve_session, max_attempts=1)
-        stub_configured_variables(auto_resolve_session, 'max_attempts')
-        resolve_client_type()
-        assert capsys.readouterr().err == ''
-
-    def test_warns_when_crt_explicitly_preferred_with_retries_disabled(
+    def test_does_not_warn_when_crt_explicitly_preferred_with_retries_disabled(
         self, warn_unsupported_settings, auto_resolve_session
     ):
         stub_config_variables(auto_resolve_session, max_attempts=1)
@@ -1384,7 +1370,7 @@ class TestMaxAttempts:
             constants.CRT_TRANSFER_CLIENT,
             preferred_transfer_client=constants.CRT_TRANSFER_CLIENT,
         )
-        assert 'max_attempts = 1' in warning
+        assert warning == ''
 
     def test_maps_configured_max_attempts_to_crt_client(
         self, crt_client_kwargs, auto_resolve_session
@@ -1667,23 +1653,13 @@ class TestChunksizeExceedingCrtMemoryPool:
 
 
 class TestMaxAttemptsBounds:
-    @pytest.mark.parametrize(
-        'max_attempts', [MIN_CRT_MAX_ATTEMPTS, 3, 64, 65, 1000]
-    )
+    @pytest.mark.parametrize('max_attempts', [1, 2, 3, 64, 65, 1000])
     def test_resolves_to_crt_within_bounds(
         self, resolve_client_type, auto_resolve_session, max_attempts
     ):
         stub_config_variables(auto_resolve_session, max_attempts=max_attempts)
         stub_configured_variables(auto_resolve_session, 'max_attempts')
         assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
-
-    @pytest.mark.parametrize('max_attempts', [MIN_CRT_MAX_ATTEMPTS - 1, 0])
-    def test_resolves_to_classic_outside_bounds(
-        self, resolve_client_type, auto_resolve_session, max_attempts
-    ):
-        stub_config_variables(auto_resolve_session, max_attempts=max_attempts)
-        stub_configured_variables(auto_resolve_session, 'max_attempts')
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
 
     @pytest.mark.parametrize('max_attempts', [64, 65, 1000])
     def test_maps_retries_above_former_crt_limit(
@@ -1721,4 +1697,10 @@ class TestMaxAttemptsBounds:
         create_s3_crt_client(
             region='us-west-2',
             retry_options={'max_retries': max_retries},
+        )
+
+    def test_awscrt_accepts_none_retry_mode(self):
+        create_s3_crt_client(
+            region='us-west-2',
+            retry_options={'retry_mode': awscrt.s3.S3RetryMode.NONE},
         )

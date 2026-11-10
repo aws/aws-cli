@@ -75,6 +75,11 @@ AGENT_TOOLKIT_REGION = 'us-east-1'
 def create_client(session, parsed_globals):
     overrides = {}
     if not getattr(parsed_globals, 'region', None):
+        LOG.debug(
+            'No --region given, using %s, the only region Agent Toolkit '
+            'is available in.',
+            AGENT_TOOLKIT_REGION,
+        )
         overrides['region_name'] = AGENT_TOOLKIT_REGION
     return create_client_from_parsed_globals(
         session,

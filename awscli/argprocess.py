@@ -14,6 +14,7 @@
 
 import logging
 import os
+import re
 
 from botocore.compat import OrderedDict, json
 from botocore.utils import is_json_value_header
@@ -278,28 +279,74 @@ def register_param_shorthand_parser(event_emitter):
 
 
 class ParamShorthand:
+    # Arguments that support the deprecated shorthand parsing case for
+    # lists of structures, e.g. ``--instances id-1 id-2``. Each argument
+    # maps to the structure member that a bare value is assigned to. The
+    # member is pinned so that the syntax keeps working if the service
+    # later adds members to the structure.
+    _OLD_LIST_CASES = {
+        'firehose': {'put-record-batch': {'records': 'Data'}},
+        'workspaces': {
+            'reboot-workspaces': {'reboot-workspace-requests': 'WorkspaceId'},
+            'rebuild-workspaces': {
+                'rebuild-workspace-requests': 'WorkspaceId'
+            },
+            'terminate-workspaces': {
+                'terminate-workspace-requests': 'WorkspaceId'
+            },
+        },
+        'elb': {
+            'remove-tags': {'tags': 'Key'},
+            'describe-instance-health': {'instances': 'InstanceId'},
+            'deregister-instances-from-load-balancer': {
+                'instances': 'InstanceId'
+            },
+            'register-instances-with-load-balancer': {
+                'instances': 'InstanceId'
+            },
+        },
+    }
+
     def _uses_old_list_case(self, command_name, operation_name, argument_name):
         """
         Determines whether a given operation for a service needs to use the
-        deprecated shorthand parsing case for lists of structures that only have
-        a single member.
+        deprecated shorthand parsing case for lists of structures.
         """
-        cases = {
-            'firehose': {'put-record-batch': ['records']},
-            'workspaces': {
-                'reboot-workspaces': ['reboot-workspace-requests'],
-                'rebuild-workspaces': ['rebuild-workspace-requests'],
-                'terminate-workspaces': ['terminate-workspace-requests'],
-            },
-            'elb': {
-                'remove-tags': ['tags'],
-                'describe-instance-health': ['instances'],
-                'deregister-instances-from-load-balancer': ['instances'],
-                'register-instances-with-load-balancer': ['instances'],
-            },
-        }
-        cases = cases.get(command_name, {}).get(operation_name, [])
-        return argument_name in cases
+        return argument_name in self._get_old_list_cases(
+            command_name, operation_name
+        )
+
+    def _get_old_list_cases(self, command_name, operation_name):
+        return self._OLD_LIST_CASES.get(command_name, {}).get(
+            operation_name, {}
+        )
+
+    def _get_old_list_case_key(
+        self, cli_argument, command_name, operation_name
+    ):
+        """
+        Returns the member name that bare values are assigned to for the
+        deprecated list shorthand case, or ``None`` if the case does not
+        apply to ``cli_argument``.
+        """
+        model = cli_argument.argument_model
+        if (
+            model.type_name != 'list'
+            or model.member.type_name != 'structure'
+            or not self._uses_old_list_case(
+                command_name, operation_name, cli_argument.name
+            )
+        ):
+            return None
+        members = model.member.members
+        if len(members) == 1:
+            return list(members)[0]
+        member_name = self._get_old_list_cases(
+            command_name, operation_name
+        ).get(cli_argument.name)
+        if member_name not in members:
+            return None
+        return member_name
 
 
 class ParamShorthandParser(ParamShorthand):
@@ -383,16 +430,12 @@ class ParamShorthandParser(ParamShorthand):
         # We need to handle a few special cases that the previous
         # parser handled in order to stay backwards compatible.
         model = cli_argument.argument_model
-        if (
-            model.type_name == 'list'
-            and model.member.type_name == 'structure'
-            and len(model.member.members) == 1
-            and self._uses_old_list_case(
-                command_name, operation_name, cli_argument.name
-            )
-        ):
+        key_name = self._get_old_list_case_key(
+            cli_argument, command_name, operation_name
+        )
+        if key_name is not None:
             # First special case is handling a list of structures
-            # of a single element such as:
+            # where bare values are assigned to a single member, such as:
             #
             # --instance-ids id-1 id-2 id-3
             #
@@ -400,9 +443,7 @@ class ParamShorthandParser(ParamShorthand):
             #
             # [{"InstanceId": "id-1"}, {"InstanceId": "id-2"},
             #  {"InstanceId": "id-3"}]
-            key_name = list(model.member.members.keys())[0]
-            new_values = [{key_name: v} for v in value]
-            return new_values
+            return self._parse_old_list_case(model, value, key_name)
         elif (
             model.type_name == 'structure'
             and len(model.members) == 1
@@ -418,6 +459,26 @@ class ParamShorthandParser(ParamShorthand):
             # gets parsed as:
             # {"Value": "shutdown"}
             return {'Value': value}
+
+    def _parse_old_list_case(self, model, value, key_name):
+        members = model.member.members
+        if len(members) == 1:
+            # The structure only has the one member, so every value is
+            # assigned to it, even if it contains an "=" (e.g. base64).
+            return [{key_name: v} for v in value]
+        # The structure has other members, so each value that starts with
+        # one of the member names followed by "=" uses the regular
+        # shorthand syntax. Any other value, including one that contains
+        # an "=" such as base64, is a bare value for the pinned member.
+        key_value = re.compile(
+            r'\s*(?:%s)\s*=' % '|'.join(re.escape(m) for m in members)
+        )
+        parsed = [
+            self._parser.parse(v) if key_value.match(v) else {key_name: v}
+            for v in value
+        ]
+        self._visitor.visit(parsed, model)
+        return parsed
 
     def _should_parse_as_shorthand(self, cli_argument, value):
         # We first need to make sure this is a parameter that qualifies
@@ -492,15 +553,13 @@ class ParamShorthandDocGen(ParamShorthand):
         self, cli_argument, command_name, operation_name
     ):
         model = cli_argument.argument_model
-        if (
-            model.type_name == 'list'
-            and model.member.type_name == 'structure'
-            and len(model.member.members) == 1
-            and self._uses_old_list_case(
-                command_name, operation_name, cli_argument.name
-            )
-        ):
-            member_name = list(model.member.members)[0]
+        member_name = self._get_old_list_case_key(
+            cli_argument, command_name, operation_name
+        )
+        # Only document the deprecated syntax when the structure has a
+        # single member. Otherwise, fall back to the regular shorthand
+        # docs so that all of the members are documented.
+        if member_name is not None and len(model.member.members) == 1:
             # Handle special case where the min/max is exactly one.
             metadata = model.metadata
             if metadata.get('min') == 1 and metadata.get('max') == 1:

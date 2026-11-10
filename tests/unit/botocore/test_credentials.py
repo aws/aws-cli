@@ -467,6 +467,35 @@ class TestAssumeRoleCredentialFetcher(BaseEnvVar):
 
         self.assertEqual(response, expected)
 
+    def test_corrupted_cache_file_is_treated_as_cache_miss(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        cache = credentials.JSONFileCache(tempdir)
+        cache_key = '793d6e2f27667ab2da104824407e486bfec24a47'
+        # An empty file is not valid JSON, e.g. after the disk filled up.
+        open(os.path.join(tempdir, cache_key + '.json'), 'w').close()
+
+        refresher = credentials.AssumeRoleCredentialFetcher(
+            client_creator, self.source_creds, self.role_arn, cache=cache
+        )
+        expected = self.get_expected_creds_from_response(response)
+        response = refresher.fetch_credentials()
+
+        self.assertEqual(response, expected)
+        # The corrupted entry is replaced with the new credentials.
+        self.assertEqual(
+            cache[cache_key]['Credentials']['AccessKeyId'], 'foo'
+        )
+
     def test_role_session_name_can_be_provided(self):
         response = {
             'Credentials': {

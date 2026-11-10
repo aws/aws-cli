@@ -445,7 +445,8 @@ These configuration variables control how the AWS CLI retries requests.
     a single request, including the initial attempt.  For example,
     setting this value to 5 will result in a request being retried up to
     4 times.  If not provided, the number of retries will default to whatever
-    is modeled, which is 3 in the ``standard`` and ``adaptive`` retry modes.
+    is modeled, which is 3 in the ``standard`` and ``adaptive`` retry modes
+    (4 for Amazon DynamoDB and Amazon DynamoDB Streams).
 
 ``retry_mode``
     A string representing the type of retries the AWS CLI will perform.  Value
@@ -455,7 +456,8 @@ These configuration variables control how the AWS CLI retries requests.
           This includes a standard set of errors that are retried as well as
           support for retry quotas, which limit the number of unsuccessful retries
           an SDK can make.  This mode will default the maximum number of attempts
-          to 3 unless a ``max_attempts`` is explicitly provided.
+          to 3 (4 for Amazon DynamoDB and Amazon DynamoDB Streams) unless a
+          ``max_attempts`` is explicitly provided.
         * ``adaptive`` - An experimental retry mode that includes all the
           functionality of ``standard`` mode along with automatic client side
           throttling.  This is a provisional mode that may change behavior in

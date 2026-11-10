@@ -741,6 +741,38 @@ class TestHandlers(BaseSessionTest):
             'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9',
         )
 
+    def test_add_retry_headers_sets_both_headers(self):
+        request = AWSRequest()
+        request.context['retries'] = {
+            'invocation-id': 'abc-123',
+            'attempt': 2,
+            'max': 3,
+        }
+        handlers.add_retry_headers(request)
+        self.assertEqual(request.headers['amz-sdk-invocation-id'], 'abc-123')
+        self.assertEqual(
+            request.headers['amz-sdk-request'], 'attempt=2; max=3'
+        )
+
+    def test_request_created_on_synthesized_request_does_not_raise(self):
+        # Callers such as s3transfer's functional tests emit
+        # ``request-created`` on an ``AWSRequest`` they build themselves, so
+        # no endpoint created the retries context first. The seeder runs
+        # before ``add_retry_headers``; it must not create a partial context
+        # that makes ``add_retry_headers`` raise.
+        client = self.session.create_client(
+            's3', config=Config(retries={'mode': 'standard'})
+        )
+        request = AWSRequest(method='PUT', url='https://s3.amazonaws.com')
+        client.meta.events.emit(
+            'request-created.s3.PutObject',
+            request=request,
+            operation_name='PutObject',
+        )
+        self.assertNotIn('retries', request.context)
+        self.assertNotIn('amz-sdk-invocation-id', request.headers)
+        self.assertNotIn('amz-sdk-request', request.headers)
+
     def test_switch_host_with_param(self):
         request = AWSRequest()
         url = 'https://machinelearning.us-east-1.amazonaws.com'

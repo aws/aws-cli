@@ -15,8 +15,10 @@ import datetime
 import json
 
 import botocore.endpoint
+from botocore.awsrequest import AWSRequest
 from botocore.config import Config
 from botocore.exceptions import ClientError
+from botocore.retries import standard
 
 from tests import BaseSessionTest, ClientHTTPStubber, mock
 from tests.functional.botocore.test_useragent import (
@@ -124,11 +126,18 @@ class BaseRetryTest(BaseSessionTest):
         with self.assert_will_retry_n_times(client, 2):
             client.list_repositories()
 
-    def test_standard_mode_has_default_3_retries(self):
+    def test_standard_mode_has_default_3_attempts(self):
+        client = self.create_client_with_retry_config(
+            'codecommit', retry_mode='standard'
+        )
+        with self.assert_will_retry_n_times(client, 2):
+            client.list_repositories()
+
+    def test_standard_mode_dynamodb_has_default_4_attempts(self):
         client = self.create_client_with_retry_config(
             'dynamodb', retry_mode='standard'
         )
-        with self.assert_will_retry_n_times(client, 2):
+        with self.assert_will_retry_n_times(client, 3):
             client.list_tables()
 
     def test_standard_mode_can_configure_max_attempts(self):
@@ -152,7 +161,7 @@ class BaseRetryTest(BaseSessionTest):
         )
         error_body = {"__type": "ThrottlingException", "message": "Error"}
         with self.assert_will_retry_n_times(
-            client, 2, status=400, body=error_body
+            client, 3, status=400, body=error_body
         ):
             client.list_tables()
 
@@ -160,27 +169,77 @@ class BaseRetryTest(BaseSessionTest):
         client = self.create_client_with_retry_config(
             'dynamodb', retry_mode='standard'
         )
-        with self.assert_will_retry_n_times(client, 2, status=502):
+        with self.assert_will_retry_n_times(client, 3, status=502):
             client.list_tables()
 
+    def test_default_mode_retries_429_with_empty_body(self):
+        # A 429 with an empty body gets the error code "429", which
+        # matches neither the throttling list nor the model, so the
+        # status code is used.
+        client = self.session.create_client('codecommit', self.region)
+        with self.assert_will_retry_n_times(client, 2, status=429, body=b''):
+            client.list_repositories()
+
+    def test_standard_mode_retries_429_with_unknown_error_code(self):
+        client = self.create_client_with_retry_config(
+            'codecommit', retry_mode='standard'
+        )
+        error_body = {"__type": "NotAThrottlingError", "message": "Error"}
+        with self.assert_will_retry_n_times(
+            client, 2, status=429, body=error_body
+        ):
+            client.list_repositories()
+
+    def test_adaptive_mode_retries_429_with_empty_body(self):
+        client = self.create_client_with_retry_config(
+            'codecommit', retry_mode='adaptive'
+        )
+        with self.assert_will_retry_n_times(client, 2, status=429, body=b''):
+            client.list_repositories()
+
+    def test_standard_mode_does_not_retry_modeled_error_on_429(self):
+        # InvalidOrderException is modeled on ListRepositories without a
+        # retryable trait, so the model wins over the 429 status code.
+        client = self.create_client_with_retry_config(
+            'codecommit', retry_mode='standard'
+        )
+        error_body = {"__type": "InvalidOrderException", "message": "Error"}
+        with ClientHTTPStubber(client) as http_stubber:
+            http_stubber.add_response(
+                status=429, body=json.dumps(error_body).encode()
+            )
+            with self.assertRaises(ClientError):
+                client.list_repositories()
+            self.assertEqual(len(http_stubber.requests), 1)
+
     def test_can_exhaust_default_retry_quota(self):
-        # Quota of 500 / 5 retry costs == 100 retry attempts
-        # 100 retry attempts / 2 retries per API call == 50 client calls
+        # Quota of 500 / 14 retry cost == 35 retry attempts (with 10 left).
+        # 35 retry attempts / 3 retries per API call == 11 client calls,
+        # which consumes 462 and leaves 38 in the quota.
         client = self.create_client_with_retry_config(
             'dynamodb', retry_mode='standard'
         )
-        for i in range(50):
-            with self.assert_will_retry_n_times(client, 2, status=502):
+        for i in range(11):
+            with self.assert_will_retry_n_times(client, 3, status=502):
                 client.list_tables()
-        # Now on the 51th attempt we should see quota errors, which we can
-        # verify by looking at the request metadata.
+        # On the 12th call, the first two retries consume 28 of the
+        # remaining 38. The third retry needs 14 but only 10 is left, so
+        # we should see quota errors, which we can verify by looking at
+        # the request metadata.
         with ClientHTTPStubber(client) as http_stubber:
-            http_stubber.add_response(status=502, body=b'{}')
+            for _ in range(3):
+                http_stubber.add_response(status=502, body=b'{}')
             with self.assertRaises(ClientError) as e:
                 client.list_tables()
         self.assertTrue(
             e.exception.response['ResponseMetadata'].get('RetryQuotaReached')
         )
+
+    def test_user_agent_has_standard_mode_feature_id_by_default(self):
+        client = self.session.create_client('dynamodb', self.region)
+        feature_lists = self._get_feature_id_lists_from_retries(client)
+        # Confirm all requests register `'RETRY_MODE_STANDARD': 'E'`
+        assert all('E' in feature_list for feature_list in feature_lists)
 
     def test_user_agent_has_standard_mode_feature_id(self):
         client = self.create_client_with_retry_config(
@@ -239,12 +298,12 @@ class TestRetryHeader(BaseRetryTest):
         ]
         expected_headers = [
             [
-                b'attempt=1',
+                b'attempt=1; max=3',
                 b'ttl=20190601T000011Z; attempt=2; max=3',
                 b'ttl=20190601T000012Z; attempt=3; max=3',
             ],
             [
-                b'attempt=1',
+                b'attempt=1; max=3',
                 b'ttl=20190601T001014Z; attempt=2; max=3',
                 b'ttl=20190601T001020Z; attempt=3; max=3',
             ],
@@ -340,3 +399,73 @@ class TestRetryHeader(BaseRetryTest):
                 amz_sdk_invocation_id_headers[0],
                 amz_sdk_invocation_id_headers[2],
             )
+
+
+class TestMaxAttemptsInRequestHeader(BaseSessionTest):
+    """The resolved max attempts must appear on the initial attempt.
+
+    ``max`` is seeded into the request context at creation time, so the
+    very first ``amz-sdk-request`` header carries it. Previously it only
+    showed up from the second attempt onward.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.region = 'us-west-2'
+        self.sleep_patch = mock.patch('time.sleep')
+        self.sleep_patch.start()
+
+    def tearDown(self):
+        super().tearDown()
+        self.sleep_patch.stop()
+
+    def _sdk_request_headers(self, client_config, responses):
+        client = self.session.create_client(
+            'dynamodb', self.region, config=client_config
+        )
+        with ClientHTTPStubber(client) as http_stubber:
+            for status in responses:
+                http_stubber.add_response(status=status, body=b'{}')
+            client.list_tables()
+            return [
+                r.headers['amz-sdk-request'] for r in http_stubber.requests
+            ]
+
+    def test_max_present_on_initial_attempt(self):
+        for retry_mode in RETRY_MODES:
+            config = Config(
+                retries={'mode': retry_mode, 'max_attempts': 3}
+            )
+            headers = self._sdk_request_headers(config, [200])
+            self.assertEqual(headers, [b'attempt=1; max=3'])
+
+    def test_max_consistent_across_retries(self):
+        for retry_mode in RETRY_MODES:
+            config = Config(
+                retries={'mode': retry_mode, 'max_attempts': 3}
+            )
+            headers = self._sdk_request_headers(config, [500, 500, 200])
+            self.assertEqual(len(headers), 3)
+            for header in headers:
+                self.assertIn(b'max=3', header)
+
+    def test_service_specific_max_attempts(self):
+        # DynamoDB overrides the default of 3.
+        config = Config(retries={'mode': 'standard'})
+        headers = self._sdk_request_headers(config, [200])
+        self.assertEqual(headers, [b'attempt=1; max=4'])
+
+    def test_seeder_adds_max_to_existing_context(self):
+        request = AWSRequest()
+        request.context['retries'] = {'invocation-id': 'abc-123'}
+        standard.MaxAttemptsSeeder(3).seed_max_attempts(request)
+        self.assertEqual(
+            request.context['retries'], {'invocation-id': 'abc-123', 'max': 3}
+        )
+
+    def test_seeder_skips_request_without_retries_context(self):
+        # The endpoint creates the context before ``request-created``; a
+        # request without one did not come from the endpoint.
+        request = AWSRequest()
+        standard.MaxAttemptsSeeder(3).seed_max_attempts(request)
+        self.assertNotIn('retries', request.context)

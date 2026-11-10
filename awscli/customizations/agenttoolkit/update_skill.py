@@ -17,6 +17,7 @@ import logging
 import os
 import sys
 
+from botocore import UNSIGNED
 from botocore.config import Config
 from botocore.exceptions import ClientError, HTTPClientError
 
@@ -135,16 +136,21 @@ class _UpdateResults(
 
 # Agents stop a hook after 60 seconds and report it as an error. A failed
 # check is tried again after HOOK_RETRY_INTERVAL, so fail fast instead of
-# retrying.
+# retrying. The agent toolkit operations need no auth, so the client is
+# unsigned: otherwise botocore loads credentials when it creates the client,
+# and an expired login session for the default profile fails every hook run.
 HOOK_CLIENT_CONFIG = Config(
-    connect_timeout=5, read_timeout=10, retries={'max_attempts': 1}
+    connect_timeout=5,
+    read_timeout=10,
+    retries={'max_attempts': 1},
+    signature_version=UNSIGNED,
 )
 
 # Several sessions can start at once, and an agent may run more than one
 # hook at session start. Hook runs take turns, so a run that starts right
 # after another finds its skills roots already checked and does nothing.
 HOOK_LOCK_FILENAME = 'hook.lock'
-HOOK_LOCK_TIMEOUT = 30
+HOOK_LOCK_TIMEOUT = 5
 
 # A hook run checks a skills root again once this long has passed since its
 # last check, or sooner if that check failed. Each root is tracked on its own,
@@ -347,7 +353,9 @@ class UpdateSkillCommand(BasicCommand):
                 agents, parsed_globals, None, results, HOOK_CLIENT_CONFIG
             ):
                 self._install_new_core_skills(
-                    agents, self._create_client(parsed_globals), results
+                    agents,
+                    self._create_client(parsed_globals, HOOK_CLIENT_CONFIG),
+                    results,
                 )
         except Exception as e:
             LOG.debug('Automatic skill update failed', exc_info=True)

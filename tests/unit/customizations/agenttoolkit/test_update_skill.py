@@ -20,6 +20,7 @@ from io import StringIO
 from unittest.mock import Mock, patch
 
 import pytest
+from botocore import UNSIGNED
 from botocore.exceptions import (
     ClientError,
     EndpointConnectionError,
@@ -1337,6 +1338,7 @@ def test_hook_client_fails_fast(tmp_path, auto_update_on):
     assert HOOK_CLIENT_CONFIG.connect_timeout == 5
     assert HOOK_CLIENT_CONFIG.read_timeout == 10
     assert HOOK_CLIENT_CONFIG.retries == {'max_attempts': 1}
+    assert HOOK_CLIENT_CONFIG.signature_version is UNSIGNED
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
     with patch(
         'awscli.customizations.agenttoolkit.update_skill.create_client',
@@ -1345,6 +1347,19 @@ def test_hook_client_fails_fast(tmp_path, auto_update_on):
         _run_hook(tmp_path, 'codex', None)
     assert create_client.call_args.kwargs == {'config': HOOK_CLIENT_CONFIG}
 
+
+
+def test_hook_installs_core_skills_with_hook_client(tmp_path, auto_update_on):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
+    client = _make_skill_client(core_skills=['aws-s3', 'aws-iam'])
+    with patch(
+        'awscli.customizations.agenttoolkit.update_skill.create_client',
+        return_value=client,
+    ) as create_client:
+        _run_hook(tmp_path, 'codex', None)
+    client.get_paginator.assert_called_once_with('list_skills')
+    create_client.assert_called_once()
+    assert create_client.call_args.kwargs == {'config': HOOK_CLIENT_CONFIG}
 
 def test_update_all_uses_default_client_config(tmp_path):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')

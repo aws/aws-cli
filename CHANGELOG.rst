@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.40.0
+======
+
+* api-change:``route53profiles``: Adds support for having multiple profiles on one VPC. This is done using a priority system to handle conflicts on the dataplane.
+* api-change:``verifiedpermissions``: Inconsequential changes to model formatting
+* api-change:``lakeformation``: Adds support for governing AWS Glue user-defined functions with Lake Formation permissions. This release adds the UserDefinedFunction and AnyResource resources, the EXECUTE permission, and the GetTemporaryGlueFunctionCredentials and GetGlueFunctionSessionContext APIs.
+* api-change:``devicefarm``: Adds the NONE insights type to disable insights generation for a run, a testPackageArn field in run details, and a new artifact type for device connect command logs.
+* bugfix:Retries: Fix the ``standard`` and ``adaptive`` retry modes not applying the service-specific default max attempts. Amazon DynamoDB and Amazon DynamoDB Streams now default to 4 max attempts when ``max_attempts`` is not explicitly configured.
+* api-change:``marketplace-agreement``: This release adds the freeTrialSummary.trialEndTime field to DescribeAgreement and the freeTrialEndTime field to SearchAgreements results, so you can see when an agreement's free trial ends.
+* api-change:``arc-region-switch``: Adds RetryableConflictException to UpdatePlan so AWS SDKs automatically retry updates that conflict with a concurrent change.
+* enhancement:Retries: The ``standard`` and ``adaptive`` retry modes now treat HTTP 429 responses as throttling errors and retry them when the error code does not match a modeled error for the operation, such as a 429 with an empty body or an unrecognized error code. If the error code matches a modeled error, the model decides whether the error is retried.
+* api-change:``connect``: Amazon Connect now returns Contact Lens conversational analytics configuration in the DescribeContact API. Customers can retrieve a contact's analytics, redaction, summarization, and sentiment settings, consistent with the configuration already available in contact trace records and contact events.
+* api-change:``gamelift``: Amazon GameLift Servers adds game session placement insights. Logs show how the queue's priority configuration, along with player latency and cost data, are applied to each placement request. Use game session placement insights to diagnose why game session placements succeed, fail, or time out.
+* feature:Retries: The updated standard retry mode behavior previously available through the ``AWS_NEW_RETRIES_2026`` opt-in environment variable is now the default, and the ``AWS_NEW_RETRIES_2026`` environment variable has been removed. The standard retry mode now uses lower initial backoff delays (50ms base instead of 1s for non-throttling errors), honors the ``x-amz-retry-after`` response header for server-guided retry timing, adjusts retry behavior for long-polling operations, and uses updated retry quota costs.
+* api-change:``s3tables``: Adds support for server access logging for Amazon S3 table buckets with the new PutTableBucketLogging and GetTableBucketLogging APIs.
+* api-change:``pcs``: Added support for configuring AMIs, Amazon EC2 security groups, SSH key pairs, and launch template modes when creating or updating AWS PCS compute node groups.
+* bugfix:Retries: Include the resolved max attempts in the ``amz-sdk-request`` header on the initial attempt
+* enhancement:shorthand: Keep the bare value shorthand syntax working for the arguments that support it (e.g. ``aws workspaces rebuild-workspaces --rebuild-workspace-requests ws-1234``) when the service adds members to the underlying structure, and document all of the members in that case.
+* api-change:``cloudwatchomni``: Release of GetSpaceDataAccess API - Used to get temporary credentials, limited to the requested actions, for working with data in a space.
+* api-change:``bedrock-agentcore-control``: Amazon Bedrock AgentCore Gateway now supports domainOverride so JWT-authorized gateways can advertise your public domain in OAuth discovery behind a proxy or custom domain. AgentCore Runtime adds warmup lifecycle hooks and specifying runtime memory via hooksConfiguration and resourceConfigurations.
+* api-change:``network-firewall``: Firewall Policy V2 for Network Firewall
+
+
 2.39.7
 ======
 

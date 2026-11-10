@@ -22,6 +22,7 @@ from botocore.useragent import (
     UserAgentComponent,
     UserAgentComponentSizeConfig,
     UserAgentString,
+    is_agentic_caller,
     register_feature_id,
     sanitize_user_agent_string_component,
 )
@@ -76,6 +77,40 @@ def clear_agentic_caller_env(monkeypatch):
 def test_sanitize_ua_string_component(raw_str, allow_hash, expected_str):
     actual_str = sanitize_user_agent_string_component(raw_str, allow_hash)
     assert actual_str == expected_str
+
+
+def test_is_agentic_caller_false_when_no_env_set():
+    # clear_agentic_caller_env fixture unsets all agentic caller env vars.
+    assert is_agentic_caller() is False
+
+
+@pytest.mark.parametrize(
+    'env_var, value',
+    [
+        ('CLAUDECODE', '1'),
+        ('GEMINI_CLI', '1'),
+        ('CODEX_THREAD_ID', 'some-thread-id'),
+        ('KIRO_SESSION_ID', 'some-session-id'),
+        ('OPENCODE', 'anything'),
+        ('CURSOR_AGENT', '1'),
+        ('PI_CODING_AGENT', 'true'),
+    ],
+)
+def test_is_agentic_caller_true_when_env_set(monkeypatch, env_var, value):
+    monkeypatch.setenv(env_var, value)
+    assert is_agentic_caller() is True
+
+
+def test_is_agentic_caller_false_when_value_does_not_match(monkeypatch):
+    # CLAUDECODE only counts when it equals '1'.
+    monkeypatch.setenv('CLAUDECODE', '0')
+    assert is_agentic_caller() is False
+
+
+def test_is_agentic_caller_false_when_env_empty(monkeypatch):
+    # An env var expecting any non-empty value must not match ''.
+    monkeypatch.setenv('CODEX_THREAD_ID', '')
+    assert is_agentic_caller() is False
 
 
 def test_basic_user_agent_string():

@@ -244,3 +244,61 @@ class TestGeneratesIndex(BaseIndexerTest):
             index_info % 'parent_command_index'
         ).fetchall()
         self.assertEqual([('parent',), ('command',)], index)
+
+
+class TestReindexCommands(BaseIndexerTest):
+    def _service(self, name, operation):
+        return DummyCommand(
+            command_name=name,
+            subcommand_table={
+                operation: DummyCommand(
+                    operation, arg_table={'arg': DummyArg('arg')}
+                ),
+            },
+        )
+
+    def test_remove_commands_removes_only_subtree(self):
+        # ``_`` and ``%`` are LIKE wildcards; names containing them must
+        # only match themselves.
+        names = ['a_b', 'axb', 'a_bc', 'a%', 'ab']
+        self.aws_command.subcommand_table = {
+            name: self._service(name, f'op-{i}')
+            for i, name in enumerate(names)
+        }
+        self.indexer.generate_index(self.aws_command)
+        self.indexer.remove_commands(['a_b', 'a%'])
+        self.assertEqual(
+            sorted(self.query.command_names(lineage=['aws'])),
+            ['a_bc', 'ab', 'axb'],
+        )
+        self.assertEqual(self.query.command_names(lineage=['aws', 'a_b']), [])
+        self.assertEqual(
+            self.query.arg_names(lineage=['aws', 'a_b'], command_name='op-0'),
+            [],
+        )
+        self.assertEqual(
+            self.query.arg_names(lineage=['aws', 'axb'], command_name='op-1'),
+            ['arg'],
+        )
+        self.assertEqual(
+            self.query.command_names(lineage=['aws', 'a_bc']), ['op-2']
+        )
+
+    def test_index_commands_replaces_command(self):
+        self.indexer.generate_index(self.aws_command)
+        self.aws_command.subcommand_table['ec2'] = self._service(
+            'ec2', 'new-operation'
+        )
+        self.indexer.remove_commands(['ec2'])
+        self.indexer.index_commands(self.aws_command, ['ec2'])
+        self.assertEqual(
+            self.query.command_names(lineage=['aws', 'ec2']),
+            ['new-operation'],
+        )
+        self.assertEqual(
+            sorted(self.query.command_names(lineage=['aws'])), ['ec2', 's3']
+        )
+        self.assertEqual(
+            self.query.commands_with_full_name(lineage=['aws'])[-1][1],
+            'Amazon Elastic',
+        )

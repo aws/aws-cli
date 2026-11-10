@@ -12,6 +12,27 @@
 # language governing permissions and limitations under the License.
 from awscli.autocomplete.db import DatabaseConnection
 
+# Matches the rows for a top level command ``aws <name>`` and every
+# command/parameter beneath it.  A range comparison is used instead of LIKE
+# so characters such as ``%`` or ``_`` in a command name are never treated as
+# patterns. ``/`` is the character immediately after ``.``, so the range
+# covers every parent that starts with ``aws.<name>.``.
+COMMAND_SUBTREE_CLAUSE = """\
+    (parent = 'aws' AND command = :name)
+    OR parent = :service_parent
+    OR (parent >= :subtree_start AND parent < :subtree_end)
+"""
+
+
+def command_subtree_params(name):
+    service_parent = f'aws.{name}'
+    return {
+        'name': name,
+        'service_parent': service_parent,
+        'subtree_start': f'{service_parent}.',
+        'subtree_end': f'{service_parent}/',
+    }
+
 
 def create_model_indexer(filename):
     index = ModelIndexer(DatabaseConnection(filename))
@@ -91,6 +112,31 @@ class ModelIndexer:
 
         self._generate_table_indexes()
 
+    def remove_commands(self, command_names):
+        """Remove top level commands and their entire subtrees."""
+        for name in command_names:
+            for table in ('param_table', 'command_table'):
+                # Table names are constants; all model-derived values
+                # are bound as parameters.
+                self._db_connection.execute(
+                    f'DELETE FROM {table} WHERE {COMMAND_SUBTREE_CLAUSE}',
+                    **command_subtree_params(name),
+                )
+
+    def index_commands(self, clidriver, command_names):
+        """Index the given top level commands of ``clidriver``.
+
+        Any existing rows for these commands must already have been
+        removed with ``remove_commands``.
+        """
+        command_table = clidriver.subcommand_table
+        help_command_table = clidriver.create_help_command().command_table
+        self._generate_command_index(
+            {name: command_table[name] for name in command_names},
+            parent='aws',
+            help_command_table=help_command_table,
+        )
+
     def _create_tables(self):
         self._db_connection.execute(self._CREATE_CMD_TABLE)
         self._db_connection.execute(self._CREATE_PARAM_TABLE)
@@ -120,7 +166,7 @@ class ModelIndexer:
                 return self._HIGH_LEVEL_SERVICE_FULL_NAMES[name]
             service = help_command_table.get(name)
             if service:
-                return service.service_model.metadata['serviceFullName']
+                return service.service_model.metadata.get('serviceFullName')
 
     def _generate_command_index(
         self, command_table, parent, help_command_table=None

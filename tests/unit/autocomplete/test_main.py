@@ -35,6 +35,8 @@ def test_autocomplete_does_not_write_carriage_returns():
         with mock.patch.object(
             main, 'create_autocompleter', return_value=fake_completer
         ):
-            main.autocomplete('aws e')
+            # Don't build an index in the real ~/.aws/cli/cache.
+            with mock.patch.object(main, 'refresh_user_index'):
+                main.autocomplete('aws e')
     stdout.flush()
     assert raw.getvalue() == b'ec2\necs\n'

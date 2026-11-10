@@ -716,6 +716,10 @@ class ServiceCommand(CLICommand):
         self._name = value
 
     @property
+    def service_name(self):
+        return self._service_name
+
+    @property
     def service_model(self):
         return self._get_service_model()
 

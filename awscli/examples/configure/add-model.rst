@@ -70,6 +70,8 @@ Contents of ``service.json``::
 
 This command produces no output.
 
+Shell completion (``aws_completer``) includes the new service, its operations, and their parameters the next time you use it. When the models in ``~/.aws/models`` change, or after you upgrade the AWS CLI, the completion index in ``~/.aws/cli/cache`` is rebuilt automatically on the next completion.
+
 Adding a model replaces existing commands for the service defined in the model. To leave existing commands as-is, specify a different service name to use for the new commands. ::
 
     aws configure add-model \

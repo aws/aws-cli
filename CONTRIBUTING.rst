@@ -38,6 +38,44 @@ contributions as well:
   to discuss the feature request further.
 
 
+Choosing a changelog type
+-------------------------
+
+Use ``scripts/new-change`` to create a changelog entry in
+``.changes/next-release/``, and include the generated JSON file in your pull
+request. Choose its ``type`` based on the capability and behavior users
+experience, rather than the size of the code change:
+
+* ``feature``: A substantial new CLI capability or change in behavior.
+  Examples include new global options that apply to all commands, a new
+  credentials type, significant changes to foundational commands such as ``s3``,
+  and adding or dropping support for a Python version.
+  Use this type when the change warrants calling out a new capability or a
+  deliberate change to existing expectations. It results in a
+  minor version bump.
+* ``enhancement``: An incremental improvement to existing functionality or
+  a change to an underlying implementation detail. Examples include
+  enhancements to a single command or dependency updates. It
+  results in a patch version bump.
+* ``bugfix``: A correction to an existing code path that restores intended
+  behavior, including a regression fix. Examples include bug fixes to a
+  single command. A fix can change observable behavior while remaining a
+  bug fix when the previous behavior was incorrect. It results
+  in a patch version bump.
+* ``api-change``: A change to a modeled AWS service API. Examples include
+  new service launches or new operations for existing services. New
+  service API functionality uses this type rather than automatically
+  counting as a CLI ``feature``. These updates ship in patch releases.
+
+A new command or option does not automatically require ``feature``: consider
+whether it introduces a substantial capability or incrementally extends an
+existing one. Likewise, changing an internal implementation can warrant
+``feature`` if it significantly changes default behavior.
+
+If the classification is unclear, describe the previous and resulting
+behavior in the pull request and discuss the type with a maintainer.
+
+
 Git Commits and Workflow
 ------------------------
 

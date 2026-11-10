@@ -607,6 +607,24 @@
       ],
       "documentation":"<p>Returns temporary credentials for a space in an organization member account. The credentials are valid for one hour.</p> <p>The caller must be the organization's management account or a delegated administrator with access to the target space. The target account must be an active member of the same organization as the domain, and the space must already exist.</p>"
     },
+    "GetSpaceDataAccess":{
+      "name":"GetSpaceDataAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSpaceDataAccessInput"},
+      "output":{"shape":"GetSpaceDataAccessOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"PolicyTooLargeException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns temporary credentials for working with data in a space, limited to the actions you request.</p> <p>The credentials allow only the requested actions that can be granted in the space and that your access grants allow. Requested actions that cannot be conferred are ignored rather than rejected.</p>"
+    },
     "GetTelemetryQueryResults":{
       "name":"GetTelemetryQueryResults",
       "http":{
@@ -2596,6 +2614,58 @@
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
+    "DataAccessActionList":{
+      "type":"list",
+      "member":{"shape":"DataAccessActionName"},
+      "documentation":"<p>The actions of one requested scope (1-50 entries), all with the same service prefix.</p>",
+      "max":50,
+      "min":1
+    },
+    "DataAccessActionName":{
+      "type":"string",
+      "documentation":"<p>An action to include in the credentials, with its service prefix, for example &quot;logs:StartQuery&quot;. Wildcards are not supported.</p>",
+      "max":256,
+      "min":3,
+      "pattern":"[a-z0-9][a-z0-9-]*:[A-Za-z][A-Za-z0-9]*"
+    },
+    "DataAccessAuditContext":{
+      "type":"map",
+      "key":{"shape":"DataAccessAuditContextKeyString"},
+      "value":{"shape":"DataAccessAuditContextValueString"},
+      "documentation":"<p>Caller-supplied audit key-value pairs (at most 10 entries). Each key is 1-256 characters of letters, digits and _ . : / = + @ -. Each value is 1-256 printable characters: any character except a C0 or C1 control character (so no tab, carriage return or newline).</p>",
+      "max":10,
+      "min":0
+    },
+    "DataAccessAuditContextKeyString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_.:/=+@-]+(?![\\s\\S]).*"
+    },
+    "DataAccessAuditContextValueString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\u0000-\\u001F\\u007F-\\u009F]+(?![\\s\\S]).*"
+    },
+    "DataAccessTarget":{
+      "type":"structure",
+      "required":["actions"],
+      "members":{
+        "actions":{
+          "shape":"DataAccessActionList",
+          "documentation":"<p>The actions of one service, each with its service prefix, for example &quot;logs:StartQuery&quot;.</p>"
+        }
+      },
+      "documentation":"<p>One requested scope: an explicit list of actions for one service. All actions in an entry share one service prefix. The same service may appear in more than one entry.</p>"
+    },
+    "DataAccessTargetList":{
+      "type":"list",
+      "member":{"shape":"DataAccessTarget"},
+      "documentation":"<p>The scopes requested for one data credential (1-10 entries, at most 100 actions in total).</p>",
+      "max":10,
+      "min":1
+    },
     "DeepLinkCode":{
       "type":"string",
       "documentation":"<p>A one-time deep-link code exchanged for a domain-scoped session. Sensitive: it can be redeemed for a session token, so it is redacted from request logs and CloudTrail.</p>",
@@ -3465,6 +3535,47 @@
       }
     },
     "GetSpaceCredentialsForOrganizationOutput":{
+      "type":"structure",
+      "required":["credentials"],
+      "members":{
+        "credentials":{
+          "shape":"AwsCredentials",
+          "documentation":"<p>The temporary AWS credentials for the space.</p>"
+        }
+      }
+    },
+    "GetSpaceDataAccessInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "targetScopes"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The unique ID of the space to return credentials for.</p>"
+        },
+        "targetScopes":{
+          "shape":"DataAccessTargetList",
+          "documentation":"<p>The actions to include in the credentials, grouped by service.</p>"
+        },
+        "durationSeconds":{
+          "shape":"GetSpaceDataAccessInputDurationSecondsInteger",
+          "documentation":"<p>The lifetime of the credentials, in seconds. Defaults to 3600.</p>"
+        },
+        "auditContext":{
+          "shape":"DataAccessAuditContext",
+          "documentation":"<p>Caller-supplied key-value pairs that are recorded for auditing. They do not affect authorization or the permissions of the credentials.</p>"
+        }
+      }
+    },
+    "GetSpaceDataAccessInputDurationSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":900
+    },
+    "GetSpaceDataAccessOutput":{
       "type":"structure",
       "required":["credentials"],
       "members":{
@@ -5238,6 +5349,22 @@
         }
       },
       "documentation":"<p>Indicates whether a query returned partial results.</p>"
+    },
+    "PolicyTooLargeException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        }
+      },
+      "documentation":"<p>The requested actions produce a credential that exceeds the maximum size. Request fewer actions.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "PrincipalId":{
       "type":"string",

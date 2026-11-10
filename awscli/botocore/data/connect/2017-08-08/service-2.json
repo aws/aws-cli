@@ -4742,7 +4742,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Allows pausing an ongoing task contact.</p>"
+      "documentation":"<p>Pauses an ongoing task or email contact.</p>"
     },
     "PutUserStatus":{
       "name":"PutUserStatus",
@@ -4817,7 +4817,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Allows resuming a task contact in a paused state.</p>"
+      "documentation":"<p>Resumes a task or email contact in a paused state.</p>"
     },
     "ResumeContactRecording":{
       "name":"ResumeContactRecording",
@@ -10867,6 +10867,10 @@
         "GlobalResiliencyMetadata":{
           "shape":"GlobalResiliencyMetadata",
           "documentation":"<p>Information about the global resiliency configuration for the contact, including traffic distribution details.</p>"
+        },
+        "ContactLens":{
+          "shape":"ContactLens",
+          "documentation":"<p>Information about the conversational analytics configuration applied to the contact. This field is present only for contacts where conversational analytics is enabled in the contact flow.</p>"
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
@@ -10910,6 +10914,20 @@
         }
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>CONTACT_ANALYSIS</code>. Otherwise, null.</p>"
+    },
+    "ContactAnalysisReferenceState":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of conversational analytics processing for the contact. Valid values:</p> <ul> <li> <p> <code>REQUESTED</code> – Analysis has been requested for the contact and has not finished.</p> </li> <li> <p> <code>COMPLETED</code> – Analysis finished successfully.</p> </li> <li> <p> <code>FAILED</code> – Analysis did not finish successfully. See <code>StatusReason</code> for the cause.</p> </li> </ul>"
+        },
+        "StatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current analysis status. This value is populated only when the status is <code>FAILED</code>.</p>"
+        }
+      },
+      "documentation":"<p>The current processing state of conversational analytics for a contact, including the analysis status and, when applicable, the reason for that status.</p>"
     },
     "ContactConfiguration":{
       "type":"structure",
@@ -11771,6 +11789,80 @@
         "CUSTOMER"
       ]
     },
+    "ContactLens":{
+      "type":"structure",
+      "members":{
+        "ConversationalAnalytics":{
+          "shape":"ConversationalAnalytics",
+          "documentation":"<p>The conversational analytics configuration applied to the contact.</p>"
+        }
+      },
+      "documentation":"<p>Information about the conversational analytics configuration applied to the contact. This field is present only for contacts where conversational analytics is enabled in the contact flow.</p>"
+    },
+    "ContactLensAnalyticsModeList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "ContactLensChannelConfiguration":{
+      "type":"structure",
+      "members":{
+        "AnalyticsModes":{
+          "shape":"ContactLensAnalyticsModeList",
+          "documentation":"<p>The conversational analytics modes enabled for the channel. Valid values:</p> <ul> <li> <p> <code>RealTime</code> – Real-time analysis is enabled during the contact. Voice channel only.</p> </li> <li> <p> <code>PostContact</code> – Post-contact analysis is enabled after the contact ends. Voice channel only.</p> </li> <li> <p> <code>ContactLens</code> – Conversational analytics is enabled for the contact. Chat channel only.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The per-channel conversational analytics configuration for a contact.</p>"
+    },
+    "ContactLensRedactionConfiguration":{
+      "type":"structure",
+      "members":{
+        "Behavior":{
+          "shape":"String",
+          "documentation":"<p>Specifies whether redaction is enabled for sensitive data, such as personal information, in the conversational analytics output. Valid values:</p> <ul> <li> <p> <code>Enable</code> – Redaction is applied according to the other values in this object.</p> </li> <li> <p> <code>Disable</code> – Redaction is not applied, and all other values in this object are ignored.</p> </li> </ul>"
+        },
+        "Policy":{
+          "shape":"String",
+          "documentation":"<p>The redaction policy that determines which versions of the transcript are stored. Valid values:</p> <ul> <li> <p> <code>None</code> – No redaction is applied.</p> </li> <li> <p> <code>RedactedOnly</code> – Only the redacted transcript is stored.</p> </li> <li> <p> <code>RedactedAndOriginal</code> – Both the redacted and the original transcript are stored.</p> </li> </ul>"
+        },
+        "Entities":{
+          "shape":"ContactLensRedactionEntitiesList",
+          "documentation":"<p>The entity types to redact from the transcript (for example, <code>NAME</code>, <code>EMAIL</code>, <code>ADDRESS</code>).</p>"
+        },
+        "MaskMode":{
+          "shape":"String",
+          "documentation":"<p>How sensitive information is masked in the transcript. Valid values:</p> <ul> <li> <p> <code>PII</code> – All redacted entities are replaced with the <code>[PII]</code> string.</p> </li> <li> <p> <code>EntityType</code> – All redacted entities are replaced with the label of the entity. For example, when the <code>EMAIL</code> entity is configured for redaction, emails in the transcript are replaced with the <code>[EMAIL]</code> string.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The redaction configuration for conversational analytics transcripts.</p>"
+    },
+    "ContactLensRedactionEntitiesList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "ContactLensSentimentConfiguration":{
+      "type":"structure",
+      "members":{
+        "Behavior":{
+          "shape":"String",
+          "documentation":"<p>Specifies whether sentiment analysis is enabled for the contact. The default value is <code>Disable</code>. Valid values:</p> <ul> <li> <p> <code>Enable</code> – Sentiment analysis is performed on the contact.</p> </li> <li> <p> <code>Disable</code> – Sentiment analysis is not performed on the contact.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The conversational analytics sentiment analysis configuration for a contact.</p>"
+    },
+    "ContactLensSummaryConfiguration":{
+      "type":"structure",
+      "members":{
+        "SummaryModes":{
+          "shape":"ContactLensSummaryModeList",
+          "documentation":"<p>The conversational analytics summary modes enabled for the contact. Valid values: <code>PostContact</code> | <code>AutomatedInteraction</code> | <code>ContactChain</code>.</p>"
+        }
+      },
+      "documentation":"<p>The conversational analytics summary configuration for a contact.</p>"
+    },
+    "ContactLensSummaryModeList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "ContactMediaProcessingFailureMode":{
       "type":"string",
       "enum":[
@@ -12140,6 +12232,55 @@
         "HierarchyGroupCondition":{"shape":"HierarchyGroupCondition"}
       },
       "documentation":"<p>An object that can be used to specify Tag conditions or Hierarchy Group conditions inside the <code>SearchFilter</code>.</p> <p>This accepts an <code>OR</code> of <code>AND</code> (List of List) input where:</p> <ul> <li> <p>The top level list specifies conditions that need to be applied with <code>OR</code> operator</p> </li> <li> <p>The inner list specifies conditions that need to be applied with <code>AND</code> operator.</p> </li> </ul> <note> <p>Only one field can be populated. Maximum number of allowed Tag conditions is 25. Maximum number of allowed Hierarchy Group conditions is 20.</p> </note>"
+    },
+    "ConversationalAnalytics":{
+      "type":"structure",
+      "members":{
+        "Configuration":{
+          "shape":"ConversationalAnalyticsConfiguration",
+          "documentation":"<p>The conversational analytics settings that apply to the contact.</p>"
+        },
+        "ContactAnalysisReferenceState":{
+          "shape":"ContactAnalysisReferenceState",
+          "documentation":"<p>The current state of conversational analytics processing for the contact.</p>"
+        }
+      },
+      "documentation":"<p>Contains the conversational analytics configuration and state for a contact.</p>"
+    },
+    "ConversationalAnalyticsConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether conversational analytics is enabled for the contact.</p>",
+          "box":true
+        },
+        "LanguageLocale":{
+          "shape":"String",
+          "documentation":"<p>The language locale that conversational analytics uses to analyze the contact (for example, <code>en-US</code>).</p>"
+        },
+        "LanguageLocales":{
+          "shape":"LanguageLocales",
+          "documentation":"<p>The language locales that conversational analytics uses to analyze the contact (for example, <code>en-US</code> and <code>es-ES</code>).</p>"
+        },
+        "ChannelConfiguration":{
+          "shape":"ContactLensChannelConfiguration",
+          "documentation":"<p>The per-channel conversational analytics settings for the contact.</p>"
+        },
+        "RedactionConfiguration":{
+          "shape":"ContactLensRedactionConfiguration",
+          "documentation":"<p>The redaction configuration for the contact transcript.</p>"
+        },
+        "SummaryConfiguration":{
+          "shape":"ContactLensSummaryConfiguration",
+          "documentation":"<p>The summary configuration for the contact.</p>"
+        },
+        "SentimentConfiguration":{
+          "shape":"ContactLensSentimentConfiguration",
+          "documentation":"<p>The sentiment analysis configuration for the contact.</p>"
+        }
+      },
+      "documentation":"<p>The conversational analytics configuration settings for a contact.</p>"
     },
     "Count":{"type":"integer"},
     "CreateAgentStatusRequest":{
@@ -24085,6 +24226,12 @@
       "documentation":"<p>The language configuration for conversational analytics.</p>"
     },
     "LanguageLocale":{"type":"string"},
+    "LanguageLocales":{
+      "type":"list",
+      "member":{"shape":"LanguageLocale"},
+      "max":5,
+      "min":0
+    },
     "LargeNextToken":{
       "type":"string",
       "max":100000,
@@ -28836,7 +28983,7 @@
           "documentation":"<p>The additional CC email address recipients. You can specify up to 50 addresses. Provide an empty list to clear the existing CC recipients.</p>"
         }
       },
-      "documentation":"Additional recipients for UpdateContact, allowing an empty list to clear CC recipients."
+      "documentation":"<p>The additional recipients of an outbound email that you can update. An empty list of <code>CcEmailAddresses</code> clears the existing CC recipients.</p>"
     },
     "NullableBoolean":{"type":"boolean"},
     "NullableDouble":{"type":"double"},

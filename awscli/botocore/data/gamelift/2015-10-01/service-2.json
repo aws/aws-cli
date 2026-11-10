@@ -223,7 +223,7 @@
         {"shape":"NotFoundException"},
         {"shape":"TaggingFailedException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Creates a placement queue that processes requests for new game sessions. A queue uses FleetIQ algorithms to locate the best available placement locations for a new game session, and then prompts the game server process to start a new game session.</p> <p>A game session queue is configured with a set of destinations (Amazon GameLift Servers fleets or aliases) that determine where the queue can place new game sessions. These destinations can span multiple Amazon Web Services Regions, can use different instance types, and can include both Spot and On-Demand fleets. If the queue includes multi-location fleets, the queue can place game sessions in any of a fleet's remote locations.</p> <p>You can configure a queue to determine how it selects the best available placement for a new game session. Queues can prioritize placement decisions based on a combination of location, hosting cost, and player latency. You can set up the queue to use the default prioritization or provide alternate instructions using <code>PriorityConfiguration</code>.</p> <p> <b>Request options</b> </p> <p>Use this operation to make these common types of requests. </p> <ul> <li> <p>Create a queue with the minimum required parameters.</p> <ul> <li> <p> <code>Name</code> </p> </li> <li> <p> <code>Destinations</code> (This parameter isn't required, but a queue can't make placements without at least one destination.)</p> </li> </ul> </li> <li> <p>Create a queue with placement notification. Queues that have high placement activity must use a notification system, such as with Amazon Simple Notification Service (Amazon SNS) or Amazon CloudWatch.</p> <ul> <li> <p>Required parameters <code>Name</code> and <code>Destinations</code> </p> </li> <li> <p> <code>NotificationTarget</code> </p> </li> </ul> </li> <li> <p>Create a queue with custom prioritization settings. These custom settings replace the default prioritization configuration for a queue.</p> <ul> <li> <p>Required parameters <code>Name</code> and <code>Destinations</code> </p> </li> <li> <p> <code>PriorityConfiguration</code> </p> </li> </ul> </li> <li> <p>Create a queue with special rules for processing player latency data.</p> <ul> <li> <p>Required parameters <code>Name</code> and <code>Destinations</code> </p> </li> <li> <p> <code>PlayerLatencyPolicies</code> </p> </li> </ul> </li> </ul> <p> <b>Results</b> </p> <p>If successful, this operation returns a new <code>GameSessionQueue</code> object with an assigned queue ARN. Use the queue's name or ARN when submitting new game session requests with <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartGameSessionPlacement.html\">StartGameSessionPlacement</a> or <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartMatchmaking.html\">StartMatchmaking</a>. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-design.html\"> Design a game session queue</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-creating.html\"> Create a game session queue</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_CreateGameSessionQueue.html\">CreateGameSessionQueue</a> | <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessionQueues.html\">DescribeGameSessionQueues</a> | <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateGameSessionQueue.html\">UpdateGameSessionQueue</a> | <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DeleteGameSessionQueue.html\">DeleteGameSessionQueue</a> | <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Creates a placement queue that processes requests for new game sessions. A queue finds the best available game server, then prompts it to start a new game session.</p> <p>A game session queue is configured with a set of destinations (Amazon GameLift Servers fleets or aliases) that determine where the queue can place new game sessions. These destinations can span multiple Amazon Web Services Regions, can use different instance types, and can include both Spot and On-Demand fleets. If the queue includes multi-location fleets, the queue can place game sessions in any of a fleet's remote locations.</p> <p>You can configure a queue to determine how it selects the best available placement for a new game session. Queues can prioritize placement decisions based on a combination of location, hosting cost, and player latency. You can set up the queue to use the default prioritization or provide alternate instructions using <code>PriorityConfiguration</code>.</p> <p> <b>Request options</b> </p> <p>Use this operation to make these common types of requests. </p> <ul> <li> <p>Create a queue with the minimum required parameters.</p> <ul> <li> <p> <code>Name</code> </p> </li> <li> <p> <code>Destinations</code> (This parameter isn't required, but a queue can't make placements without at least one destination.)</p> </li> </ul> </li> <li> <p>Create a queue with placement notification. Queues that have high placement activity must use a notification system, such as with Amazon Simple Notification Service (Amazon SNS) or Amazon CloudWatch.</p> <ul> <li> <p>Required parameters <code>Name</code> and <code>Destinations</code> </p> </li> <li> <p> <code>NotificationTarget</code> </p> </li> </ul> </li> <li> <p>Create a queue with custom prioritization settings. These custom settings replace the default prioritization configuration for a queue.</p> <ul> <li> <p>Required parameters <code>Name</code> and <code>Destinations</code> </p> </li> <li> <p> <code>PriorityConfiguration</code> </p> </li> </ul> </li> <li> <p>Create a queue with special rules for processing player latency data.</p> <ul> <li> <p>Required parameters <code>Name</code> and <code>Destinations</code> </p> </li> <li> <p> <code>PlayerLatencyPolicies</code> </p> </li> </ul> </li> <li> <p>Create a queue that delivers game session placement insight logs to one or more log destinations.</p> <ul> <li> <p>Required parameters <code>Name</code> and <code>Destinations</code> </p> </li> <li> <p> <code>LogConfiguration</code> </p> </li> </ul> </li> </ul> <p> <b>Results</b> </p> <p>If successful, this operation returns a new <code>GameSessionQueue</code> object with an assigned queue ARN. Use the queue's name or ARN when submitting new game session requests with <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartGameSessionPlacement.html\">StartGameSessionPlacement</a> or <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartMatchmaking.html\">StartMatchmaking</a>. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-design.html\"> Design a game session queue</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-creating.html\"> Create a game session queue</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_CreateGameSessionQueue.html\">CreateGameSessionQueue</a> | <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessionQueues.html\">DescribeGameSessionQueues</a> | <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateGameSessionQueue.html\">UpdateGameSessionQueue</a> | <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DeleteGameSessionQueue.html\">DeleteGameSessionQueue</a> | <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "CreateLocation":{
       "name":"CreateLocation",
@@ -3576,7 +3576,7 @@
         },
         "PriorityConfiguration":{
           "shape":"PriorityConfiguration",
-          "documentation":"<p>Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. </p>"
+          "documentation":"<p>Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. </p>"
         },
         "CustomEventData":{
           "shape":"QueueCustomEventData",
@@ -3589,6 +3589,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of labels to assign to the new game session queue resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources is useful for resource management, access management and cost allocation. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"GameSessionQueueLogConfiguration",
+          "documentation":"<p>An optional configuration that delivers game session placement insight logs to one or more destinations of your choice. Use these logs to diagnose why a game session placement is <code>FULFILLED</code>, <code>CANCELLED</code>, <code>TIMED_OUT</code>, or <code>FAILED</code>, which locations were evaluated, and the latency and cost factors that influenced each decision.</p>"
         }
       }
     },
@@ -4151,23 +4155,29 @@
       "type":"structure",
       "members":{}
     },
+    "DeliveryDestinationArnStringModel":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^arn:[a-zA-Z0-9:/*._#-]+$"
+    },
     "DeploymentConfiguration":{
       "type":"structure",
       "members":{
         "ProtectionStrategy":{
           "shape":"DeploymentProtectionStrategy",
-          "documentation":"<p>Determines how fleet deployment activity affects active game sessions on the fleet. With protection, a deployment honors game session protection, and delays actions that would interrupt a protected active game session until the game session ends. Without protection, deployment activity can shut down all running tasks, including active game sessions, regardless of game session protection. </p>"
+          "documentation":"<p>Determines how fleet deployment activity affects active game sessions on the fleet. A protected game session can't be terminated while it's active; a fleet sets the default protection for its new game sessions with <code>NewGameSessionProtectionPolicy</code>.</p> <ul> <li> <p> <code>WITH_PROTECTION</code> -- The deployment honors game session protection, and delays actions that would interrupt a protected active game session until the game session ends.</p> </li> <li> <p> <code>IGNORE_PROTECTION</code> -- The deployment replaces containers regardless of game session activity, including active game sessions. This option is useful during development and testing.</p> </li> </ul> <p>This setting also affects how long deployment validation can take. When the fleet's <code>NewGameSessionProtectionPolicy</code> is <code>FullProtection</code> and the deployment uses <code>WITH_PROTECTION</code>, validation waits for protected game sessions to end.</p> <p>Default value: <code>WITH_PROTECTION</code> </p>"
         },
         "MinimumHealthyPercentage":{
           "shape":"MinimumHealthyPercentage",
-          "documentation":"<p>Sets a minimum level of healthy tasks to maintain during deployment activity. </p>"
+          "documentation":"<p>Sets the minimum percentage of the fleet's game server container groups to keep healthy during deployment activity. A low value favors deployment speed; a high value favors game server availability. For example, if the fleet runs 20 game server container groups and this value is 75, Amazon GameLift Servers keeps at least 15 of them healthy, so it replaces no more than 5 at a time.</p> <p>Default value: 75</p>"
         },
         "ImpairmentStrategy":{
           "shape":"DeploymentImpairmentStrategy",
-          "documentation":"<p>Determines what actions to take if a deployment fails. If the fleet is multi-location, this strategy applies across all fleet locations. With a rollback strategy, updated fleet instances are rolled back to the last successful deployment. Alternatively, you can maintain a few impaired containers for the purpose of debugging, while all other tasks return to the last successful deployment.</p>"
+          "documentation":"<p>Determines what actions to take if a deployment fails validation. If the fleet is multi-location, this strategy applies across all fleet locations.</p> <ul> <li> <p> <code>ROLLBACK</code> -- Returns all of the fleet's containers to the last successful deployment.</p> </li> <li> <p> <code>MAINTAIN</code> -- Keeps the containers that failed validation in place so that you can inspect them, and returns all other containers to the last successful deployment. Use this option when you're deploying a container image that you want to be able to debug on failure.</p> </li> </ul> <p>Default value: <code>MAINTAIN</code> </p>"
         }
       },
-      "documentation":"<p>Set of rules for processing a deployment for a container fleet update.</p>"
+      "documentation":"<p>Set of rules for processing a deployment for a container fleet update. For how Amazon GameLift Servers validates and rolls out a deployment, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/containers-deployment-validation.html\">Container fleet deployments</a>.</p>"
     },
     "DeploymentDetails":{
       "type":"structure",
@@ -6201,7 +6211,7 @@
         },
         "DeploymentStatus":{
           "shape":"DeploymentStatus",
-          "documentation":"<p>The status of fleet deployment activity in the location. </p> <ul> <li> <p> <code>IN_PROGRESS</code> -- The deployment is in progress.</p> </li> <li> <p> <code>IMPAIRED</code> -- The deployment failed and the fleet has some impaired containers. </p> </li> <li> <p> <code>COMPLETE</code> -- The deployment has completed successfully.</p> </li> <li> <p> <code>ROLLBACK_IN_PROGRESS</code> -- The deployment failed and rollback has been initiated.</p> </li> <li> <p> <code>ROLLBACK_IN_COMPLETE</code> -- The deployment failed and rollback has been completed.</p> </li> <li> <p> <code>CANCELLED</code> -- The deployment was cancelled.</p> </li> </ul>"
+          "documentation":"<p>The status of the fleet deployment. For per-location status, see <code>LocationalDeployment</code>.</p> <ul> <li> <p> <code>PENDING</code> -- Amazon GameLift Servers has accepted the deployment and hasn't started it yet.</p> </li> <li> <p> <code>IN_PROGRESS</code> -- The deployment is in progress. This status covers validation as well as the replacement of the fleet's containers.</p> </li> <li> <p> <code>IMPAIRED</code> -- The deployment failed validation, and the fleet kept the containers that failed validation so that you can inspect them. A deployment reaches this status when its impairment strategy is <code>MAINTAIN</code>.</p> </li> <li> <p> <code>COMPLETE</code> -- The deployment has completed successfully in every fleet location.</p> </li> <li> <p> <code>ROLLBACK_IN_PROGRESS</code> -- The deployment failed and rollback has been initiated. A deployment reaches this status when its impairment strategy is <code>ROLLBACK</code>.</p> </li> <li> <p> <code>ROLLBACK_COMPLETE</code> -- The deployment failed and rollback has been completed. The fleet is running the configuration from the last successful deployment.</p> </li> <li> <p> <code>CANCELLED</code> -- The deployment was cancelled because a new deployment started for the same fleet.</p> </li> </ul> <p>For how to debug an impaired deployment or cancel one, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/containers-deployment-validation.html\">Container fleet deployments</a>.</p>"
         },
         "DeploymentConfiguration":{
           "shape":"DeploymentConfiguration",
@@ -7135,7 +7145,7 @@
         },
         "PriorityConfiguration":{
           "shape":"PriorityConfiguration",
-          "documentation":"<p>Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. </p>"
+          "documentation":"<p>Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. </p>"
         },
         "CustomEventData":{
           "shape":"QueueCustomEventData",
@@ -7144,6 +7154,10 @@
         "NotificationTarget":{
           "shape":"QueueSnsArnStringModel",
           "documentation":"<p>An SNS topic ARN that is set up to receive game session placement notifications. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html\"> Setting up notifications for game session placement</a>.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"GameSessionQueueLogConfiguration",
+          "documentation":"<p>An optional configuration that delivers game session placement insight logs to one or more destinations of your choice. Use these logs to diagnose why a game session placement is <code>FULFILLED</code>, <code>CANCELLED</code>, <code>TIMED_OUT</code>, or <code>FAILED</code>, which locations were evaluated, and the latency and cost factors that influenced each decision.</p>"
         }
       },
       "documentation":"<p>Configuration for a game session placement mechanism that processes requests for new game sessions. A queue can be used on its own or as part of a matchmaking solution.</p>"
@@ -7171,6 +7185,17 @@
     "GameSessionQueueList":{
       "type":"list",
       "member":{"shape":"GameSessionQueue"}
+    },
+    "GameSessionQueueLogConfiguration":{
+      "type":"structure",
+      "required":["DeliveryDestinations"],
+      "members":{
+        "DeliveryDestinations":{
+          "shape":"LogDeliveryDestinationList",
+          "documentation":"<p>The destinations that receive game session placement insight logs for the queue. You can specify up to 3 destinations. Each destination must have a unique ARN.</p>"
+        }
+      },
+      "documentation":"<p>A configuration that delivers game session placement insight logs to one or more destinations of your choice.</p>"
     },
     "GameSessionQueueName":{
       "type":"string",
@@ -8300,7 +8325,7 @@
       "members":{
         "DeploymentStatus":{
           "shape":"DeploymentStatus",
-          "documentation":"<p>The status of fleet deployment activity in the location. </p> <ul> <li> <p> <code>IN_PROGRESS</code> -- The deployment is in progress.</p> </li> <li> <p> <code>IMPAIRED</code> -- The deployment failed and the fleet has some impaired containers. </p> </li> <li> <p> <code>COMPLETE</code> -- The deployment has completed successfully.</p> </li> <li> <p> <code>ROLLBACK_IN_PROGRESS</code> -- The deployment failed and rollback has been initiated.</p> </li> <li> <p> <code>ROLLBACK_IN_COMPLETE</code> -- The deployment failed and rollback has been completed.</p> </li> <li> <p> <code>CANCELLED</code> -- The deployment was cancelled.</p> </li> </ul>"
+          "documentation":"<p>The status of fleet deployment activity in the location. </p> <ul> <li> <p> <code>IN_PROGRESS</code> -- The deployment is in progress in the location. This status covers validation as well as the replacement of the location's containers.</p> </li> <li> <p> <code>IMPAIRED</code> -- The deployment failed validation in the location, and the location kept the containers that failed validation so that you can inspect them. A location reaches this status when the deployment's impairment strategy is <code>MAINTAIN</code>.</p> </li> <li> <p> <code>COMPLETE</code> -- The deployment has completed successfully in the location.</p> </li> <li> <p> <code>ROLLBACK_IN_PROGRESS</code> -- The deployment failed and rollback has been initiated in the location. A location reaches this status when the deployment's impairment strategy is <code>ROLLBACK</code>.</p> </li> <li> <p> <code>ROLLBACK_COMPLETE</code> -- The deployment failed and rollback has been completed in the location. The location is running the configuration from the last successful deployment.</p> </li> <li> <p> <code>CANCELLED</code> -- The deployment was cancelled because a new deployment started for the same fleet.</p> </li> </ul>"
         }
       },
       "documentation":"<p>For a multi-location container fleet, describes the progress of a deployment across all fleet locations. </p>"
@@ -8327,6 +8352,35 @@
         }
       },
       "documentation":"<p>A method for collecting container logs for the fleet. Amazon GameLift Servers saves all standard output for each container in logs, including game session logs. You can select from the following methods: </p>"
+    },
+    "LogDeliveryDestination":{
+      "type":"structure",
+      "required":["LogDestination"],
+      "members":{
+        "LogDestination":{
+          "shape":"LogDeliveryDestinationType",
+          "documentation":"<p>The type of Amazon Web Services resource that receives the game session placement insight logs. This value is required. Valid values are:</p> <ul> <li> <p> <code>CLOUDWATCH</code> -- an Amazon CloudWatch Logs log group.</p> </li> <li> <p> <code>S3</code> -- an Amazon S3 bucket.</p> </li> <li> <p> <code>FIREHOSE</code> -- an Amazon Data Firehose delivery stream.</p> </li> </ul>"
+        },
+        "DestinationArn":{
+          "shape":"DeliveryDestinationArnStringModel",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that receives the game session placement insight logs. This resource must match the type that you specify in <code>LogDestination</code>. This value is required for <code>FIREHOSE</code> destinations. For <code>CLOUDWATCH</code> and <code>S3</code>, you can omit this value; Amazon GameLift Servers then creates a destination resource of the specified type on your behalf.</p>"
+        }
+      },
+      "documentation":"<p>A single destination that receives game session placement insight logs for a game session queue.</p> <note> <p>Amazon CloudWatch Logs vended log charges apply to each destination. Amazon S3 and Amazon Data Firehose destinations also incur their own service charges. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">Amazon CloudWatch Pricing</a>.</p> </note>"
+    },
+    "LogDeliveryDestinationList":{
+      "type":"list",
+      "member":{"shape":"LogDeliveryDestination"},
+      "max":3,
+      "min":1
+    },
+    "LogDeliveryDestinationType":{
+      "type":"string",
+      "enum":[
+        "CLOUDWATCH",
+        "S3",
+        "FIREHOSE"
+      ]
     },
     "LogDestination":{
       "type":"string",
@@ -10659,7 +10713,7 @@
         },
         "PriorityConfiguration":{
           "shape":"PriorityConfiguration",
-          "documentation":"<p>Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. To remove an existing priority configuration, pass in an empty set.</p>"
+          "documentation":"<p>Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. To remove an existing priority configuration, pass in an empty set.</p>"
         },
         "CustomEventData":{
           "shape":"QueueCustomEventData",
@@ -10668,6 +10722,14 @@
         "NotificationTarget":{
           "shape":"QueueSnsArnStringModel",
           "documentation":"<p>An SNS topic ARN that is set up to receive game session placement notifications. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html\"> Setting up notifications for game session placement</a>.</p>"
+        },
+        "AddLogDeliveryDestinations":{
+          "shape":"LogDeliveryDestinationList",
+          "documentation":"<p>Log delivery destinations to add to the queue's log configuration (<code>LogConfiguration</code>).</p>"
+        },
+        "RemoveLogDeliveryDestinations":{
+          "shape":"LogDeliveryDestinationList",
+          "documentation":"<p>Log delivery destinations to remove from the queue's log configuration (<code>LogConfiguration</code>).</p>"
         }
       }
     },

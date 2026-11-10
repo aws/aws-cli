@@ -2,8 +2,8 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2018-05-10",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"route53profiles",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
     "protocols":["rest-json"],
     "serviceFullName":"Route 53 Profiles",
@@ -32,7 +32,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p> Associates a Route 53 Profiles profile with a VPC. A VPC can have only one Profile associated with it, but a Profile can be associated with 1000 of VPCs (and you can request a higher quota). For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html#limits-api-entities\">https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html#limits-api-entities</a>. </p>"
+      "documentation":"<p> Associates a Route 53 Profiles profile with a VPC. A VPC can have up to two Profile associations. A Profile can be associated with up to 1,000 VPCs, and you can request a higher quota for the number of VPCs. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html#limits-api-entities-route53-profiles\">Quotas on Route 53 Profiles</a>. </p> <p> Route 53 VPC Resolver evaluates the Profile associations for a VPC in priority order, starting with the lowest <code>Priority</code> value. If the VPC has no other Profile associations, you can omit <code>Priority</code>, and the association gets priority 100. When the VPC already has a Profile association, you must specify a <code>Priority</code>, and each Profile association for the VPC must have a unique priority. To change the priority of an existing association, use <code>UpdateProfileAssociation</code>. </p> <p>The request fails with a <code>ValidationException</code> in these cases:</p> <ul> <li> <p>You omit <code>Priority</code>, and the VPC already has a Profile association.</p> </li> <li> <p>Another Profile association for the VPC already uses the priority that you specify.</p> </li> <li> <p>The priority is outside the range 100–9900.</p> </li> <li> <p>The Profile is already associated with the VPC, and you specify a different <code>Name</code> or <code>Priority</code>. To change the priority, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53profiles_UpdateProfileAssociation.html\">UpdateProfileAssociation</a>.</p> </li> </ul> <p> The request fails with a <code>LimitExceededException</code> if the VPC already has the maximum number of Profile associations. </p>"
     },
     "AssociateResourceToProfile":{
       "name":"AssociateResourceToProfile",
@@ -45,15 +45,15 @@
       "output":{"shape":"AssociateResourceToProfileResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
-        {"shape":"LimitExceededException"},
         {"shape":"InternalServiceErrorException"},
+        {"shape":"LimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p> Associates a DNS reource configuration to a Route 53 Profile. </p>"
+      "documentation":"<p> Associates a DNS resource configuration to a Route 53 Profile. </p>"
     },
     "CreateProfile":{
       "name":"CreateProfile",
@@ -123,8 +123,8 @@
       "output":{"shape":"DisassociateResourceFromProfileResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
-        {"shape":"LimitExceededException"},
         {"shape":"InternalServiceErrorException"},
+        {"shape":"LimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
@@ -149,7 +149,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Returns information about a specified Route 53 Profile, such as whether whether the Profile is shared, and the current status of the Profile. </p>"
+      "documentation":"<p> Returns information about a specified Route 53 Profile, such as whether whether the Profile is shared, and the current status of the Profile. </p>",
+      "readonly":true
     },
     "GetProfileAssociation":{
       "name":"GetProfileAssociation",
@@ -166,7 +167,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Retrieves a Route 53 Profile association for a VPC. A VPC can have only one Profile association, but a Profile can be associated with up to 5000 VPCs. </p>"
+      "documentation":"<p> Retrieves a Route 53 Profile association for a VPC. A VPC can have up to two Profile associations, and a Profile can be associated with up to 1,000 VPCs. </p>",
+      "readonly":true
     },
     "GetProfileResourceAssociation":{
       "name":"GetProfileResourceAssociation",
@@ -184,7 +186,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Returns information about a specified Route 53 Profile resource association. </p>"
+      "documentation":"<p> Returns information about a specified Route 53 Profile resource association. </p>",
+      "readonly":true
     },
     "ListProfileAssociations":{
       "name":"ListProfileAssociations",
@@ -202,7 +205,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p> Lists all the VPCs that the specified Route 53 Profile is associated with. </p>"
+      "documentation":"<p> Lists all the VPCs that the specified Route 53 Profile is associated with. </p>",
+      "readonly":true
     },
     "ListProfileResourceAssociations":{
       "name":"ListProfileResourceAssociations",
@@ -222,7 +226,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p> Lists all the resource associations for the specified Route 53 Profile. </p>"
+      "documentation":"<p> Lists all the resource associations for the specified Route 53 Profile. </p>",
+      "readonly":true
     },
     "ListProfiles":{
       "name":"ListProfiles",
@@ -240,7 +245,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p> Lists all the Route 53 Profiles associated with your Amazon Web Services account. </p>"
+      "documentation":"<p> Lists all the Route 53 Profiles associated with your Amazon Web Services account. </p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -258,7 +264,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p> Lists the tags that you associated with the specified resource. </p>"
+      "documentation":"<p> Lists the tags that you associated with the specified resource. </p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -297,6 +304,28 @@
       "documentation":"<p> Removes one or more tags from a specified resource. </p>",
       "idempotent":true
     },
+    "UpdateProfileAssociation":{
+      "name":"UpdateProfileAssociation",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/profileassociation/{ProfileAssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProfileAssociationRequest"},
+      "output":{"shape":"UpdateProfileAssociationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p> Updates the name or priority of the specified Route 53 Profile association with a VPC. Route 53 VPC Resolver evaluates the Profile associations for a VPC in priority order, starting with the lowest value. Only the account that created the association can update it. </p> <p> When you change the priority, the association status is <code>UPDATING</code> until the change propagates, and then <code>COMPLETE</code>. While the status is <code>UPDATING</code>, Route 53 VPC Resolver might still use the previous priority for some queries. When the status is <code>COMPLETE</code>, the new priority applies to all queries from the VPC. </p> <p> The request fails with a <code>ValidationException</code> if another Profile association for the VPC already uses the priority that you specify, or if the priority is outside the range 100–9900. </p> <p> You can update an association whose status is <code>CREATING</code>, <code>UPDATING</code>, or <code>COMPLETE</code>. The request fails with a <code>ConflictException</code> if the association status is <code>DELETING</code>, <code>DELETED</code>, or <code>FAILED</code>, or if the account that owns the association is inactive. </p>",
+      "idempotent":true
+    },
     "UpdateProfileResourceAssociation":{
       "name":"UpdateProfileResourceAssociation",
       "http":{
@@ -308,8 +337,8 @@
       "output":{"shape":"UpdateProfileResourceAssociationResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
-        {"shape":"LimitExceededException"},
         {"shape":"InternalServiceErrorException"},
+        {"shape":"LimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
@@ -341,15 +370,11 @@
     "AssociateProfileRequest":{
       "type":"structure",
       "required":[
-        "Name",
         "ProfileId",
-        "ResourceId"
+        "ResourceId",
+        "Name"
       ],
       "members":{
-        "Name":{
-          "shape":"Name",
-          "documentation":"<p> A name for the association. </p>"
-        },
         "ProfileId":{
           "shape":"ResourceId",
           "documentation":"<p> ID of the Profile. </p>"
@@ -358,9 +383,17 @@
           "shape":"ResourceId",
           "documentation":"<p> The ID of the VPC. </p>"
         },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p> A name for the association. </p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p> A list of the tag keys and values that you want to identify the Profile association. </p>"
+        },
+        "Priority":{
+          "shape":"Priority",
+          "documentation":"<p> The priority of the Profile association. Route 53 VPC Resolver evaluates the Profile associations for a VPC in priority order, starting with the lowest value. </p> <p> When the VPC already has a Profile association, you must specify a priority that no other Profile association for the VPC uses. If you omit the priority for the first association with a VPC, the association gets priority 100. </p>"
         }
       }
     },
@@ -369,29 +402,29 @@
       "members":{
         "ProfileAssociation":{
           "shape":"ProfileAssociation",
-          "documentation":"<p> The association that you just created. The association has an ID that you can use to identify it in other requests, like update and delete. </p>"
+          "documentation":"<p> The association that you just created. The association has an ID that you can use to identify it in other requests, such as update and delete. </p>"
         }
       }
     },
     "AssociateResourceToProfileRequest":{
       "type":"structure",
       "required":[
-        "Name",
         "ProfileId",
-        "ResourceArn"
+        "ResourceArn",
+        "Name"
       ],
       "members":{
-        "Name":{
-          "shape":"Name",
-          "documentation":"<p> Name for the resource association. </p>"
-        },
         "ProfileId":{
           "shape":"ResourceId",
           "documentation":"<p> ID of the Profile. </p>"
         },
         "ResourceArn":{
           "shape":"Arn",
-          "documentation":"<p> Amazon resource number, ARN, of the DNS resource. </p>"
+          "documentation":"<p> Amazon resource number, ARN, of the resource to associate. Either a private hosted zone, DNS Firewall rule group, Resolver rule, or an interface VPC endpoint. </p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p> Name for the resource association. </p>"
         },
         "ResourceProperties":{
           "shape":"ResourceProperties",
@@ -419,18 +452,18 @@
     "CreateProfileRequest":{
       "type":"structure",
       "required":[
-        "ClientToken",
-        "Name"
+        "Name",
+        "ClientToken"
       ],
       "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p> A name for the Profile. </p>"
+        },
         "ClientToken":{
           "shape":"CreatorRequestId",
           "documentation":"<p> <code>ClientToken</code> is an idempotency token that ensures a call to <code>CreateProfile</code> completes only once. You choose the value to pass. For example, an issue might prevent you from getting a response from <code>CreateProfile</code>. In this case, safely retry your call to <code>CreateProfile</code> by using the same <code>CreateProfile</code> parameter value. </p>",
           "idempotencyToken":true
-        },
-        "Name":{
-          "shape":"Name",
-          "documentation":"<p> A name for the Profile. </p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -573,7 +606,7 @@
       "members":{
         "ProfileResourceAssociationId":{
           "shape":"ResourceId",
-          "documentation":"<p> <p>The ID of the profile resource association that you want to get information about.</p> </p>",
+          "documentation":"<p> The ID of the profile resource association that you want to get information about. </p>",
           "location":"uri",
           "locationName":"ProfileResourceAssociationId"
         }
@@ -603,7 +636,8 @@
         "Message":{"shape":"ExceptionMessage"}
       },
       "documentation":"<p> An internal server error occured. Retry your request. </p>",
-      "exception":true
+      "exception":true,
+      "retryable":{"throttling":false}
     },
     "InvalidNextTokenException":{
       "type":"structure",
@@ -617,11 +651,11 @@
       "type":"structure",
       "required":["Message"],
       "members":{
+        "Message":{"shape":"ExceptionMessage"},
         "FieldName":{
           "shape":"String",
           "documentation":"<p> The parameter field name for the invalid parameter exception. </p>"
-        },
-        "Message":{"shape":"ExceptionMessage"}
+        }
       },
       "documentation":"<p> One or more parameters in this request are not valid. </p>",
       "exception":true
@@ -641,17 +675,11 @@
     "ListProfileAssociationsRequest":{
       "type":"structure",
       "members":{
-        "MaxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p> The maximum number of objects that you want to return for this request. If more objects are available, in the response, a <code>NextToken</code> value, which you can use in a subsequent call to get the next batch of objects, is provided.</p> <p> If you don't specify a value for <code>MaxResults</code>, up to 100 objects are returned. </p>",
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p> ID of the VPC. </p>",
           "location":"querystring",
-          "locationName":"maxResults"
-        },
-        "NextToken":{
-          "shape":"NextToken",
-          "documentation":"<p> For the first call to this list request, omit this value. </p> <p>When you request a list of objects, at most the number of objects specified by <code>MaxResults</code> is returned. If more objects are available for retrieval, a <code>NextToken</code> value is returned in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>",
-          "location":"querystring",
-          "locationName":"nextToken"
+          "locationName":"resourceId"
         },
         "ProfileId":{
           "shape":"ResourceId",
@@ -659,31 +687,6 @@
           "location":"querystring",
           "locationName":"profileId"
         },
-        "ResourceId":{
-          "shape":"ResourceId",
-          "documentation":"<p> ID of the VPC. </p>",
-          "location":"querystring",
-          "locationName":"resourceId"
-        }
-      }
-    },
-    "ListProfileAssociationsResponse":{
-      "type":"structure",
-      "members":{
-        "NextToken":{
-          "shape":"NextToken",
-          "documentation":"<p> If more than <code>MaxResults</code> profile associations match the specified criteria, you can submit another <code>ListProfileAssociations</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>"
-        },
-        "ProfileAssociations":{
-          "shape":"ProfileAssociations",
-          "documentation":"<p> A complex type that containts settings information about the profile's VPC associations. </p>"
-        }
-      }
-    },
-    "ListProfileResourceAssociationsRequest":{
-      "type":"structure",
-      "required":["ProfileId"],
-      "members":{
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p> The maximum number of objects that you want to return for this request. If more objects are available, in the response, a <code>NextToken</code> value, which you can use in a subsequent call to get the next batch of objects, is provided.</p> <p> If you don't specify a value for <code>MaxResults</code>, up to 100 objects are returned. </p>",
@@ -695,7 +698,26 @@
           "documentation":"<p> For the first call to this list request, omit this value. </p> <p>When you request a list of objects, at most the number of objects specified by <code>MaxResults</code> is returned. If more objects are available for retrieval, a <code>NextToken</code> value is returned in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        }
+      }
+    },
+    "ListProfileAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "ProfileAssociations":{
+          "shape":"ProfileAssociations",
+          "documentation":"<p> A complex type that containts settings information about the profile's VPC associations. </p>"
         },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> If more than <code>MaxResults</code> profile associations match the specified criteria, you can submit another <code>ListProfileAssociations</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>"
+        }
+      }
+    },
+    "ListProfileResourceAssociationsRequest":{
+      "type":"structure",
+      "required":["ProfileId"],
+      "members":{
         "ProfileId":{
           "shape":"ResourceId",
           "documentation":"<p> The ID of the Profile. </p>",
@@ -707,19 +729,37 @@
           "documentation":"<p> ID of a resource if you want information on only one type. </p>",
           "location":"querystring",
           "locationName":"resourceType"
+        },
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of a resource. If you specify this parameter, only the association with that resource is returned. </p>",
+          "location":"querystring",
+          "locationName":"resourceArn"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of objects that you want to return for this request. If more objects are available, in the response, a <code>NextToken</code> value, which you can use in a subsequent call to get the next batch of objects, is provided.</p> <p> If you don't specify a value for <code>MaxResults</code>, up to 100 objects are returned. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> For the first call to this list request, omit this value. </p> <p>When you request a list of objects, at most the number of objects specified by <code>MaxResults</code> is returned. If more objects are available for retrieval, a <code>NextToken</code> value is returned in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
         }
       }
     },
     "ListProfileResourceAssociationsResponse":{
       "type":"structure",
       "members":{
-        "NextToken":{
-          "shape":"NextToken",
-          "documentation":"<p> If more than <code>MaxResults</code> resource associations match the specified criteria, you can submit another <code>ListProfileResourceAssociations</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>"
-        },
         "ProfileResourceAssociations":{
           "shape":"ProfileResourceAssociations",
           "documentation":"<p> Information about the profile resource association that you specified in a <code>GetProfileResourceAssociation</code> request. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> If more than <code>MaxResults</code> resource associations match the specified criteria, you can submit another <code>ListProfileResourceAssociations</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>"
         }
       }
     },
@@ -743,13 +783,13 @@
     "ListProfilesResponse":{
       "type":"structure",
       "members":{
-        "NextToken":{
-          "shape":"NextToken",
-          "documentation":"<p> If more than <code>MaxResults</code> resource associations match the specified criteria, you can submit another <code>ListProfiles</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>"
-        },
         "ProfileSummaries":{
           "shape":"ProfileSummaryList",
           "documentation":"<p> Summary information about the Profiles. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> If more than <code>MaxResults</code> resource associations match the specified criteria, you can submit another <code>ListProfiles</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>"
         }
       }
     },
@@ -785,31 +825,25 @@
       "type":"string",
       "max":64,
       "min":0,
-      "pattern":"^(?!^[0-9]+$)([a-zA-Z0-9\\-_' ']+)$"
+      "pattern":"(?!^[0-9]+$)([a-zA-Z0-9\\-_' ']+)"
     },
     "NextToken":{"type":"string"},
+    "Priority":{
+      "type":"integer",
+      "box":true,
+      "max":9900,
+      "min":100
+    },
     "Profile":{
       "type":"structure",
       "members":{
-        "Arn":{
-          "shape":"Arn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the Profile. </p>"
-        },
-        "ClientToken":{
-          "shape":"CreatorRequestId",
-          "documentation":"<p> The <code>ClientToken</code> value that was assigned when the Profile was created. </p>"
-        },
-        "CreationTime":{
-          "shape":"Rfc3339Timestamp",
-          "documentation":"<p> The date and time that the Profile was created, in Unix time format and Coordinated Universal Time (UTC). </p>"
-        },
         "Id":{
           "shape":"ResourceId",
           "documentation":"<p> ID of the Profile. </p>"
         },
-        "ModificationTime":{
-          "shape":"Rfc3339Timestamp",
-          "documentation":"<p> The date and time that the Profile was modified, in Unix time format and Coordinated Universal Time (UTC). </p>"
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Profile. </p>"
         },
         "Name":{
           "shape":"Name",
@@ -819,10 +853,6 @@
           "shape":"AccountId",
           "documentation":"<p> Amazon Web Services account ID of the Profile owner. </p>"
         },
-        "ShareStatus":{
-          "shape":"ShareStatus",
-          "documentation":"<p> Sharing status for the Profile. </p>"
-        },
         "Status":{
           "shape":"ProfileStatus",
           "documentation":"<p> The status for the Profile. </p>"
@@ -830,6 +860,22 @@
         "StatusMessage":{
           "shape":"String",
           "documentation":"<p> Status message that includes additiona information about the Profile. </p>"
+        },
+        "ShareStatus":{
+          "shape":"ShareStatus",
+          "documentation":"<p> Sharing status for the Profile. </p>"
+        },
+        "CreationTime":{
+          "shape":"Rfc3339Timestamp",
+          "documentation":"<p> The date and time that the Profile was created, in Unix time format and Coordinated Universal Time (UTC). </p>"
+        },
+        "ModificationTime":{
+          "shape":"Rfc3339Timestamp",
+          "documentation":"<p> The date and time that the Profile was modified, in Unix time format and Coordinated Universal Time (UTC). </p>"
+        },
+        "ClientToken":{
+          "shape":"CreatorRequestId",
+          "documentation":"<p> The <code>ClientToken</code> value that was assigned when the Profile was created. </p>"
         }
       },
       "documentation":"<p> A complex type that includes settings for a Route 53 Profile. </p>"
@@ -837,17 +883,9 @@
     "ProfileAssociation":{
       "type":"structure",
       "members":{
-        "CreationTime":{
-          "shape":"Rfc3339Timestamp",
-          "documentation":"<p> The date and time that the Profile association was created, in Unix time format and Coordinated Universal Time (UTC). </p>"
-        },
         "Id":{
           "shape":"ResourceId",
           "documentation":"<p> ID of the Profile association. </p>"
-        },
-        "ModificationTime":{
-          "shape":"Rfc3339Timestamp",
-          "documentation":"<p> The date and time that the Profile association was modified, in Unix time format and Coordinated Universal Time (UTC). </p>"
         },
         "Name":{
           "shape":"Name",
@@ -872,6 +910,18 @@
         "StatusMessage":{
           "shape":"String",
           "documentation":"<p> Additional information about the Profile association. </p>"
+        },
+        "CreationTime":{
+          "shape":"Rfc3339Timestamp",
+          "documentation":"<p> The date and time that the Profile association was created, in Unix time format and Coordinated Universal Time (UTC). </p>"
+        },
+        "ModificationTime":{
+          "shape":"Rfc3339Timestamp",
+          "documentation":"<p> The date and time that the Profile association was modified, in Unix time format and Coordinated Universal Time (UTC). </p>"
+        },
+        "Priority":{
+          "shape":"Priority",
+          "documentation":"<p> The priority of the Profile association. Route 53 VPC Resolver evaluates the Profile associations for a VPC in priority order, starting with the lowest value. Associations created without a priority have priority 100. </p>"
         }
       },
       "documentation":"<p> An association between a Route 53 Profile and a VPC. </p>"
@@ -883,17 +933,9 @@
     "ProfileResourceAssociation":{
       "type":"structure",
       "members":{
-        "CreationTime":{
-          "shape":"Rfc3339Timestamp",
-          "documentation":"<p> The date and time that the Profile resource association was created, in Unix time format and Coordinated Universal Time (UTC). </p>"
-        },
         "Id":{
           "shape":"ResourceId",
           "documentation":"<p> ID of the Profile resource association. </p>"
-        },
-        "ModificationTime":{
-          "shape":"Rfc3339Timestamp",
-          "documentation":"<p> The date and time that the Profile resource association was modified, in Unix time format and Coordinated Universal Time (UTC). </p>"
         },
         "Name":{
           "shape":"Name",
@@ -911,13 +953,13 @@
           "shape":"Arn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the resource association. </p>"
         },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p> Resource type, such as a private hosted zone, interface VPC endpoint, Resolver query log configuration, or DNS Firewall rule group. </p>"
+        },
         "ResourceProperties":{
           "shape":"ResourceProperties",
           "documentation":"<p> If the DNS resource is a DNS Firewall rule group, this indicates the priority. </p>"
-        },
-        "ResourceType":{
-          "shape":"String",
-          "documentation":"<p> Resource type, such as a private hosted zone, or DNS Firewall rule group. </p>"
         },
         "Status":{
           "shape":"ProfileStatus",
@@ -926,6 +968,14 @@
         "StatusMessage":{
           "shape":"String",
           "documentation":"<p> Additional information about the Profile resource association. </p>"
+        },
+        "CreationTime":{
+          "shape":"Rfc3339Timestamp",
+          "documentation":"<p> The date and time that the Profile resource association was created, in Unix time format and Coordinated Universal Time (UTC). </p>"
+        },
+        "ModificationTime":{
+          "shape":"Rfc3339Timestamp",
+          "documentation":"<p> The date and time that the Profile resource association was modified, in Unix time format and Coordinated Universal Time (UTC). </p>"
         }
       },
       "documentation":"<p> The association between a Route 53 Profile and resources. </p>"
@@ -948,13 +998,13 @@
     "ProfileSummary":{
       "type":"structure",
       "members":{
-        "Arn":{
-          "shape":"Arn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the Profile. </p>"
-        },
         "Id":{
           "shape":"ResourceId",
           "documentation":"<p> ID of the Profile. </p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Profile. </p>"
         },
         "Name":{
           "shape":"Name",
@@ -1074,8 +1124,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -1088,7 +1137,8 @@
         "Message":{"shape":"ExceptionMessage"}
       },
       "documentation":"<p> The request was throttled. Try again in a few minutes. </p>",
-      "exception":true
+      "exception":true,
+      "retryable":{"throttling":true}
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -1113,22 +1163,51 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "UpdateProfileAssociationRequest":{
+      "type":"structure",
+      "required":["ProfileAssociationId"],
       "members":{
+        "ProfileAssociationId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The ID of the Profile association to update. </p>",
+          "location":"uri",
+          "locationName":"ProfileAssociationId"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p> The name of the Profile association. </p>"
+        },
+        "Priority":{
+          "shape":"Priority",
+          "documentation":"<p> The new priority of the Profile association. Route 53 VPC Resolver evaluates the Profile associations for a VPC in priority order, starting with the lowest value. </p> <p>The priority must be unique among the Profile associations for the VPC.</p>"
+        }
+      }
+    },
+    "UpdateProfileAssociationResponse":{
+      "type":"structure",
+      "required":["ProfileAssociation"],
+      "members":{
+        "ProfileAssociation":{
+          "shape":"ProfileAssociation",
+          "documentation":"<p> Information about the <code>UpdateProfileAssociation</code> request, including a status message. </p>"
+        }
       }
     },
     "UpdateProfileResourceAssociationRequest":{
       "type":"structure",
       "required":["ProfileResourceAssociationId"],
       "members":{
-        "Name":{
-          "shape":"Name",
-          "documentation":"<p> Name of the resource association. </p>"
-        },
         "ProfileResourceAssociationId":{
           "shape":"ResourceId",
           "documentation":"<p> ID of the resource association. </p>",
           "location":"uri",
           "locationName":"ProfileResourceAssociationId"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p> Name of the resource association. </p>"
         },
         "ResourceProperties":{
           "shape":"ResourceProperties",
@@ -1154,5 +1233,5 @@
       "exception":true
     }
   },
-  "documentation":"<p> With Amazon Route 53 Profiles you can share Route 53 configurations with VPCs and AWS accounts </p>"
+  "documentation":"<p> With Amazon Route 53 Profiles you can share Route 53 configurations with VPCs and Amazon Web Services accounts </p>"
 }

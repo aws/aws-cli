@@ -346,6 +346,26 @@
       "documentation":"<p>Gets the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketEncryption</code> permission to use this operation.</p> </dd> </dl>",
       "readonly":true
     },
+    "GetTableBucketLogging":{
+      "name":"GetTableBucketLogging",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/logging",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketLoggingRequest"},
+      "output":{"shape":"GetTableBucketLoggingResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the server access logging configuration for a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-server-logs.html\">Server access logging for table buckets</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketLogging</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
     "GetTableBucketMaintenanceConfiguration":{
       "name":"GetTableBucketMaintenanceConfiguration",
       "http":{
@@ -787,6 +807,25 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Sets the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketEncryption</code> permission to use this operation.</p> <note> <p>If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> </note> </dd> </dl>",
+      "idempotent":true
+    },
+    "PutTableBucketLogging":{
+      "name":"PutTableBucketLogging",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/logging",
+        "responseCode":204
+      },
+      "input":{"shape":"PutTableBucketLoggingRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Sets, updates, or removes the server access logging configuration for a table bucket. When logging is enabled, Amazon S3 delivers a record of the requests made to the table bucket and its tables to the target general purpose bucket that you specify. To disable logging, call this operation with an empty <code>tableBucketLoggingStatus</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-server-logs.html\">Server access logging for table buckets</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketLogging</code> permission to use this operation.</p> </dd> </dl>",
       "idempotent":true
     },
     "PutTableBucketMaintenanceConfiguration":{
@@ -1694,6 +1733,28 @@
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>The encryption configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableBucketLoggingRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketLoggingResponse":{
+      "type":"structure",
+      "required":["tableBucketLoggingStatus"],
+      "members":{
+        "tableBucketLoggingStatus":{
+          "shape":"TableBucketLoggingStatus",
+          "documentation":"<p>The logging status of the table bucket. If logging is disabled, <code>loggingEnabled</code> is absent.</p>"
         }
       }
     },
@@ -3061,6 +3122,39 @@
         }
       }
     },
+    "LoggingEnabled":{
+      "type":"structure",
+      "required":[
+        "targetBucket",
+        "targetPrefix",
+        "targetObjectKeyFormat"
+      ],
+      "members":{
+        "targetBucket":{
+          "shape":"LoggingTargetBucket",
+          "documentation":"<p>The name of the general purpose bucket that logs are delivered to. The bucket must be in the same Amazon Web Services Region and owned by the same Amazon Web Services account as the table bucket. The bucket can't use SSE-KMS or DSSE-KMS default encryption, can't have S3 Object Lock enabled, and can't have Requester Pays enabled. You can deliver logs from multiple table buckets to the same target bucket. In this case, choose a different <code>targetPrefix</code> for each table bucket so that you can tell their log objects apart.</p>"
+        },
+        "targetPrefix":{
+          "shape":"LoggingTargetPrefix",
+          "documentation":"<p>The prefix for the keys of the log objects that are delivered to the target bucket.</p>"
+        },
+        "targetObjectKeyFormat":{
+          "shape":"TargetObjectKeyFormat",
+          "documentation":"<p>The key format of the log objects. Log object keys are always partitioned by date.</p>"
+        }
+      },
+      "documentation":"<p>Describes where logs are stored and the prefix that Amazon S3 assigns to all log object keys for a table bucket.</p>"
+    },
+    "LoggingTargetBucket":{
+      "type":"string",
+      "max":63,
+      "min":3
+    },
+    "LoggingTargetPrefix":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "Long":{
       "type":"long",
       "box":true
@@ -3480,6 +3574,24 @@
       "type":"string",
       "enum":["ICEBERG"]
     },
+    "PartitionDateSource":{
+      "type":"string",
+      "enum":[
+        "EventTime",
+        "DeliveryTime"
+      ]
+    },
+    "PartitionedPrefix":{
+      "type":"structure",
+      "required":["partitionDateSource"],
+      "members":{
+        "partitionDateSource":{
+          "shape":"PartitionDateSource",
+          "documentation":"<p>The date to use for the log object key partitions. Valid values are <code>EventTime</code>, the time that the requests in the log were made, and <code>DeliveryTime</code>, the time that the log was delivered.</p>"
+        }
+      },
+      "documentation":"<p>Amazon S3 keys for log objects are partitioned in the following format: <code>[targetPrefix][SourceAccountId]/[SourceRegion]/[SourceTableBucket]/[YYYY]/[MM]/[DD]/[YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString]</code> </p>"
+    },
     "PlanningStats":{
       "type":"structure",
       "members":{
@@ -3520,6 +3632,25 @@
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>The encryption configuration to apply to the table bucket.</p>"
+        }
+      }
+    },
+    "PutTableBucketLoggingRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "tableBucketLoggingStatus"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "tableBucketLoggingStatus":{
+          "shape":"TableBucketLoggingStatus",
+          "documentation":"<p>The logging status to apply to the table bucket. To disable logging, specify an empty <code>tableBucketLoggingStatus</code>.</p>"
         }
       }
     },
@@ -4159,6 +4290,16 @@
       "pattern":"(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-z0-9_-]{3,63})"
     },
     "TableBucketId":{"type":"string"},
+    "TableBucketLoggingStatus":{
+      "type":"structure",
+      "members":{
+        "loggingEnabled":{
+          "shape":"LoggingEnabled",
+          "documentation":"<p>Where logs for the table bucket are delivered and how the log objects are named. Must be populated to enable logging.</p>"
+        }
+      },
+      "documentation":"<p>The server access logging status of a table bucket. To enable logging, specify <code>loggingEnabled</code>. To disable logging, specify an empty <code>TableBucketLoggingStatus</code>.</p>"
+    },
     "TableBucketMaintenanceConfiguration":{
       "type":"map",
       "key":{"shape":"TableBucketMaintenanceType"},
@@ -4571,6 +4712,17 @@
       "type":"map",
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"}
+    },
+    "TargetObjectKeyFormat":{
+      "type":"structure",
+      "required":["partitionedPrefix"],
+      "members":{
+        "partitionedPrefix":{
+          "shape":"PartitionedPrefix",
+          "documentation":"<p>Partitions log object keys by date.</p>"
+        }
+      },
+      "documentation":"<p>The key format of the log objects. Only <code>partitionedPrefix</code> is supported.</p>"
     },
     "TooManyRequestsException":{
       "type":"structure",

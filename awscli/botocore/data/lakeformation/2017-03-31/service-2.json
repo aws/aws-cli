@@ -535,6 +535,23 @@
       ],
       "documentation":"<p>Returns the Lake Formation permissions for a specified table or database resource located at a path in Amazon S3. <code>GetEffectivePermissionsForPath</code> will not return databases and tables if the catalog is encrypted.</p>"
     },
+    "GetGlueFunctionSessionContext":{
+      "name":"GetGlueFunctionSessionContext",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetGlueFunctionSessionContext"
+      },
+      "input":{"shape":"GetGlueFunctionSessionContextRequest"},
+      "output":{"shape":"GetGlueFunctionSessionContextResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a session context for one or more user-defined functions that an integrated analytics engine runs together in a job. You must have the <code>EXECUTE</code> permission on every function in the list.</p> <p>While the session context is in use, if you don't have full <code>SELECT</code> permission on a table, the job can read the table only if every function in the session has the <code>SELECT</code> permission on it. Lake Formation enforces this check.</p> <p>To use this operation, you must have the <code>lakeformation:GetDataAccess</code> permission.</p>"
+    },
     "GetLFTag":{
       "name":"GetLFTag",
       "http":{
@@ -678,6 +695,24 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Allows a user or application in a secure environment to access data in a specific Amazon S3 location registered with Lake Formation by providing temporary scoped credentials that are limited to the requested data location and the caller's authorized access level.</p> <p> <code>GetDataAccess</code> is logged in CloudTrail whenever a principal requests temporary data location credentials to access data in a data lake location that is registered with Lake Formation.</p> <p> The API operation returns an error in the following scenarios:</p> <ul> <li> <p>The data location is not registered with Lake Formation. </p> </li> <li> <p>No Glue table is associated with the data location.</p> </li> <li> <p>The caller doesn't have required permissions on the associated table. The caller must have <code>SELECT</code> or <code>SUPER</code> permissions on the associated table, and credential vending for full table access must be enabled in the data lake settings. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/full-table-credential-vending.html\">Application integration for full table access</a>.</p> </li> <li> <p>The data location is in a different Amazon Web Services Region. Lake Formation doesn't support cross-Region access when vending credentials for a data location. Lake Formation only supports Amazon S3 paths registered within the same Region as the API call. </p> </li> </ul>"
+    },
+    "GetTemporaryGlueFunctionCredentials":{
+      "name":"GetTemporaryGlueFunctionCredentials",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTemporaryGlueFunctionCredentials"
+      },
+      "input":{"shape":"GetTemporaryGlueFunctionCredentialsRequest"},
+      "output":{"shape":"GetTemporaryGlueFunctionCredentialsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"GlueEncryptionException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns temporary credentials that you can use to download the artifacts of a user-defined function whose <code>GovernanceMode</code> is <code>LAKE_FORMATION</code>. Lake Formation assumes the role that you registered for the function's <code>ArtifactLocation</code>. The credentials have read-only access to that location in Amazon S3.</p> <p>To use this operation, you must have the <code>EXECUTE</code> permission on the function.</p>"
     },
     "GetTemporaryGluePartitionCredentials":{
       "name":"GetTemporaryGluePartitionCredentials",
@@ -1309,6 +1344,25 @@
       "documentation":"<p>A resource to be created or added already exists.</p>",
       "exception":true
     },
+    "AnyResource":{
+      "type":"structure",
+      "required":["ResourceType"],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog. By default, it's your account ID.</p>"
+        },
+        "ResourceType":{
+          "shape":"AnyResourceSupportedTypes",
+          "documentation":"<p>The type of resource that the grant covers. The only supported value is <code>TABLE</code>.</p>"
+        }
+      },
+      "documentation":"<p>Represents all resources of the specified type in a Data Catalog, including resources that are created after the grant.</p>"
+    },
+    "AnyResourceSupportedTypes":{
+      "type":"string",
+      "enum":["TABLE"]
+    },
     "ApplicationArn":{"type":"string"},
     "ApplicationStatus":{
       "type":"string",
@@ -1931,6 +1985,7 @@
     "DataLakeResourceType":{
       "type":"string",
       "enum":[
+        "ANY_RESOURCE",
         "CATALOG",
         "DATABASE",
         "TABLE",
@@ -1939,7 +1994,8 @@
         "LF_TAG_POLICY",
         "LF_TAG_POLICY_DATABASE",
         "LF_TAG_POLICY_TABLE",
-        "LF_NAMED_TAG_EXPRESSION"
+        "LF_NAMED_TAG_EXPRESSION",
+        "USER_DEFINED_FUNCTION"
       ]
     },
     "DataLakeSettings":{
@@ -2573,6 +2629,33 @@
         }
       }
     },
+    "GetGlueFunctionSessionContextRequest":{
+      "type":"structure",
+      "required":["UserDefinedFunctionArns"],
+      "members":{
+        "UserDefinedFunctionArns":{
+          "shape":"ResourceArnList",
+          "documentation":"<p>The ARNs of one or more user-defined functions to include in the session context, each in the format <code>arn:aws:glue:<i>region</i>:<i>account-id</i>:userDefinedFunction/<i>database-name</i>/<i>function-name</i> </code>.</p>"
+        },
+        "DurationSeconds":{
+          "shape":"SessionDurationSecondInteger",
+          "documentation":"<p>The number of seconds the session context is valid. The default is 86,400 (24 hours).</p>"
+        }
+      }
+    },
+    "GetGlueFunctionSessionContextResponse":{
+      "type":"structure",
+      "members":{
+        "SessionContextId":{
+          "shape":"SessionContextIdString",
+          "documentation":"<p>The ID of the session context.</p>"
+        },
+        "Expiration":{
+          "shape":"ExpirationTimestamp",
+          "documentation":"<p>The date and time when the session context expires.</p>"
+        }
+      }
+    },
     "GetLFTagExpressionRequest":{
       "type":"structure",
       "required":["Name"],
@@ -2838,6 +2921,41 @@
         "CredentialsScope":{
           "shape":"CredentialsScope",
           "documentation":"<p>The credential scope is determined by the caller's Lake Formation permission on the associated table. Credential scope can be either:</p> <ul> <li> <p>READ - Provides read-only access to the data location.</p> </li> <li> <p>READ_WRITE - Provides both read and write access to the data location.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetTemporaryGlueFunctionCredentialsRequest":{
+      "type":"structure",
+      "required":["UserDefinedFunctionArn"],
+      "members":{
+        "UserDefinedFunctionArn":{
+          "shape":"ResourceArnString",
+          "documentation":"<p>The ARN of the user-defined function whose artifacts you want to download, in the format <code>arn:aws:glue:<i>region</i>:<i>account-id</i>:userDefinedFunction/<i>database-name</i>/<i>function-name</i> </code>.</p>"
+        },
+        "AuditContext":{
+          "shape":"AuditContext",
+          "documentation":"<p>Context for the request, such as the column names and query ID, that Lake Formation uses for auditing.</p>"
+        }
+      }
+    },
+    "GetTemporaryGlueFunctionCredentialsResponse":{
+      "type":"structure",
+      "members":{
+        "AccessKeyId":{
+          "shape":"AccessKeyIdString",
+          "documentation":"<p>The access key ID for the temporary credentials.</p>"
+        },
+        "SecretAccessKey":{
+          "shape":"SecretAccessKeyString",
+          "documentation":"<p>The secret key for the temporary credentials.</p>"
+        },
+        "SessionToken":{
+          "shape":"SessionTokenString",
+          "documentation":"<p>The session token for the temporary credentials.</p>"
+        },
+        "Expiration":{
+          "shape":"ExpirationTimestamp",
+          "documentation":"<p>The date and time when the temporary credentials expire.</p>"
         }
       }
     },
@@ -3794,7 +3912,8 @@
         "GRANT_WITH_LF_TAG_EXPRESSION",
         "CREATE_LF_TAG_EXPRESSION",
         "CREATE_CATALOG",
-        "SUPER_USER"
+        "SUPER_USER",
+        "EXECUTE"
       ]
     },
     "PermissionList":{
@@ -4183,6 +4302,10 @@
     "Resource":{
       "type":"structure",
       "members":{
+        "AnyResource":{
+          "shape":"AnyResource",
+          "documentation":"<p>All resources of the specified type in a Data Catalog. When you grant or revoke permissions on this resource, the principal must be a user-defined function whose <code>GovernanceMode</code> is <code>LAKE_FORMATION</code>, and the Data Catalog must be in your account.</p>"
+        },
         "Catalog":{
           "shape":"CatalogResource",
           "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
@@ -4222,9 +4345,19 @@
         "RLSPolicy":{
           "shape":"RLSPolicyResource",
           "documentation":"<p>A row-level security policy resource. Specify this when granting or revoking permissions on a row-level security policy.</p>"
+        },
+        "UserDefinedFunction":{
+          "shape":"UserDefinedFunctionResource",
+          "documentation":"<p>The user-defined function that you want to grant or revoke permissions on. The function's <code>GovernanceMode</code> must be <code>LAKE_FORMATION</code>. You can grant the following permissions:</p> <ul> <li> <p> <code>EXECUTE</code> – Use the function in a job, and get credentials to download its artifacts.</p> </li> <li> <p> <code>DESCRIBE</code> – View the function's definition.</p> </li> <li> <p> <code>ALTER</code> – Update the function.</p> </li> <li> <p> <code>DROP</code> – Delete the function.</p> </li> <li> <p> <code>ALL</code> – All of the preceding permissions.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A structure for the resource.</p>"
+    },
+    "ResourceArnList":{
+      "type":"list",
+      "member":{"shape":"ResourceArnString"},
+      "max":1000,
+      "min":1
     },
     "ResourceArnString":{"type":"string"},
     "ResourceInfo":{
@@ -4474,6 +4607,13 @@
       },
       "documentation":"<p>A union structure representing different service integration types.</p>",
       "union":true
+    },
+    "SessionContextIdString":{"type":"string"},
+    "SessionDurationSecondInteger":{
+      "type":"integer",
+      "box":true,
+      "max":86400,
+      "min":60
     },
     "SessionTokenString":{"type":"string"},
     "StartQueryPlanningRequest":{
@@ -5092,6 +5232,34 @@
           "documentation":"<p>A response indicating the success of failure of the operation.</p>"
         }
       }
+    },
+    "UserDefinedFunctionResource":{
+      "type":"structure",
+      "required":["DatabaseName"],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog. By default, it's your account ID.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database that contains the function.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the function.</p> <p>Exactly one of <code>UserDefinedFunctionResource$Name</code> or <code>UserDefinedFunctionResource$UserDefinedFunctionWildcard</code> is required.</p>"
+        },
+        "UserDefinedFunctionWildcard":{
+          "shape":"UserDefinedFunctionWildcard",
+          "documentation":"<p>A wildcard object representing every user-defined function in the database, including functions created after the grant.</p> <p>Exactly one of <code>UserDefinedFunctionResource$Name</code> or <code>UserDefinedFunctionResource$UserDefinedFunctionWildcard</code> is required.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a user-defined function, or all user-defined functions in a database, as a resource that you can grant permissions on. You can grant permissions only on functions whose <code>GovernanceMode</code> is <code>LAKE_FORMATION</code>.</p>"
+    },
+    "UserDefinedFunctionWildcard":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A wildcard object representing every user-defined function in a database.</p>"
     },
     "ValueString":{"type":"string"},
     "ValueStringList":{

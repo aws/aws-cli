@@ -51,7 +51,7 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a managed set of compute nodes. You associate a compute node group with a cluster through 1 or more PCS queues or as part of the login fleet. A compute node group includes the definition of the compute properties and lifecycle management. PCS uses the information you provide to this API action to launch compute nodes in your account. You can only specify subnets in the same Amazon VPC as your cluster. You receive billing charges for the compute nodes that PCS launches in your account. You must already have a launch template before you call this API. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">Launch an instance from a launch template</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>.</p>",
+      "documentation":"<p>Creates a managed set of compute nodes. You associate a compute node group with a cluster through 1 or more PCS queues or as part of the login fleet. A compute node group includes the definition of the compute properties and lifecycle management. PCS uses the information you provide to this API action to launch compute nodes in your account. You can only specify subnets in the same Amazon VPC as your cluster. You receive billing charges for the compute nodes that PCS launches in your account. You can configure common instance settings, such as the AMI, security groups, and SSH key pair, directly on the compute node group, or you can provide a custom EC2 launch template. To use a launch template that PCS manages, set <code>launchTemplateMode</code> to <code>MANAGED</code> and don't provide <code>customLaunchTemplate</code>. In this case, you must specify <code>amiId</code> and <code>securityGroupIds</code>. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/working-with_cng_instance-settings.html\">Configuring instance settings for compute node groups in PCS</a> in the <i>PCS User Guide</i>.</p>",
       "idempotent":true
     },
     "CreateQueue":{
@@ -425,6 +425,10 @@
       "type":"string",
       "pattern":"ami-[a-z0-9]+"
     },
+    "AmiIdOrEmpty":{
+      "type":"string",
+      "pattern":"(ami-[a-z0-9]+)?"
+    },
     "Arn":{
       "type":"string",
       "max":1011,
@@ -676,12 +680,23 @@
         "modifiedAt",
         "status",
         "subnetIds",
-        "customLaunchTemplate",
         "iamInstanceProfileArn",
         "scalingConfiguration",
         "instanceConfigs"
       ],
       "members":{
+        "amiId":{
+          "shape":"AmiId",
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that PCS uses to launch instances. If not present, PCS uses the AMI ID specified in the custom launch template.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The IDs of the EC2 security groups configured directly on the compute node group. PCS uses these security groups instead of the security groups in the custom launch template. This value isn't present if security groups aren't configured directly on the compute node group. In that case, PCS uses the security groups in the custom launch template.</p>"
+        },
+        "sshKeyName":{
+          "shape":"KeyPairName",
+          "documentation":"<p>The name of the EC2 key pair configured directly on the compute node group. PCS uses this key pair instead of the key pair in the custom launch template. This value isn't present if a key pair isn't configured directly on the compute node group. In that case, PCS uses the key pair in the custom launch template, if one is specified.</p>"
+        },
         "name":{
           "shape":"ComputeNodeGroupName",
           "documentation":"<p>The name that identifies the compute node group.</p>"
@@ -710,10 +725,6 @@
           "shape":"ComputeNodeGroupStatus",
           "documentation":"<p>The provisioning status of the compute node group.</p> <note> <p>The provisioning status doesn't indicate the overall health of the compute node group.</p> </note> <important> <p>The resource enters the <code>SUSPENDING</code> and <code>SUSPENDED</code> states when the scheduler is beyond end of life and we have suspended the cluster. When in these states, you can't use the cluster. The cluster controller is down and all compute instances are terminated. The resources still count toward your service quotas. You can delete a resource if its status is <code>SUSPENDED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions_faq.html\">Frequently asked questions about Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> </important>"
         },
-        "amiId":{
-          "shape":"AmiId",
-          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that PCS uses to launch instances. If not provided, PCS uses the AMI ID specified in the custom launch template.</p>"
-        },
         "subnetIds":{
           "shape":"SubnetIdList",
           "documentation":"<p>The list of subnet IDs where instances are provisioned by the compute node group. The subnets must be in the same VPC as the cluster.</p>"
@@ -722,7 +733,14 @@
           "shape":"PurchaseOption",
           "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, Interruptible Capacity Reservations, On-Demand Capacity Reservations, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. For more information about PCS support for interruptible capacity reservations, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-iodcr.html\">Using I-ODCRs with PCS</a> in the <i>PCS User Guide</i>. Choose On-Demand if you plan to use an On-Demand Capacity Reservation (ODCR). For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-odcr.html\">Using ODCRs with PCS</a>. If you don't provide this option, it defaults to On-Demand.</p>"
         },
-        "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
+        "launchTemplateMode":{
+          "shape":"LaunchTemplateMode",
+          "documentation":"<p>Indicates whether the compute node group uses a custom launch template or a launch template that PCS manages. The default value is <code>CUSTOM</code>.</p> <p>Valid values:</p> <ul> <li> <p> <code>CUSTOM</code> – The compute node group uses the launch template in <code>customLaunchTemplate</code>.</p> </li> <li> <p> <code>MANAGED</code> – PCS creates and manages the launch template.</p> </li> </ul>"
+        },
+        "customLaunchTemplate":{
+          "shape":"CustomLaunchTemplate",
+          "documentation":"<p>The custom Amazon EC2 launch template associated with the compute node group. This value is present when <code>launchTemplateMode</code> is <code>CUSTOM</code> and isn't present when <code>launchTemplateMode</code> is <code>MANAGED</code>.</p>"
+        },
         "iamInstanceProfileArn":{
           "shape":"InstanceProfileArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have the <code>pcs:RegisterComputeNodeGroupInstance</code> permission and the role name must start with <code>AWSPCS</code> or must have the path <code>/aws-pcs/</code>. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/security-instance-profiles.html\">IAM instance profiles for PCS</a> in the <i>PCS User Guide</i>.</p>"
@@ -932,7 +950,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         },
         "tags":{
@@ -956,12 +974,23 @@
         "clusterIdentifier",
         "computeNodeGroupName",
         "subnetIds",
-        "customLaunchTemplate",
         "iamInstanceProfileArn",
         "scalingConfiguration",
         "instanceConfigs"
       ],
       "members":{
+        "amiId":{
+          "shape":"AmiId",
+          "documentation":"<p> The ID of the Amazon Machine Image (AMI) that PCS uses to launch compute nodes (Amazon EC2 instances). This value overrides the AMI ID in the custom launch template. If you don't provide this value, PCS uses the AMI ID specified in the custom launch template. You must provide this value if <code>launchTemplateMode</code> is <code>MANAGED</code>.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The IDs of the EC2 security groups to configure directly on the compute node group. The security groups must be in the same VPC as the cluster. PCS uses these security groups instead of the security groups in the custom launch template. You can't specify this value if the custom launch template defines network interfaces. If you don't provide this value, PCS uses the security groups in the custom launch template. You must provide this value if <code>launchTemplateMode</code> is <code>MANAGED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/working-with_cng_instance-settings.html\">Configuring instance settings for compute node groups in PCS</a> in the <i>PCS User Guide</i>.</p>"
+        },
+        "sshKeyName":{
+          "shape":"KeyPairName",
+          "documentation":"<p>The name of the EC2 key pair to configure directly on the compute node group. The key pair must exist in your account and Amazon Web Services Region. PCS uses this key pair instead of the key pair in the custom launch template. If you don't provide this value, PCS uses the key pair in the custom launch template, if one is specified. You must have permission for <code>ec2:DescribeKeyPairs</code>. If you delete the key pair later, future instance launches can fail. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/working-with_cng_instance-settings.html\">Configuring instance settings for compute node groups in PCS</a> in the <i>PCS User Guide</i>.</p>"
+        },
         "clusterIdentifier":{
           "shape":"ClusterIdentifier",
           "documentation":"<p>The name or ID of the cluster to create a compute node group in.</p>"
@@ -969,10 +998,6 @@
         "computeNodeGroupName":{
           "shape":"ComputeNodeGroupName",
           "documentation":"<p>A name to identify the cluster. Example: <code>MyCluster</code> </p>"
-        },
-        "amiId":{
-          "shape":"AmiId",
-          "documentation":"<p> The ID of the Amazon Machine Image (AMI) that PCS uses to launch compute nodes (Amazon EC2 instances). If you don't provide this value, PCS uses the AMI ID specified in the custom launch template.</p>"
         },
         "subnetIds":{
           "shape":"StringList",
@@ -982,7 +1007,14 @@
           "shape":"PurchaseOption",
           "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, Interruptible Capacity Reservations, On-Demand Capacity Reservations, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. For more information about PCS support for interruptible capacity reservations, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-iodcr.html\">Using I-ODCRs with PCS</a> in the <i>PCS User Guide</i>. Choose On-Demand if you plan to use an On-Demand Capacity Reservation (ODCR). For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-odcr.html\">Using ODCRs with PCS</a>. If you don't provide this option, it defaults to On-Demand.</p>"
         },
-        "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
+        "launchTemplateMode":{
+          "shape":"LaunchTemplateMode",
+          "documentation":"<p>Specifies whether the compute node group uses a custom launch template or a launch template that PCS manages. The default value is <code>CUSTOM</code>.</p> <p>If the value is <code>CUSTOM</code>, provide <code>customLaunchTemplate</code>. If the value is <code>MANAGED</code>, omit <code>customLaunchTemplate</code> and provide <code>amiId</code> and <code>securityGroupIds</code>.</p>"
+        },
+        "customLaunchTemplate":{
+          "shape":"CustomLaunchTemplate",
+          "documentation":"<p>The custom Amazon EC2 launch template to associate with the compute node group. Specify the launch template <code>id</code> and <code>version</code> when <code>launchTemplateMode</code> is <code>CUSTOM</code>. Don't specify this value when <code>launchTemplateMode</code> is <code>MANAGED</code>.</p>"
+        },
         "iamInstanceProfileArn":{
           "shape":"InstanceProfileArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have the <code>pcs:RegisterComputeNodeGroupInstance</code> permission and the role name must start with <code>AWSPCS</code> or must have the path <code>/aws-pcs/</code>. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/security-instance-profiles.html\">IAM instance profiles for PCS</a> in the <i>PCS User Guide</i>.</p>"
@@ -1006,7 +1038,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         },
         "tags":{
@@ -1046,7 +1078,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         },
         "tags":{
@@ -1070,14 +1102,14 @@
       "members":{
         "id":{
           "shape":"String",
-          "documentation":"<p>The ID of the EC2 launch template to use to provision instances.</p> <p> Example: <code>lt-xxxx</code> </p>"
+          "documentation":"<p>The ID of the EC2 launch template to use to provision instances. Specify this value together with <code>version</code>.</p> <p> Example: <code>lt-xxxx</code> </p>"
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version of the EC2 launch template to use to provision instances.</p>"
+          "documentation":"<p>The version of the EC2 launch template to use to provision instances. Specify this value together with <code>id</code>.</p>"
         }
       },
-      "documentation":"<p>An Amazon EC2 launch template PCS uses to launch compute nodes.</p>"
+      "documentation":"<p>An Amazon EC2 launch template PCS uses to launch compute nodes. The structure contains the launch template ID and version.</p>"
     },
     "DeleteClusterRequest":{
       "type":"structure",
@@ -1089,7 +1121,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         }
       }
@@ -1115,7 +1147,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         }
       }
@@ -1141,7 +1173,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         }
       }
@@ -1354,6 +1386,23 @@
         }
       },
       "documentation":"<p>The JWT key stored in Amazon Web Services Secrets Manager for Slurm REST API authentication.</p>"
+    },
+    "KeyPairName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "KeyPairNameOrEmpty":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
+    "LaunchTemplateMode":{
+      "type":"string",
+      "enum":[
+        "CUSTOM",
+        "MANAGED"
+      ]
     },
     "ListClustersRequest":{
       "type":"structure",
@@ -2022,6 +2071,10 @@
       "type":"list",
       "member":{"shape":"SecurityGroupId"}
     },
+    "SecurityGroupIdListOrEmpty":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"}
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":[
@@ -2291,7 +2344,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         },
         "slurmConfiguration":{
@@ -2353,6 +2406,18 @@
         "computeNodeGroupIdentifier"
       ],
       "members":{
+        "amiId":{
+          "shape":"AmiIdOrEmpty",
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that PCS uses to launch instances. This value overrides the AMI ID in the custom launch template. Specify an empty string (<code>\"\"</code>) to remove the AMI ID from the compute node group and use the AMI ID specified in the custom launch template. Omit this value to leave the current setting unchanged.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIdListOrEmpty",
+          "documentation":"<p>The IDs of the EC2 security groups to configure directly on the compute node group. The security groups must be in the same VPC as the cluster. PCS uses these security groups instead of the security groups in the custom launch template. You can't specify this value if the custom launch template defines network interfaces. Specify an empty list (<code>[]</code>) to remove the security groups from the compute node group and use the security groups in the custom launch template. Omit this value to leave the current setting unchanged.</p>"
+        },
+        "sshKeyName":{
+          "shape":"KeyPairNameOrEmpty",
+          "documentation":"<p>The name of the EC2 key pair to configure directly on the compute node group. The key pair must exist in your account and Amazon Web Services Region. PCS uses this key pair instead of the key pair in the custom launch template. Specify an empty string (<code>\"\"</code>) to remove the key pair from the compute node group and use the key pair in the custom launch template. Omit this value to leave the current setting unchanged. You must have permission for <code>ec2:DescribeKeyPairs</code> to specify a key pair. If you delete the key pair later, future instance launches can fail.</p>"
+        },
         "clusterIdentifier":{
           "shape":"ClusterIdentifier",
           "documentation":"<p>The name or ID of the cluster of the compute node group.</p>"
@@ -2361,15 +2426,18 @@
           "shape":"ComputeNodeGroupIdentifier",
           "documentation":"<p>The name or ID of the compute node group.</p>"
         },
-        "amiId":{
-          "shape":"AmiId",
-          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that PCS uses to launch instances. If not provided, PCS uses the AMI ID specified in the custom launch template.</p>"
-        },
         "subnetIds":{
           "shape":"StringList",
           "documentation":"<p>The list of subnet IDs where the compute node group provisions instances. The subnets must be in the same VPC as the cluster.</p>"
         },
-        "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
+        "launchTemplateMode":{
+          "shape":"LaunchTemplateMode",
+          "documentation":"<p>Specifies whether the compute node group uses a custom launch template or a launch template that PCS manages. Omit this value to keep the current mode.</p> <p>Valid values:</p> <ul> <li> <p> <code>CUSTOM</code> – Use a custom launch template. To switch from <code>MANAGED</code>, also provide <code>customLaunchTemplate</code>. If the compute node group already uses <code>CUSTOM</code> and you omit <code>customLaunchTemplate</code>, the existing launch template is unchanged.</p> </li> <li> <p> <code>MANAGED</code> – Use a launch template created and managed by PCS. Omit <code>customLaunchTemplate</code>. Switching to this mode removes the custom launch template association but doesn't delete the launch template.</p> </li> </ul> <p>When switching to <code>MANAGED</code>, the compute node group must have <code>amiId</code> and <code>securityGroupIds</code> configured. You can set these values in the same request.</p>"
+        },
+        "customLaunchTemplate":{
+          "shape":"CustomLaunchTemplate",
+          "documentation":"<p>The custom Amazon EC2 launch template to associate with the compute node group. To set or change the custom launch template, specify <code>id</code> and <code>version</code>. If you provide this value and omit <code>launchTemplateMode</code>, the compute node group must already use <code>CUSTOM</code> mode. To switch from <code>MANAGED</code> to <code>CUSTOM</code>, specify <code>launchTemplateMode</code> as <code>CUSTOM</code> and provide this value. If the compute node group already uses <code>CUSTOM</code>, omit this value while also omitting <code>launchTemplateMode</code>, or while specifying <code>CUSTOM</code>, to keep the existing custom launch template. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/working-with_cng_instance-settings-migrate.html\">Migrating a compute node group from a custom launch template</a> in the <i>PCS User Guide</i>.</p>"
+        },
         "purchaseOption":{
           "shape":"PurchaseOption",
           "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, Interruptible Capacity Reservations, On-Demand Capacity Reservations, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. For more information about PCS support for interruptible capacity reservations, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-iodcr.html\">Using I-ODCRs with PCS</a> in the <i>PCS User Guide</i>. Choose On-Demand if you plan to use an On-Demand Capacity Reservation (ODCR). For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-odcr.html\">Using ODCRs with PCS</a>. If you don't provide this option, it defaults to On-Demand.</p>"
@@ -2393,7 +2461,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         }
       }
@@ -2468,7 +2536,7 @@
         },
         "clientToken":{
           "shape":"SBClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate one for you.</p>",
           "idempotencyToken":true
         }
       }

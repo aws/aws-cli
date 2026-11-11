@@ -4754,7 +4754,7 @@
           "documentation":"<p>The Amazon Web Services Secrets Manager location of the PEM-encoded private CA certificate.</p>"
         }
       },
-      "documentation":"<p>A reference to a private certificate authority (CA) certificate that the gateway uses to verify TLS connections to the target endpoint. Use this when the target presents a certificate issued by a private CA that is not trusted by default. Specify exactly one certificate source. The configuration is a reference only and never contains the certificate content.</p>",
+      "documentation":"<p>A reference to a private certificate authority (CA) certificate that AgentCore uses to verify TLS connections to an endpoint, such as a gateway target or an identity provider, that presents a certificate issued by a private CA that is not trusted by default. Specify exactly one certificate source. The configuration is a reference only and never contains the certificate content.</p>",
       "union":true
     },
     "CertificateConfigurationList":{
@@ -8337,6 +8337,10 @@
           "shape":"PrivateEndpointOverrides",
           "documentation":"<p>The private endpoint overrides for the custom JWT authorizer configuration.</p>"
         },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the identity provider. Use this to have AgentCore Identity trust a private CA when establishing TLS connections to identity provider endpoints. You can specify only one certificate authority configuration in this list. Provide the certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can use this only together with <code>privateEndpoint</code>.</p>"
+        },
         "allowedWorkloadConfiguration":{
           "shape":"AllowedWorkloadConfiguration",
           "documentation":"<p>The configuration that restricts which workloads in the request's identity chain are allowed to invoke the target, identified by their hosting environments and workload identities. At launch, this is supported only for AgentCore Runtime targets, and the allowed workloads are AgentCore Gateways.</p>"
@@ -8425,6 +8429,10 @@
         "privateEndpointOverrides":{
           "shape":"PrivateEndpointOverrides",
           "documentation":"<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the identity provider. Use this to have AgentCore Identity trust a private CA when establishing TLS connections to identity provider endpoints. You can specify only one certificate authority configuration in this list. Provide the certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can use this only together with <code>privateEndpoint</code>.</p>"
         }
       },
       "documentation":"<p>Input configuration for a custom OAuth2 provider.</p>"
@@ -8456,6 +8464,10 @@
         "privateEndpointOverrides":{
           "shape":"PrivateEndpointOverrides",
           "documentation":"<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the identity provider. Use this to have AgentCore Identity trust a private CA when establishing TLS connections to identity provider endpoints. You can specify only one certificate authority configuration in this list. Provide the certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can use this only together with <code>privateEndpoint</code>.</p>"
         },
         "privateKeyJwtConfig":{
           "shape":"PrivateKeyJwtConfig",
@@ -14237,7 +14249,10 @@
           "shape":"String",
           "documentation":"<p>The ID of the underlying AgentCore Runtime.</p>"
         },
-        "lifecycleConfiguration":{"shape":"LifecycleConfiguration"},
+        "lifecycleConfiguration":{
+          "shape":"LifecycleConfiguration",
+          "documentation":"<p>The lifecycle configuration for the harness's runtime environment. For a harness, <code>idleRuntimeSessionTimeout</code> and <code>maxLifetime</code> each accept a value between 60 and 28800 seconds (8 hours), and <code>idleRuntimeSessionTimeout</code> must be less than or equal to <code>maxLifetime</code>.</p>"
+        },
         "networkConfiguration":{"shape":"NetworkConfiguration"},
         "filesystemConfigurations":{
           "shape":"FilesystemConfigurations",
@@ -14249,7 +14264,10 @@
     "HarnessAgentCoreRuntimeEnvironmentRequest":{
       "type":"structure",
       "members":{
-        "lifecycleConfiguration":{"shape":"LifecycleConfiguration"},
+        "lifecycleConfiguration":{
+          "shape":"LifecycleConfiguration",
+          "documentation":"<p>The lifecycle configuration for the harness's runtime environment. For a harness, <code>idleRuntimeSessionTimeout</code> and <code>maxLifetime</code> each accept a value between 60 and 28800 seconds (8 hours), and <code>idleRuntimeSessionTimeout</code> must be less than or equal to <code>maxLifetime</code>. Values above 28800 seconds are rejected with a <code>ValidationException</code>.</p>"
+        },
         "networkConfiguration":{"shape":"NetworkConfiguration"},
         "filesystemConfigurations":{
           "shape":"FilesystemConfigurations",
@@ -14896,9 +14914,28 @@
         "headers":{
           "shape":"HttpHeadersMap",
           "documentation":"<p>Custom headers to include when connecting to the remote MCP server.</p>"
+        },
+        "outboundAuth":{
+          "shape":"HarnessRemoteMcpOutboundAuth",
+          "documentation":"<p>How the harness authenticates to this MCP server. Defaults to no authentication.</p>"
         }
       },
       "documentation":"<p>Configuration for connecting to a remote MCP server.</p>"
+    },
+    "HarnessRemoteMcpOutboundAuth":{
+      "type":"structure",
+      "members":{
+        "awsIam":{
+          "shape":"IamCredentialProvider",
+          "documentation":"<p>Sign requests to the remote MCP server with Signature Version 4 (SigV4) using the harness execution role. If you don't specify a Region, the harness Region is used.</p>"
+        },
+        "none":{
+          "shape":"Unit",
+          "documentation":"<p>No authentication.</p>"
+        }
+      },
+      "documentation":"<p>Authentication method for calling a remote MCP server.</p>",
+      "union":true
     },
     "HarnessRemoteMcpUrl":{
       "type":"string",

@@ -1109,6 +1109,10 @@
           "shape":"DashCompactness",
           "documentation":"<p>The layout of the DASH manifest that MediaPackage produces. <code>STANDARD</code> indicates a default manifest, which is compacted. <code>NONE</code> indicates a full manifest.</p> <p>For information about compactness, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/compacted.html\">DASH manifest compactness</a> in the <i>Elemental MediaPackage v2 User Guide</i>.</p>"
         },
+        "BandwidthReportingMode":{
+          "shape":"DashBandwidthReportingMode",
+          "documentation":"<p>Specifies how MediaPackage calculates the <code>bandwidth</code> attribute of regular (non-iFrame) video <code>Representation</code> elements in the DASH manifest. Audio, subtitle, image, and iFrame-only (trick-play) representations are unchanged.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>AVERAGE</code> – MediaPackage reports the average bitrate of the source video track. This is the default.</p> </li> <li> <p> <code>MAX</code> – MediaPackage reports the peak bitrate of the video stream.</p> </li> </ul> <p>For information about bandwidth reporting, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/dash-bandwidth-reporting.html\">DASH bandwidth reporting</a> in the <i>Elemental MediaPackage v2 User Guide</i>.</p>"
+        },
         "AudioTimelinePattern":{
           "shape":"DashAudioTimelinePattern",
           "documentation":"<p>How MediaPackage represents the audio timeline in the DASH manifest. This setting applies DASH Segment Duration Patternization, as defined in the MPEG-DASH specification, to audio adaptation sets. When set to <code>PATTERNED</code>, MediaPackage uses a pattern-based segment template for audio, which reduces manifest size by expressing repeating segment durations as a pattern instead of listing each segment individually. When set to <code>NONE</code>, the manifest contains an explicit timeline that lists each audio segment.</p> <p>Valid values: <code>NONE</code> | <code>PATTERNED</code> </p> <p>For information about audio timeline patterns, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/dash-audio-timeline-pattern.html\">DASH audio timeline pattern</a> in the <i>Elemental MediaPackage v2 User Guide</i>.</p>"
@@ -1636,6 +1640,13 @@
       },
       "documentation":"<p>The configuration for the DASH <code>availabilityStartTime</code> attribute of the Media Presentation Description (MPD). Use this configuration to set a custom availability start time for your DASH manifest.</p>",
       "union":true
+    },
+    "DashBandwidthReportingMode":{
+      "type":"string",
+      "enum":[
+        "AVERAGE",
+        "MAX"
+      ]
     },
     "DashBaseUrl":{
       "type":"structure",
@@ -2497,6 +2508,10 @@
         "Compactness":{
           "shape":"DashCompactness",
           "documentation":"<p>The layout of the DASH manifest that MediaPackage produces. <code>STANDARD</code> indicates a default manifest, which is compacted. <code>NONE</code> indicates a full manifest.</p>"
+        },
+        "BandwidthReportingMode":{
+          "shape":"DashBandwidthReportingMode",
+          "documentation":"<p>Specifies how MediaPackage calculates the <code>bandwidth</code> attribute of regular (non-iFrame) video <code>Representation</code> elements in the DASH manifest. Audio, subtitle, image, and iFrame-only (trick-play) representations are unchanged.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>AVERAGE</code> – MediaPackage reports the average bitrate of the source video track. This is the default.</p> </li> <li> <p> <code>MAX</code> – MediaPackage reports the peak bitrate of the video stream.</p> </li> </ul> <p>For information about bandwidth reporting, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/dash-bandwidth-reporting.html\">DASH bandwidth reporting</a> in the <i>Elemental MediaPackage v2 User Guide</i>.</p>"
         },
         "AudioTimelinePattern":{
           "shape":"DashAudioTimelinePattern",

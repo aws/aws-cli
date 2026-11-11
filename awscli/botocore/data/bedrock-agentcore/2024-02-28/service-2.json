@@ -6209,9 +6209,28 @@
         "headers":{
           "shape":"HttpHeadersMap",
           "documentation":"<p>Custom headers to include when connecting to the remote MCP server.</p>"
+        },
+        "outboundAuth":{
+          "shape":"HarnessRemoteMcpOutboundAuth",
+          "documentation":"<p>How the harness authenticates to this MCP server. Defaults to no authentication.</p>"
         }
       },
       "documentation":"<p>Configuration for connecting to a remote MCP server.</p>"
+    },
+    "HarnessRemoteMcpOutboundAuth":{
+      "type":"structure",
+      "members":{
+        "awsIam":{
+          "shape":"IamCredentialProvider",
+          "documentation":"<p>Sign requests to the remote MCP server with Signature Version 4 (SigV4) using the harness execution role. If you don't specify a Region, the harness Region is used.</p>"
+        },
+        "none":{
+          "shape":"Unit",
+          "documentation":"<p>No authentication.</p>"
+        }
+      },
+      "documentation":"<p>Authentication method for calling a remote MCP server.</p>",
+      "union":true
     },
     "HarnessRemoteMcpUrl":{
       "type":"string",
@@ -6693,6 +6712,33 @@
     "HttpResponseCode":{
       "type":"integer",
       "box":true
+    },
+    "IamCredentialProvider":{
+      "type":"structure",
+      "required":["service"],
+      "members":{
+        "service":{
+          "shape":"IamCredentialProviderServiceString",
+          "documentation":"<p>The name of the Amazon Web Services service used for SigV4 signing. This value identifies the service to authenticate with when sending requests to the target endpoint.</p>"
+        },
+        "region":{
+          "shape":"IamCredentialProviderRegionString",
+          "documentation":"<p>The Amazon Web Services Region used for SigV4 signing. If not specified, defaults to the Region of the resource that makes the request.</p>"
+        }
+      },
+      "documentation":"<p>An IAM credential provider for authenticating requests. This structure contains the configuration for authenticating with a target endpoint using IAM credentials and SigV4 signing.</p>"
+    },
+    "IamCredentialProviderRegionString":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "IamCredentialProviderServiceString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]+"
     },
     "IgnoredReferenceInputField":{
       "type":"string",

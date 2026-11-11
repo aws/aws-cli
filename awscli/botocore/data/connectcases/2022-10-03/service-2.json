@@ -230,9 +230,10 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <p>There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> <p> <b>Use cases</b> </p> <p>Following are examples of related items that you may want to associate with a case:</p> <ul> <li> <p>Related contacts, such as calls, chats, emails tasks</p> </li> <li> <p>Comments, for agent notes</p> </li> <li> <p>SLAs, to capture target resolution goals</p> </li> <li> <p>Cases, to capture related Connect Customer Cases</p> </li> <li> <p>Files, such as policy documentation or customer-provided attachments</p> </li> <li> <p>Custom related items, which provide flexibility for you to define related items that such as bookings, orders, products, notices, and more</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>If you are associating a contact to a case by passing in <code>Contact</code> for a <code>type</code>, you must have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeContact.html\">DescribeContact</a> permission on the ARN of the contact that you provide in <code>content.contact.contactArn</code>.</p> </li> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
+      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <p>There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> <p> <b>Use cases</b> </p> <p>Following are examples of related items that you may want to associate with a case:</p> <ul> <li> <p>Related contacts, such as calls, chats, emails tasks</p> </li> <li> <p>Comments, for agent notes</p> </li> <li> <p>SLAs, to capture target resolution goals</p> </li> <li> <p>Cases, to capture related Connect Customer Cases</p> </li> <li> <p>Files, such as policy documentation or customer-provided attachments</p> </li> <li> <p>Custom related items, which provide flexibility for you to define related items that such as bookings, orders, products, notices, and more</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>If you are associating a contact to a case by passing in <code>Contact</code> for a <code>type</code>, you must have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeContact.html\">DescribeContact</a> permission on the ARN of the contact that you provide in <code>content.contact.contactArn</code>.</p> </li> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>If the case is the secondary case of a merge that is running, the request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
       "idempotent":true
     },
     "CreateTemplate":{
@@ -270,9 +271,10 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p> The DeleteCase API permanently deletes a case and all its associated resources from the cases data store. After a successful deletion, you cannot:</p> <ul> <li> <p>Retrieve related items</p> </li> <li> <p>Access audit history</p> </li> <li> <p>Perform any operations that require the CaseID</p> </li> </ul> <important> <p>This action is irreversible. After you delete a case, you cannot recover its data.</p> </important>",
+      "documentation":"<p> The DeleteCase API permanently deletes a case and all its associated resources from the cases data store. After a successful deletion, you cannot:</p> <ul> <li> <p>Retrieve related items</p> </li> <li> <p>Access audit history</p> </li> <li> <p>Perform any operations that require the CaseID</p> </li> </ul> <p>You can't delete a case while it's part of a merge that is running, as either the primary or the secondary case. The request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p> <important> <p>This action is irreversible. After you delete a case, you cannot recover its data.</p> </important>",
       "idempotent":true
     },
     "DeleteCaseRule":{
@@ -369,9 +371,10 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes the related item resource under a case.</p> <note> <p>This API cannot be used on a FILE type related attachment. To delete this type of file, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteAttachedFile.html\">DeleteAttachedFile</a> API</p> </note>",
+      "documentation":"<p>Deletes the related item resource under a case.</p> <note> <p>This API cannot be used on a FILE type related attachment. To delete this type of file, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteAttachedFile.html\">DeleteAttachedFile</a> API</p> </note> <p>If the case is the secondary case of a merge that is running, the request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p>",
       "idempotent":true
     },
     "DeleteTemplate":{
@@ -487,6 +490,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns the details for the requested layout.</p>",
+      "readonly":true
+    },
+    "GetMergeCasesStatus":{
+      "name":"GetMergeCasesStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{domainId}/cases/{caseId}/merge-status",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMergeCasesStatusRequest"},
+      "output":{"shape":"GetMergeCasesStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the merge status of a case. Use this operation to track a merge that you started with <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>, or to check whether a case is part of a merge before you modify it.</p> <p>The operation returns the following, depending on the case:</p> <ul> <li> <p>For the primary case or the secondary case of a merge that is running, it returns <code>IN_PROGRESS</code>.</p> </li> <li> <p>For a case that was merged into another case as the secondary case, it returns <code>COMPLETED</code>.</p> </li> <li> <p>For any other case, it returns a <code>ResourceNotFoundException</code>. This includes the primary case after its merge finishes.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
       "readonly":true
     },
     "GetTemplate":{
@@ -735,6 +757,26 @@
       "documentation":"<p>Searches for related items that are associated with a case.</p> <note> <p>If no filters are provided, this returns all related items associated with a case.</p> </note>",
       "readonly":true
     },
+    "StartMergeCases":{
+      "name":"StartMergeCases",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{domainId}/cases/{caseId}/merge",
+        "responseCode":200
+      },
+      "input":{"shape":"StartMergeCasesRequest"},
+      "output":{"shape":"StartMergeCasesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Merges a secondary case into a primary case. The primary case, which you specify in the request URI, remains active. Both cases must belong to the same domain.</p> <p>The merge runs asynchronously. To track its progress, call <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetMergeCasesStatus.html\">GetMergeCasesStatus</a>. When the merge finishes, the selected field values and related items from the secondary case are on the primary case, the two cases are linked, and the secondary case is closed. Both cases record the merge in their audit history. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetCaseAuditEvents.html\">GetCaseAuditEvents</a>.</p> <p> <b>Important things to know</b> </p> <ul> <li> <p>Both cases must have the same customer, or at least one of them must have no customer.</p> </li> <li> <p>While the merge runs, you can't modify the secondary case or its related items, and you can't delete the primary case. These requests return a <code>ConflictException</code>.</p> </li> <li> <p>After the merge, the secondary case can be reopened, updated, and deleted, but it can't be merged again.</p> </li> </ul> <p>The request fails with a <code>ValidationException</code>, and no merge starts, if:</p> <ul> <li> <p>The primary case and the secondary case are the same case.</p> </li> <li> <p>Either case is closed.</p> </li> <li> <p>Both cases have a customer, and the customers are different.</p> </li> <li> <p> <code>fieldsConfiguration</code> selects a field that can't be merged, or a field that the secondary case doesn't have.</p> </li> <li> <p>After the merge, the primary case would have more than 500 field values, or would exceed the maximum case size.</p> </li> </ul> <p>The request fails with a <code>ServiceQuotaExceededException</code> if, after the merge, either case would exceed the quota for related items per case. For the primary case, the count is its existing related items, plus the related items moved from the secondary case, plus the new case link. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> <p>The request fails with a <code>ConflictException</code> if either case is already part of a merge that is running, or was previously merged into another case as the secondary case.</p> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -785,9 +827,10 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code>, you must also have the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the user ARN that you provide.</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input.</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p></p>"
+      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code>, you must also have the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the user ARN that you provide.</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input.</p> <p>If the case is the secondary case of a merge that is running, the request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p></p>"
     },
     "UpdateCaseRule":{
       "name":"UpdateCaseRule",
@@ -866,9 +909,10 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Updates the content of a related item associated with a case. The following related item types are supported:</p> <ul> <li> <p> <b>Comment</b> - Update the text content of an existing comment</p> </li> <li> <p> <b>Custom</b> - Update the fields of a custom related item. You can add, modify, and remove fields from a custom related item. There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>When updating a Custom related item, all existing and new fields, and their associated values should be included in the request. Fields not included as part of this request will be removed.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html#system-case-fields\">System case fields</a> cannot be used in a custom related item.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
+      "documentation":"<p>Updates the content of a related item associated with a case. The following related item types are supported:</p> <ul> <li> <p> <b>Comment</b> - Update the text content of an existing comment</p> </li> <li> <p> <b>Custom</b> - Update the fields of a custom related item. You can add, modify, and remove fields from a custom related item. There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>When updating a Custom related item, all existing and new fields, and their associated values should be included in the request. Fields not included as part of this request will be removed.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html#system-case-fields\">System case fields</a> cannot be used in a custom related item.</p> </li> <li> <p>If the case is the secondary case of a merge that is running, the request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
       "idempotent":true
     },
     "UpdateTemplate":{
@@ -931,7 +975,7 @@
         },
         "type":{
           "shape":"AuditEventType",
-          "documentation":"<p>The type of audit history event.</p> <p>Valid Values: <code>Case.Created</code> | <code>Case.Updated</code> | <code>RelatedItem.Created</code> | <code>RelatedItem.Updated</code> | <code>RelatedItem.Deleted</code> </p>"
+          "documentation":"<p>The type of audit history event.</p> <p>Valid Values: <code>Case.Created</code> | <code>Case.Updated</code> | <code>RelatedItem.Created</code> | <code>RelatedItem.Updated</code> | <code>RelatedItem.Deleted</code> | <code>Case.Merged</code> </p> <p> <code>Case.Merged</code> summarizes a merge on each of the two cases that took part in it.</p>"
         },
         "relatedItemType":{
           "shape":"RelatedItemType",
@@ -948,6 +992,10 @@
         "performedBy":{
           "shape":"AuditEventPerformedBy",
           "documentation":"<p>Information of the user which performed the audit.</p>"
+        },
+        "mergeMetadata":{
+          "shape":"AuditMergeMetadata",
+          "documentation":"<p>Information about the merge that produced this audit event. Present only on audit events produced by a merge. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p>"
         }
       },
       "documentation":"<p>Represents the content of a particular audit event.</p>"
@@ -1041,8 +1089,37 @@
         "Case.Updated",
         "RelatedItem.Created",
         "RelatedItem.Deleted",
-        "RelatedItem.Updated"
+        "RelatedItem.Updated",
+        "Case.Merged"
       ]
+    },
+    "AuditMergeMetadata":{
+      "type":"structure",
+      "required":[
+        "mergeEventId",
+        "primaryCaseId",
+        "secondaryCaseId"
+      ],
+      "members":{
+        "mergeEventId":{
+          "shape":"AuditMergeMetadataMergeEventIdString",
+          "documentation":"<p>The unique identifier of the merge. All audit events produced by the same merge, on both cases, have the same value. Use it to group the changes that a merge made.</p>"
+        },
+        "primaryCaseId":{
+          "shape":"CaseId",
+          "documentation":"<p>The unique identifier of the primary case of the merge.</p>"
+        },
+        "secondaryCaseId":{
+          "shape":"CaseId",
+          "documentation":"<p>The unique identifier of the secondary case of the merge.</p>"
+        }
+      },
+      "documentation":"<p>Information about the merge that produced an audit event.</p>"
+    },
+    "AuditMergeMetadataMergeEventIdString":{
+      "type":"string",
+      "max":500,
+      "min":1
     },
     "BasicLayout":{
       "type":"structure",
@@ -1590,6 +1667,10 @@
       "max":500,
       "min":1,
       "pattern":"[A-Za-z0-9\\-._/:#=+-]*"
+    },
+    "CaseIdList":{
+      "type":"list",
+      "member":{"shape":"CaseId"}
     },
     "CaseIdentifier":{
       "type":"structure",
@@ -2769,6 +2850,10 @@
       },
       "documentation":"<p>Object for unique identifier of a field.</p>"
     },
+    "FieldIdentifierList":{
+      "type":"list",
+      "member":{"shape":"FieldIdentifier"}
+    },
     "FieldIdentifierUnion":{
       "type":"structure",
       "members":{
@@ -3009,6 +3094,28 @@
       "type":"string",
       "max":4100,
       "min":0
+    },
+    "FieldsConfiguration":{
+      "type":"structure",
+      "required":[
+        "fieldIds",
+        "sourceCaseId"
+      ],
+      "members":{
+        "fieldIds":{
+          "shape":"FieldIdentifierList",
+          "documentation":"<p>The fields whose values to take from the source case. Each field must exist on the source case and must be a field that can be merged. Don't list the same field more than once.</p>"
+        },
+        "sourceCaseId":{
+          "shape":"CaseId",
+          "documentation":"<p>The unique identifier of the case to take the field values from. This must be the secondary case.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the fields whose values to take from the secondary case when you merge cases.</p>"
+    },
+    "FieldsConfigurationList":{
+      "type":"list",
+      "member":{"shape":"FieldsConfiguration"}
     },
     "FileArn":{
       "type":"string",
@@ -3395,6 +3502,45 @@
         "lastModifiedTime":{
           "shape":"LastModifiedTime",
           "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
+        }
+      }
+    },
+    "GetMergeCasesStatusRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "caseId"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>The unique identifier of the case. This can be the primary case or the secondary case of a merge.</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        }
+      }
+    },
+    "GetMergeCasesStatusResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"MergeStatus",
+          "documentation":"<p>The merge status of the case.</p>"
+        },
+        "primaryCaseId":{
+          "shape":"CaseId",
+          "documentation":"<p>The unique identifier of the primary case of the merge.</p>"
+        },
+        "secondaryCaseIds":{
+          "shape":"CaseIdList",
+          "documentation":"<p>The unique identifiers of the secondary cases of the merge.</p>"
         }
       }
     },
@@ -3948,6 +4094,14 @@
       "max":100,
       "min":1
     },
+    "MergeStatus":{
+      "type":"string",
+      "documentation":"<p>The merge status of a case.</p> <ul> <li> <p> <code>IN_PROGRESS</code> - The merge is running. You can't modify the secondary case or its related items. You can modify the primary case, but you can't delete it.</p> </li> <li> <p> <code>COMPLETED</code> - The merge finished, and this case was the secondary case. The case was closed by the merge. You can reopen, update, and delete it, but you can't include it in another merge.</p> </li> </ul>",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED"
+      ]
+    },
     "MutableTagKey":{
       "type":"string",
       "max":128,
@@ -4216,6 +4370,28 @@
       },
       "documentation":"<p>Represents the content of a related item to be updated. This is a union type that can contain either comment content or custom content.</p>",
       "union":true
+    },
+    "RelatedItemsConfiguration":{
+      "type":"structure",
+      "members":{
+        "comment":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to move Comment related items to the primary case.</p>"
+        },
+        "connectCase":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to move Case related items to the primary case. If the primary case already links to the same case, the secondary case's link is removed instead of moved.</p>"
+        },
+        "contact":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to move Contact related items to the primary case. If the same contact is related to both cases, the primary case keeps its related item and gets any tag keys that only the secondary case's related item has.</p>"
+        },
+        "custom":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to move Custom related items to the primary case.</p>"
+        }
+      },
+      "documentation":"<p>Specifies which types of related items to move from the secondary case to the primary case when you merge cases. Moved related items keep their related item ID, creator, association time, and tags.</p>"
     },
     "RequiredCaseRule":{
       "type":"structure",
@@ -4826,6 +5002,54 @@
         }
       },
       "documentation":"<p>A structured set of sort terms.</p>"
+    },
+    "StartMergeCasesRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "caseId",
+        "secondaryCaseIds"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>The unique identifier of the primary case. The primary case remains active and receives the merged field values and related items. The cases can use different templates, and the primary case keeps its template.</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        },
+        "secondaryCaseIds":{
+          "shape":"StartMergeCasesRequestSecondaryCaseIdsList",
+          "documentation":"<p>The unique identifier of the secondary case to merge into the primary case. The secondary case is closed when the merge finishes. Specify exactly one case ID.</p>"
+        },
+        "fieldsConfiguration":{
+          "shape":"FieldsConfigurationList",
+          "documentation":"<p>The fields whose values to take from the secondary case. You can only merge custom fields and the following system fields: <code>assigned_queue</code>, <code>assigned_user</code>, <code>summary</code>, and <code>case_reason</code>. If you select any other system field, the request fails with a <code>ValidationException</code>.</p> <p>For each field that can be merged, the merge works as follows:</p> <ul> <li> <p>If you select the field, the primary case gets the secondary case's value. If the secondary case's value is empty, the primary case's value is cleared.</p> </li> <li> <p>If you don't select the field and the primary case has a value for it, the primary case keeps its value.</p> </li> <li> <p>If you don't select the field and the primary case doesn't have the field, or its value is empty, the primary case gets the secondary case's value. This applies even when the field isn't on the primary case's template.</p> </li> </ul> <p>Field values are read from both cases when the merge runs, so changes that you make to the primary case after you start the merge are taken into account.</p> <p>Specify at most one entry, and set its <code>sourceCaseId</code> to the secondary case ID.</p>"
+        },
+        "relatedItemsConfiguration":{
+          "shape":"RelatedItemsConfiguration",
+          "documentation":"<p>The types of related items to move from the secondary case to the primary case. Related items of a type that you don't select, or set to <code>false</code>, stay on the closed secondary case. If you omit this parameter, no related items are moved.</p> <p>File, SLA, and work plan related items are never moved. They stay on the secondary case.</p>"
+        },
+        "performedBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>The user who performed the merge. If you provide <code>userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of that user.</p>"
+        }
+      }
+    },
+    "StartMergeCasesRequestSecondaryCaseIdsList":{
+      "type":"list",
+      "member":{"shape":"CaseId"},
+      "max":1,
+      "min":1
+    },
+    "StartMergeCasesResponse":{
+      "type":"structure",
+      "members":{}
     },
     "String":{"type":"string"},
     "TagFilter":{

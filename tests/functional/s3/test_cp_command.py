@@ -21,6 +21,7 @@ from awscrt.s3 import (
     S3RequestType,
     S3ResponseError,
 )
+from botocore.exceptions import ReadTimeoutError
 from botocore.response import StreamingBody
 
 from awscli.compat import BytesIO, OrderedDict
@@ -32,6 +33,7 @@ from awscli.testutils import (
     mock,
     skip_if_windows,
 )
+from tests import BaseResponse
 from tests.functional.s3 import (
     BaseCRTTransferClientTest,
     BaseS3CLIRunnerTest,
@@ -3986,3 +3988,21 @@ class TestS3ExpressCpRecursive(BaseCPCommandTest):
 
         _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
         assert "warning: Recursive copies/moves" in stderr
+
+
+class TestCpFailureExitCode(BaseS3CLIRunnerTest):
+    def test_upload_fails_with_read_timeout_error_returns_exit_code_1(self):
+        class ReadTimeoutResponse(BaseResponse):
+            def on_http_request_sent(self, request):
+                raise ReadTimeoutError(endpoint_url='https://s3.amazonaws.com')
+
+        self.cli_runner.env['AWS_MAX_ATTEMPTS'] = '1'
+        self.session_stubber.add_response(ReadTimeoutResponse())
+        filename = os.path.join(self.config_files.rootdir, 'test.txt')
+        with open(filename, 'w') as f:
+            f.write('hello')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key']
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 1)
+        self.assertIn('upload failed', result.stderr)
+        self.assertIn('Read timeout on endpoint URL', result.stderr)

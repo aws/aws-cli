@@ -145,6 +145,9 @@ def test_same_device_fetch_token_success(
     assert token == EXPECTED_TOKEN
     assert session_id == 'arn:aws:sts::012345678901:assumed-role/Admin/admin'
     mock_on_pending_auth.assert_called_once()
+    mock_auth_code_fetcher.get_auth_code_and_state.assert_called_once_with(
+        expected_state=str(mock_same_device_fetcher._expected_state)
+    )
     mock_client.create_o_auth2_token.assert_called_with(
         tokenInput={
             'clientId': 'arn:aws:signin:::devtools/same-device',

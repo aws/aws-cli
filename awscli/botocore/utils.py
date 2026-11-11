@@ -3737,7 +3737,9 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         # Open/display the link, then block until the redirect uri is hit and
         # the auth code is retrieved
         self._on_pending_authorization(**authorization_args)
-        auth_code, state = self._auth_code_fetcher.get_auth_code_and_state()
+        auth_code, state = self._auth_code_fetcher.get_auth_code_and_state(
+            expected_state=str(expected_state)
+        )
 
         if auth_code is None:
             raise AuthorizationCodeLoadError(

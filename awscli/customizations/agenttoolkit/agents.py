@@ -242,8 +242,13 @@ class DetectedAgent:
     def _configure_via_shell(self):
         argv = list(self.config.mcp_shell_command)
         executable = argv[0]
-        if shutil.which(executable) is None:
+        resolved = shutil.which(executable)
+        if resolved is None:
             return McpConfigureAction.SKIPPED, executable
+        # Run the resolved path: on Windows, shutil.which() also finds .cmd
+        # and .bat files through PATHEXT (npm installs Codex as codex.cmd),
+        # and those cannot be started by their bare name.
+        argv[0] = resolved
         subprocess.run(argv, check=True)
         return McpConfigureAction.CONFIGURED, executable
 

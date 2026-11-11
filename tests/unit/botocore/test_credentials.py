@@ -1654,6 +1654,24 @@ class TestSharedCredentialsProvider(BaseEnvVar):
         creds = provider.load()
         self.assertIsNone(creds)
 
+    def test_credentials_file_with_utf8_bom(self):
+        with tempfile.NamedTemporaryFile('wb', delete=False) as f:
+            f.write(
+                b'\xef\xbb\xbf[default]\n'
+                b'aws_access_key_id = bom_key\n'
+                b'aws_secret_access_key = bom_secret\n'
+            )
+            creds_file = f.name
+        self.addCleanup(os.unlink, creds_file)
+        provider = credentials.SharedCredentialProvider(
+            creds_filename=creds_file,
+            profile_name='default',
+        )
+        creds = provider.load()
+        self.assertIsNotNone(creds)
+        self.assertEqual(creds.access_key, 'bom_key')
+        self.assertEqual(creds.secret_key, 'bom_secret')
+
     def test_credentials_file_exists_with_account_id(self):
         self.ini_parser.return_value = {
             'default': {

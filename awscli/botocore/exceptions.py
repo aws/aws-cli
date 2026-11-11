@@ -299,6 +299,11 @@ class ConfigParseError(BotoCoreError):
 
     fmt = 'Unable to parse config file: {path}'
 
+    def __init__(self, **kwargs):
+        if 'message' in kwargs:
+            self.fmt = 'Unable to parse config file: {path} - {message}'
+        super().__init__(**kwargs)
+
 
 class ConfigNotFound(BotoCoreError):
     """

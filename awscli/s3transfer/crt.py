@@ -490,7 +490,8 @@ class CRTTransferManager:
         self._region_redirect_policy = CRTS3RegionRedirectPolicy(
             crt_request_serializer
         )
-        self._future_coordinators = []
+        self._future_coordinators = set()
+        self._future_coordinators_lock = threading.Lock()
         self._semaphore = threading.Semaphore(128)  # not configurable
         # A counter to create unique id's for each transfer submitted.
         self._id_counter = 0
@@ -562,17 +563,29 @@ class CRTTransferManager:
                 f'Supported algorithms are: {supported_algorithms}'
             )
 
+    def _tracked_coordinators(self):
+        with self._future_coordinators_lock:
+            return list(self._future_coordinators)
+
+    def _track_coordinator(self, coordinator):
+        with self._future_coordinators_lock:
+            self._future_coordinators.add(coordinator)
+
+    def _untrack_coordinator(self, coordinator):
+        with self._future_coordinators_lock:
+            self._future_coordinators.discard(coordinator)
+
     def _cancel_transfers(self):
-        for coordinator in self._future_coordinators:
+        for coordinator in self._tracked_coordinators():
             if not coordinator.done():
                 coordinator.cancel()
 
     def _finish_transfers(self):
-        for coordinator in self._future_coordinators:
+        for coordinator in self._tracked_coordinators():
             coordinator.result()
 
     def _wait_transfers_done(self):
-        for coordinator in self._future_coordinators:
+        for coordinator in self._tracked_coordinators():
             coordinator.wait_until_on_done_callbacks_complete()
 
     def _shutdown(self, cancel=False):
@@ -619,6 +632,10 @@ class CRTTransferManager:
         future = CRTTransferFuture(**components)
         afterdone = AfterDoneHandler(coordinator)
         on_done_after_calls.append(afterdone)
+        # Untrack only after the done callbacks, which shutdown waits on.
+        on_done_after_calls.append(
+            lambda **kwargs: self._untrack_coordinator(coordinator)
+        )
         # Serialization can rewrite an ARN in call_args, so retain the
         # caller-provided bucket for redirect eligibility and caching.
         bucket = call_args.bucket
@@ -637,6 +654,7 @@ class CRTTransferManager:
                 is_replayable = False
 
         try:
+            self._track_coordinator(coordinator)
             self._semaphore.acquire()
             on_queued = self._s3_args_creator.get_crt_callback(
                 future, 'queued'
@@ -684,13 +702,18 @@ class CRTTransferManager:
                 is_replayable=is_replayable,
             )
         except Exception as e:
+            # The done callbacks run on this thread, so shutdown needn't wait.
+            self._untrack_coordinator(coordinator)
             coordinator.set_exception(e, True)
             on_done = self._s3_args_creator.get_crt_callback(
                 future, 'done', after_subscribers=on_done_after_calls
             )
             coordinator.complete(e)
             on_done(error=e)
-        self._future_coordinators.append(coordinator)
+        except BaseException:
+            # An interrupted submit may never complete, so don't wait on it.
+            self._untrack_coordinator(coordinator)
+            raise
 
         self._id_counter += 1
         return future
@@ -1414,6 +1437,9 @@ class CRTTransferCoordinator:
                 # The redirect is already active. The original request
                 # completed and redirected before make_request() returned.
                 return
+            if self._completion_started:
+                # The request finished before make_request() returned.
+                return
             if is_region_redirect:
                 self._redirect_retry_started = True
             self._s3_request = s3_request
@@ -1432,10 +1458,11 @@ class CRTTransferCoordinator:
             self._completion_started = True
             completion_future = self._completion_future
             # No further request will be started for this transfer, so release
-            # the factory. It holds the transfer's call args, including an
-            # upload's stream, and the manager keeps every coordinator until
-            # it shuts down.
+            # the factory and the CRT request. The CRT request's native
+            # callbacks reference this coordinator, so keeping it would leak
+            # both.
             self._request_factory = None
+            self._s3_request = None
         if error is None:
             completion_future.set_result(None)
         else:

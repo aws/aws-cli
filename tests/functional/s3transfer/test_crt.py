@@ -11,9 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import fnmatch
+import gc
 import io
 import threading
 import time
+import weakref
 from concurrent.futures import Future
 
 import pytest
@@ -1408,6 +1410,283 @@ class TestCRTTransferManager(unittest.TestCase):
             future.result()
         self.assertTrue(self.cancel_called)
 
+    def _assert_shutdown_returns(self, cancel=False):
+        shutdown = threading.Thread(
+            target=self.transfer_manager.shutdown,
+            kwargs={'cancel': cancel},
+            daemon=True,
+        )
+        shutdown.start()
+        shutdown.join(5)
+        self.assertFalse(shutdown.is_alive())
+
+    def _assert_coordinator_released(self, coordinator, *clients):
+        # The mocks keep the requests' callbacks, which reference the
+        # coordinator.
+        for client in clients or (self.s3_crt_client,):
+            client.reset_mock()
+            client.make_request.side_effect = None
+        # A redirected transfer finishes on its own thread.
+        deadline = time.time() + RESULT_TIMEOUT
+        while coordinator() is not None and time.time() < deadline:
+            gc.collect()
+            time.sleep(0.01)
+        self.assertIsNone(coordinator())
+
+    def _assert_result_raises(self, future):
+        # Not assertRaises, which keeps the traceback and so the coordinator.
+        raised = False
+        try:
+            future.result()
+        except Exception:
+            raised = True
+        self.assertTrue(raised)
+
+    def test_finished_transfer_is_released(self):
+        future = self.transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, []
+        )
+        future.result()
+        coordinator = weakref.ref(future._coordinator)
+        del future
+        self._assert_coordinator_released(coordinator)
+
+    def test_shutdown_waits_for_in_flight_transfer(self):
+        self.s3_crt_client.make_request.side_effect = None
+        self.s3_crt_client.make_request.return_value = self.s3_request
+        finished = self.transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, []
+        )
+        in_flight = self.transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, []
+        )
+        first_on_done = self.s3_crt_client.make_request.call_args_list[0][1][
+            'on_done'
+        ]
+        first_on_done(error=None)
+        self.assertTrue(finished.done())
+
+        shutdown = threading.Thread(
+            target=self.transfer_manager.shutdown, daemon=True
+        )
+        shutdown.start()
+        shutdown.join(0.2)
+        self.assertTrue(shutdown.is_alive())
+
+        self._invoke_done_callbacks()
+        shutdown.join(5)
+        self.assertFalse(shutdown.is_alive())
+        self.assertTrue(in_flight.done())
+
+    def test_shutdown_after_interrupted_submit_does_not_hang(self):
+        # Ctrl-C usually lands while a submit waits for a free request slot.
+        self.transfer_manager._semaphore = mock.Mock()
+        self.transfer_manager._semaphore.acquire.side_effect = (
+            KeyboardInterrupt()
+        )
+        with self.assertRaises(KeyboardInterrupt):
+            self.transfer_manager.upload(
+                self.filename, self.bucket, self.key, {}, []
+            )
+
+        self._assert_shutdown_returns(cancel=True)
+
+    def test_failed_submit_is_released(self):
+        self.s3_crt_client.make_request.side_effect = (
+            awscrt.exceptions.from_code(0)
+        )
+        future = self.transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, []
+        )
+        self._assert_result_raises(future)
+        coordinator = weakref.ref(future._coordinator)
+        del future
+        self._assert_coordinator_released(coordinator)
+
+    def test_transfer_that_fails_in_crt_is_released(self):
+        self.s3_crt_client.make_request.side_effect = None
+        self.s3_crt_client.make_request.return_value = self.s3_request
+        future = self.transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, []
+        )
+        self._invoke_done_callbacks(error=awscrt.exceptions.from_code(0))
+        self._assert_result_raises(future)
+        coordinator = weakref.ref(future._coordinator)
+        del future
+        self._assert_coordinator_released(coordinator)
+
+    def test_redirected_transfer_is_released(self):
+        self.transfer_manager = self._create_redirecting_transfer_manager(
+            self._fail_make_request(
+                self._create_redirect_error('eu-central-1')
+            )
+        )
+        future = self._upload_and_wait(self.transfer_manager)
+        coordinator = weakref.ref(future._coordinator)
+        del future
+        self._assert_coordinator_released(
+            coordinator, self.initial_client, self.redirected_client
+        )
+
+    def test_shutdown_after_interrupted_seekable_check(self):
+        with open(self.filename, 'rb') as fileobj:
+            with mock.patch(
+                's3transfer.crt.seekable', side_effect=KeyboardInterrupt()
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    self.transfer_manager.upload(
+                        fileobj, self.bucket, self.key, {}, []
+                    )
+        self._assert_shutdown_returns(cancel=True)
+
+    def test_shutdown_after_failed_submit_interrupted_in_on_done(self):
+        # Ctrl-C can land while a failed submit runs its done callbacks.
+        class InterruptingSubscriber(BaseSubscriber):
+            def on_done(self, future, **kwargs):
+                raise KeyboardInterrupt()
+
+        self.s3_crt_client.make_request.side_effect = RuntimeError()
+        with self.assertRaises(KeyboardInterrupt):
+            self.transfer_manager.upload(
+                self.filename,
+                self.bucket,
+                self.key,
+                {},
+                [InterruptingSubscriber()],
+            )
+        self._assert_shutdown_returns(cancel=True)
+
+    def test_shutdown_after_failed_submit_with_raising_on_done(self):
+        class RaisingSubscriber(BaseSubscriber):
+            def on_done(self, future, **kwargs):
+                raise ValueError()
+
+        self.s3_crt_client.make_request.side_effect = RuntimeError()
+        with self.assertRaises(ValueError):
+            self.transfer_manager.upload(
+                self.filename,
+                self.bucket,
+                self.key,
+                {},
+                [RaisingSubscriber()],
+            )
+        self._assert_shutdown_returns(cancel=True)
+
+    def _upload_in_flight(self, count):
+        # As in the CRT, cancelling a request finishes it with an error.
+        on_dones = []
+
+        def make_request(**kwargs):
+            on_done = kwargs['on_done']
+            on_dones.append(on_done)
+            request = mock.Mock(awscrt.s3.S3Request)
+            request.cancel.side_effect = lambda: on_done(
+                error=awscrt.exceptions.from_code(0)
+            )
+            return request
+
+        self.s3_crt_client.make_request.side_effect = make_request
+        futures = [
+            self.transfer_manager.upload(
+                self.filename, self.bucket, self.key, {}, []
+            )
+            for _ in range(count)
+        ]
+        return futures, on_dones
+
+    def test_shutdown_while_transfers_finish_their_done_callbacks(self):
+        futures, on_dones = self._upload_in_flight(2)
+        # Both transfers have a result, but their done callbacks are still
+        # running on CRT threads.
+        for future in futures:
+            future._coordinator.complete()
+        coordinator_class = s3transfer.crt.CRTTransferCoordinator
+        wait = coordinator_class.wait_until_on_done_callbacks_complete
+
+        def finish_done_callbacks_then_wait(coordinator, timeout=None):
+            while on_dones:
+                on_dones.pop()(error=None)
+            wait(coordinator, timeout)
+
+        with mock.patch.object(
+            coordinator_class,
+            'wait_until_on_done_callbacks_complete',
+            autospec=True,
+            side_effect=finish_done_callbacks_then_wait,
+        ):
+            self.transfer_manager.shutdown()
+
+    def test_interrupted_shutdown_cancels_transfers_after_others_finish(self):
+        futures, on_dones = self._upload_in_flight(2)
+        on_done_by_coordinator = {
+            future._coordinator: on_done
+            for future, on_done in zip(futures, on_dones)
+        }
+        result = s3transfer.crt.CRTTransferCoordinator.result
+        result_calls = []
+
+        def finish_first_then_interrupt(coordinator, timeout=None):
+            result_calls.append(coordinator)
+            if len(result_calls) == 1:
+                # The transfer shutdown waits on finishes first.
+                on_done_by_coordinator[coordinator](error=None)
+                return result(coordinator, timeout)
+            # Ctrl-C while shutdown waits on the next transfer.
+            raise KeyboardInterrupt()
+
+        def finish_stranded_transfers():
+            for coordinator, on_done in on_done_by_coordinator.items():
+                if not coordinator.done():
+                    on_done(error=None)
+
+        self.addCleanup(finish_stranded_transfers)
+        shutdown = threading.Thread(
+            target=self.transfer_manager.shutdown, daemon=True
+        )
+        with mock.patch.object(
+            s3transfer.crt.CRTTransferCoordinator,
+            'result',
+            autospec=True,
+            side_effect=finish_first_then_interrupt,
+        ):
+            shutdown.start()
+            shutdown.join(5)
+        self.assertFalse(shutdown.is_alive())
+        self.assertTrue(all(future.done() for future in futures))
+
+    def test_shutdown_waits_for_subscriber_done_callbacks(self):
+        self.s3_crt_client.make_request.side_effect = None
+        self.s3_crt_client.make_request.return_value = self.s3_request
+        on_done_started = threading.Event()
+        release_on_done = threading.Event()
+
+        class BlockingSubscriber(BaseSubscriber):
+            def on_done(self, future, **kwargs):
+                on_done_started.set()
+                release_on_done.wait(RESULT_TIMEOUT)
+
+        self.addCleanup(release_on_done.set)
+        self.transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, [BlockingSubscriber()]
+        )
+        on_done = threading.Thread(
+            target=self._invoke_done_callbacks, daemon=True
+        )
+        on_done.start()
+        self.addCleanup(on_done.join, RESULT_TIMEOUT)
+        self.assertTrue(on_done_started.wait(RESULT_TIMEOUT))
+
+        shutdown = threading.Thread(
+            target=self.transfer_manager.shutdown, daemon=True
+        )
+        shutdown.start()
+        shutdown.join(0.2)
+        self.assertTrue(shutdown.is_alive())
+
+        release_on_done.set()
+        shutdown.join(RESULT_TIMEOUT)
+        self.assertFalse(shutdown.is_alive())
+
     def test_serializer_error_handling(self):
         class SerializationException(Exception):
             pass
@@ -1439,6 +1718,75 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         with self.assertRaises(awscrt.exceptions.AwsCrtError):
             future.result()
+
+
+class FakeNativeS3Request:
+    def __init__(self, native_callbacks, key):
+        weakref.finalize(self, native_callbacks.pop, key, None)
+
+    def cancel(self):
+        pass
+
+
+class NativeLikeS3Client:
+    """Like awscrt, keeps each request's callbacks until the request is freed
+    and finishes requests on another thread.
+    """
+
+    def __init__(self):
+        self.native_callbacks = {}
+        self.threads = []
+        self.release = threading.Event()
+        self._next_key = 0
+        self._lock = threading.Lock()
+
+    def make_request(self, **kwargs):
+        with self._lock:
+            key = self._next_key
+            self._next_key += 1
+        self.native_callbacks[key] = kwargs['on_done']
+        request = FakeNativeS3Request(self.native_callbacks, key)
+        thread = threading.Thread(target=self._finish, args=(key,))
+        self.threads.append(thread)
+        thread.start()
+        return request
+
+    def _finish(self, key):
+        self.release.wait(RESULT_TIMEOUT)
+        self.native_callbacks[key](error=None)
+
+
+@requires_crt()
+class TestCRTTransferLifetime(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+        self.addCleanup(self.files.remove_all)
+        self.filename = self.files.create_file('myfile', 'content')
+        session = Session()
+        session.set_config_variable('region', 'us-west-2')
+        self.client = NativeLikeS3Client()
+        self.transfer_manager = s3transfer.crt.CRTTransferManager(
+            crt_client_factory=lambda region=None: self.client,
+            crt_request_serializer=(
+                s3transfer.crt.BotocoreCRTRequestSerializer(session)
+            ),
+        )
+
+    def test_finished_transfers_release_coordinator_and_request(self):
+        coordinators = []
+        for i in range(50):
+            future = self.transfer_manager.upload(
+                self.filename, 'bucket', f'key{i}', {}, []
+            )
+            coordinators.append(weakref.ref(future._coordinator))
+            del future
+        self.client.release.set()
+        for thread in self.client.threads:
+            thread.join(RESULT_TIMEOUT)
+        gc.collect()
+        self.assertEqual([c for c in coordinators if c() is not None], [])
+        self.assertEqual(self.client.native_callbacks, {})
+        self.transfer_manager.shutdown()
 
 
 MULTIPART_THRESHOLD = 8 * 1024 * 1024

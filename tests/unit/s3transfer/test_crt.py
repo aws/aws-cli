@@ -664,6 +664,17 @@ class TestCRTTransferCoordinator:
         self.coordinator.complete(CustomFutureException())
         assert self.coordinator.result() is None
 
+    def test_complete_releases_s3_request(self):
+        self.coordinator.set_s3_request(self.create_s3_request())
+        self.coordinator.complete()
+        assert self.coordinator.s3_request is None
+
+    def test_request_finished_before_set_is_not_kept(self):
+        # A request can finish before make_request() returns it.
+        self.coordinator.complete()
+        self.coordinator.set_s3_request(self.create_s3_request())
+        assert self.coordinator.s3_request is None
+
     def test_not_done_until_completed(self):
         s3_request = self.create_s3_request()
         self.coordinator.set_s3_request(s3_request)

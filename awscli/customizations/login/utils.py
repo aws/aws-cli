@@ -242,7 +242,9 @@ class SameDeviceLoginTokenFetcher(BaseLoginTokenFetcher):
         self._on_pending_authorization(
             **self._get_browser_handler_args(authorization_uri)
         )
-        auth_code, state = self._auth_code_fetcher.get_auth_code_and_state()
+        auth_code, state = self._auth_code_fetcher.get_auth_code_and_state(
+            expected_state=str(self._expected_state)
+        )
 
         if auth_code is None:
             raise LoginAuthorizationCodeError(

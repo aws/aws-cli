@@ -475,6 +475,17 @@ class TestLoginCommand(BaseSSOTest):
         _, stderr, _ = self.run_cmd('sso login', expected_rc=255)
         self.assertIn('Failed to retrieve an authorization code.', stderr)
 
+    def test_login_auth_sso_waits_for_expected_state(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+
+        self.run_cmd('sso login')
+        fetcher = self.fetcher_mock.return_value
+        fetcher.get_auth_code_and_state.assert_called_once_with(
+            expected_state='00000000-0000-0000-0000-000000000000'
+        )
+
     def test_login_auth_sso_state_mismatch_throws_error(self):
         self.fetcher_mock.return_value.get_auth_code_and_state.return_value = (
             "abc",

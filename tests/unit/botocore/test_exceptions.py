@@ -98,6 +98,21 @@ class TestPickleExceptions(unittest.TestCase):
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(unpickled_exception.kwargs, exception.kwargs)
 
+    def test_config_parse_error(self):
+        exception = botocore.exceptions.ConfigParseError(
+            path='/path/to/config',
+            message=(
+                "Found duplicate profile 'xyz' "
+                "(first seen on line 5, duplicated on line 20)"
+            ),
+        )
+        unpickled_exception = pickle.loads(pickle.dumps(exception))
+        self.assertIsInstance(
+            unpickled_exception, botocore.exceptions.ConfigParseError
+        )
+        self.assertEqual(str(unpickled_exception), str(exception))
+        self.assertEqual(unpickled_exception.kwargs, exception.kwargs)
+
     def test_multiple_kwarg_botocore_error(self):
         exception = botocore.exceptions.UnknownServiceError(
             service_name='myservice', known_service_names=['s3']

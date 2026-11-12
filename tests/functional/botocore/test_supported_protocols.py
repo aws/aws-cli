@@ -12,19 +12,16 @@
 # language governing permissions and limitations under the License.
 import pytest
 from botocore.args import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
-from botocore.session import get_session
+
+from tests import ALL_SERVICES
 
 
 def _multi_protocol_test_cases():
-    session = get_session()
-    loader = session.get_component('data_loader')
-    services = loader.list_available_services('service-2')
     multi_protocol_services = []
     supported_protocols = []
-    for service in services:
-        service_model = session.get_service_model(service)
+    for service_model in ALL_SERVICES:
         if 'protocols' in service_model.metadata:
-            multi_protocol_services.append(service)
+            multi_protocol_services.append(service_model.service_name)
             supported_protocols.append(
                 service_model.metadata.get('protocols', [])
             )
@@ -32,15 +29,11 @@ def _multi_protocol_test_cases():
 
 
 def _single_protocol_test_cases():
-    session = get_session()
-    loader = session.get_component('data_loader')
-    services = loader.list_available_services('service-2')
     single_protocol_services = []
     supported_protocol = []
-    for service in services:
-        service_model = session.get_service_model(service)
+    for service_model in ALL_SERVICES:
         if 'protocols' not in service_model.metadata:
-            single_protocol_services.append(service)
+            single_protocol_services.append(service_model.service_name)
             supported_protocol.append(service_model.metadata.get('protocol'))
     return list(zip(single_protocol_services, supported_protocol))
 

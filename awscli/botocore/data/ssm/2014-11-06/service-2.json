@@ -394,7 +394,7 @@
         {"shape":"InternalServerError"},
         {"shape":"ParameterNotFound"}
       ],
-      "documentation":"<p>Delete a parameter from the system. After deleting a parameter, wait for at least 30 seconds to create a parameter with the same name.</p>"
+      "documentation":"<p>Delete a parameter from the system. After deleting a parameter, wait for at least 30 seconds to create a parameter with the same name.</p> <note> <p>This operation is authorized against the <code>ssm:DeleteParameter</code> action. Denying that action alone doesn't restrict <a>DeleteParameters</a>, which is authorized against its own action. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/ps-restrict-parameter-access.html\">Restricting access to specific parameters and paths</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note>"
     },
     "DeleteParameters":{
       "name":"DeleteParameters",
@@ -407,7 +407,7 @@
       "errors":[
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Delete a list of parameters. After deleting a parameter, wait for at least 30 seconds to create a parameter with the same name.</p>"
+      "documentation":"<p>Delete a list of parameters. After deleting a parameter, wait for at least 30 seconds to create a parameter with the same name.</p> <important> <p>This operation is authorized against the <code>ssm:DeleteParameters</code> action, not against <code>ssm:DeleteParameter</code>. Denying <code>ssm:DeleteParameter</code> for a parameter doesn't prevent a principal from deleting that parameter with this operation. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/ps-restrict-parameter-access.html\">Restricting access to specific parameters and paths</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>"
     },
     "DeletePatchBaseline":{
       "name":"DeletePatchBaseline",
@@ -455,6 +455,20 @@
         {"shape":"ResourcePolicyNotFoundException"}
       ],
       "documentation":"<p>Deletes a Systems Manager resource policy. A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your Systems Manager resources. The following resources support Systems Manager resource policies.</p> <ul> <li> <p> <code>OpsItemGroup</code> - The resource policy for <code>OpsItemGroup</code> enables Amazon Web Services accounts to view and interact with OpsCenter operational work items (OpsItems).</p> </li> <li> <p> <code>Parameter</code> - The resource policy is used to share a parameter with other accounts using Resource Access Manager (RAM). For more information about cross-account sharing of parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html\">Working with shared parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> <li> <p> <code>Document</code> – Shares the document using Resource Access Manager (RAM). For more information about sharing documents, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/documents-ssm-sharing.html\">Sharing Systems Manager documents</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> </ul>"
+    },
+    "DeregisterDefaultHostManagementConfiguration":{
+      "name":"DeregisterDefaultHostManagementConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeregisterDefaultHostManagementConfigurationRequest"},
+      "output":{"shape":"DeregisterDefaultHostManagementConfigurationResult"},
+      "errors":[
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Removes the Default Host Management Configuration (DHMC) for an Amazon Web Services account and Amazon Web Services Region. After you deregister DHMC, Amazon EC2 instances are no longer automatically managed as managed nodes by Amazon Web Services Systems Manager.</p> <p>To use this operation, you must have the following permissions:</p> <ul> <li> <p>You need the <code>ssm:GetServiceSetting</code> and <code>ssm:ResetServiceSetting</code> permissions for the <code>/ssm/managed-instance/default-ec2-instance-management-role</code> service setting.</p> </li> </ul> <p>If the registered role is service-managed, you also need the <code>iam:DeleteRole</code> permission so that Amazon Web Services Systems Manager can remove the role it created.</p>",
+      "idempotent":true
     },
     "DeregisterManagedInstance":{
       "name":"DeregisterManagedInstance",
@@ -1335,7 +1349,7 @@
         {"shape":"ParameterNotFound"},
         {"shape":"ParameterVersionNotFound"}
       ],
-      "documentation":"<p>Get information about a single parameter by specifying the parameter name.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <note> <p>To get information about more than one parameter at a time, use the <a>GetParameters</a> operation.</p> </note> <note> <p>Parameter Store throughput defines the number of API transactions per second (TPS) that Systems Manager can process. This applies to <code>GetParameter</code>, <code>GetParameters</code>, and <code>PutParameter</code> API calls for your Amazon Web Services account and Amazon Web Services Region. By default, Parameter Store is configured with a standard throughput quota suitable for low- to moderate-volume workloads. Applications that retrieve configuration data infrequently or operate at smaller scale can use this default setting without additional cost.</p> <p>For higher-volume workloads, you can enable higher throughput. This increases the maximum number of supported transactions per second for your account and Region. Increased throughput supports applications and workloads that need concurrent access to multiple parameters. If you experience <code>ThrottlingException: Rate exceeded</code> errors, enable higher throughput. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html\">Changing Parameter Store throughput</a>.</p> </note>"
+      "documentation":"<p>Get information about a single parameter by specifying the parameter name.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <note> <p>To get information about more than one parameter at a time, use the <a>GetParameters</a> operation.</p> </note> <note> <p>This operation is authorized against the <code>ssm:GetParameter</code> action. Denying that action alone doesn't restrict <a>GetParameters</a>, <a>GetParameterHistory</a>, or <a>GetParametersByPath</a>, each of which is authorized against its own action. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/ps-retrieval-authorization.html\">How Parameter Store authorizes parameter retrieval</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note> <note> <p>Parameter Store throughput defines the number of API transactions per second (TPS) that Systems Manager can process. This applies to <code>GetParameter</code>, <code>GetParameters</code>, and <code>PutParameter</code> API calls for your Amazon Web Services account and Amazon Web Services Region. By default, Parameter Store is configured with a standard throughput quota suitable for low- to moderate-volume workloads. Applications that retrieve configuration data infrequently or operate at smaller scale can use this default setting without additional cost.</p> <p>For higher-volume workloads, you can enable higher throughput. This increases the maximum number of supported transactions per second for your account and Region. Increased throughput supports applications and workloads that need concurrent access to multiple parameters. If you experience <code>ThrottlingException: Rate exceeded</code> errors, enable higher throughput. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html\">Changing Parameter Store throughput</a>.</p> </note>"
     },
     "GetParameterHistory":{
       "name":"GetParameterHistory",
@@ -1351,7 +1365,7 @@
         {"shape":"InvalidNextToken"},
         {"shape":"InvalidKeyId"}
       ],
-      "documentation":"<p>Retrieves the history of all changes to a parameter.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <important> <p>If you change the KMS key alias for the KMS key used to encrypt a parameter, then you must also update the key alias the parameter uses to reference KMS. Otherwise, <code>GetParameterHistory</code> retrieves whatever the original key alias was referencing.</p> </important>"
+      "documentation":"<p>Retrieves the history of all changes to a parameter.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <important> <p>If you change the KMS key alias for the KMS key used to encrypt a parameter, then you must also update the key alias the parameter uses to reference KMS. Otherwise, <code>GetParameterHistory</code> retrieves whatever the original key alias was referencing.</p> </important> <important> <p>This operation is authorized against the <code>ssm:GetParameterHistory</code> action, not against <code>ssm:GetParameter</code>. Because parameter history includes every version of a parameter, including the current one, a principal who is denied <code>ssm:GetParameter</code>, <code>ssm:GetParameters</code>, and <code>ssm:GetParametersByPath</code> but allowed <code>ssm:GetParameterHistory</code> can still read the current value. To restrict access to a parameter value, deny every action that can return it. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/ps-retrieval-authorization.html\">How Parameter Store authorizes parameter retrieval</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>"
     },
     "GetParameters":{
       "name":"GetParameters",
@@ -1365,7 +1379,7 @@
         {"shape":"InvalidKeyId"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Get information about one or more parameters by specifying multiple parameter names.</p> <note> <p>To get information about a single parameter, you can use the <a>GetParameter</a> operation instead.</p> </note> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <note> <p>Parameter Store throughput defines the number of API transactions per second (TPS) that Systems Manager can process. This applies to <code>GetParameter</code>, <code>GetParameters</code>, and <code>PutParameter</code> API calls for your Amazon Web Services account and Amazon Web Services Region. By default, Parameter Store is configured with a standard throughput quota suitable for low- to moderate-volume workloads. Applications that retrieve configuration data infrequently or operate at smaller scale can use this default setting without additional cost.</p> <p>For higher-volume workloads, you can enable higher throughput. This increases the maximum number of supported transactions per second for your account and Region. Increased throughput supports applications and workloads that need concurrent access to multiple parameters. If you experience <code>ThrottlingException: Rate exceeded</code> errors, enable higher throughput. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html\">Changing Parameter Store throughput</a>.</p> </note>"
+      "documentation":"<p>Get information about one or more parameters by specifying multiple parameter names.</p> <note> <p>To get information about a single parameter, you can use the <a>GetParameter</a> operation instead.</p> </note> <important> <p>This operation is authorized against the <code>ssm:GetParameters</code> action, not against <code>ssm:GetParameter</code>. Denying <code>ssm:GetParameter</code> for a parameter doesn't prevent a principal from retrieving that parameter with this operation. To restrict access to a parameter value, deny every action that can return it. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/ps-retrieval-authorization.html\">How Parameter Store authorizes parameter retrieval</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <note> <p>Parameter Store throughput defines the number of API transactions per second (TPS) that Systems Manager can process. This applies to <code>GetParameter</code>, <code>GetParameters</code>, and <code>PutParameter</code> API calls for your Amazon Web Services account and Amazon Web Services Region. By default, Parameter Store is configured with a standard throughput quota suitable for low- to moderate-volume workloads. Applications that retrieve configuration data infrequently or operate at smaller scale can use this default setting without additional cost.</p> <p>For higher-volume workloads, you can enable higher throughput. This increases the maximum number of supported transactions per second for your account and Region. Increased throughput supports applications and workloads that need concurrent access to multiple parameters. If you experience <code>ThrottlingException: Rate exceeded</code> errors, enable higher throughput. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html\">Changing Parameter Store throughput</a>.</p> </note>"
     },
     "GetParametersByPath":{
       "name":"GetParametersByPath",
@@ -1383,7 +1397,7 @@
         {"shape":"InvalidKeyId"},
         {"shape":"InvalidNextToken"}
       ],
-      "documentation":"<p>Retrieve information about one or more parameters under a specified level in a hierarchy. </p> <p>Request results are returned on a best-effort basis. If you specify <code>MaxResults</code> in the request, the response includes information up to the limit specified. The number of items returned, however, can be between zero and the value of <code>MaxResults</code>. If the service reaches an internal limit while processing the results, it stops the operation and returns the matching values up to that point and a <code>NextToken</code>. You can specify the <code>NextToken</code> in a subsequent call to get the next set of results.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p>"
+      "documentation":"<p>Retrieve information about one or more parameters under a specified level in a hierarchy. </p> <important> <p>This operation is authorized against the <code>ssm:GetParametersByPath</code> action for the path that you specify in the request. It isn't authorized against the individual parameters that it returns, and it isn't authorized against <code>ssm:GetParameter</code>. A principal who is allowed to call this operation for the path <code>/a</code> with <code>Recursive</code> set to <code>true</code> receives every parameter under that path, including <code>/a/b</code>, even if a policy explicitly denies access to <code>/a/b</code>.</p> <p>To prevent a parameter from being returned by this operation, deny the <code>ssm:GetParametersByPath</code> action on every ancestor path that could include the parameter in its results. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/ps-restrict-parameter-access.html\">Restricting access to specific parameters and paths</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important> <p>Request results are returned on a best-effort basis. If you specify <code>MaxResults</code> in the request, the response includes information up to the limit specified. The number of items returned, however, can be between zero and the value of <code>MaxResults</code>. If the service reaches an internal limit while processing the results, it stops the operation and returns the matching values up to that point and a <code>NextToken</code>. You can specify the <code>NextToken</code> in a subsequent call to get the next set of results.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p>"
     },
     "GetPatchBaseline":{
       "name":"GetPatchBaseline",
@@ -1860,6 +1874,20 @@
         {"shape":"ResourcePolicyNotFoundException"}
       ],
       "documentation":"<p>Creates or updates a Systems Manager resource policy. A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your Systems Manager resources. The following resources support Systems Manager resource policies.</p> <ul> <li> <p> <code>OpsItemGroup</code> - The resource policy for <code>OpsItemGroup</code> enables Amazon Web Services accounts to view and interact with OpsCenter operational work items (OpsItems).</p> </li> <li> <p> <code>Parameter</code> - The resource policy is used to share a parameter with other accounts using Resource Access Manager (RAM). </p> <p>To share a parameter, it must be in the advanced parameter tier. For information about parameter tiers, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html\">Managing parameter tiers</a>. For information about changing an existing standard parameter to an advanced parameter, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html#parameter-store-advanced-parameters-enabling\">Changing a standard parameter to an advanced parameter</a>.</p> <p>To share a <code>SecureString</code> parameter, it must be encrypted with a customer managed key, and you must share the key separately through Key Management Service. Amazon Web Services managed keys cannot be shared. Parameters encrypted with the default Amazon Web Services managed key can be updated to use a customer managed key instead. For KMS key definitions, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html\">KMS concepts</a> in the <i>Key Management Service Developer Guide</i>.</p> <important> <p>While you can share a parameter using the Systems Manager <code>PutResourcePolicy</code> operation, we recommend using Resource Access Manager (RAM) instead. This is because using <code>PutResourcePolicy</code> requires the extra step of promoting the parameter to a standard RAM Resource Share using the RAM <a href=\"https://docs.aws.amazon.com/ram/latest/APIReference/API_PromoteResourceShareCreatedFromPolicy.html\">PromoteResourceShareCreatedFromPolicy</a> API operation. Otherwise, the parameter won't be returned by the Systems Manager <a href=\"https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_DescribeParameters.html\">DescribeParameters</a> API operation using the <code>--shared</code> option.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html#share\">Sharing a parameter</a> in the <i>Amazon Web Services Systems Manager User Guide</i> </p> </important> </li> <li> <p> <code>Document</code> – Shares the document using Resource Access Manager (RAM). For more information about sharing documents, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/documents-ssm-sharing.html\">Sharing Systems Manager documents</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> </ul> <important> <p>While you can share a document using the Systems Manager <code>PutResourcePolicy</code> operation, we recommend using Resource Access Manager (RAM) instead. Using <code>PutResourcePolicy</code> requires an extra step. You must promote the document to a standard RAM Resource Share using the RAM <a href=\"https://docs.aws.amazon.com/ram/latest/APIReference/API_PromoteResourceShareCreatedFromPolicy.html\">PromoteResourceShareCreatedFromPolicy</a> API operation. Otherwise, the Systems Manager <a href=\"https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_ListDocuments.html\">ListDocuments</a> API operation won't return the document when filtering for shared documents. The Amazon Web Services Config <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutRemediationConfigurations.html\">PutRemediationConfigurations</a> API operation also can't use the document.</p> </important>"
+    },
+    "RegisterDefaultHostManagementConfiguration":{
+      "name":"RegisterDefaultHostManagementConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RegisterDefaultHostManagementConfigurationRequest"},
+      "output":{"shape":"RegisterDefaultHostManagementConfigurationResult"},
+      "errors":[
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Enables Default Host Management Configuration (DHMC) for the current Amazon Web Services account and Amazon Web Services Region. With DHMC enabled, you don't need to configure additional resources, such as an instance profile, to use your Amazon EC2 instances as managed nodes in Amazon Web Services Systems Manager.</p> <p>To use this operation, you must have the following permissions:</p> <ul> <li> <p>You need the <code>ssm:GetServiceSetting</code> and <code>ssm:UpdateServiceSetting</code> permissions for the <code>/ssm/managed-instance/default-ec2-instance-management-role</code> service setting.</p> </li> <li> <p>You need the <code>iam:GetRole</code> and <code>iam:PassRole</code> permissions for the role used for Default Host Management Configuration.</p> </li> </ul> <p>If <code>PermissionModel</code> is <code>SERVICE_MANAGED</code>, you also need the <code>iam:CreateRole</code> and <code>iam:AttachRolePolicy</code> permissions so that Amazon Web Services Systems Manager can create and configure the role on your behalf.</p>",
+      "idempotent":true
     },
     "RegisterDefaultPatchBaseline":{
       "name":"RegisterDefaultPatchBaseline",
@@ -5731,6 +5759,19 @@
       "documentation":"<p>You have exceeded the limit for custom schemas. Delete one or more custom schemas and try again.</p>",
       "exception":true
     },
+    "DHMCPermissionModel":{
+      "type":"string",
+      "enum":[
+        "SERVICE_MANAGED",
+        "SELF_MANAGED"
+      ]
+    },
+    "DHMCRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z0-9-]*:iam::\\d{12}:role/[\\w+=,.@/-]+$"
+    },
     "DateTime":{"type":"timestamp"},
     "DefaultBaseline":{"type":"boolean"},
     "DefaultInstanceName":{
@@ -6018,6 +6059,14 @@
       ]
     },
     "DeliveryTimedOutCount":{"type":"integer"},
+    "DeregisterDefaultHostManagementConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeregisterDefaultHostManagementConfigurationResult":{
+      "type":"structure",
+      "members":{}
+    },
     "DeregisterManagedInstanceRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -9242,7 +9291,7 @@
         },
         "Recursive":{
           "shape":"Boolean",
-          "documentation":"<p>Retrieve all parameters within a hierarchy.</p> <important> <p>If a user has access to a path, then the user can access all levels of that path. For example, if a user has permission to access path <code>/a</code>, then the user can also access <code>/a/b</code>. Even if a user has explicitly been denied access in IAM for parameter <code>/a/b</code>, they can still call the GetParametersByPath API operation recursively for <code>/a</code> and view <code>/a/b</code>.</p> </important>",
+          "documentation":"<p>Retrieve all parameters within a hierarchy.</p>",
           "box":true
         },
         "ParameterFilters":{
@@ -15399,6 +15448,33 @@
       "member":{"shape":"Region"},
       "max":50,
       "min":1
+    },
+    "RegisterDefaultHostManagementConfigurationRequest":{
+      "type":"structure",
+      "required":["PermissionModel"],
+      "members":{
+        "PermissionModel":{
+          "shape":"DHMCPermissionModel",
+          "documentation":"<p>The permission model that determines how the IAM role for Default Host Management Configuration is provided.</p> <p>The permission model can be one of the following values:</p> <dl> <dt>SERVICE_MANAGED</dt> <dd> <p>Amazon Web Services Systems Manager creates and manages the role on your behalf.</p> </dd> <dt>SELF_MANAGED</dt> <dd> <p>You provide the role to register in <code>RoleArn</code>.</p> </dd> </dl>"
+        },
+        "RoleArn":{
+          "shape":"DHMCRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the self-managed IAM role that you register for Default Host Management Configuration. The requirement for this value depends on the permission model:</p> <ul> <li> <p>If <code>PermissionModel</code> is <code>SELF_MANAGED</code>, this value is required.</p> </li> <li> <p>If <code>PermissionModel</code> is <code>SERVICE_MANAGED</code>, this value must not be set.</p> </li> </ul>"
+        },
+        "Overwrite":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to override the role that is currently registered for Default Host Management Configuration. The default is <code>false</code>, which acts as a guardrail against accidentally replacing an existing configuration. Set this to <code>true</code> to replace the currently registered role.</p>"
+        }
+      }
+    },
+    "RegisterDefaultHostManagementConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "RoleArn":{
+          "shape":"DHMCRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role registered for Default Host Management Configuration. The value depends on the permission model:</p> <dl> <dt>SERVICE_MANAGED</dt> <dd> <p>The ARN of the role that Amazon Web Services Systems Manager created in the IAM reserved path.</p> </dd> <dt>SELF_MANAGED</dt> <dd> <p>The <code>RoleArn</code> that you provided.</p> </dd> </dl>"
+        }
+      }
     },
     "RegisterDefaultPatchBaselineRequest":{
       "type":"structure",

@@ -327,7 +327,8 @@
       "input":{"shape":"UpdatePlanRequest"},
       "output":{"shape":"UpdatePlanResponse"},
       "errors":[
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"RetryableConflictException"}
       ],
       "documentation":"<p>Updates an existing Region switch plan. You can modify the plan's description, workflows, execution role, recovery time objective, associated alarms, and triggers.</p>",
       "staticContextParams":{
@@ -2862,6 +2863,28 @@
     "Resources":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "RetryableConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource involved in the concurrent modification.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource involved in the concurrent modification.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicted with a concurrent modification of the same resource and did not take effect.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
     },
     "RoleArn":{"type":"string"},
     "Route53HealthCheck":{

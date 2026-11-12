@@ -3,7 +3,7 @@
 The following ``list-type-versions`` example returns summary information about the versions of an extension. ::
 
     aws cloudformation list-type-versions \
-        --endpoint https://example.com \
+        --endpoint-url https://example.com \
         --type RESOURCE \
         --type-name My::Resource::Example \
         --publisher-id 123456789012

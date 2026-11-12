@@ -995,6 +995,10 @@
         "endTimeBehaviorReasonCode":{
           "shape":"EndTimeBehaviorReasonCode",
           "documentation":"<p>The reason why the agreement doesn't renew at its end date. The field is <code>null</code> when the agreement renews.</p> <p>More than one reason can apply to the same agreement. When that happens, the operation returns only one reason code, and <code>PROPOSER_RENEW_OPTED_OUT</code> takes precedence over all others.</p> <p>The <code>EnableAutoRenew</code> field reflects only the acceptor's preference, and doesn't reflect the other reasons an agreement might not renew.</p> <p>Reason codes include:</p> <ul> <li> <p> <code>PROPOSER_RENEW_OPTED_OUT</code> – The proposer opted out of renewing the agreement.</p> </li> <li> <p> <code>ACCEPTOR_RENEW_OPTED_OUT</code> – The acceptor opted out of renewing the agreement.</p> </li> <li> <p> <code>NO_RENEWAL_TERM</code> – The accepted terms of the agreement don't include a renewal term, which is required for an agreement to renew.</p> </li> <li> <p> <code>RENEWAL_LIMIT_EXHAUSTED</code> – The agreement reached the maximum number of renewals allowed by its renewal term.</p> </li> </ul>"
+        },
+        "freeTrialEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the free trial of the agreement ends. This field is present only when the agreement includes a free trial.</p> <p>For an agreement that includes both a free trial and usage-based pricing, the agreement converts to paid usage at this time.</p>"
         }
       },
       "documentation":"<p>A summary of the agreement, including top-level attributes (for example, the agreement ID, proposer, and acceptor).</p>"
@@ -1725,6 +1729,10 @@
         "endTimeBehavior":{
           "shape":"EndTimeBehavior",
           "documentation":"<p>The behavior of the agreement when it reaches its end date. For example, whether the agreement renews, and if it doesn't, the reason why.</p> <p>This field is present for every active agreement that has an end date. It is not present for an agreement that has no end date, because such an agreement never reaches an end time. Pay-as-you-go agreements are the most common example. It is also not present for an agreement that is no longer active.</p>"
+        },
+        "freeTrialSummary":{
+          "shape":"FreeTrialSummary",
+          "documentation":"<p>The free trial details of the agreement. This field is present only when the agreement includes a free trial.</p>"
         }
       }
     },
@@ -1987,7 +1995,7 @@
         },
         "duration":{
           "shape":"BoundedString",
-          "documentation":"<p>Duration of the free trial period (5–31 days). </p>"
+          "documentation":"<p>Duration of the free trial period. The allowed duration depends on the product type. For SaaS products, the free trial lasts 7 to 90 days.</p>"
         },
         "grants":{
           "shape":"GrantList",
@@ -1995,6 +2003,16 @@
         }
       },
       "documentation":"<p>Defines a short-term free pricing model where the buyers aren’t charged anything within a specified limit.</p>"
+    },
+    "FreeTrialSummary":{
+      "type":"structure",
+      "members":{
+        "trialEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the free trial ends. For an agreement that includes both a free trial and usage-based pricing, the agreement converts to paid usage at this time.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the free trial of an agreement, including when the free trial ends.</p>"
     },
     "GetAgreementCancellationRequestInput":{
       "type":"structure",
@@ -2338,8 +2356,8 @@
     },
     "InvoiceId":{
       "type":"string",
-      "max":255,
-      "min":1
+      "max":1024,
+      "min":0
     },
     "InvoiceType":{
       "type":"string",

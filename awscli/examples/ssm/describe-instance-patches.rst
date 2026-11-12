@@ -62,7 +62,7 @@ The following ``describe-instance-patches`` example retrieves information about 
     aws ssm describe-instance-patches \
         --instance-id "i-1234567890abcdef0" \
         --filters Key=State,Values=Installed \
-        --query "Patches[?InstalledTime >= `2023-01-01T16:00:00`]"
+        --query 'Patches[?InstalledTime >= `"2023-01-01T16:00:00"`]'
 
 Output::
 

@@ -7,7 +7,7 @@ The following ``admin-respond-to-auth-challenge`` example provides a TOTP MFA co
         --client-id 1example23456789 \
         --challenge-name SOFTWARE_TOKEN_MFA \
         --challenge-responses USERNAME=diego@example.com,SOFTWARE_TOKEN_MFA_CODE=000000 \
-        --session AYABeExample...
+        --session AYABeEXAMPLEsessionToken
 
 Output::
 

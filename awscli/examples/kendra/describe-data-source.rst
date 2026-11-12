@@ -4,7 +4,7 @@ The following ``describe-data-source`` example gets information about an Amazon 
 
     aws kendra describe-data-source \
         --id exampledatasource1 \
-        --index-id exampleindex1
+        --index-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -67,7 +67,7 @@ Output::
         },
         "Description": "Example data source 1 for example index 1 contains the first set of example documents",
         "Id": "exampledatasource1",
-        "IndexId": "exampleindex1",
+        "IndexId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "LanguageCode": "en",
         "Name": "example data source 1",
         "RoleArn": "arn:aws:iam::my-account-id:role/KendraRoleForS3TemplateConfigDataSource",

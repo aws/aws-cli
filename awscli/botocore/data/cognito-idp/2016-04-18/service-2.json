@@ -423,6 +423,26 @@
       ],
       "documentation":"<p>Requests a history of user activity and any risks detected as part of Amazon Cognito threat protection. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html#user-pool-settings-adaptive-authentication-event-user-history\">Viewing user event history</a>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
+    "AdminListUserSessions":{
+      "name":"AdminListUserSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AdminListUserSessionsRequest"},
+      "output":{"shape":"AdminListUserSessionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Lists the active sessions for a specified user as an administrator. The response includes both token sessions and SSO sessions. Only active sessions are returned; revoked and expired sessions aren't included. Amazon Cognito returns all of a user's sessions in a single page of up to 125 sessions. The results are eventually consistent, and new sessions are typically included within a few seconds.</p>",
+      "readonly":true
+    },
     "AdminRemoveUserFromGroup":{
       "name":"AdminRemoveUserFromGroup",
       "http":{
@@ -501,6 +521,25 @@
         {"shape":"OperationNotEnabledException"}
       ],
       "documentation":"<p>Some API operations in a user pool generate a challenge, like a prompt for an MFA code, for device authentication that bypasses MFA, or for a custom authentication challenge. An <code>AdminRespondToAuthChallenge</code> API request provides the answer to that challenge, like a code or a secure remote password (SRP). The parameters of a response to an authentication challenge vary with the type of challenge.</p> <p>For more information about custom authentication challenges, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-challenge.html\">Custom authentication challenge Lambda triggers</a>.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Services service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "AdminRevokeUserSession":{
+      "name":"AdminRevokeUserSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AdminRevokeUserSessionRequest"},
+      "output":{"shape":"AdminRevokeUserSessionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Revokes a specific user session as an administrator. Amazon Cognito revokes all refresh and access tokens that are associated with the session and deletes the session record. You can revoke either a token session or an SSO session, and you can optionally cascade the revocation to linked sessions.</p>"
     },
     "AdminSetUserMFAPreference":{
       "name":"AdminSetUserMFAPreference",
@@ -1790,6 +1829,25 @@
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
     },
+    "GetUserPoolClientSessionConfiguration":{
+      "name":"GetUserPoolClientSessionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetUserPoolClientSessionConfigurationRequest"},
+      "output":{"shape":"GetUserPoolClientSessionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"OperationNotEnabledException"}
+      ],
+      "documentation":"<p>Retrieves the session configuration for a user pool app client. If you have never called <code>SetUserPoolClientSessionConfiguration</code> for the app client, this operation returns the default SSO session maximum validity of <code>60</code> minutes.</p>",
+      "readonly":true
+    },
     "GetUserPoolMfaConfig":{
       "name":"GetUserPoolMfaConfig",
       "http":{
@@ -1806,6 +1864,25 @@
         {"shape":"InternalErrorException"}
       ],
       "documentation":"<p>Given a user pool ID, returns configuration for sign-in with WebAuthn authenticators and for multi-factor authentication (MFA). This operation describes the following:</p> <ul> <li> <p>The WebAuthn relying party (RP) ID and user-verification settings.</p> </li> <li> <p>The required, optional, or disabled state of MFA for all user pool users.</p> </li> <li> <p>The message templates for email and SMS MFA.</p> </li> <li> <p>The enabled or disabled state of time-based one-time password (TOTP) MFA.</p> </li> </ul> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "GetUserPoolSessionConfiguration":{
+      "name":"GetUserPoolSessionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetUserPoolSessionConfigurationRequest"},
+      "output":{"shape":"GetUserPoolSessionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"OperationNotEnabledException"}
+      ],
+      "documentation":"<p>Retrieves the session tracking configuration for a user pool, including whether session tracking is enabled and the pool-wide maximum number of active token sessions for each user. If you have never called <code>SetUserPoolSessionConfiguration</code> for the user pool, this operation returns the default values: <code>UserSessionTracking</code> as <code>DISABLED</code> and a <code>MaxPerUser</code> value of <code>20</code>.</p>",
+      "readonly":true
     },
     "GlobalSignOut":{
       "name":"GlobalSignOut",
@@ -2064,6 +2141,31 @@
       ],
       "documentation":"<p>Lists user pools and their details in the current Amazon Web Services account.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
+    "ListUserSessions":{
+      "name":"ListUserSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListUserSessionsRequest"},
+      "output":{"shape":"ListUserSessionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"PasswordResetRequiredException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"UserNotConfirmedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
+      ],
+      "documentation":"<p>Lists the active sessions for the currently signed-in user. Amazon Cognito authorizes this operation with the user's access token and returns all of the user's active sessions across every app client in the user pool, including both token sessions and SSO sessions. The <code>IsCurrentSession</code> field identifies the session that the calling access token belongs to. The results are eventually consistent, and new sessions are typically included within a few seconds.</p>",
+      "authtype":"none",
+      "readonly":true,
+      "auth":["smithy.api#noAuth"]
+    },
     "ListUsers":{
       "name":"ListUsers",
       "http":{
@@ -2212,6 +2314,30 @@
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
     },
+    "RevokeUserSession":{
+      "name":"RevokeUserSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RevokeUserSessionRequest"},
+      "output":{"shape":"RevokeUserSessionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"PasswordResetRequiredException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"UserNotConfirmedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
+      ],
+      "documentation":"<p>Revokes a specific session for the currently signed-in user. Amazon Cognito authorizes this operation with the user's access token, revokes all refresh and access tokens that are associated with the session, and deletes the session record. You can't revoke the session that the calling access token belongs to.</p>",
+      "authtype":"none",
+      "auth":["smithy.api#noAuth"]
+    },
     "SetLogDeliveryConfiguration":{
       "name":"SetLogDeliveryConfiguration",
       "http":{
@@ -2292,6 +2418,26 @@
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
     },
+    "SetUserPoolClientSessionConfiguration":{
+      "name":"SetUserPoolClientSessionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetUserPoolClientSessionConfigurationRequest"},
+      "output":{"shape":"SetUserPoolClientSessionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"FeatureUnavailableInTierException"},
+        {"shape":"OperationNotEnabledException"}
+      ],
+      "documentation":"<p>Sets the session configuration for a user pool app client. The configurable client-level setting is the maximum validity period for silent reuse of an SSO session. This operation performs a full replacement of the client-level session configuration; every request parameter is required, and session tracking must be enabled for the user pool. The user pool must be in the Essentials or Plus tier. Otherwise, this operation returns a <code>FeatureUnavailableInTierException</code>.</p>"
+    },
     "SetUserPoolMfaConfig":{
       "name":"SetUserPoolMfaConfig",
       "http":{
@@ -2313,6 +2459,26 @@
         {"shape":"FeatureUnavailableInTierException"}
       ],
       "documentation":"<p>Sets user pool multi-factor authentication (MFA) and passkey configuration. For more information about user pool MFA, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html\">Adding MFA</a>. For more information about WebAuthn passkeys see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html#amazon-cognito-user-pools-authentication-flow-methods-passkey\">Authentication flows</a>.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Services service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>"
+    },
+    "SetUserPoolSessionConfiguration":{
+      "name":"SetUserPoolSessionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetUserPoolSessionConfigurationRequest"},
+      "output":{"shape":"SetUserPoolSessionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"FeatureUnavailableInTierException"},
+        {"shape":"OperationNotEnabledException"}
+      ],
+      "documentation":"<p>Enables or disables session tracking for a user pool, and sets the pool-wide maximum number of active token sessions that each user can have. This operation performs a full replacement of the pool-level session configuration; every request parameter is required. The user pool must be in the Essentials or Plus tier. Otherwise, this operation returns a <code>FeatureUnavailableInTierException</code>.</p>"
     },
     "SetUserSettings":{
       "name":"SetUserSettings",
@@ -3619,6 +3785,40 @@
         }
       }
     },
+    "AdminListUserSessionsRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "Username"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the user.</p>"
+        },
+        "Username":{
+          "shape":"UsernameType",
+          "documentation":"<p>The username of the user whose sessions you want to list.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationKey",
+          "documentation":"<p>A pagination token that Amazon Cognito returned in a previous response. Use this value to retrieve the next page of results if a <code>NextToken</code> was included in a prior response.</p>"
+        }
+      }
+    },
+    "AdminListUserSessionsResponse":{
+      "type":"structure",
+      "members":{
+        "Sessions":{
+          "shape":"SessionsListType",
+          "documentation":"<p>A list of the user's active sessions. Each element describes one token session or SSO session.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationKey",
+          "documentation":"<p>The pagination token to use in a subsequent request to retrieve the next page of results.</p>"
+        }
+      }
+    },
     "AdminRemoveUserFromGroupRequest":{
       "type":"structure",
       "required":[
@@ -3736,6 +3936,36 @@
         }
       },
       "documentation":"<p>Responds to the authentication challenge, as an administrator.</p>"
+    },
+    "AdminRevokeUserSessionRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "Username",
+        "SessionId"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the session.</p>"
+        },
+        "Username":{
+          "shape":"UsernameType",
+          "documentation":"<p>The username of the user who owns the session. The username must match the user associated with the <code>SessionId</code>, to confirm they are the intended target user.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionIdType",
+          "documentation":"<p>The ID of the session to revoke. This is a 28-character string of lowercase letters and digits, prefixed with <code>tkn</code> for a token session or <code>sso</code> for an SSO session.</p>"
+        },
+        "RevokeAssociatedSessions":{
+          "shape":"RevokeAssociatedSessionsType",
+          "documentation":"<p>Specifies whether to also revoke the sessions that are linked to the targeted session. <code>NONE</code>, the default, revokes only the targeted session. <code>LINKED</code> also revokes the directly linked session or sessions, interpreted relative to the type of the targeted session: revoking a token session also revokes the parent SSO session it came through, and revoking an SSO session also revokes the token sessions that came through it. The set of linked sessions is eventually consistent, so associated sessions are typically revoked within a few seconds.</p>"
+        }
+      }
+    },
+    "AdminRevokeUserSessionResponse":{
+      "type":"structure",
+      "members":{}
     },
     "AdminSetUserMFAPreferenceRequest":{
       "type":"structure",
@@ -4463,6 +4693,17 @@
       "type":"string",
       "max":2048,
       "min":1
+    },
+    "ClientSSOSessionConfigType":{
+      "type":"structure",
+      "required":["MaxValidityMinutes"],
+      "members":{
+        "MaxValidityMinutes":{
+          "shape":"SSOSessionMaxValidityMinutesType",
+          "documentation":"<p>The maximum amount of time, in minutes, that this app client silently reuses an existing SSO session, returning a new set of tokens without requiring the user to re-authenticate, measured from the user's last fresh authentication. The minimum value is <code>0</code> and the maximum value is <code>129600</code> (90 days). The default is <code>60</code>. A value of <code>0</code> means that this app client never silently reuses the SSO session and always re-authenticates the user. The SSO session record and its cookie are still created regardless of this value, and other app clients in the same user pool can still reuse the session.</p>"
+        }
+      },
+      "documentation":"<p>The SSO session settings for a user pool app client.</p>"
     },
     "ClientSecretDescriptorListType":{
       "type":"list",
@@ -6932,6 +7173,40 @@
         }
       }
     },
+    "GetUserPoolClientSessionConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "ClientId"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the app client.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client where you want to retrieve the session configuration.</p>"
+        }
+      }
+    },
+    "GetUserPoolClientSessionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the app client.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that the session configuration applies to.</p>"
+        },
+        "SSOSession":{
+          "shape":"ClientSSOSessionConfigType",
+          "documentation":"<p>The SSO session settings for the app client.</p>"
+        }
+      }
+    },
     "GetUserPoolMfaConfigRequest":{
       "type":"structure",
       "required":["UserPoolId"],
@@ -6964,6 +7239,33 @@
         "WebAuthnConfiguration":{
           "shape":"WebAuthnConfigurationType",
           "documentation":"<p>Shows user pool configuration for sign-in with passkey authenticators such as biometric devices and security keys. Includes relying-party configuration, user-verification requirements, and whether passkeys can satisfy MFA requirements.</p>"
+        }
+      }
+    },
+    "GetUserPoolSessionConfigurationRequest":{
+      "type":"structure",
+      "required":["UserPoolId"],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool where you want to retrieve the session configuration.</p>"
+        }
+      }
+    },
+    "GetUserPoolSessionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that the session configuration applies to.</p>"
+        },
+        "UserSessionTracking":{
+          "shape":"UserSessionTrackingType",
+          "documentation":"<p>Indicates whether session tracking is enabled for the user pool.</p>"
+        },
+        "TokenSession":{
+          "shape":"UserPoolTokenSessionConfigType",
+          "documentation":"<p>The pool-wide token session settings for the user pool.</p>"
         }
       }
     },
@@ -7905,6 +8207,33 @@
       },
       "documentation":"<p>Represents the response to list user pools.</p>"
     },
+    "ListUserSessionsRequest":{
+      "type":"structure",
+      "required":["AccessToken"],
+      "members":{
+        "AccessToken":{
+          "shape":"TokenModelType",
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose sessions you want to list. Amazon Cognito derives the user pool and username from this token.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationKey",
+          "documentation":"<p>A pagination token that Amazon Cognito returned in a previous response. Use this value to retrieve the next page of results if a <code>NextToken</code> was included in a prior response.</p>"
+        }
+      }
+    },
+    "ListUserSessionsResponse":{
+      "type":"structure",
+      "members":{
+        "Sessions":{
+          "shape":"SessionsListType",
+          "documentation":"<p>A list of the user's active sessions. Each element describes one token session or SSO session.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationKey",
+          "documentation":"<p>The pagination token to use in a subsequent request to retrieve the next page of results.</p>"
+        }
+      }
+    },
     "ListUsersInGroupRequest":{
       "type":"structure",
       "required":[
@@ -8158,6 +8487,11 @@
         }
       },
       "documentation":"<p>A managed login branding style that's assigned to a user pool app client.</p>"
+    },
+    "MaxSessionsPerUserType":{
+      "type":"integer",
+      "max":100,
+      "min":1
     },
     "MessageActionType":{
       "type":"string",
@@ -8830,6 +9164,14 @@
       "max":60,
       "min":0
     },
+    "RevokeAssociatedSessionsType":{
+      "type":"string",
+      "documentation":"<p>Controls whether revoking a session also revokes the sessions that are linked to it. <code>NONE</code> revokes only the targeted session. <code>LINKED</code> also revokes the directly linked session or sessions, interpreted relative to the type of the targeted session: revoking a token session also revokes the parent SSO session it came through, and revoking an SSO session also revokes the token sessions that came through it. The set of linked sessions is eventually consistent, so associated sessions are typically revoked within a few seconds.</p>",
+      "enum":[
+        "NONE",
+        "LINKED"
+      ]
+    },
     "RevokeTokenRequest":{
       "type":"structure",
       "required":[
@@ -8848,10 +9190,39 @@
         "ClientSecret":{
           "shape":"ClientSecretType",
           "documentation":"<p>The client secret of the requested app client, if the client has a secret.</p>"
+        },
+        "RevokeAssociatedSessions":{
+          "shape":"RevokeAssociatedSessionsType",
+          "documentation":"<p>Specifies whether to also revoke the SSO session that is linked to the token session being revoked. <code>NONE</code>, the default, revokes only the token session that is associated with the refresh token. <code>LINKED</code> also revokes the parent SSO session that the token session came through; the other token sessions that came through that SSO session aren't revoked. <code>LINKED</code> has no effect when session tracking is disabled or when the token session has no parent SSO session.</p>"
         }
       }
     },
     "RevokeTokenResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "RevokeUserSessionRequest":{
+      "type":"structure",
+      "required":[
+        "AccessToken",
+        "SessionId"
+      ],
+      "members":{
+        "AccessToken":{
+          "shape":"TokenModelType",
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user. Amazon Cognito uses this token to authorize the request and to identify the user.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionIdType",
+          "documentation":"<p>The ID of the session to revoke. This is a 28-character string of lowercase letters and digits, prefixed with <code>tkn</code> for a token session or <code>sso</code> for an SSO session. This value can't identify the caller's own current session.</p>"
+        },
+        "RevokeAssociatedSessions":{
+          "shape":"RevokeAssociatedSessionsType",
+          "documentation":"<p>Specifies whether to also revoke the sessions that are linked to the targeted session. <code>NONE</code>, the default, revokes only the targeted session. <code>LINKED</code> also revokes the directly linked session or sessions, interpreted relative to the type of the targeted session: revoking a token session also revokes the parent SSO session it came through, and revoking an SSO session also revokes the token sessions that came through it. The set of linked sessions is eventually consistent, so associated sessions are typically revoked within a few seconds.</p>"
+        }
+      }
+    },
+    "RevokeUserSessionResponse":{
       "type":"structure",
       "members":{}
     },
@@ -8967,6 +9338,11 @@
       },
       "documentation":"<p>A user's preference for using SMS message multi-factor authentication (MFA). Turns SMS MFA on and off, and can set SMS as preferred when other MFA options are available. You can't turn off SMS MFA for any of your users when MFA is required in your user pool; you can only set the type that your user prefers. </p>"
     },
+    "SSOSessionMaxValidityMinutesType":{
+      "type":"integer",
+      "max":129600,
+      "min":0
+    },
     "SchemaAttributeType":{
       "type":"structure",
       "members":{
@@ -9067,11 +9443,112 @@
       "documentation":"<p>The request exceeded your account's service quota. To increase your limit, use or submit a Service Quotas increase request.</p>",
       "exception":true
     },
+    "SessionDescriptionType":{
+      "type":"structure",
+      "members":{
+        "SessionId":{
+          "shape":"SessionIdType",
+          "documentation":"<p>The unique identifier for the session. This is a 28-character string of lowercase letters and digits, prefixed with <code>tkn</code> for a token session or <code>sso</code> for an SSO session.</p>"
+        },
+        "SessionType":{
+          "shape":"SessionTypeType",
+          "documentation":"<p>The type of the session. Valid values are <code>TOKEN</code> and <code>SSO</code>.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that the session belongs to.</p>"
+        },
+        "CreateDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time when the session was created.</p>"
+        },
+        "LastActiveDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time of the most recent activity on the session. For a token session, this is the most recent token refresh or rotation; a new authentication creates a new token session rather than updating an existing one. For an SSO session, this is the most recent authentication, token grant, or token rotation.</p>"
+        },
+        "DeviceType":{
+          "shape":"SessionDeviceType",
+          "documentation":"<p>A description of the device associated with the most recent activity on the session, derived from the parsed user agent (operating system and browser or app). Amazon Cognito overwrites this value on each sign-in, refresh, and rotation. The value can be <code>unknown</code>. The maximum length is 1,024 characters.</p>"
+        },
+        "LastIPAddress":{
+          "shape":"SessionIpAddressType",
+          "documentation":"<p>The IP address associated with the most recent activity on the session. Amazon Cognito overwrites this value on each refresh and rotation. The maximum length is 128 characters.</p>"
+        },
+        "LastLocation":{
+          "shape":"SessionLocationType",
+          "documentation":"<p>The geographic location of the most recent activity on the session, derived from the IP address.</p>"
+        },
+        "OriginSessionId":{
+          "shape":"SessionIdType",
+          "documentation":"<p>For a token session, the ID of the SSO session that the token session originated from. This value is null for sessions that were initiated through the API and didn't come through an SSO session. Amazon Cognito returns this value for token sessions only.</p>"
+        },
+        "IsCurrentSession":{
+          "shape":"WrappedBooleanType",
+          "documentation":"<p>Specifies whether this session matches the access token supplied in the request. This value is always <code>false</code> for the <code>AdminListUserSessions</code> operation, which doesn't take an access token.</p>"
+        }
+      },
+      "documentation":"<p>Describes an active user session. Amazon Cognito returns this type in the responses of <code>ListUserSessions</code> and <code>AdminListUserSessions</code>, for both token sessions and SSO sessions.</p>"
+    },
+    "SessionDeviceType":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "SessionIdType":{
+      "type":"string",
+      "max":28,
+      "min":28,
+      "pattern":"^(tkn|sso)[a-z0-9]{25}$"
+    },
+    "SessionIpAddressType":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "sensitive":true
+    },
+    "SessionLocationCityType":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SessionLocationCountryType":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SessionLocationType":{
+      "type":"structure",
+      "members":{
+        "City":{
+          "shape":"SessionLocationCityType",
+          "documentation":"<p>The city of the most recent activity on the session, derived from the IP address. This value can be null if geo-IP resolution fails. The maximum length is 256 characters.</p>"
+        },
+        "Country":{
+          "shape":"SessionLocationCountryType",
+          "documentation":"<p>The country of the most recent activity on the session, derived from the IP address and returned in English (for example, <code>United States</code>). This is a country name as returned by the geo-IP database, not an ISO country code, and can be <code>unknown</code> if geo-IP resolution fails.</p>"
+        }
+      },
+      "documentation":"<p>The geographic location of the most recent activity on a session, derived from the IP address.</p>"
+    },
     "SessionType":{
       "type":"string",
       "max":4096,
       "min":20,
       "sensitive":true
+    },
+    "SessionTypeType":{
+      "type":"string",
+      "documentation":"<p>The type of a user session. <code>TOKEN</code> identifies a token session, which represents an app's authenticated session for a user and is tied to a refresh token. <code>SSO</code> identifies an SSO session, which is a single sign-on (SSO) session that records an authentication through managed login and can let the user sign in to other apps without re-authenticating.</p>",
+      "enum":[
+        "TOKEN",
+        "SSO"
+      ]
+    },
+    "SessionsListType":{
+      "type":"list",
+      "member":{"shape":"SessionDescriptionType"},
+      "max":125,
+      "min":0
     },
     "SetLogDeliveryConfigurationRequest":{
       "type":"structure",
@@ -9197,6 +9674,45 @@
       "type":"structure",
       "members":{}
     },
+    "SetUserPoolClientSessionConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "ClientId",
+        "SSOSession"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the app client.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that you want to configure.</p>"
+        },
+        "SSOSession":{
+          "shape":"ClientSSOSessionConfigType",
+          "documentation":"<p>The SSO session settings for the app client.</p>"
+        }
+      }
+    },
+    "SetUserPoolClientSessionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the app client.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that the session configuration was applied to.</p>"
+        },
+        "SSOSession":{
+          "shape":"ClientSSOSessionConfigType",
+          "documentation":"<p>The SSO session settings that were applied to the app client.</p>"
+        }
+      }
+    },
     "SetUserPoolMfaConfigRequest":{
       "type":"structure",
       "required":["UserPoolId"],
@@ -9249,6 +9765,45 @@
         "WebAuthnConfiguration":{
           "shape":"WebAuthnConfigurationType",
           "documentation":"<p>The configuration of your user pool for passkey, or WebAuthn, sign-in with authenticators such as biometric and security-key devices. Includes relying-party configuration and settings for user-verification requirements.</p>"
+        }
+      }
+    },
+    "SetUserPoolSessionConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "UserSessionTracking",
+        "TokenSession"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool where you want to configure session tracking.</p>"
+        },
+        "UserSessionTracking":{
+          "shape":"UserSessionTrackingType",
+          "documentation":"<p>Specifies whether Amazon Cognito tracks sessions for users in the user pool. Set this value to <code>ENABLED</code> to turn on server-side session tracking, or <code>DISABLED</code> to turn it off. When you set this value to <code>DISABLED</code> while the user pool remains active, existing client-level session configurations are retained but dormant, and are reactivated when you enable tracking again.</p>"
+        },
+        "TokenSession":{
+          "shape":"UserPoolTokenSessionConfigType",
+          "documentation":"<p>The pool-wide token session settings to apply.</p>"
+        }
+      }
+    },
+    "SetUserPoolSessionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that the session configuration was applied to.</p>"
+        },
+        "UserSessionTracking":{
+          "shape":"UserSessionTrackingType",
+          "documentation":"<p>The session tracking setting that was applied to the user pool.</p>"
+        },
+        "TokenSession":{
+          "shape":"UserPoolTokenSessionConfigType",
+          "documentation":"<p>The pool-wide token session settings that were applied.</p>"
         }
       }
     },
@@ -10953,6 +11508,17 @@
         "PLUS"
       ]
     },
+    "UserPoolTokenSessionConfigType":{
+      "type":"structure",
+      "required":["MaxPerUser"],
+      "members":{
+        "MaxPerUser":{
+          "shape":"MaxSessionsPerUserType",
+          "documentation":"<p>The maximum number of active token sessions that a user can have across the user pool. The minimum value is <code>1</code> and the maximum value is <code>100</code>. The default is <code>20</code>. When a user reaches this limit, the next successful authentication automatically evicts that user's least recently used token session before it creates the new session. Lowering this value doesn't evict existing sessions on its own; the user is brought back within the limit on their next sign-in.</p>"
+        }
+      },
+      "documentation":"<p>The pool-wide token session settings for a user pool.</p>"
+    },
     "UserPoolType":{
       "type":"structure",
       "members":{
@@ -11108,6 +11674,13 @@
         }
       },
       "documentation":"<p>The configuration of a user pool.</p>"
+    },
+    "UserSessionTrackingType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "UserStatusType":{
       "type":"string",

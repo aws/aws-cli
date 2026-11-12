@@ -93,11 +93,14 @@ The following ``create-fleet`` example creates a fleet of Spot Windows instances
 
 Contents of ``runtime-config.json``::
 
-    GameSessionActivationTimeoutSeconds=300,
-    MaxConcurrentGameSessionActivations=2,
-    ServerProcesses=[
-        {LaunchPath=C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe,Parameters=-debug,ConcurrentExecutions=1},
-        {LaunchPath=C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe,ConcurrentExecutions=1}]
+    {
+        "GameSessionActivationTimeoutSeconds": 300,
+        "MaxConcurrentGameSessionActivations": 2,
+        "ServerProcesses": [
+            {"LaunchPath": "C:\\game\\Bin64.Release.Dedicated\\MegaFrogRace_Server.exe", "Parameters": "-debug", "ConcurrentExecutions": 1},
+            {"LaunchPath": "C:\\game\\Bin64.Release.Dedicated\\MegaFrogRace_Server.exe", "ConcurrentExecutions": 1}
+        ]
+    }
 
 Output::
 

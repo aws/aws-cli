@@ -3,14 +3,14 @@
 The following ``deregister-task-from-maintenance-window`` example removes the specified task from the specified maintenance window. ::
 
     aws ssm deregister-task-from-maintenance-window \
-        --window-id "mw-ab12cd34ef56gh78" \
+        --window-id "mw-ab12cd34efEXAMPLE" \
         --window-task-id "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
 
 Output::
 
     {
         "WindowTaskId":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-        "WindowId":"mw-ab12cd34ef56gh78"
+        "WindowId":"mw-ab12cd34efEXAMPLE"
     }
 
 For more information, see `Systems Manager Maintenance Windows Tutorials (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-tutorials.html>`__ in the *AWS Systems Manager User Guide*.

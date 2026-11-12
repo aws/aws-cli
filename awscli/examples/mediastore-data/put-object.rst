@@ -3,7 +3,7 @@
 The following ``put-object`` example upload an object to the specified container. ::
 
     aws mediastore-data put-object \
-        --endpoint https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
+        --endpoint-url https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
         --body ReadMe.md \
         --path ReadMe.md \
         --cache-control "max-age=6, public" \
@@ -22,7 +22,7 @@ Output::
 The following ``put-object`` example upload an object to the specified folder within a container. ::
 
     aws mediastore-data put-object \
-        --endpoint https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
+        --endpoint-url https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
         --body ReadMe.md \
         --path /september-events/ReadMe.md \
         --cache-control "max-age=6, public" \

@@ -5,7 +5,7 @@ The following ``delete-package-versions`` example deletes version 4.0.0 of a pac
 
     aws codeartifact delete-package-versions \
         --domain test-domain \
-        --repo test-repo \
+        --repository test-repo \
         --format npm \
         --package test-package \
         --versions 4.0.0

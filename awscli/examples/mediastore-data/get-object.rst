@@ -3,7 +3,7 @@
 The following ``get-object`` example downloads the specified object. ::
 
     aws mediastore-data get-object \
-        --endpoint https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
+        --endpoint-url https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
         --path events/baseball/setup.jpg setup.jpg
 
 Output::
@@ -21,7 +21,7 @@ Output::
 The following ``get-object`` example downloads the specified part of an object. ::
 
     aws mediastore-data get-object \
-        --endpoint https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
+        --endpoint-url https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
         --path events/baseball/setup.jpg setup.jpg \
         --range "bytes=0-100"
 

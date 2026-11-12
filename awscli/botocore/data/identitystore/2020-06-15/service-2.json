@@ -1852,8 +1852,8 @@
           "box":true
         },
         "ApiRestrictSourceVpcs":{
-          "shape":"VpcIdList",
-          "documentation":"<p>A list of virtual private cloud (VPC) IDs that are allowed to access the identity store API operations. A request is denied unless it originates from a VPC in this list, or from an IP address in <code>ApiAllowSourceIps</code> if you specified one. If you don't specify a value, access isn't restricted to specific VPCs, but the VPC endpoint requirement set by <code>VpceAccessRequired</code> still applies.</p>"
+          "shape":"VpcArnList",
+          "documentation":"<p>A list of virtual private cloud (VPC) ARNs that are allowed to access the identity store API operations. A request is denied unless it originates from a VPC in this list, or from an IP address in <code>ApiAllowSourceIps</code> if you specified one. If you don't specify a value, access isn't restricted to specific VPCs, but the VPC endpoint requirement set by <code>VpceAccessRequired</code> still applies.</p>"
         },
         "ApiAllowSourceIps":{
           "shape":"IpCidrList",
@@ -1876,8 +1876,8 @@
           "box":true
         },
         "ApiRestrictSourceVpcs":{
-          "shape":"VpcIdList",
-          "documentation":"<p>A list of virtual private cloud (VPC) IDs that are allowed to access the identity store API operations. A request is denied unless it originates from a VPC in this list, or from an IP address in <code>ApiAllowSourceIps</code> if one is configured. If this field is empty, access isn't restricted to specific VPCs, but the VPC endpoint requirement from <code>VpceAccessRequired</code> still applies.</p>"
+          "shape":"VpcArnList",
+          "documentation":"<p>A list of virtual private cloud (VPC) ARNs that are allowed to access the identity store API operations. A request is denied unless it originates from a VPC in this list, or from an IP address in <code>ApiAllowSourceIps</code> if one is configured. If this field is empty, access isn't restricted to specific VPCs, but the VPC endpoint requirement from <code>VpceAccessRequired</code> still applies.</p>"
         },
         "ApiAllowSourceIps":{
           "shape":"IpCidrList",
@@ -2403,17 +2403,17 @@
         "KMS_DISABLED"
       ]
     },
-    "VpcIdList":{
+    "VpcArn":{
+      "type":"string",
+      "max":128,
+      "min":12,
+      "pattern":"(arn:aws(-[a-z]{1,5}){0,3}:ec2:[a-z]{2,4}(-[a-z]{1,10}){1,3}-[0-9]{1,2}:[0-9]{12}:vpc/)?vpc-([0-9a-f]){8}(([0-9a-f]){9})?"
+    },
+    "VpcArnList":{
       "type":"list",
-      "member":{"shape":"VpcIdType"},
+      "member":{"shape":"VpcArn"},
       "max":50,
       "min":1
-    },
-    "VpcIdType":{
-      "type":"string",
-      "max":21,
-      "min":12,
-      "pattern":"vpc-([0-9a-f]){8}(([0-9a-f]){9})?"
     }
   },
   "documentation":"<p><note> <p> IAM Identity Center uses the <code>sso</code>, <code>sso-directory</code>, and <code>identitystore</code> API namespaces. The <code>sso-directory</code> and <code>identitystore</code> namespaces authorize access to data in the Identity Store. Make sure your policies with IAM actions from these two namespaces are consistent to avoid conflicting authorization to the same data.</p> </note> <p>The Identity Store service used by IAM Identity Center provides a single place to retrieve all of your identities (users and groups). You can use the identity store API operations in this guide to manage your identity data programmatically. The scope of these APIs allows you to create, read, update, delete, and list users, groups, and memberships.</p> <p>This guide also describes identity store operations that you can call and includes detailed information about data types and errors.</p> <important> <p>If you use an external identity provider or Active Directory as your identity source, we recommend that you use the <code>Create</code>, <code>Update</code>, and <code>Delete</code> APIs with caution. Because IAM Identity Center doesn't support outbound synchronization, your identity source won't automatically update with the changes that you make to users or groups using these APIs.</p> </important> <p>Amazon Web Services provides SDKs that consist of libraries and sample code for various programming languages and platforms (Java, Ruby, .Net, iOS, Android, and more). The SDKs provide a convenient way to programmatically access the identity store and other Amazon Web Services services. For more information about the Amazon Web Services SDKs, including how to download and install them, see <a href=\"http://aws.amazon.com/tools/\">Amazon Web Services Builder Center Toolbox</a>.</p></p>"

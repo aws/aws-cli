@@ -43,7 +43,7 @@ The following ``describe-spot-price-history`` example returns the Spot Price his
 
     aws ec2 describe-spot-price-history \
         --instance-types m1.xlarge \
-        --product-description "Linux/UNIX (Amazon VPC)" \
+        --product-descriptions "Linux/UNIX (Amazon VPC)" \
         --start-time 2014-01-06T07:08:09 \
         --end-time 2014-01-06T08:09:10
 

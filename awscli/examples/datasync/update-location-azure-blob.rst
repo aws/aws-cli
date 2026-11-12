@@ -5,8 +5,8 @@ The following ``update-location-azure-blob`` example updates your DataSync locat
     aws datasync update-location-azure-blob \
         --location-arn arn:aws:datasync:us-west-2:123456789012:location/loc-abcdef01234567890 \
         --agent-arns arn:aws:datasync:us-west-2:123456789012:agent/agent-1234567890abcdef0 \
-        --sas-configuration '{ \
-            "Token": "sas-token-for-azure-blob-storage-access" \
+        --sas-configuration '{
+            "Token": "sas-token-for-azure-blob-storage-access"
         }'
 
 This command produces no output.

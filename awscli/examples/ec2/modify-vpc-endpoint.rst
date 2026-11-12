@@ -21,7 +21,7 @@ The following ``modify-vpc-endpoint`` example modifies interface endpoint ``vpce
 
     aws ec2 modify-vpc-endpoint \
         --vpc-endpoint-id vpce-0fe5b17a0707d6fa5 \
-        --add-subnet-id subnet-d6fcaa8d
+        --add-subnet-ids subnet-d6fcaa8d
 
 Output::
 

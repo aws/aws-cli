@@ -5709,7 +5709,7 @@
       },
       "input":{"shape":"GetFlowLogsIntegrationTemplateRequest"},
       "output":{"shape":"GetFlowLogsIntegrationTemplateResult"},
-      "documentation":"<p>Generates a CloudFormation template that streamlines and automates the integration of VPC flow logs with Amazon Athena. This make it easier for you to query and gain insights from VPC flow logs data. Based on the information that you provide, we configure resources in the template to do the following:</p> <ul> <li> <p>Create a table in Athena that maps fields to a custom log format</p> </li> <li> <p>Create a Lambda function that updates the table with new partitions on a daily, weekly, or monthly basis</p> </li> <li> <p>Create a table partitioned between two timestamps in the past</p> </li> <li> <p>Create a set of named queries in Athena that you can use to get started quickly</p> </li> </ul> <note> <p> <code>GetFlowLogsIntegrationTemplate</code> does not support integration between Amazon Web Services Transit Gateway Flow Logs and Amazon Athena.</p> </note>"
+      "documentation":"<p>Generates a CloudFormation template that streamlines and automates the integration of VPC flow logs with Amazon Athena. This make it easier for you to query and gain insights from VPC flow logs data. Based on the information that you provide, we configure resources in the template to do the following:</p> <ul> <li> <p>Create a table in Athena that maps fields to a custom log format</p> </li> <li> <p>Create a Lambda function that updates the table with new partitions on a daily, weekly, or monthly basis</p> </li> <li> <p>Create a table partitioned between two timestamps in the past</p> </li> <li> <p>Create a set of named queries in Athena that you can use to get started quickly</p> </li> </ul> <note> <p> <code>GetFlowLogsIntegrationTemplate</code> does not support integration between Amazon Web Services Transit Gateway Flow Logs or Amazon Web Services Cloud WAN Flow Logs and Amazon Athena.</p> </note>"
     },
     "GetGroupsForCapacityReservation":{
       "name":"GetGroupsForCapacityReservation",
@@ -17939,7 +17939,7 @@
         },
         "TrafficType":{
           "shape":"TrafficType",
-          "documentation":"<p>The type of traffic to monitor (accepted traffic, rejected traffic, or all traffic). This parameter is not supported for transit gateway resource types. It is required for the other resource types.</p>"
+          "documentation":"<p>The type of traffic to monitor (accepted traffic, rejected traffic, or all traffic). This parameter is not supported for transit gateway or Cloud WAN resource types. It is required for the other resource types.</p>"
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
@@ -17951,7 +17951,7 @@
         },
         "LogFormat":{
           "shape":"String",
-          "documentation":"<p>The fields to include in the flow log record. List the fields in the order in which they should appear. If you omit this parameter, the flow log is created using the default format. If you specify this parameter, you must include at least one field. For more information about the available fields, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html\">Flow log records</a> in the <i>Amazon VPC User Guide</i> or <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-log-records\">Transit Gateway Flow Log records</a> in the <i>Amazon Web Services Transit Gateway Guide</i>.</p> <p>Specify the fields using the <code>${field-id}</code> format, separated by spaces.</p>"
+          "documentation":"<p>The fields to include in the flow log record. List the fields in the order in which they should appear. If you omit this parameter, the flow log is created using the default format. If you specify this parameter, you must include at least one field. For more information about the available fields, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html\">Flow log records</a> in the <i>Amazon VPC User Guide</i>, <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-log-records\">Transit Gateway Flow Log records</a> in the <i>Amazon Web Services Transit Gateway Guide</i>, or <a href=\"https://docs.aws.amazon.com/network-manager/latest/cloudwan/cwan-flow-logs.html\">Cloud WAN Flow Log records</a> in the <i>Amazon Web Services Cloud WAN User Guide</i>.</p> <p>Specify the fields using the <code>${field-id}</code> format, separated by spaces.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -17960,7 +17960,7 @@
         },
         "MaxAggregationInterval":{
           "shape":"Integer",
-          "documentation":"<p>The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. The possible values are 60 seconds (1 minute) or 600 seconds (10 minutes). This parameter must be 60 seconds for transit gateway resource types.</p> <p>When a network interface is attached to a <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html\">Nitro-based instance</a>, the aggregation interval is always 60 seconds or less, regardless of the value that you specify.</p> <p>Default: 600</p>"
+          "documentation":"<p>The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. The possible values are 60 seconds (1 minute) or 600 seconds (10 minutes). This parameter must be 60 seconds for transit gateway and Cloud WAN resource types.</p> <p>When a network interface is attached to a <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html\">Nitro-based instance</a>, the aggregation interval is always 60 seconds or less, regardless of the value that you specify.</p> <p>Default: 600</p>"
         },
         "DestinationOptions":{
           "shape":"DestinationOptionsRequest",
@@ -40505,7 +40505,10 @@
         "NetworkInterface",
         "TransitGateway",
         "TransitGatewayAttachment",
-        "RegionalNatGateway"
+        "RegionalNatGateway",
+        "CoreNetwork",
+        "CoreNetworkEdge",
+        "CoreNetworkAttachment"
       ]
     },
     "FpgaDeviceCount":{"type":"integer"},

@@ -8,8 +8,8 @@ The following ``update-service-level-objective`` example updates an existing ser
 Contents of ``update-slo.json``::
 
     {
-        "id": "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName",
-        "goal": {
+        "Id": "arn:aws:application-signals:us-west-2:123456789012:slo/SLOName",
+        "Goal": {
             "Interval": {
                 "RollingInterval": {
                     "DurationUnit": "DAY",

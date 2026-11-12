@@ -22,12 +22,19 @@ at the man output, we look one step before at the generated rst output
 
 """
 
+import collections.abc
 import contextlib
+import copy
+import functools
+import gc
 import json
 import os
 import re
 import shlex
+import tempfile
 import textwrap
+import zipfile
+from unittest import mock
 
 import docutils.nodes
 import docutils.parsers.rst
@@ -35,6 +42,7 @@ import docutils.utils
 import pytest
 from botocore.validate import ParamValidator
 
+import awscli.clidriver
 from awscli.argparser import (
     ArgTableArgParser,
     MainArgParser,
@@ -42,8 +50,13 @@ from awscli.argparser import (
     SubCommandArgParser,
 )
 from awscli.clidriver import ServiceOperation
+from awscli.customizations.arguments import OverrideRequiredArgsArgument
 from awscli.customizations.waiters import WaitCommand
-from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
+from awscli.testutils import (
+    BaseAWSHelpOutputTest,
+    capture_output,
+    create_clidriver,
+)
 
 # Mapping of command names to subcommands that have examples in their help
 # output.  This isn't mean to be an exhaustive list, but should help catch
@@ -132,6 +145,32 @@ REGION_RE = re.compile(
 # then the file, then the example's title, with the reason for each example.
 EXCEPTIONS_PATH = os.path.join(
     _dname(os.path.abspath(__file__)), 'example_style_exceptions.json'
+)
+RUN_ENVIRONMENT = {
+    'AWS_ACCESS_KEY_ID': 'AKIAIOSFODNN7EXAMPLE',
+    'AWS_SECRET_ACCESS_KEY': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+    'AWS_DEFAULT_REGION': APPROVED_REGION,
+    'AWS_CONFIG_FILE': os.devnull,
+    'AWS_SHARED_CREDENTIALS_FILE': os.devnull,
+    'AWS_EC2_METADATA_DISABLED': 'true',
+    'AWS_PAGER': '',
+}
+LOCAL_FILE_RE = re.compile(r'(?P<scheme>fileb?)://(?P<path>[^\s,\'"]+)')
+VALIDATION_ERRORS = (
+    'Parameter validation failed',
+    'Error parsing parameter',
+    'Invalid base64',
+    'Bad value for --query',
+    'Unknown options',
+    'the following arguments are required',
+    'expected one argument',
+    'Found invalid choice',
+)
+# Errors from the machine that runs the example, such as a local file that
+# the example uses but doesn't show.
+ENVIRONMENT_ERRORS = (
+    'Unable to load paramfile',
+    'Blob values must be a path to a file',
 )
 
 
@@ -636,6 +675,43 @@ def check_command(example):
     return errors
 
 
+def _command_object(command_table, line):
+    """The command or operation that the first line of a command runs."""
+    command = None
+    for word in line.split()[1:]:
+        if word not in command_table:
+            break
+        command = command_table[word]
+        command_table = command.subcommand_table
+    return command
+
+
+def check_option_names(example, command_table, global_options):
+    # The CLI accepts an abbreviated option such as "--max-it" for
+    # "--max-items", but the example must use the full name.
+    errors = []
+    for block in example.commands:
+        for command in _split_commands(block):
+            command, _ = _aws_part(command)
+            command_obj = _command_object(command_table, command[0][1][0])
+            if command_obj is None:
+                continue
+            names = set(command_obj.arg_table) | global_options
+            for lineno, scanned in command:
+                for match in OPTION_RE.finditer(scanned[3]):
+                    name = match.group('name')
+                    if name in names:
+                        continue
+                    full = sorted(n for n in names if n.startswith(name))
+                    if full:
+                        found = ' or '.join('--' + n for n in full)
+                        errors.append(
+                            f'Line {lineno}: use the full option name '
+                            f'{found} instead of --{name}'
+                        )
+    return errors
+
+
 def check_file_contents(example):
     shown = set()
     errors = []
@@ -1028,17 +1104,30 @@ def extract_error_line(content, error_start, error_end):
     return content[error_line_begin:error_line_end]
 
 
-@pytest.fixture(scope="module")
-def command_validator():
-    # CLIDriver can take up a lot of resources so we'll just create one
-    # instance and use it for all the validation tests.
-    driver = create_clidriver()
-    return CommandValidator(driver)
+@pytest.fixture(scope="module", autouse=True)
+def freeze_collected_objects():
+    # About a million objects, mostly the collected tests, exist before the
+    # first test here and outlive the module.  Freezing them stops every
+    # full garbage collection from scanning them again.
+    gc.collect()
+    gc.freeze()
+    yield
+    gc.unfreeze()
 
 
 @pytest.fixture(scope="module")
 def command_table():
-    return create_clidriver().subcommand_table
+    return ServiceCommandTable()
+
+
+@pytest.fixture(scope="module")
+def command_validator(command_table):
+    return CommandValidator(create_clidriver(), command_table)
+
+
+@pytest.fixture(scope="module")
+def global_options():
+    return set(create_clidriver().create_help_command().arg_table)
 
 
 @pytest.mark.parametrize("command, subcommand", EXAMPLE_COMMAND_TESTS)
@@ -1055,15 +1144,13 @@ def test_examples(command, subcommand):
 @pytest.mark.filterwarnings('ignore::DeprecationWarning')
 @pytest.mark.parametrize("example_file", RST_DOC_EXAMPLES)
 def test_rst_doc_examples(command_validator, example_file):
-    verify_has_only_ascii_chars(example_file)
-    verify_is_valid_rst(example_file)
-    verify_cli_commands_valid(example_file, command_validator)
-    verify_no_http_links(example_file)
+    contents = verify_has_only_ascii_chars(example_file)
+    document = verify_is_valid_rst(example_file, contents)
+    verify_cli_commands_valid(example_file, command_validator, document)
+    verify_no_http_links(example_file, contents)
 
 
-def verify_no_http_links(filename):
-    with open(filename) as f:
-        contents = f.read()
+def verify_no_http_links(filename, contents):
     match = HTTP_LINK_REGEX.search(contents)
     if match:
         error_line_number = line_num(contents, match.span()[0])
@@ -1073,8 +1160,8 @@ def verify_no_http_links(filename):
         marker_idx = error_line.find('http://') - 1
         marker_line = (" " * marker_idx) + '^'
         raise AssertionError(
-            'Found http:// link in the examples file %s, line %s\n'
-            '%s\n%s' % (filename, error_line_number, error_line, marker_line)
+            f'Found http:// link in the examples file {filename}, line {error_line_number}\n'
+            f'{error_line}\n{marker_line}'
         )
 
 
@@ -1082,36 +1169,44 @@ def verify_has_only_ascii_chars(filename):
     with open(filename, 'rb') as f:
         bytes_content = f.read()
         try:
-            bytes_content.decode('ascii')
+            contents = bytes_content.decode('ascii')
         except UnicodeDecodeError as e:
             # The test has failed so we'll try to provide a useful error
             # message.
             offset = e.start
             spread = 20
-            bad_text = bytes_content[offset - spread : e.start + spread]
+            bad_text = bytes_content[
+                offset - spread : e.start + spread
+            ].decode('ascii', errors='backslashreplace')
             underlined = ' ' * spread + '^'
             error_text = '\n'.join([bad_text, underlined])
             line_number = bytes_content[:offset].count(b'\n') + 1
             raise AssertionError(
-                "Non ascii characters found in the examples file %s, line %s:"
-                "\n\n%s\n" % (filename, line_number, error_text)
+                f"Non ascii characters found in the examples file {filename}, line {line_number}:"
+                f"\n\n{error_text}\n"
             )
+    # Match the universal-newline translation of the previous text reads.
+    return contents.replace('\r\n', '\n').replace('\r', '\n')
 
 
-def verify_is_valid_rst(filename):
-    _, errors = parse_rst(filename)
+def verify_is_valid_rst(filename, contents):
+    document, errors = parse_rst(contents)
     if errors:
         raise AssertionError(_make_error_msg(filename, errors))
+    return document
 
 
-def parse_rst(filename):
-    with open(filename) as f:
-        contents = f.read()
+@functools.cache
+def _rst_option_parser():
+    # Creating the option parser takes longer than parsing most examples.
+    return docutils.frontend.OptionParser(
+        components=(docutils.parsers.rst.Parser,)
+    )
+
+
+def parse_rst(contents):
     parser = docutils.parsers.rst.Parser()
-    components = (docutils.parsers.rst.Parser,)
-    settings = docutils.frontend.OptionParser(
-        components=components
-    ).get_default_values()
+    settings = _rst_option_parser().get_default_values()
     document = docutils.utils.new_document('<cli-example>', settings=settings)
     errors = []
 
@@ -1133,7 +1228,7 @@ def _make_error_msg(filename, errors):
         lines = f.readlines()
     relative_name = filename[len(EXAMPLES_DIR) + 1 :]
     failure_message = [
-        'The file "%s" contains invalid RST: ' % relative_name,
+        f'The file "{relative_name}" contains invalid RST: ',
         '',
     ]
     for error in errors:
@@ -1146,34 +1241,258 @@ def _make_error_msg(filename, errors):
         if line_number > 0:
             line_number -= 1
         current_message = [
-            'Line %s: %s' % (error['line_number'], error['msg']),
-            '  %s' % lines[line_number],
+            f"Line {error['line_number']}: {error['msg']}",
+            f'  {lines[line_number]}',
         ]
         failure_message.extend(current_message)
     return '\n'.join(failure_message)
 
 
-def verify_cli_commands_valid(filename, command_validator):
-    cli_commands = find_all_cli_commands(filename)
+def verify_cli_commands_valid(filename, command_validator, document):
+    cli_commands = find_all_cli_commands(document)
     for command in cli_commands:
         command_validator.validate_cli_command(command, filename)
 
 
-def find_all_cli_commands(filename):
-    document, _ = parse_rst(filename)
+def find_all_cli_commands(document):
     visitor = CollectCLICommands(document)
     document.walk(visitor)
     return visitor.cli_commands
 
 
+class ServiceCommandTable(collections.abc.Mapping):
+    """The CLI's top-level command table, with one service loaded at a time.
+
+    A driver keeps the model of every service it loads, which adds up to
+    hundreds of MB for all of them, and so does the loader that the drivers
+    from ``awscli.testutils`` share.  The examples are checked one service
+    at a time, so each service is looked up in a new driver with its own
+    loader, and the previous driver is released.
+    """
+
+    def __init__(self):
+        self._names = set(awscli.clidriver.create_clidriver().subcommand_table)
+        self._service_name = None
+        self._driver = None
+
+    def driver(self, service_name):
+        if service_name != self._service_name:
+            # The driver reads the config file when it is created, and the
+            # examples of the service are run in it, so it is created in the
+            # environment they run in.
+            with _run_environment():
+                self._driver = awscli.clidriver.create_clidriver()
+            self._service_name = service_name
+        return self._driver
+
+    def __getitem__(self, name):
+        if name not in self._names:
+            raise KeyError(name)
+        return self.driver(name).subcommand_table[name]
+
+    def __contains__(self, name):
+        return name in self._names
+
+    def __iter__(self):
+        return iter(self._names)
+
+    def __len__(self):
+        return len(self._names)
+
+
+def _command_args(command):
+    lines = [line.rstrip() for line in command.splitlines()]
+    marker = _continuation_marker(lines[0])
+    if marker != '\\':
+        # Windows examples continue lines with ^ or `, which are not
+        # arguments.
+        command = '\n'.join(
+            line[:-1] if line.endswith(marker) else line for line in lines
+        )
+    args = shlex.split(command)[1:]
+    # Strip newlines from arguments that may have been included due to
+    # backslash line continuations in the RST examples, and drop the
+    # arguments that are only a line continuation
+    args = [part.lstrip('\n') for part in args if not part or part.strip('\n')]
+    # Only the arguments before a redirect or pipe, such as
+    # "> skeleton.json", are passed to the CLI.
+    for i, part in enumerate(args):
+        if part in SHELL_OPERATORS or part.startswith(SHELL_OPERATOR_PREFIXES):
+            return args[:i]
+    return args
+
+
+class _RequestReady(Exception):
+    pass
+
+
+def _api_operation(command_table, args):
+    """The command that the arguments run, if it is an API operation."""
+    command = None
+    for arg in args:
+        if arg not in command_table:
+            break
+        command = command_table[arg]
+        command_table = command.subcommand_table
+    return command if isinstance(command, ServiceOperation) else None
+
+
+def _write_files(blocks, directory):
+    for block in blocks:
+        if block.kind != 'literal' or block.intro is None:
+            continue
+        match = CONTENTS_HEADER_RE.match(block.intro.lines[-1].strip())
+        if match:
+            name = os.path.basename(match.group('name'))
+            with open(os.path.join(directory, name), 'w') as f:
+                f.write(textwrap.dedent('\n'.join(block.lines)) + '\n')
+
+
+def _local_files(directory):
+    def local_file(match):
+        name = os.path.basename(match.group('path').replace('\\', '/'))
+        path = os.path.join(directory, name)
+        # A binary file that isn't shown, such as an image, is created empty.
+        if match.group('scheme') == 'fileb' and not os.path.exists(path):
+            if name.endswith('.zip'):
+                zipfile.ZipFile(path, 'w').close()
+            else:
+                open(path, 'wb').close()
+        if not os.path.exists(path):
+            return match.group(0)
+        return f'{match.group("scheme")}://{path}'
+
+    return lambda arg: LOCAL_FILE_RE.sub(local_file, arg)
+
+
+@contextlib.contextmanager
+def _run_environment():
+    """Make the CLI use fake credentials and ignore the user's config."""
+    with mock.patch.dict(os.environ):
+        for name in list(os.environ):
+            if name.startswith('AWS_') and name != 'AWS_DATA_PATH':
+                del os.environ[name]
+        os.environ.update(RUN_ENVIRONMENT)
+        yield
+
+
+@contextlib.contextmanager
+def _isolated_session(session):
+    """Undo what a command changes in the session, so that it doesn't
+    affect the next command.
+
+    Each command registers handlers for its options (such as the handler
+    that decodes base64 blobs, unless --cli-binary-format is
+    raw-in-base64-out), and --region and --no-sign-request change the
+    session's settings.  The command runs with a copy of the session's
+    handlers, which is dropped afterwards.
+    """
+    events = session._events
+    client_config = session.get_default_client_config()
+    session._events = copy.copy(events)
+    # The copy shares these caches with the original.  Through the init
+    # cache, plugins that the copy loads would count as loaded in the
+    # original too, though only the copy has their handlers.
+    session._events._init_cache = {}
+    session._events._lookup_cache = {}
+    session.register_component('event_emitter', session._events)
+    try:
+        yield
+    finally:
+        session._events = events
+        session.register_component('event_emitter', events)
+        session.set_default_client_config(client_config)
+        session.set_config_variable('region', None)
+
+
+def _run_command(driver, operation, args):
+    """Run a command until its request would be sent, and return the error
+    it prints, or None if it got that far or succeeded without a request.
+
+    The command runs in the driver that the other checks use for its
+    service, so the service's model is loaded once.
+    """
+    ready = []
+
+    def stop(**kwargs):
+        ready.append(True)
+        raise _RequestReady()
+
+    session = driver.session
+    with _run_environment(), _isolated_session(session):
+        session.register('before-call', stop)
+        # CommandValidator unregisters the handlers of arguments such as
+        # --cli-input-json once it has used them, so they are registered
+        # again, for this run only.
+        for arg in operation.arg_table.values():
+            if isinstance(arg, OverrideRequiredArgsArgument):
+                session.register(
+                    'before-building-argument-table-parser',
+                    arg.override_required_args,
+                )
+        with capture_output() as output:
+            rc = driver.main(args)
+    if ready or rc == 0:
+        return None
+    return ' '.join(output.stderr.getvalue().split())
+
+
+def check_commands_run(example, command_table):
+    errors = []
+    with tempfile.TemporaryDirectory() as directory:
+        local_files = _local_files(directory)
+        for section in example.sections:
+            # Several examples in a file can show different files with the
+            # same name, so each example uses the files it shows, or else
+            # the ones shown before it.
+            _write_files(section.blocks, directory)
+            commands = [
+                command
+                for block in section.commands
+                if not _is_os_specific(block)
+                for command in _split_commands(block)
+            ]
+            for command in commands:
+                command, _ = _aws_part(command)
+                lineno = command[0][0]
+                text = '\n'.join(scanned[0] for _, scanned in command)
+                try:
+                    args = _command_args(text)
+                except ValueError:
+                    # Reported by test_rst_doc_examples.
+                    continue
+                operation = _api_operation(command_table, args)
+                if operation is None:
+                    continue
+                # The profile only changes where the CLI finds credentials.
+                while '--profile' in args[:-1]:
+                    i = args.index('--profile')
+                    del args[i : i + 2]
+                error = _run_command(
+                    command_table.driver(args[0]),
+                    operation,
+                    [local_files(arg) for arg in args],
+                )
+                if error is None:
+                    continue
+                environment = any(e in error for e in ENVIRONMENT_ERRORS)
+                if environment and directory not in error:
+                    continue
+                if any(e in error for e in VALIDATION_ERRORS):
+                    error = error.replace('aws: [ERROR]: ', '')
+                    errors.append(f'Line {lineno}: the command fails: {error}')
+    return errors
+
+
 class CommandValidator:
-    def __init__(self, driver):
-        self.driver = driver
-        help_command = self.driver.create_help_command()
-        self._service_command_table = help_command.command_table
+    def __init__(self, driver, command_table):
+        # The driver only parses the global arguments and the service name.
+        # The commands of the service come from command_table.
+        help_command = driver.create_help_command()
+        self._command_table = command_table
         self._global_arg_table = help_command.arg_table
         self._main_parser = MainArgParser(
-            self._service_command_table,
+            help_command.command_table,
             driver.session.user_agent(),
             'Some description',
             self._global_arg_table,
@@ -1191,36 +1510,12 @@ class CommandValidator:
         - Invalid sub-commands, such as waiters of "wait", and their
           arguments
         """
-        lines = [line.rstrip() for line in command.splitlines()]
-        marker = _continuation_marker(lines[0])
-        if marker != '\\':
-            # Windows examples continue lines with ^ or `, which are not
-            # arguments.
-            command = '\n'.join(
-                line[:-1] if line.endswith(marker) else line for line in lines
-            )
         try:
-            command_parts = shlex.split(command)[1:]
-            # Strip newlines from arguments that may have been included due to
-            # backslash line continuations in the RST examples, and drop the
-            # arguments that are only a line continuation
-            command_parts = [
-                part.lstrip('\n')
-                for part in command_parts
-                if not part or part.strip('\n')
-            ]
-            # Only the arguments before a redirect or pipe, such as
-            # "> skeleton.json", are passed to the CLI.
-            for i, part in enumerate(command_parts):
-                if part in SHELL_OPERATORS or part.startswith(
-                    SHELL_OPERATOR_PREFIXES
-                ):
-                    command_parts = command_parts[:i]
-                    break
+            command_parts = _command_args(command)
         except Exception as e:
             raise AssertionError(
-                "Failed to parse this example as shell command: %s\n\n"
-                "Error:\n%s\n" % (command, e)
+                f"Failed to parse this example as shell command: {command}\n\n"
+                f"Error:\n{e}\n"
             )
 
         try:
@@ -1231,7 +1526,8 @@ class CommandValidator:
             service_name = parsed_args.command
 
             # Get the service command
-            service_cmd = self._service_command_table[service_name]
+            service_cmd = self._command_table[service_name]
+            session = self._command_table.driver(service_name).session
 
             # Create the service parser
             cmd_table = service_cmd.create_help_command().command_table
@@ -1263,7 +1559,7 @@ class CommandValidator:
 
             try:
                 while True:
-                    with self._cli_required_args(command_obj, args):
+                    with self._cli_required_args(command_obj, args, session):
                         subcommand = None
                         if command_obj.subcommand_table:
                             subcommand_parser = SubCommandArgParser(
@@ -1311,7 +1607,7 @@ class CommandValidator:
             )
 
     @contextlib.contextmanager
-    def _cli_required_args(self, command_obj, args):
+    def _cli_required_args(self, command_obj, args, session):
         """Apply the CLI's rules for which arguments are required.
 
         Arguments such as ``--cli-input-json`` and ``--generate-cli-skeleton``
@@ -1328,13 +1624,26 @@ class CommandValidator:
         if isinstance(command_obj, ServiceOperation):
             lineage_names = lineage_names[-2:]
         required = {name: arg.required for name, arg in arg_table.items()}
+        # Arguments such as --cli-input-json register their handler for the
+        # event of every command when their argument table is built.  The
+        # CLI builds one argument table, but these tests build thousands, and
+        # the handlers left behind would make every emit slower.  So they
+        # are unregistered, and only this command's handlers are called.
+        event = 'before-building-argument-table-parser'
+        handlers = [
+            arg.override_required_args
+            for arg in arg_table.values()
+            if isinstance(arg, OverrideRequiredArgsArgument)
+        ]
         try:
-            self.driver.session.emit(
-                'before-building-argument-table-parser.'
-                + '.'.join(lineage_names),
+            for handler in handlers:
+                session.unregister(event, handler)
+                handler(argument_table=arg_table, args=args)
+            session.emit(
+                f'{event}.' + '.'.join(lineage_names),
                 argument_table=arg_table,
                 args=args,
-                session=self.driver.session,
+                session=session,
             )
             yield
         finally:
@@ -1383,73 +1692,34 @@ def _assert_name_contains_only_allowed_characters(filename):
 
 
 @pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_whitespace(example_file):
+def test_example_style(command_table, global_options, example_file):
+    # All the style rules are checked in one test per file, so each file is
+    # read and parsed once, and the test count stays at one per file.
     example = Example(example_file)
-    errors = check_whitespace(example)
-    _assert_follows_rule('whitespace', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_location(command_table, example_file):
-    example = Example(example_file)
-    errors = check_location(example, command_table)
-    _assert_follows_rule('location', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_title(example_file):
-    example = Example(example_file)
-    errors = check_title(example)
-    _assert_follows_rule('title', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_description(example_file):
-    example = Example(example_file)
-    errors = check_description(example)
-    _assert_follows_rule('description', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_command(example_file):
-    example = Example(example_file)
-    errors = check_command(example)
-    _assert_follows_rule('command', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_command_name(example_file):
-    example = Example(example_file)
-    errors = check_command_name(example)
-    _assert_follows_rule('command-name', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_file_contents(example_file):
-    example = Example(example_file)
-    errors = check_file_contents(example)
-    _assert_follows_rule('file-contents', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_output(command_table, example_file):
-    example = Example(example_file)
-    errors = check_output(example, command_table)
-    _assert_follows_rule('output', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_link(example_file):
-    example = Example(example_file)
-    errors = check_link(example)
-    _assert_follows_rule('link', example, errors)
-
-
-@pytest.mark.parametrize('example_file', STYLE_EXAMPLE_FILES)
-def test_example_sanitization(example_file):
-    example = Example(example_file)
-    errors = check_sanitization(example)
-    _assert_follows_rule('sanitization', example, errors)
+    errors_by_rule = {
+        'whitespace': check_whitespace(example),
+        'location': check_location(example, command_table),
+        'title': check_title(example),
+        'description': check_description(example),
+        'command': check_command(example),
+        'option-names': check_option_names(
+            example, command_table, global_options
+        ),
+        'command-name': check_command_name(example),
+        'file-contents': check_file_contents(example),
+        'output': check_output(example, command_table),
+        'link': check_link(example),
+        'sanitization': check_sanitization(example),
+        'commands-run': check_commands_run(example, command_table),
+    }
+    failures = []
+    for rule, errors in errors_by_rule.items():
+        try:
+            _assert_follows_rule(rule, example, errors)
+        except AssertionError as e:
+            failures.append(str(e))
+    if failures:
+        raise AssertionError('\n'.join(failures))
 
 
 def test_example_style_exceptions_exist():

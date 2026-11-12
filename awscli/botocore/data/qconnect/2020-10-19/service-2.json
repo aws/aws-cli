@@ -1322,6 +1322,46 @@
       "deprecatedMessage":"QueryAssistant API will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications.",
       "readonly":true
     },
+    "RegisterAssistantReplicaKey":{
+      "name":"RegisterAssistantReplicaKey",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/assistants/{assistantId}/replicaKey",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterAssistantReplicaKeyRequest"},
+      "output":{"shape":"RegisterAssistantReplicaKeyResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Registers a replica Region KMS key for an Amazon Q in Connect assistant. To use this operation, you must have <code>kms:GenerateDataKey</code> permission on the replica key.</p>",
+      "idempotent":true
+    },
+    "RegisterKnowledgeBaseReplicaKey":{
+      "name":"RegisterKnowledgeBaseReplicaKey",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/replicaKey",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterKnowledgeBaseReplicaKeyRequest"},
+      "output":{"shape":"RegisterKnowledgeBaseReplicaKeyResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Registers a replica Region KMS key for an Amazon Q in Connect knowledge base. To use this operation, you must have <code>kms:GenerateDataKey</code> permission on the replica key. You must also have <code>kms:CreateGrant</code> permission on the primary key.</p>",
+      "idempotent":true
+    },
     "RemoveAssistantAIAgent":{
       "name":"RemoveAssistantAIAgent",
       "http":{
@@ -1333,6 +1373,7 @@
       "output":{"shape":"RemoveAssistantAIAgentResponse"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
@@ -1630,6 +1671,7 @@
       "output":{"shape":"UpdateAssistantAIAgentResponse"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
@@ -1873,6 +1915,14 @@
           "shape":"Timestamp",
           "documentation":"<p>The time the AI Agent was last modified.</p>"
         },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the AI Agent was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the AI Agent was last modified.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the AI Agent.</p>"
@@ -1935,6 +1985,14 @@
         "modifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the AI Agent was last modified.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the AI Agent was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the AI Agent was last modified.</p>"
         },
         "visibilityStatus":{
           "shape":"VisibilityStatus",
@@ -2119,6 +2177,14 @@
         "modifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the AI Guardrail was last modified.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the AI Guardrail was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the AI Guardrail was last modified.</p>"
         }
       },
       "documentation":"<p>The data for the AI Guardrail</p>"
@@ -2182,6 +2248,14 @@
         "modifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the AI Guardrail was last modified.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the AI Guardrail was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the AI Guardrail was last modified.</p>"
         },
         "visibilityStatus":{
           "shape":"VisibilityStatus",
@@ -2318,6 +2392,14 @@
           "shape":"Timestamp",
           "documentation":"<p>The time the AI Prompt was last modified.</p>"
         },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the AI Prompt was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the AI Prompt was last modified.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the AI Prompt.</p>"
@@ -2410,6 +2492,14 @@
         "modifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the AI Prompt was last modified.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the AI Prompt was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the AI Prompt was last modified.</p>"
         },
         "templateType":{
           "shape":"AIPromptTemplateType",
@@ -2723,6 +2813,14 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the assistant association was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the assistant association was last modified.</p>"
         }
       },
       "documentation":"<p>Information about the assistant association.</p>"
@@ -2801,6 +2899,14 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the assistant association was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the assistant association was last modified.</p>"
         }
       },
       "documentation":"<p>Summary information about the assistant association.</p>"
@@ -2883,9 +2989,29 @@
         "orchestratorConfigurationList":{
           "shape":"OrchestratorConfigurationList",
           "documentation":"<p>The list of orchestrator configurations for the assistant.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the assistant was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the assistant was last modified.</p>"
+        },
+        "assistantGlobalResiliencyStatus":{
+          "shape":"AssistantGlobalResiliencyStatus",
+          "documentation":"<p>Whether Amazon Connect Global Resiliency replicates the Connect instance this assistant is associated with, and so whether resources created under this assistant must satisfy the replication group's model parity constraint. Answered from the ACGR side per request rather than stored, so it reflects the customer's replication state now.</p> <p>Absent means &quot;not applicable or not known&quot; - never read an absent field as DISABLED. It is absent on the operations that return an assistant which is not yet associated with a Connect instance, because replication cannot be established until it is.</p>"
         }
       },
       "documentation":"<p>The assistant data.</p>"
+    },
+    "AssistantGlobalResiliencyStatus":{
+      "type":"string",
+      "documentation":"<p>Whether an assistant's Connect instance is replicated by Amazon Connect Global Resiliency.</p> <p>Distinct from <code>GlobalResiliencyStatus</code> on <code>ModelSummary</code>, which answers a different question - is this <em>model</em> published across the replication group. This one answers whether <em>this assistant</em> is subject to that constraint at all.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "AssistantIntegrationConfiguration":{
       "type":"structure",
@@ -2969,6 +3095,14 @@
         "orchestratorConfigurationList":{
           "shape":"OrchestratorConfigurationList",
           "documentation":"<p>The list of orchestrator configurations for the assistant.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the assistant was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the assistant was last modified.</p>"
         }
       },
       "documentation":"<p>Summary information about the assistant.</p>"
@@ -3023,6 +3157,12 @@
       "min":1,
       "pattern":"[\\p{L}\\p{M}\\p{N}_\\s&@()+,;=\\-]+\\.[A-Za-z0-9]+",
       "sensitive":true
+    },
+    "AwsRegion":{
+      "type":"string",
+      "max":31,
+      "min":8,
+      "pattern":"[a-z]{2}(-[a-z]+){1,2}(-[0-9])?"
     },
     "BedrockFoundationModelConfigurationForParsing":{
       "type":"structure",
@@ -3449,6 +3589,18 @@
         "urlExpiry":{
           "shape":"SyntheticTimestamp_epoch_seconds",
           "documentation":"<p>The expiration time of the URL as an epoch timestamp.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the content was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the content was last modified.</p>"
+        },
+        "fileHash":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Base64-encoded SHA-256 hash of the content file. Amazon Connect Global Resiliency returns this field only for replicated content.</p>"
         }
       },
       "documentation":"<p>Information about the content.</p>"
@@ -3593,6 +3745,18 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the content was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the content was last modified.</p>"
+        },
+        "fileHash":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Base64-encoded SHA-256 hash of the content file. Amazon Connect Global Resiliency returns this field only for replicated content.</p>"
         }
       },
       "documentation":"<p>Summary information about the content.</p>"
@@ -6354,6 +6518,13 @@
         }
       }
     },
+    "GlobalResiliencyStatus":{
+      "type":"string",
+      "enum":[
+        "SUPPORTED",
+        "UNSUPPORTED"
+      ]
+    },
     "GroupingConfiguration":{
       "type":"structure",
       "members":{
@@ -7150,6 +7321,14 @@
         "ingestionFailureReasons":{
           "shape":"FailureReason",
           "documentation":"<p>List of failure reasons on ingestion per file.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the knowledge base was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the knowledge base was last modified.</p>"
         }
       },
       "documentation":"<p>Information about the knowledge base.</p>"
@@ -7229,6 +7408,14 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the knowledge base was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the knowledge base was last modified.</p>"
         }
       },
       "documentation":"<p>Summary information about the knowledge base.</p>"
@@ -8854,6 +9041,10 @@
         "endOfLifeTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the model will reach end of life and no longer be available for use.</p>"
+        },
+        "globalResiliencyStatus":{
+          "shape":"GlobalResiliencyStatus",
+          "documentation":"<p>Whether this model is published in every Region of the caller's Amazon Connect Global Resiliency replication group, and so can be referenced by an AI Prompt that replicates. Present only for callers to which global resiliency applies.</p>"
         }
       },
       "documentation":"<p>The summary of a model available to an Amazon Q in Connect assistant.</p>"
@@ -9714,6 +9905,10 @@
           "shape":"SyntheticTimestamp_epoch_seconds",
           "documentation":"<p>The timestamp when the quick response data was last modified.</p>"
         },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the quick response was last modified.</p>"
+        },
         "contents":{
           "shape":"QuickResponseContents",
           "documentation":"<p>The contents of the quick response.</p>"
@@ -9968,6 +10163,10 @@
           "shape":"SyntheticTimestamp_epoch_seconds",
           "documentation":"<p>The timestamp when the quick response search result data was last modified.</p>"
         },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the quick response was last modified.</p>"
+        },
         "isActive":{
           "shape":"Boolean",
           "documentation":"<p>Whether the quick response is active.</p>"
@@ -10077,6 +10276,10 @@
         "lastModifiedTime":{
           "shape":"SyntheticTimestamp_epoch_seconds",
           "documentation":"<p>The timestamp when the quick response summary was last modified.</p>"
+        },
+        "lastModifiedRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region where the quick response was last modified.</p>"
         },
         "description":{
           "shape":"QuickResponseDescription",
@@ -10269,6 +10472,68 @@
         "BEDROCK_KB_SQL"
       ]
     },
+    "RegisterAssistantReplicaKeyRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "replicaKmsKey"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "replicaKmsKey":{
+          "shape":"ReplicaKmsKey",
+          "documentation":"<p>The replica Region KMS key to register for the assistant.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "RegisterAssistantReplicaKeyResponse":{
+      "type":"structure",
+      "required":["assistant"],
+      "members":{
+        "assistant":{"shape":"AssistantData"}
+      }
+    },
+    "RegisterKnowledgeBaseReplicaKeyRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "replicaKmsKey"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "replicaKmsKey":{
+          "shape":"ReplicaKmsKey",
+          "documentation":"<p>The replica Region KMS key to register for the knowledge base.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "RegisterKnowledgeBaseReplicaKeyResponse":{
+      "type":"structure",
+      "required":["knowledgeBase"],
+      "members":{
+        "knowledgeBase":{"shape":"KnowledgeBaseData"}
+      }
+    },
     "Relevance":{
       "type":"string",
       "enum":[
@@ -10391,6 +10656,23 @@
         }
       },
       "documentation":"<p>Information about how to render the content.</p>"
+    },
+    "ReplicaKmsKey":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key in the replica Region.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the KMS key used to encrypt data in a replica Amazon Web Services Region, including its Amazon Resource Name (ARN).</p>"
+    },
+    "ReplicaKmsKeyList":{
+      "type":"list",
+      "member":{"shape":"ReplicaKmsKey"},
+      "max":5,
+      "min":1
     },
     "RequestTimeoutException":{
       "type":"structure",
@@ -11114,6 +11396,10 @@
         "kmsKeyId":{
           "shape":"NonEmptyString",
           "documentation":"<p>The customer managed key used for encryption. For more information about setting up a customer managed key for Amazon Q in Connect, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>. For information about valid ID values, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id\">Key identifiers (KeyId)</a>.</p>"
+        },
+        "replicaKmsKeys":{
+          "shape":"ReplicaKmsKeyList",
+          "documentation":"<p>The list of KMS keys used to encrypt data for this resource's replicas in other Amazon Web Services Regions. Each entry corresponds to a Region where a replica is configured.</p>"
         }
       },
       "documentation":"<p>The configuration information for the customer managed key used for encryption.</p>"
@@ -12355,7 +12641,11 @@
     "UnprocessableContentException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{"shape":"String"},
+        "reason":{
+          "shape":"UnprocessableContentReason",
+          "documentation":"<p>The reason the content could not be processed.</p>"
+        }
       },
       "documentation":"<p>The server has a failure of processing the message</p>",
       "error":{
@@ -12363,6 +12653,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "UnprocessableContentReason":{
+      "type":"string",
+      "enum":[
+        "ORCHESTRATION_ERROR",
+        "AI_INFERENCE_MODEL_UNAVAILABLE"
+      ]
     },
     "UntagResourceRequest":{
       "type":"structure",

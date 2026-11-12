@@ -116,3 +116,7 @@
   *   enhanced
   
   
+``--help`` (boolean)
+  
+  Display help for the command/subcommand.
+  

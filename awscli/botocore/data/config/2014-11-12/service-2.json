@@ -2862,7 +2862,7 @@
         },
         "provider":{
           "shape":"Provider",
-          "documentation":"<p>For service-linked configuration recorders that record resources from a third-party cloud service provider, indicates the cloud service provider. Currently, <code>AZURE</code> is supported.</p>"
+          "documentation":"<p>For service-linked configuration recorders that record resources from a third-party cloud service provider, indicates the cloud service provider. Valid values:</p> <ul> <li> <p> <code>AZURE</code> – The recorder records resources from Microsoft Azure</p> </li> <li> <p> <code>GCP</code> – The recorder records resources from Google Cloud</p> </li> </ul>"
         }
       },
       "documentation":"<p>A summary of a configuration recorder, including the <code>arn</code>, <code>name</code>, <code>servicePrincipal</code>, <code>recordingScope</code>, and <code>provider</code>.</p>"
@@ -3264,6 +3264,10 @@
         "azure":{
           "shape":"AzureConnectorConfiguration",
           "documentation":"<p>The configuration for an Azure connector.</p>"
+        },
+        "gcp":{
+          "shape":"GcpConnectorConfiguration",
+          "documentation":"<p>The configuration for a Google Cloud connector.</p>"
         }
       },
       "documentation":"<p>The provider-specific configuration for connecting to the third-party cloud service provider. You must specify exactly one provider configuration.</p>"
@@ -3277,7 +3281,7 @@
         },
         "filterValues":{
           "shape":"FilterValueList",
-          "documentation":"<p>The value of the filter. For <code>provider</code>, valid values include: <code>AZURE</code>.</p>"
+          "documentation":"<p>The value of the filter. For <code>provider</code>, valid values include:</p> <ul> <li> <p> <code>AZURE</code> – The connector is for Microsoft Azure</p> </li> <li> <p> <code>GCP</code> – The connector is for Google Cloud</p> </li> </ul>"
         }
       },
       "documentation":"<p>Filters connectors based on the connector provider.</p>"
@@ -3309,7 +3313,6 @@
         "arn",
         "name",
         "provider",
-        "tenantIdentifier",
         "createdTime"
       ],
       "members":{
@@ -3323,11 +3326,19 @@
         },
         "provider":{
           "shape":"Provider",
-          "documentation":"<p>The third-party cloud service provider. Currently, <code>AZURE</code> is supported.</p>"
+          "documentation":"<p>The third-party cloud service provider. Valid values:</p> <ul> <li> <p> <code>AZURE</code> – The connector is for Microsoft Azure</p> </li> <li> <p> <code>GCP</code> – The connector is for Google Cloud</p> </li> </ul>"
         },
         "tenantIdentifier":{
           "shape":"AzureTenantIdentifier",
-          "documentation":"<p>The Azure tenant identifier for the connector.</p>"
+          "documentation":"<p>The Azure tenant identifier for the connector. Returned only for Azure connectors.</p>"
+        },
+        "gcpOrganizationId":{
+          "shape":"GcpOrganizationId",
+          "documentation":"<p>The Google Cloud organization ID for the connector. Returned only for Google Cloud connectors.</p>"
+        },
+        "serviceAccountEmail":{
+          "shape":"GcpServiceAccountEmail",
+          "documentation":"<p>The email address of the Google Cloud service account for the connector. Returned only for Google Cloud connectors.</p>"
         },
         "createdTime":{
           "shape":"Date",
@@ -4857,6 +4868,45 @@
       "member":{"shape":"String"},
       "max":10,
       "min":0
+    },
+    "GcpConnectorConfiguration":{
+      "type":"structure",
+      "required":[
+        "serviceAccountEmail",
+        "workloadIdentityPoolProvider"
+      ],
+      "members":{
+        "gcpOrganizationId":{
+          "shape":"GcpOrganizationId",
+          "documentation":"<p>The ID of the Google Cloud organization that contains the connector's management project, which is the project of the service account in <code>serviceAccountEmail</code>.</p> <p>Required if the management project belongs to an organization. A connector needs an organization ID to record an entire organization or more than one project. Omit it only if the management project doesn't belong to an organization. In that case, the connector can record only the management project.</p>"
+        },
+        "serviceAccountEmail":{
+          "shape":"GcpServiceAccountEmail",
+          "documentation":"<p>The email address of the Google Cloud service account that Config uses to access your Google Cloud resources. The format is <code>SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com</code>.</p> <p>The project that contains this service account is the connector's management project. If the connector has no <code>gcpOrganizationId</code>, it can record only the management project.</p>"
+        },
+        "workloadIdentityPoolProvider":{
+          "shape":"GcpWorkloadIdentityPoolProvider",
+          "documentation":"<p>The full resource name of the Google Cloud workload identity pool provider that trusts Config. The format is <code>projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for connecting to Google Cloud.</p>"
+    },
+    "GcpOrganizationId":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
+    "GcpServiceAccountEmail":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-z][a-z0-9\\-]*@[a-z][a-z0-9\\-]*[a-z0-9]\\.iam\\.gserviceaccount\\.com$"
+    },
+    "GcpWorkloadIdentityPoolProvider":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^projects/[0-9]+/locations/global/workloadIdentityPools/[^/]+/providers/[^/]+$"
     },
     "GetAggregateComplianceDetailsByConfigRuleRequest":{
       "type":"structure",
@@ -6782,7 +6832,10 @@
     },
     "Provider":{
       "type":"string",
-      "enum":["AZURE"]
+      "enum":[
+        "AZURE",
+        "GCP"
+      ]
     },
     "PutAggregationAuthorizationRequest":{
       "type":"structure",
@@ -8661,11 +8714,11 @@
       "members":{
         "scopeType":{
           "shape":"ScopeType",
-          "documentation":"<p>The type of scope for the third-party cloud resources. Valid values include <code>tenant</code> and <code>subscription</code>.</p>"
+          "documentation":"<p>The type of scope for the third-party cloud resources. Valid values include:</p> <ul> <li> <p> <code>tenant</code> – Applies to all resources in an Azure tenant</p> </li> <li> <p> <code>subscription</code> – Applies to resources in the Azure subscriptions you specify</p> </li> <li> <p> <code>organization</code> – Applies to all resources in a Google Cloud organization</p> </li> <li> <p> <code>project</code> – Applies to resources in the Google Cloud projects you specify</p> </li> </ul>"
         },
         "scopeValues":{
           "shape":"ScopeValues",
-          "documentation":"<p>The list of specific scope values for the third-party cloud resources. For example, a list of Azure subscriptions or management groups.</p>"
+          "documentation":"<p>The list of specific scope values for the third-party cloud resources. For example, a list of Azure subscription IDs, or a list of Google Cloud project IDs. Don't specify <code>scopeValues</code> when <code>scopeType</code> is <code>tenant</code> or <code>organization</code>.</p>"
         },
         "allRegions":{
           "shape":"Boolean",

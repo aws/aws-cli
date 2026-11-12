@@ -1,12 +1,12 @@
 **To modify the health check configuration for a target group**
 
-The following ``modify-target-group`` example changes the configuration of the health checks used to evaluate the health of the targets for the specified target group. Note that due to the way the CLI parses commas, you must surround the range for the ``--matcher`` option with single quotes instead of double quotes. ::
+The following ``modify-target-group`` example changes the configuration of the health checks used to evaluate the health of the targets for the specified target group. Because the range for the ``--matcher`` option contains a comma, put the range in double quotes and the whole value in single quotes. ::
 
     aws elbv2 modify-target-group \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-https-targets/2453ed029918f21f \
         --health-check-protocol HTTPS \
         --health-check-port 443 \
-        --matcher HttpCode='200,299'
+        --matcher 'HttpCode="200,299"'
 
 Output::
 

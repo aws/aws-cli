@@ -3,7 +3,7 @@
 The following ``describe-notification-configurations`` example describes the notification configurations for the specified Auto Scaling group. ::
 
     aws autoscaling describe-notification-configurations \
-        --auto-scaling-group-name my-asg
+        --auto-scaling-group-names my-asg
 
 Output::
 
@@ -29,7 +29,7 @@ For more information, see `Getting Amazon SNS notifications when your Auto Scali
 The following ``describe-notification-configurations`` example uses the ``--max-items`` option to return a specific number of notification configurations. ::
 
     aws autoscaling describe-notification-configurations \
-        --auto-scaling-group-name my-auto-scaling-group \
+        --auto-scaling-group-names my-auto-scaling-group \
         --max-items 1
 
 Output::
@@ -52,7 +52,7 @@ Output::
 If the output includes a ``NextToken`` field, there are more notification configurations. To get the additional notification configurations, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows. ::
 
     aws autoscaling describe-notification-configurations \
-        --auto-scaling-group-name my-asg \
+        --auto-scaling-group-names my-asg \
         --starting-token Z3M3LMPEXAMPLE
 
 For more information, see `Getting Amazon SNS notifications when your Auto Scaling group scales <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ASGettingNotifications.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

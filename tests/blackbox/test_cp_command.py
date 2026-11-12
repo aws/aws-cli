@@ -438,6 +438,139 @@ class TestCPCommand:
             StorageClass="DEEP_ARCHIVE",
         )
 
+    async def test_upload_with_tags(self, aws_cli, tmp_path):
+        """cp --tags sends percent-encoded x-amz-tagging on PutObject."""
+        src = tmp_path / "foo.txt"
+        src.write_text("mycontent")
+        async with mock_server(on_headers_received=handle_expect_header) as (
+            server,
+            proxy,
+        ):
+            setup_responses(server, [put_object_response()])
+            stdout, stderr, rc = await run_cli(
+                aws_cli,
+                [
+                    "s3",
+                    "cp",
+                    str(src),
+                    "s3://bucket/key.txt",
+                    "--tags",
+                    "key1",
+                    "a=b&c",
+                    "--tags",
+                    "key 2",
+                    "value2",
+                ],
+                cli_env(proxy),
+            )
+
+        assert rc == 0, stderr.decode()
+        assert len(server.requests) == 1, format_requests(server)
+        assert_put_object(
+            server.requests[0],
+            Bucket="bucket",
+            Key="key.txt",
+            Tagging="key1=a%3Db%26c&key%202=value2",
+        )
+
+    async def test_multipart_upload_with_tags(self, aws_cli, tmp_path):
+        """cp --tags with a large file sends x-amz-tagging on CreateMultipartUpload."""
+        src = tmp_path / "foo.txt"
+        src.write_bytes(b"a" * 10 * (1024**2))
+        async with mock_server(on_headers_received=handle_expect_header) as (
+            server,
+            proxy,
+        ):
+            setup_responses(
+                server,
+                [
+                    create_mpu_response("foo"),
+                    upload_part_response("foo-1"),
+                    upload_part_response("foo-2"),
+                    complete_mpu_response(),
+                ],
+            )
+            stdout, stderr, rc = await run_cli(
+                aws_cli,
+                [
+                    "s3",
+                    "cp",
+                    str(src),
+                    "s3://bucket/key.txt",
+                    "--tags",
+                    "key1",
+                    "value1",
+                ],
+                cli_env(proxy),
+            )
+
+        assert rc == 0, stderr.decode()
+        assert len(server.requests) == 4, format_requests(server)
+        assert_create_multipart_upload(
+            server.requests[0],
+            Bucket="bucket",
+            Key="key.txt",
+            Tagging="key1=value1",
+        )
+
+    async def test_tags_rejected_for_s3_to_s3_copy(self, aws_cli, tmp_path):
+        """cp s3://... s3://... --tags is rejected before any request."""
+        async with mock_server(on_headers_received=handle_expect_header) as (
+            server,
+            proxy,
+        ):
+            setup_responses(server, [])
+            stdout, stderr, rc = await run_cli(
+                aws_cli,
+                [
+                    "s3",
+                    "cp",
+                    "s3://bucket/key1.txt",
+                    "s3://bucket/key2.txt",
+                    "--tags",
+                    "key1",
+                    "value1",
+                ],
+                cli_env(proxy),
+            )
+
+        assert rc == 252
+        assert len(server.requests) == 0, format_requests(server)
+        assert (
+            "Expected tags parameter to be used with one of following path "
+            "formats: <LocalPath> <S3Uri>. Instead, received <S3Uri> <S3Uri>."
+            in stderr.decode()
+        )
+
+    async def test_tags_rejected_for_download(self, aws_cli, tmp_path):
+        """cp s3://... localpath --tags is rejected before any request."""
+        async with mock_server(on_headers_received=handle_expect_header) as (
+            server,
+            proxy,
+        ):
+            setup_responses(server, [])
+            stdout, stderr, rc = await run_cli(
+                aws_cli,
+                [
+                    "s3",
+                    "cp",
+                    "s3://bucket/key.txt",
+                    str(tmp_path / "foo.txt"),
+                    "--tags",
+                    "key1",
+                    "value1",
+                ],
+                cli_env(proxy),
+            )
+
+        assert rc == 252
+        assert len(server.requests) == 0, format_requests(server)
+        assert (
+            "Expected tags parameter to be used with one of following path "
+            "formats: <LocalPath> <S3Uri>. Instead, received <S3Uri> <LocalPath>."
+            in stderr.decode()
+        )
+
     async def test_operations_used_in_download_file(self, aws_cli, tmp_path):
         """cp s3://bucket/key.txt localdir uses HeadObject then GetObject."""
         async with mock_server(on_headers_received=handle_expect_header) as (

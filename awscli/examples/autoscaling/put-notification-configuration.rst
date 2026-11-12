@@ -5,7 +5,7 @@ The following ``put-notification-configuration`` example adds the specified noti
     aws autoscaling put-notification-configuration \
         --auto-scaling-group-name my-asg \
         --topic-arn arn:aws:sns:us-west-2:123456789012:my-sns-topic \
-        --notification-type autoscaling:TEST_NOTIFICATION
+        --notification-types autoscaling:TEST_NOTIFICATION
 
 This command produces no output.
 

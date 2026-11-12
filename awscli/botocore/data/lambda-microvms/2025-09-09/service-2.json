@@ -502,7 +502,10 @@
     },
     "Architecture":{
       "type":"string",
-      "enum":["ARM_64"]
+      "enum":[
+        "ARM_64",
+        "X86_64"
+      ]
     },
     "AuthTokenKey":{
       "type":"string",
@@ -541,7 +544,10 @@
     },
     "Chipset":{
       "type":"string",
-      "enum":["GRAVITON"]
+      "enum":[
+        "GRAVITON",
+        "INTEL"
+      ]
     },
     "CloudWatchLogging":{
       "type":"structure",
@@ -598,7 +604,8 @@
         "httpStatusCode":409,
         "senderFault":true
       },
-      "exception":true
+      "exception":true,
+      "retryable":{"throttling":false}
     },
     "CpuConfiguration":{
       "type":"structure",
@@ -685,7 +692,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"CreateMicrovmImageRequestEgressNetworkConnectorsList",
-          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at image build time.</p>"
         },
         "cpuConfigurations":{
           "shape":"CpuConfigurationList",
@@ -793,7 +800,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"CreateMicrovmImageResponseEgressNetworkConnectorsList",
-          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at image build time.</p>"
         },
         "cpuConfigurations":{
           "shape":"CpuConfigurationList",
@@ -943,7 +950,7 @@
       "type":"map",
       "key":{"shape":"EnvironmentVariableKey"},
       "value":{"shape":"EnvironmentVariableValue"},
-      "max":50,
+      "max":100,
       "min":0
     },
     "EnvironmentVariableValue":{
@@ -1150,7 +1157,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"GetMicrovmImageVersionOutputEgressNetworkConnectorsList",
-          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at image build time.</p>"
         },
         "cpuConfigurations":{
           "shape":"CpuConfigurationList",
@@ -1283,7 +1290,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"NetworkConnectorList",
-          "documentation":"<p>The list of egress network connectors configured for the MicroVM.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
         }
       }
     },
@@ -1797,6 +1804,10 @@
           "shape":"ManagedMicrovmImageVersionStatus",
           "documentation":"<p>The lifecycle status of the managed MicroVM image version. Valid values: AVAILABLE (the version is available for use) or DEPRECATED (the version is deprecated; do not use it for new MicroVM images).</p>"
         },
+        "supportedCpuConfigurations":{
+          "shape":"CpuConfigurationList",
+          "documentation":"<p>CPU configurations supported by this managed base image version.</p>"
+        },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the version was created.</p>"
@@ -1817,7 +1828,8 @@
       "documentation":"<p>The lifecycle status of a managed MicroVM image version.</p>",
       "enum":[
         "AVAILABLE",
-        "DEPRECATED"
+        "DEPRECATED",
+        "RECALLED"
       ]
     },
     "MicrovmHooks":{
@@ -2104,7 +2116,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"MicrovmImageVersionSummaryEgressNetworkConnectorsList",
-          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at image build time.</p>"
         },
         "cpuConfigurations":{
           "shape":"CpuConfigurationList",
@@ -2379,7 +2391,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"NetworkConnectorList",
-          "documentation":"<p>The list of egress network connectors to configure for the MicroVM.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
         },
         "imageIdentifier":{
           "shape":"MicrovmImageIdentifier",
@@ -2489,7 +2501,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"NetworkConnectorList",
-          "documentation":"<p>The list of egress network connectors configured for the MicroVM.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
         }
       }
     },
@@ -2750,7 +2762,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"UpdateMicrovmImageRequestEgressNetworkConnectorsList",
-          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at image build time.</p>"
         },
         "cpuConfigurations":{
           "shape":"CpuConfigurationList",
@@ -2857,7 +2869,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"UpdateMicrovmImageResponseEgressNetworkConnectorsList",
-          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at image build time.</p>"
         },
         "cpuConfigurations":{
           "shape":"CpuConfigurationList",
@@ -2957,7 +2969,7 @@
         },
         "egressNetworkConnectors":{
           "shape":"UpdateMicrovmImageVersionResponseEgressNetworkConnectorsList",
-          "documentation":"<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
+          "documentation":"<p>The list of egress network connectors available to the MicroVM at image build time.</p>"
         },
         "cpuConfigurations":{
           "shape":"CpuConfigurationList",

@@ -3,7 +3,7 @@
 The following ``create-instance-event-window`` example creates an event window with a time range. You can't also specify the ``cron-expression`` parameter. ::
 
     aws ec2 create-instance-event-window \
-        --time-range StartWeekDay=monday,StartHour=2,EndWeekDay=wednesday,EndHour=8 \
+        --time-ranges StartWeekDay=monday,StartHour=2,EndWeekDay=wednesday,EndHour=8 \
         --tag-specifications "ResourceType=instance-event-window,Tags=[{Key=K1,Value=V1}]" \
         --name myEventWindowName
 

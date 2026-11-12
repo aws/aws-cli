@@ -433,7 +433,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates a new user-defined designation with a Cedar permit policy. The designation defines a named role that can be assigned to project members.</p>"
+      "documentation":"<p>Creates a new user-defined designation with a Cedar permit policy. The designation defines a named role that can be assigned to project members through <code>CreateProjectMembership</code> or granted through <code>AddPolicyGrant</code>.</p>"
     },
     "CreateDomain":{
       "name":"CreateDomain",
@@ -1033,7 +1033,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Deletes a designation. Managed designations cannot be deleted. This operation is idempotent.</p>",
+      "documentation":"<p>Deletes a user-created designation. Managed designations cannot be deleted. The call fails if the designation has <code>deletionProtection</code> enabled or if any project member still holds it. This operation is idempotent.</p>",
       "idempotent":true
     },
     "DeleteDomain":{
@@ -1699,7 +1699,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets the details of a designation, including its Cedar policy.</p>",
+      "documentation":"<p>Gets the details of a designation, including its Cedar permit policy. Returns the full designation record for both system-managed and user-created designations.</p>",
       "readonly":true
     },
     "GetDomain":{
@@ -2504,7 +2504,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Lists the designations in a domain. Returns system-managed designations first, followed by user-created designations sorted alphabetically by name.</p>",
+      "documentation":"<p>Lists the designations in a domain. The response returns system-managed designations first, followed by user-created designations in alphabetical order by name. Results are paginated. Use <code>nextToken</code> to retrieve additional pages of results.</p>",
       "readonly":true
     },
     "ListDomainUnitsForParent":{
@@ -3612,7 +3612,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Updates an existing designation. Managed designations cannot be modified.</p>"
+      "documentation":"<p>Updates an existing user-created designation. Managed designations cannot be modified. Omit a field to leave its current value unchanged.</p>"
     },
     "UpdateDomain":{
       "name":"UpdateDomain",
@@ -5478,6 +5478,10 @@
         "basicAuthenticationCredentials":{
           "shape":"BasicAuthenticationCredentials",
           "documentation":"<p>The basic authentication credentials of a connection.</p>"
+        },
+        "oAuth2Properties":{
+          "shape":"OAuth2PropertiesPatch",
+          "documentation":"<p>The OAuth2 properties, such as the client application, grant type, and token URL, that you want to update for a connection. Only the properties that you specify are updated; the connection keeps its existing values for the properties that you omit.</p>"
         }
       },
       "documentation":"<p>The authentication configuration patch of a connection. </p>"
@@ -6436,7 +6440,9 @@
         "GIT",
         "ICEBERGRESTCATALOG",
         "SNOWFLAKEICEBERGRESTCATALOG",
-        "DATABRICKSICEBERGRESTCATALOG"
+        "DATABRICKSICEBERGRESTCATALOG",
+        "WORKDAYICEBERGRESTCATALOG",
+        "WORKDAYLDQ"
       ]
     },
     "ConnectivityProperties":{
@@ -7666,11 +7672,11 @@
         },
         "policy":{
           "shape":"CedarDesignationPolicy",
-          "documentation":"<p>The Cedar permit policy that defines what actions holders of this designation are allowed to perform.</p>"
+          "documentation":"<p>The Cedar permit policy that defines the actions holders of this designation are allowed to perform.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
-          "documentation":"<p>Whether deletion protection is enabled for this designation. Defaults to true when omitted.</p>"
+          "documentation":"<p>Specifies whether deletion protection is enabled for this designation. Defaults to <code>true</code> when omitted. When enabled, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>"
         }
       }
     },
@@ -7704,15 +7710,15 @@
         },
         "designationType":{
           "shape":"DesignationType",
-          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+          "documentation":"<p>The classification of this designation. Valid values:</p> <ul> <li> <p> <code>MANAGED</code> — System-defined designations that cannot be modified or deleted.</p> </li> <li> <p> <code>USER_CREATED</code> — Designations created through <code>CreateDesignation</code>.</p> </li> </ul>"
         },
         "policy":{
           "shape":"CedarDesignationPolicy",
-          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+          "documentation":"<p>The Cedar permit policy that governs the actions holders of this designation are allowed to perform.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
-          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+          "documentation":"<p>Specifies whether deletion protection is enabled for this designation. When <code>true</code>, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>"
         },
         "createdBy":{
           "shape":"CreatedBy",
@@ -11561,11 +11567,11 @@
         },
         "designationType":{
           "shape":"DesignationType",
-          "documentation":"<p>The classification of this designation.</p>"
+          "documentation":"<p>The classification of this designation. Valid values:</p> <ul> <li> <p> <code>MANAGED</code> — System-defined designation.</p> </li> <li> <p> <code>USER_CREATED</code> — User-created designation.</p> </li> </ul>"
         },
         "deletionProtection":{
           "shape":"Boolean",
-          "documentation":"<p>Whether deletion protection is enabled for this designation.</p>"
+          "documentation":"<p>Specifies whether deletion protection is enabled for this designation. When <code>true</code>, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>"
         },
         "createdBy":{
           "shape":"CreatedBy",
@@ -11580,7 +11586,7 @@
           "documentation":"<p>The date and time when the designation was last updated.</p>"
         }
       },
-      "documentation":"<p>Summary representation of a designation returned by list operations.</p>"
+      "documentation":"<p>The summary representation of a designation returned by <code>ListDesignations</code>. The summary omits the Cedar permit policy. Call <code>GetDesignation</code> to retrieve the full designation record including the policy.</p>"
     },
     "DesignationType":{
       "type":"string",
@@ -13878,15 +13884,15 @@
         },
         "designationType":{
           "shape":"DesignationType",
-          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+          "documentation":"<p>The classification of this designation. Valid values:</p> <ul> <li> <p> <code>MANAGED</code> — System-defined designations that cannot be modified or deleted.</p> </li> <li> <p> <code>USER_CREATED</code> — Designations created through <code>CreateDesignation</code>.</p> </li> </ul>"
         },
         "policy":{
           "shape":"CedarDesignationPolicy",
-          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+          "documentation":"<p>The Cedar permit policy that governs the actions holders of this designation are allowed to perform.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
-          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+          "documentation":"<p>Specifies whether deletion protection is enabled for this designation. When <code>true</code>, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>"
         },
         "createdBy":{
           "shape":"CreatedBy",
@@ -16976,7 +16982,9 @@
         "VERTICA",
         "ICEBERGRESTCATALOG",
         "SNOWFLAKEICEBERGRESTCATALOG",
-        "DATABRICKSICEBERGRESTCATALOG"
+        "DATABRICKSICEBERGRESTCATALOG",
+        "WORKDAYICEBERGRESTCATALOG",
+        "WORKDAYLDQ"
       ]
     },
     "GlueOAuth2Credentials":{
@@ -21472,6 +21480,34 @@
         }
       },
       "documentation":"<p>The OAuth2 properties.</p>"
+    },
+    "OAuth2PropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "oAuth2GrantType":{
+          "shape":"OAuth2GrantType",
+          "documentation":"<p>The OAuth2 grant type of the OAuth2 properties to update.</p>"
+        },
+        "oAuth2ClientApplication":{
+          "shape":"OAuth2ClientApplication",
+          "documentation":"<p>The OAuth2 client application of the OAuth2 properties to update.</p>"
+        },
+        "tokenUrl":{
+          "shape":"OAuth2PropertiesPatchTokenUrlString",
+          "documentation":"<p>The OAuth2 token URL of the OAuth2 properties to update.</p>"
+        },
+        "tokenUrlParametersMap":{
+          "shape":"TokenUrlParametersMap",
+          "documentation":"<p>The OAuth2 token URL parameter map of the OAuth2 properties to update, for example the scope. If you specify an empty map, the existing parameters are kept.</p>"
+        }
+      },
+      "documentation":"<p>Contains the OAuth2 properties, such as the client application, grant type, and token URL, that you want to update for a connection.</p>"
+    },
+    "OAuth2PropertiesPatchTokenUrlString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
     },
     "OAuth2PropertiesTokenUrlString":{
       "type":"string",
@@ -27541,11 +27577,11 @@
         },
         "policy":{
           "shape":"CedarDesignationPolicy",
-          "documentation":"<p>The updated Cedar permit policy.</p>"
+          "documentation":"<p>The updated Cedar permit policy. Omit to keep the existing policy.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
-          "documentation":"<p>Whether deletion protection is enabled for this designation. Omit to keep the existing value.</p>"
+          "documentation":"<p>Specifies whether deletion protection is enabled for this designation. Omit to keep the existing value.</p>"
         }
       }
     },
@@ -27579,15 +27615,15 @@
         },
         "designationType":{
           "shape":"DesignationType",
-          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+          "documentation":"<p>The classification of this designation. Valid values:</p> <ul> <li> <p> <code>MANAGED</code> — System-defined designations that cannot be modified or deleted.</p> </li> <li> <p> <code>USER_CREATED</code> — Designations created through <code>CreateDesignation</code>.</p> </li> </ul>"
         },
         "policy":{
           "shape":"CedarDesignationPolicy",
-          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+          "documentation":"<p>The Cedar permit policy that governs the actions holders of this designation are allowed to perform.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
-          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+          "documentation":"<p>Specifies whether deletion protection is enabled for this designation. When <code>true</code>, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>"
         },
         "createdBy":{
           "shape":"CreatedBy",

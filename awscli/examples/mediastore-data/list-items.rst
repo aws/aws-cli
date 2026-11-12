@@ -3,7 +3,7 @@
 The following ``list-items`` example displays a list of items (objects and folders) stored in the specified container. ::
 
     aws mediastore-data list-items \
-        --endpoint https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com
+        --endpoint-url https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com
 
 Output::
 
@@ -29,7 +29,7 @@ Output::
 The following ``list-items`` example displays a list of items (objects and folders) stored in the specified folder. ::
 
     aws mediastore-data list-items \
-        --endpoint https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
+        --endpoint-url https://aaabbbcccdddee.data.mediastore.us-west-2.amazonaws.com \
         --path events/baseball
 
 Output::

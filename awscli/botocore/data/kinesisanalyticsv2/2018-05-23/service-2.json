@@ -174,6 +174,25 @@
       ],
       "documentation":"<p>Creates a snapshot of the application's state data.</p>"
     },
+    "CreateSnapshot":{
+      "name":"CreateSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSnapshotRequest"},
+      "output":{"shape":"CreateSnapshotResponse"},
+      "errors":[
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InvalidApplicationConfigurationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Creates an enhanced snapshot of the state data of a running Managed Service for Apache Flink application. The application must be in the <code>RUNNING</code> status, use Apache Flink version 1.20 or later, and use the <code>ENHANCED_SNAPSHOTS</code> snapshot mode.</p> <p>This operation is asynchronous. The response returns the snapshot ARN with the <code>CREATING</code> status. To check the status of the snapshot, use <code>DescribeSnapshot</code>. To track the progress of the operation, use <code>DescribeSnapshotOperation</code>.</p> <p>An application can have only one <code>CreateSnapshot</code> operation in progress at a time. For information about limits, see <a href=\"https://docs.aws.amazon.com/managed-flink/latest/java/limits.html\">Managed Service for Apache Flink Quotas</a>. For more information about snapshots, see <a href=\"https://docs.aws.amazon.com/managed-flink/latest/java/how-snapshots.html\">Enhanced Snapshots</a>.</p>"
+    },
     "DeleteApplication":{
       "name":"DeleteApplication",
       "http":{
@@ -296,6 +315,23 @@
       ],
       "documentation":"<p>Removes a VPC configuration from a Managed Service for Apache Flink application.</p>"
     },
+    "DeleteSnapshot":{
+      "name":"DeleteSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSnapshotRequest"},
+      "output":{"shape":"DeleteSnapshotResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Deletes an enhanced snapshot. Snapshots are not scoped to an application, so you can delete a snapshot independently of the application that it was created from.</p> <p>This operation is asynchronous. The response returns the snapshot ARN with the <code>DELETING</code> status. To track the progress of the operation, use <code>DescribeSnapshotOperation</code>.</p> <p>You can delete a snapshot in the <code>READY</code> or <code>FAILED</code> status. If a snapshot operation, such as an export, uses the snapshot, Managed Service for Apache Flink waits for that operation to finish before it deletes the snapshot. For a snapshot in any other status, <code>ResourceInUseException</code> is returned.</p>"
+    },
     "DescribeApplication":{
       "name":"DescribeApplication",
       "http":{
@@ -356,6 +392,36 @@
       ],
       "documentation":"<p>Provides a detailed description of a specified version of the application. To see a list of all the versions of an application, invoke the <a>ListApplicationVersions</a> operation.</p> <note> <p>This operation is supported only for Managed Service for Apache Flink.</p> </note>"
     },
+    "DescribeSnapshot":{
+      "name":"DescribeSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSnapshotRequest"},
+      "output":{"shape":"DescribeSnapshotResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Returns information about an enhanced snapshot. To see a list of the snapshots in your account, use <code>ListSnapshots</code>.</p>"
+    },
+    "DescribeSnapshotOperation":{
+      "name":"DescribeSnapshotOperation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSnapshotOperationRequest"},
+      "output":{"shape":"DescribeSnapshotOperationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Provides a detailed description of a specified operation that was performed on an enhanced snapshot. To see a list of the operations of a snapshot, use <code>ListSnapshotOperations</code>.</p> <p>Snapshot operations are available for 90 days after they are created.</p>"
+    },
     "DiscoverInputSchema":{
       "name":"DiscoverInputSchema",
       "http":{
@@ -373,6 +439,42 @@
         {"shape":"UnsupportedOperationException"}
       ],
       "documentation":"<p>Infers a schema for a SQL-based Kinesis Data Analytics application by evaluating sample records on the specified streaming source (Kinesis data stream or Kinesis Data Firehose delivery stream) or Amazon S3 object. In the response, the operation returns the inferred schema and also the sample records that the operation used to infer the schema.</p> <p> You can use the inferred schema when configuring a streaming source for your application. When you create an application using the Kinesis Data Analytics console, the console uses this operation to infer a schema and show it in the console user interface. </p>"
+    },
+    "ExportSnapshot":{
+      "name":"ExportSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExportSnapshotRequest"},
+      "output":{"shape":"ExportSnapshotResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Exports the data of an enhanced snapshot to an Amazon S3 location. Managed Service for Apache Flink assumes the IAM role that you specify in <code>ExportDestinationConfiguration</code> to write the snapshot data. The snapshot must be in the <code>READY</code> status.</p> <p>This operation is asynchronous. To track the progress of the export, use <code>DescribeSnapshotOperation</code>.</p> <p>A snapshot can have only one export in progress at a time. If an export of the snapshot is already in progress, <code>LimitExceededException</code> is returned.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/managed-flink/latest/java/snapshots-import-export.html\">Import and export</a>.</p>"
+    },
+    "ImportSnapshot":{
+      "name":"ImportSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportSnapshotRequest"},
+      "output":{"shape":"ImportSnapshotResponse"},
+      "errors":[
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Imports an Apache Flink savepoint from an Amazon S3 location as an enhanced snapshot. Managed Service for Apache Flink assumes the IAM role that you specify in <code>ImportSourceConfiguration</code> to read the savepoint data.</p> <p>This operation is asynchronous. The response returns the snapshot ARN with the <code>CREATING</code> status. To track the progress of the import, use <code>DescribeSnapshotOperation</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/managed-flink/latest/java/snapshots-import-export.html\">Import and export</a>.</p>"
     },
     "ListApplicationOperations":{
       "name":"ListApplicationOperations",
@@ -431,6 +533,35 @@
       ],
       "documentation":"<p>Returns a list of Managed Service for Apache Flink applications in your account. For each application, the response includes the application name, Amazon Resource Name (ARN), and status. </p> <p>If you want detailed information about a specific application, use <a>DescribeApplication</a>.</p>"
     },
+    "ListSnapshotOperations":{
+      "name":"ListSnapshotOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSnapshotOperationsRequest"},
+      "output":{"shape":"ListSnapshotOperationsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Lists the operations that were performed on the specified enhanced snapshot, such as <code>CreateSnapshot</code>, <code>ImportSnapshot</code>, and <code>ExportSnapshot</code>. The response includes a summary of each operation.</p> <p>You can specify only one of the <code>SnapshotOperation</code> or <code>SnapshotOperationStatus</code> filters in a request. If you specify both, <code>InvalidArgumentException</code> is returned.</p> <p>To get the complete description of a specific operation, use <code>DescribeSnapshotOperation</code>. Snapshot operations are available for 90 days after they are created.</p>"
+    },
+    "ListSnapshots":{
+      "name":"ListSnapshots",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSnapshotsRequest"},
+      "output":{"shape":"ListSnapshotsResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Lists the enhanced snapshots in your account. Snapshots are not scoped to an application. To list the snapshots that were created from a specific application, use the <code>SourceApplicationName</code> parameter.</p> <p>You can specify only one of the following filters in a request: <code>SourceApplicationName</code>, <code>SnapshotInitiator</code>, <code>SnapshotInitiatorOperation</code>, or <code>SnapshotStatus</code>. If you specify more than one filter, <code>InvalidArgumentException</code> is returned.</p> <p>The results are sorted in descending order of snapshot creation timestamp. To get detailed information about a specific snapshot, use <code>DescribeSnapshot</code>.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -477,7 +608,8 @@
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidArgumentException"},
         {"shape":"InvalidApplicationConfigurationException"},
-        {"shape":"InvalidRequestException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"UnsupportedOperationException"}
       ],
       "documentation":"<p>Starts the specified Managed Service for Apache Flink application. After creating an application, you must exclusively call this operation to start your application.</p>"
     },
@@ -549,7 +681,8 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidApplicationConfigurationException"},
-        {"shape":"LimitExceededException"}
+        {"shape":"LimitExceededException"},
+        {"shape":"UnsupportedOperationException"}
       ],
       "documentation":"<p>Updates an existing Managed Service for Apache Flink application. Using this operation, you can update application code, input configuration, and output configuration. </p> <p>Managed Service for Apache Flink updates the <code>ApplicationVersionId</code> each time you update your application. </p>"
     },
@@ -1193,6 +1326,14 @@
       "min":1,
       "pattern":"[a-zA-Z0-9_.-]+"
     },
+    "ApplicationOperationDescription":{
+      "type":"structure",
+      "members":{
+        "ApplicationOperationId":{"shape":"OperationId"},
+        "ApplicationName":{"shape":"ApplicationName"}
+      },
+      "documentation":"<p>Describes the application operation that initiated a snapshot operation. To get information about the application operation, use <code>DescribeApplicationOperation</code>.</p>"
+    },
     "ApplicationOperationInfo":{
       "type":"structure",
       "members":{
@@ -1250,6 +1391,10 @@
         "SnapshotName":{
           "shape":"SnapshotName",
           "documentation":"<p>The identifier of an existing snapshot of application state to use to restart an application. The application uses this value if <code>RESTORE_FROM_CUSTOM_SNAPSHOT</code> is specified for the <code>ApplicationRestoreType</code>.</p>"
+        },
+        "SnapshotArn":{
+          "shape":"SnapshotArn",
+          "documentation":"<p>The identifier of an existing enhanced snapshot of application state to use to restart an application. The application uses this value if <code>RESTORE_FROM_CUSTOM_SNAPSHOT</code> is specified for the <code>ApplicationRestoreType</code> and <code>SnapshotMode</code> is <code>ENHANCED_SNAPSHOTS</code>.</p>"
         }
       },
       "documentation":"<p>Specifies the method and snapshot to use when restarting an application using previously saved application state.</p>"
@@ -1269,6 +1414,10 @@
         "SnapshotsEnabled":{
           "shape":"BooleanObject",
           "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
+        },
+        "SnapshotMode":{
+          "shape":"SnapshotMode",
+          "documentation":"<p>Specifies the snapshot mode for a Managed Service for Apache Flink application. To use enhanced snapshots, specify <code>ENHANCED_SNAPSHOTS</code>. If you don't specify this parameter, the application uses <code>APPLICATION_SNAPSHOTS_LEGACY</code>. For more information, see <a href=\"https://docs.aws.amazon.com/managed-flink/latest/java/how-snapshots.html\">Enhanced Snapshots</a>.</p> <p>To use <code>ENHANCED_SNAPSHOTS</code>, the application must use Apache Flink version 1.20 or later.</p>"
         }
       },
       "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
@@ -1280,6 +1429,10 @@
         "SnapshotsEnabled":{
           "shape":"BooleanObject",
           "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
+        },
+        "SnapshotMode":{
+          "shape":"SnapshotMode",
+          "documentation":"<p>Describes the snapshot mode of a Managed Service for Apache Flink application.</p>"
         }
       },
       "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
@@ -1291,6 +1444,10 @@
         "SnapshotsEnabledUpdate":{
           "shape":"BooleanObject",
           "documentation":"<p>Describes updates to whether snapshots are enabled for an application.</p>"
+        },
+        "SnapshotModeUpdate":{
+          "shape":"SnapshotMode",
+          "documentation":"<p>Describes updates to the snapshot mode of a Managed Service for Apache Flink application. You can update the snapshot mode from <code>APPLICATION_SNAPSHOTS_LEGACY</code> to <code>ENHANCED_SNAPSHOTS</code>. You can't use <code>UpdateApplication</code> to change the snapshot mode back to <code>APPLICATION_SNAPSHOTS_LEGACY</code>.</p> <p>To return to <code>APPLICATION_SNAPSHOTS_LEGACY</code>, use <code>RollbackApplication</code>. After you update an application that uses <code>ENHANCED_SNAPSHOTS</code>, you can't roll it back to <code>APPLICATION_SNAPSHOTS_LEGACY</code>.</p> <p>To use <code>ENHANCED_SNAPSHOTS</code>, the application must use Apache Flink version 1.20 or later.</p>"
         }
       },
       "documentation":"<p>Describes updates to whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
@@ -1722,7 +1879,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>Exception thrown as a result of concurrent modifications to an application. This error can be the result of attempting to modify an application without using the current application ID.</p>",
+      "documentation":"<p>Exception thrown as a result of concurrent modifications to an application or snapshot. This error can be the result of attempting to modify an application without using the current application ID.</p>",
       "exception":true
     },
     "ConditionalToken":{
@@ -1840,6 +1997,55 @@
     "CreateApplicationSnapshotResponse":{
       "type":"structure",
       "members":{}
+    },
+    "CreateSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationName",
+        "SnapshotName"
+      ],
+      "members":{
+        "ApplicationName":{"shape":"ApplicationName"},
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot. The name must be unique among the snapshots in your account and Region. You can't reuse the name of an existing snapshot, including a snapshot in the <code>FAILED</code> status, until you delete that snapshot. Names that begin with <code>SYSTEMSNAPSHOT</code> are reserved.</p>"
+        },
+        "SnapshotDescription":{
+          "shape":"SnapshotV2Description",
+          "documentation":"<p>A summary description of the snapshot.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of one or more tags to assign to the snapshot. A tag is a key-value pair that identifies a snapshot. For more information, see <a href=\"https://docs.aws.amazon.com/kinesisanalytics/latest/java/how-tagging.html\">Using Tagging</a>.</p>"
+        }
+      }
+    },
+    "CreateSnapshotResponse":{
+      "type":"structure",
+      "required":[
+        "SnapshotArn",
+        "SnapshotStatus",
+        "SnapshotOperationId",
+        "SnapshotOperationStatus"
+      ],
+      "members":{
+        "SnapshotArn":{
+          "shape":"SnapshotArn",
+          "documentation":"<p>The ARN of the enhanced snapshot.</p>"
+        },
+        "SnapshotStatus":{
+          "shape":"SnapshotStatus",
+          "documentation":"<p>The status of the snapshot. When Managed Service for Apache Flink accepts the request, the status is <code>CREATING</code>.</p>"
+        },
+        "SnapshotOperationId":{
+          "shape":"SnapshotOperationId",
+          "documentation":"<p>The ID of the snapshot operation. You can use this value with <code>DescribeSnapshotOperation</code> to track the progress of the operation.</p>"
+        },
+        "SnapshotOperationStatus":{
+          "shape":"SnapshotOperationStatus",
+          "documentation":"<p>The status of the snapshot operation.</p>"
+        }
+      }
     },
     "CustomArtifactConfiguration":{
       "type":"structure",
@@ -2128,6 +2334,50 @@
         }
       }
     },
+    "DeleteSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "SnapshotName",
+        "SnapshotCreationTimestamp"
+      ],
+      "members":{
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot to delete.</p>"
+        },
+        "SnapshotCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation timestamp of the enhanced snapshot to delete. Use the <code>DescribeSnapshot</code> operation to get this value.</p>"
+        }
+      }
+    },
+    "DeleteSnapshotResponse":{
+      "type":"structure",
+      "required":[
+        "SnapshotArn",
+        "SnapshotStatus",
+        "SnapshotOperationId",
+        "SnapshotOperationStatus"
+      ],
+      "members":{
+        "SnapshotArn":{
+          "shape":"SnapshotArn",
+          "documentation":"<p>The ARN of the enhanced snapshot.</p>"
+        },
+        "SnapshotStatus":{
+          "shape":"SnapshotStatus",
+          "documentation":"<p>The status of the snapshot. When Managed Service for Apache Flink accepts the request, the status is <code>DELETING</code>. If a snapshot operation, such as an export, uses the snapshot, the status stays <code>DELETING</code> until that operation finishes and Managed Service for Apache Flink deletes the snapshot.</p>"
+        },
+        "SnapshotOperationId":{
+          "shape":"SnapshotOperationId",
+          "documentation":"<p>The ID of the snapshot operation. You can use this value with <code>DescribeSnapshotOperation</code> to track the progress of the operation.</p>"
+        },
+        "SnapshotOperationStatus":{
+          "shape":"SnapshotOperationStatus",
+          "documentation":"<p>The status of the snapshot operation.</p>"
+        }
+      }
+    },
     "DeployAsApplicationConfiguration":{
       "type":"structure",
       "required":["S3ContentLocation"],
@@ -2253,6 +2503,53 @@
         "ApplicationVersionDetail":{"shape":"ApplicationDetail"}
       }
     },
+    "DescribeSnapshotOperationRequest":{
+      "type":"structure",
+      "required":[
+        "SnapshotName",
+        "SnapshotOperationId"
+      ],
+      "members":{
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot.</p>"
+        },
+        "SnapshotOperationId":{
+          "shape":"SnapshotOperationId",
+          "documentation":"<p>The ID of the snapshot operation. You can retrieve this value using <code>ListSnapshotOperations</code>.</p>"
+        }
+      }
+    },
+    "DescribeSnapshotOperationResponse":{
+      "type":"structure",
+      "required":["SnapshotOperationInfoDetails"],
+      "members":{
+        "SnapshotOperationInfoDetails":{
+          "shape":"SnapshotOperationInfoDetails",
+          "documentation":"<p>An object containing information about the snapshot operation.</p>"
+        }
+      }
+    },
+    "DescribeSnapshotRequest":{
+      "type":"structure",
+      "required":["SnapshotName"],
+      "members":{
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot. You can retrieve this value using <code>ListSnapshots</code>.</p>"
+        }
+      }
+    },
+    "DescribeSnapshotResponse":{
+      "type":"structure",
+      "required":["SnapshotInfoDetails"],
+      "members":{
+        "SnapshotInfoDetails":{
+          "shape":"SnapshotInfoDetails",
+          "documentation":"<p>An object containing information about the enhanced snapshot.</p>"
+        }
+      }
+    },
     "DestinationSchema":{
       "type":"structure",
       "required":["RecordFormatType"],
@@ -2311,6 +2608,21 @@
         }
       }
     },
+    "EncryptionConfigurationDescription":{
+      "type":"structure",
+      "required":["KeyType"],
+      "members":{
+        "KeyId":{
+          "shape":"KeyId",
+          "documentation":"<p>The KMS key used for encryption.</p>"
+        },
+        "KeyType":{
+          "shape":"KeyType",
+          "documentation":"<p>Specifies the type of key used for encryption.</p>"
+        }
+      },
+      "documentation":"<p>Describes the encryption configuration of snapshot data for a snapshot operation.</p>"
+    },
     "EnvironmentProperties":{
       "type":"structure",
       "required":["PropertyGroups"],
@@ -2356,6 +2668,67 @@
       "documentation":"<p>An error message that is returned when an operation fails.</p>",
       "max":512,
       "min":1
+    },
+    "ExportDestinationConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationType",
+        "ExportRoleArn",
+        "DestinationS3PrefixLocation"
+      ],
+      "members":{
+        "DestinationType":{
+          "shape":"StorageLocationType",
+          "documentation":"<p>The type of the destination location. The only supported value is <code>S3</code>.</p>"
+        },
+        "ExportRoleArn":{
+          "shape":"RoleARN",
+          "documentation":"<p>The ARN of the IAM role that Managed Service for Apache Flink assumes to write the snapshot data to the destination location. For information about the permissions that this role requires, see <a href=\"https://docs.aws.amazon.com/managed-flink/latest/java/snapshots-import-export.html\">Import and export</a>.</p>"
+        },
+        "DestinationEncryptionConfiguration":{
+          "shape":"SnapshotEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration of the exported snapshot data. If you don't specify this parameter, Managed Service for Apache Flink uses a key of type <code>AWS_OWNED_KEY</code>. If you specify a KMS key, you must specify the key ARN.</p>"
+        },
+        "DestinationS3PrefixLocation":{
+          "shape":"S3PrefixLocation",
+          "documentation":"<p>The Amazon S3 bucket and key prefix to export the snapshot data to. Managed Service for Apache Flink writes the data under a unique prefix that it appends to the key prefix that you specify. After the export completes, use <code>DescribeSnapshotOperation</code> to get the full prefix. The bucket must be owned by your account and must be in the same Region as the request.</p>"
+        }
+      },
+      "documentation":"<p>Describes the destination of the exported snapshot data.</p>"
+    },
+    "ExportSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "SnapshotName",
+        "ExportDestinationConfiguration"
+      ],
+      "members":{
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot to export.</p>"
+        },
+        "ExportDestinationConfiguration":{
+          "shape":"ExportDestinationConfiguration",
+          "documentation":"<p>Describes the location, IAM role, and encryption configuration of the export destination.</p>"
+        }
+      }
+    },
+    "ExportSnapshotResponse":{
+      "type":"structure",
+      "required":[
+        "SnapshotOperationId",
+        "SnapshotOperationStatus"
+      ],
+      "members":{
+        "SnapshotOperationId":{
+          "shape":"SnapshotOperationId",
+          "documentation":"<p>The ID of the snapshot operation. You can use this value with <code>DescribeSnapshotOperation</code> to track the progress of the export.</p>"
+        },
+        "SnapshotOperationStatus":{
+          "shape":"SnapshotOperationStatus",
+          "documentation":"<p>The status of the snapshot operation.</p>"
+        }
+      }
     },
     "FileKey":{
       "type":"string",
@@ -2468,6 +2841,93 @@
       "max":50,
       "min":1,
       "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "ImportSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "SnapshotName",
+        "ImportSourceConfiguration"
+      ],
+      "members":{
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot. The name must be unique among the snapshots in your account and Region. You can't reuse the name of an existing snapshot, including a snapshot in the <code>FAILED</code> status, until you delete that snapshot. Names that begin with <code>SYSTEMSNAPSHOT</code> are reserved.</p>"
+        },
+        "ImportSourceConfiguration":{
+          "shape":"ImportSourceConfiguration",
+          "documentation":"<p>Describes the location, IAM role, and encryption configuration of the savepoint data to import.</p>"
+        },
+        "DestinationEncryptionConfiguration":{
+          "shape":"SnapshotEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration of the imported snapshot. If you don't specify this parameter, the snapshot is encrypted using a key of type <code>AWS_OWNED_KEY</code>. If you specify a KMS key, you must specify the key ARN.</p>"
+        },
+        "SnapshotDescription":{
+          "shape":"SnapshotV2Description",
+          "documentation":"<p>A summary description of the snapshot.</p>"
+        },
+        "SnapshotFormat":{
+          "shape":"SnapshotFormat",
+          "documentation":"<p>The format of the snapshot being imported.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of one or more tags to assign to the snapshot. A tag is a key-value pair that identifies a snapshot. For more information, see <a href=\"https://docs.aws.amazon.com/kinesisanalytics/latest/java/how-tagging.html\">Using Tagging</a>.</p>"
+        }
+      }
+    },
+    "ImportSnapshotResponse":{
+      "type":"structure",
+      "required":[
+        "SnapshotArn",
+        "SnapshotStatus",
+        "SnapshotOperationId",
+        "SnapshotOperationStatus"
+      ],
+      "members":{
+        "SnapshotArn":{
+          "shape":"SnapshotArn",
+          "documentation":"<p>The ARN of the enhanced snapshot.</p>"
+        },
+        "SnapshotStatus":{
+          "shape":"SnapshotStatus",
+          "documentation":"<p>The status of the snapshot. When Managed Service for Apache Flink accepts the request, the status is <code>CREATING</code>.</p>"
+        },
+        "SnapshotOperationId":{
+          "shape":"SnapshotOperationId",
+          "documentation":"<p>The ID of the snapshot operation. You can use this value with <code>DescribeSnapshotOperation</code> to track the progress of the import.</p>"
+        },
+        "SnapshotOperationStatus":{
+          "shape":"SnapshotOperationStatus",
+          "documentation":"<p>The status of the snapshot operation.</p>"
+        }
+      }
+    },
+    "ImportSourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "SourceType",
+        "ImportRoleArn",
+        "SourceS3PrefixLocation"
+      ],
+      "members":{
+        "SourceType":{
+          "shape":"StorageLocationType",
+          "documentation":"<p>The type of the source location. The only supported value is <code>S3</code>.</p>"
+        },
+        "ImportRoleArn":{
+          "shape":"RoleARN",
+          "documentation":"<p>The ARN of the IAM role that Managed Service for Apache Flink assumes to read the savepoint data from the source location. For information about the permissions that this role requires, see <a href=\"https://docs.aws.amazon.com/managed-flink/latest/java/snapshots-import-export.html\">Import and export</a>.</p>"
+        },
+        "SourceEncryptionConfiguration":{
+          "shape":"SnapshotEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration of the savepoint data at the source location. If you don't specify this parameter, Managed Service for Apache Flink uses a key of type <code>AWS_OWNED_KEY</code>. If you specify a KMS key, you must specify the key ARN.</p>"
+        },
+        "SourceS3PrefixLocation":{
+          "shape":"S3PrefixLocation",
+          "documentation":"<p>The Amazon S3 bucket and key prefix that contain the savepoint data to import. The bucket must be owned by your account and must be in the same Region as the request.</p>"
+        }
+      },
+      "documentation":"<p>Describes the source of the savepoint data to import.</p>"
     },
     "InAppStreamName":{
       "type":"string",
@@ -2777,6 +3237,11 @@
     "KeyId":{
       "type":"string",
       "max":2048,
+      "min":1
+    },
+    "KeyPrefix":{
+      "type":"string",
+      "max":200,
       "min":1
     },
     "KeyType":{
@@ -3110,10 +3575,88 @@
         }
       }
     },
+    "ListSnapshotOperationsLimit":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ListSnapshotOperationsRequest":{
+      "type":"structure",
+      "required":["SnapshotName"],
+      "members":{
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot.</p>"
+        },
+        "SnapshotOperation":{
+          "shape":"SnapshotOperation",
+          "documentation":"<p>Use this parameter to list only the operations of the specified type.</p>"
+        },
+        "SnapshotOperationStatus":{
+          "shape":"SnapshotOperationStatus",
+          "documentation":"<p>Use this parameter to list only the operations with the specified status.</p>"
+        },
+        "Limit":{
+          "shape":"ListSnapshotOperationsLimit",
+          "documentation":"<p>The maximum number of snapshot operations to list.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListSnapshotOperationsResponse":{
+      "type":"structure",
+      "required":["SnapshotOperationInfoList"],
+      "members":{
+        "SnapshotOperationInfoList":{
+          "shape":"SnapshotOperationInfoList",
+          "documentation":"<p>A list of <code>SnapshotOperationInfo</code> objects.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
     "ListSnapshotsInputLimit":{
       "type":"integer",
       "max":50,
       "min":1
+    },
+    "ListSnapshotsLimit":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ListSnapshotsRequest":{
+      "type":"structure",
+      "members":{
+        "SourceApplicationName":{"shape":"ApplicationName"},
+        "SnapshotInitiator":{
+          "shape":"SnapshotInitiator",
+          "documentation":"<p>Use this parameter to list only the snapshots with the specified initiator.</p>"
+        },
+        "SnapshotInitiatorOperation":{
+          "shape":"SnapshotInitiatorOperation",
+          "documentation":"<p>Use this parameter to list only the snapshots that were created by the specified operation.</p>"
+        },
+        "SnapshotStatus":{
+          "shape":"SnapshotStatus",
+          "documentation":"<p>Use this parameter to list only the snapshots with the specified status.</p>"
+        },
+        "Limit":{
+          "shape":"ListSnapshotsLimit",
+          "documentation":"<p>The maximum number of snapshots to list.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListSnapshotsResponse":{
+      "type":"structure",
+      "required":["SnapshotInfoList"],
+      "members":{
+        "SnapshotInfoList":{
+          "shape":"SnapshotInfoList",
+          "documentation":"<p>A list of <code>SnapshotInfo</code> objects.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -3740,7 +4283,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The application is not available for this operation.</p>",
+      "documentation":"<p>The application or snapshot is not available for this operation.</p>",
       "exception":true
     },
     "ResourceNotFoundException":{
@@ -3748,7 +4291,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>Specified application can't be found.</p>",
+      "documentation":"<p>The specified application, snapshot, or snapshot operation can't be found.</p>",
       "exception":true
     },
     "ResourceProvisionedThroughputExceededException":{
@@ -3979,6 +4522,24 @@
       },
       "documentation":"<p>Describes an update for the Amazon S3 code content location for an application.</p>"
     },
+    "S3PrefixLocation":{
+      "type":"structure",
+      "required":[
+        "BucketARN",
+        "KeyPrefix"
+      ],
+      "members":{
+        "BucketARN":{
+          "shape":"BucketARN",
+          "documentation":"<p>The ARN of the Amazon S3 bucket.</p>"
+        },
+        "KeyPrefix":{
+          "shape":"KeyPrefix",
+          "documentation":"<p>The key prefix in the Amazon S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Amazon S3 bucket and key prefix.</p>"
+    },
     "S3ReferenceDataSource":{
       "type":"structure",
       "members":{
@@ -4050,6 +4611,11 @@
       "max":43200,
       "min":1800
     },
+    "SnapshotArn":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "SnapshotDetails":{
       "type":"structure",
       "required":[
@@ -4085,11 +4651,367 @@
       },
       "documentation":"<p>Provides details about a snapshot of application state.</p>"
     },
+    "SnapshotEncryptionConfiguration":{
+      "type":"structure",
+      "required":["KeyType"],
+      "members":{
+        "KeyId":{
+          "shape":"KeyId",
+          "documentation":"<p>The KMS key used for encryption. <code>KeyId</code> is used only when <code>KeyType</code> is <code>CUSTOMER_MANAGED_KEY</code>.</p>"
+        },
+        "KeyType":{
+          "shape":"KeyType",
+          "documentation":"<p>Specifies the type of key used for encryption.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the encryption configuration of snapshot data.</p>"
+    },
+    "SnapshotErrorInfo":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"SnapshotOperationErrorCode",
+          "documentation":"<p>The error code that identifies the cause of the failure.</p>"
+        },
+        "ErrorString":{
+          "shape":"ErrorString",
+          "documentation":"<p>An error message that is returned when an operation fails.</p>"
+        }
+      },
+      "documentation":"<p>A description of the error that caused a snapshot operation to fail.</p>"
+    },
+    "SnapshotFormat":{
+      "type":"string",
+      "enum":["CANONICAL"]
+    },
+    "SnapshotInfo":{
+      "type":"structure",
+      "required":[
+        "SnapshotName",
+        "SnapshotArn",
+        "SnapshotStatus",
+        "SnapshotCreationTimestamp",
+        "SnapshotInitiator",
+        "SnapshotInitiatorOperation",
+        "SnapshotFormat"
+      ],
+      "members":{
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot.</p>"
+        },
+        "SnapshotArn":{
+          "shape":"SnapshotArn",
+          "documentation":"<p>The ARN of the enhanced snapshot.</p>"
+        },
+        "SnapshotStatus":{
+          "shape":"SnapshotStatus",
+          "documentation":"<p>The status of the enhanced snapshot.</p>"
+        },
+        "SnapshotCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates when the snapshot was created.</p>"
+        },
+        "SnapshotInitiator":{
+          "shape":"SnapshotInitiator",
+          "documentation":"<p>Indicates who initiated the snapshot. <code>USER</code> indicates a snapshot that you created or imported. <code>SYSTEM</code> indicates a snapshot that Managed Service for Apache Flink created.</p>"
+        },
+        "SnapshotInitiatorOperation":{
+          "shape":"SnapshotInitiatorOperation",
+          "documentation":"<p>The operation that created the snapshot.</p>"
+        },
+        "SourceApplicationName":{"shape":"ApplicationName"},
+        "SnapshotFormat":{
+          "shape":"SnapshotFormat",
+          "documentation":"<p>The format of the snapshot.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about an enhanced snapshot.</p>"
+    },
+    "SnapshotInfoDetails":{
+      "type":"structure",
+      "required":[
+        "SnapshotName",
+        "SnapshotArn",
+        "SnapshotStatus",
+        "SnapshotCreationTimestamp",
+        "SnapshotInitiator",
+        "SnapshotInitiatorOperation",
+        "SnapshotSourceDescription",
+        "SnapshotFormat"
+      ],
+      "members":{
+        "SnapshotName":{
+          "shape":"SnapshotV2Name",
+          "documentation":"<p>The name of the enhanced snapshot.</p>"
+        },
+        "SnapshotArn":{
+          "shape":"SnapshotArn",
+          "documentation":"<p>The ARN of the enhanced snapshot.</p>"
+        },
+        "SnapshotDescription":{
+          "shape":"SnapshotV2Description",
+          "documentation":"<p>The summary description of the snapshot.</p>"
+        },
+        "SnapshotStatus":{
+          "shape":"SnapshotStatus",
+          "documentation":"<p>The status of the enhanced snapshot.</p>"
+        },
+        "SnapshotCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates when the snapshot was created.</p>"
+        },
+        "RuntimeEnvironment":{
+          "shape":"RuntimeEnvironment",
+          "documentation":"<p>The Flink runtime of the application that the snapshot was created from. This field is not present for imported snapshots.</p>"
+        },
+        "SnapshotSizeInBytes":{
+          "shape":"SnapshotSizeInBytes",
+          "documentation":"<p>The size of the snapshot, in bytes. The value is <code>0</code> until the snapshot status is <code>READY</code>.</p>"
+        },
+        "SnapshotEncryptionConfigurationDescription":{
+          "shape":"SnapshotEncryptionConfiguration",
+          "documentation":"<p>Describes the encryption settings of data at rest for the snapshot.</p>"
+        },
+        "SnapshotInitiator":{
+          "shape":"SnapshotInitiator",
+          "documentation":"<p>Indicates who initiated the snapshot. <code>USER</code> indicates a snapshot that you created or imported. <code>SYSTEM</code> indicates a snapshot that Managed Service for Apache Flink created.</p>"
+        },
+        "SnapshotInitiatorOperation":{
+          "shape":"SnapshotInitiatorOperation",
+          "documentation":"<p>The operation that created the snapshot.</p>"
+        },
+        "SnapshotSourceDescription":{
+          "shape":"SnapshotSourceDescription",
+          "documentation":"<p>Describes the source of the snapshot.</p>"
+        },
+        "SnapshotFormat":{
+          "shape":"SnapshotFormat",
+          "documentation":"<p>The format of the snapshot.</p>"
+        }
+      },
+      "documentation":"<p>Provides details about an enhanced snapshot.</p>"
+    },
+    "SnapshotInfoList":{
+      "type":"list",
+      "member":{"shape":"SnapshotInfo"}
+    },
+    "SnapshotInitiator":{
+      "type":"string",
+      "enum":[
+        "USER",
+        "SYSTEM"
+      ]
+    },
+    "SnapshotInitiatorOperation":{
+      "type":"string",
+      "enum":[
+        "CreateSnapshot",
+        "ImportSnapshot",
+        "SystemCreateSnapshot"
+      ]
+    },
+    "SnapshotMode":{
+      "type":"string",
+      "enum":[
+        "APPLICATION_SNAPSHOTS_LEGACY",
+        "ENHANCED_SNAPSHOTS"
+      ]
+    },
     "SnapshotName":{
       "type":"string",
       "max":256,
       "min":1,
       "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "SnapshotOperation":{
+      "type":"string",
+      "enum":[
+        "CreateSnapshot",
+        "DeleteSnapshot",
+        "ImportSnapshot",
+        "ExportSnapshot",
+        "SystemCreateSnapshot"
+      ]
+    },
+    "SnapshotOperationErrorCode":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "SnapshotOperationFailureDetails":{
+      "type":"structure",
+      "members":{
+        "ErrorInfo":{
+          "shape":"SnapshotErrorInfo",
+          "documentation":"<p>A description of the error that caused the snapshot operation to fail.</p>"
+        }
+      },
+      "documentation":"<p>Provides a description of the snapshot operation failure.</p>"
+    },
+    "SnapshotOperationId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "SnapshotOperationInfo":{
+      "type":"structure",
+      "required":[
+        "SnapshotOperationId",
+        "SnapshotOperation",
+        "SnapshotOperationStatus"
+      ],
+      "members":{
+        "SnapshotOperationId":{
+          "shape":"SnapshotOperationId",
+          "documentation":"<p>The ID of the snapshot operation.</p>"
+        },
+        "SnapshotOperation":{
+          "shape":"SnapshotOperation",
+          "documentation":"<p>The type of operation that was performed on the snapshot.</p>"
+        },
+        "SnapshotOperationStatus":{
+          "shape":"SnapshotOperationStatus",
+          "documentation":"<p>The status of the snapshot operation.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates when the operation was created.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates when the operation finished. This field is present only after the operation completes.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about an operation that was performed on an enhanced snapshot.</p>"
+    },
+    "SnapshotOperationInfoDetails":{
+      "type":"structure",
+      "required":[
+        "SnapshotOperationId",
+        "SnapshotOperation",
+        "SnapshotOperationStatus",
+        "SnapshotArn"
+      ],
+      "members":{
+        "SnapshotOperationId":{
+          "shape":"SnapshotOperationId",
+          "documentation":"<p>The ID of the snapshot operation.</p>"
+        },
+        "SnapshotOperation":{
+          "shape":"SnapshotOperation",
+          "documentation":"<p>The type of operation that was performed on the snapshot.</p>"
+        },
+        "SnapshotOperationStatus":{
+          "shape":"SnapshotOperationStatus",
+          "documentation":"<p>The status of the snapshot operation.</p>"
+        },
+        "SnapshotArn":{
+          "shape":"SnapshotArn",
+          "documentation":"<p>The ARN of the enhanced snapshot.</p>"
+        },
+        "SourceEncryptionConfigurationDescription":{
+          "shape":"EncryptionConfigurationDescription",
+          "documentation":"<p>Describes the encryption configuration of the source data. This field is present only for <code>ImportSnapshot</code> operation.</p>"
+        },
+        "DestinationEncryptionConfigurationDescription":{
+          "shape":"EncryptionConfigurationDescription",
+          "documentation":"<p>Describes the encryption configuration of the destination data. This field is present only for <code>ImportSnapshot</code> and <code>ExportSnapshot</code> operations.</p>"
+        },
+        "SnapshotSourceLocationDescription":{
+          "shape":"SnapshotOperationLocationDescription",
+          "documentation":"<p>Describes the location that the snapshot data was read from. This field is present only for <code>ImportSnapshot</code> operations.</p>"
+        },
+        "SnapshotDestinationLocationDescription":{
+          "shape":"SnapshotOperationLocationDescription",
+          "documentation":"<p>Describes the location that the snapshot data was written to. This field is present only for <code>ExportSnapshot</code> operations, after the operation completes.</p>"
+        },
+        "ApplicationOperationDescription":{
+          "shape":"ApplicationOperationDescription",
+          "documentation":"<p>Describes the application operation that initiated the snapshot operation. This field is present only for <code>SystemCreateSnapshot</code> operations.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates when the operation was created.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates when the operation finished. This field is present only after the operation completes.</p>"
+        },
+        "SnapshotOperationFailureDetails":{
+          "shape":"SnapshotOperationFailureDetails",
+          "documentation":"<p>Provides a description of the operation failure. This field is present only if <code>SnapshotOperationStatus</code> is <code>FAILED</code>.</p>"
+        }
+      },
+      "documentation":"<p>A description of a snapshot operation that provides information about the operation that was performed on an enhanced snapshot.</p>"
+    },
+    "SnapshotOperationInfoList":{
+      "type":"list",
+      "member":{"shape":"SnapshotOperationInfo"}
+    },
+    "SnapshotOperationLocationDescription":{
+      "type":"structure",
+      "required":[
+        "LocationType",
+        "S3PrefixLocation"
+      ],
+      "members":{
+        "LocationType":{
+          "shape":"StorageLocationType",
+          "documentation":"<p>The type of the location. The only supported value is <code>S3</code>.</p>"
+        },
+        "S3PrefixLocation":{
+          "shape":"SnapshotOperationS3PrefixLocation",
+          "documentation":"<p>Describes the Amazon S3 bucket and key prefix of the location.</p>"
+        }
+      },
+      "documentation":"<p>Describes the location of snapshot data for a snapshot operation.</p>"
+    },
+    "SnapshotOperationS3PrefixLocation":{
+      "type":"structure",
+      "required":[
+        "BucketARN",
+        "KeyPrefix"
+      ],
+      "members":{
+        "BucketARN":{
+          "shape":"BucketARN",
+          "documentation":"<p>The ARN of the Amazon S3 bucket.</p>"
+        },
+        "KeyPrefix":{
+          "shape":"KeyPrefix",
+          "documentation":"<p>The key prefix in the Amazon S3 bucket that you specified in the request.</p>"
+        },
+        "ExportedPrefix":{
+          "shape":"KeyPrefix",
+          "documentation":"<p>The full key prefix that the exported snapshot data was written to. This value includes the unique prefix that Managed Service for Apache Flink appends to <code>KeyPrefix</code>. This field is present only after an <code>ExportSnapshot</code> operation completes successfully.</p>"
+        }
+      },
+      "documentation":"<p>Describes an Amazon S3 bucket and key prefix for a snapshot operation.</p>"
+    },
+    "SnapshotOperationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCESSFUL",
+        "FAILED",
+        "CANCELLED"
+      ]
+    },
+    "SnapshotSizeInBytes":{"type":"long"},
+    "SnapshotSourceDescription":{
+      "type":"structure",
+      "members":{
+        "S3PrefixLocation":{
+          "shape":"S3PrefixLocation",
+          "documentation":"<p>The Amazon S3 location that the snapshot was imported from. This field is present only if <code>SnapshotInitiatorOperation</code> is <code>ImportSnapshot</code>.</p>"
+        },
+        "SourceApplicationDescription":{
+          "shape":"SourceApplicationDescription",
+          "documentation":"<p>Describes the application that the snapshot was created from. This field is not present for imported snapshots.</p>"
+        }
+      },
+      "documentation":"<p>Describes the source of an enhanced snapshot. For a snapshot that was created from an application, <code>SourceApplicationDescription</code> is present. For an imported snapshot, <code>S3PrefixLocation</code> is present.</p>"
     },
     "SnapshotStatus":{
       "type":"string",
@@ -4103,6 +5025,38 @@
     "SnapshotSummaries":{
       "type":"list",
       "member":{"shape":"SnapshotDetails"}
+    },
+    "SnapshotV2Description":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[^\\u0000-\\u001F\\u007F]*"
+    },
+    "SnapshotV2Name":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "SourceApplicationDescription":{
+      "type":"structure",
+      "required":[
+        "ApplicationName",
+        "ApplicationCreationTimestamp",
+        "ApplicationVersionId"
+      ],
+      "members":{
+        "ApplicationName":{"shape":"ApplicationName"},
+        "ApplicationCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates when the source application was created.</p>"
+        },
+        "ApplicationVersionId":{
+          "shape":"ApplicationVersionId",
+          "documentation":"<p>The version ID of the source application when the snapshot was created.</p>"
+        }
+      },
+      "documentation":"<p>Describes the application that an enhanced snapshot was created from.</p>"
     },
     "SourceSchema":{
       "type":"structure",
@@ -4247,6 +5201,10 @@
           "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
+    },
+    "StorageLocationType":{
+      "type":"string",
+      "enum":["S3"]
     },
     "SubnetId":{"type":"string"},
     "SubnetIds":{

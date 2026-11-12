@@ -9,12 +9,10 @@ The following ``create-game-session-queue`` example creates a new game session q
 
 Contents of ``destinations.json``::
 
-    {
-        "Destinations": [
-            {"DestinationArn": "arn:aws:gamelift:us-west-2::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" },
-            {"DestinationArn": "arn:aws:gamelift:us-west-1::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222" }
-        ]
-    }
+    [
+        {"DestinationArn": "arn:aws:gamelift:us-west-2::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" },
+        {"DestinationArn": "arn:aws:gamelift:us-west-1::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222" }
+    ]
 
 Output::
 
@@ -42,21 +40,17 @@ The following ``create-game-session-queue`` example creates a new game session q
 
 Contents of ``destinations.json``::
 
-    {
-        "Destinations": [
-            { "DestinationArn": "arn:aws:gamelift:us-west-2::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" },
-            { "DestinationArn": "arn:aws:gamelift:us-east-1::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222" }
-        ]
-    }
+    [
+        { "DestinationArn": "arn:aws:gamelift:us-west-2::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" },
+        { "DestinationArn": "arn:aws:gamelift:us-east-1::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222" }
+    ]
 
 Contents of ``latency-policies.json``::
 
-    {
-        "PlayerLatencyPolicies": [
-            {"MaximumIndividualPlayerLatencyMilliseconds": 200},
-            {"MaximumIndividualPlayerLatencyMilliseconds": 100, "PolicyDurationSeconds": 60}
-        ]
-    }
+    [
+        {"MaximumIndividualPlayerLatencyMilliseconds": 200},
+        {"MaximumIndividualPlayerLatencyMilliseconds": 100, "PolicyDurationSeconds": 60}
+    ]
 
 Output::
 

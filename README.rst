@@ -27,6 +27,7 @@ The aws-cli package works on Python versions:
 
 -  `Notices <#notices>`__
 -  `Installation <#installation>`__
+-  `CLI Releases <#cli-releases>`__
 -  `Getting Started <#getting-started>`__
 -  `Getting Help <#getting-help>`__
 -  `More Resources <#more-resources>`__
@@ -66,6 +67,25 @@ CLI Releases
 ------------
 
 The release notes for the AWS CLI can be found `here <https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst>`__.
+
+Within AWS CLI v2, the middle number is the minor version and the last number
+is the patch version:
+
+* **Minor version releases** generally include substantial new CLI
+  capabilities or changes in behavior. Examples of these are new global
+  options that apply to all commands, a new credentials type, changes to
+  "foundational" commands such as ``s3``, and adding or dropping support for
+  a Python version. The minor version increases and the patch version resets
+  to zero (for example,  ``2.39.6`` to ``2.40.0``).
+* **Patch version releases** generally include incremental improvements to
+  existing functionality, bug fixes, dependency updates, and updates to
+  supported AWS service APIs. Examples of these include new service launches,
+  new operations for existing services, and bugfixes or enhancements
+  to a single command. The patch version increases (for example, ``2.39.6``
+  to ``2.39.7``).
+
+Minor releases can also include improvements, bug fixes, and service API
+updates. Review the release notes for the specific changes in each version.
 
 
 ------------------

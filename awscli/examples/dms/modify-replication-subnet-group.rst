@@ -4,7 +4,7 @@ The following ``modify-replication-subnet-group`` example changes the lists of s
 
     aws dms modify-replication-subnet-group \
         --replication-subnet-group-identifier my-subnet-group \
-        --subnet-id subnet-da327bf6 subnet-bac383e0
+        --subnet-ids subnet-da327bf6 subnet-bac383e0
 
 Output::
 

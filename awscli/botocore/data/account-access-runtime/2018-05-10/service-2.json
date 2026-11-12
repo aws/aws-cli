@@ -1,0 +1,298 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "auth":["smithy.api#httpBearerAuth"],
+    "endpointPrefix":"account-access-runtime",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Account Access Runtime",
+    "serviceId":"Account Access Runtime",
+    "signatureVersion":"bearer",
+    "signingName":"account-access",
+    "uid":"account-access-runtime-2018-05-10"
+  },
+  "operations":{
+    "GetRoleCredentials":{
+      "name":"GetRoleCredentials",
+      "http":{
+        "method":"GET",
+        "requestUri":"/access/credentials",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRoleCredentialsRequest"},
+      "output":{"shape":"GetRoleCredentialsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns temporary Amazon Web Services credentials for a role that you are entitled to assume within a tenant. You can use these credentials for programmatic access with the CLI or an Amazon Web Services SDK. If you aren't entitled to the role, the request fails with an <code>AccessDeniedException</code> error.</p>",
+      "readonly":true
+    },
+    "ListRoles":{
+      "name":"ListRoles",
+      "http":{
+        "method":"GET",
+        "requestUri":"/access",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRolesRequest"},
+      "output":{"shape":"ListRolesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the roles that you are entitled to access within a tenant. The results are paginated. Use a returned role with <code>GetRoleCredentials</code> to obtain temporary credentials.</p>",
+      "readonly":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You are authenticated but not authorized to perform the requested action, such as assuming a role that you aren't entitled to. This error returns an HTTP 403 status code.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccessDetails":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "roleArn"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"Account",
+          "documentation":"<p>The 12-digit identifier of the Amazon Web Services account that contains the role.</p>"
+        },
+        "accountName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the Amazon Web Services account, if available. This value can be absent when the account name can't be resolved.</p>"
+        },
+        "roleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role that you can access.</p>"
+        }
+      },
+      "documentation":"<p>Describes a role that you can access, including the Amazon Web Services account that contains the role and the role's ARN.</p>"
+    },
+    "AccessDetailsList":{
+      "type":"list",
+      "member":{"shape":"AccessDetails"}
+    },
+    "AccessType":{
+      "type":"string",
+      "enum":["PROGRAMMATIC_ACCESS"]
+    },
+    "Account":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "CredentialsDetails":{
+      "type":"structure",
+      "members":{
+        "programmaticAccess":{
+          "shape":"ProgrammaticAccessDetails",
+          "documentation":"<p>The access key credentials returned for programmatic access with the CLI or an Amazon Web Services SDK.</p>"
+        }
+      },
+      "documentation":"<p>The temporary credentials returned for a role. Only one member is set, depending on the type of access that you requested.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "GetRoleCredentialsRequest":{
+      "type":"structure",
+      "required":[
+        "tenantId",
+        "roleArn",
+        "accessType"
+      ],
+      "members":{
+        "tenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>The identifier of the tenant that the request applies to. A tenant ID begins with <code>aa-</code> and is 3 to 24 characters long. It can contain lowercase letters, numbers, and hyphens.</p>",
+          "location":"querystring",
+          "locationName":"tenantId"
+        },
+        "roleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role to retrieve credentials for. You must be entitled to assume this role.</p>",
+          "location":"querystring",
+          "locationName":"roleArn"
+        },
+        "accessType":{
+          "shape":"AccessType",
+          "documentation":"<p>The type of access to request for the role. Specify <code>PROGRAMMATIC_ACCESS</code> to receive access key credentials for use with the CLI or an Amazon Web Services SDK.</p>",
+          "location":"querystring",
+          "locationName":"accessType"
+        },
+        "sessionName":{
+          "shape":"SessionName",
+          "documentation":"<p>An optional name for the role session. The name can be 2 to 64 characters and can contain alphanumeric characters and the following symbols: plus (+), equal (=), comma (,), period (.), at (@), and hyphen (-). The session name appears in CloudTrail logs for the assumed role session.</p>",
+          "location":"querystring",
+          "locationName":"sessionName"
+        },
+        "sessionDuration":{
+          "shape":"Integer",
+          "documentation":"<p>The duration, in seconds, that the returned credentials remain valid. If you don't specify a value, the service uses the default session duration. The maximum value can't exceed the maximum session duration configured for the role.</p>",
+          "location":"querystring",
+          "locationName":"sessionDuration"
+        }
+      }
+    },
+    "GetRoleCredentialsResponse":{
+      "type":"structure",
+      "members":{
+        "credentialsDetails":{
+          "shape":"CredentialsDetails",
+          "documentation":"<p>The temporary credentials that the service returns for the requested role.</p>"
+        }
+      }
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal server error occurred. Retry the request. If the problem persists, contact Amazon Web Services Support. This error returns an HTTP 500 status code.</p>",
+      "exception":true,
+      "fault":true
+    },
+    "ListRolesRequest":{
+      "type":"structure",
+      "required":["tenantId"],
+      "members":{
+        "tenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>The identifier of the tenant whose roles you want to list. A tenant ID begins with <code>aa-</code> and is 3 to 24 characters long. It can contain lowercase letters, numbers, and hyphens.</p>",
+          "location":"querystring",
+          "locationName":"tenantId"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of roles to return in a single response. If more roles are available than the specified value, the response includes a <code>nextToken</code> value that you can use to retrieve the next page of results. If you don't specify a value, the service uses a default page size.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token from a previous <code>ListRoles</code> response. Use it to retrieve the next page of results. Omit this parameter on the first call.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListRolesResponse":{
+      "type":"structure",
+      "required":["roles"],
+      "members":{
+        "roles":{
+          "shape":"AccessDetailsList",
+          "documentation":"<p>The list of roles that you can access in the tenant. Each entry describes an Amazon Web Services account and a role.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to include in a subsequent <code>ListRoles</code> request to retrieve the next page of results. This value is absent when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ProgrammaticAccessDetails":{
+      "type":"structure",
+      "required":[
+        "accessKeyId",
+        "secretAccessKey",
+        "sessionToken",
+        "expiresAt"
+      ],
+      "members":{
+        "accessKeyId":{
+          "shape":"String",
+          "documentation":"<p>The access key ID for the temporary credentials.</p>"
+        },
+        "secretAccessKey":{
+          "shape":"String",
+          "documentation":"<p>The secret access key for the temporary credentials. Treat this value as a secret.</p>"
+        },
+        "sessionToken":{
+          "shape":"String",
+          "documentation":"<p>The session token that you must include along with the access key ID and secret access key when you make requests with the temporary credentials.</p>"
+        },
+        "expiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the temporary credentials expire, after which they can no longer be used.</p>"
+        }
+      },
+      "documentation":"<p>A set of temporary Amazon Web Services credentials for programmatic access. Treat these values as sensitive.</p>",
+      "sensitive":true
+    },
+    "SessionName":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_+=,.@-]{2,64}"
+    },
+    "String":{"type":"string"},
+    "TenantId":{
+      "type":"string",
+      "max":24,
+      "min":3,
+      "pattern":"[a-z0-9-]+"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request rate exceeded the allowed limit. Reduce your request rate, and then retry the request. This error returns an HTTP 429 status code.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Timestamp":{"type":"timestamp"},
+    "Token":{"type":"string"},
+    "UnauthorizedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The bearer token is missing, invalid, or expired. Obtain a new token, and then retry the request. This error returns an HTTP 401 status code.</p>",
+      "error":{
+        "httpStatusCode":401,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request is missing a required parameter, or a parameter value doesn't satisfy its constraints, such as its length or pattern. Correct the input, and then retry the request. This error returns an HTTP 400 status code.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>Use the Account Access Runtime API to list the roles that you can access and retrieve temporary Amazon Web Services credentials for those roles. You authenticate with a bearer token from IAM Identity Center. Each request is scoped to a tenant.</p>"
+}

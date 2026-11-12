@@ -13,30 +13,36 @@
 from botocore import xform_name
 from botocore.docs.service import ServiceDocumenter
 
+from tests import ALL_SERVICES
 from tests.functional.botocore.docs import BaseDocsFunctionalTest
 
 
 class TestStreamingBodyDocumentation(BaseDocsFunctionalTest):
     def test_all_streaming_body_are_properly_documented(self):
-        for service in self._session.get_available_services():
-            client = self._session.create_client(
-                service,
-                region_name='us-east-1',
-                aws_access_key_id='foo',
-                aws_secret_access_key='bar',
-            )
-            service_model = client.meta.service_model
-            for operation in service_model.operation_names:
-                operation_model = service_model.operation_model(operation)
-                if operation_model.has_streaming_output:
-                    self.assert_streaming_body_is_properly_documented(
-                        service, xform_name(operation)
-                    )
+        for service_model in ALL_SERVICES:
+            operations = [
+                xform_name(operation)
+                for operation in service_model.operation_names
+                if service_model.operation_model(
+                    operation
+                ).has_streaming_output
+            ]
+            if not operations:
+                continue
+            service = service_model.service_name
+            # Generate the complete service once, not once per streaming
+            # operation. Each operation's documentation is still checked.
+            ServiceDocumenter(
+                service, self._session, self.root_services_path
+            ).document_service()
+            for operation in operations:
+                self.assert_streaming_body_is_properly_documented(
+                    service, operation
+                )
 
-    def assert_streaming_body_is_properly_documented(self, service, operation):
-        ServiceDocumenter(
-            service, self._session, self.root_services_path
-        ).document_service()
+    def assert_streaming_body_is_properly_documented(
+        self, service, operation
+    ):
         contents = self.get_client_method_contents(service, operation)
         method_docs = self.get_method_document_block(operation, contents)
         self.assert_contains_line('StreamingBody', method_docs)

@@ -13,7 +13,6 @@
 import botocore.session
 import jmespath
 import pytest
-from botocore.exceptions import UnknownServiceError
 from botocore.utils import ArgumentGenerator
 from jsonschema import Draft4Validator
 
@@ -76,26 +75,26 @@ WAITER_SCHEMA = {
 }
 
 
-def _waiter_configs():
+def _services_with_waiters():
     session = botocore.session.get_session()
+    loader = session.get_component('data_loader')
+    waiter_services = set(loader.list_available_services('waiters-2'))
+    return [
+        name
+        for name in session.get_available_services()
+        if name in waiter_services
+    ]
+
+
+@pytest.mark.parametrize('service_name', _services_with_waiters())
+def test_lint_waiter_configs(service_name):
+    # Keep clients and their cached models out of collected test parameters.
+    session = botocore.session.get_session()
+    loader = session.get_component('data_loader')
+    waiter_model = loader.load_service_model(service_name, 'waiters-2')
     validator = Draft4Validator(WAITER_SCHEMA)
-    for service_name in session.get_available_services():
-        client = session.create_client(service_name, 'us-east-1')
-        try:
-            # We use the loader directly here because we need the entire
-            # json document, not just the portions exposed (either
-            # internally or externally) by the WaiterModel class.
-            loader = session.get_component('data_loader')
-            waiter_model = loader.load_service_model(service_name, 'waiters-2')
-        except UnknownServiceError:
-            # The service doesn't have waiters
-            continue
-        yield validator, waiter_model, client
-
-
-@pytest.mark.parametrize("validator, waiter_model, client", _waiter_configs())
-def test_lint_waiter_configs(validator, waiter_model, client):
     _validate_schema(validator, waiter_model)
+    client = session.create_client(service_name, 'us-east-1')
     for waiter_name in client.waiter_names:
         _lint_single_waiter(client, waiter_name, client.meta.service_model)
 
@@ -117,7 +116,7 @@ def _lint_single_waiter(client, waiter_name, service_model):
     # Needs to reference an existing operation name.
     if operation_name not in service_model.operation_names:
         raise AssertionError(
-            "Waiter config references unknown " f"operation: {operation_name}"
+            f"Waiter config references unknown operation: {operation_name}"
         )
     # Needs to have at least one acceptor.
     if not waiter.config.acceptors:
@@ -145,9 +144,9 @@ def _validate_acceptor(acceptor, op_model, waiter_name):
         # The JMESPath expression should have the potential to match something
         # in the response shape.
         output_shape = op_model.output_shape
-        assert (
-            output_shape is not None
-        ), f"Waiter '{waiter_name}' has JMESPath expression with no output shape: {op_model}"
+        assert output_shape is not None, (
+            f"Waiter '{waiter_name}' has JMESPath expression with no output shape: {op_model}"
+        )
         # We want to check if the JMESPath expression makes sense.
         # To do this, we'll generate sample output and evaluate the
         # JMESPath expression against the output.  We'll then

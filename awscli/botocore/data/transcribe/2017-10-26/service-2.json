@@ -4,8 +4,11 @@
     "apiVersion":"2017-10-26",
     "endpointPrefix":"transcribe",
     "jsonVersion":"1.1",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"Amazon Transcribe Service",
     "serviceId":"Transcribe",
     "signatureVersion":"v4",
@@ -735,6 +738,7 @@
         "Message":{"shape":"FailureReason"}
       },
       "documentation":"<p>Your request didn't pass one or more validation tests. This can occur when the entity you're trying to delete doesn't exist or if it's in a non-terminal state (such as <code>IN PROGRESS</code>). See the exception message field for more information.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "BaseModelName":{
@@ -1044,6 +1048,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>A resource already exists with this name. Resource names must be unique within an Amazon Web Services account.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "ContentRedaction":{
@@ -1726,6 +1731,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>There was an internal error. Check the error message, correct the issue, and try your request again.</p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -2004,6 +2010,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>You've either sent too many requests or your input file is too long. Wait before retrying your request, or use a smaller file and try your request again.</p>",
+      "error":{"httpStatusCode":429},
       "exception":true
     },
     "ListCallAnalyticsCategoriesRequest":{
@@ -2861,6 +2868,7 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>We can't find the requested resource. Check that the specified name is correct and try your request again.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "OutputBucketName":{

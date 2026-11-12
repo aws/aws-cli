@@ -4519,6 +4519,16 @@
       },
       "documentation":"<p>Contains summary information about a browser. A browser enables Amazon Bedrock AgentCore Agent to interact with web content.</p>"
     },
+    "BuildLifecycleHooks":{
+      "type":"structure",
+      "members":{
+        "warmup":{
+          "shape":"LifecycleHook",
+          "documentation":"<p>The hook that warms up your agent before any sessions are created. Use this hook to load the resources that your sessions need, such as models, libraries, or caches. Your hook must complete within 120 seconds.</p>"
+        }
+      },
+      "documentation":"<p>The lifecycle hooks that run when you create or update the AgentCore Runtime, before any sessions are created.</p>"
+    },
     "CapacityProviderArn":{
       "type":"string",
       "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:capacity-provider/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
@@ -4744,7 +4754,7 @@
           "documentation":"<p>The Amazon Web Services Secrets Manager location of the PEM-encoded private CA certificate.</p>"
         }
       },
-      "documentation":"<p>A reference to a private certificate authority (CA) certificate that the gateway uses to verify TLS connections to the target endpoint. Use this when the target presents a certificate issued by a private CA that is not trusted by default. Specify exactly one certificate source. The configuration is a reference only and never contains the certificate content.</p>",
+      "documentation":"<p>A reference to a private certificate authority (CA) certificate that AgentCore uses to verify TLS connections to an endpoint, such as a gateway target or an identity provider, that presents a certificate issued by a private CA that is not trusted by default. Specify exactly one certificate source. The configuration is a reference only and never contains the certificate content.</p>",
       "union":true
     },
     "CertificateConfigurationList":{
@@ -5851,6 +5861,10 @@
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The life cycle configuration for the AgentCore Runtime.</p>"
         },
+        "hooksConfiguration":{
+          "shape":"RuntimeHooksConfiguration",
+          "documentation":"<p>The lifecycle hooks configuration for the AgentCore Runtime. Use lifecycle hooks to run actions in the agent's container at fixed points in the runtime's lifecycle, such as warming up the agent before sessions are created.</p>"
+        },
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Environment variables to set in the AgentCore Runtime environment.</p>"
@@ -5874,6 +5888,10 @@
         "allowedPorts":{
           "shape":"AllowedPorts",
           "documentation":"<p>The additional ports on the AgentCore Runtime that are reachable through the runtime's session URL. Specify one to five non-overlapping entries, each containing either a single port or an inclusive port range. Ports must be between <code>8000</code> and <code>12000</code>, excluding the reserved port <code>8443</code>.</p>"
+        },
+        "resourceConfigurations":{
+          "shape":"ResourceConfigurations",
+          "documentation":"<p>The resource configurations for the AgentCore Runtime, such as the minimum amount of memory to allocate to the runtime. You can specify at most one resource configuration.</p>"
         }
       }
     },
@@ -6738,6 +6756,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of key-value pairs to associate with the gateway as metadata tags.</p>"
+        },
+        "domainOverride":{
+          "shape":"DomainOverride",
+          "documentation":"<p>The public domain names that the gateway advertises in its OAuth discovery URLs instead of the inbound Host header. Specify this when clients reach the gateway through your own proxy or custom domain.</p>"
         }
       }
     },
@@ -6840,6 +6862,10 @@
         "wafConfiguration":{
           "shape":"WafConfiguration",
           "documentation":"<p>The Amazon Web Services WAF configuration for the gateway.</p>"
+        },
+        "domainOverride":{
+          "shape":"DomainOverride",
+          "documentation":"<p>The public domain names that the gateway advertises in its OAuth discovery URLs instead of the inbound Host header.</p>"
         }
       }
     },
@@ -7229,7 +7255,7 @@
         },
         "eventExpiryDuration":{
           "shape":"CreateMemoryInputEventExpiryDurationInteger",
-          "documentation":"<p>The duration after which memory events expire. Specified as an ISO 8601 duration.</p>"
+          "documentation":"<p>The number of days after which memory events expire, between 7 and 3650 days.</p>"
         },
         "memoryStrategies":{
           "shape":"MemoryStrategyInputList",
@@ -7261,7 +7287,7 @@
     "CreateMemoryInputEventExpiryDurationInteger":{
       "type":"integer",
       "box":true,
-      "max":365,
+      "max":3650,
       "min":3
     },
     "CreateMemoryOutput":{
@@ -8311,6 +8337,10 @@
           "shape":"PrivateEndpointOverrides",
           "documentation":"<p>The private endpoint overrides for the custom JWT authorizer configuration.</p>"
         },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the identity provider. Use this to have AgentCore Identity trust a private CA when establishing TLS connections to identity provider endpoints. You can specify only one certificate authority configuration in this list. Provide the certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can use this only together with <code>privateEndpoint</code>.</p>"
+        },
         "allowedWorkloadConfiguration":{
           "shape":"AllowedWorkloadConfiguration",
           "documentation":"<p>The configuration that restricts which workloads in the request's identity chain are allowed to invoke the target, identified by their hosting environments and workload identities. At launch, this is supported only for AgentCore Runtime targets, and the allowed workloads are AgentCore Gateways.</p>"
@@ -8399,6 +8429,10 @@
         "privateEndpointOverrides":{
           "shape":"PrivateEndpointOverrides",
           "documentation":"<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the identity provider. Use this to have AgentCore Identity trust a private CA when establishing TLS connections to identity provider endpoints. You can specify only one certificate authority configuration in this list. Provide the certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can use this only together with <code>privateEndpoint</code>.</p>"
         }
       },
       "documentation":"<p>Input configuration for a custom OAuth2 provider.</p>"
@@ -8430,6 +8464,10 @@
         "privateEndpointOverrides":{
           "shape":"PrivateEndpointOverrides",
           "documentation":"<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the identity provider. Use this to have AgentCore Identity trust a private CA when establishing TLS connections to identity provider endpoints. You can specify only one certificate authority configuration in this list. Provide the certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can use this only together with <code>privateEndpoint</code>.</p>"
         },
         "privateKeyJwtConfig":{
           "shape":"PrivateKeyJwtConfig",
@@ -9899,11 +9937,11 @@
     },
     "DiscoveryUrl":{
       "type":"string",
-      "pattern":".+/\\.well-known/openid-configuration"
+      "pattern":"[^\\s?#]+/\\.well-known/(openid-configuration|oauth-authorization-server)(/[^\\s?#]+)?"
     },
     "DiscoveryUrlType":{
       "type":"string",
-      "pattern":".+/\\.well-known/(openid-configuration|oauth-authorization-server)"
+      "pattern":"[^\\s?#]+/\\.well-known/(openid-configuration|oauth-authorization-server)(/[^\\s?#]+)?"
     },
     "Document":{
       "type":"structure",
@@ -9911,6 +9949,22 @@
       "document":true
     },
     "DomainName":{"type":"string"},
+    "DomainOverride":{
+      "type":"structure",
+      "required":["defaultDomain"],
+      "members":{
+        "defaultDomain":{
+          "shape":"PublicDomainName",
+          "documentation":"<p>The default public domain name for the gateway. The gateway advertises this domain when a request doesn't select a specific domain.</p>",
+          "locationName":"default"
+        },
+        "alternateDomains":{
+          "shape":"PublicDomainNameList",
+          "documentation":"<p>Additional public domain names for the gateway, up to 10. Don't repeat the default domain or list a domain more than once. A request can select one of these domains, or the default domain, with the <code>x-amzn-bedrock-agentcore-gateway-domain</code> header. The gateway rejects a request that selects a domain that isn't configured.</p>"
+        }
+      },
+      "documentation":"<p>The public domain names for a gateway that clients reach through your own proxy or custom domain. When you configure a domain override, the gateway advertises these domains instead of the inbound Host header in the URLs that it returns for OAuth discovery, such as the protected resource metadata and the <code>WWW-Authenticate</code> challenge.</p>"
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -11582,6 +11636,10 @@
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The life cycle configuration for the AgentCore Runtime.</p>"
         },
+        "hooksConfiguration":{
+          "shape":"RuntimeHooksConfiguration",
+          "documentation":"<p>The lifecycle hooks configuration for the AgentCore Runtime.</p>"
+        },
         "failureReason":{
           "shape":"String",
           "documentation":"<p>The reason for failure if the AgentCore Runtime is in a failed state.</p>"
@@ -11633,6 +11691,10 @@
         "allowedPorts":{
           "shape":"AllowedPorts",
           "documentation":"<p>The additional ports on the AgentCore Runtime that are reachable through the runtime's session URL.</p>"
+        },
+        "resourceConfigurations":{
+          "shape":"ResourceConfigurations",
+          "documentation":"<p>The resource configurations for the AgentCore Runtime.</p>"
         }
       }
     },
@@ -12553,6 +12615,10 @@
         "wafConfiguration":{
           "shape":"WafConfiguration",
           "documentation":"<p>The Amazon Web Services WAF configuration for the gateway.</p>"
+        },
+        "domainOverride":{
+          "shape":"DomainOverride",
+          "documentation":"<p>The public domain names that the gateway advertises in its OAuth discovery URLs instead of the inbound Host header.</p>"
         }
       }
     },
@@ -14183,7 +14249,10 @@
           "shape":"String",
           "documentation":"<p>The ID of the underlying AgentCore Runtime.</p>"
         },
-        "lifecycleConfiguration":{"shape":"LifecycleConfiguration"},
+        "lifecycleConfiguration":{
+          "shape":"LifecycleConfiguration",
+          "documentation":"<p>The lifecycle configuration for the harness's runtime environment. For a harness, <code>idleRuntimeSessionTimeout</code> and <code>maxLifetime</code> each accept a value between 60 and 28800 seconds (8 hours), and <code>idleRuntimeSessionTimeout</code> must be less than or equal to <code>maxLifetime</code>.</p>"
+        },
         "networkConfiguration":{"shape":"NetworkConfiguration"},
         "filesystemConfigurations":{
           "shape":"FilesystemConfigurations",
@@ -14195,7 +14264,10 @@
     "HarnessAgentCoreRuntimeEnvironmentRequest":{
       "type":"structure",
       "members":{
-        "lifecycleConfiguration":{"shape":"LifecycleConfiguration"},
+        "lifecycleConfiguration":{
+          "shape":"LifecycleConfiguration",
+          "documentation":"<p>The lifecycle configuration for the harness's runtime environment. For a harness, <code>idleRuntimeSessionTimeout</code> and <code>maxLifetime</code> each accept a value between 60 and 28800 seconds (8 hours), and <code>idleRuntimeSessionTimeout</code> must be less than or equal to <code>maxLifetime</code>. Values above 28800 seconds are rejected with a <code>ValidationException</code>.</p>"
+        },
         "networkConfiguration":{"shape":"NetworkConfiguration"},
         "filesystemConfigurations":{
           "shape":"FilesystemConfigurations",
@@ -14842,9 +14914,28 @@
         "headers":{
           "shape":"HttpHeadersMap",
           "documentation":"<p>Custom headers to include when connecting to the remote MCP server.</p>"
+        },
+        "outboundAuth":{
+          "shape":"HarnessRemoteMcpOutboundAuth",
+          "documentation":"<p>How the harness authenticates to this MCP server. Defaults to no authentication.</p>"
         }
       },
       "documentation":"<p>Configuration for connecting to a remote MCP server.</p>"
+    },
+    "HarnessRemoteMcpOutboundAuth":{
+      "type":"structure",
+      "members":{
+        "awsIam":{
+          "shape":"IamCredentialProvider",
+          "documentation":"<p>Sign requests to the remote MCP server with Signature Version 4 (SigV4) using the harness execution role. If you don't specify a Region, the harness Region is used.</p>"
+        },
+        "none":{
+          "shape":"Unit",
+          "documentation":"<p>No authentication.</p>"
+        }
+      },
+      "documentation":"<p>Authentication method for calling a remote MCP server.</p>",
+      "union":true
     },
     "HarnessRemoteMcpUrl":{
       "type":"string",
@@ -15308,6 +15399,21 @@
       "value":{"shape":"HttpHeaderValue"},
       "documentation":"<p>Map of key/value pairs for HTTP headers.</p>",
       "sensitive":true
+    },
+    "HttpPostLifecycleHookAction":{
+      "type":"structure",
+      "required":["path"],
+      "members":{
+        "path":{
+          "shape":"LifecycleHookPath",
+          "documentation":"<p>The path in the agent's container that AgentCore Runtime sends the <code>POST</code> request to.</p>"
+        },
+        "port":{
+          "shape":"ServerPort",
+          "documentation":"<p>The port in the agent's container that AgentCore Runtime sends the <code>POST</code> request to. If you don't specify a port, the default is the runtime's server port: the port in the protocol configuration if one is set, otherwise the protocol's default port.</p>"
+        }
+      },
+      "documentation":"<p>A lifecycle hook action that sends an HTTP <code>POST</code> request to the agent's container. The path and port can't conflict with a path that your agent already serves for AgentCore Runtime, such as the protocol's invocation path or the health check path.</p>"
     },
     "HttpQueryParameterName":{
       "type":"string",
@@ -16070,6 +16176,35 @@
       "box":true,
       "max":1209600,
       "min":60
+    },
+    "LifecycleHook":{
+      "type":"structure",
+      "required":["action"],
+      "members":{
+        "action":{
+          "shape":"LifecycleHookAction",
+          "documentation":"<p>The action that AgentCore Runtime runs for the hook. Specify exactly one action.</p>"
+        }
+      },
+      "documentation":"<p>A lifecycle hook, which defines the action that AgentCore Runtime runs at a point in the runtime's lifecycle.</p>"
+    },
+    "LifecycleHookAction":{
+      "type":"structure",
+      "members":{
+        "httpPost":{
+          "shape":"HttpPostLifecycleHookAction",
+          "documentation":"<p>Sends an HTTP <code>POST</code> request to your agent's container on the specified port and path to run the hook. The hook succeeds if your container returns a <code>2xx</code> response. The hook fails if your container returns any other response or doesn't respond before the hook times out.</p>"
+        }
+      },
+      "documentation":"<p>The action that a lifecycle hook runs. Specify exactly one member. Currently, <code>httpPost</code> is the only supported action.</p>",
+      "union":true
+    },
+    "LifecycleHookPath":{
+      "type":"string",
+      "documentation":"<p>The path for an HTTP <code>POST</code> lifecycle hook action. The path must begin with <code>/</code>, can contain up to 32 characters, and can contain only letters, numbers, and the characters <code>.</code>, <code>_</code>, <code>~</code>, <code>/</code>, and <code>-</code>.</p>",
+      "max":32,
+      "min":1,
+      "pattern":"/[A-Za-z0-9._~/-]*"
     },
     "LimitEntries":{
       "type":"list",
@@ -18124,7 +18259,7 @@
     "MemoryEventExpiryDurationInteger":{
       "type":"integer",
       "box":true,
-      "max":365,
+      "max":3650,
       "min":1
     },
     "MemoryId":{
@@ -20349,6 +20484,18 @@
       "max":1,
       "min":1
     },
+    "PublicDomainName":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\\.(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))+"
+    },
+    "PublicDomainNameList":{
+      "type":"list",
+      "member":{"shape":"PublicDomainName"},
+      "max":10,
+      "min":1
+    },
     "PutResourcePolicyRequest":{
       "type":"structure",
       "required":[
@@ -20857,11 +21004,29 @@
       "type":"string",
       "pattern":"arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:servicenetworkresourceassociation/snra-[0-9a-f]{17}"
     },
+    "ResourceConfiguration":{
+      "type":"structure",
+      "required":["minimumMemoryInMiB"],
+      "members":{
+        "minimumMemoryInMiB":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum amount of memory, in mebibytes, to allocate to the AgentCore Runtime.</p>"
+        }
+      },
+      "documentation":"<p>The resource configuration for an AgentCore Runtime.</p>"
+    },
     "ResourceConfigurationIdentifier":{
       "type":"string",
       "max":2048,
       "min":20,
       "pattern":"((rcfg-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}))"
+    },
+    "ResourceConfigurations":{
+      "type":"list",
+      "member":{"shape":"ResourceConfiguration"},
+      "documentation":"<p>A list of resource configurations for an AgentCore Runtime. The list can contain at most one resource configuration.</p>",
+      "max":1,
+      "min":0
     },
     "ResourceGatewayArn":{
       "type":"string",
@@ -21124,6 +21289,16 @@
       "max":1024,
       "min":1,
       "pattern":"(([0-9]{12})\\.dkr\\.ecr\\.([a-z0-9-]+)\\.amazonaws\\.com(\\.cn)?|public\\.ecr\\.aws)/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(?::([^:@]{1,300}))?(?:@(.+))?"
+    },
+    "RuntimeHooksConfiguration":{
+      "type":"structure",
+      "members":{
+        "build":{
+          "shape":"BuildLifecycleHooks",
+          "documentation":"<p>The hooks that run when you create or update the AgentCore Runtime, before any sessions are created.</p>"
+        }
+      },
+      "documentation":"<p>The lifecycle hooks that AgentCore Runtime runs at fixed points in the runtime's lifecycle.</p>"
     },
     "RuntimeMetadataConfiguration":{
       "type":"structure",
@@ -23323,6 +23498,10 @@
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The updated life cycle configuration for the AgentCore Runtime.</p>"
         },
+        "hooksConfiguration":{
+          "shape":"RuntimeHooksConfiguration",
+          "documentation":"<p>The updated lifecycle hooks configuration for the AgentCore Runtime.</p>"
+        },
         "metadataConfiguration":{
           "shape":"RuntimeMetadataConfiguration",
           "documentation":"<p>The updated configuration for microVM Metadata Service (MMDS) settings for the AgentCore Runtime.</p>"
@@ -23346,6 +23525,10 @@
         "allowedPorts":{
           "shape":"AllowedPorts",
           "documentation":"<p>The updated additional ports on the AgentCore Runtime that are reachable through the runtime's session URL. Specify one to five non-overlapping entries, each containing either a single port or an inclusive port range. Ports must be between <code>8000</code> and <code>12000</code>, excluding the reserved port <code>8443</code>.</p>"
+        },
+        "resourceConfigurations":{
+          "shape":"ResourceConfigurations",
+          "documentation":"<p>The updated resource configurations for the AgentCore Runtime. You can specify at most one resource configuration.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -23997,6 +24180,10 @@
         "wafConfiguration":{
           "shape":"WafConfiguration",
           "documentation":"<p>The updated Amazon Web Services WAF configuration for the gateway.</p>"
+        },
+        "domainOverride":{
+          "shape":"DomainOverride",
+          "documentation":"<p>The updated public domain names that the gateway advertises in its OAuth discovery URLs instead of the inbound Host header. Specify this when clients reach the gateway through your own proxy or custom domain.</p>"
         }
       }
     },
@@ -24096,6 +24283,10 @@
         "wafConfiguration":{
           "shape":"WafConfiguration",
           "documentation":"<p>The Amazon Web Services WAF configuration for the gateway.</p>"
+        },
+        "domainOverride":{
+          "shape":"DomainOverride",
+          "documentation":"<p>The public domain names that the gateway advertises in its OAuth discovery URLs instead of the inbound Host header.</p>"
         }
       }
     },
@@ -24470,7 +24661,7 @@
         },
         "eventExpiryDuration":{
           "shape":"UpdateMemoryInputEventExpiryDurationInteger",
-          "documentation":"<p>The number of days after which memory events will expire, between 7 and 365 days.</p>"
+          "documentation":"<p>The number of days after which memory events expire, between 7 and 3650 days.</p>"
         },
         "memoryExecutionRoleArn":{
           "shape":"Arn",
@@ -24502,7 +24693,7 @@
     "UpdateMemoryInputEventExpiryDurationInteger":{
       "type":"integer",
       "box":true,
-      "max":365,
+      "max":3650,
       "min":3
     },
     "UpdateMemoryOutput":{

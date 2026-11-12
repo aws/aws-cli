@@ -3,7 +3,7 @@
 The following ``describe-clusters`` example retrieves details about the specified cluster. ::
 
     aws ecs describe-clusters \
-        --cluster default
+        --clusters default
 
 Output::
 

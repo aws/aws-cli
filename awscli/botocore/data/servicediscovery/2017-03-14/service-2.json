@@ -4,8 +4,11 @@
     "apiVersion":"2017-03-14",
     "endpointPrefix":"servicediscovery",
     "jsonVersion":"1.1",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceAbbreviation":"ServiceDiscovery",
     "serviceFullName":"AWS Cloud Map",
     "serviceId":"ServiceDiscovery",
@@ -672,6 +675,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The health check for the instance that's specified by <code>ServiceId</code> and <code>InstanceId</code> isn't a custom health check. </p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "CustomHealthStatus":{
@@ -924,6 +928,7 @@
         }
       },
       "documentation":"<p>The operation is already in progress.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "ErrorMessage":{"type":"string"},
@@ -1246,6 +1251,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>No instance exists with the specified ID, or the instance was recently registered, and information about the instance hasn't propagated yet.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "InstanceSummary":{
@@ -1276,6 +1282,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>One or more specified values aren't valid. For example, a required value might be missing, a numeric value might be outside the allowed range, or a string value might exceed length constraints.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ListInstancesRequest":{
@@ -1488,6 +1495,7 @@
         }
       },
       "documentation":"<p>The namespace that you're trying to create already exists.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "NamespaceFilter":{
@@ -1551,6 +1559,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>No namespace exists with the specified ID.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "NamespaceProperties":{
@@ -1713,6 +1722,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>No operation exists with the specified ID.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "OperationStatus":{
@@ -1938,6 +1948,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The operation can't be completed because you've reached the quota for the number of requests. For more information, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/throttling.html\">Cloud Map API request throttling quota</a> in the <i>Cloud Map Developer Guide</i>.</p>",
+      "error":{"httpStatusCode":429},
       "exception":true
     },
     "ResourceCount":{"type":"integer"},
@@ -1955,6 +1966,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The specified resource can't be deleted because it contains other resources. For example, you can't delete a service that contains any instances.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "ResourceLimitExceeded":{
@@ -1963,6 +1975,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The resource can't be created because you've reached the quota on the number of resources.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ResourceNotFoundException":{
@@ -1971,6 +1984,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The operation can't be completed because the resource was not found.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "ResourcePath":{
@@ -2087,6 +2101,7 @@
         }
       },
       "documentation":"<p>The service can't be created because a service with the same name already exists.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ServiceAttributeKey":{
@@ -2127,6 +2142,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The attribute can't be added to the service because you've exceeded the quota for the number of attributes you can add to a service.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ServiceAttributesMap":{
@@ -2197,6 +2213,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>No service exists with the specified ID.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "ServiceSummariesList":{
@@ -2341,6 +2358,7 @@
         }
       },
       "documentation":"<p>The list of tags on the resource is over the quota. The maximum number of tags that can be applied to a resource is 50.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "UntagResourceRequest":{

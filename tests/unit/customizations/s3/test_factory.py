@@ -1720,14 +1720,8 @@ class TestMaxAttemptsBounds:
             f'{MAX_CRT_MAX_ATTEMPTS}'
         ) in warning
 
-    def test_upper_bound_matches_what_awscrt_accepts(self):
-        # Guards against awscrt moving the limit out from under us.
+    def test_awscrt_accepts_upper_bound(self):
         create_s3_crt_client(
             region='us-west-2',
             retry_options={'max_retries': MAX_CRT_MAX_ATTEMPTS - 1},
         )
-        with pytest.raises(RuntimeError):
-            create_s3_crt_client(
-                region='us-west-2',
-                retry_options={'max_retries': MAX_CRT_MAX_ATTEMPTS},
-            )

@@ -18,6 +18,35 @@ from awscli.customizations.codedeploy.systems import RHEL, Ubuntu, Windows
 from awscli.testutils import mock, unittest
 
 
+class _FakeProcess:
+    """Popen stand-in that mimics the real text versus bytes behaviour."""
+
+    def __init__(self, returncode, stdout, stderr, text_mode):
+        self.returncode = returncode
+        self._stdout = stdout
+        self._stderr = stderr
+        self._text_mode = text_mode
+
+    def communicate(self):
+        if self._text_mode:
+            return self._stdout, self._stderr
+        return self._stdout.encode(), self._stderr.encode()
+
+
+def _popen_side_effect(*results):
+    """Return a Popen replacement that yields the given (rc, out, err)."""
+    pending = list(results)
+
+    def popen(*args, **kwargs):
+        returncode, stdout, stderr = pending.pop(0)
+        text_mode = bool(
+            kwargs.get('text') or kwargs.get('universal_newlines')
+        )
+        return _FakeProcess(returncode, stdout, stderr, text_mode)
+
+    return popen
+
+
 class TestWindows(unittest.TestCase):
     def setUp(self):
         self.popen_patcher = mock.patch('subprocess.Popen')
@@ -93,6 +122,7 @@ class TestWindows(unittest.TestCase):
                     ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    text=True,
                 ),
                 mock.call().communicate(),
                 mock.call(
@@ -105,6 +135,7 @@ class TestWindows(unittest.TestCase):
                     ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    text=True,
                 ),
                 mock.call().communicate(),
             ]
@@ -152,6 +183,7 @@ class TestWindows(unittest.TestCase):
                     ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    text=True,
                 ),
                 mock.call().communicate(),
                 mock.call(
@@ -166,10 +198,50 @@ class TestWindows(unittest.TestCase):
                     ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    text=True,
                 ),
                 mock.call().communicate(),
             ]
         )
+
+    def test_install_tolerates_missing_service(self):
+        self.popen.side_effect = _popen_side_effect(
+            (
+                1,
+                '',
+                "Cannot find any service with service name 'codedeployagent'",
+            ),
+            (0, 'Running  codedeployagent', ''),
+        )
+
+        self.windows.install(self.params)
+
+        self.assertEqual(self.popen.call_count, 2)
+
+    def test_install_fails_when_agent_is_not_running(self):
+        self.popen.side_effect = _popen_side_effect(
+            (0, '', ''),
+            (0, 'Stopped  codedeployagent', ''),
+        )
+
+        with self.assertRaisesRegex(
+            RuntimeError, 'did not start after installation'
+        ):
+            self.windows.install(self.params)
+
+    def test_uninstall_tolerates_missing_service(self):
+        self.popen.side_effect = _popen_side_effect(
+            (
+                1,
+                '',
+                "Cannot find any service with service name 'codedeployagent'",
+            ),
+        )
+
+        self.windows.uninstall(self.params)
+
+        # The agent was never installed, so there is nothing to remove.
+        self.assertEqual(self.popen.call_count, 1)
 
 
 class TestLinux(unittest.TestCase):
@@ -276,6 +348,7 @@ class TestUbuntu(TestLinux):
                     ['service', 'codedeploy-agent', 'stop'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    text=True,
                 ),
                 mock.call().communicate(),
             ]
@@ -305,6 +378,7 @@ class TestUbuntu(TestLinux):
                     ['service', 'codedeploy-agent', 'stop'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    text=True,
                 ),
                 mock.call().communicate(),
             ]
@@ -312,6 +386,31 @@ class TestUbuntu(TestLinux):
         self.check_call.assert_has_calls(
             [mock.call(['dpkg', '-r', 'codedeploy-agent'])]
         )
+
+    def test_stop_agent_tolerates_missing_service(self):
+        self.popen.side_effect = _popen_side_effect(
+            (1, '', 'codedeploy-agent: unrecognized service'),
+        )
+
+        process = self.ubuntu._stop_agent(self.params)
+
+        self.assertEqual(process.returncode, 1)
+        self.popen.assert_called_once_with(
+            ['service', 'codedeploy-agent', 'stop'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+
+    def test_stop_agent_raises_on_other_failure(self):
+        self.popen.side_effect = _popen_side_effect(
+            (1, '', 'Failed to stop codedeploy-agent: Access denied'),
+        )
+
+        with self.assertRaisesRegex(
+            RuntimeError, 'Failed to stop the AWS CodeDeploy Agent'
+        ):
+            self.ubuntu._stop_agent(self.params)
 
 
 class TestRHEL(TestLinux):
@@ -351,6 +450,7 @@ class TestRHEL(TestLinux):
                     ['service', 'codedeploy-agent', 'stop'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    text=True,
                 ),
                 mock.call().communicate(),
             ]
@@ -379,6 +479,7 @@ class TestRHEL(TestLinux):
                     ['service', 'codedeploy-agent', 'stop'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    text=True,
                 ),
                 mock.call().communicate(),
             ]
@@ -386,6 +487,19 @@ class TestRHEL(TestLinux):
         self.check_call.assert_has_calls(
             [mock.call(['yum', '-y', 'erase', 'codedeploy-agent'])]
         )
+
+    def test_stop_agent_tolerates_missing_service(self):
+        self.popen.side_effect = _popen_side_effect(
+            (
+                1,
+                '',
+                'Redirecting to /bin/systemctl stop  codedeploy-agent.service',
+            ),
+        )
+
+        process = self.rhel._stop_agent(self.params)
+
+        self.assertEqual(process.returncode, 1)
 
 
 if __name__ == "__main__":

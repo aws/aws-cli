@@ -403,7 +403,7 @@ class SetFileUtimeError(Exception):
 
 
 def _date_parser(date_string):
-    return parse(date_string).astimezone(tzlocal())
+    return parse(date_string).astimezone()
 
 
 class BucketLister:

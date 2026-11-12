@@ -94,6 +94,25 @@ class TestBaseLogin(unittest.TestCase):
         ):
             self.test_subject._run_commands('tool', ['cmd'])
 
+    def test_run_commands_command_failed_redact_auth_token_from_stderr(self):
+        error_to_be_caught = subprocess.CalledProcessError(
+            returncode=1,
+            cmd=['cmd'],
+            output=None,
+            stderr=(
+                b'nuget sources add failed: '
+                b'-username aws -password auth-token'
+            ),
+        )
+        self.subprocess_utils.run.side_effect = error_to_be_caught
+        with self.assertRaises(CommandFailedError) as caught:
+            self.test_subject._run_commands('tool', ['cmd'])
+
+        message = str(caught.exception)
+        self.assertIn('Stderr from command:', message)
+        self.assertIn('-password ******', message)
+        self.assertNotIn(self.auth_token, message)
+
     def test_run_commands_nonexistent_command(self):
         self.subprocess_utils.run.side_effect = OSError(
             errno.ENOENT, 'not found error'

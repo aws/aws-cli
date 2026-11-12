@@ -1434,7 +1434,9 @@ class TestGetServiceModuleName(unittest.TestCase):
     def setUp(self):
         self.service_description = {
             'metadata': {
+                'serviceId': 'My Service',
                 'serviceFullName': 'AWS MyService',
+                'serviceAbbreviation': 'Abbreviation',
                 'apiVersion': '2014-01-01',
                 'endpointPrefix': 'myservice',
                 'signatureVersion': 'v4',
@@ -1447,39 +1449,64 @@ class TestGetServiceModuleName(unittest.TestCase):
             self.service_description, 'myservice'
         )
 
-    def test_default(self):
+    def test_derived_from_service_id(self):
         self.assertEqual(
             get_service_module_name(self.service_model), 'MyService'
         )
 
-    def test_client_name_with_amazon(self):
+    def test_service_id_spaces_are_removed(self):
+        self.service_description['metadata']['serviceId'] = 'My Big Service'
+        self.assertEqual(
+            get_service_module_name(self.service_model), 'MyBigService'
+        )
+
+    def test_service_id_casing_is_preserved(self):
+        self.service_description['metadata']['serviceId'] = 'API Gateway'
+        self.assertEqual(
+            get_service_module_name(self.service_model), 'APIGateway'
+        )
+
+    def test_docgen_ids_are_not_read(self):
         self.service_description['metadata']['serviceFullName'] = (
-            'Amazon MyService'
+            'Amazon Renamed'
         )
+        self.service_description['metadata']['serviceAbbreviation'] = 'Renamed'
         self.assertEqual(
             get_service_module_name(self.service_model), 'MyService'
         )
 
-    def test_client_name_using_abreviation(self):
-        self.service_description['metadata']['serviceAbbreviation'] = (
-            'Abbreviation'
-        )
+    def test_table_wins_over_derivation(self):
+        # 'Transcribe' shipped as TranscribeService before the table
+        # existed and must keep that name.
+        self.service_description['metadata']['serviceId'] = 'Transcribe'
         self.assertEqual(
-            get_service_module_name(self.service_model), 'Abbreviation'
+            get_service_module_name(self.service_model),
+            'TranscribeService',
         )
 
-    def test_client_name_with_non_alphabet_characters(self):
-        self.service_description['metadata']['serviceFullName'] = (
-            'Amazon My-Service'
-        )
+    def test_table_key_is_exact(self):
+        self.service_description['metadata']['serviceId'] = 'transcribe'
         self.assertEqual(
-            get_service_module_name(self.service_model), 'MyService'
+            get_service_module_name(self.service_model), 'transcribe'
         )
 
-    def test_client_name_with_no_full_name_or_abbreviation(self):
-        del self.service_description['metadata']['serviceFullName']
+    def test_no_service_id_falls_back_to_service_name(self):
+        del self.service_description['metadata']['serviceId']
         self.assertEqual(
             get_service_module_name(self.service_model), 'myservice'
+        )
+
+    def test_derived_name_colliding_with_tabled_name_raises(self):
+        # 'Medical Imaging' is tabled as HealthImaging. A new service whose
+        # serviceId derives the same name must fail rather than share it.
+        self.service_description['metadata']['serviceId'] = 'Health Imaging'
+        with self.assertRaisesRegex(ValueError, 'HealthImaging'):
+            get_service_module_name(self.service_model)
+
+    def test_tabled_service_does_not_collide_with_itself(self):
+        self.service_description['metadata']['serviceId'] = 'Medical Imaging'
+        self.assertEqual(
+            get_service_module_name(self.service_model), 'HealthImaging'
         )
 
 

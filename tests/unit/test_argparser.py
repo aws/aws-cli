@@ -20,6 +20,7 @@ from awscli.argparser import (
     ServiceArgParser,
     format_unknown_options_error,
     get_option_suggestion_candidates,
+    suggest_choices,
 )
 from awscli.arguments import CustomArgument
 from awscli.testutils import mock, unittest
@@ -236,3 +237,103 @@ class TestFormatUnknownOptionsError(unittest.TestCase):
     def test_does_not_match_values(self):
         msg = format_unknown_options_error(['region'], self.candidates)
         self.assertNotIn('Maybe you meant', msg)
+
+
+class TestSuggestChoices(unittest.TestCase):
+    def test_swaps_verb_for_same_noun(self):
+        choices = ['get-tables', 'get-table', 'create-table']
+        self.assertEqual(
+            suggest_choices('list-tables', choices),
+            ['get-tables', 'get-table'],
+        )
+
+    def test_swaps_create_and_start(self):
+        choices = ['start-job', 'stop-job', 'list-jobs']
+        self.assertEqual(suggest_choices('create-job', choices), ['start-job'])
+
+    def test_prefers_matching_plurality(self):
+        choices = ['describe-channel', 'list-channels', 'delete-channel']
+        self.assertEqual(
+            suggest_choices('describe-channels', choices)[:2],
+            ['list-channels', 'describe-channel'],
+        )
+
+    def test_matches_when_choice_drops_qualifiers(self):
+        choices = ['list-components', 'list-images', 'get-component']
+        self.assertEqual(
+            suggest_choices('list-image-builder-components', choices),
+            ['list-components', 'get-component'],
+        )
+
+    def test_does_not_match_choice_with_extra_words(self):
+        choices = ['get-column-statistics-for-table', 'get-tables']
+        self.assertEqual(
+            suggest_choices('list-tables', choices), ['get-tables']
+        )
+
+    def test_bare_verb_gets_no_verb_swaps(self):
+        # No noun to match, so even a single swapped-verb operation
+        # isn't suggested.
+        choices = ['query-vectors', 'put-vectors', 'list-vectors']
+        self.assertEqual(suggest_choices('search', choices), [])
+
+    def test_verb_swaps_come_before_close_matches(self):
+        choices = ['describe-namespace-x', 'get-namespace']
+        self.assertEqual(
+            suggest_choices('describe-namespace', choices),
+            ['get-namespace', 'describe-namespace-x'],
+        )
+
+    def test_still_suggests_typos(self):
+        choices = ['list-objects', 'list-buckets']
+        self.assertEqual(
+            suggest_choices('list-objecst', choices), ['list-objects']
+        )
+
+    def test_no_verb_swap_for_other_verbs(self):
+        choices = ['remove-tags', 'list-tags']
+        self.assertEqual(suggest_choices('delete-tags', choices), [])
+
+    def test_search_swaps_with_read_verbs(self):
+        choices = ['search-profiles', 'merge-profiles']
+        self.assertEqual(
+            suggest_choices('get-profile', choices)[0], 'search-profiles'
+        )
+
+    def test_swaps_update_with_modify_and_put(self):
+        self.assertEqual(
+            suggest_choices(
+                'update-instance-attribute', ['modify-instance-attribute']
+            ),
+            ['modify-instance-attribute'],
+        )
+        self.assertEqual(
+            suggest_choices('update-bucket-policy', ['put-bucket-policy']),
+            ['put-bucket-policy'],
+        )
+
+    def test_swaps_register_and_deregister(self):
+        choices = ['register-task-definition', 'deregister-task-definition']
+        self.assertEqual(
+            suggest_choices('create-task-definition', choices)[0],
+            'register-task-definition',
+        )
+        self.assertEqual(
+            suggest_choices('delete-task-definition', choices)[0],
+            'deregister-task-definition',
+        )
+
+    def test_swaps_stop_and_cancel(self):
+        self.assertEqual(
+            suggest_choices('stop-job', ['cancel-job']), ['cancel-job']
+        )
+
+    def test_verb_groups_are_not_transitive(self):
+        # create swaps with both start and register, but those two
+        # aren't interchangeable with each other.
+        self.assertEqual(
+            suggest_choices('start-widget', ['register-widget']), []
+        )
+
+    def test_no_suggestions_for_unrelated_value(self):
+        self.assertEqual(suggest_choices('ec2', ['s3', 'iam']), [])

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import stat
 import subprocess
 from argparse import Namespace
 
@@ -74,6 +75,65 @@ class TestWindows(unittest.TestCase):
 
     def test_installer(self):
         self.assertEqual(self.installer, self.windows.INSTALLER)
+
+    def test_recreates_config_file(self):
+        self.assertTrue(self.windows.RECREATE_CONFIG_FILE)
+
+    def _patch_create(self):
+        module = 'awscli.customizations.codedeploy.systems.'
+        patchers = {
+            'chmod': mock.patch(module + 'os.chmod'),
+            'remove': mock.patch(module + 'os.remove'),
+            'create': mock.patch(
+                module + '_create_windows_file', return_value=4
+            ),
+        }
+        mocks = {}
+        for name, patcher in patchers.items():
+            mocks[name] = patcher.start()
+            self.addCleanup(patcher.stop)
+        return mocks
+
+    def test_create_config_file_replaces_existing_file(self):
+        mocks = self._patch_create()
+        calls = mock.Mock()
+        for name, m in mocks.items():
+            calls.attach_mock(m, name)
+        self.assertEqual(self.windows.create_config_file(), 4)
+        self.assertEqual(
+            calls.mock_calls,
+            [
+                mock.call.chmod(self.config_path, stat.S_IWRITE),
+                mock.call.remove(self.config_path),
+                mock.call.create(
+                    self.config_path, 'D:P(A;;FA;;;SY)(A;;FA;;;BA)'
+                ),
+            ],
+        )
+
+    def test_create_config_file_handles_missing_file(self):
+        mocks = self._patch_create()
+        mocks['chmod'].side_effect = FileNotFoundError()
+        self.assertEqual(self.windows.create_config_file(), 4)
+        self.assertFalse(mocks['remove'].called)
+        self.assertTrue(mocks['create'].called)
+
+    def test_create_config_file_explains_file_in_use(self):
+        mocks = self._patch_create()
+        mocks['remove'].side_effect = PermissionError(
+            13, 'The process cannot access the file'
+        )
+        with self.assertRaisesRegex(
+            RuntimeError, 'Make sure no other process has the file open'
+        ):
+            self.windows.create_config_file()
+        self.assertFalse(mocks['create'].called)
+
+    def test_create_config_file_raises_on_create_failure(self):
+        mocks = self._patch_create()
+        mocks['create'].side_effect = OSError(80, 'The file exists')
+        with self.assertRaisesRegex(RuntimeError, 'Failed to create'):
+            self.windows.create_config_file()
 
     def test_install(self):
         process = mock.MagicMock()
@@ -255,6 +315,9 @@ class TestUbuntu(TestLinux):
 
     def test_installer(self):
         self.assertEqual(self.installer, self.ubuntu.INSTALLER)
+
+    def test_does_not_recreate_config_file(self):
+        self.assertFalse(self.ubuntu.RECREATE_CONFIG_FILE)
 
     @mock.patch('os.geteuid', create=True)
     def test_validate_administrator_throws(self, geteuid):

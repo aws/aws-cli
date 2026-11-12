@@ -11259,14 +11259,18 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p> The message for the protected job error.</p>"
+          "documentation":"<p>A description of why the protected job failed.</p>"
         },
         "code":{
           "shape":"String",
-          "documentation":"<p> The error code for the protected job.</p>"
+          "documentation":"<p>A code that identifies the category of the failure. Valid values are:</p> <ul> <li> <p> <code>MALFORMED_SCRIPT</code> – The job script or its execution environment is not valid (code, imports, entry point, virtual environment, or dependencies).</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – A referenced resource doesn't exist.</p> </li> <li> <p> <code>INVALID_RESOURCE</code> – A referenced resource exists, but you can't use it because its configuration, state, or data is not valid.</p> </li> <li> <p> <code>RESOURCE_ACCESS_DENIED</code> – A required permission is missing for a data source or resource.</p> </li> <li> <p> <code>INSUFFICIENT_COMPUTE</code> – The job exceeded the available compute (memory, disk, or time).</p> </li> <li> <p> <code>TRANSIENT_ERROR</code> – A temporary condition caused the failure, such as throttling or a network interruption.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> – Clean Rooms encountered an unexpected error. If the error persists, contact AWS Support.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code> – The failure couldn't be classified.</p> </li> </ul> <p>For more information about error codes, see <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/error-codes.html\">https://docs.aws.amazon.com/clean-rooms/latest/userguide/error-codes.html</a> in the Clean Rooms User Guide.</p>"
+        },
+        "retry":{
+          "shape":"RetryInfo",
+          "documentation":"<p>Contains information about whether running the same protected job again might succeed.</p>"
         }
       },
-      "documentation":"<p>The protected job error.</p>"
+      "documentation":"<p>Details of the error that caused the protected job to fail.</p>"
     },
     "ProtectedJobIdentifier":{
       "type":"string",
@@ -11700,14 +11704,18 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>A description of why the query failed.</p>"
+          "documentation":"<p>A description of why the protected query failed.</p>"
         },
         "code":{
           "shape":"String",
-          "documentation":"<p>An error code for the error.</p>"
+          "documentation":"<p>A code that identifies the category of the failure. Valid values are:</p> <ul> <li> <p> <code>MALFORMED_QUERY</code> – The query is not valid (syntax, semantics, columns, or an unsupported operation).</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – A referenced resource doesn't exist.</p> </li> <li> <p> <code>INVALID_RESOURCE</code> – A referenced resource exists, but you can't use it because its configuration, state, or data is not valid.</p> </li> <li> <p> <code>RESOURCE_ACCESS_DENIED</code> – A required permission is missing for a data source or resource.</p> </li> <li> <p> <code>INSUFFICIENT_COMPUTE</code> – The query exceeded the available compute (memory, disk, or time).</p> </li> <li> <p> <code>TRANSIENT_ERROR</code> – A temporary condition caused the failure, such as throttling or a network interruption.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> – Clean Rooms encountered an unexpected error. If the error persists, contact AWS Support.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code> – The failure couldn't be classified.</p> </li> </ul> <p>For more information about error codes, see <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/error-codes.html\">https://docs.aws.amazon.com/clean-rooms/latest/userguide/error-codes.html</a> in the Clean Rooms User Guide.</p>"
+        },
+        "retry":{
+          "shape":"RetryInfo",
+          "documentation":"<p>Contains information about whether running the same protected query again might succeed.</p>"
         }
       },
-      "documentation":"<p>Details of errors thrown by the protected query.</p>"
+      "documentation":"<p>Details of the error that caused the protected query to fail.</p>"
     },
     "ProtectedQueryIdentifier":{
       "type":"string",
@@ -12087,6 +12095,16 @@
         "CSV",
         "PARQUET"
       ]
+    },
+    "RetryInfo":{
+      "type":"structure",
+      "members":{
+        "retryable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether running the same request again might succeed. <code>true</code> means that the failure was transient. <code>false</code> means that running the same request again is not expected to succeed.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about whether running a failed protected query or protected job again might succeed.</p>"
     },
     "RoleArn":{
       "type":"string",

@@ -420,6 +420,14 @@
         "MaxWebservers":{
           "shape":"MaxWebservers",
           "documentation":"<p> The maximum number of web servers that you want to run in your environment. Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code> when you interact with your Apache Airflow environment using Apache Airflow REST API, or the Apache Airflow CLI. For example, in scenarios where your workload requires network calls to the Apache Airflow REST API with a high transaction-per-second (TPS) rate, Amazon MWAA will increase the number of web servers up to the number set in <code>MaxWebserers</code>. As TPS rates decrease Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>. </p> <p>Valid values: For environments larger than mw1.micro, accepts values from <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment sizes except mw1.micro, which defaults to <code>1</code>.</p>"
+        },
+        "IdentityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p>The Amazon Web Services IAM Identity Center configuration used to authenticate users to the Apache Airflow web UI for your environment.</p>"
+        },
+        "Teams":{
+          "shape":"TeamMap",
+          "documentation":"<p>A map of teams to configure for Apache Airflow multi-team support on your Amazon MWAA environment. Each entry maps a team name to a object that defines the Amazon S3 location of that team's DAG code. The team name must match the display name of an Amazon Web Services IAM Identity Center group that you associate with your environment, so you must configure IAM Identity Center for the environment before you add teams. You can configure between <code>1</code> and <code>20</code> teams. For more information, refer to <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/multi-team-environments.html\">Apache Airflow multi-team environments</a>.</p>"
         }
       },
       "documentation":"<p>This section contains the Amazon Managed Workflows for Apache Airflow (Amazon MWAA) API reference documentation to create an environment. For more information, refer to <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html\">Get started with Amazon Managed Workflows for Apache Airflow</a>.</p>"
@@ -663,6 +671,14 @@
         "MaxWebservers":{
           "shape":"MaxWebservers",
           "documentation":"<p> The maximum number of web servers that you want to run in your environment. Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code> when you interact with your Apache Airflow environment using Apache Airflow REST API, or the Apache Airflow CLI. For example, in scenarios where your workload requires network calls to the Apache Airflow REST API with a high transaction-per-second (TPS) rate, Amazon MWAA will increase the number of web servers up to the number set in <code>MaxWebserers</code>. As TPS rates decrease Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>. </p> <p>Valid values: For environments larger than mw1.micro, accepts values from <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment sizes except mw1.micro, which defaults to <code>1</code>.</p>"
+        },
+        "IdentityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p>The Amazon Web Services IAM Identity Center configuration used to authenticate users to the Apache Airflow web UI for your environment.</p>"
+        },
+        "Teams":{
+          "shape":"TeamMap",
+          "documentation":"<p>The teams configured for Apache Airflow multi-team support on your Amazon MWAA environment. Each entry maps a team name to its settings, which define the Amazon S3 location of that team's DAG code. Each team name matches the display name of the Amazon Web Services IAM Identity Center group associated with the team. For more information, refer to <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/multi-team-environments.html\">Apache Airflow multi-team environments</a>.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>"
@@ -745,6 +761,32 @@
       "max":1224,
       "min":1,
       "pattern":"arn:aws(-[a-z]+)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+    },
+    "IdentityCenterConfiguration":{
+      "type":"structure",
+      "members":{
+        "StartUrl":{
+          "shape":"IdentityCenterStartUrl",
+          "documentation":"<p>The Amazon Web Services access portal URL of the IAM Identity Center instance associated with your environment. For example, <code>https://my-portal.awsapps.com/start</code>.</p>"
+        },
+        "IdentityStoreId":{
+          "shape":"IdentityCenterIdentityStoreId",
+          "documentation":"<p>The identifier of the identity store associated with the IAM Identity Center instance for your environment. For example, <code>d-1234567890</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Amazon Web Services IAM Identity Center configuration used to authenticate users to the Apache Airflow web UI for your Amazon MWAA environment.</p>"
+    },
+    "IdentityCenterIdentityStoreId":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "pattern":".*d-[0-9a-f]{10}$|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+    },
+    "IdentityCenterStartUrl":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"https://.+"
     },
     "Integer":{
       "type":"integer",
@@ -1311,6 +1353,43 @@
       "min":1,
       "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
+    "TeamConfig":{
+      "type":"structure",
+      "required":[
+        "SourceBucketArn",
+        "DagS3Path"
+      ],
+      "members":{
+        "SourceBucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where the team's DAG code and supporting files are stored. For example, <code>arn:aws:s3:::my-airflow-bucket-unique-name</code>. For more information, refer to <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-s3-bucket.html\">Create an Amazon S3 bucket for Amazon MWAA</a>.</p>"
+        },
+        "DagS3Path":{
+          "shape":"RelativePath",
+          "documentation":"<p>The relative path to the DAGs folder for the team in the team's Amazon S3 bucket. For example, <code>dags/team-a</code>. For more information, refer to <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-dag-folder.html\">Adding or updating DAGs</a>.</p> <p>DAG folders can't overlap. A team folder can't be inside the global folder or another team's folder, and the global folder can't be inside a team folder. Amazon Managed Workflows for Apache Airflow (Amazon MWAA) compares folder paths as Amazon S3 prefixes, so the trailing slash matters:</p> <ul> <li> <p> <code>s3://amzn-s3-demo-bucket/dags/</code> and <code>s3://amzn-s3-demo-bucket/dags/team-a/</code> overlap, because the first path is a prefix of the second.</p> </li> <li> <p> <code>s3://amzn-s3-demo-bucket/dags/</code> and <code>s3://amzn-s3-demo-bucket/dags-team-a/</code> don't overlap.</p> </li> <li> <p> <code>s3://amzn-s3-demo-bucket/teams/team-a/</code> and <code>s3://amzn-s3-demo-bucket/teams/team-b/</code> don't overlap.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for a single team in Apache Airflow multi-team support on your Amazon MWAA environment. A team configuration defines the Amazon S3 location of the DAG code for the team. The team name that maps to this configuration must match the display name of an Amazon Web Services IAM Identity Center group associated with your environment. For more information, refer to <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/multi-team-environments.html\">Apache Airflow multi-team environments</a>.</p>"
+    },
+    "TeamMap":{
+      "type":"map",
+      "key":{"shape":"TeamNameString"},
+      "value":{"shape":"TeamConfig"},
+      "max":20,
+      "min":1
+    },
+    "TeamNameList":{
+      "type":"list",
+      "member":{"shape":"TeamNameString"},
+      "max":20,
+      "min":1
+    },
+    "TeamNameString":{
+      "type":"string",
+      "max":50,
+      "min":3,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_-]*"
+    },
     "Timestamp":{"type":"timestamp"},
     "Token":{
       "type":"string",
@@ -1471,6 +1550,14 @@
         "WeeklyMaintenanceWindowStart":{
           "shape":"WeeklyMaintenanceWindowStart",
           "documentation":"<p>The day and time of the week in Coordinated Universal Time (UTC) 24-hour standard time to start weekly maintenance updates of your environment in the following format: <code>DAY:HH:MM</code>. For example: <code>TUE:03:30</code>. You can specify a start time in 30 minute increments only.</p>"
+        },
+        "IdentityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p>The Amazon Web Services IAM Identity Center configuration used to authenticate users to the Apache Airflow web UI for your environment.</p>"
+        },
+        "Teams":{
+          "shape":"UpdateTeamsInput",
+          "documentation":"<p>Updates the teams configured for Apache Airflow multi-team support on your Amazon MWAA environment. Use <code>AddOrUpdate</code> to add new teams or change the configuration of existing teams, and <code>Remove</code> to remove teams by name. For more information, refer to <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/multi-team-environments.html\">Apache Airflow multi-team environments</a>.</p>"
         }
       }
     },
@@ -1521,6 +1608,20 @@
         "PENDING",
         "FAILED"
       ]
+    },
+    "UpdateTeamsInput":{
+      "type":"structure",
+      "members":{
+        "AddOrUpdate":{
+          "shape":"TeamMap",
+          "documentation":"<p>A map of teams to add to your environment, or to update if they already exist. Each entry maps a team name to its settings. Each team name must match the display name of an Amazon Web Services IAM Identity Center group associated with your environment. You can configure between <code>1</code> and <code>20</code> teams.</p>"
+        },
+        "Remove":{
+          "shape":"TeamNameList",
+          "documentation":"<p>A list of team names to remove from your environment. For example, <code>team-a</code>. You can remove between <code>1</code> and <code>20</code> teams in a single update. Removing a team does not delete the team's DAG code from Amazon S3.</p>"
+        }
+      },
+      "documentation":"<p>Defines the changes to the teams configured for Apache Airflow multi-team support when you update your Amazon MWAA environment. Use <code>AddOrUpdate</code> to add or modify teams, and <code>Remove</code> to remove teams by name.</p>"
     },
     "ValidationException":{
       "type":"structure",

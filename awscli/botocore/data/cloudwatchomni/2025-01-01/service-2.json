@@ -4525,6 +4525,14 @@
       "max":50,
       "min":0
     },
+    "MetricAggregationTemporality":{
+      "type":"string",
+      "documentation":"<p>Describes how an aggregating metric reports values over time. A delta value covers the preceding reporting interval. A cumulative value covers a fixed start time through the current reporting time, restarting when the stream resets.</p>",
+      "enum":[
+        "delta",
+        "cumulative"
+      ]
+    },
     "MetricMetadata":{
       "type":"structure",
       "members":{
@@ -4542,21 +4550,37 @@
         },
         "attributes":{
           "shape":"MetadataAttributeMap",
-          "documentation":"<p>Per-metric qualifying attributes used to query this metric's telemetry. Keys are the metric store's own label names, not bare OTel attribute names: service identity arrives as &quot;@resource.service.name&quot; and &quot;@resource.service.namespace&quot;, and the instrumentation scope as &quot;@instrumentation.@name&quot;, while span-derived metrics label the service as a bare &quot;service.name&quot;. Cloud provider, account and region are not repeated per metric — read those from the node. Values are RAW, deliberately NOT the node's normalized or merged identity, so a selector built from them matches the emitted series. A merged node can carry different values per metric, which is why these live here rather than on the node.</p>"
+          "documentation":"<p>Per-metric qualifying attributes used to query this metric's telemetry. Keys are the metric store's own label names, not bare OTel attribute names: service identity arrives as &quot;@resource.service.name&quot; and &quot;@resource.service.namespace&quot;, and the instrumentation scope as &quot;@instrumentation.@name&quot;. Span-derived metrics can additionally carry the service as a bare data point &quot;service.name&quot; label. Cloud provider, account and region are not repeated per metric — read those from the node. Values are RAW, deliberately NOT the node's merged identity, so a selector built from them matches the emitted series. A merged node can carry different values per metric, which is why these live here rather than on the node.</p>"
         },
         "semantics":{
           "shape":"MetricSemantics",
           "documentation":"<p>What the metric means and the unit it is reported in.</p>"
+        },
+        "aggregationTemporality":{
+          "shape":"MetricAggregationTemporality",
+          "documentation":"<p>Aggregation temporality for the selected metric stream represented by this metadata entry. Present when known, including cumulative for OTel Summary metrics. Absent for Gauge metrics or when the information is unavailable.</p>"
+        },
+        "monotonicity":{
+          "shape":"MetricMonotonicity",
+          "documentation":"<p>Whether the selected Sum metric stream represented by this metadata entry is a non-negative accumulation. Absent for metrics other than Sum or when the information is unavailable.</p>"
         }
       },
-      "documentation":"<p>A single metric observed on a context graph node.</p>"
+      "documentation":"<p>A single metric observed on a context graph node or edge.</p>"
     },
     "MetricMetadataList":{
       "type":"list",
       "member":{"shape":"MetricMetadata"},
-      "documentation":"<p>Metrics observed on a context graph node. When more are observed than the cap, the backend keeps RED/OTel-semconv names (http/rpc server+client, span-metrics) ahead of the alphabetical remainder, so the metrics the console charts survive. Must match the backend MetricMetadataList cap or entries the backend kept get re-truncated here at the frontend boundary.</p>",
+      "documentation":"<p>Metrics observed on a context graph node or edge. When more are observed than the cap, the backend keeps RED/OTel-semconv names (http/rpc server+client, span-metrics) ahead of the alphabetical remainder, so the metrics the console charts survive. Must match the backend MetricMetadataList cap or entries the backend kept get re-truncated here at the frontend boundary.</p>",
       "max":50,
       "min":0
+    },
+    "MetricMonotonicity":{
+      "type":"string",
+      "documentation":"<p>Describes whether a Sum is a non-negative accumulation. For a monotonic Sum, delta values are non-negative and cumulative values do not decrease except when the stream resets. A non-monotonic Sum can report positive or negative changes.</p>",
+      "enum":[
+        "monotonic",
+        "non_monotonic"
+      ]
     },
     "MetricSemantics":{
       "type":"structure",

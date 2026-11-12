@@ -888,7 +888,7 @@
       },
       "input":{"shape":"CreateImageUsageReportRequest"},
       "output":{"shape":"CreateImageUsageReportResult"},
-      "documentation":"<p>Creates a report that shows how your image is used across other Amazon Web Services accounts. The report provides visibility into which accounts are using the specified image, and how many resources (EC2 instances or launch templates) are referencing it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/your-ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates a report that shows how your image is used across other Amazon Web Services accounts. The report provides visibility into which accounts are using the specified image, and how many resources (EC2 instances, EC2 launch templates, Image Builder image recipes, or Image Builder container recipes) are referencing it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/your-ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateInstanceConnectEndpoint":{
       "name":"CreateInstanceConnectEndpoint",
@@ -1149,6 +1149,16 @@
       "input":{"shape":"CreateManagedPrefixListRequest"},
       "output":{"shape":"CreateManagedPrefixListResult"},
       "documentation":"<p>Creates a managed prefix list. You can specify entries for the prefix list. Each entry consists of a CIDR block and an optional description.</p>"
+    },
+    "CreateMetricCategory":{
+      "name":"CreateMetricCategory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateMetricCategoryRequest"},
+      "output":{"shape":"CreateMetricCategoryResult"},
+      "documentation":"<p>Creates a metric category. A metric category is a set of additional metrics that you can associate with an instance that has detailed monitoring enabled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-detailed-monitoring.html#detailed-monitoring-metric-categories\">Use metric categories for additional metrics</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateNatGateway":{
       "name":"CreateNatGateway",
@@ -2133,6 +2143,16 @@
       "input":{"shape":"DeleteManagedPrefixListRequest"},
       "output":{"shape":"DeleteManagedPrefixListResult"},
       "documentation":"<p>Deletes the specified managed prefix list. You must first remove all references to the prefix list in your resources.</p>"
+    },
+    "DeleteMetricCategory":{
+      "name":"DeleteMetricCategory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMetricCategoryRequest"},
+      "output":{"shape":"DeleteMetricCategoryResult"},
+      "documentation":"<p>Deletes the specified metric category. Associations between the metric category and your instances are removed asynchronously.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-detailed-monitoring.html#detailed-monitoring-metric-categories\">Use metric categories for additional metrics</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DeleteNatGateway":{
       "name":"DeleteNatGateway",
@@ -3818,6 +3838,16 @@
       "input":{"shape":"DescribeManagedPrefixListsRequest"},
       "output":{"shape":"DescribeManagedPrefixListsResult"},
       "documentation":"<p>Describes your managed prefix lists and any Amazon Web Services-managed prefix lists.</p>"
+    },
+    "DescribeMetricCategories":{
+      "name":"DescribeMetricCategories",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMetricCategoriesRequest"},
+      "output":{"shape":"DescribeMetricCategoriesResult"},
+      "documentation":"<p>Describes the specified metric categories, or all of your metric categories.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-detailed-monitoring.html#detailed-monitoring-metric-categories\">Use metric categories for additional metrics</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribeMovingAddresses":{
       "name":"DescribeMovingAddresses",
@@ -5709,7 +5739,7 @@
       },
       "input":{"shape":"GetFlowLogsIntegrationTemplateRequest"},
       "output":{"shape":"GetFlowLogsIntegrationTemplateResult"},
-      "documentation":"<p>Generates a CloudFormation template that streamlines and automates the integration of VPC flow logs with Amazon Athena. This make it easier for you to query and gain insights from VPC flow logs data. Based on the information that you provide, we configure resources in the template to do the following:</p> <ul> <li> <p>Create a table in Athena that maps fields to a custom log format</p> </li> <li> <p>Create a Lambda function that updates the table with new partitions on a daily, weekly, or monthly basis</p> </li> <li> <p>Create a table partitioned between two timestamps in the past</p> </li> <li> <p>Create a set of named queries in Athena that you can use to get started quickly</p> </li> </ul> <note> <p> <code>GetFlowLogsIntegrationTemplate</code> does not support integration between Amazon Web Services Transit Gateway Flow Logs or Amazon Web Services Cloud WAN Flow Logs and Amazon Athena.</p> </note>"
+      "documentation":"<p>Generates a CloudFormation template that streamlines and automates the integration of VPC flow logs with Amazon Athena. This make it easier for you to query and gain insights from VPC flow logs data. Based on the information that you provide, we configure resources in the template to do the following:</p> <ul> <li> <p>Create a table in Athena that maps fields to a custom log format</p> </li> <li> <p>Create a Lambda function that updates the table with new partitions on a daily, weekly, or monthly basis</p> </li> <li> <p>Create a table partitioned between two timestamps in the past</p> </li> <li> <p>Create a set of named queries in Athena that you can use to get started quickly</p> </li> </ul> <note> <p> <code>GetFlowLogsIntegrationTemplate</code> does not support integration between Amazon Web Services Transit Gateway Flow Logs and Amazon Athena.</p> </note>"
     },
     "GetGroupsForCapacityReservation":{
       "name":"GetGroupsForCapacityReservation",
@@ -6826,6 +6856,16 @@
       "input":{"shape":"ModifyManagedResourceVisibilityRequest"},
       "output":{"shape":"ModifyManagedResourceVisibilityResult"},
       "documentation":"<p>Modifies the managed resource visibility configuration for the account. Use this operation to control whether managed resources are hidden or visible by default. Visibility settings are account-wide and affect all IAM principals uniformly. Hidden resources remain fully operational and billable.</p>"
+    },
+    "ModifyMetricCategory":{
+      "name":"ModifyMetricCategory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyMetricCategoryRequest"},
+      "output":{"shape":"ModifyMetricCategoryResult"},
+      "documentation":"<p>Modifies the metrics in the specified metric category. The metrics that you specify replace the existing metrics.</p> <p>Instances that are associated with the metric category are updated asynchronously.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-detailed-monitoring.html#detailed-monitoring-metric-categories\">Use metric categories for additional metrics</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "ModifyNetworkInterfaceAttribute":{
       "name":"ModifyNetworkInterfaceAttribute",
@@ -8664,6 +8704,16 @@
           "shape":"VpcEncryptionControlExclusionState",
           "documentation":"<p>The exclusion configuration for Elastic File System service.</p>",
           "locationName":"elasticFileSystem"
+        },
+        "GlobalAccelerator":{
+          "shape":"VpcEncryptionControlExclusionState",
+          "documentation":"<p>The exclusion configuration for AWS Global Accelerator.</p>",
+          "locationName":"globalAccelerator"
+        },
+        "ApiGatewayV2":{
+          "shape":"VpcEncryptionControlExclusionState",
+          "documentation":"<p>The exclusion configuration for Amazon API Gateway V2.</p>",
+          "locationName":"apiGatewayV2"
         }
       },
       "documentation":"<p>Describes the exclusion configurations for the various resource types in the account-level VPC Encryption Control configuration.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
@@ -17939,7 +17989,7 @@
         },
         "TrafficType":{
           "shape":"TrafficType",
-          "documentation":"<p>The type of traffic to monitor (accepted traffic, rejected traffic, or all traffic). This parameter is not supported for transit gateway or Cloud WAN resource types. It is required for the other resource types.</p>"
+          "documentation":"<p>The type of traffic to monitor (accepted traffic, rejected traffic, or all traffic). This parameter is not supported for transit gateway resource types. It is required for the other resource types.</p>"
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
@@ -17951,7 +18001,7 @@
         },
         "LogFormat":{
           "shape":"String",
-          "documentation":"<p>The fields to include in the flow log record. List the fields in the order in which they should appear. If you omit this parameter, the flow log is created using the default format. If you specify this parameter, you must include at least one field. For more information about the available fields, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html\">Flow log records</a> in the <i>Amazon VPC User Guide</i>, <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-log-records\">Transit Gateway Flow Log records</a> in the <i>Amazon Web Services Transit Gateway Guide</i>, or <a href=\"https://docs.aws.amazon.com/network-manager/latest/cloudwan/cwan-flow-logs.html\">Cloud WAN Flow Log records</a> in the <i>Amazon Web Services Cloud WAN User Guide</i>.</p> <p>Specify the fields using the <code>${field-id}</code> format, separated by spaces.</p>"
+          "documentation":"<p>The fields to include in the flow log record. List the fields in the order in which they should appear. If you omit this parameter, the flow log is created using the default format. If you specify this parameter, you must include at least one field. For more information about the available fields, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html\">Flow log records</a> in the <i>Amazon VPC User Guide</i> or <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-log-records\">Transit Gateway Flow Log records</a> in the <i>Amazon Web Services Transit Gateway Guide</i>.</p> <p>Specify the fields using the <code>${field-id}</code> format, separated by spaces.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -17960,7 +18010,7 @@
         },
         "MaxAggregationInterval":{
           "shape":"Integer",
-          "documentation":"<p>The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. The possible values are 60 seconds (1 minute) or 600 seconds (10 minutes). This parameter must be 60 seconds for transit gateway and Cloud WAN resource types.</p> <p>When a network interface is attached to a <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html\">Nitro-based instance</a>, the aggregation interval is always 60 seconds or less, regardless of the value that you specify.</p> <p>Default: 600</p>"
+          "documentation":"<p>The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. The possible values are 60 seconds (1 minute) or 600 seconds (10 minutes). This parameter must be 60 seconds for transit gateway resource types.</p> <p>When a network interface is attached to a <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html\">Nitro-based instance</a>, the aggregation interval is always 60 seconds or less, regardless of the value that you specify.</p> <p>Default: 600</p>"
         },
         "DestinationOptions":{
           "shape":"DestinationOptionsRequest",
@@ -19351,6 +19401,41 @@
           "shape":"ManagedPrefixList",
           "documentation":"<p>Information about the prefix list.</p>",
           "locationName":"prefixList"
+        }
+      }
+    },
+    "CreateMetricCategoryRequest":{
+      "type":"structure",
+      "required":["Metrics"],
+      "members":{
+        "Metrics":{
+          "shape":"MetricCategoryMetricNameList",
+          "documentation":"<p>The names of the metrics to include in the metric category.</p> <p>Specify each metric by its Amazon CloudWatch metric name or its OpenTelemetry metric name. The two names for a measurement are separate entries, and you can include both.</p> <p>In Regions where Amazon CloudWatch OpenTelemetry metrics aren't available, you can't specify OpenTelemetry metric names.</p>",
+          "locationName":"Metric"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the metric category during creation.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensure Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateMetricCategoryResult":{
+      "type":"structure",
+      "members":{
+        "MetricCategory":{
+          "shape":"MetricCategory",
+          "documentation":"<p>Information about the metric category.</p>",
+          "locationName":"metricCategory"
         }
       }
     },
@@ -24214,6 +24299,30 @@
         }
       }
     },
+    "DeleteMetricCategoryRequest":{
+      "type":"structure",
+      "required":["MetricCategoryId"],
+      "members":{
+        "MetricCategoryId":{
+          "shape":"MetricCategoryId",
+          "documentation":"<p>The ID of the metric category.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteMetricCategoryResult":{
+      "type":"structure",
+      "members":{
+        "MetricCategoryId":{
+          "shape":"MetricCategoryId",
+          "documentation":"<p>The ID of the metric category that was deleted.</p>",
+          "locationName":"metricCategoryId"
+        }
+      }
+    },
     "DeleteNatGatewayRequest":{
       "type":"structure",
       "required":["NatGatewayId"],
@@ -28648,7 +28757,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>account-id</code> - A 12-digit Amazon Web Services account ID.</p> </li> <li> <p> <code>creation-time</code> - The time when the report was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2025-11-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2025-11-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>resource-type</code> - The resource type (<code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>account-id</code> - A 12-digit Amazon Web Services account ID.</p> </li> <li> <p> <code>creation-time</code> - The time when the report was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2025-11-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2025-11-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>resource-type</code> - The resource type (<code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> | <code>imagebuilder:ImageRecipe</code> | <code>imagebuilder:ContainerRecipe</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "DryRun":{
@@ -30630,6 +30739,53 @@
           "shape":"ManagedPrefixListSet",
           "documentation":"<p>Information about the prefix lists.</p>",
           "locationName":"prefixListSet"
+        }
+      }
+    },
+    "DescribeMetricCategoriesMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":5
+    },
+    "DescribeMetricCategoriesRequest":{
+      "type":"structure",
+      "members":{
+        "MetricCategoryIds":{
+          "shape":"MetricCategoryIdList",
+          "documentation":"<p>The IDs of the metric categories. If you specify IDs, you can't specify <code>MaxResults</code> or <code>NextToken</code>.</p>",
+          "locationName":"MetricCategoryId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>metric-name</code> - The name of a metric in the metric category.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeMetricCategoriesMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p> <p>Valid range: 5 - 100.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeMetricCategoriesResult":{
+      "type":"structure",
+      "members":{
+        "MetricCategories":{
+          "shape":"MetricCategoryList",
+          "documentation":"<p>Information about the metric categories.</p>",
+          "locationName":"metricCategorySet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -45890,7 +46046,7 @@
       "members":{
         "ResourceType":{
           "shape":"ImageUsageResourceTypeName",
-          "documentation":"<p>The type of resource (<code>ec2:Instance</code> or <code>ec2:LaunchTemplate</code>).</p>",
+          "documentation":"<p>The type of resource (<code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> | <code>imagebuilder:ImageRecipe</code> | <code>imagebuilder:ContainerRecipe</code>).</p>",
           "locationName":"resourceType"
         },
         "ReportId":{
@@ -45958,7 +46114,7 @@
       "members":{
         "ResourceType":{
           "shape":"ImageUsageResourceTypeName",
-          "documentation":"<p>The resource type.</p> <p>Valid values: <code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> </p>",
+          "documentation":"<p>The resource type.</p> <p>Valid values: <code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> | <code>imagebuilder:ImageRecipe</code> | <code>imagebuilder:ContainerRecipe</code> </p>",
           "locationName":"resourceType"
         },
         "ResourceTypeOptions":{
@@ -46032,7 +46188,7 @@
       "members":{
         "ResourceType":{
           "shape":"ImageUsageResourceTypeName",
-          "documentation":"<p>The resource type.</p> <p>Valid values: <code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> </p>"
+          "documentation":"<p>The resource type.</p> <p>Valid values: <code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> | <code>imagebuilder:ImageRecipe</code> | <code>imagebuilder:ContainerRecipe</code> </p>"
         },
         "ResourceTypeOptions":{
           "shape":"ImageUsageResourceTypeOptionRequestList",
@@ -56223,6 +56379,11 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether detailed monitoring is enabled. Otherwise, basic monitoring is enabled.</p>",
           "locationName":"enabled"
+        },
+        "MetricCategoryIds":{
+          "shape":"MetricCategoryIdList",
+          "documentation":"<p>The IDs of the metric categories to associate with the instance.</p>",
+          "locationName":"metricCategoryIdSet"
         }
       },
       "documentation":"<p>Describes the monitoring for the instance.</p>"
@@ -56233,6 +56394,11 @@
         "Enabled":{
           "shape":"Boolean",
           "documentation":"<p>Specify <code>true</code> to enable detailed monitoring. Otherwise, basic monitoring is enabled.</p>"
+        },
+        "MetricCategoryIds":{
+          "shape":"MetricCategoryIdList",
+          "documentation":"<p>The IDs of the metric categories to associate with the instance. To specify metric categories, you must also enable detailed monitoring.</p>",
+          "locationName":"MetricCategoryId"
         }
       },
       "documentation":"<p>Describes the monitoring for the instance.</p>"
@@ -57775,6 +57941,50 @@
         "spot-inst-az-fulfillment-rate"
       ]
     },
+    "MetricCategory":{
+      "type":"structure",
+      "members":{
+        "MetricCategoryId":{
+          "shape":"MetricCategoryId",
+          "documentation":"<p>The ID of the metric category.</p>",
+          "locationName":"metricCategoryId"
+        },
+        "Metrics":{
+          "shape":"MetricCategoryMetricNameList",
+          "documentation":"<p>The names of the metrics in the metric category.</p>",
+          "locationName":"metricSet"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags assigned to the metric category.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a metric category. A metric category is a set of additional metrics that you can associate with an instance that has detailed monitoring enabled.</p>"
+    },
+    "MetricCategoryId":{"type":"string"},
+    "MetricCategoryIdList":{
+      "type":"list",
+      "member":{
+        "shape":"MetricCategoryId",
+        "locationName":"item"
+      }
+    },
+    "MetricCategoryList":{
+      "type":"list",
+      "member":{
+        "shape":"MetricCategory",
+        "locationName":"item"
+      }
+    },
+    "MetricCategoryMetricName":{"type":"string"},
+    "MetricCategoryMetricNameList":{
+      "type":"list",
+      "member":{
+        "shape":"MetricCategoryMetricName",
+        "locationName":"item"
+      }
+    },
     "MetricDataResult":{
       "type":"structure",
       "members":{
@@ -57979,6 +58189,14 @@
         "ElasticFileSystem":{
           "shape":"VpcEncryptionControlExclusionStateInput",
           "documentation":"<p>Specifies whether to exclude Elastic File System service from account-level encryption enforcement.</p>"
+        },
+        "GlobalAccelerator":{
+          "shape":"VpcEncryptionControlExclusionStateInput",
+          "documentation":"<p>Specifies whether to exclude AWS Global Accelerator from account-level encryption enforcement.</p>"
+        },
+        "ApiGatewayV2":{
+          "shape":"VpcEncryptionControlExclusionStateInput",
+          "documentation":"<p>Specifies whether to exclude Amazon API Gateway V2 from account-level encryption enforcement.</p>"
         }
       }
     },
@@ -59830,6 +60048,38 @@
         }
       }
     },
+    "ModifyMetricCategoryRequest":{
+      "type":"structure",
+      "required":[
+        "MetricCategoryId",
+        "Metrics"
+      ],
+      "members":{
+        "MetricCategoryId":{
+          "shape":"MetricCategoryId",
+          "documentation":"<p>The ID of the metric category.</p>"
+        },
+        "Metrics":{
+          "shape":"MetricCategoryMetricNameList",
+          "documentation":"<p>The names of the metrics for the metric category. These metrics replace the existing metrics, and must differ from the current set.</p> <p>Specify each metric by its Amazon CloudWatch metric name or its OpenTelemetry metric name. The two names for a measurement are separate entries, and you can include both.</p> <p>In Regions where Amazon CloudWatch OpenTelemetry metrics aren't available, you can't specify OpenTelemetry metric names.</p>",
+          "locationName":"Metric"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyMetricCategoryResult":{
+      "type":"structure",
+      "members":{
+        "MetricCategory":{
+          "shape":"MetricCategory",
+          "documentation":"<p>Information about the metric category.</p>",
+          "locationName":"metricCategory"
+        }
+      }
+    },
     "ModifyNetworkInterfaceAttributeRequest":{
       "type":"structure",
       "required":["NetworkInterfaceId"],
@@ -61375,6 +61625,14 @@
         "ElasticFileSystemExclusion":{
           "shape":"VpcEncryptionControlExclusionStateInput",
           "documentation":"<p>Specifies whether to exclude Elastic File System traffic from encryption enforcement.</p>"
+        },
+        "GlobalAcceleratorExclusion":{
+          "shape":"VpcEncryptionControlExclusionStateInput",
+          "documentation":"<p>Specifies whether to exclude AWS Global Accelerator traffic from encryption enforcement.</p>"
+        },
+        "ApiGatewayV2Exclusion":{
+          "shape":"VpcEncryptionControlExclusionStateInput",
+          "documentation":"<p>Specifies whether to exclude Amazon API Gateway V2 traffic from encryption enforcement.</p>"
         }
       }
     },
@@ -62014,6 +62272,11 @@
           "documentation":"<p>The IDs of the instances.</p>",
           "locationName":"InstanceId"
         },
+        "MetricCategoryIds":{
+          "shape":"MetricCategoryIdList",
+          "documentation":"<p>The IDs of the metric categories to associate with the instances. The specified metric categories are added to any metric categories that are already associated with the instances.</p>",
+          "locationName":"MetricCategoryId"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -62034,6 +62297,11 @@
     "Monitoring":{
       "type":"structure",
       "members":{
+        "MetricCategoryIds":{
+          "shape":"MetricCategoryIdList",
+          "documentation":"<p>The IDs of the metric categories that are associated with the instance.</p>",
+          "locationName":"metricCategoryIdSet"
+        },
         "State":{
           "shape":"MonitoringState",
           "documentation":"<p>Indicates whether detailed monitoring is enabled. Otherwise, basic monitoring is enabled.</p>",
@@ -69136,7 +69404,8 @@
         "ipam-pool-allocation",
         "capacity-reservation-cancellation-quote",
         "application-status-check",
-        "capacity-reservation-modification-quote"
+        "capacity-reservation-modification-quote",
+        "metric-category"
       ]
     },
     "ResourceTypeOption":{
@@ -70759,6 +71028,11 @@
       "type":"structure",
       "required":["Enabled"],
       "members":{
+        "MetricCategoryIds":{
+          "shape":"MetricCategoryIdList",
+          "documentation":"<p>The IDs of the metric categories to associate with the instance. To specify metric categories, you must also enable detailed monitoring.</p>",
+          "locationName":"MetricCategoryId"
+        },
         "Enabled":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether detailed monitoring is enabled. Otherwise, basic monitoring is enabled.</p>",
@@ -78983,6 +79257,11 @@
           "documentation":"<p>The IDs of the instances.</p>",
           "locationName":"InstanceId"
         },
+        "MetricCategoryIds":{
+          "shape":"MetricCategoryIdList",
+          "documentation":"<p>The IDs of the metric categories to remove from the instances. If you specify metric categories, only those metric categories are removed and detailed monitoring remains enabled. If you don't specify metric categories, detailed monitoring and all metric categories are turned off.</p>",
+          "locationName":"MetricCategoryId"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -81777,6 +82056,14 @@
         "ElasticFileSystemExclusion":{
           "shape":"VpcEncryptionControlExclusionStateInput",
           "documentation":"<p>Specifies whether to exclude Elastic File System traffic from encryption enforcement.</p>"
+        },
+        "GlobalAcceleratorExclusion":{
+          "shape":"VpcEncryptionControlExclusionStateInput",
+          "documentation":"<p>Specifies whether to exclude AWS Global Accelerator traffic from encryption enforcement.</p>"
+        },
+        "ApiGatewayV2Exclusion":{
+          "shape":"VpcEncryptionControlExclusionStateInput",
+          "documentation":"<p>Specifies whether to exclude Amazon API Gateway V2 traffic from encryption enforcement.</p>"
         }
       },
       "documentation":"<p>Describes the configuration settings for VPC Encryption Control.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
@@ -81855,6 +82142,16 @@
           "shape":"VpcEncryptionControlExclusion",
           "documentation":"<p>The exclusion configuration for Elastic File System traffic.</p>",
           "locationName":"elasticFileSystem"
+        },
+        "GlobalAccelerator":{
+          "shape":"VpcEncryptionControlExclusion",
+          "documentation":"<p>The exclusion configuration for AWS Global Accelerator traffic.</p>",
+          "locationName":"globalAccelerator"
+        },
+        "ApiGatewayV2":{
+          "shape":"VpcEncryptionControlExclusion",
+          "documentation":"<p>The exclusion configuration for Amazon API Gateway V2 traffic.</p>",
+          "locationName":"apiGatewayV2"
         }
       },
       "documentation":"<p>Describes the exclusion configurations for various resource types in VPC Encryption Control.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"

@@ -135,6 +135,20 @@
       ],
       "documentation":"<p>Permanently deletes the specified Contributor Insights rules.</p> <p>If you create a rule, delete it, and then re-create it with the same name, historical data from the first time the rule was created might not be available.</p>"
     },
+    "DeleteMetricDataQueryDefinition":{
+      "name":"DeleteMetricDataQueryDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMetricDataQueryDefinitionInput"},
+      "output":{
+        "shape":"DeleteMetricDataQueryDefinitionOutput",
+        "resultWrapper":"DeleteMetricDataQueryDefinitionResult"
+      },
+      "documentation":"<p>Deletes a metric data query definition.</p> <p>This operation is idempotent. If the definition doesn't exist, the operation succeeds without returning an error.</p> <p> <b>Permissions</b> </p> <p>To delete a definition, you need the <code>cloudwatch:DeleteMetricDataQueryDefinition</code> permission on the metric data query definition resource. You can use the <code>aws:ResourceTag/${TagKey}</code> condition key to control access based on the tags of the definition.</p>",
+      "idempotent":true
+    },
     "DeleteMetricStream":{
       "name":"DeleteMetricStream",
       "http":{
@@ -422,6 +436,23 @@
       ],
       "documentation":"<p>You can use the <code>GetMetricData</code> API to retrieve CloudWatch metric values. The operation can also include a CloudWatch Metrics Insights query, and one or more metric math functions.</p> <p>A <code>GetMetricData</code> operation that does not include a query can retrieve as many as 500 different metrics in a single request, with a total of as many as 100,800 data points. You can also optionally perform metric math expressions on the values of the returned statistics, to create new time series that represent new insights into your data. For example, using Lambda metrics, you could divide the Errors metric by the Invocations metric to get an error rate time series. For more information about metric math expressions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax\">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>If you include a Metrics Insights query, each <code>GetMetricData</code> operation can include only one query. But the same <code>GetMetricData</code> operation can also retrieve other metrics. Metrics Insights queries can query the most recent two weeks of metric data. For alarm condition evaluations, Metrics Insights queries can query only the most recent three hours of metric data. For more information about Metrics Insights, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/query_with_cloudwatch-metrics-insights.html\">Query your metrics with CloudWatch Metrics Insights</a>.</p> <p>Calls to the <code>GetMetricData</code> API have a different pricing structure than calls to <code>GetMetricStatistics</code>. For more information about pricing, see <a href=\"https://aws.amazon.com/cloudwatch/pricing/\">Amazon CloudWatch Pricing</a>.</p> <p>Amazon CloudWatch retains metric data as follows:</p> <ul> <li> <p>Data points with a period of less than 60 seconds are available for 3 hours. These data points are high-resolution metrics and are available only for custom metrics that have been defined with a <code>StorageResolution</code> of 1.</p> </li> <li> <p>Data points with a period of 60 seconds (1-minute) are available for 15 days.</p> </li> <li> <p>Data points with a period of 300 seconds (5-minute) are available for 63 days.</p> </li> <li> <p>Data points with a period of 3600 seconds (1 hour) are available for 455 days (15 months).</p> </li> </ul> <p>Data points that are initially published with a shorter period are aggregated together for long-term storage. For example, if you collect data using a period of 1 minute, the data remains available for 15 days with 1-minute resolution. After 15 days, this data is still available, but is aggregated and retrievable only with a resolution of 5 minutes. After 63 days, the data is further aggregated and is available with a resolution of 1 hour.</p> <p>If you omit <code>Unit</code> in your request, all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p> <p> <b>Using Metrics Insights queries with metric math</b> </p> <p>You can't mix a Metric Insights query and metric math syntax in the same expression, but you can reference results from a Metrics Insights query within other Metric math expressions. A Metrics Insights query without a <b>GROUP BY</b> clause returns a single time-series (TS), and can be used as input for a metric math expression that expects a single time series. A Metrics Insights query with a <b>GROUP BY</b> clause returns an array of time-series (TS[]), and can be used as input for a metric math expression that expects an array of time series. </p>"
     },
+    "GetMetricDataQueryDefinition":{
+      "name":"GetMetricDataQueryDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetMetricDataQueryDefinitionInput"},
+      "output":{
+        "shape":"GetMetricDataQueryDefinitionOutput",
+        "resultWrapper":"GetMetricDataQueryDefinitionResult"
+      },
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a metric data query definition, including its expression.</p> <p> <b>Permissions</b> </p> <p>To get a definition, you need the <code>cloudwatch:GetMetricDataQueryDefinition</code> permission on the metric data query definition resource. You can use the <code>aws:ResourceTag/${TagKey}</code> condition key to control access based on the tags of the definition.</p>",
+      "readonly":true
+    },
     "GetMetricStatistics":{
       "name":"GetMetricStatistics",
       "http":{
@@ -554,6 +585,20 @@
         {"shape":"InvalidNextToken"}
       ],
       "documentation":"<p> Returns a list that contains the number of managed Contributor Insights rules in your account. </p>"
+    },
+    "ListMetricDataQueryDefinitions":{
+      "name":"ListMetricDataQueryDefinitions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMetricDataQueryDefinitionsInput"},
+      "output":{
+        "shape":"ListMetricDataQueryDefinitionsOutput",
+        "resultWrapper":"ListMetricDataQueryDefinitionsResult"
+      },
+      "documentation":"<p>Lists the metric data query definitions in your account and Region.</p> <p>The results are summaries that don't include the expression. To get the full definition, call <code>GetMetricDataQueryDefinition</code> with its ID.</p> <p>This operation supports pagination. Use the <code>MaxResults</code> and <code>NextToken</code> parameters to retrieve results in multiple calls.</p> <p> <b>Permissions</b> </p> <p>To list definitions, you need the <code>cloudwatch:ListMetricDataQueryDefinitions</code> permission. This permission applies to all definitions in the account and Region. The results aren't filtered by tags.</p>",
+      "readonly":true
     },
     "ListMetricStreams":{
       "name":"ListMetricStreams",
@@ -746,6 +791,25 @@
       ],
       "documentation":"<p>Publishes metric data to Amazon CloudWatch. CloudWatch associates the data with the specified metric. If the specified metric does not exist, CloudWatch creates the metric. When CloudWatch creates a metric, it can take up to fifteen minutes for the metric to appear in calls to <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_ListMetrics.html\">ListMetrics</a>.</p> <p>You can publish metrics with associated entity data (so that related telemetry can be found and viewed together), or publish metric data by itself. To send entity data with your metrics, use the <code>EntityMetricData</code> parameter. To send metrics without entity data, use the <code>MetricData</code> parameter. The <code>EntityMetricData</code> structure includes <code>MetricData</code> structures for the metric data.</p> <p>You can publish either individual values in the <code>Value</code> field, or arrays of values and the number of times each value occurred during the period by using the <code>Values</code> and <code>Counts</code> fields in the <code>MetricData</code> structure. Using the <code>Values</code> and <code>Counts</code> method enables you to publish up to 150 values per metric with one <code>PutMetricData</code> request, and supports retrieving percentile statistics on this data.</p> <p>Each <code>PutMetricData</code> request is limited to 1 MB in size for HTTP POST requests. You can send a payload compressed by gzip. Each request is also limited to no more than 1000 different metrics (across both the <code>MetricData</code> and <code>EntityMetricData</code> properties).</p> <p>Although the <code>Value</code> parameter accepts numbers of type <code>Double</code>, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p> <p>You can use up to 30 dimensions per metric to further clarify what data the metric collects. Each dimension consists of a Name and Value pair. For more information about specifying dimensions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html\">Publishing Metrics</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>You specify the time stamp to be associated with each data point. You can specify time stamps that are as much as two weeks before the current date, and as much as 2 hours after the current day and time.</p> <p>Data points with time stamps from 24 hours ago or longer can take at least 48 hours to become available for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html\">GetMetricData</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricStatistics.html\">GetMetricStatistics</a> from the time they are submitted. Data points with time stamps between 3 and 24 hours ago can take as much as 2 hours to become available for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html\">GetMetricData</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricStatistics.html\">GetMetricStatistics</a>.</p> <p>CloudWatch needs raw data points to calculate percentile statistics. If you publish data using a statistic set instead, you can only retrieve percentile statistics for this data if one of the following conditions is true:</p> <ul> <li> <p>The <code>SampleCount</code> value of the statistic set is 1 and <code>Min</code>, <code>Max</code>, and <code>Sum</code> are all equal.</p> </li> <li> <p>The <code>Min</code> and <code>Max</code> are equal, and <code>Sum</code> is equal to <code>Min</code> multiplied by <code>SampleCount</code>.</p> </li> </ul>",
       "requestcompression":{"encodings":["gzip"]}
+    },
+    "PutMetricDataQueryDefinition":{
+      "name":"PutMetricDataQueryDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutMetricDataQueryDefinitionInput"},
+      "output":{
+        "shape":"PutMetricDataQueryDefinitionOutput",
+        "resultWrapper":"PutMetricDataQueryDefinitionResult"
+      },
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates or updates a metric data query definition.</p> <p>A metric data query definition saves a metric query so that you can reuse it later. It includes the query expression, the query language, and a path that names the definition and can organize it into folders. When you save a definition, CloudWatch doesn't validate or run its expression.</p> <p>To create a definition, omit <code>Id</code>. CloudWatch generates the ID and returns it. To update a definition, specify its <code>Id</code>. An update replaces the path, expression, and type, and keeps the creation time.</p> <p>The path must be unique in your account and Region. If another definition already uses the path, the request fails with a <code>ConflictException</code>.</p> <p>You can have up to 1,000 metric data query definitions in each Region of your account. A request that would create more fails with a <code>LimitExceededException</code>.</p> <p> <b>Permissions</b> </p> <p>To create or update a definition, you need the <code>cloudwatch:PutMetricDataQueryDefinition</code> permission on the metric data query definition resource. The resource ARN has the format <code>arn:aws:cloudwatch:Region:account-id:metric-query-definition/Id</code>.</p> <p>To add tags when you create a definition, you also need the <code>cloudwatch:TagResource</code> permission. You can use the <code>aws:RequestTag/${TagKey}</code> and <code>aws:TagKeys</code> condition keys to control which tags can be added.</p>",
+      "idempotent":true
     },
     "PutMetricStream":{
       "name":"PutMetricStream",
@@ -1712,6 +1776,18 @@
       "min":1,
       "pattern":"(default|arn:[a-zA-Z0-9-]+:cloudwatch:[a-zA-Z0-9-]*:\\d{12}:dataset/default)"
     },
+    "DefinitionId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]{1,64}"
+    },
+    "DefinitionPath":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\p{L}\\p{M}\\p{N}\\p{P}\\p{S}\\p{Zs}]+"
+    },
     "DeleteAlarmMuteRuleInput":{
       "type":"structure",
       "required":["AlarmMuteRuleName"],
@@ -1809,6 +1885,20 @@
           "documentation":"<p>An array listing the rules that could not be deleted. You cannot delete built-in rules.</p>"
         }
       }
+    },
+    "DeleteMetricDataQueryDefinitionInput":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"DefinitionId",
+          "documentation":"<p>The ID of the metric data query definition to delete.</p>"
+        }
+      }
+    },
+    "DeleteMetricDataQueryDefinitionOutput":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteMetricStreamInput":{
       "type":"structure",
@@ -2615,6 +2705,58 @@
         }
       }
     },
+    "GetMetricDataQueryDefinitionInput":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"DefinitionId",
+          "documentation":"<p>The ID of the metric data query definition to retrieve.</p>"
+        }
+      }
+    },
+    "GetMetricDataQueryDefinitionOutput":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn",
+        "Path",
+        "Expression",
+        "Type",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Id":{
+          "shape":"DefinitionId",
+          "documentation":"<p>The ID of the metric data query definition.</p>"
+        },
+        "Arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric data query definition.</p>"
+        },
+        "Path":{
+          "shape":"DefinitionPath",
+          "documentation":"<p>The path of the metric data query definition.</p>"
+        },
+        "Expression":{
+          "shape":"MetricExpressionString",
+          "documentation":"<p>The query expression.</p>"
+        },
+        "Type":{
+          "shape":"QueryType",
+          "documentation":"<p>The language of the expression. Valid values are the following:</p> <ul> <li> <p> <code>PROMQL</code> – A PromQL query.</p> </li> <li> <p> <code>SQL</code> – A CloudWatch Metrics Insights query.</p> </li> <li> <p> <code>METRIC_MATH</code> – A metric math expression.</p> </li> </ul>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when you created the metric data query definition.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when you last updated the metric data query definition.</p>"
+        }
+      }
+    },
     "GetMetricStatisticsInput":{
       "type":"structure",
       "required":[
@@ -3273,6 +3415,33 @@
         }
       }
     },
+    "ListMetricDataQueryDefinitionsInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of metric data query definitions to return in one call. The default is 100.</p>"
+        },
+        "NextToken":{
+          "shape":"MetricDataQueryDefinitionNextToken",
+          "documentation":"<p>The token returned by a previous call to indicate where to continue retrieving results.</p>"
+        }
+      }
+    },
+    "ListMetricDataQueryDefinitionsOutput":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"MetricDataQueryDefinitionSummaries",
+          "documentation":"<p>A list of metric data query definition summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"MetricDataQueryDefinitionNextToken",
+          "documentation":"<p>The token to use when requesting the next set of results. If this field is absent, there are no more results to retrieve.</p>"
+        }
+      }
+    },
     "ListMetricStreamsInput":{
       "type":"structure",
       "members":{
@@ -3587,6 +3756,12 @@
       "max":100,
       "min":1
     },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "MaxReturnedResultsCount":{
       "type":"integer",
       "min":1
@@ -3866,6 +4041,43 @@
       },
       "documentation":"<p>This structure is used in both <code>GetMetricData</code> and <code>PutMetricAlarm</code>. The supported use of this structure is different for those two operations.</p> <p>When used in <code>GetMetricData</code>, it indicates the metric data to return, and whether this call is just retrieving a batch set of data for one metric, or is performing a Metrics Insights query or a math expression. A single <code>GetMetricData</code> call can include up to 500 <code>MetricDataQuery</code> structures.</p> <p>When used in <code>PutMetricAlarm</code>, it enables you to create an alarm based on a metric math expression. Each <code>MetricDataQuery</code> in the array specifies either a metric to retrieve, or a math expression to be performed on retrieved metrics. A single <code>PutMetricAlarm</code> call can include up to 20 <code>MetricDataQuery</code> structures in the array. The 20 structures can include as many as 10 structures that contain a <code>MetricStat</code> parameter to retrieve a metric, and as many as 10 structures that contain the <code>Expression</code> parameter to perform a math expression. Of those <code>Expression</code> structures, one must have <code>true</code> as the value for <code>ReturnData</code>. The result of this expression is the value the alarm watches.</p> <p>Any expression used in a <code>PutMetricAlarm</code> operation must return a single time series. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax\">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Some of the parameters of this structure also have different uses whether you are using this structure in a <code>GetMetricData</code> operation or a <code>PutMetricAlarm</code> operation. These differences are explained in the following parameter list.</p>"
     },
+    "MetricDataQueryDefinitionNextToken":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "MetricDataQueryDefinitionSummaries":{
+      "type":"list",
+      "member":{"shape":"MetricDataQueryDefinitionSummary"}
+    },
+    "MetricDataQueryDefinitionSummary":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Path",
+        "Type"
+      ],
+      "members":{
+        "Id":{
+          "shape":"DefinitionId",
+          "documentation":"<p>The ID of the metric data query definition.</p>"
+        },
+        "Path":{
+          "shape":"DefinitionPath",
+          "documentation":"<p>The path of the metric data query definition.</p>"
+        },
+        "Type":{
+          "shape":"QueryType",
+          "documentation":"<p>The language of the expression. Valid values are the following:</p> <ul> <li> <p> <code>PROMQL</code> – A PromQL query.</p> </li> <li> <p> <code>SQL</code> – A CloudWatch Metrics Insights query.</p> </li> <li> <p> <code>METRIC_MATH</code> – A metric math expression.</p> </li> </ul>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when you last updated the metric data query definition.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a metric data query definition. To get the expression, call <code>GetMetricDataQueryDefinition</code>.</p>"
+    },
     "MetricDataResult":{
       "type":"structure",
       "members":{
@@ -3951,6 +4163,12 @@
       "type":"string",
       "max":2048,
       "min":1
+    },
+    "MetricExpressionString":{
+      "type":"string",
+      "max":65536,
+      "min":1,
+      "sensitive":true
     },
     "MetricId":{
       "type":"string",
@@ -4708,6 +4926,78 @@
         }
       }
     },
+    "PutMetricDataQueryDefinitionInput":{
+      "type":"structure",
+      "required":[
+        "Path",
+        "Expression",
+        "Type"
+      ],
+      "members":{
+        "Id":{
+          "shape":"DefinitionId",
+          "documentation":"<p>The ID of the metric data query definition to update. Omit this parameter to create a definition. CloudWatch then generates the ID and returns it in the response.</p>"
+        },
+        "Path":{
+          "shape":"DefinitionPath",
+          "documentation":"<p>The name of the metric data query definition. Use slashes (<code>/</code>) to organize definitions into folders, for example <code>team/web/latency</code>. The path must meet the following requirements:</p> <ul> <li> <p>It must be unique in your account and Region.</p> </li> <li> <p>It can't start or end with a slash.</p> </li> <li> <p>It can't contain an empty folder name (<code>//</code>).</p> </li> <li> <p>It can be at most 1,015 bytes when encoded as UTF-8.</p> </li> </ul>"
+        },
+        "Expression":{
+          "shape":"MetricExpressionString",
+          "documentation":"<p>The query expression, in the language that <code>Type</code> specifies. CloudWatch doesn't validate or run the expression when you save it.</p>"
+        },
+        "Type":{
+          "shape":"QueryType",
+          "documentation":"<p>The language of the expression. Valid values are the following:</p> <ul> <li> <p> <code>PROMQL</code> – A PromQL query.</p> </li> <li> <p> <code>SQL</code> – A CloudWatch Metrics Insights query.</p> </li> <li> <p> <code>METRIC_MATH</code> – A metric math expression.</p> </li> </ul>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs to associate with the metric data query definition. You can use tags to categorize definitions and to control access to them. Tags are applied only when the request creates a definition, that is, when you omit <code>Id</code>. To change the tags of an existing definition, use <code>TagResource</code> and <code>UntagResource</code>.</p>"
+        }
+      }
+    },
+    "PutMetricDataQueryDefinitionOutput":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn",
+        "Path",
+        "Expression",
+        "Type",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Id":{
+          "shape":"DefinitionId",
+          "documentation":"<p>The ID of the metric data query definition.</p>"
+        },
+        "Arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric data query definition.</p>"
+        },
+        "Path":{
+          "shape":"DefinitionPath",
+          "documentation":"<p>The path of the metric data query definition.</p>"
+        },
+        "Expression":{
+          "shape":"MetricExpressionString",
+          "documentation":"<p>The query expression.</p>"
+        },
+        "Type":{
+          "shape":"QueryType",
+          "documentation":"<p>The language of the expression.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when you created the metric data query definition.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when you last updated the metric data query definition.</p>"
+        }
+      }
+    },
     "PutMetricStreamInput":{
       "type":"structure",
       "required":[
@@ -4781,6 +5071,14 @@
       "type":"string",
       "max":10000,
       "min":0
+    },
+    "QueryType":{
+      "type":"string",
+      "enum":[
+        "PROMQL",
+        "SQL",
+        "METRIC_MATH"
+      ]
     },
     "Range":{
       "type":"structure",

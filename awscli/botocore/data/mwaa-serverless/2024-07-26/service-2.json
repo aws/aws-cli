@@ -15,6 +15,24 @@
     "uid":"mwaa-serverless-2024-07-26"
   },
   "operations":{
+    "CreateAirflowUiUrl":{
+      "name":"CreateAirflowUiUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAirflowUiUrlRequest"},
+      "output":{"shape":"CreateAirflowUiUrlResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a launch URL that opens the Apache Airflow UI for your workflows in Amazon Managed Workflows for Apache Airflow Serverless. The UI shows the workflows in your account in the current AWS Region. To start a UI session, open the URL in a browser before it expires.</p> <p>The UI runs with the permissions of the IAM identity that you use to call this operation. You see only the workflows, workflow runs, and logs that the identity can read, and you can start a workflow run only if the identity has permission to start one.</p> <p>The UI session uses the caller's permissions. The session works only from the network address that opened the URL. It ends at <code>SessionExpiresAt</code> or when you sign out from the UI.</p>"
+    },
     "CreateWorkflow":{
       "name":"CreateWorkflow",
       "http":{
@@ -310,6 +328,12 @@
       "documentation":"<p>You do not have sufficient permission to perform this action.</p>",
       "exception":true
     },
+    "AuthorizedUrlString":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
     "Code":{
       "type":"structure",
       "members":{
@@ -341,6 +365,46 @@
       },
       "documentation":"<p>You cannot create a resource that already exists, or the resource is in a state that prevents the requested operation.</p>",
       "exception":true
+    },
+    "CreateAirflowUiUrlRequest":{
+      "type":"structure",
+      "members":{
+        "ExpiresInSeconds":{
+          "shape":"ExpiresInSecondsInteger",
+          "documentation":"<p>Specifies the number of seconds that the launch URL stays valid. This value limits only the time to open the URL, not the length of the UI session. The default is 300.</p>"
+        },
+        "SessionDurationInSeconds":{
+          "shape":"SessionDurationInSecondsInteger",
+          "documentation":"<p>Specifies the number of seconds that the UI session lasts, starting from when you call this operation. The default is 43200 (12 hours).</p>"
+        }
+      }
+    },
+    "CreateAirflowUiUrlResponse":{
+      "type":"structure",
+      "required":[
+        "AuthorizedUrl",
+        "SessionId",
+        "UrlExpiresAt",
+        "SessionExpiresAt"
+      ],
+      "members":{
+        "AuthorizedUrl":{
+          "shape":"AuthorizedUrlString",
+          "documentation":"<p>The launch URL that opens the Airflow UI. Open it in a browser before <code>UrlExpiresAt</code>. The UI session uses the permissions of the identity that called this operation.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionIdString",
+          "documentation":"<p>The URL starts a UI session that has this identifier.</p>"
+        },
+        "UrlExpiresAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The launch URL stops being valid at this time. The value is in ISO 8601 date-time format.</p>"
+        },
+        "SessionExpiresAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The UI session ends at this time. The value is in ISO 8601 date-time format. After this time, create a new URL to open the UI again.</p>"
+        }
+      }
     },
     "CreateWorkflowRequest":{
       "type":"structure",
@@ -561,6 +625,12 @@
       "min":1,
       "pattern":".*"
     },
+    "ExpiresInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":300,
+      "min":5
+    },
     "GenericMap":{
       "type":"map",
       "key":{"shape":"GenericString"},
@@ -736,7 +806,7 @@
         },
         "ScheduleConfiguration":{
           "shape":"ScheduleConfiguration",
-          "documentation":"<p>The schedule configuration for the workflow, including cron expressions for automated execution. Amazon Managed Workflows for Apache Airflow Serverless uses EventBridge Scheduler for cost-effective, timezone-aware scheduling. When a workflow includes schedule information in its YAML definition, the service automatically configures the appropriate triggers for automated execution. Only one version of a workflow can have an active schedule at any given time.</p>"
+          "documentation":"<p>The schedule configuration for the workflow. Only one version of a workflow can have an active schedule at any given time.</p>"
         },
         "RoleArn":{
           "shape":"RoleARN",
@@ -1159,10 +1229,10 @@
       "members":{
         "CronExpression":{
           "shape":"String",
-          "documentation":"<p>A cron expression that defines when the workflow is automatically executed. Uses standard cron syntax.</p>"
+          "documentation":"<p>The schedule expression that determines when the workflow runs, as specified in the <code>schedule</code> parameter of the workflow's YAML definition. You can specify one of the following types of schedule expressions:</p> <ul> <li> <p>Apache Airflow cron expression – Five fields, such as <code>0 12 1 * *</code>.</p> </li> <li> <p>Apache Airflow schedule preset – <code>@hourly</code>, <code>@daily</code>, <code>@weekly</code>, <code>@monthly</code>, <code>@yearly</code>, or <code>@annually</code>.</p> </li> <li> <p>EventBridge Scheduler rate expression – For example, <code>rate(5 minutes)</code>. Supported units are minutes, hours, and days.</p> </li> <li> <p>EventBridge Scheduler cron expression – Six fields, such as <code>cron(0 12 * * ? *)</code>.</p> </li> </ul> <p>In a cron expression, specify either a day-of-month or a day-of-week, not both.</p>"
         }
       },
-      "documentation":"<p>The configuration to use to schedule automated workflow execution using cron expressions. Amazon Managed Workflows for Apache Airflow Serverless integrates with EventBridge Scheduler to provide cost-effective, timezone-aware scheduling capabilities. The service supports both time-based and event-based scheduling (event-based scheduling available post-GA). When a workflow definition includes scheduling information, Amazon Managed Workflows for Apache Airflow Serverless automatically configures the appropriate triggers and ensures only one version of a workflow has an active schedule at any time.</p>"
+      "documentation":"<p>Contains the configuration used to schedule automated workflow execution. Only one version of a workflow can have an active schedule at any time.</p>"
     },
     "SecurityGroupIds":{
       "type":"list",
@@ -1204,6 +1274,19 @@
       },
       "documentation":"<p>The request exceeds the service quota for Amazon Managed Workflows for Apache Airflow Serverless resources. This can occur when you attempt to create more workflows than allowed, exceed concurrent workflow run limits, or surpass task execution limits. Amazon Managed Workflows for Apache Airflow Serverless implements admission control using DynamoDB-based counters to manage resource utilization across the multi-tenant environment. Contact Amazon Web Services Support to request quota increases if you need higher limits for your use case.</p>",
       "exception":true
+    },
+    "SessionDurationInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":43200,
+      "min":1
+    },
+    "SessionIdString":{
+      "type":"string",
+      "max":32,
+      "min":32,
+      "pattern":"[a-z0-9]{32}",
+      "sensitive":true
     },
     "StartWorkflowRunRequest":{
       "type":"structure",

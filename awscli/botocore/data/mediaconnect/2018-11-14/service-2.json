@@ -1910,6 +1910,11 @@
     }
   },
   "shapes":{
+    "ActionString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "AddBridgeFlowSourceRequest":{
       "type":"structure",
       "required":[
@@ -2518,6 +2523,11 @@
           "shape":"NdiAudioReferenceLevel",
           "documentation":"<p>The audio reference level of the NDI receiver, in decibels relative to full scale (dBFS). Common values are <code>-20</code> (NDI and SMPTE) and <code>-18</code> (EBU). If you don't specify this field, MediaConnect uses <code>-20</code>.</p>",
           "locationName":"ndiAudioReferenceLevel"
+        },
+        "RtmpPushSettings":{
+          "shape":"RtmpPushOutputSettings",
+          "documentation":"<p>The settings for an output that pushes a stream to a destination using the RTMP (Real-Time Messaging Protocol) protocol, or RTMPS (RTMP over TLS) when TLS encryption is specified.</p>",
+          "locationName":"rtmpPushSettings"
         }
       },
       "documentation":"<p> A request to add an output to a flow.</p>"
@@ -2541,6 +2551,32 @@
       },
       "documentation":"<p> Specifies the configuration for audio stream metrics monitoring.</p>"
     },
+    "AutoPidMapConfiguration":{
+      "type":"structure",
+      "required":[
+        "StartPid",
+        "PidsPerProgram"
+      ],
+      "members":{
+        "StartPid":{
+          "shape":"Pid",
+          "documentation":"<p>The first PID in the range for automatic PID assignment.</p>",
+          "locationName":"startPid"
+        },
+        "PidsPerProgram":{
+          "shape":"AutoPidMapConfigurationPidsPerProgramInteger",
+          "documentation":"<p>The number of PIDs in the range for automatic PID assignment.</p>",
+          "locationName":"pidsPerProgram"
+        }
+      },
+      "documentation":"<p>The configuration settings for automatic Packet ID (PID) assignment. These settings apply to any PID mapping rule that uses the <code>auto</code> action, including the default action.</p>"
+    },
+    "AutoPidMapConfigurationPidsPerProgramInteger":{
+      "type":"integer",
+      "box":true,
+      "max":8158,
+      "min":1
+    },
     "AutomaticEncryptionKeyConfiguration":{
       "type":"structure",
       "members":{},
@@ -2550,6 +2586,11 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>The configuration for automatic endpoint encryption. In this mode, MediaConnect determines the encryption key when the endpoint connects. This type does not require any additional settings.</p>"
+    },
+    "AutomaticRtmpPushNamingConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The automatic RTMP naming configuration, where MediaConnect generates the application and stream names. This type does not require any additional settings.</p>"
     },
     "BadRequestException":{
       "type":"structure",
@@ -3793,6 +3834,11 @@
           "documentation":"<p>A unique identifier for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "locationName":"clientToken"
+        },
+        "Processors":{
+          "shape":"RouterOutputProcessors",
+          "documentation":"<p>The processor settings for the router output.</p>",
+          "locationName":"processors"
         }
       }
     },
@@ -4218,6 +4264,11 @@
           "shape":"NdiSourceMetadataInfo",
           "documentation":"<p> The NDI® specific information about the flow's source. This includes the current active NDI sender, a list of all discovered NDI senders, the associated media streams for the active NDI sender, and any relevant status messages. </p>",
           "locationName":"ndiInfo"
+        },
+        "RtmpInfo":{
+          "shape":"RtmpSourceMetadataInfo",
+          "documentation":"<p>The RTMP (Real-Time Messaging Protocol) specific information about the flow's source. This includes the application name, the stream name, and the associated audio and video streams.</p>",
+          "locationName":"rtmpInfo"
         }
       }
     },
@@ -5068,6 +5119,16 @@
           "shape":"FabricLatencyMode",
           "documentation":"<p>The recovery latency mode for the router fabric connection. Valid values include the following:</p> <ul> <li> <p> <code>BALANCED</code> (default) – Optimizes for stream quality.</p> </li> <li> <p> <code>LOW_LATENCY</code> – Reduces latency at the potential cost of stream quality under adverse network conditions.</p> </li> </ul>",
           "locationName":"recoveryLatencyMode"
+        },
+        "SwitchingMode":{
+          "shape":"FabricSwitchingMode",
+          "documentation":"<p>The switching mode that the router output uses when it switches to a new router input. Valid values include the following:</p> <ul> <li> <p> <code>IMMEDIATE</code> (default) – Switches to the new router input immediately.</p> </li> <li> <p> <code>KEY_FRAME</code> – Waits for a key frame on the new router input before it switches.</p> </li> </ul> <p>If you specify it, it must match the switching configuration.</p>",
+          "locationName":"switchingMode"
+        },
+        "SwitchingConfiguration":{
+          "shape":"FabricSwitchingConfiguration",
+          "documentation":"<p>The configuration settings for the switching mode.</p>",
+          "locationName":"switchingConfiguration"
         }
       },
       "documentation":"<p>The fabric configuration settings for the router output.</p>"
@@ -5077,6 +5138,30 @@
       "enum":[
         "BALANCED",
         "LOW_LATENCY"
+      ]
+    },
+    "FabricSwitchingConfiguration":{
+      "type":"structure",
+      "members":{
+        "Immediate":{
+          "shape":"ImmediateFabricSwitchingConfiguration",
+          "documentation":"<p>The switching configuration where the router output switches to the new router input immediately.</p>",
+          "locationName":"immediate"
+        },
+        "KeyFrame":{
+          "shape":"KeyFrameFabricSwitchingConfiguration",
+          "documentation":"<p>The switching configuration where the router output waits for a key frame on the new router input before it switches.</p>",
+          "locationName":"keyFrame"
+        }
+      },
+      "documentation":"<p>The configuration settings for switching between router inputs.</p>",
+      "union":true
+    },
+    "FabricSwitchingMode":{
+      "type":"string",
+      "enum":[
+        "IMMEDIATE",
+        "KEY_FRAME"
       ]
     },
     "FailoverConfig":{
@@ -5169,6 +5254,11 @@
           "shape":"String",
           "documentation":"<p>The IP address of the source for this indexed stream.</p>",
           "locationName":"sourceIpAddress"
+        },
+        "RtmpPush":{
+          "shape":"RtmpPushStreamDetails",
+          "documentation":"<p>The RTMP stream details for this indexed stream, including the application and stream names.</p>",
+          "locationName":"rtmpPush"
         }
       },
       "documentation":"<p>Configuration details for an indexed stream in a failover router input setup.</p>"
@@ -5183,6 +5273,11 @@
         "SrtListener":{
           "shape":"SrtListenerRouterInputConfiguration",
           "locationName":"srtListener"
+        },
+        "RtmpPush":{
+          "shape":"RtmpPushRouterInputConfiguration",
+          "documentation":"<p>The configuration settings for a failover router input that uses the RTMP protocol.</p>",
+          "locationName":"rtmpPush"
         },
         "SrtCaller":{
           "shape":"SrtCallerRouterInputConfiguration",
@@ -5976,6 +6071,11 @@
         }
       }
     },
+    "ImmediateFabricSwitchingConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The switching configuration where the router output switches to the new router input immediately. This type does not require any additional settings.</p>"
+    },
     "IngressGatewayBridge":{
       "type":"structure",
       "required":[
@@ -6100,6 +6200,23 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "KeyFrameFabricSwitchingConfiguration":{
+      "type":"structure",
+      "members":{
+        "KeyFrameWaitMilliseconds":{
+          "shape":"KeyFrameFabricSwitchingConfigurationKeyFrameWaitMillisecondsLong",
+          "documentation":"<p>The maximum time, in milliseconds, that the router output waits for a key frame on the new input before it switches. Set this value to at least the GOP (Group of Pictures) duration of your content, which your upstream encoder determines. If the wait time is shorter than the GOP duration, MediaConnect makes a best effort to switch without a key frame. The default is 3000.</p>",
+          "locationName":"keyFrameWaitMilliseconds"
+        }
+      },
+      "documentation":"<p>The switching configuration where the router output waits for a key frame on the new router input before it switches.</p>"
+    },
+    "KeyFrameFabricSwitchingConfigurationKeyFrameWaitMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":0
     },
     "KeyType":{
       "type":"string",
@@ -7377,6 +7494,26 @@
         "DEFAULT"
       ]
     },
+    "ManualRtmpPushNamingConfiguration":{
+      "type":"structure",
+      "required":[
+        "ApplicationName",
+        "StreamName"
+      ],
+      "members":{
+        "ApplicationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP application. Together with the stream name, the application name forms the RTMP URL path, in the pattern <code>rtmp://ingestAddress/applicationName/streamName</code>.</p>",
+          "locationName":"applicationName"
+        },
+        "StreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP stream. The stream name forms the final segment of the RTMP URL path.</p>",
+          "locationName":"streamName"
+        }
+      },
+      "documentation":"<p>The manual RTMP naming configuration, where you specify the application and stream names.</p>"
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -7812,6 +7949,14 @@
         "Rist":{
           "shape":"RistRouterInputConfiguration",
           "locationName":"rist"
+        },
+        "SrtListener":{
+          "shape":"SrtListenerRouterInputConfiguration",
+          "locationName":"srtListener"
+        },
+        "SrtCaller":{
+          "shape":"SrtCallerRouterInputConfiguration",
+          "locationName":"srtCaller"
         }
       },
       "documentation":"<p>Protocol configuration settings for merge router inputs.</p>",
@@ -8317,6 +8462,48 @@
       },
       "documentation":"<p>The cross-account sharing details for an endpoint that this account owns and shares with other accounts.</p>"
     },
+    "Passthrough":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The configuration that passes through the value from the source. This type does not require any additional settings.</p>"
+    },
+    "Pid":{
+      "type":"integer",
+      "box":true,
+      "max":8190,
+      "min":32
+    },
+    "PidMapRule":{
+      "type":"structure",
+      "required":[
+        "MatchExpression",
+        "Action"
+      ],
+      "members":{
+        "MatchExpression":{
+          "shape":"PidMapRuleMatchExpressionString",
+          "documentation":"<p>An expression that selects the elementary streams that this rule applies to.</p>",
+          "locationName":"matchExpression"
+        },
+        "Action":{
+          "shape":"ActionString",
+          "documentation":"<p>The action to apply to the elementary streams that match this rule.</p>",
+          "locationName":"action"
+        }
+      },
+      "documentation":"<p>A rule that selects elementary streams and specifies the action to apply to them.</p>"
+    },
+    "PidMapRuleMatchExpressionString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "PidMapRules":{
+      "type":"list",
+      "member":{"shape":"PidMapRule"},
+      "max":32,
+      "min":0
+    },
     "PreferredDayTimeMaintenanceConfiguration":{
       "type":"structure",
       "required":[
@@ -8341,6 +8528,63 @@
       "type":"string",
       "enum":["HOURLY"]
     },
+    "ProgramClockReferencePidConfiguration":{
+      "type":"structure",
+      "members":{
+        "Passthrough":{
+          "shape":"Passthrough",
+          "documentation":"<p>The PCR PID configuration that passes through the PCR PID from the source.</p>",
+          "locationName":"passthrough"
+        },
+        "Set":{
+          "shape":"Pid",
+          "documentation":"<p>The PCR PID to use for the router output. MediaConnect applies this value only when the PCR is carried on its own PID. If the PCR is carried on an elementary stream, this value has no effect. If you also set the PMT PID, the two values must be different.</p>",
+          "locationName":"set"
+        }
+      },
+      "documentation":"<p>The configuration settings for the Program Clock Reference (PCR) Packet ID (PID).</p>",
+      "union":true
+    },
+    "ProgramMapTablePidConfiguration":{
+      "type":"structure",
+      "members":{
+        "Passthrough":{
+          "shape":"Passthrough",
+          "documentation":"<p>The PMT PID configuration that passes through the PMT PID from the source.</p>",
+          "locationName":"passthrough"
+        },
+        "Set":{
+          "shape":"Pid",
+          "documentation":"<p>The PMT PID to use for the router output. If you also set the PCR PID, the two values must be different.</p>",
+          "locationName":"set"
+        }
+      },
+      "documentation":"<p>The configuration settings for the Program Map Table (PMT) Packet ID (PID).</p>",
+      "union":true
+    },
+    "ProgramNumberConfiguration":{
+      "type":"structure",
+      "members":{
+        "Passthrough":{
+          "shape":"Passthrough",
+          "documentation":"<p>The program number configuration that passes through the program number from the source.</p>",
+          "locationName":"passthrough"
+        },
+        "Set":{
+          "shape":"ProgramNumberConfigurationSetInteger",
+          "documentation":"<p>The program number to use for the router output.</p>",
+          "locationName":"set"
+        }
+      },
+      "documentation":"<p>The configuration settings for the program number.</p>",
+      "union":true
+    },
+    "ProgramNumberConfigurationSetInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
     "Protocol":{
       "type":"string",
       "enum":[
@@ -8355,7 +8599,8 @@
         "srt-caller",
         "fujitsu-qos",
         "udp",
-        "ndi-speed-hq"
+        "ndi-speed-hq",
+        "rtmp-push"
       ]
     },
     "PublicDestinationEndpointNetworkingConfiguration":{
@@ -8544,8 +8789,8 @@
     "RegisterDestinationEndpointRequestDescriptionString":{
       "type":"string",
       "max":1000,
-      "min":1,
-      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+      "min":0,
+      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)]*"
     },
     "RegisterDestinationEndpointResponse":{
       "type":"structure",
@@ -8593,8 +8838,8 @@
     "RegisterSourceEndpointRequestDescriptionString":{
       "type":"string",
       "max":1000,
-      "min":1,
-      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+      "min":0,
+      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)]*"
     },
     "RegisterSourceEndpointResponse":{
       "type":"structure",
@@ -9604,6 +9849,11 @@
         "TransportStreamMediaInfo":{
           "shape":"TransportMediaInfo",
           "locationName":"transportStreamMediaInfo"
+        },
+        "RtmpInfo":{
+          "shape":"RtmpSourceMetadataInfo",
+          "documentation":"<p>The RTMP (Real-Time Messaging Protocol) specific information about the router input's source. This includes the application name, the stream name, and the associated audio and video streams.</p>",
+          "locationName":"rtmpInfo"
         }
       },
       "documentation":"<p>Metadata information associated with the router input, including stream details and connection state.</p>",
@@ -9615,7 +9865,8 @@
         "RTP",
         "RIST",
         "SRT_CALLER",
-        "SRT_LISTENER"
+        "SRT_LISTENER",
+        "RTMP_PUSH"
       ]
     },
     "RouterInputProtocolConfiguration":{
@@ -9628,6 +9879,11 @@
         "SrtListener":{
           "shape":"SrtListenerRouterInputConfiguration",
           "locationName":"srtListener"
+        },
+        "RtmpPush":{
+          "shape":"RtmpPushRouterInputConfiguration",
+          "documentation":"<p>The configuration settings for a router input that uses the RTMP protocol.</p>",
+          "locationName":"rtmpPush"
         },
         "SrtCaller":{
           "shape":"SrtCallerRouterInputConfiguration",
@@ -10133,6 +10389,11 @@
           "documentation":"<p>The fabric configuration settings for the router output.</p>",
           "locationName":"fabricConfiguration"
         },
+        "Processors":{
+          "shape":"RouterOutputProcessors",
+          "documentation":"<p>The processor settings for the router output.</p>",
+          "locationName":"processors"
+        },
         "AssociatedSourceEndpointArns":{
           "shape":"SourceEndpointArnList",
           "documentation":"<p>The Amazon Resource Names (ARNs) of one or more source endpoints that are associated with this router output.</p>",
@@ -10237,6 +10498,17 @@
     "RouterOutputMessages":{
       "type":"list",
       "member":{"shape":"RouterOutputMessage"}
+    },
+    "RouterOutputProcessors":{
+      "type":"structure",
+      "members":{
+        "SingleProgramTransportStreamPidMap":{
+          "shape":"SingleProgramTransportStreamPidMapConfiguration",
+          "documentation":"<p>The configuration settings for remapping the identification numbers of elementary streams and program identifiers of a single-program transport stream.</p>",
+          "locationName":"singleProgramTransportStreamPidMap"
+        }
+      },
+      "documentation":"<p>The processor settings for a router output.</p>"
     },
     "RouterOutputProtocol":{
       "type":"string",
@@ -10436,6 +10708,168 @@
       "type":"list",
       "member":{"shape":"RoutingScope"}
     },
+    "RtmpMediaInfo":{
+      "type":"structure",
+      "required":["Streams"],
+      "members":{
+        "Streams":{
+          "shape":"RtmpMediaStreamInfoList",
+          "documentation":"<p>A list of the individual audio and video streams that make up the RTMP source. This includes details about each stream's codec, resolution, frame rate, audio channels, and other parameters.</p>",
+          "locationName":"streams"
+        }
+      },
+      "documentation":"<p>Metadata about the audio and video media that is part of the RTMP source content. This includes details about the individual streams.</p>"
+    },
+    "RtmpMediaStreamInfo":{
+      "type":"structure",
+      "required":[
+        "StreamId",
+        "StreamType",
+        "Codec"
+      ],
+      "members":{
+        "StreamId":{
+          "shape":"Integer",
+          "documentation":"<p>A unique identifier for the stream.</p>",
+          "locationName":"streamId"
+        },
+        "StreamType":{
+          "shape":"SourceMediaStreamType",
+          "documentation":"<p>The type of stream (for example, <code>VIDEO</code> or <code>AUDIO</code>).</p>",
+          "locationName":"streamType"
+        },
+        "Codec":{
+          "shape":"String",
+          "documentation":"<p>The codec used for the stream.</p>",
+          "locationName":"codec"
+        },
+        "FrameRate":{
+          "shape":"String",
+          "documentation":"<p>The number of video frames displayed per second. Used when the <code>streamType</code> is <code>VIDEO</code>.</p>",
+          "locationName":"frameRate"
+        },
+        "FrameResolution":{
+          "shape":"FrameResolution",
+          "documentation":"<p>The width and height dimensions of the video frame in pixels. Used when the <code>streamType</code> is <code>VIDEO</code>.</p>",
+          "locationName":"frameResolution"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>The method used to display video frames. Used when the <code>streamType</code> is <code>VIDEO</code>.</p>",
+          "locationName":"scanMode"
+        },
+        "Color":{
+          "shape":"ColorInformation",
+          "documentation":"<p>The color signaling of the video stream. Used when the <code>streamType</code> is <code>VIDEO</code>.</p>",
+          "locationName":"color"
+        },
+        "Channels":{
+          "shape":"Integer",
+          "documentation":"<p>The number of audio channels in the stream. Used when the <code>streamType</code> is <code>AUDIO</code>.</p>",
+          "locationName":"channels"
+        },
+        "SampleRate":{
+          "shape":"Integer",
+          "documentation":"<p>The number of audio samples captured per second. Used when the <code>streamType</code> is <code>AUDIO</code>.</p>",
+          "locationName":"sampleRate"
+        },
+        "SampleSize":{
+          "shape":"Integer",
+          "documentation":"<p>The sample bit size used by the audio stream. Used when the <code>streamType</code> is <code>AUDIO</code>.</p>",
+          "locationName":"sampleSize"
+        },
+        "Language":{
+          "shape":"String",
+          "documentation":"<p>The language of the audio stream. Used when the <code>streamType</code> is <code>AUDIO</code>.</p>",
+          "locationName":"language"
+        }
+      },
+      "documentation":"<p>Information about a single audio or video stream that is part of an RTMP source. This includes details about the stream type, codec, resolution, frame rate, audio channels, and sample rate.</p>"
+    },
+    "RtmpMediaStreamInfoList":{
+      "type":"list",
+      "member":{"shape":"RtmpMediaStreamInfo"}
+    },
+    "RtmpPushNamingConfiguration":{
+      "type":"structure",
+      "members":{
+        "Manual":{
+          "shape":"ManualRtmpPushNamingConfiguration",
+          "documentation":"<p>The naming configuration where you specify the application and stream names.</p>",
+          "locationName":"manual"
+        },
+        "Automatic":{
+          "shape":"AutomaticRtmpPushNamingConfiguration",
+          "documentation":"<p>The naming configuration where MediaConnect generates the application and stream names.</p>",
+          "locationName":"automatic"
+        }
+      },
+      "documentation":"<p>The configuration settings for the RTMP (Real-Time Messaging Protocol) application and stream names.</p>",
+      "union":true
+    },
+    "RtmpPushNamingType":{
+      "type":"string",
+      "enum":[
+        "MANUAL",
+        "AUTOMATIC"
+      ]
+    },
+    "RtmpPushOutputSettings":{
+      "type":"structure",
+      "required":[
+        "ApplicationName",
+        "StreamName"
+      ],
+      "members":{
+        "ApplicationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP application on the destination server. Together with the stream name, the application name forms the RTMP URL path, in the pattern <code>rtmp://destinationAddress/applicationName/streamName</code>.</p>",
+          "locationName":"applicationName"
+        },
+        "StreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP stream that the output publishes to the destination application. The stream name forms the final segment of the RTMP URL path.</p>",
+          "locationName":"streamName"
+        },
+        "TlsEncryption":{
+          "shape":"TlsEncryption",
+          "documentation":"<p>The TLS encryption settings for the output. When you specify these settings, the output uses RTMPS (RTMP over TLS) to establish a secure, encrypted connection to the destination server.</p>",
+          "locationName":"tlsEncryption"
+        }
+      },
+      "documentation":"<p>The settings for an output that pushes a stream to a destination using the RTMP (Real-Time Messaging Protocol) protocol, or RTMPS (RTMP over TLS) when TLS encryption is specified. These settings include the application and stream names, and optional TLS encryption configuration.</p>"
+    },
+    "RtmpPushRouterInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "Port",
+        "NamingConfiguration"
+      ],
+      "members":{
+        "Port":{
+          "shape":"RtmpPushRouterInputConfigurationPortInteger",
+          "documentation":"<p>The port number for the RTMP protocol. The only valid value is <code>1935</code>.</p>",
+          "locationName":"port"
+        },
+        "NamingType":{
+          "shape":"RtmpPushNamingType",
+          "documentation":"<p>The naming type. If you specify it, it must match the naming configuration.</p>",
+          "locationName":"namingType"
+        },
+        "NamingConfiguration":{
+          "shape":"RtmpPushNamingConfiguration",
+          "documentation":"<p>The configuration settings for the application and stream names.</p>",
+          "locationName":"namingConfiguration"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router input using the RTMP (Real-Time Messaging Protocol) protocol.</p>"
+    },
+    "RtmpPushRouterInputConfigurationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1935,
+      "min":1935
+    },
     "RtmpPushRouterOutputConfiguration":{
       "type":"structure",
       "required":[
@@ -10478,6 +10912,74 @@
       "box":true,
       "max":65535,
       "min":443
+    },
+    "RtmpPushSourceSettings":{
+      "type":"structure",
+      "required":[
+        "ApplicationName",
+        "StreamName",
+        "NamingType"
+      ],
+      "members":{
+        "ApplicationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP application. Together with the stream name, the application name forms the RTMP URL path, in the pattern <code>rtmp://ingestAddress/applicationName/streamName</code>.</p>",
+          "locationName":"applicationName"
+        },
+        "StreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP stream. The stream name forms the final segment of the RTMP URL path.</p>",
+          "locationName":"streamName"
+        },
+        "NamingType":{
+          "shape":"RtmpPushNamingType",
+          "documentation":"<p>The naming type that the source uses. With <code>AUTOMATIC</code> naming, MediaConnect generates the application and stream names.</p>",
+          "locationName":"namingType"
+        }
+      },
+      "documentation":"<p>The settings for the RTMP (Real-Time Messaging Protocol) source.</p>"
+    },
+    "RtmpPushStreamDetails":{
+      "type":"structure",
+      "required":[
+        "ApplicationName",
+        "StreamName"
+      ],
+      "members":{
+        "ApplicationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP application.</p>",
+          "locationName":"applicationName"
+        },
+        "StreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP stream.</p>",
+          "locationName":"streamName"
+        }
+      },
+      "documentation":"<p>Configuration details for an RTMP (Real-Time Messaging Protocol) router input stream, including the application and stream names.</p>"
+    },
+    "RtmpSourceMetadataInfo":{
+      "type":"structure",
+      "required":["MediaInfo"],
+      "members":{
+        "ApplicationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP application.</p>",
+          "locationName":"applicationName"
+        },
+        "StreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP stream.</p>",
+          "locationName":"streamName"
+        },
+        "MediaInfo":{
+          "shape":"RtmpMediaInfo",
+          "documentation":"<p>Information about the audio and video streams that are part of the RTMP source.</p>",
+          "locationName":"mediaInfo"
+        }
+      },
+      "documentation":"<p>Information about the RTMP (Real-Time Messaging Protocol) source. This includes the application name, the stream name, and metadata about the audio and video streams.</p>"
     },
     "RtpRouterInputConfiguration":{
       "type":"structure",
@@ -10676,6 +11178,18 @@
       "type":"string",
       "pattern":"arn:.+:mediaconnect.+:bridge:.+"
     },
+    "SetRtmpPushSourceSettings":{
+      "type":"structure",
+      "required":["NamingConfiguration"],
+      "members":{
+        "NamingConfiguration":{
+          "shape":"RtmpPushNamingConfiguration",
+          "documentation":"<p>The configuration settings for the application and stream names.</p>",
+          "locationName":"namingConfiguration"
+        }
+      },
+      "documentation":"<p>The settings for the RTMP (Real-Time Messaging Protocol) source.</p>"
+    },
     "SetSourceRequest":{
       "type":"structure",
       "members":{
@@ -10793,6 +11307,11 @@
           "shape":"FlowTransitEncryption",
           "documentation":"<p>The decryption configuration for the flow source when router integration is enabled. Specifies how the source content should be decrypted when router integration is used.</p>",
           "locationName":"routerIntegrationTransitDecryption"
+        },
+        "RtmpPushSettings":{
+          "shape":"SetRtmpPushSourceSettings",
+          "documentation":"<p>The settings for the RTMP (Real-Time Messaging Protocol) source.</p>",
+          "locationName":"rtmpPushSettings"
         }
       },
       "documentation":"<p> The settings for the source of the flow.</p>"
@@ -10836,6 +11355,51 @@
         }
       },
       "documentation":"<p>Detects silent audio in the router input's source content and reports it through a CloudWatch metric, an EventBridge event, and a router input message.</p>"
+    },
+    "SingleProgramTransportStreamPidMapConfiguration":{
+      "type":"structure",
+      "required":[
+        "Rules",
+        "DefaultAction"
+      ],
+      "members":{
+        "Rules":{
+          "shape":"PidMapRules",
+          "documentation":"<p>The ordered list of up to 32 rules that determine the action for each elementary stream. MediaConnect applies the first rule that matches.</p>",
+          "locationName":"rules"
+        },
+        "DefaultAction":{
+          "shape":"ActionString",
+          "documentation":"<p>The action to apply to an elementary stream that doesn't match any rule.</p>",
+          "locationName":"defaultAction"
+        },
+        "TransportStreamId":{
+          "shape":"TransportStreamIdConfiguration",
+          "documentation":"<p>The transport stream ID (TSID) settings for the router output. By default, the router output passes through the TSID from the source.</p>",
+          "locationName":"transportStreamId"
+        },
+        "ProgramNumber":{
+          "shape":"ProgramNumberConfiguration",
+          "documentation":"<p>The program number settings for the router output. By default, the router output passes through the program number from the source.</p>",
+          "locationName":"programNumber"
+        },
+        "ProgramMapTablePid":{
+          "shape":"ProgramMapTablePidConfiguration",
+          "documentation":"<p>The Program Map Table (PMT) PID settings for the router output. By default, the router output passes through the PMT PID from the source.</p>",
+          "locationName":"programMapTablePid"
+        },
+        "ProgramClockReferencePid":{
+          "shape":"ProgramClockReferencePidConfiguration",
+          "documentation":"<p>The Program Clock Reference (PCR) PID settings for the router output. By default, the router output passes through the PCR PID from the source.</p>",
+          "locationName":"programClockReferencePid"
+        },
+        "Auto":{
+          "shape":"AutoPidMapConfiguration",
+          "documentation":"<p>The settings for automatic Packet ID (PID) assignment. The default start PID is 512, with 32 PIDs per program.</p>",
+          "locationName":"auto"
+        }
+      },
+      "documentation":"<p>The configuration settings for remapping the identification numbers of elementary streams and program identifiers of a single-program transport stream.</p>"
     },
     "Source":{
       "type":"structure",
@@ -11285,6 +11849,15 @@
     "SourceEndpointTypeList":{
       "type":"list",
       "member":{"shape":"SourceEndpointType"}
+    },
+    "SourceMediaStreamType":{
+      "type":"string",
+      "enum":[
+        "VIDEO",
+        "AUDIO",
+        "DATA",
+        "UNKNOWN"
+      ]
     },
     "SourcePriority":{
       "type":"structure",
@@ -11817,6 +12390,11 @@
           "shape":"String",
           "documentation":"<p>The source IP address for the standard router input stream.</p>",
           "locationName":"sourceIpAddress"
+        },
+        "RtmpPush":{
+          "shape":"RtmpPushStreamDetails",
+          "documentation":"<p>The RTMP stream details for the standard router input stream, including the application and stream names.</p>",
+          "locationName":"rtmpPush"
         }
       },
       "documentation":"<p>Configuration details for a standard router input stream type.</p>"
@@ -12531,6 +13109,16 @@
           "shape":"NdiAudioReferenceLevel",
           "documentation":"<p>The audio reference level of the NDI receiver, in decibels relative to full scale (dBFS). Common values are <code>-20</code> (NDI and SMPTE) and <code>-18</code> (EBU). For NDI outputs, this field is always present and defaults to <code>-20</code>.</p>",
           "locationName":"ndiAudioReferenceLevel"
+        },
+        "RtmpPushSourceSettings":{
+          "shape":"RtmpPushSourceSettings",
+          "documentation":"<p>The settings for the RTMP (Real-Time Messaging Protocol) source.</p>",
+          "locationName":"rtmpPushSourceSettings"
+        },
+        "RtmpPushOutputSettings":{
+          "shape":"RtmpPushOutputSettings",
+          "documentation":"<p>The settings for an output that pushes a stream to a destination using the RTMP (Real-Time Messaging Protocol) protocol, or RTMPS (RTMP over TLS) when TLS encryption is specified.</p>",
+          "locationName":"rtmpPushOutputSettings"
         }
       },
       "documentation":"<p> Attributes related to the transport stream that are used in a source or output.</p>"
@@ -12599,13 +13187,46 @@
           "documentation":"<p> The sample bit size used by the audio stream.</p>",
           "locationName":"sampleSize"
         },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>The scan mode used by the video stream.</p>",
+          "locationName":"scanMode"
+        },
         "StreamType":{
           "shape":"String",
           "documentation":"<p> The Stream Type as it is reported in the Program Map Table.</p>",
           "locationName":"streamType"
+        },
+        "Language":{
+          "shape":"String",
+          "documentation":"<p>The language of the elementary stream.</p>",
+          "locationName":"language"
         }
       },
       "documentation":"<p> The metadata of an elementary transport stream.</p>"
+    },
+    "TransportStreamIdConfiguration":{
+      "type":"structure",
+      "members":{
+        "Passthrough":{
+          "shape":"Passthrough",
+          "documentation":"<p>The TSID configuration that passes through the TSID from the source.</p>",
+          "locationName":"passthrough"
+        },
+        "Set":{
+          "shape":"TransportStreamIdConfigurationSetInteger",
+          "documentation":"<p>The TSID to use for the router output.</p>",
+          "locationName":"set"
+        }
+      },
+      "documentation":"<p>The configuration settings for the transport stream ID (TSID).</p>",
+      "union":true
+    },
+    "TransportStreamIdConfigurationSetInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":0
     },
     "TransportStreamProgram":{
       "type":"structure",
@@ -12968,8 +13589,8 @@
     "UpdateDestinationEndpointRequestDescriptionString":{
       "type":"string",
       "max":1000,
-      "min":1,
-      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+      "min":0,
+      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)]*"
     },
     "UpdateDestinationEndpointResponse":{
       "type":"structure",
@@ -13326,6 +13947,11 @@
           "shape":"NdiAudioReferenceLevel",
           "documentation":"<p>The audio reference level of the NDI receiver, in decibels relative to full scale (dBFS). Common values are <code>-20</code> (NDI and SMPTE) and <code>-18</code> (EBU). If you don't specify this field, MediaConnect leaves the value unchanged.</p>",
           "locationName":"ndiAudioReferenceLevel"
+        },
+        "RtmpPushSettings":{
+          "shape":"RtmpPushOutputSettings",
+          "documentation":"<p>The settings for an output that pushes a stream to a destination using the RTMP (Real-Time Messaging Protocol) protocol, or RTMPS (RTMP over TLS) when TLS encryption is specified.</p>",
+          "locationName":"rtmpPushSettings"
         }
       }
     },
@@ -13530,6 +14156,11 @@
           "shape":"FlowTransitEncryption",
           "documentation":"<p>The encryption configuration for the flow source when router integration is enabled.</p>",
           "locationName":"routerIntegrationTransitDecryption"
+        },
+        "RtmpPushSettings":{
+          "shape":"SetRtmpPushSourceSettings",
+          "documentation":"<p>The settings for the RTMP (Real-Time Messaging Protocol) source.</p>",
+          "locationName":"rtmpPushSettings"
         }
       }
     },
@@ -13804,6 +14435,11 @@
           "shape":"FabricConfiguration",
           "documentation":"<p>The updated fabric configuration settings for the router output. You cannot update the fabric configuration while the output has an active route. You must unroute the output before updating the fabric configuration.</p>",
           "locationName":"fabricConfiguration"
+        },
+        "Processors":{
+          "shape":"RouterOutputProcessors",
+          "documentation":"<p>The updated processor settings for the router output. When you update the processors, include every setting that you want to keep. MediaConnect resets the settings that you don't specify to their defaults.</p>",
+          "locationName":"processors"
         }
       }
     },
@@ -13848,8 +14484,8 @@
     "UpdateSourceEndpointRequestDescriptionString":{
       "type":"string",
       "max":1000,
-      "min":1,
-      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+      "min":0,
+      "pattern":"[ a-zA-Z_0-9\\-.',@:;\\(\\)]*"
     },
     "UpdateSourceEndpointResponse":{
       "type":"structure",

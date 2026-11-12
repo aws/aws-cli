@@ -132,6 +132,23 @@
       ],
       "documentation":"<p>Attaches a static IP address to a specific Amazon Lightsail instance.</p>"
     },
+    "CheckSubdomainAvailability":{
+      "name":"CheckSubdomainAvailability",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CheckSubdomainAvailabilityRequest"},
+      "output":{"shape":"CheckSubdomainAvailabilityResult"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationFailureException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Checks whether a Lightsail subdomain is available to create. Optionally, reserves the subdomain for your account for 15 minutes.</p> <p>If you don't reserve the subdomain, another account can create it before you do.</p>"
+    },
     "CloseInstancePublicPorts":{
       "name":"CloseInstancePublicPorts",
       "http":{
@@ -634,6 +651,24 @@
       ],
       "documentation":"<p>Creates a snapshot of your database in Amazon Lightsail. You can use snapshots for backups, to make copies of a database, and to save data before deleting a database.</p> <p>The <code>create relational database snapshot</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
+    "CreateSubdomain":{
+      "name":"CreateSubdomain",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSubdomainRequest"},
+      "output":{"shape":"CreateSubdomainResult"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"OperationFailureException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Creates a Lightsail subdomain, such as <code>mysite</code>, with the web address <code>mysite.amazonlightsail.com</code>. After the subdomain is created, use the <code>UpdateSubdomainAssociation</code> action to associate it with a Lightsail resource.</p> <p>When you create a nested subdomain, such as <code>blog.mysite</code>, and you don't already have the top-level subdomain (<code>mysite</code>), Lightsail adds the top-level subdomain to your account in the <code>IMPLICIT</code> state.</p> <p>You can have up to 30 subdomains in your account. Nested subdomains, subdomains in the <code>CREATE_FAILED</code> state, and deleted subdomains that other accounts can't create yet count toward this quota. Subdomains in the <code>IMPLICIT</code> state don't count toward this quota.</p>"
+    },
     "DeleteAlarm":{
       "name":"DeleteAlarm",
       "http":{
@@ -1038,6 +1073,24 @@
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes a database snapshot in Amazon Lightsail.</p> <p>The <code>delete relational database snapshot</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+    },
+    "DeleteSubdomain":{
+      "name":"DeleteSubdomain",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSubdomainRequest"},
+      "output":{"shape":"DeleteSubdomainResult"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"OperationFailureException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Deletes a Lightsail subdomain.</p> <p>The subdomain must be in the <code>UNATTACHED</code> or <code>CREATE_FAILED</code> state. To delete a subdomain that's associated with a resource, first disassociate it by using the <code>UpdateSubdomainAssociation</code> action.</p> <p>When you delete a top-level subdomain that has nested subdomains, the nested subdomains continue to work, and the top-level subdomain changes to the <code>IMPLICIT</code> state.</p> <note> <p>After you delete a subdomain that was associated with a resource, the subdomain isn't available to other accounts for at least 30 days.</p> </note>"
     },
     "DetachCertificateFromDistribution":{
       "name":"DetachCertificateFromDistribution",
@@ -1713,7 +1766,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Returns information about one or more of your Amazon Lightsail content delivery network (CDN) distributions.</p>"
+      "documentation":"<p>Returns information about one or more of your Amazon Lightsail content delivery network (CDN) distributions.</p> <note> <p>The <code>defaultRootObject</code> and <code>customErrorResponses</code> values are returned only when you specify <code>distributionName</code> to retrieve a single distribution. When you call <code>GetDistributions</code> without a distribution name to list all distributions, these two fields aren't included in the response.</p> </note>"
     },
     "GetDomain":{
       "name":"GetDomain",
@@ -2468,6 +2521,23 @@
       ],
       "documentation":"<p>Returns information about all static IPs in the user's account.</p>"
     },
+    "GetSubdomains":{
+      "name":"GetSubdomains",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSubdomainsRequest"},
+      "output":{"shape":"GetSubdomainsResult"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Returns information about one or more of your Lightsail subdomains.</p> <p>When you don't specify a subdomain, the response lists your top-level subdomains, and each top-level subdomain includes its nested subdomains.</p> <p>The results are paginated. To get the next page of results, use the <code>pageToken</code> parameter.</p>"
+    },
     "ImportKeyPair":{
       "name":"ImportKeyPair",
       "http":{
@@ -3142,6 +3212,24 @@
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Allows the update of one or more parameters of a database in Amazon Lightsail.</p> <p>Parameter updates don't cause outages; therefore, their application is not subject to the preferred maintenance window. However, there are two ways in which parameter updates are applied: <code>dynamic</code> or <code>pending-reboot</code>. Parameters marked with a <code>dynamic</code> apply type are applied immediately. Parameters marked with a <code>pending-reboot</code> apply type are applied only after the database is rebooted using the <code>reboot relational database</code> operation.</p> <p>The <code>update relational database parameters</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+    },
+    "UpdateSubdomainAssociation":{
+      "name":"UpdateSubdomainAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateSubdomainAssociationRequest"},
+      "output":{"shape":"UpdateSubdomainAssociationResult"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"OperationFailureException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Associates a Lightsail subdomain with a resource, disassociates it from a resource, or moves it from one resource to another resource.</p> <p>Currently, you can associate a subdomain only with a Lightsail content delivery network (CDN) distribution. A resource can be associated with only one subdomain at a time.</p> <p>When you associate a subdomain with a distribution, Lightsail attaches the subdomain's certificate to the distribution. You can't associate a subdomain with a distribution that uses a custom domain, which is a distribution that has a Lightsail certificate attached.</p> <p>You can transfer each subdomain to another resource only once in a 24-hour period.</p> <p>The update is asynchronous. The response returns the subdomain in the <code>ATTACHING</code>, <code>DETACHING</code>, or <code>TRANSFERRING</code> state, and an operation. To check when the update is complete, use the <code>GetSubdomains</code> action.</p>"
     }
   },
   "shapes":{
@@ -4309,6 +4397,37 @@
       "type":"list",
       "member":{"shape":"CertificateSummary"}
     },
+    "CheckSubdomainAvailabilityRequest":{
+      "type":"structure",
+      "required":["subdomainName"],
+      "members":{
+        "subdomainName":{
+          "shape":"string",
+          "documentation":"<p>The subdomain to check (for example, <code>mysite</code> or <code>blog.mysite</code>).</p> <p>A subdomain can contain one or two labels separated by a period (<code>.</code>). Each label must start and end with a lowercase letter or a number, and can contain only lowercase letters, numbers, and hyphens (<code>-</code>). The name can be up to 39 characters long, including periods. Labels that start with <code>xn--</code> aren't supported, and some names are reserved.</p> <p>Specify only the subdomain. A web address, such as <code>mysite.amazonlightsail.com</code>, isn't accepted.</p>"
+        },
+        "reserve":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether to reserve the subdomain for your account if it's available. A reservation holds the subdomain for 15 minutes so that other accounts can't create it. Checking the subdomain again doesn't extend the reservation.</p> <p>For a nested subdomain, such as <code>blog.mysite</code>, the top-level subdomain (<code>mysite</code>) is reserved.</p> <p>You can have up to 5 active reservations at a time.</p>"
+        }
+      }
+    },
+    "CheckSubdomainAvailabilityResult":{
+      "type":"structure",
+      "members":{
+        "available":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean value that indicates whether the subdomain is available to create.</p>"
+        },
+        "reservationExpiresAt":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp when the reservation of the subdomain expires.</p> <p>The expiry is returned only when your account holds an active reservation for the subdomain.</p>"
+        },
+        "subdomainName":{
+          "shape":"string",
+          "documentation":"<p>The subdomain that was checked.</p>"
+        }
+      }
+    },
     "CloseInstancePublicPortsRequest":{
       "type":"structure",
       "required":[
@@ -5438,6 +5557,10 @@
         "wafRules":{
           "shape":"WafRuleList",
           "documentation":"<p>An array of objects that describe the WAF rule groups to enable for the distribution.</p> <p>The WAF rule groups that you can specify depend on the bundle of the distribution:</p> <ul> <li> <p> <code>medium_1_0</code> – Supports the <code>AWSManagedRulesCommonRuleSet</code>, <code>AWSManagedRulesKnownBadInputsRuleSet</code>, and <code>AWSManagedRulesAnonymousIpList</code> rule groups.</p> </li> <li> <p> <code>large_1_0</code> – Supports the rule groups for <code>medium_1_0</code>, plus <code>AWSManagedRulesAdminProtectionRuleSet</code>, <code>AWSManagedRulesSQLiRuleSet</code>, <code>AWSManagedRulesLinuxRuleSet</code>, <code>AWSManagedRulesUnixRuleSet</code>, <code>AWSManagedRulesWindowsRuleSet</code>, <code>AWSManagedRulesPHPRuleSet</code>, <code>AWSManagedRulesWordPressRuleSet</code>, <code>AWSManagedRulesAmazonIpReputationList</code>, <code>AWSManagedRulesATPRuleSet</code>, <code>AWSManagedRulesACFPRuleSet</code>, and <code>AWSManagedRulesBotControlRuleSet</code> rule groups.</p> </li> </ul>"
+        },
+        "subdomainName":{
+          "shape":"string",
+          "documentation":"<p>The Lightsail subdomain to create and associate with the distribution (for example, <code>mysite</code>, for the web address <code>mysite.amazonlightsail.com</code>).</p> <p>After the distribution is deployed, Lightsail creates the subdomain and associates it with the distribution. If Lightsail can't create or associate the subdomain, it still creates the distribution, but the <code>CreateDistribution</code> operation fails and the <code>state</code> of the distribution's <code>subdomain</code> is <code>Error</code>. To check the status, use the <code>subdomain</code> parameter of the distribution.</p>"
         }
       }
     },
@@ -5974,6 +6097,33 @@
         }
       }
     },
+    "CreateSubdomainRequest":{
+      "type":"structure",
+      "required":["subdomainName"],
+      "members":{
+        "subdomainName":{
+          "shape":"string",
+          "documentation":"<p>The subdomain to create (for example, <code>mysite</code> or <code>blog.mysite</code>).</p> <p>A subdomain can contain one or two labels separated by a period (<code>.</code>). Each label must start and end with a lowercase letter or a number, and can contain only lowercase letters, numbers, and hyphens (<code>-</code>). The name can be up to 39 characters long, including periods. Labels that start with <code>xn--</code> aren't supported, and some names are reserved.</p> <p>Specify only the subdomain. A web address, such as <code>mysite.amazonlightsail.com</code>, isn't accepted.</p> <p>To create a nested subdomain, you must own the top-level subdomain or be able to create it.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tag keys and optional values to add to the subdomain during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>"
+        }
+      }
+    },
+    "CreateSubdomainResult":{
+      "type":"structure",
+      "members":{
+        "subdomain":{
+          "shape":"Subdomain",
+          "documentation":"<p>An object that describes the subdomain that was created.</p>"
+        },
+        "operation":{
+          "shape":"Operation",
+          "documentation":"<p>An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
+        }
+      }
+    },
     "Currency":{
       "type":"string",
       "enum":["USD"]
@@ -6426,6 +6576,29 @@
         "operations":{
           "shape":"OperationList",
           "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
+        }
+      }
+    },
+    "DeleteSubdomainRequest":{
+      "type":"structure",
+      "required":["subdomainName"],
+      "members":{
+        "subdomainName":{
+          "shape":"string",
+          "documentation":"<p>The subdomain to delete (for example, <code>mysite</code> or <code>blog.mysite</code>), not its web address.</p>"
+        }
+      }
+    },
+    "DeleteSubdomainResult":{
+      "type":"structure",
+      "members":{
+        "subdomain":{
+          "shape":"Subdomain",
+          "documentation":"<p>An object that describes the top-level subdomain in the <code>IMPLICIT</code> state.</p> <p>This parameter is returned only when you delete a top-level subdomain that has nested subdomains.</p>"
+        },
+        "operation":{
+          "shape":"Operation",
+          "documentation":"<p>An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
         }
       }
     },
@@ -8931,6 +9104,32 @@
         }
       }
     },
+    "GetSubdomainsRequest":{
+      "type":"structure",
+      "members":{
+        "subdomainName":{
+          "shape":"string",
+          "documentation":"<p>The subdomain for which to return information (for example, <code>mysite</code> or <code>blog.mysite</code>), not its web address.</p> <p>When omitted, the response includes all of your subdomains.</p> <p>You can't specify this parameter together with the <code>pageToken</code> parameter.</p>"
+        },
+        "pageToken":{
+          "shape":"string",
+          "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetSubdomains</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>"
+        }
+      }
+    },
+    "GetSubdomainsResult":{
+      "type":"structure",
+      "members":{
+        "subdomains":{
+          "shape":"SubdomainList",
+          "documentation":"<p>An array of objects that describe your subdomains.</p>"
+        },
+        "nextPageToken":{
+          "shape":"string",
+          "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetSubdomains</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>"
+        }
+      }
+    },
     "HeaderEnum":{
       "type":"string",
       "enum":[
@@ -9883,18 +10082,57 @@
         },
         "defaultRootObject":{
           "shape":"string",
-          "documentation":"<p>The object (for example, <code>index.html</code>) that the distribution returns when a viewer requests the root URL of the distribution (<code>/</code>) instead of a specific object.</p>"
+          "documentation":"<p>The object (for example, <code>index.html</code>) that the distribution returns when a viewer requests the root URL of the distribution (<code>/</code>) instead of a specific object.</p> <p>This value is returned only when you specify <code>distributionName</code> in your <code>GetDistributions</code> request. It isn't included in the response when you list all of your distributions.</p>"
         },
         "customErrorResponses":{
           "shape":"DistributionCustomErrorResponseList",
-          "documentation":"<p>An array of objects that describe the custom error responses configured for the distribution.</p>"
+          "documentation":"<p>An array of objects that describe the custom error responses configured for the distribution.</p> <p>This value is returned only when you specify <code>distributionName</code> in your <code>GetDistributions</code> request. It isn't included in the response when you list all of your distributions.</p>"
         },
         "waf":{
           "shape":"WafConfig",
           "documentation":"<p>An object that describes the Web Application Firewall (WAF) configuration of the distribution.</p>"
+        },
+        "subdomain":{
+          "shape":"LightsailDistributionSubdomain",
+          "documentation":"<p>An object that describes the Lightsail subdomain that's associated with the distribution, or is being associated with it.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Lightsail content delivery network (CDN) distribution.</p>"
+    },
+    "LightsailDistributionSubdomain":{
+      "type":"structure",
+      "required":[
+        "name",
+        "state"
+      ],
+      "members":{
+        "name":{
+          "shape":"string",
+          "documentation":"<p>The subdomain (for example, <code>mysite</code>), not its web address.</p>"
+        },
+        "state":{
+          "shape":"LightsailDistributionSubdomainStateEnum",
+          "documentation":"<p>The state of the subdomain for the distribution.</p> <p>The following states are possible:</p> <ul> <li> <p> <code>Creating</code> – The subdomain is being created.</p> </li> <li> <p> <code>Attaching</code> – The subdomain is being associated with the distribution.</p> </li> <li> <p> <code>Attached</code> – The subdomain is associated with the distribution.</p> </li> <li> <p> <code>Error</code> – The subdomain couldn't be created or associated with the distribution. For more information, see the <code>errorCode</code> and <code>errorDetails</code> parameters.</p> </li> </ul>"
+        },
+        "errorCode":{
+          "shape":"string",
+          "documentation":"<p>The error code that describes why the subdomain is in the <code>Error</code> state.</p>"
+        },
+        "errorDetails":{
+          "shape":"string",
+          "documentation":"<p>The details of the error that caused the subdomain to be in the <code>Error</code> state.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Lightsail subdomain of a distribution. The distribution is reachable at the subdomain's web address, which is the subdomain followed by <code>amazonlightsail.com</code>.</p>"
+    },
+    "LightsailDistributionSubdomainStateEnum":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Attaching",
+        "Attached",
+        "Error"
+      ]
     },
     "LoadBalancer":{
       "type":"structure",
@@ -10749,7 +10987,10 @@
         "StartGUISession",
         "StopGUISession",
         "SetupInstanceHttps",
-        "GetProfile"
+        "GetProfile",
+        "CreateSubdomain",
+        "UpdateSubdomainAssociation",
+        "DeleteSubdomain"
       ]
     },
     "Origin":{
@@ -11890,7 +12131,8 @@
         "ContactMethod",
         "Distribution",
         "Certificate",
-        "Bucket"
+        "Bucket",
+        "Subdomain"
       ]
     },
     "ResourcesBudgetEstimate":{
@@ -12414,6 +12656,103 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "Subdomain":{
+      "type":"structure",
+      "members":{
+        "subdomainName":{
+          "shape":"string",
+          "documentation":"<p>The subdomain (for example, <code>mysite</code> or <code>blog.mysite</code>). To get the web address, use the <code>fqdn</code> parameter.</p>"
+        },
+        "arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the subdomain.</p> <p>If you create a subdomain with a depth of 2, such as <code>blog.mysite</code>, without first creating the subdomain with a depth of 1 (<code>mysite</code>), Lightsail holds <code>mysite</code> for your account in the <code>IMPLICIT</code> state. It doesn't have an ARN until you create a subdomain with that name.</p>"
+        },
+        "fqdn":{
+          "shape":"string",
+          "documentation":"<p>The web address of the subdomain, which is the subdomain followed by <code>amazonlightsail.com</code> (for example, <code>blog.mysite.amazonlightsail.com</code>).</p>"
+        },
+        "depth":{
+          "shape":"integer",
+          "documentation":"<p>The number of labels in the subdomain. A top-level subdomain, such as <code>mysite</code>, has a depth of <code>1</code>. A nested subdomain, such as <code>blog.mysite</code>, has a depth of <code>2</code>.</p>"
+        },
+        "state":{
+          "shape":"SubdomainState",
+          "documentation":"<p>The state of the subdomain.</p> <p>The following states are possible:</p> <ul> <li> <p> <code>CREATING</code> – The subdomain is being created.</p> </li> <li> <p> <code>CREATE_FAILED</code> – The subdomain couldn't be created. Delete the subdomain, and then create it again if the name is still available.</p> </li> <li> <p> <code>UNATTACHED</code> – The subdomain is ready, and isn't associated with a resource.</p> </li> <li> <p> <code>ATTACHING</code> – The subdomain is being associated with a resource.</p> </li> <li> <p> <code>ATTACHED</code> – The subdomain is associated with a resource, and routes traffic to it.</p> </li> <li> <p> <code>DETACHING</code> – The subdomain is being disassociated from a resource.</p> </li> <li> <p> <code>TRANSFERRING</code> – The subdomain is being moved from one resource to another resource.</p> </li> <li> <p> <code>IMPLICIT</code> – The subdomain is the parent of one or more nested subdomains that you created, but you didn't create the parent subdomain itself. You can't associate or delete a subdomain in this state. To use it, create it with the <code>CreateSubdomain</code> action.</p> </li> </ul>"
+        },
+        "attachedResource":{
+          "shape":"SubdomainAttachableResource",
+          "documentation":"<p>An object that describes the resource that the subdomain is associated with.</p> <p>When the subdomain is in the <code>TRANSFERRING</code> state, this is the resource that the subdomain is being moved from.</p>"
+        },
+        "attachingResource":{
+          "shape":"SubdomainAttachableResource",
+          "documentation":"<p>An object that describes the resource that the subdomain is being associated with.</p> <p>This parameter is returned only when the subdomain is in the <code>ATTACHING</code> or <code>TRANSFERRING</code> state.</p>"
+        },
+        "location":{
+          "shape":"ResourceLocation",
+          "documentation":"<p>An object that describes the location of the subdomain, such as the AWS Region.</p>"
+        },
+        "createdAt":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp when the subdomain was created.</p>"
+        },
+        "parentFqdn":{
+          "shape":"string",
+          "documentation":"<p>The web address of the parent subdomain (for example, <code>mysite.amazonlightsail.com</code> for <code>blog.mysite</code>).</p> <p>This parameter isn't returned for a subdomain with a depth of 1.</p>"
+        },
+        "children":{
+          "shape":"SubdomainList",
+          "documentation":"<p>An array of objects that describe the nested subdomains of the subdomain.</p> <p>This parameter is returned only by the <code>GetSubdomains</code> action when you don't specify a subdomain.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tag keys and optional values for the subdomain. For more information about tags in Lightsail, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-tags\">Lightsail Developer Guide</a>.</p> <p>This parameter is returned only by the <code>GetSubdomains</code> action when you specify a subdomain.</p>"
+        }
+      },
+      "documentation":"<p>Describes a Lightsail subdomain. A subdomain is the name that you choose, such as <code>mysite</code> or <code>blog.mysite</code>. Its web address is the subdomain followed by <code>amazonlightsail.com</code>, such as <code>blog.mysite.amazonlightsail.com</code>. You can associate a subdomain with a Lightsail resource to make the resource reachable at the web address.</p>"
+    },
+    "SubdomainAssociationAction":{
+      "type":"string",
+      "enum":[
+        "ASSOCIATE",
+        "DISASSOCIATE",
+        "TRANSFER"
+      ]
+    },
+    "SubdomainAttachableResource":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the resource.</p>"
+        },
+        "attachedAt":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp when the subdomain was associated with the resource.</p>"
+        }
+      },
+      "documentation":"<p>Describes a Lightsail resource that a subdomain is associated with, or is being associated with.</p>"
+    },
+    "SubdomainList":{
+      "type":"list",
+      "member":{"shape":"Subdomain"}
+    },
+    "SubdomainState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "UNATTACHED",
+        "ATTACHING",
+        "ATTACHED",
+        "DETACHING",
+        "TRANSFERRING",
+        "IMPLICIT"
+      ]
     },
     "SubjectAlternativeNameList":{
       "type":"list",
@@ -12964,6 +13303,40 @@
         "operations":{
           "shape":"OperationList",
           "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
+        }
+      }
+    },
+    "UpdateSubdomainAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "subdomainName",
+        "action"
+      ],
+      "members":{
+        "subdomainName":{
+          "shape":"string",
+          "documentation":"<p>The subdomain to update (for example, <code>mysite</code> or <code>blog.mysite</code>), not its web address.</p>"
+        },
+        "action":{
+          "shape":"SubdomainAssociationAction",
+          "documentation":"<p>The association change to make.</p> <p>The following actions are possible:</p> <ul> <li> <p> <code>ASSOCIATE</code> – Associates the subdomain with the resource that you specify in the <code>targetResourceArn</code> parameter. The subdomain must be in the <code>UNATTACHED</code> state.</p> </li> <li> <p> <code>DISASSOCIATE</code> – Disassociates the subdomain from its current resource. The subdomain must be in the <code>ATTACHED</code> state.</p> </li> <li> <p> <code>TRANSFER</code> – Moves the subdomain from its current resource to the resource that you specify in the <code>targetResourceArn</code> parameter. The subdomain must be in the <code>ATTACHED</code> state. You can transfer each subdomain only once in a 24-hour period.</p> </li> </ul>"
+        },
+        "targetResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to associate the subdomain with. The resource must be in your account.</p> <p>This parameter is required when the <code>action</code> is <code>ASSOCIATE</code> or <code>TRANSFER</code>. It's ignored when the <code>action</code> is <code>DISASSOCIATE</code>.</p>"
+        }
+      }
+    },
+    "UpdateSubdomainAssociationResult":{
+      "type":"structure",
+      "members":{
+        "subdomain":{
+          "shape":"Subdomain",
+          "documentation":"<p>An object that describes the subdomain that was updated.</p>"
+        },
+        "operation":{
+          "shape":"Operation",
+          "documentation":"<p>An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
         }
       }
     },

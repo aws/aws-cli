@@ -1357,7 +1357,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Update the details for the instance of IAM Identity Center that is owned by the Amazon Web Services account.</p> <p>In a single <code>UpdateInstance</code> request, you can perform only one of the following operations:</p> <ul> <li> <p>Update the encryption configuration of the instance by specifying <code>EncryptionConfiguration</code>.</p> </li> <li> <p>Enable permission sets for the instance by specifying <code>PermissionSetsEnabled</code>.</p> </li> </ul> <p>If you specify both <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in a request, the request returns a <code>ValidationException</code>. To perform both operations, call <code>UpdateInstance</code> separately for each. You can make the two calls in parallel.</p>"
+      "documentation":"<p>Update the details for the instance of IAM Identity Center that is owned by the Amazon Web Services account.</p> <p>In a single <code>UpdateInstance</code> request, you can perform only one of the following operations:</p> <ul> <li> <p>Update the encryption configuration of the instance by specifying <code>EncryptionConfiguration</code>.</p> </li> <li> <p>Enable permission sets for the instance by specifying <code>PermissionSetsEnabled</code>.</p> </li> <li> <p>Update the network configuration of the instance by specifying <code>NetworkConfiguration</code>.</p> </li> </ul> <p>A request that specifies more than one of <code>EncryptionConfiguration</code>, <code>PermissionSetsEnabled</code>, and <code>NetworkConfiguration</code> returns a <code>ValidationException</code>. To perform more than one of these operations, call <code>UpdateInstance</code> separately for each. The calls can be made in parallel.</p>"
     },
     "UpdateInstanceAccessControlAttributeConfiguration":{
       "name":"UpdateInstanceAccessControlAttributeConfiguration",
@@ -1697,6 +1697,12 @@
       "max":1224,
       "min":10,
       "pattern":"arn:aws(-[a-z]{1,5}){0,3}:sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}"
+    },
+    "ApplicationArnList":{
+      "type":"list",
+      "member":{"shape":"FirstOrThirdPartyApplicationArnType"},
+      "max":50,
+      "min":0
     },
     "ApplicationAssignment":{
       "type":"structure",
@@ -2769,6 +2775,10 @@
           "shape":"EncryptionConfigurationDetails",
           "documentation":"<p>Contains the encryption configuration for your IAM Identity Center instance, including the encryption status, KMS key type, and KMS key ARN.</p>"
         },
+        "NetworkConfigurationDetails":{
+          "shape":"NetworkConfigurationInfo",
+          "documentation":"<p>The network access controls configured for your Identity Center instance, including whether VPC endpoint access is required, and any VPC, IP address range, or application controls applied to instance traffic. Present only after a network configuration has been set on the instance.</p>"
+        },
         "PermissionSetsEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether permission sets are enabled for this Identity Center instance.</p>"
@@ -3020,6 +3030,12 @@
         "SAML",
         "OAUTH"
       ]
+    },
+    "FirstOrThirdPartyApplicationArnType":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"arn:aws(-[a-z]{1,5}){0,3}:[a-z0-9-]+:[a-z0-9-*]*:[0-9]{12}:[-a-zA-Z0-9./:_*]+"
     },
     "GetApplicationAccessScopeRequest":{
       "type":"structure",
@@ -3376,6 +3392,18 @@
       "documentation":"<p>The request processing has failed because of an unknown error, exception, or failure with an internal server.</p>",
       "exception":true,
       "fault":true
+    },
+    "IpCidrList":{
+      "type":"list",
+      "member":{"shape":"IpCidrType"},
+      "max":50,
+      "min":0
+    },
+    "IpCidrType":{
+      "type":"string",
+      "max":43,
+      "min":2,
+      "pattern":"((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(3[0-2]|[1-2][0-9]|[0-9]))?|(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(:[0-9a-fA-F]{1,4}){1,6}|:((:[0-9a-fA-F]{1,4}){1,7}|:))(\\/(12[0-8]|1[0-1][0-9]|[1-9][0-9]|[0-9]))?)"
     },
     "IsPrimaryRegion":{"type":"boolean"},
     "JMESPath":{
@@ -4228,6 +4256,29 @@
       "max":255,
       "min":0,
       "pattern":"[\\w+=,.@-]+"
+    },
+    "NetworkConfigurationInfo":{
+      "type":"structure",
+      "required":["VpceAccessRequired"],
+      "members":{
+        "VpceAccessRequired":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether access to your Identity Center instance and to applications must originate from a VPC endpoint. When this value is <code>true</code> and no other field is specified, access is allowed from any VPC in your organization, or from any VPC in the Amazon Web Services account for an account instance, and applies to all applications. When this value is <code>false</code>, no network access control is enforced and the values of <code>RestrictSourceVpcs</code>, <code>AllowSourceIps</code>, and <code>ExcludeApplicationArns</code> are cleared.</p>"
+        },
+        "RestrictSourceVpcs":{
+          "shape":"VpcArnList",
+          "documentation":"<p>Limits access to the VPC endpoints in the VPCs that you specify. These VPCs must be in your organization, or in the Amazon Web Services account for an account instance. If you don't specify this value, access is allowed from any VPC in your organization or Amazon Web Services account.</p>"
+        },
+        "AllowSourceIps":{
+          "shape":"IpCidrList",
+          "documentation":"<p>Allows access from the IPv4 or IPv6 CIDR blocks that you specify, in addition to the VPCs allowed by <code>RestrictSourceVpcs</code>. If you don't specify this value, no additional IP address ranges are allowed.</p>"
+        },
+        "ExcludeApplicationArns":{
+          "shape":"ApplicationArnList",
+          "documentation":"<p>Exempts the applications that you specify from the network access control, so that access to them is unchanged. You can specify both Amazon Web Services managed applications and customer managed applications, and you can use wildcards. These applications are not restricted by <code>RestrictSourceVpcs</code> or <code>AllowSourceIps</code>. If you don't specify this value, the controls apply to all applications.</p>"
+        }
+      },
+      "documentation":"<p>The network access controls for your Identity Center instance. These controls restrict which networks can reach your instance and applications.</p>"
     },
     "OidcJwtConfiguration":{
       "type":"structure",
@@ -5155,11 +5206,15 @@
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
-          "documentation":"<p>Specifies the encryption configuration for your IAM Identity Center instance. You can use this to configure customer managed KMS keys or Amazon Web Services owned KMS keys for encrypting your instance data.</p>"
+          "documentation":"<p>Specifies the encryption configuration for your IAM Identity Center instance. You can use this to configure customer managed KMS keys or Amazon Web Services owned KMS keys for encrypting your instance data.</p> <note> <p>You can't set more than one of <code>EncryptionConfiguration</code>, <code>PermissionSetsEnabled</code>, and <code>NetworkConfiguration</code> in the same request. To configure more than one of them, make a separate <code>UpdateInstance</code> call for each. These calls can be made in parallel.</p> </note>"
         },
         "PermissionSetsEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Enables permission sets for this Identity Center instance. The only accepted value is <code>true </code>. After permission sets are enabled, they cannot be disabled.</p> <note> <p>You can't set <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in the same request. To configure both, make two separate <code>UpdateInstance</code> calls. You can make these calls in parallel.</p> </note>"
+          "documentation":"<p>Enables permission sets for this Identity Center instance. The only accepted value is <code>true </code>. After permission sets are enabled, they cannot be disabled.</p>"
+        },
+        "NetworkConfiguration":{
+          "shape":"NetworkConfigurationInfo",
+          "documentation":"<p>Specifies the network access controls for your Identity Center instance. Use this to require that access to your instance and to applications originates from VPC endpoints, and to optionally restrict which VPCs are permitted, allow specific IP address ranges that bypass the VPC endpoint requirement, or exempt specific applications from the controls.</p> <p>If you omit <code>NetworkConfiguration</code>, the stored network configuration is preserved. If you specify <code>NetworkConfiguration</code>, it replaces the stored network configuration in its entirety. Any list that you omit from the object, or include as an empty list, is cleared.</p>"
         }
       }
     },
@@ -5249,6 +5304,18 @@
         "KMS_InvalidStateException",
         "KMS_DisabledException"
       ]
+    },
+    "VpcArn":{
+      "type":"string",
+      "max":128,
+      "min":43,
+      "pattern":"arn:aws(-[a-z]{1,5}){0,3}:ec2:[a-z0-9-]+:[0-9]{12}:vpc/vpc-([0-9a-f]){8}(([0-9a-f]){9})?"
+    },
+    "VpcArnList":{
+      "type":"list",
+      "member":{"shape":"VpcArn"},
+      "max":50,
+      "min":0
     }
   },
   "documentation":"<p>IAM Identity Center is the Amazon Web Services solution for connecting your workforce users to Amazon Web Services managed applications and other Amazon Web Services resources. You can connect your existing identity provider and synchronize users and groups from your directory, or create and manage your users directly in IAM Identity Center. You can then use IAM Identity Center for either or both of the following:</p> <ul> <li> <p>User access to applications</p> </li> <li> <p>User access to Amazon Web Services accounts</p> </li> </ul> <p>This guide provides information about single sign-on operations that you can use for access to applications and Amazon Web Services accounts. For information about IAM Identity Center features, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">IAM Identity Center User Guide</a>.</p> <note> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces.</p> </note> <p>Many API operations for IAM Identity Center rely on identifiers for users and groups, known as principals. For more information about how to work with principals and principal IDs in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">Identity Store API Reference</a>.</p> <note> <p>Amazon Web Services provides SDKs that consist of libraries and sample code for various programming languages and platforms (Java, Ruby, .Net, iOS, Android, and more). The SDKs provide a convenient way to create programmatic access to IAM Identity Center and other Amazon Web Services services. For more information about the Amazon Web Services SDKs, including how to download and install them, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> </note>"

@@ -1064,7 +1064,7 @@
         },
         "schedulerConfiguration": {
           "shape": "SchedulerConfiguration",
-          "documentation": "<p>The scheduler configuration (concurrency and queue limits) to apply to the virtual cluster at creation time. When omitted, no limits are applied.</p>"
+          "documentation": "<p>The scheduler configuration (concurrency and queue limits) to apply to the virtual cluster at creation time. If you omit this field, the service applies a default limit of 1,000 concurrent job runs and does not limit queue depth.</p>"
         }
       }
     },
@@ -1646,8 +1646,8 @@
     "InQueueJobLimitInteger": {
       "type": "integer",
       "box": true,
-      "max": 10000,
-      "min": 100
+      "max": 1000,
+      "min": 1
     },
     "InTransitEncryptionConfiguration": {
       "type": "structure",
@@ -1698,7 +1698,7 @@
     "JobLimitInteger": {
       "type": "integer",
       "box": true,
-      "max": 10000,
+      "max": 1000,
       "min": 1
     },
     "JobRun": {
@@ -2487,11 +2487,11 @@
         },
         "maxConcurrentJobRuns": {
           "shape": "JobLimitInteger",
-          "documentation": "<p>The maximum number of job runs that can be in the <code>RUNNING</code> state at any time for the virtual cluster. As running slots free up, queued job runs start automatically. If you omit this field, the service applies no concurrency limit.</p>",
+          "documentation": "<p>The maximum number of job runs that can be in the <code>RUNNING</code> state at any time for the virtual cluster. As running slots free up, queued job runs start automatically. If you omit this field, the service applies a default limit of 1,000 concurrent job runs to the virtual cluster.</p>",
           "box": true
         }
       },
-      "documentation": "<p>The scheduler configuration for a virtual cluster on Amazon EMR on EKS. It controls how many job runs can run concurrently and how many can wait in the queue. When not set, no concurrency or queue limits are applied.</p>"
+      "documentation": "<p>The scheduler configuration for a virtual cluster on Amazon EMR on EKS. It controls how many job runs can run concurrently and how many can wait in the queue. If you omit this configuration, the service applies a default limit of 1,000 concurrent job runs and does not limit queue depth.</p>"
     },
     "SchedulerStatus": {
       "type": "structure",
@@ -2928,7 +2928,7 @@
         },
         "schedulerConfiguration": {
           "shape": "SchedulerConfiguration",
-          "documentation": "<p>The scheduler configuration to apply to the virtual cluster. The new configuration fully replaces the existing one. If you omit a field, the corresponding limit is removed.</p>"
+          "documentation": "<p>The scheduler configuration to apply to the virtual cluster. The new configuration fully replaces the existing one. If you omit <code>maxInQueueJobRuns</code>, the service removes the queue-depth limit. If you omit <code>maxConcurrentJobRuns</code>, the service applies the default limit of 1,000 concurrent job runs.</p>"
         },
         "clientToken": {
           "shape": "ClientToken",

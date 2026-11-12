@@ -765,7 +765,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This API is currently available as a preview. This feature is available in the following Amazon Web Services Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo).</p> <p>Retrieves the results and status of a specific GuardDuty investigation.</p> <p>An administrator account can retrieve any investigation within the organization. Member accounts can only retrieve investigations that belong to them.</p>"
+      "documentation":"<p>This API is currently available as a preview. This feature is available in the following Amazon Web Services Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo).</p> <p>Retrieves the results and status of a specific GuardDuty investigation.</p> <p>GuardDuty returns the results, including the summary and the scope of the investigation, only when the investigation status is <code>COMPLETED</code>. By default, GuardDuty returns the summary as text in <code>Summary</code>. To return a typed summary in <code>SummaryData</code> instead, set <code>SummaryFormat</code> to <code>STRUCTURED</code>.</p> <p>An administrator account can retrieve any investigation within the organization. Member accounts can only retrieve investigations that belong to them.</p>"
     },
     "GetInvitationsCount":{
       "name":"GetInvitationsCount",
@@ -1107,6 +1107,23 @@
       ],
       "documentation":"<p>Lists the IPSets of the GuardDuty service specified by the detector ID. If you use this operation from a member account, the IPSets returned are the IPSets from the associated administrator account.</p>"
     },
+    "ListInvestigationRecords":{
+      "name":"ListInvestigationRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{DetectorId}/investigation/records",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInvestigationRecordsRequest"},
+      "output":{"shape":"ListInvestigationRecordsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>This API is currently available as a preview. This feature is available in the following Amazon Web Services Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo).</p> <p>Returns the records for a specific GuardDuty investigation. Each record is one step in the reasoning that GuardDuty followed to reach the results of the investigation.</p> <p>An administrator account can list the records of any investigation within the organization. Member accounts can only list the records of investigations that belong to them.</p>"
+    },
     "ListInvestigations":{
       "name":"ListInvestigations",
       "http":{
@@ -1121,7 +1138,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This API is currently available as a preview. This feature is available in the following Amazon Web Services Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo).</p> <p>Returns a list of investigations associated with the specified GuardDuty detector.</p> <p>An administrator account sees all investigations across the organization. Member accounts see only the investigations that belong to them.</p>"
+      "documentation":"<p>This API is currently available as a preview. This feature is available in the following Amazon Web Services Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo).</p> <p>Returns a list of investigations associated with the specified GuardDuty detector. You can filter the investigations by status, risk level, confidence, finding ID, and investigation type, and sort them by start time, end time, status, risk level, or confidence.</p> <p>An administrator account sees all investigations across the organization. Member accounts see only the investigations that belong to them.</p>"
     },
     "ListInvitations":{
       "name":"ListInvitations",
@@ -1772,6 +1789,54 @@
       },
       "documentation":"<p>Contains information about the Amazon Web Services account within which the activity took place.</p>"
     },
+    "AccountAffectedResource":{
+      "type":"structure",
+      "members":{
+        "Identifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource.</p>",
+          "locationName":"identifier"
+        },
+        "Type":{
+          "shape":"InvestigationResourceType",
+          "documentation":"<p>The type of the resource. Possible values are <code>EC2_INSTANCE</code>, <code>EBS_VOLUME</code>, <code>S3_BUCKET</code>, <code>IAM_ROLE</code>, <code>IAM_USER</code>, <code>IAM_ACCESS_KEY</code>, <code>LAMBDA_FUNCTION</code>, <code>EKS_CLUSTER</code>, <code>ECS_CLUSTER</code>, <code>KUBERNETES_WORKLOAD</code>, <code>RDS_INSTANCE</code>, <code>RDS_DB_USER</code>, and <code>EC2_SECURITY_GROUP</code>.</p>",
+          "locationName":"type"
+        },
+        "FindingCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings associated with the resource.</p>",
+          "locationName":"findingCount"
+        }
+      },
+      "documentation":"<p>Contains the number of findings associated with a resource.</p>"
+    },
+    "AccountAffectedResources":{
+      "type":"list",
+      "member":{"shape":"AccountAffectedResource"},
+      "max":50,
+      "min":0
+    },
+    "AccountAnalysis":{
+      "type":"structure",
+      "members":{
+        "FindingsSummary":{
+          "shape":"FindingsSummary",
+          "documentation":"<p>A summary of the findings in the account.</p>",
+          "locationName":"findingsSummary"
+        },
+        "TacticCoverage":{
+          "shape":"TacticCoverages",
+          "documentation":"<p>The findings in the account, mapped to MITRE ATT&amp;CK tactics and techniques.</p>",
+          "locationName":"tacticCoverage"
+        },
+        "AffectedResources":{
+          "shape":"AccountAffectedResources",
+          "documentation":"<p>The resources in the account that are associated with findings.</p>",
+          "locationName":"affectedResources"
+        }
+      },
+      "documentation":"<p>Contains an analysis of the findings in an Amazon Web Services account.</p>"
+    },
     "AccountDetail":{
       "type":"structure",
       "required":[
@@ -1847,6 +1912,57 @@
       },
       "documentation":"<p>Contains information about the account level permissions on the S3 bucket.</p>"
     },
+    "AccountOverview":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "locationName":"accountId"
+        },
+        "AccountStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of the account.</p>",
+          "locationName":"accountStatus"
+        },
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The ID of the detector of the account.</p>",
+          "locationName":"detectorId"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the detector.</p>",
+          "locationName":"region"
+        },
+        "DelegatedAdminAccountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID of the GuardDuty delegated administrator account.</p>",
+          "locationName":"delegatedAdminAccountId"
+        },
+        "TotalMemberAccounts":{
+          "shape":"Count",
+          "documentation":"<p>The total number of member accounts.</p>",
+          "locationName":"totalMemberAccounts"
+        },
+        "TotalFindings":{
+          "shape":"Count",
+          "documentation":"<p>The total number of findings.</p>",
+          "locationName":"totalFindings"
+        },
+        "AffectedAccountCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of accounts that have findings.</p>",
+          "locationName":"affectedAccountCount"
+        },
+        "AccountRankings":{
+          "shape":"MemberAccountRankings",
+          "documentation":"<p>A ranking of member accounts.</p>",
+          "locationName":"accountRankings"
+        }
+      },
+      "documentation":"<p>Contains overview information about an account, including its findings and, for an organization, its member accounts.</p>"
+    },
     "AccountStatistics":{
       "type":"structure",
       "members":{
@@ -1867,6 +1983,28 @@
         }
       },
       "documentation":"<p>Represents a list of map of accounts with the number of findings associated with each account.</p>"
+    },
+    "AccountSummaries":{
+      "type":"list",
+      "member":{"shape":"AccountSummary"},
+      "max":20,
+      "min":0
+    },
+    "AccountSummary":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account.</p>",
+          "locationName":"accountId"
+        },
+        "FindingCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings in the account.</p>",
+          "locationName":"findingCount"
+        }
+      },
+      "documentation":"<p>Contains the number of findings in an Amazon Web Services account.</p>"
     },
     "Action":{
       "type":"structure",
@@ -1924,6 +2062,14 @@
       },
       "documentation":"<p>Contains information about actions.</p>"
     },
+    "ActionPriority":{
+      "type":"string",
+      "enum":[
+        "IMMEDIATE",
+        "SHORT_TERM",
+        "STRATEGIC"
+      ]
+    },
     "Activities":{
       "type":"list",
       "member":{"shape":"Activity"},
@@ -1952,6 +2098,22 @@
       "type":"string",
       "documentation":"<p>The type of an observed activity.</p>",
       "enum":["API_CALL"]
+    },
+    "ActivityWindow":{
+      "type":"structure",
+      "members":{
+        "FirstSeenAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the activity was first observed.</p>",
+          "locationName":"firstSeenAt"
+        },
+        "LastSeenAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the activity was last observed.</p>",
+          "locationName":"lastSeenAt"
+        }
+      },
+      "documentation":"<p>Contains the time range during which activity was observed.</p>"
     },
     "Actor":{
       "type":"structure",
@@ -2110,6 +2272,27 @@
       },
       "documentation":"<p>Contains information about the administrator account and invitation.</p>"
     },
+    "AffectedResource":{
+      "type":"structure",
+      "members":{
+        "Identifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource.</p>",
+          "locationName":"identifier"
+        },
+        "Type":{
+          "shape":"InvestigationResourceType",
+          "documentation":"<p>The type of the resource. Possible values are <code>EC2_INSTANCE</code>, <code>EBS_VOLUME</code>, <code>S3_BUCKET</code>, <code>IAM_ROLE</code>, <code>IAM_USER</code>, <code>IAM_ACCESS_KEY</code>, <code>LAMBDA_FUNCTION</code>, <code>EKS_CLUSTER</code>, <code>ECS_CLUSTER</code>, <code>KUBERNETES_WORKLOAD</code>, <code>RDS_INSTANCE</code>, <code>RDS_DB_USER</code>, and <code>EC2_SECURITY_GROUP</code>.</p>",
+          "locationName":"type"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "locationName":"arn"
+        }
+      },
+      "documentation":"<p>Contains information about a resource that an action applies to.</p>"
+    },
     "AffectedResources":{
       "type":"map",
       "key":{"shape":"String"},
@@ -2125,6 +2308,63 @@
         }
       },
       "documentation":"<p>Information about the installed GuardDuty security agent.</p>"
+    },
+    "AnalysisRecord":{
+      "type":"structure",
+      "required":["AnalysisType"],
+      "members":{
+        "AnalysisType":{
+          "shape":"AnalysisType",
+          "documentation":"<p>The kind of analysis. The value identifies the payload member that can be set: <code>REPUTATION</code>, <code>THREAT_ASSESSMENT</code>, and <code>RDS_THREAT_ASSESSMENT</code> (<code>ThreatAssessment</code>); <code>KUBERNETES_POLICY_VIOLATION</code> (<code>KubernetesPolicyViolation</code>); <code>S3_EXPOSURE</code>, <code>S3_ACTOR_CONTEXT</code>, and <code>S3_PEN_TEST</code> (<code>S3Analysis</code>); <code>PROCESS_LINEAGE</code> (<code>Processes</code>); and <code>TREND</code> and <code>BASELINE</code> (<code>AccountAnalysis</code>).</p>",
+          "locationName":"analysisType"
+        },
+        "ThreatAssessment":{
+          "shape":"InvestigationThreatAssessment",
+          "documentation":"<p>A threat assessment. Set when <code>AnalysisType</code> is <code>REPUTATION</code>, <code>THREAT_ASSESSMENT</code>, or <code>RDS_THREAT_ASSESSMENT</code>.</p>",
+          "locationName":"threatAssessment"
+        },
+        "KubernetesPolicyViolation":{
+          "shape":"KubernetesPolicyViolation",
+          "documentation":"<p>An assessment of a Kubernetes policy violation. Set when <code>AnalysisType</code> is <code>KUBERNETES_POLICY_VIOLATION</code>.</p>",
+          "locationName":"kubernetesPolicyViolation"
+        },
+        "S3Analysis":{
+          "shape":"S3Analysis",
+          "documentation":"<p>An analysis of Amazon S3 activity or exposure. Set when <code>AnalysisType</code> is <code>S3_EXPOSURE</code>, <code>S3_ACTOR_CONTEXT</code>, or <code>S3_PEN_TEST</code>.</p>",
+          "locationName":"s3Analysis"
+        },
+        "Processes":{
+          "shape":"Processes",
+          "documentation":"<p>The processes in a process lineage. Set when <code>AnalysisType</code> is <code>PROCESS_LINEAGE</code>.</p>",
+          "locationName":"processes"
+        },
+        "AccountAnalysis":{
+          "shape":"InvestigationAccountAnalysis",
+          "documentation":"<p>An analysis of the findings in an account over time. Set when <code>AnalysisType</code> is <code>TREND</code> or <code>BASELINE</code>.</p>",
+          "locationName":"accountAnalysis"
+        },
+        "Indicators":{
+          "shape":"InvestigationIndicators",
+          "documentation":"<p>The threat indicators associated with the analysis, such as an IP address, a domain, or a file hash.</p>",
+          "locationName":"indicators"
+        }
+      },
+      "documentation":"<p>Contains an assessment that GuardDuty derived from the data during an investigation, such as a threat assessment, a comparison against normal behavior, or a process lineage. The record contains at most one of the payload members, the one that corresponds to <code>AnalysisType</code>. <code>Indicators</code> can accompany any analysis type.</p>"
+    },
+    "AnalysisType":{
+      "type":"string",
+      "enum":[
+        "REPUTATION",
+        "THREAT_ASSESSMENT",
+        "RDS_THREAT_ASSESSMENT",
+        "KUBERNETES_POLICY_VIOLATION",
+        "S3_EXPOSURE",
+        "S3_ACTOR_CONTEXT",
+        "S3_PEN_TEST",
+        "PROCESS_LINEAGE",
+        "TREND",
+        "BASELINE"
+      ]
     },
     "Anomaly":{
       "type":"structure",
@@ -2238,6 +2478,32 @@
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "ArchiveDistribution":{
+      "type":"structure",
+      "members":{
+        "ArchivedCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of archived findings.</p>",
+          "locationName":"archivedCount"
+        },
+        "UnarchivedCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of unarchived findings.</p>",
+          "locationName":"unarchivedCount"
+        },
+        "ArchivedPercentage":{
+          "shape":"Percentage",
+          "documentation":"<p>The percentage of findings that are archived, from 0 to 100.</p>",
+          "locationName":"archivedPercentage"
+        },
+        "UnarchivedPercentage":{
+          "shape":"Percentage",
+          "documentation":"<p>The percentage of findings that are unarchived, from 0 to 100.</p>",
+          "locationName":"unarchivedPercentage"
+        }
+      },
+      "documentation":"<p>Contains the number and percentage of archived and unarchived findings.</p>"
     },
     "ArchiveFindingsRequest":{
       "type":"structure",
@@ -2384,6 +2650,84 @@
       "type":"list",
       "member":{"shape":"AssociationSummary"}
     },
+    "Attack":{
+      "type":"structure",
+      "members":{
+        "Tactic":{
+          "shape":"ThreatReference",
+          "documentation":"<p>The MITRE ATT&amp;CK tactic.</p>",
+          "locationName":"tactic"
+        },
+        "Technique":{
+          "shape":"ThreatReference",
+          "documentation":"<p>The MITRE ATT&amp;CK technique.</p>",
+          "locationName":"technique"
+        },
+        "Findings":{
+          "shape":"FindingReferences",
+          "documentation":"<p>The findings associated with the tactic and technique.</p>",
+          "locationName":"findings"
+        },
+        "Version":{
+          "shape":"String",
+          "documentation":"<p>The version of the attack framework that the tactic and technique classification uses.</p>",
+          "locationName":"version"
+        }
+      },
+      "documentation":"<p>Contains a MITRE ATT&amp;CK tactic and technique observed during an attack, with the findings that are associated with them.</p>"
+    },
+    "AttackPhase":{
+      "type":"structure",
+      "members":{
+        "Phase":{
+          "shape":"AttackPhaseName",
+          "documentation":"<p>The MITRE ATT&amp;CK tactic of the phase. Possible values are <code>Reconnaissance</code>, <code>Resource Development</code>, <code>Initial Access</code>, <code>Execution</code>, <code>Persistence</code>, <code>Privilege Escalation</code>, <code>Defense Evasion</code>, <code>Credential Access</code>, <code>Discovery</code>, <code>Lateral Movement</code>, <code>Collection</code>, <code>Command and Control</code>, <code>Exfiltration</code>, and <code>Impact</code>.</p>",
+          "locationName":"phase"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the activity in this phase.</p>",
+          "locationName":"description"
+        },
+        "Attacks":{
+          "shape":"Attacks",
+          "documentation":"<p>The MITRE ATT&amp;CK tactics and techniques observed in this phase, with the findings that are associated with them.</p>",
+          "locationName":"attacks"
+        }
+      },
+      "documentation":"<p>Contains information about one phase of an attack.</p>"
+    },
+    "AttackPhaseName":{
+      "type":"string",
+      "enum":[
+        "Reconnaissance",
+        "Resource Development",
+        "Initial Access",
+        "Execution",
+        "Persistence",
+        "Privilege Escalation",
+        "Defense Evasion",
+        "Credential Access",
+        "Discovery",
+        "Lateral Movement",
+        "Collection",
+        "Command and Control",
+        "Exfiltration",
+        "Impact"
+      ]
+    },
+    "AttackPhases":{
+      "type":"list",
+      "member":{"shape":"AttackPhase"},
+      "max":20,
+      "min":0
+    },
+    "Attacks":{
+      "type":"list",
+      "member":{"shape":"Attack"},
+      "max":25,
+      "min":0
+    },
     "AutoEnableMembers":{
       "type":"string",
       "enum":[
@@ -2494,6 +2838,27 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Baseline":{
+      "type":"structure",
+      "members":{
+        "TotalFindings":{
+          "shape":"Count",
+          "documentation":"<p>The total number of findings.</p>",
+          "locationName":"totalFindings"
+        },
+        "BaselineFindings":{
+          "shape":"FindingTypeClassifications",
+          "documentation":"<p>The finding types that are consistent with normal behavior.</p>",
+          "locationName":"baselineFindings"
+        },
+        "AnomalousFindings":{
+          "shape":"FindingTypeClassifications",
+          "documentation":"<p>The finding types that deviate from normal behavior.</p>",
+          "locationName":"anomalousFindings"
+        }
+      },
+      "documentation":"<p>Contains a comparison of findings against the normal behavior of an account.</p>"
     },
     "BedrockGuardrail":{
       "type":"structure",
@@ -2692,6 +3057,12 @@
         }
       },
       "documentation":"<p>Contains information about the city associated with the IP address.</p>"
+    },
+    "CliCommands":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":20,
+      "min":0
     },
     "ClientToken":{
       "type":"string",
@@ -3042,6 +3413,72 @@
       },
       "documentation":"<p>Contains information about the time range within the continuous backup in Amazon Web Services Backup to scan for a point-in-time recovery resource.</p>"
     },
+    "CorrelatedFinding":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"FindingType",
+          "documentation":"<p>The finding type of the group.</p>",
+          "locationName":"findingType"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The number of correlated findings of this type. This value can be greater than the number of IDs in <code>FindingIds</code>.</p>",
+          "locationName":"count"
+        },
+        "SeverityMax":{
+          "shape":"SeverityScore",
+          "documentation":"<p>The highest severity score among the findings in the group, from 0 to 10.</p>",
+          "locationName":"severityMax"
+        },
+        "CorrelationReasons":{
+          "shape":"CorrelationReasons",
+          "documentation":"<p>The reasons why GuardDuty correlated the findings. Possible values are <code>HIGH_SEVERITY</code>, <code>SAME_RESOURCE</code>, and <code>SAME_BEHAVIOR</code>. A value can appear more than once.</p>",
+          "locationName":"correlationReasons"
+        },
+        "FindingIds":{
+          "shape":"RelatedFindingIds",
+          "documentation":"<p>A sample of the IDs of the findings in the group.</p>",
+          "locationName":"findingIds"
+        },
+        "SharedResources":{
+          "shape":"SharedResources",
+          "documentation":"<p>The resources that the findings in the group share with the investigated activity.</p>",
+          "locationName":"sharedResources"
+        },
+        "SharedBehaviors":{
+          "shape":"SharedBehaviors",
+          "documentation":"<p>The behaviors that the findings in the group share with the investigated activity.</p>",
+          "locationName":"sharedBehaviors"
+        }
+      },
+      "documentation":"<p>Contains information about a group of correlated findings that have the same finding type.</p>"
+    },
+    "CorrelatedFindings":{
+      "type":"list",
+      "member":{"shape":"CorrelatedFinding"},
+      "max":8,
+      "min":0
+    },
+    "CorrelationReason":{
+      "type":"string",
+      "enum":[
+        "HIGH_SEVERITY",
+        "SAME_RESOURCE",
+        "SAME_BEHAVIOR"
+      ]
+    },
+    "CorrelationReasons":{
+      "type":"list",
+      "member":{"shape":"CorrelationReason"},
+      "max":10,
+      "min":0
+    },
+    "Count":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
     "CountByCoverageStatus":{
       "type":"map",
       "key":{"shape":"CoverageStatus"},
@@ -3056,6 +3493,90 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"Integer"}
+    },
+    "Countermeasure":{
+      "type":"structure",
+      "members":{
+        "DefenseTactic":{
+          "shape":"DefenseTactic",
+          "documentation":"<p>The defensive tactic. Possible values are <code>Isolate</code>, <code>Evict</code>, <code>Restore</code>, <code>Harden</code>, and <code>Detect</code>.</p>",
+          "locationName":"defenseTactic"
+        },
+        "Actions":{
+          "shape":"CountermeasureActions",
+          "documentation":"<p>The actions for the defensive tactic.</p>",
+          "locationName":"actions"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the countermeasure.</p>",
+          "locationName":"description"
+        }
+      },
+      "documentation":"<p>Contains the actions that you can take for one defensive tactic.</p>"
+    },
+    "CountermeasureAction":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>A short title for the action.</p>",
+          "locationName":"title"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the action.</p>",
+          "locationName":"description"
+        },
+        "Priority":{
+          "shape":"ActionPriority",
+          "documentation":"<p>The priority of the action. Possible values are <code>IMMEDIATE</code>, <code>SHORT_TERM</code>, and <code>STRATEGIC</code>.</p>",
+          "locationName":"priority"
+        },
+        "DefenseTechnique":{
+          "shape":"String",
+          "documentation":"<p>The defensive technique that the action applies.</p>",
+          "locationName":"defenseTechnique"
+        },
+        "Mitigates":{
+          "shape":"MitreTechniqueIds",
+          "documentation":"<p>The MITRE ATT&amp;CK technique IDs that the action mitigates, such as <code>T1059.004</code>.</p>",
+          "locationName":"mitigates"
+        },
+        "CliCommands":{
+          "shape":"CliCommands",
+          "documentation":"<p>CLI commands that you can run to carry out the action.</p>",
+          "locationName":"cliCommands"
+        },
+        "DispositionId":{
+          "shape":"Integer",
+          "documentation":"<p>The numeric identifier of the action's disposition.</p>",
+          "locationName":"dispositionId"
+        },
+        "Disposition":{
+          "shape":"Disposition",
+          "documentation":"<p>The outcome of the action. Possible values are <code>Isolated</code>, <code>Blocked</code>, <code>Deleted</code>, <code>Access Revoked</code>, and <code>Logged</code>.</p>",
+          "locationName":"disposition"
+        },
+        "AffectedResources":{
+          "shape":"RemediationAffectedResources",
+          "documentation":"<p>The resources that the action applies to.</p>",
+          "locationName":"affectedResources"
+        }
+      },
+      "documentation":"<p>Contains an action that you can take to respond to a threat.</p>"
+    },
+    "CountermeasureActions":{
+      "type":"list",
+      "member":{"shape":"CountermeasureAction"},
+      "max":25,
+      "min":0
+    },
+    "Countermeasures":{
+      "type":"list",
+      "member":{"shape":"Countermeasure"},
+      "max":20,
+      "min":0
     },
     "Country":{
       "type":"structure",
@@ -4249,6 +4770,16 @@
       },
       "documentation":"<p>Contains information on the server side encryption method used in the S3 bucket. See <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html\">S3 Server-Side Encryption</a> for more information.</p>"
     },
+    "DefenseTactic":{
+      "type":"string",
+      "enum":[
+        "Isolate",
+        "Evict",
+        "Restore",
+        "Harden",
+        "Detect"
+      ]
+    },
     "DeleteCustomDetectionRuleAssociationRequest":{
       "type":"structure",
       "required":[
@@ -4777,6 +5308,32 @@
         }
       },
       "documentation":"<p>Contains information about the detected behavior.</p>"
+    },
+    "DetectionCoverage":{
+      "type":"structure",
+      "members":{
+        "ProtectionPlans":{
+          "shape":"ProtectionPlans",
+          "documentation":"<p>The protection plans and their status.</p>",
+          "locationName":"protectionPlans"
+        },
+        "FoundationalDataSources":{
+          "shape":"FoundationalDataSources",
+          "documentation":"<p>The foundational data sources, such as <code>CLOUD_TRAIL</code>, <code>DNS_LOGS</code>, and <code>FLOW_LOGS</code>.</p>",
+          "locationName":"foundationalDataSources"
+        },
+        "CoverageGaps":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A description of the gaps in detection coverage. A record doesn't include both <code>CoverageGaps</code> and <code>KeyObservation</code>.</p>",
+          "locationName":"coverageGaps"
+        },
+        "KeyObservation":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A key observation about detection coverage.</p>",
+          "locationName":"keyObservation"
+        }
+      },
+      "documentation":"<p>Contains information about your detection coverage, such as the status of protection plans and foundational data sources.</p>"
     },
     "DetectionRuleAccountIds":{
       "type":"list",
@@ -5312,6 +5869,94 @@
           "locationName":"unprocessedAccounts"
         }
       }
+    },
+    "Disposition":{
+      "type":"string",
+      "enum":[
+        "Isolated",
+        "Blocked",
+        "Deleted",
+        "Access Revoked",
+        "Logged"
+      ]
+    },
+    "Distribution":{
+      "type":"structure",
+      "required":["Dimension"],
+      "members":{
+        "Dimension":{
+          "shape":"DistributionDimension",
+          "documentation":"<p>The dimension of the breakdown. The value identifies the breakdown that the record describes: <code>SEVERITY</code> (<code>SeverityBreakdown</code>), <code>TYPE</code> (<code>FindingTypes</code> or <code>TopFindingTypes</code>), <code>RESOURCE</code> (<code>Resources</code>), <code>ATTACK_VECTOR</code> (<code>AttackVectors</code>), and <code>ARCHIVE</code> (<code>Archive</code>).</p>",
+          "locationName":"dimension"
+        },
+        "TotalFindings":{
+          "shape":"Count",
+          "documentation":"<p>The total number of findings in the breakdown.</p>",
+          "locationName":"totalFindings"
+        },
+        "SeverityBreakdown":{
+          "shape":"SeverityBreakdown",
+          "documentation":"<p>The number of findings at each severity level.</p>",
+          "locationName":"severityBreakdown"
+        },
+        "FindingTypes":{
+          "shape":"TypeDistributions",
+          "documentation":"<p>The findings broken down by finding type, with counts and percentages.</p>",
+          "locationName":"findingTypes"
+        },
+        "TopFindingTypes":{
+          "shape":"FindingTypeCounts",
+          "documentation":"<p>The finding types that have the most findings, with counts.</p>",
+          "locationName":"topFindingTypes"
+        },
+        "Resources":{
+          "shape":"ResourceDistributions",
+          "documentation":"<p>The findings broken down by affected resource.</p>",
+          "locationName":"resources"
+        },
+        "AttackVectors":{
+          "shape":"TacticCoverages",
+          "documentation":"<p>The findings broken down by MITRE ATT&amp;CK tactic.</p>",
+          "locationName":"attackVectors"
+        },
+        "Archive":{
+          "shape":"ArchiveDistribution",
+          "documentation":"<p>The number and percentage of archived and unarchived findings.</p>",
+          "locationName":"archive"
+        }
+      },
+      "documentation":"<p>Contains a breakdown of findings along a dimension, such as severity or finding type.</p>"
+    },
+    "DistributionDimension":{
+      "type":"string",
+      "enum":[
+        "SEVERITY",
+        "TYPE",
+        "RESOURCE",
+        "ATTACK_VECTOR",
+        "ARCHIVE"
+      ]
+    },
+    "DnsContext":{
+      "type":"structure",
+      "members":{
+        "DomainSuffix":{
+          "shape":"String",
+          "documentation":"<p>The suffix of the domain that was queried.</p>",
+          "locationName":"domainSuffix"
+        },
+        "OtherDomains":{
+          "shape":"String",
+          "documentation":"<p>Other domains that were queried.</p>",
+          "locationName":"otherDomains"
+        },
+        "ResolverHistory":{
+          "shape":"String",
+          "documentation":"<p>The DNS resolution history for the domain.</p>",
+          "locationName":"resolverHistory"
+        }
+      },
+      "documentation":"<p>Contains DNS details about network activity.</p>"
     },
     "DnsRequestAction":{
       "type":"structure",
@@ -5868,6 +6513,32 @@
       "max":400,
       "min":0
     },
+    "Enrichment":{
+      "type":"structure",
+      "members":{
+        "CountryName":{
+          "shape":"String",
+          "documentation":"<p>The name of the country associated with the activity.</p>",
+          "locationName":"countryName"
+        },
+        "AsnOrg":{
+          "shape":"String",
+          "documentation":"<p>The name of the organization that owns the autonomous system number (ASN).</p>",
+          "locationName":"asnOrg"
+        },
+        "ThreatListName":{
+          "shape":"String",
+          "documentation":"<p>The name of the threat list that contains the indicator.</p>",
+          "locationName":"threatListName"
+        },
+        "ThreatName":{
+          "shape":"String",
+          "documentation":"<p>The name of the threat.</p>",
+          "locationName":"threatName"
+        }
+      },
+      "documentation":"<p>Contains additional context about activity, such as geolocation and threat intelligence information. Not every member is set.</p>"
+    },
     "Eq":{
       "type":"list",
       "member":{"shape":"String"}
@@ -5930,6 +6601,239 @@
       "enum":[
         "USEFUL",
         "NOT_USEFUL"
+      ]
+    },
+    "FetchCriteria":{
+      "type":"list",
+      "member":{"shape":"FetchCriterion"},
+      "max":20,
+      "min":0
+    },
+    "FetchCriterion":{
+      "type":"structure",
+      "required":[
+        "Field",
+        "Condition"
+      ],
+      "members":{
+        "Field":{
+          "shape":"FetchFieldName",
+          "documentation":"<p>The name of the field that the condition applies to.</p>",
+          "locationName":"field"
+        },
+        "Condition":{
+          "shape":"FetchCriterionCondition",
+          "documentation":"<p>The comparison operator of the condition. Possible values are <code>EQUALS</code>, <code>NOT_EQUALS</code>, <code>GREATER_THAN</code>, <code>GREATER_THAN_OR_EQUAL</code>, <code>LESS_THAN</code>, and <code>LESS_THAN_OR_EQUAL</code>.</p>",
+          "locationName":"condition"
+        },
+        "Values":{
+          "shape":"FetchFieldValues",
+          "documentation":"<p>The values that the field is compared against. Numeric and Boolean values are represented as strings.</p>",
+          "locationName":"values"
+        }
+      },
+      "documentation":"<p>Contains a filter condition that GuardDuty applied when it retrieved data.</p>"
+    },
+    "FetchCriterionCondition":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "NOT_EQUALS",
+        "GREATER_THAN",
+        "GREATER_THAN_OR_EQUAL",
+        "LESS_THAN",
+        "LESS_THAN_OR_EQUAL"
+      ]
+    },
+    "FetchDetectorFeatures":{
+      "type":"list",
+      "member":{"shape":"InvestigationDetectorFeatureConfiguration"},
+      "max":50,
+      "min":0
+    },
+    "FetchDurationInMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":120,
+      "min":1
+    },
+    "FetchFieldName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "FetchFieldValue":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "FetchFieldValues":{
+      "type":"list",
+      "member":{"shape":"FetchFieldValue"},
+      "max":20,
+      "min":0
+    },
+    "FetchItemId":{
+      "type":"string",
+      "max":300,
+      "min":1
+    },
+    "FetchItemIds":{
+      "type":"list",
+      "member":{"shape":"FetchItemId"},
+      "max":50,
+      "min":0
+    },
+    "FetchLearnMoreLink":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "FetchLearnMoreLinks":{
+      "type":"list",
+      "member":{"shape":"FetchLearnMoreLink"},
+      "max":10,
+      "min":0
+    },
+    "FetchQuery":{
+      "type":"structure",
+      "members":{
+        "Criteria":{
+          "shape":"FetchCriteria",
+          "documentation":"<p>The filter criteria that GuardDuty applied to the request.</p>",
+          "locationName":"criteria"
+        },
+        "TimeWindow":{
+          "shape":"FetchTimeWindow",
+          "documentation":"<p>The time range of the data that GuardDuty requested.</p>",
+          "locationName":"timeWindow"
+        },
+        "RowLimit":{
+          "shape":"FetchRowLimit",
+          "documentation":"<p>The maximum number of rows that GuardDuty requested. Valid values are 1 to 1,000.</p>",
+          "locationName":"rowLimit"
+        },
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that the request was made for.</p>",
+          "locationName":"accountId"
+        },
+        "Indicator":{
+          "shape":"IndicatorValue",
+          "documentation":"<p>The threat indicator that GuardDuty looked up, such as an IP address, a domain, or a file hash.</p>",
+          "locationName":"indicator"
+        },
+        "IndicatorType":{
+          "shape":"InvestigationIndicatorType",
+          "documentation":"<p>The type of the threat indicator. Possible values are <code>IP</code>, <code>DOMAIN</code>, and <code>FILE</code>.</p>",
+          "locationName":"indicatorType"
+        },
+        "FindingType":{
+          "shape":"FindingType",
+          "documentation":"<p>The finding type whose documentation GuardDuty retrieved.</p>",
+          "locationName":"findingType"
+        },
+        "FindingId":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the finding that GuardDuty retrieved.</p>",
+          "locationName":"findingId"
+        }
+      },
+      "documentation":"<p>Contains the parameters of a request that GuardDuty made to retrieve data during an investigation. The members that are set depend on the <code>FetchType</code> of the record.</p>"
+    },
+    "FetchRecord":{
+      "type":"structure",
+      "required":["FetchType"],
+      "members":{
+        "FetchType":{
+          "shape":"FetchType",
+          "documentation":"<p>The kind of data that GuardDuty retrieved. The value determines which members of <code>Query</code> and <code>Result</code> can be set. Possible values:</p> <ul> <li> <p> <code>FINDINGS</code> – GuardDuty findings.</p> </li> <li> <p> <code>DETECTOR</code> – The configuration of a GuardDuty detector.</p> </li> <li> <p> <code>REPUTATION</code> – Reputation information about a threat indicator, such as an IP address, a domain, or a file hash.</p> </li> <li> <p> <code>FINDING_TYPE_DOCUMENTATION</code> – The documentation for a finding type.</p> </li> <li> <p> <code>CLOUD_TRAIL_RAW_EVENTS</code> – Amazon Web Services CloudTrail events.</p> </li> <li> <p> <code>RUNTIME_SIGNALS</code> – Runtime signals.</p> </li> <li> <p> <code>MEMBER_ACCOUNTS</code> – A list of member accounts.</p> </li> </ul>",
+          "locationName":"fetchType"
+        },
+        "Query":{
+          "shape":"FetchQuery",
+          "documentation":"<p>The request that GuardDuty made. Not every record includes a query.</p>",
+          "locationName":"query"
+        },
+        "Result":{
+          "shape":"FetchResult",
+          "documentation":"<p>The data that GuardDuty received in response to the request. Not every record includes a result.</p>",
+          "locationName":"result"
+        }
+      },
+      "documentation":"<p>Contains information about data that GuardDuty retrieved during an investigation, including what GuardDuty requested and what it received.</p>"
+    },
+    "FetchResult":{
+      "type":"structure",
+      "members":{
+        "ItemIds":{
+          "shape":"FetchItemIds",
+          "documentation":"<p>The identifiers of the items that were returned, such as finding IDs, event IDs, signal IDs, or account IDs, depending on <code>FetchType</code>. The list contains at most 50 identifiers; <code>TotalCount</code> can be larger.</p>",
+          "locationName":"itemIds"
+        },
+        "TotalCount":{
+          "shape":"Count",
+          "documentation":"<p>The total number of items that were returned. This value can be greater than the number of identifiers in <code>ItemIds</code>.</p>",
+          "locationName":"totalCount"
+        },
+        "Features":{
+          "shape":"FetchDetectorFeatures",
+          "documentation":"<p>The configuration of the detector features that GuardDuty retrieved.</p>",
+          "locationName":"features"
+        },
+        "Verdict":{
+          "shape":"FetchVerdict",
+          "documentation":"<p>The reputation verdict for the threat indicator. Possible values are <code>THREAT</code>, <code>BENIGN</code>, and <code>NEUTRAL</code>. If the lookup returned more than one result, the verdict describes the first result.</p>",
+          "locationName":"verdict"
+        },
+        "Documentation":{
+          "shape":"FindingTypeDocumentation",
+          "documentation":"<p>The documentation for the finding type that GuardDuty retrieved.</p>",
+          "locationName":"documentation"
+        }
+      },
+      "documentation":"<p>Contains the data that GuardDuty received in response to a request during an investigation. The members that are set depend on the <code>FetchType</code> of the record.</p>"
+    },
+    "FetchRowLimit":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "FetchTimeWindow":{
+      "type":"structure",
+      "members":{
+        "StartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the time range starts.</p>",
+          "locationName":"startedAt"
+        },
+        "DurationInMinutes":{
+          "shape":"FetchDurationInMinutes",
+          "documentation":"<p>The length of the time range, in minutes. Valid values are 1 to 120.</p>",
+          "locationName":"durationInMinutes"
+        }
+      },
+      "documentation":"<p>Contains the time range of the data that GuardDuty requested. The range is defined by a start time and a duration.</p>"
+    },
+    "FetchType":{
+      "type":"string",
+      "enum":[
+        "FINDINGS",
+        "DETECTOR",
+        "REPUTATION",
+        "FINDING_TYPE_DOCUMENTATION",
+        "CLOUD_TRAIL_RAW_EVENTS",
+        "RUNTIME_SIGNALS",
+        "MEMBER_ACCOUNTS"
+      ]
+    },
+    "FetchVerdict":{
+      "type":"string",
+      "enum":[
+        "THREAT",
+        "BENIGN",
+        "NEUTRAL"
       ]
     },
     "FilePaths":{
@@ -6150,6 +7054,42 @@
       },
       "documentation":"<p>Contains information about the criteria used for querying findings.</p>"
     },
+    "FindingDetail":{
+      "type":"structure",
+      "members":{
+        "FindingId":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the finding.</p>",
+          "locationName":"findingId"
+        },
+        "FindingType":{
+          "shape":"FindingType",
+          "documentation":"<p>The type of the finding.</p>",
+          "locationName":"findingType"
+        },
+        "Severity":{
+          "shape":"String",
+          "documentation":"<p>The severity of the finding.</p>",
+          "locationName":"severity"
+        },
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account in which the finding was generated.</p>",
+          "locationName":"accountId"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region in which the finding was generated.</p>",
+          "locationName":"region"
+        },
+        "ActivityWindow":{
+          "shape":"ActivityWindow",
+          "documentation":"<p>The time range of the activity that the finding describes.</p>",
+          "locationName":"activityWindow"
+        }
+      },
+      "documentation":"<p>Contains details about a GuardDuty finding.</p>"
+    },
     "FindingId":{
       "type":"string",
       "max":300,
@@ -6168,6 +7108,28 @@
         "ONE_HOUR",
         "SIX_HOURS"
       ]
+    },
+    "FindingReference":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"String",
+          "documentation":"<p>The type of the finding.</p>",
+          "locationName":"findingType"
+        },
+        "Uid":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the finding.</p>",
+          "locationName":"uid"
+        }
+      },
+      "documentation":"<p>Contains a reference to a GuardDuty finding.</p>"
+    },
+    "FindingReferences":{
+      "type":"list",
+      "member":{"shape":"FindingReference"},
+      "max":100,
+      "min":0
     },
     "FindingResourceType":{
       "type":"string",
@@ -6253,6 +7215,107 @@
       "max":100,
       "min":1
     },
+    "FindingTypeClassification":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"FindingType",
+          "documentation":"<p>The finding type.</p>",
+          "locationName":"findingType"
+        },
+        "Classification":{
+          "shape":"InvestigationText",
+          "documentation":"<p>The classification of the finding type.</p>",
+          "locationName":"classification"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The number of findings of this type.</p>",
+          "locationName":"count"
+        },
+        "Percentage":{
+          "shape":"Percentage",
+          "documentation":"<p>The percentage of findings that are of this type, from 0 to 100.</p>",
+          "locationName":"percentage"
+        },
+        "Description":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A description of the classification.</p>",
+          "locationName":"description"
+        }
+      },
+      "documentation":"<p>Contains information about how a finding type compares with normal behavior.</p>"
+    },
+    "FindingTypeClassifications":{
+      "type":"list",
+      "member":{"shape":"FindingTypeClassification"},
+      "max":50,
+      "min":0
+    },
+    "FindingTypeCount":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"String",
+          "documentation":"<p>The finding type.</p>",
+          "locationName":"findingType"
+        },
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings of this type.</p>",
+          "locationName":"count"
+        }
+      },
+      "documentation":"<p>Contains the number of findings of a finding type.</p>"
+    },
+    "FindingTypeCounts":{
+      "type":"list",
+      "member":{"shape":"FindingTypeCount"},
+      "max":50,
+      "min":0
+    },
+    "FindingTypeDocumentation":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A short description of the finding type.</p>",
+          "locationName":"description"
+        },
+        "Severity":{
+          "shape":"String",
+          "documentation":"<p>The severity of the finding type, as stated in the documentation.</p>",
+          "locationName":"severity"
+        },
+        "Feature":{
+          "shape":"String",
+          "documentation":"<p>The label that the documentation uses for the GuardDuty capability associated with the finding type. This value isn't a detector feature name.</p>",
+          "locationName":"feature"
+        },
+        "FullDescription":{
+          "shape":"InvestigationText",
+          "documentation":"<p>The full description of the finding type.</p>",
+          "locationName":"fullDescription"
+        },
+        "Remediation":{
+          "shape":"InvestigationText",
+          "documentation":"<p>The recommended steps to remediate the finding type.</p>",
+          "locationName":"remediation"
+        },
+        "LearnMoreLinks":{
+          "shape":"FetchLearnMoreLinks",
+          "documentation":"<p>Links to more information about the finding type.</p>",
+          "locationName":"learnMoreLinks"
+        }
+      },
+      "documentation":"<p>Contains information about a finding type from the GuardDuty documentation.</p>"
+    },
+    "FindingTypeNames":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":50,
+      "min":0
+    },
     "FindingTypeStatistics":{
       "type":"structure",
       "members":{
@@ -6286,6 +7349,32 @@
       "max":50,
       "min":0
     },
+    "FindingsSummary":{
+      "type":"structure",
+      "members":{
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings.</p>",
+          "locationName":"totalFindings"
+        },
+        "SeverityBreakdown":{
+          "shape":"SeverityBreakdown",
+          "documentation":"<p>The number of findings at each severity level.</p>",
+          "locationName":"severityBreakdown"
+        },
+        "TopFindingTypes":{
+          "shape":"FindingTypeCounts",
+          "documentation":"<p>The finding types that have the most findings, with counts.</p>",
+          "locationName":"topFindingTypes"
+        },
+        "ByTimeWindow":{
+          "shape":"TimeWindowGroups",
+          "documentation":"<p>The number of findings in each time window.</p>",
+          "locationName":"byTimeWindow"
+        }
+      },
+      "documentation":"<p>Contains a summary of findings.</p>"
+    },
     "FlagsList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -6301,6 +7390,12 @@
         }
       },
       "documentation":"<p>Contains information on the status of VPC flow logs as a data source.</p>"
+    },
+    "FoundationalDataSources":{
+      "type":"list",
+      "member":{"shape":"InvestigationDetectorFeature"},
+      "max":20,
+      "min":0
     },
     "FreeTrialFeatureConfigurationResult":{
       "type":"structure",
@@ -6815,6 +7910,12 @@
           "documentation":"<p>The unique identifier of the investigation to retrieve.</p>",
           "location":"uri",
           "locationName":"InvestigationId"
+        },
+        "SummaryFormat":{
+          "shape":"SummaryFormat",
+          "documentation":"<p>The format in which to return the investigation summary. Possible values:</p> <ul> <li> <p> <code>STRING</code> – (Default) Returns the summary as text in <code>Summary</code>.</p> </li> <li> <p> <code>STRUCTURED</code> – Returns a typed summary in <code>SummaryData</code>.</p> </li> </ul> <p>GuardDuty returns a summary only when the investigation status is <code>COMPLETED</code>.</p>",
+          "location":"querystring",
+          "locationName":"summaryFormat"
         }
       }
     },
@@ -7690,6 +8791,12 @@
         "SENSITIVE_DATA"
       ]
     },
+    "IndicatorValue":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
+    },
     "IndicatorValueString":{
       "type":"string",
       "max":256,
@@ -7866,9 +8973,19 @@
           "locationName":"confidence"
         },
         "Summary":{
-          "shape":"String",
-          "documentation":"<p>A structured summary of the investigation findings, including affected resources, threat assessment, and recommended remediation steps.</p>",
+          "shape":"InvestigationSummaryText",
+          "documentation":"<p>A summary of the investigation results as text, up to 262,144 characters. Returned only when the investigation status is <code>COMPLETED</code>. When you set <code>SummaryFormat</code> to <code>STRUCTURED</code>, the summary is returned in <code>SummaryData</code> instead, unless it isn't available in a structured form, in which case it's returned in this field.</p>",
           "locationName":"summary"
+        },
+        "SummaryData":{
+          "shape":"InvestigationSummaryData",
+          "documentation":"<p>A structured summary of the investigation results. GuardDuty returns this field only when you set <code>SummaryFormat</code> to <code>STRUCTURED</code>, the investigation status is <code>COMPLETED</code>, and the summary is available in a structured form. When this field is returned, <code>Summary</code> isn't returned.</p>",
+          "locationName":"summaryData"
+        },
+        "Scope":{
+          "shape":"InvestigationScope",
+          "documentation":"<p>Information about what the investigation analyzed, including the investigation type, the finding, account, or organization that was analyzed, and, for <code>ACCOUNT</code> and <code>ORGANIZATION</code> investigations, the time window over which the investigation queried data. Returned only when the investigation status is <code>COMPLETED</code>.</p>",
+          "locationName":"scope"
         },
         "StartTime":{
           "shape":"Timestamp",
@@ -7888,16 +9005,405 @@
       },
       "documentation":"<p>Contains the details and results of a GuardDuty investigation.</p>"
     },
+    "InvestigationAccountAnalysis":{
+      "type":"structure",
+      "members":{
+        "Trend":{
+          "shape":"Trend",
+          "documentation":"<p>The trend of findings over time. Set when <code>AnalysisType</code> is <code>TREND</code>.</p>",
+          "locationName":"trend"
+        },
+        "Baseline":{
+          "shape":"Baseline",
+          "documentation":"<p>A comparison of findings against normal behavior. Set when <code>AnalysisType</code> is <code>BASELINE</code>.</p>",
+          "locationName":"baseline"
+        }
+      },
+      "documentation":"<p>Contains an analysis of the findings in an account. Either <code>Trend</code> or <code>Baseline</code> is set, depending on the <code>AnalysisType</code> of the record.</p>"
+    },
+    "InvestigationActor":{
+      "type":"structure",
+      "members":{
+        "AccessKeyId":{
+          "shape":"String",
+          "documentation":"<p>The access key ID that the identity used.</p>",
+          "locationName":"accessKeyId"
+        },
+        "PrincipalId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the principal.</p>",
+          "locationName":"principalId"
+        },
+        "UserName":{
+          "shape":"String",
+          "documentation":"<p>The name of the user.</p>",
+          "locationName":"userName"
+        },
+        "UserType":{
+          "shape":"String",
+          "documentation":"<p>The type of the identity, such as <code>IAMUser</code>, <code>AssumedRole</code>, or <code>Root</code>.</p>",
+          "locationName":"userType"
+        },
+        "UserAgent":{
+          "shape":"String",
+          "documentation":"<p>The user agent that the identity used.</p>",
+          "locationName":"userAgent"
+        }
+      },
+      "documentation":"<p>Contains information about the identity that performed an activity.</p>"
+    },
+    "InvestigationCriterion":{
+      "type":"map",
+      "key":{"shape":"InvestigationFilterCriterionKey"},
+      "value":{"shape":"InvestigationFilterCondition"}
+    },
+    "InvestigationDetectorFeature":{
+      "type":"string",
+      "enum":[
+        "CLOUD_TRAIL",
+        "DNS_LOGS",
+        "FLOW_LOGS",
+        "S3_DATA_EVENTS",
+        "EKS_AUDIT_LOGS",
+        "EBS_MALWARE_PROTECTION",
+        "RDS_LOGIN_EVENTS",
+        "EKS_RUNTIME_MONITORING",
+        "EKS_ADDON_MANAGEMENT",
+        "LAMBDA_NETWORK_LOGS",
+        "RUNTIME_MONITORING",
+        "ECS_FARGATE_AGENT_MANAGEMENT",
+        "EC2_AGENT_MANAGEMENT"
+      ]
+    },
+    "InvestigationDetectorFeatureConfiguration":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"InvestigationDetectorFeature",
+          "documentation":"<p>The name of the feature. Possible values are <code>CLOUD_TRAIL</code>, <code>DNS_LOGS</code>, <code>FLOW_LOGS</code>, <code>S3_DATA_EVENTS</code>, <code>EKS_AUDIT_LOGS</code>, <code>EBS_MALWARE_PROTECTION</code>, <code>RDS_LOGIN_EVENTS</code>, <code>EKS_RUNTIME_MONITORING</code>, <code>EKS_ADDON_MANAGEMENT</code>, <code>LAMBDA_NETWORK_LOGS</code>, <code>RUNTIME_MONITORING</code>, <code>ECS_FARGATE_AGENT_MANAGEMENT</code>, and <code>EC2_AGENT_MANAGEMENT</code>.</p>",
+          "locationName":"name"
+        },
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>The status of the feature. Possible values are <code>ENABLED</code> and <code>DISABLED</code>.</p>",
+          "locationName":"status"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the feature configuration was last updated.</p>",
+          "locationName":"updatedAt"
+        }
+      },
+      "documentation":"<p>Contains information about the configuration of a detector feature. Each member is optional.</p>"
+    },
+    "InvestigationEc2Instance":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the instance.</p>",
+          "locationName":"instanceId"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type.</p>",
+          "locationName":"instanceType"
+        },
+        "InstanceState":{
+          "shape":"String",
+          "documentation":"<p>The state of the instance.</p>",
+          "locationName":"instanceState"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone of the instance.</p>",
+          "locationName":"availabilityZone"
+        },
+        "PrivateIpAddress":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The private IP address of the instance.</p>",
+          "locationName":"privateIpAddress"
+        },
+        "PublicIp":{
+          "shape":"String",
+          "documentation":"<p>The public IP address of the instance.</p>",
+          "locationName":"publicIp"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC in which the instance runs.</p>",
+          "locationName":"vpcId"
+        },
+        "SubnetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subnet in which the instance runs.</p>",
+          "locationName":"subnetId"
+        },
+        "ImageId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that was used to launch the instance.</p>",
+          "locationName":"imageId"
+        },
+        "LaunchedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the instance was launched.</p>",
+          "locationName":"launchedAt"
+        }
+      },
+      "documentation":"<p>Contains details about an Amazon EC2 instance.</p>"
+    },
+    "InvestigationEcsCluster":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the cluster.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster.</p>",
+          "locationName":"arn"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the cluster.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Contains details about an Amazon ECS cluster.</p>"
+    },
+    "InvestigationEksCluster":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the cluster.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster.</p>",
+          "locationName":"arn"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the cluster.</p>",
+          "locationName":"status"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC that is associated with the cluster.</p>",
+          "locationName":"vpcId"
+        }
+      },
+      "documentation":"<p>Contains details about an Amazon EKS cluster.</p>"
+    },
     "InvestigationErrorDetails":{
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "InvestigationFilterCondition":{
+      "type":"structure",
+      "members":{
+        "Equals":{
+          "shape":"Equals",
+          "documentation":"<p>The values to match. An investigation matches if its attribute value equals any of the specified values.</p>",
+          "locationName":"equals"
+        },
+        "NotEquals":{
+          "shape":"NotEquals",
+          "documentation":"<p>The values to exclude. An investigation matches only if its attribute value doesn't equal any of the specified values. An investigation that has no value for the attribute also matches.</p>",
+          "locationName":"notEquals"
+        }
+      },
+      "documentation":"<p>Contains the values that an investigation attribute must match. Specify <code>Equals</code>, <code>NotEquals</code>, or both, each with at least one value. If you specify both, an investigation must match both conditions.</p>"
+    },
+    "InvestigationFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "Criterion":{
+          "shape":"InvestigationCriterion",
+          "documentation":"<p>A map of investigation attributes to the conditions that they must match. When you specify more than one attribute, an investigation must match the conditions for every attribute. Valid attributes and values:</p> <ul> <li> <p> <code>STATUS</code> – <code>RUNNING</code>, <code>COMPLETED</code>, and <code>FAILED</code>.</p> </li> <li> <p> <code>RISK_LEVEL</code> – <code>Info</code>, <code>Low</code>, <code>Medium</code>, <code>High</code>, and <code>Critical</code>.</p> </li> <li> <p> <code>CONFIDENCE</code> – <code>Unknown</code>, <code>Low</code>, <code>Medium</code>, and <code>High</code>.</p> </li> <li> <p> <code>FINDING_ID</code> – A finding ID, which is 32 lowercase hexadecimal characters.</p> </li> <li> <p> <code>INVESTIGATION_TYPE</code> – <code>FINDING</code>, <code>ACCOUNT</code>, and <code>ORGANIZATION</code>.</p> </li> </ul> <p>Values are case sensitive. GuardDuty sets the risk level, confidence, and investigation type of an investigation only when the investigation completes.</p>",
+          "locationName":"criterion"
+        }
+      },
+      "documentation":"<p>Contains the criteria used to filter investigations.</p>"
+    },
+    "InvestigationFilterCriterionKey":{
+      "type":"string",
+      "enum":[
+        "STATUS",
+        "RISK_LEVEL",
+        "CONFIDENCE",
+        "FINDING_ID",
+        "INVESTIGATION_TYPE"
+      ]
     },
     "InvestigationId":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[a-fA-F0-9\\-]+"
+    },
+    "InvestigationIndicator":{
+      "type":"structure",
+      "required":["Value"],
+      "members":{
+        "Value":{
+          "shape":"IndicatorValue",
+          "documentation":"<p>The value of the indicator.</p>",
+          "locationName":"value"
+        },
+        "Type":{
+          "shape":"InvestigationIndicatorType",
+          "documentation":"<p>The type of the indicator. Possible values are <code>IP</code>, <code>DOMAIN</code>, and <code>FILE</code>.</p>",
+          "locationName":"type"
+        }
+      },
+      "documentation":"<p>Contains a threat indicator, such as an IP address, a domain, or a file hash.</p>"
+    },
+    "InvestigationIndicatorType":{
+      "type":"string",
+      "enum":[
+        "IP",
+        "DOMAIN",
+        "FILE"
+      ]
+    },
+    "InvestigationIndicators":{
+      "type":"list",
+      "member":{"shape":"InvestigationIndicator"},
+      "max":20,
+      "min":0
+    },
+    "InvestigationKubernetesWorkload":{
+      "type":"structure",
+      "members":{
+        "WorkloadType":{
+          "shape":"String",
+          "documentation":"<p>The type of the workload.</p>",
+          "locationName":"workloadType"
+        },
+        "WorkloadName":{
+          "shape":"String",
+          "documentation":"<p>The name of the workload.</p>",
+          "locationName":"workloadName"
+        },
+        "Containers":{
+          "shape":"String",
+          "documentation":"<p>The containers in the workload.</p>",
+          "locationName":"containers"
+        },
+        "Volumes":{
+          "shape":"String",
+          "documentation":"<p>The volumes of the workload.</p>",
+          "locationName":"volumes"
+        },
+        "SecurityContext":{
+          "shape":"String",
+          "documentation":"<p>The security context of the workload.</p>",
+          "locationName":"securityContext"
+        }
+      },
+      "documentation":"<p>Contains details about a Kubernetes workload.</p>"
+    },
+    "InvestigationMalwareScan":{
+      "type":"structure",
+      "members":{
+        "ScanId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the scan.</p>",
+          "locationName":"scanId"
+        },
+        "ScanType":{
+          "shape":"MalwareProtectionScanType",
+          "documentation":"<p>The type of the scan. Possible values are <code>BACKUP_INITIATED</code>, <code>ON_DEMAND</code>, and <code>GUARDDUTY_INITIATED</code>.</p>",
+          "locationName":"scanType"
+        },
+        "ScanCategory":{
+          "shape":"ScanCategory",
+          "documentation":"<p>The category of the scan. Possible values are <code>FULL_SCAN</code> and <code>INCREMENTAL_SCAN</code>.</p>",
+          "locationName":"scanCategory"
+        },
+        "TriggerFindingId":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the finding that initiated the scan.</p>",
+          "locationName":"triggerFindingId"
+        },
+        "EngineSources":{
+          "shape":"String",
+          "documentation":"<p>The scan engines that the scan used.</p>",
+          "locationName":"engineSources"
+        },
+        "ScanStartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the scan started.</p>",
+          "locationName":"scanStartedAt"
+        },
+        "ScanCompletedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the scan completed.</p>",
+          "locationName":"scanCompletedAt"
+        },
+        "FilesScanned":{
+          "shape":"Count",
+          "documentation":"<p>The number of files that the scan scanned.</p>",
+          "locationName":"filesScanned"
+        },
+        "GigabytesScanned":{
+          "shape":"Double",
+          "documentation":"<p>The amount of data that the scan scanned, in GB.</p>",
+          "locationName":"gigabytesScanned"
+        },
+        "VolumesScanned":{
+          "shape":"Count",
+          "documentation":"<p>The number of volumes that the scan scanned.</p>",
+          "locationName":"volumesScanned"
+        },
+        "InfectedFileCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of infected files.</p>",
+          "locationName":"infectedFileCount"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the scanned resource.</p>",
+          "locationName":"resourceType"
+        },
+        "ResourceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the scanned resource.</p>",
+          "locationName":"resourceIdentifier"
+        },
+        "HighestSeverity":{
+          "shape":"String",
+          "documentation":"<p>The highest severity among the threats that the scan detected.</p>",
+          "locationName":"highestSeverity"
+        },
+        "HighestSeverityThreatName":{
+          "shape":"String",
+          "documentation":"<p>The name of the threat that has the highest severity.</p>",
+          "locationName":"highestSeverityThreatName"
+        },
+        "UniqueThreatCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of unique threats that the scan detected.</p>",
+          "locationName":"uniqueThreatCount"
+        },
+        "TotalInfectedItems":{
+          "shape":"Count",
+          "documentation":"<p>The total number of infected items.</p>",
+          "locationName":"totalInfectedItems"
+        },
+        "Threats":{
+          "shape":"MalwareThreats",
+          "documentation":"<p>The threats that the scan detected.</p>",
+          "locationName":"threats"
+        }
+      },
+      "documentation":"<p>Contains details about a malware scan.</p>"
     },
     "InvestigationMetadata":{
       "type":"structure",
@@ -7918,6 +9424,169 @@
         }
       },
       "documentation":"<p>Contains metadata about the product and version that produced an investigation.</p>"
+    },
+    "InvestigationObservations":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":25,
+      "min":0
+    },
+    "InvestigationRecord":{
+      "type":"structure",
+      "required":[
+        "RecordId",
+        "Type",
+        "Title",
+        "CreatedAt"
+      ],
+      "members":{
+        "RecordId":{
+          "shape":"RecordId",
+          "documentation":"<p>The unique identifier of the record.</p>",
+          "locationName":"recordId"
+        },
+        "Type":{
+          "shape":"RecordType",
+          "documentation":"<p>The type of the record. Possible values:</p> <ul> <li> <p> <code>UPDATE</code> – A progress milestone, such as the request that started the investigation or a response from GuardDuty.</p> </li> <li> <p> <code>FETCH</code> – Data that GuardDuty retrieved for the investigation, such as a finding, a detector configuration, or a list of your member accounts. The record includes what GuardDuty requested and what it received.</p> </li> <li> <p> <code>OBSERVATION</code> – A fact that GuardDuty noted about your environment, such as the affected resource, the activity on that resource, or your detection coverage.</p> </li> <li> <p> <code>ANALYSIS</code> – An assessment that GuardDuty derived from the data, such as a threat assessment, a comparison against normal behavior, or a process lineage.</p> </li> <li> <p> <code>METADATA</code> – Operational details about the investigation itself, such as how long the investigation took.</p> </li> </ul>",
+          "locationName":"type"
+        },
+        "Title":{
+          "shape":"RecordTitle",
+          "documentation":"<p>A short title that describes the step.</p>",
+          "locationName":"title"
+        },
+        "Narrative":{
+          "shape":"Narrative",
+          "documentation":"<p>A plain-text explanation of the step. A narrative can span several paragraphs. Not every record includes a narrative.</p>",
+          "locationName":"narrative"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which GuardDuty created the record.</p>",
+          "locationName":"createdAt"
+        },
+        "SupportingData":{
+          "shape":"SupportingData",
+          "documentation":"<p>The structured details for the step. The member that is set matches the record type. <code>UPDATE</code> records never include supporting data, and records of other types don't always include it.</p>",
+          "locationName":"supportingData"
+        }
+      },
+      "documentation":"<p>Contains information about one step in the reasoning that GuardDuty followed during an investigation.</p>"
+    },
+    "InvestigationResource":{
+      "type":"structure",
+      "required":[
+        "Uid",
+        "ResourceType"
+      ],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the resource. This is the Amazon Resource Name (ARN) of the resource when it's available. Otherwise, it's the name or ID of the resource.</p>",
+          "locationName":"uid"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource.</p>",
+          "locationName":"name"
+        },
+        "ResourceType":{
+          "shape":"InvestigationResourceType",
+          "documentation":"<p>The type of the resource. Possible values are <code>EC2_INSTANCE</code>, <code>EBS_VOLUME</code>, <code>S3_BUCKET</code>, <code>IAM_ROLE</code>, <code>IAM_USER</code>, <code>IAM_ACCESS_KEY</code>, <code>LAMBDA_FUNCTION</code>, <code>EKS_CLUSTER</code>, <code>ECS_CLUSTER</code>, <code>KUBERNETES_WORKLOAD</code>, <code>RDS_INSTANCE</code>, <code>RDS_DB_USER</code>, and <code>EC2_SECURITY_GROUP</code>.</p>",
+          "locationName":"resourceType"
+        },
+        "Data":{
+          "shape":"InvestigationResourceData",
+          "documentation":"<p>Details that are specific to the type of the resource.</p>",
+          "locationName":"data"
+        }
+      },
+      "documentation":"<p>Contains information about an Amazon Web Services resource that is relevant to an investigation.</p>"
+    },
+    "InvestigationResourceData":{
+      "type":"structure",
+      "members":{
+        "Ec2Instance":{
+          "shape":"InvestigationEc2Instance",
+          "documentation":"<p>Details about an Amazon EC2 instance.</p>",
+          "locationName":"ec2Instance"
+        },
+        "LambdaFunction":{
+          "shape":"LambdaFunction",
+          "documentation":"<p>Details about an Lambda function.</p>",
+          "locationName":"lambdaFunction"
+        },
+        "RdsDbInstance":{
+          "shape":"RdsDbInstance",
+          "documentation":"<p>Details about an Amazon RDS database instance.</p>",
+          "locationName":"rdsDbInstance"
+        },
+        "RdsDbUser":{
+          "shape":"RdsDbUser",
+          "documentation":"<p>Details about the user that logged in to an Amazon RDS database instance.</p>",
+          "locationName":"rdsDbUser"
+        },
+        "EksCluster":{
+          "shape":"InvestigationEksCluster",
+          "documentation":"<p>Details about an Amazon EKS cluster.</p>",
+          "locationName":"eksCluster"
+        },
+        "EcsCluster":{
+          "shape":"InvestigationEcsCluster",
+          "documentation":"<p>Details about an Amazon ECS cluster.</p>",
+          "locationName":"ecsCluster"
+        }
+      },
+      "documentation":"<p>Contains details that are specific to the type of a resource. The member that is set matches the <code>ResourceType</code> of the resource, except that <code>RdsDbInstance</code> and <code>RdsDbUser</code> can be set together.</p>"
+    },
+    "InvestigationResourceType":{
+      "type":"string",
+      "enum":[
+        "EC2_INSTANCE",
+        "EBS_VOLUME",
+        "S3_BUCKET",
+        "IAM_ROLE",
+        "IAM_USER",
+        "IAM_ACCESS_KEY",
+        "LAMBDA_FUNCTION",
+        "EKS_CLUSTER",
+        "ECS_CLUSTER",
+        "KUBERNETES_WORKLOAD",
+        "RDS_INSTANCE",
+        "RDS_DB_USER",
+        "EC2_SECURITY_GROUP"
+      ]
+    },
+    "InvestigationScope":{
+      "type":"structure",
+      "members":{
+        "InvestigationType":{
+          "shape":"InvestigationType",
+          "documentation":"<p>The type of investigation. Possible values:</p> <ul> <li> <p> <code>FINDING</code> – An investigation of a specific GuardDuty finding.</p> </li> <li> <p> <code>ACCOUNT</code> – An investigation of the threat posture of an Amazon Web Services account.</p> </li> <li> <p> <code>ORGANIZATION</code> – An investigation of your organization's threat posture.</p> </li> </ul>",
+          "locationName":"investigationType"
+        },
+        "FindingId":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the finding that the investigation analyzed. Set only when <code>InvestigationType</code> is <code>FINDING</code>.</p>",
+          "locationName":"findingId"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that the investigation analyzed. Set only when <code>InvestigationType</code> is <code>ACCOUNT</code>.</p>",
+          "locationName":"accountId"
+        },
+        "AdminAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the administrator account of the organization that the investigation analyzed. Set only when <code>InvestigationType</code> is <code>ORGANIZATION</code>.</p>",
+          "locationName":"adminAccountId"
+        },
+        "QueryTimeWindow":{
+          "shape":"QueryTimeWindow",
+          "documentation":"<p>The time window over which the investigation queried data, set only when <code>InvestigationType</code> is <code>ACCOUNT</code> or <code>ORGANIZATION</code>.</p>",
+          "locationName":"queryTimeWindow"
+        }
+      },
+      "documentation":"<p>Contains information about what an investigation analyzed. Only the identifier that matches <code>InvestigationType</code> is set.</p>"
     },
     "InvestigationSortCriteria":{
       "type":"structure",
@@ -7994,10 +9663,25 @@
           "documentation":"<p>A short title summarizing the investigation.</p>",
           "locationName":"title"
         },
+        "InvestigationType":{
+          "shape":"InvestigationType",
+          "documentation":"<p>The type of investigation. Possible values are <code>FINDING</code>, <code>ACCOUNT</code>, and <code>ORGANIZATION</code>. GuardDuty sets this field when the investigation completes.</p>",
+          "locationName":"investigationType"
+        },
+        "FindingId":{
+          "shape":"FindingId",
+          "documentation":"<p>For a <code>FINDING</code> investigation, the ID of the finding that the investigation analyzed. GuardDuty sets this field when the investigation completes.</p>",
+          "locationName":"findingId"
+        },
         "AccountId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services account ID associated with the investigation.</p>",
           "locationName":"accountId"
+        },
+        "AdminAccountId":{
+          "shape":"String",
+          "documentation":"<p>For an <code>ORGANIZATION</code> investigation, the ID of the administrator account of the organization that the investigation analyzed. GuardDuty sets this field when the investigation completes.</p>",
+          "locationName":"adminAccountId"
         },
         "StartTime":{
           "shape":"Timestamp",
@@ -8012,10 +9696,115 @@
       },
       "documentation":"<p>Contains summary information about a GuardDuty investigation.</p>"
     },
+    "InvestigationSummaryData":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"String",
+          "documentation":"<p>For a <code>FINDING</code> investigation, the type of the finding that the investigation analyzed.</p>",
+          "locationName":"findingType"
+        },
+        "ThreatAssessment":{
+          "shape":"ThreatAssessment",
+          "documentation":"<p>For a <code>FINDING</code> investigation, an assessment of the threat, including how the attack progressed.</p>",
+          "locationName":"threatAssessment"
+        },
+        "Countermeasures":{
+          "shape":"Countermeasures",
+          "documentation":"<p>For a <code>FINDING</code> investigation, actions that you can take to respond to the threat, grouped by defensive tactic.</p>",
+          "locationName":"countermeasures"
+        },
+        "AccountAnalysis":{
+          "shape":"AccountAnalysis",
+          "documentation":"<p>For an <code>ACCOUNT</code> investigation, an analysis of the findings in the investigated account.</p>",
+          "locationName":"accountAnalysis"
+        },
+        "OrganizationAnalysis":{
+          "shape":"OrganizationAnalysis",
+          "documentation":"<p>For an <code>ORGANIZATION</code> investigation, an analysis of the findings across the organization.</p>",
+          "locationName":"organizationAnalysis"
+        },
+        "KeyObservations":{
+          "shape":"KeyObservations",
+          "documentation":"<p>The key observations of the investigation.</p>",
+          "locationName":"keyObservations"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>For an <code>ACCOUNT</code> or <code>ORGANIZATION</code> investigation, the recommended actions.</p>",
+          "locationName":"recommendations"
+        }
+      },
+      "documentation":"<p>Contains the structured summary of a GuardDuty investigation. The fields that are present depend on the investigation type.</p>"
+    },
+    "InvestigationSummaryText":{
+      "type":"string",
+      "max":262144,
+      "min":0
+    },
+    "InvestigationText":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "InvestigationThreatAssessment":{
+      "type":"structure",
+      "members":{
+        "Reputation":{
+          "shape":"Reputation",
+          "documentation":"<p>Reputation information about a threat indicator. Set when <code>AnalysisType</code> is <code>REPUTATION</code>.</p>",
+          "locationName":"reputation"
+        },
+        "ThreatConfidence":{
+          "shape":"ThreatConfidence",
+          "documentation":"<p>The confidence in the threat assessment. Possible values are <code>VERY_HIGH</code>, <code>HIGH</code>, <code>MEDIUM</code>, and <code>LOW</code>.</p>",
+          "locationName":"threatConfidence"
+        },
+        "Classification":{
+          "shape":"InvestigationText",
+          "documentation":"<p>The classification of the threat.</p>",
+          "locationName":"classification"
+        },
+        "Assessment":{
+          "shape":"InvestigationText",
+          "documentation":"<p>The assessment of the threat.</p>",
+          "locationName":"assessment"
+        },
+        "AuthenticationContext":{
+          "shape":"InvestigationText",
+          "documentation":"<p>Context about how the identity involved in the activity authenticated.</p>",
+          "locationName":"authenticationContext"
+        },
+        "RdsControlPlaneActivity":{
+          "shape":"InvestigationText",
+          "documentation":"<p>An assessment of Amazon RDS control plane activity that is related to the threat.</p>",
+          "locationName":"rdsControlPlaneActivity"
+        },
+        "IpAccountActivity":{
+          "shape":"InvestigationText",
+          "documentation":"<p>An assessment of the activity from the IP address in the account.</p>",
+          "locationName":"ipAccountActivity"
+        },
+        "CredentialCompromise":{
+          "shape":"InvestigationText",
+          "documentation":"<p>An assessment of whether credentials were compromised.</p>",
+          "locationName":"credentialCompromise"
+        }
+      },
+      "documentation":"<p>Contains a threat assessment. The members that are set depend on the <code>AnalysisType</code> of the record.</p>"
+    },
     "InvestigationTitle":{
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "InvestigationType":{
+      "type":"string",
+      "enum":[
+        "FINDING",
+        "ACCOUNT",
+        "ORGANIZATION"
+      ]
     },
     "Invitation":{
       "type":"structure",
@@ -8183,6 +9972,150 @@
       "type":"list",
       "member":{"shape":"ItemPath"}
     },
+    "KeyObservations":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>A short title for the key observations.</p>",
+          "locationName":"title"
+        },
+        "Narrative":{
+          "shape":"String",
+          "documentation":"<p>A narrative explanation of the key observations.</p>",
+          "locationName":"narrative"
+        },
+        "Observations":{
+          "shape":"InvestigationObservations",
+          "documentation":"<p>The individual key observations.</p>",
+          "locationName":"observations"
+        }
+      },
+      "documentation":"<p>Contains the key observations of an investigation.</p>"
+    },
+    "KubernetesActivity":{
+      "type":"structure",
+      "members":{
+        "ApiCall":{
+          "shape":"KubernetesApiCall",
+          "documentation":"<p>Details about a Kubernetes API call.</p>",
+          "locationName":"apiCall"
+        },
+        "Anomaly":{
+          "shape":"KubernetesAnomaly",
+          "documentation":"<p>Details about anomalous Kubernetes behavior.</p>",
+          "locationName":"anomaly"
+        },
+        "Workload":{
+          "shape":"InvestigationKubernetesWorkload",
+          "documentation":"<p>The Kubernetes workload that is associated with the anomaly.</p>",
+          "locationName":"workload"
+        },
+        "Enrichment":{
+          "shape":"Enrichment",
+          "documentation":"<p>Additional context about the API call, such as geolocation information.</p>",
+          "locationName":"enrichment"
+        }
+      },
+      "documentation":"<p>Contains details about Kubernetes activity. A record contains either <code>ApiCall</code> and <code>Enrichment</code>, or <code>Anomaly</code> and <code>Workload</code>.</p>"
+    },
+    "KubernetesAnomaly":{
+      "type":"structure",
+      "members":{
+        "UnusualBehavior":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A description of the unusual behavior.</p>",
+          "locationName":"unusualBehavior"
+        },
+        "BaselineContext":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A description of the normal behavior that the activity was compared against.</p>",
+          "locationName":"baselineContext"
+        },
+        "AnomalyScore":{
+          "shape":"String",
+          "documentation":"<p>The anomaly score of the behavior.</p>",
+          "locationName":"anomalyScore"
+        },
+        "TrainingPeriod":{
+          "shape":"String",
+          "documentation":"<p>The period over which the normal behavior was established.</p>",
+          "locationName":"trainingPeriod"
+        }
+      },
+      "documentation":"<p>Contains details about anomalous Kubernetes behavior.</p>"
+    },
+    "KubernetesApiCall":{
+      "type":"structure",
+      "members":{
+        "ClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the cluster.</p>",
+          "locationName":"clusterName"
+        },
+        "Username":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes user name of the caller.</p>",
+          "locationName":"username"
+        },
+        "UserGroups":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes groups of the caller.</p>",
+          "locationName":"userGroups"
+        },
+        "UserId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the caller.</p>",
+          "locationName":"userId"
+        },
+        "Verb":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes API verb, such as <code>get</code> or <code>create</code>.</p>",
+          "locationName":"verb"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the Kubernetes resource.</p>",
+          "locationName":"resourceType"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Kubernetes resource.</p>",
+          "locationName":"resourceName"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes namespace of the resource.</p>",
+          "locationName":"namespace"
+        },
+        "RequestUri":{
+          "shape":"String",
+          "documentation":"<p>The URI of the request.</p>",
+          "locationName":"requestUri"
+        },
+        "StatusCode":{
+          "shape":"Integer",
+          "documentation":"<p>The status code of the API call.</p>",
+          "locationName":"statusCode"
+        },
+        "SourceIps":{
+          "shape":"String",
+          "documentation":"<p>The source IP addresses of the API call.</p>",
+          "locationName":"sourceIPs"
+        },
+        "UserAgent":{
+          "shape":"String",
+          "documentation":"<p>The user agent of the caller.</p>",
+          "locationName":"userAgent"
+        },
+        "EventCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of matching API calls.</p>",
+          "locationName":"eventCount"
+        }
+      },
+      "documentation":"<p>Contains details about a Kubernetes API call.</p>"
+    },
     "KubernetesApiCallAction":{
       "type":"structure",
       "members":{
@@ -8343,6 +10276,42 @@
         }
       },
       "documentation":"<p>Information about the Kubernetes API for which you check if you have permission to call.</p>"
+    },
+    "KubernetesPolicyViolation":{
+      "type":"structure",
+      "members":{
+        "ViolationType":{
+          "shape":"String",
+          "documentation":"<p>The type of the violation.</p>",
+          "locationName":"violationType"
+        },
+        "AffectedResource":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes resource that the violation affects.</p>",
+          "locationName":"affectedResource"
+        },
+        "Subject":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes subject, such as a user, a group, or a service account, that the violation involves.</p>",
+          "locationName":"subject"
+        },
+        "GrantedAccess":{
+          "shape":"String",
+          "documentation":"<p>The access that the violation grants.</p>",
+          "locationName":"grantedAccess"
+        },
+        "ExposureVector":{
+          "shape":"InvestigationText",
+          "documentation":"<p>How the misconfiguration exposes the resource.</p>",
+          "locationName":"exposureVector"
+        },
+        "MisconfigurationImpact":{
+          "shape":"InvestigationText",
+          "documentation":"<p>The potential impact of the misconfiguration.</p>",
+          "locationName":"misconfigurationImpact"
+        }
+      },
+      "documentation":"<p>Contains an assessment of a Kubernetes policy violation.</p>"
     },
     "KubernetesResourcesTypes":{
       "type":"string",
@@ -8567,6 +10536,52 @@
         }
       },
       "documentation":"<p>Information about the Lambda function involved in the finding.</p>"
+    },
+    "LambdaFunction":{
+      "type":"structure",
+      "members":{
+        "FunctionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the function.</p>",
+          "locationName":"functionName"
+        },
+        "FunctionArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function.</p>",
+          "locationName":"functionArn"
+        },
+        "FunctionVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the function.</p>",
+          "locationName":"functionVersion"
+        },
+        "Role":{
+          "shape":"String",
+          "documentation":"<p>The execution role of the function.</p>",
+          "locationName":"role"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the function.</p>",
+          "locationName":"description"
+        },
+        "RevisionId":{
+          "shape":"String",
+          "documentation":"<p>The revision ID of the function version.</p>",
+          "locationName":"revisionId"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the function was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "VpcConfigurationSummary":{
+          "shape":"String",
+          "documentation":"<p>A summary of the VPC configuration of the function, as a single string.</p>",
+          "locationName":"vpcConfigurationSummary"
+        }
+      },
+      "documentation":"<p>Contains details about an Lambda function.</p>"
     },
     "LaunchTemplateVersion":{
       "type":"string",
@@ -8957,6 +10972,71 @@
         }
       }
     },
+    "ListInvestigationRecordsRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "InvestigationId"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the GuardDuty detector associated with the investigation.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"DetectorId"
+        },
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The unique identifier of the investigation whose records you want to list.</p>",
+          "locationName":"investigationId"
+        },
+        "RecordTypes":{
+          "shape":"RecordTypes",
+          "documentation":"<p>The types of records to return. Possible values are <code>UPDATE</code>, <code>FETCH</code>, <code>OBSERVATION</code>, <code>ANALYSIS</code>, and <code>METADATA</code>. If you don't specify this parameter, GuardDuty returns records of all types.</p>",
+          "locationName":"recordTypes"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of records to return in a single response. Valid values are 1 to 50. The default value is 20. A response can contain fewer records than this value, or no records, and still include a <code>NextToken</code>.</p>",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data. Use the same <code>InvestigationId</code> and <code>RecordTypes</code> values that you used in the previous request.</p> <p>If you specify this parameter for an investigation whose status isn't <code>COMPLETED</code>, the operation returns a <code>BadRequestException</code>. A <code>NextToken</code> expires 24 hours after it's returned.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListInvestigationRecordsResponse":{
+      "type":"structure",
+      "required":[
+        "InvestigationId",
+        "Status",
+        "Records"
+      ],
+      "members":{
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The unique identifier of the investigation.</p>",
+          "locationName":"investigationId"
+        },
+        "Status":{
+          "shape":"InvestigationStatus",
+          "documentation":"<p>The current status of the investigation. Possible values are <code>RUNNING</code>, <code>COMPLETED</code>, and <code>FAILED</code>. Records are returned only when the status is <code>COMPLETED</code>. If the status is <code>RUNNING</code> or <code>FAILED</code>, the response contains an empty list of records and no <code>NextToken</code>.</p>",
+          "locationName":"status"
+        },
+        "Records":{
+          "shape":"Records",
+          "documentation":"<p>The records for the investigation, in the order that GuardDuty created them, oldest first. This list can contain fewer records than <code>MaxResults</code>, or no records, even when more records are available. To check for more records, use <code>NextToken</code>.</p>",
+          "locationName":"records"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items. If this value is absent, there are no more records to retrieve.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListInvestigationsRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -8966,6 +11046,11 @@
           "documentation":"<p>The unique ID of the GuardDuty detector whose investigations you want to list.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"DetectorId"
+        },
+        "FilterCriteria":{
+          "shape":"InvestigationFilterCriteria",
+          "documentation":"<p>The criteria used to filter investigations. GuardDuty returns only the investigations that match all of the specified criteria.</p>",
+          "locationName":"filterCriteria"
         },
         "SortCriteria":{
           "shape":"InvestigationSortCriteria",
@@ -9732,6 +11817,38 @@
       "type":"list",
       "member":{"shape":"MalwareScan"}
     },
+    "MalwareThreat":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the threat.</p>",
+          "locationName":"name"
+        },
+        "Severity":{
+          "shape":"String",
+          "documentation":"<p>The severity of the threat.</p>",
+          "locationName":"severity"
+        },
+        "InfectedFileCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of files that the threat infected.</p>",
+          "locationName":"infectedFileCount"
+        },
+        "SampleFiles":{
+          "shape":"String",
+          "documentation":"<p>Examples of files that the threat infected.</p>",
+          "locationName":"sampleFiles"
+        }
+      },
+      "documentation":"<p>Contains information about a threat that a malware scan detected.</p>"
+    },
+    "MalwareThreats":{
+      "type":"list",
+      "member":{"shape":"MalwareThreat"},
+      "max":50,
+      "min":0
+    },
     "ManagedBy":{
       "type":"string",
       "enum":["GUARDDUTY_POLICY"]
@@ -9849,6 +11966,43 @@
         }
       },
       "documentation":"<p>Contains information about the member account. </p>"
+    },
+    "MemberAccountRanking":{
+      "type":"structure",
+      "members":{
+        "Rank":{
+          "shape":"Integer",
+          "documentation":"<p>The position of the account in the ranking.</p>",
+          "locationName":"rank"
+        },
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the member account.</p>",
+          "locationName":"accountId"
+        },
+        "FindingCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of findings in the account.</p>",
+          "locationName":"findingCount"
+        },
+        "RiskLevel":{
+          "shape":"RiskLevel",
+          "documentation":"<p>The assessed risk level of the account. Possible values are <code>Info</code>, <code>Low</code>, <code>Medium</code>, <code>High</code>, and <code>Critical</code>.</p>",
+          "locationName":"riskLevel"
+        },
+        "RiskRationale":{
+          "shape":"InvestigationText",
+          "documentation":"<p>The reason for the assessed risk level.</p>",
+          "locationName":"riskRationale"
+        }
+      },
+      "documentation":"<p>Contains information about the position of a member account in a ranking.</p>"
+    },
+    "MemberAccountRankings":{
+      "type":"list",
+      "member":{"shape":"MemberAccountRanking"},
+      "max":10,
+      "min":0
     },
     "MemberAdditionalConfiguration":{
       "type":"structure",
@@ -10003,6 +12157,22 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "MetadataRecord":{
+      "type":"structure",
+      "members":{
+        "TotalTimeMilliseconds":{
+          "shape":"MetadataTotalTimeMilliseconds",
+          "documentation":"<p>The total time that the investigation took, in milliseconds.</p>",
+          "locationName":"totalTimeMilliseconds"
+        }
+      },
+      "documentation":"<p>Contains operational details about an investigation, such as how long it took.</p>"
+    },
+    "MetadataTotalTimeMilliseconds":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
     "MfaStatus":{
       "type":"string",
       "enum":[
@@ -10019,6 +12189,16 @@
       "type":"string",
       "max":255,
       "min":1
+    },
+    "MitreTechniqueIds":{
+      "type":"list",
+      "member":{"shape":"MitreThreatId"},
+      "max":20,
+      "min":0
+    },
+    "MitreThreatId":{
+      "type":"string",
+      "pattern":"(TA|T)\\d{4}(\\.\\d{3})?"
     },
     "ModelDetail":{
       "type":"structure",
@@ -10045,9 +12225,121 @@
       "max":300,
       "min":1
     },
+    "Narrative":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
     "Neq":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "NetworkActivity":{
+      "type":"structure",
+      "members":{
+        "Protocol":{
+          "shape":"String",
+          "documentation":"<p>The network protocol of the activity.</p>",
+          "locationName":"protocol"
+        },
+        "Direction":{
+          "shape":"String",
+          "documentation":"<p>The direction of the network connection, such as inbound or outbound.</p>",
+          "locationName":"direction"
+        },
+        "Method":{
+          "shape":"String",
+          "documentation":"<p>The method that the network activity used.</p>",
+          "locationName":"method"
+        },
+        "Blocked":{
+          "shape":"String",
+          "documentation":"<p>Indicates whether the network connection was blocked.</p>",
+          "locationName":"blocked"
+        },
+        "Platform":{
+          "shape":"String",
+          "documentation":"<p>The platform on which the network activity was observed.</p>",
+          "locationName":"platform"
+        },
+        "Ports":{
+          "shape":"NetworkPorts",
+          "documentation":"<p>The ports that the network activity involved.</p>",
+          "locationName":"ports"
+        },
+        "Traffic":{
+          "shape":"NetworkTraffic",
+          "documentation":"<p>The amount of data that the network activity transferred.</p>",
+          "locationName":"traffic"
+        },
+        "Anomaly":{
+          "shape":"NetworkAnomaly",
+          "documentation":"<p>Details about how the network activity deviates from normal behavior.</p>",
+          "locationName":"anomaly"
+        },
+        "Dns":{
+          "shape":"DnsContext",
+          "documentation":"<p>DNS details about the network activity.</p>",
+          "locationName":"dns"
+        },
+        "Counts":{
+          "shape":"NetworkCounts",
+          "documentation":"<p>Counts that describe the network activity, such as the number of requests or connection attempts.</p>",
+          "locationName":"counts"
+        },
+        "Enrichment":{
+          "shape":"Enrichment",
+          "documentation":"<p>Additional context about the network activity, such as geolocation and threat intelligence information.</p>",
+          "locationName":"enrichment"
+        }
+      },
+      "documentation":"<p>Contains details about network activity.</p>"
+    },
+    "NetworkAnomaly":{
+      "type":"structure",
+      "members":{
+        "BaselineBytes":{
+          "shape":"String",
+          "documentation":"<p>The amount of data that is typical for the normal behavior.</p>",
+          "locationName":"baselineBytes"
+        },
+        "Deviation":{
+          "shape":"String",
+          "documentation":"<p>How much the activity deviates from normal behavior.</p>",
+          "locationName":"deviation"
+        },
+        "ProfileAgeDays":{
+          "shape":"Integer",
+          "documentation":"<p>The number of days of activity that the normal behavior is based on.</p>",
+          "locationName":"profileAgeDays"
+        },
+        "RemoteService":{
+          "shape":"String",
+          "documentation":"<p>The remote service that the activity involved.</p>",
+          "locationName":"remoteService"
+        },
+        "RemoteRegion":{
+          "shape":"String",
+          "documentation":"<p>The Region of the remote endpoint.</p>",
+          "locationName":"remoteRegion"
+        },
+        "Duration":{
+          "shape":"String",
+          "documentation":"<p>The duration of the activity.</p>",
+          "locationName":"duration"
+        },
+        "ResetRatio":{
+          "shape":"String",
+          "documentation":"<p>The ratio of connection attempts that were reset.</p>",
+          "locationName":"resetRatio"
+        },
+        "TargetHostCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of target hosts.</p>",
+          "locationName":"targetHostCount"
+        }
+      },
+      "documentation":"<p>Contains information about how network activity deviates from normal behavior.</p>"
     },
     "NetworkConnection":{
       "type":"structure",
@@ -10106,6 +12398,32 @@
         }
       },
       "documentation":"<p>Contains information about the NETWORK_CONNECTION action described in the finding.</p>"
+    },
+    "NetworkCounts":{
+      "type":"structure",
+      "members":{
+        "RequestCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of requests.</p>",
+          "locationName":"requestCount"
+        },
+        "TotalAttempts":{
+          "shape":"Count",
+          "documentation":"<p>The total number of connection attempts.</p>",
+          "locationName":"totalAttempts"
+        },
+        "SuspiciousAttempts":{
+          "shape":"Count",
+          "documentation":"<p>The number of connection attempts that were suspicious.</p>",
+          "locationName":"suspiciousAttempts"
+        },
+        "ResetAttempts":{
+          "shape":"Count",
+          "documentation":"<p>The number of connection attempts that were reset.</p>",
+          "locationName":"resetAttempts"
+        }
+      },
+      "documentation":"<p>Contains counts that describe network activity, such as the number of requests or connection attempts.</p>"
     },
     "NetworkDirection":{
       "type":"string",
@@ -10254,6 +12572,58 @@
       "type":"list",
       "member":{"shape":"NetworkInterface"}
     },
+    "NetworkPorts":{
+      "type":"structure",
+      "members":{
+        "TargetPort":{
+          "shape":"String",
+          "documentation":"<p>The port on the target of the activity.</p>",
+          "locationName":"targetPort"
+        },
+        "RemotePort":{
+          "shape":"String",
+          "documentation":"<p>The port on the remote host.</p>",
+          "locationName":"remotePort"
+        },
+        "ResolverPort":{
+          "shape":"String",
+          "documentation":"<p>The port of the DNS resolver.</p>",
+          "locationName":"resolverPort"
+        },
+        "Ports":{
+          "shape":"String",
+          "documentation":"<p>The ports that the activity involved.</p>",
+          "locationName":"ports"
+        },
+        "PortsUsed":{
+          "shape":"String",
+          "documentation":"<p>The ports that the activity used.</p>",
+          "locationName":"portsUsed"
+        },
+        "PortCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of ports that the activity involved.</p>",
+          "locationName":"portCount"
+        }
+      },
+      "documentation":"<p>Contains information about the ports that network activity involved. A port value can be a single port, a range such as <code>51000-51010</code>, or a comma-separated list such as <code>443,8080</code>.</p>"
+    },
+    "NetworkTraffic":{
+      "type":"structure",
+      "members":{
+        "BytesSent":{
+          "shape":"Count",
+          "documentation":"<p>The number of bytes sent.</p>",
+          "locationName":"bytesSent"
+        },
+        "BytesReceived":{
+          "shape":"Count",
+          "documentation":"<p>The number of bytes received.</p>",
+          "locationName":"bytesReceived"
+        }
+      },
+      "documentation":"<p>Contains the amount of data that network activity transferred.</p>"
+    },
     "NextToken":{
       "type":"string",
       "max":2048,
@@ -10289,9 +12659,115 @@
       "type":"list",
       "member":{"shape":"Long"}
     },
+    "ObservationRecord":{
+      "type":"structure",
+      "required":["ObservationType"],
+      "members":{
+        "ObservationType":{
+          "shape":"ObservationType",
+          "documentation":"<p>The kind of observation. The value identifies the payload member that can be set: <code>FINDING_DETAIL</code> (<code>FindingDetail</code>), <code>RESOURCE</code> (<code>Resource</code>), <code>NETWORK_ACTIVITY</code> (<code>NetworkActivity</code>), <code>RDS_LOGIN_ACTIVITY</code> (<code>RdsLoginActivity</code>), <code>S3_ACTIVITY</code> (<code>S3Activity</code>), <code>KUBERNETES_ACTIVITY</code> (<code>KubernetesActivity</code>), <code>MALWARE_SCAN</code> (<code>MalwareScan</code>), <code>RELATED_FINDINGS</code> (<code>RelatedFindings</code>), <code>DETECTION_COVERAGE</code> (<code>DetectionCoverage</code>), <code>ACCOUNT_OVERVIEW</code> (<code>AccountOverview</code>), <code>RECOMMENDATION</code> (<code>Recommendations</code>), <code>RUNTIME_SIGNALS</code> (<code>RuntimeSignals</code>), <code>DISTRIBUTION</code> (<code>Distribution</code>), and <code>REPRESENTATIVE_RESOURCE</code> (<code>RepresentativeResources</code>).</p>",
+          "locationName":"observationType"
+        },
+        "FindingDetail":{
+          "shape":"FindingDetail",
+          "documentation":"<p>Details about a GuardDuty finding. Set when <code>ObservationType</code> is <code>FINDING_DETAIL</code>.</p>",
+          "locationName":"findingDetail"
+        },
+        "Resource":{
+          "shape":"InvestigationResource",
+          "documentation":"<p>Details about an affected resource. Set when <code>ObservationType</code> is <code>RESOURCE</code>.</p>",
+          "locationName":"resource"
+        },
+        "NetworkActivity":{
+          "shape":"NetworkActivity",
+          "documentation":"<p>Details about network activity. Set when <code>ObservationType</code> is <code>NETWORK_ACTIVITY</code>.</p>",
+          "locationName":"networkActivity"
+        },
+        "RdsLoginActivity":{
+          "shape":"RdsLoginActivity",
+          "documentation":"<p>Details about login activity on an Amazon RDS database. Set when <code>ObservationType</code> is <code>RDS_LOGIN_ACTIVITY</code>.</p>",
+          "locationName":"rdsLoginActivity"
+        },
+        "S3Activity":{
+          "shape":"S3Activity",
+          "documentation":"<p>Details about Amazon S3 activity. Set when <code>ObservationType</code> is <code>S3_ACTIVITY</code>.</p>",
+          "locationName":"s3Activity"
+        },
+        "KubernetesActivity":{
+          "shape":"KubernetesActivity",
+          "documentation":"<p>Details about Kubernetes activity. Set when <code>ObservationType</code> is <code>KUBERNETES_ACTIVITY</code>.</p>",
+          "locationName":"kubernetesActivity"
+        },
+        "MalwareScan":{
+          "shape":"InvestigationMalwareScan",
+          "documentation":"<p>Details about a malware scan. Set when <code>ObservationType</code> is <code>MALWARE_SCAN</code>.</p>",
+          "locationName":"malwareScan"
+        },
+        "RelatedFindings":{
+          "shape":"RelatedFindings",
+          "documentation":"<p>Details about findings that are related to the investigated activity. Set when <code>ObservationType</code> is <code>RELATED_FINDINGS</code>.</p>",
+          "locationName":"relatedFindings"
+        },
+        "DetectionCoverage":{
+          "shape":"DetectionCoverage",
+          "documentation":"<p>Details about your detection coverage. Set when <code>ObservationType</code> is <code>DETECTION_COVERAGE</code>.</p>",
+          "locationName":"detectionCoverage"
+        },
+        "AccountOverview":{
+          "shape":"AccountOverview",
+          "documentation":"<p>Overview information about an account. Set when <code>ObservationType</code> is <code>ACCOUNT_OVERVIEW</code>.</p>",
+          "locationName":"accountOverview"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>Recommended actions. Set when <code>ObservationType</code> is <code>RECOMMENDATION</code>.</p>",
+          "locationName":"recommendations"
+        },
+        "RuntimeSignals":{
+          "shape":"RuntimeSignals",
+          "documentation":"<p>A summary of runtime signals. Set when <code>ObservationType</code> is <code>RUNTIME_SIGNALS</code>.</p>",
+          "locationName":"runtimeSignals"
+        },
+        "Distribution":{
+          "shape":"Distribution",
+          "documentation":"<p>A breakdown of findings along one dimension. Set when <code>ObservationType</code> is <code>DISTRIBUTION</code>.</p>",
+          "locationName":"distribution"
+        },
+        "RepresentativeResources":{
+          "shape":"RepresentativeFindings",
+          "documentation":"<p>Representative findings for the affected resources, one finding for each resource. Set when <code>ObservationType</code> is <code>REPRESENTATIVE_RESOURCE</code>.</p>",
+          "locationName":"representativeResources"
+        },
+        "Indicators":{
+          "shape":"InvestigationIndicators",
+          "documentation":"<p>The threat indicators associated with the observation, such as an IP address, a domain, or a file hash.</p>",
+          "locationName":"indicators"
+        }
+      },
+      "documentation":"<p>Contains a fact that GuardDuty noted about your environment during an investigation, such as the affected resource, the activity on that resource, or your detection coverage. The record contains at most one of the payload members, the one that matches <code>ObservationType</code>. <code>Indicators</code> can accompany any observation type.</p>"
+    },
     "ObservationTexts":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "ObservationType":{
+      "type":"string",
+      "enum":[
+        "FINDING_DETAIL",
+        "RESOURCE",
+        "NETWORK_ACTIVITY",
+        "RDS_LOGIN_ACTIVITY",
+        "S3_ACTIVITY",
+        "KUBERNETES_ACTIVITY",
+        "MALWARE_SCAN",
+        "RELATED_FINDINGS",
+        "DETECTION_COVERAGE",
+        "ACCOUNT_OVERVIEW",
+        "RECOMMENDATION",
+        "RUNTIME_SIGNALS",
+        "DISTRIBUTION",
+        "REPRESENTATIVE_RESOURCE"
+      ]
     },
     "Observations":{
       "type":"structure",
@@ -10308,6 +12784,38 @@
         }
       },
       "documentation":"<p>Contains information about the observed behavior.</p>"
+    },
+    "ObservedFindingType":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"FindingType",
+          "documentation":"<p>The finding type.</p>",
+          "locationName":"findingType"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The number of findings of this type.</p>",
+          "locationName":"count"
+        },
+        "SeverityMax":{
+          "shape":"SeverityScore",
+          "documentation":"<p>The highest severity score among the findings of this type, from 0 to 10.</p>",
+          "locationName":"severityMax"
+        },
+        "SharedResources":{
+          "shape":"SharedResources",
+          "documentation":"<p>The resources that the findings of this type share with the investigated activity.</p>",
+          "locationName":"sharedResources"
+        }
+      },
+      "documentation":"<p>Contains information about a finding type that GuardDuty observed.</p>"
+    },
+    "ObservedFindingTypes":{
+      "type":"list",
+      "member":{"shape":"ObservedFindingType"},
+      "max":50,
+      "min":0
     },
     "OrderBy":{
       "type":"string",
@@ -10411,6 +12919,22 @@
     "OrganizationAdditionalConfigurations":{
       "type":"list",
       "member":{"shape":"OrganizationAdditionalConfiguration"}
+    },
+    "OrganizationAnalysis":{
+      "type":"structure",
+      "members":{
+        "FindingsSummary":{
+          "shape":"OrganizationFindingsSummary",
+          "documentation":"<p>A summary of the findings across the organization.</p>",
+          "locationName":"findingsSummary"
+        },
+        "AccountBreakdown":{
+          "shape":"AccountSummaries",
+          "documentation":"<p>The accounts in the organization that have findings, with the number of findings in each.</p>",
+          "locationName":"accountBreakdown"
+        }
+      },
+      "documentation":"<p>Contains an analysis of the findings across an organization.</p>"
     },
     "OrganizationDataSourceConfigurations":{
       "type":"structure",
@@ -10588,6 +13112,42 @@
       "type":"list",
       "member":{"shape":"OrganizationFeatureConfigurationResult"}
     },
+    "OrganizationFindingsSummary":{
+      "type":"structure",
+      "members":{
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings across the organization.</p>",
+          "locationName":"totalFindings"
+        },
+        "SeverityBreakdown":{
+          "shape":"SeverityBreakdown",
+          "documentation":"<p>The number of findings at each severity level across the organization.</p>",
+          "locationName":"severityBreakdown"
+        },
+        "TopFindingTypes":{
+          "shape":"FindingTypeCounts",
+          "documentation":"<p>The finding types that have the most findings, with counts.</p>",
+          "locationName":"topFindingTypes"
+        },
+        "ByTimeWindow":{
+          "shape":"TimeWindowGroups",
+          "documentation":"<p>The number of findings in each time window.</p>",
+          "locationName":"byTimeWindow"
+        },
+        "TotalAccountCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of accounts in the organization.</p>",
+          "locationName":"totalAccountCount"
+        },
+        "AffectedAccountCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of accounts that have findings.</p>",
+          "locationName":"affectedAccountCount"
+        }
+      },
+      "documentation":"<p>Contains a summary of findings across an organization.</p>"
+    },
     "OrganizationKubernetesAuditLogsConfiguration":{
       "type":"structure",
       "required":["AutoEnable"],
@@ -10746,6 +13306,12 @@
       },
       "documentation":"<p>Contains information on the owner of the bucket.</p>"
     },
+    "Percentage":{
+      "type":"double",
+      "box":true,
+      "max":100,
+      "min":0
+    },
     "PermissionConfiguration":{
       "type":"structure",
       "members":{
@@ -10827,6 +13393,38 @@
     "PrivateIpAddresses":{
       "type":"list",
       "member":{"shape":"PrivateIpAddressDetails"}
+    },
+    "Process":{
+      "type":"structure",
+      "required":["Uuid"],
+      "members":{
+        "Uuid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the process.</p>",
+          "locationName":"uuid"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the process.</p>",
+          "locationName":"name"
+        },
+        "Path":{
+          "shape":"String",
+          "documentation":"<p>The path of the process executable.</p>",
+          "locationName":"path"
+        },
+        "ParentUuid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the parent process. Not set for the root process.</p>",
+          "locationName":"parentUuid"
+        },
+        "Findings":{
+          "shape":"FindingReferences",
+          "documentation":"<p>The findings associated with this process.</p>",
+          "locationName":"findings"
+        }
+      },
+      "documentation":"<p>Contains information about a process in a process lineage. <code>ParentUuid</code> links each process to its parent process.</p>"
     },
     "ProcessDetails":{
       "type":"structure",
@@ -10914,6 +13512,12 @@
       "max":1024,
       "min":0
     },
+    "Processes":{
+      "type":"list",
+      "member":{"shape":"Process"},
+      "max":100,
+      "min":0
+    },
     "Product":{
       "type":"structure",
       "required":["Name"],
@@ -10968,6 +13572,28 @@
         "FREQUENCY",
         "VOLUME"
       ]
+    },
+    "ProtectionPlan":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"InvestigationDetectorFeature",
+          "documentation":"<p>The name of the protection plan. Possible values are <code>CLOUD_TRAIL</code>, <code>DNS_LOGS</code>, <code>FLOW_LOGS</code>, <code>S3_DATA_EVENTS</code>, <code>EKS_AUDIT_LOGS</code>, <code>EBS_MALWARE_PROTECTION</code>, <code>RDS_LOGIN_EVENTS</code>, <code>EKS_RUNTIME_MONITORING</code>, <code>EKS_ADDON_MANAGEMENT</code>, <code>LAMBDA_NETWORK_LOGS</code>, <code>RUNTIME_MONITORING</code>, <code>ECS_FARGATE_AGENT_MANAGEMENT</code>, and <code>EC2_AGENT_MANAGEMENT</code>.</p>",
+          "locationName":"name"
+        },
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>The status of the protection plan. Possible values are <code>ENABLED</code> and <code>DISABLED</code>.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Contains information about the status of a protection plan.</p>"
+    },
+    "ProtectionPlans":{
+      "type":"list",
+      "member":{"shape":"ProtectionPlan"},
+      "max":20,
+      "min":0
     },
     "PublicAccess":{
       "type":"structure",
@@ -11043,6 +13669,58 @@
       "max":300,
       "min":1
     },
+    "QueryTimeWindow":{
+      "type":"structure",
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the time window starts.</p>",
+          "locationName":"startTime"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the time window ends.</p>",
+          "locationName":"endTime"
+        }
+      },
+      "documentation":"<p>Contains the start and end of a time window.</p>"
+    },
+    "RdsDbInstance":{
+      "type":"structure",
+      "members":{
+        "DbInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the database instance.</p>",
+          "locationName":"dbInstanceIdentifier"
+        },
+        "DbClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the database cluster that contains the instance.</p>",
+          "locationName":"dbClusterIdentifier"
+        },
+        "DbInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the database instance.</p>",
+          "locationName":"dbInstanceArn"
+        },
+        "DbiResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique resource ID of the database instance.</p>",
+          "locationName":"dbiResourceId"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The database engine of the instance.</p>",
+          "locationName":"engine"
+        },
+        "EngineVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the database engine.</p>",
+          "locationName":"engineVersion"
+        }
+      },
+      "documentation":"<p>Contains details about an Amazon RDS database instance.</p>"
+    },
     "RdsDbInstanceDetails":{
       "type":"structure",
       "members":{
@@ -11083,6 +13761,37 @@
         }
       },
       "documentation":"<p>Contains information about the resource type <code>RDSDBInstance</code> involved in a GuardDuty finding.</p>"
+    },
+    "RdsDbUser":{
+      "type":"structure",
+      "members":{
+        "User":{
+          "shape":"String",
+          "documentation":"<p>The user name that was used to log in.</p>",
+          "locationName":"user"
+        },
+        "Application":{
+          "shape":"String",
+          "documentation":"<p>The name of the application that was used to log in.</p>",
+          "locationName":"application"
+        },
+        "Database":{
+          "shape":"String",
+          "documentation":"<p>The name of the database that the user logged in to.</p>",
+          "locationName":"database"
+        },
+        "AuthMethod":{
+          "shape":"String",
+          "documentation":"<p>The authentication method that the user used.</p>",
+          "locationName":"authMethod"
+        },
+        "Ssl":{
+          "shape":"String",
+          "documentation":"<p>The version of Secure Sockets Layer (SSL) that the connection used.</p>",
+          "locationName":"ssl"
+        }
+      },
+      "documentation":"<p>Contains details about the user that logged in to an Amazon RDS database instance.</p>"
     },
     "RdsDbUserDetails":{
       "type":"structure",
@@ -11156,6 +13865,42 @@
       },
       "documentation":"<p>Contains information about the resource type <code>RDSLimitlessDB</code> that is involved in a GuardDuty finding.</p>"
     },
+    "RdsLoginActivity":{
+      "type":"structure",
+      "members":{
+        "Outcome":{
+          "shape":"String",
+          "documentation":"<p>The outcome of the login attempts.</p>",
+          "locationName":"outcome"
+        },
+        "Rate":{
+          "shape":"String",
+          "documentation":"<p>The rate of the login attempts.</p>",
+          "locationName":"rate"
+        },
+        "AnomalyContext":{
+          "shape":"InvestigationText",
+          "documentation":"<p>An explanation of how the login activity deviates from normal behavior.</p>",
+          "locationName":"anomalyContext"
+        },
+        "LoginCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of login attempts.</p>",
+          "locationName":"loginCount"
+        },
+        "ActivityWindow":{
+          "shape":"ActivityWindow",
+          "documentation":"<p>The time range of the login activity.</p>",
+          "locationName":"activityWindow"
+        },
+        "Enrichment":{
+          "shape":"Enrichment",
+          "documentation":"<p>Additional context about the login activity, such as geolocation information.</p>",
+          "locationName":"enrichment"
+        }
+      },
+      "documentation":"<p>Contains details about login activity on an Amazon RDS database.</p>"
+    },
     "RdsLoginAttemptAction":{
       "type":"structure",
       "members":{
@@ -11169,6 +13914,85 @@
         }
       },
       "documentation":"<p>Indicates that a login attempt was made to the potentially compromised database from a remote IP address.</p>"
+    },
+    "Recommendation":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>A short title for the recommendation.</p>",
+          "locationName":"title"
+        },
+        "Rationale":{
+          "shape":"String",
+          "documentation":"<p>The reason for the recommendation.</p>",
+          "locationName":"rationale"
+        },
+        "Category":{
+          "shape":"RecommendationCategory",
+          "documentation":"<p>The category of the recommendation. Possible values are <code>ENABLE_PROTECTION</code>, <code>FURTHER_INVESTIGATION</code>, <code>SUPPRESSION_RULE</code>, <code>HARDENING</code>, and <code>MONITORING</code>.</p>",
+          "locationName":"category"
+        },
+        "Priority":{
+          "shape":"ActionPriority",
+          "documentation":"<p>The priority of the recommendation. Possible values are <code>IMMEDIATE</code>, <code>SHORT_TERM</code>, and <code>STRATEGIC</code>.</p>",
+          "locationName":"priority"
+        },
+        "CliCommands":{
+          "shape":"CliCommands",
+          "documentation":"<p>CLI commands that you can run to carry out the recommendation.</p>",
+          "locationName":"cliCommands"
+        }
+      },
+      "documentation":"<p>Contains a recommended action.</p>"
+    },
+    "RecommendationCategory":{
+      "type":"string",
+      "enum":[
+        "ENABLE_PROTECTION",
+        "FURTHER_INVESTIGATION",
+        "SUPPRESSION_RULE",
+        "HARDENING",
+        "MONITORING"
+      ]
+    },
+    "Recommendations":{
+      "type":"list",
+      "member":{"shape":"Recommendation"},
+      "max":25,
+      "min":0
+    },
+    "RecordId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "RecordTitle":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "RecordType":{
+      "type":"string",
+      "enum":[
+        "OBSERVATION",
+        "ANALYSIS",
+        "UPDATE",
+        "FETCH",
+        "METADATA"
+      ]
+    },
+    "RecordTypes":{
+      "type":"list",
+      "member":{"shape":"RecordType"},
+      "max":10,
+      "min":1
+    },
+    "Records":{
+      "type":"list",
+      "member":{"shape":"InvestigationRecord"},
+      "max":50,
+      "min":0
     },
     "RecoveryPoint":{
       "type":"structure",
@@ -11212,6 +14036,34 @@
       "member":{"shape":"String"},
       "max":25,
       "min":1
+    },
+    "RelatedFindingIds":{
+      "type":"list",
+      "member":{"shape":"FindingId"},
+      "max":50,
+      "min":0
+    },
+    "RelatedFindings":{
+      "type":"structure",
+      "members":{
+        "Correlated":{
+          "shape":"CorrelatedFindings",
+          "documentation":"<p>The findings that GuardDuty correlated with the investigated activity, grouped by finding type.</p>",
+          "locationName":"correlated"
+        },
+        "Observed":{
+          "shape":"ObservedFindingTypes",
+          "documentation":"<p>Other finding types that GuardDuty observed, with counts. These entries don't include finding IDs.</p>",
+          "locationName":"observed"
+        }
+      },
+      "documentation":"<p>Contains information about findings that are related to the investigated activity.</p>"
+    },
+    "RemediationAffectedResources":{
+      "type":"list",
+      "member":{"shape":"AffectedResource"},
+      "max":50,
+      "min":0
     },
     "RemoteAccountDetails":{
       "type":"structure",
@@ -11285,6 +14137,69 @@
         }
       },
       "documentation":"<p>Contains information about the remote port.</p>"
+    },
+    "RepresentativeFinding":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the affected resource.</p>",
+          "locationName":"resourceType"
+        },
+        "Identifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the affected resource.</p>",
+          "locationName":"identifier"
+        },
+        "FindingId":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the representative finding.</p>",
+          "locationName":"findingId"
+        },
+        "FindingCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of findings for the resource.</p>",
+          "locationName":"findingCount"
+        },
+        "RiskLevel":{
+          "shape":"RiskLevel",
+          "documentation":"<p>The assessed risk level of the resource. Possible values are <code>Info</code>, <code>Low</code>, <code>Medium</code>, <code>High</code>, and <code>Critical</code>.</p>",
+          "locationName":"riskLevel"
+        },
+        "RiskRationale":{
+          "shape":"InvestigationText",
+          "documentation":"<p>The reason for the assessed risk level.</p>",
+          "locationName":"riskRationale"
+        }
+      },
+      "documentation":"<p>Contains a representative finding for an affected resource. GuardDuty selects one finding for each affected resource, based on severity.</p>"
+    },
+    "RepresentativeFindings":{
+      "type":"list",
+      "member":{"shape":"RepresentativeFinding"},
+      "max":20,
+      "min":0
+    },
+    "Reputation":{
+      "type":"structure",
+      "members":{
+        "FindingTimeDisposition":{
+          "shape":"String",
+          "documentation":"<p>The reputation of the indicator at the time of the finding.</p>",
+          "locationName":"findingTimeDisposition"
+        },
+        "CurrentDisposition":{
+          "shape":"String",
+          "documentation":"<p>The current reputation of the indicator.</p>",
+          "locationName":"currentDisposition"
+        },
+        "ReputationComparison":{
+          "shape":"String",
+          "documentation":"<p>A comparison of the reputation at the time of the finding with the current reputation.</p>",
+          "locationName":"reputationComparison"
+        }
+      },
+      "documentation":"<p>Contains reputation information about a threat indicator.</p>"
     },
     "Resource":{
       "type":"structure",
@@ -11486,6 +14401,33 @@
         }
       },
       "documentation":"<p>Represents the resources that were scanned in the scan entry.</p>"
+    },
+    "ResourceDistribution":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The display name of the resource type, such as <code>Instance</code>.</p>",
+          "locationName":"resourceType"
+        },
+        "Identifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource.</p>",
+          "locationName":"identifier"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The number of findings for the resource.</p>",
+          "locationName":"count"
+        }
+      },
+      "documentation":"<p>Contains the number of findings for a resource.</p>"
+    },
+    "ResourceDistributions":{
+      "type":"list",
+      "member":{"shape":"ResourceDistribution"},
+      "max":50,
+      "min":0
     },
     "ResourceList":{
       "type":"list",
@@ -12013,6 +14955,144 @@
         }
       },
       "documentation":"<p>Information about the process and any required context values for a specific finding.</p>"
+    },
+    "RuntimeSignals":{
+      "type":"structure",
+      "members":{
+        "SignalGroups":{
+          "shape":"SignalGroups",
+          "documentation":"<p>The runtime signals, grouped by finding type.</p>",
+          "locationName":"signalGroups"
+        },
+        "KeyObservation":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A key observation about the runtime signals.</p>",
+          "locationName":"keyObservation"
+        }
+      },
+      "documentation":"<p>Contains a summary of runtime signals.</p>"
+    },
+    "S3Activity":{
+      "type":"structure",
+      "members":{
+        "Api":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 API operation that was called.</p>",
+          "locationName":"api"
+        },
+        "AffectedBucket":{
+          "shape":"String",
+          "documentation":"<p>The name of the affected bucket, or <code>account-wide</code> if the activity isn't limited to one bucket.</p>",
+          "locationName":"affectedBucket"
+        },
+        "OtherS3Activity":{
+          "shape":"String",
+          "documentation":"<p>Other Amazon S3 activity that is related to the observation.</p>",
+          "locationName":"otherS3Activity"
+        },
+        "NonS3Activity":{
+          "shape":"String",
+          "documentation":"<p>Related activity on Amazon Web Services services other than Amazon S3.</p>",
+          "locationName":"nonS3Activity"
+        },
+        "SessionAssessment":{
+          "shape":"InvestigationText",
+          "documentation":"<p>An assessment of the session in which the activity occurred.</p>",
+          "locationName":"sessionAssessment"
+        },
+        "EventCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of events.</p>",
+          "locationName":"eventCount"
+        },
+        "Actor":{
+          "shape":"InvestigationActor",
+          "documentation":"<p>The identity that performed the activity.</p>",
+          "locationName":"actor"
+        },
+        "SourceIp":{
+          "shape":"String",
+          "documentation":"<p>The source address of the activity, or a description of the source.</p>",
+          "locationName":"sourceIp"
+        },
+        "Enrichment":{
+          "shape":"Enrichment",
+          "documentation":"<p>Additional context about the activity, such as geolocation information.</p>",
+          "locationName":"enrichment"
+        },
+        "ActivityWindow":{
+          "shape":"ActivityWindow",
+          "documentation":"<p>The time range of the activity.</p>",
+          "locationName":"activityWindow"
+        }
+      },
+      "documentation":"<p>Contains details about Amazon S3 activity.</p>"
+    },
+    "S3Analysis":{
+      "type":"structure",
+      "members":{
+        "FindingSubtype":{
+          "shape":"String",
+          "documentation":"<p>The subtype of the finding.</p>",
+          "locationName":"findingSubtype"
+        },
+        "EffectivePermission":{
+          "shape":"String",
+          "documentation":"<p>The effective permission of the Amazon S3 resource.</p>",
+          "locationName":"effectivePermission"
+        },
+        "BlockPublicAccessSettings":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A description of the Amazon S3 Block Public Access settings.</p>",
+          "locationName":"blockPublicAccessSettings"
+        },
+        "Exposure":{
+          "shape":"InvestigationText",
+          "documentation":"<p>An assessment of the exposure of the Amazon S3 resource.</p>",
+          "locationName":"exposure"
+        },
+        "UserAgent":{
+          "shape":"String",
+          "documentation":"<p>The user agent of the caller.</p>",
+          "locationName":"userAgent"
+        },
+        "UserAgentClassification":{
+          "shape":"String",
+          "documentation":"<p>The classification of the user agent.</p>",
+          "locationName":"userAgentClassification"
+        },
+        "SourceIp":{
+          "shape":"String",
+          "documentation":"<p>The source address of the activity, or a description of the source.</p>",
+          "locationName":"sourceIp"
+        },
+        "IpReputation":{
+          "shape":"String",
+          "documentation":"<p>The reputation of the source IP address.</p>",
+          "locationName":"ipReputation"
+        },
+        "ActorAssessment":{
+          "shape":"InvestigationText",
+          "documentation":"<p>An assessment of the identity that performed the activity.</p>",
+          "locationName":"actorAssessment"
+        },
+        "S3ApiActivity":{
+          "shape":"InvestigationText",
+          "documentation":"<p>A description of the Amazon S3 API activity.</p>",
+          "locationName":"s3ApiActivity"
+        },
+        "SourceContext":{
+          "shape":"InvestigationText",
+          "documentation":"<p>Context about the source of the activity.</p>",
+          "locationName":"sourceContext"
+        },
+        "AuthorizationAssessment":{
+          "shape":"InvestigationText",
+          "documentation":"<p>An assessment of whether the activity was authorized.</p>",
+          "locationName":"authorizationAssessment"
+        }
+      },
+      "documentation":"<p>Contains an analysis of Amazon S3 activity or exposure. The members that can be set depend on <code>AnalysisType</code>: <code>S3_EXPOSURE</code> (<code>FindingSubtype</code>, <code>EffectivePermission</code>, <code>BlockPublicAccessSettings</code>, and <code>Exposure</code>), <code>S3_ACTOR_CONTEXT</code> (<code>UserAgent</code>, <code>UserAgentClassification</code>, <code>SourceIp</code>, <code>IpReputation</code>, and <code>ActorAssessment</code>), and <code>S3_PEN_TEST</code> (<code>UserAgent</code>, <code>S3ApiActivity</code>, <code>SourceContext</code>, and <code>AuthorizationAssessment</code>).</p>"
     },
     "S3Bucket":{
       "type":"structure",
@@ -12953,6 +16033,43 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "SeverityBreakdown":{
+      "type":"structure",
+      "members":{
+        "Critical":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings that have Critical severity.</p>",
+          "locationName":"critical"
+        },
+        "High":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings that have High severity.</p>",
+          "locationName":"high"
+        },
+        "Medium":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings that have Medium severity.</p>",
+          "locationName":"medium"
+        },
+        "Low":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings that have Low severity.</p>",
+          "locationName":"low"
+        },
+        "Info":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings that have Info severity.</p>",
+          "locationName":"info"
+        }
+      },
+      "documentation":"<p>Contains the number of findings at each severity level.</p>"
+    },
+    "SeverityScore":{
+      "type":"double",
+      "box":true,
+      "max":10,
+      "min":0
+    },
     "SeverityStatistics":{
       "type":"structure",
       "members":{
@@ -12973,6 +16090,50 @@
         }
       },
       "documentation":"<p>Information about severity level for each finding type.</p>"
+    },
+    "SharedBehavior":{
+      "type":"structure",
+      "members":{
+        "Path":{
+          "shape":"String",
+          "documentation":"<p>The JSON path of the finding attribute that matched.</p>",
+          "locationName":"path"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value that matched.</p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p>Contains information about a behavior that related findings share.</p>"
+    },
+    "SharedBehaviors":{
+      "type":"list",
+      "member":{"shape":"SharedBehavior"},
+      "max":20,
+      "min":0
+    },
+    "SharedResource":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource. This value isn't limited to the resource types of <code>InvestigationResource</code>.</p>",
+          "locationName":"resourceType"
+        },
+        "Identifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource.</p>",
+          "locationName":"identifier"
+        }
+      },
+      "documentation":"<p>Contains information about a resource that related findings share.</p>"
+    },
+    "SharedResources":{
+      "type":"list",
+      "member":{"shape":"SharedResource"},
+      "max":20,
+      "min":0
     },
     "Signal":{
       "type":"structure",
@@ -13068,6 +16229,33 @@
     "SignalDescription":{
       "type":"string",
       "max":2000,
+      "min":0
+    },
+    "SignalGroup":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"FindingType",
+          "documentation":"<p>The finding type of the group.</p>",
+          "locationName":"findingType"
+        },
+        "Severity":{
+          "shape":"SeverityScore",
+          "documentation":"<p>The severity score of the signals in the group, from 0 to 10.</p>",
+          "locationName":"severity"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The number of signals in the group.</p>",
+          "locationName":"count"
+        }
+      },
+      "documentation":"<p>Contains information about a group of runtime signals that have the same finding type.</p>"
+    },
+    "SignalGroups":{
+      "type":"list",
+      "member":{"shape":"SignalGroup"},
+      "max":50,
       "min":0
     },
     "SignalType":{
@@ -13233,6 +16421,72 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "SummaryFormat":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "STRUCTURED"
+      ]
+    },
+    "SupportingData":{
+      "type":"structure",
+      "members":{
+        "Fetch":{
+          "shape":"FetchRecord",
+          "documentation":"<p>Details about data that GuardDuty retrieved. Set for <code>FETCH</code> records.</p>",
+          "locationName":"fetch"
+        },
+        "Analysis":{
+          "shape":"AnalysisRecord",
+          "documentation":"<p>Details about an assessment that GuardDuty derived from the data. Set for <code>ANALYSIS</code> records.</p>",
+          "locationName":"analysis"
+        },
+        "Observation":{
+          "shape":"ObservationRecord",
+          "documentation":"<p>Details about a fact that GuardDuty noted about your environment. Set for <code>OBSERVATION</code> records.</p>",
+          "locationName":"observation"
+        },
+        "Metadata":{
+          "shape":"MetadataRecord",
+          "documentation":"<p>Operational details about the investigation. Set for <code>METADATA</code> records.</p>",
+          "locationName":"metadata"
+        }
+      },
+      "documentation":"<p>Contains the structured details for an investigation record. Only the member that matches the record type is set.</p>",
+      "union":true
+    },
+    "TacticCoverage":{
+      "type":"structure",
+      "members":{
+        "Phase":{
+          "shape":"AttackPhaseName",
+          "documentation":"<p>The name of the tactic. Possible values are <code>Reconnaissance</code>, <code>Resource Development</code>, <code>Initial Access</code>, <code>Execution</code>, <code>Persistence</code>, <code>Privilege Escalation</code>, <code>Defense Evasion</code>, <code>Credential Access</code>, <code>Discovery</code>, <code>Lateral Movement</code>, <code>Collection</code>, <code>Command and Control</code>, <code>Exfiltration</code>, and <code>Impact</code>.</p>",
+          "locationName":"phase"
+        },
+        "FindingCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings associated with the tactic.</p>",
+          "locationName":"findingCount"
+        },
+        "FindingTypes":{
+          "shape":"FindingTypeNames",
+          "documentation":"<p>The finding types associated with the tactic.</p>",
+          "locationName":"findingTypes"
+        },
+        "Techniques":{
+          "shape":"TechniqueCoverages",
+          "documentation":"<p>The MITRE ATT&amp;CK techniques within the tactic that are associated with findings.</p>",
+          "locationName":"techniques"
+        }
+      },
+      "documentation":"<p>Contains information about the findings associated with a MITRE ATT&amp;CK tactic.</p>"
+    },
+    "TacticCoverages":{
+      "type":"list",
+      "member":{"shape":"TacticCoverage"},
+      "max":20,
+      "min":0
+    },
     "Tag":{
       "type":"structure",
       "members":{
@@ -13301,6 +16555,33 @@
       "type":"list",
       "member":{"shape":"Tag"}
     },
+    "TechniqueCoverage":{
+      "type":"structure",
+      "members":{
+        "Technique":{
+          "shape":"ThreatReference",
+          "documentation":"<p>The technique.</p>",
+          "locationName":"technique"
+        },
+        "FindingCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings associated with the technique.</p>",
+          "locationName":"findingCount"
+        },
+        "FindingTypes":{
+          "shape":"FindingTypeNames",
+          "documentation":"<p>The finding types associated with the technique.</p>",
+          "locationName":"findingTypes"
+        }
+      },
+      "documentation":"<p>Contains information about the findings associated with a MITRE ATT&amp;CK technique.</p>"
+    },
+    "TechniqueCoverages":{
+      "type":"list",
+      "member":{"shape":"TechniqueCoverage"},
+      "max":50,
+      "min":0
+    },
     "Threat":{
       "type":"structure",
       "members":{
@@ -13336,6 +16617,31 @@
         }
       },
       "documentation":"<p>Information about the detected threats associated with the generated finding.</p>"
+    },
+    "ThreatAssessment":{
+      "type":"structure",
+      "members":{
+        "AttackProgression":{
+          "shape":"AttackPhases",
+          "documentation":"<p>The phases of the attack, in terms of MITRE ATT&amp;CK tactics.</p>",
+          "locationName":"attackProgression"
+        },
+        "ThreatActorProfile":{
+          "shape":"String",
+          "documentation":"<p>A description of the likely threat actor.</p>",
+          "locationName":"threatActorProfile"
+        }
+      },
+      "documentation":"<p>Contains an assessment of the threat that a <code>FINDING</code> investigation identified.</p>"
+    },
+    "ThreatConfidence":{
+      "type":"string",
+      "enum":[
+        "VERY_HIGH",
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ]
     },
     "ThreatDetectedByName":{
       "type":"structure",
@@ -13458,6 +16764,22 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ThreatReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the tactic or technique.</p>",
+          "locationName":"name"
+        },
+        "Uid":{
+          "shape":"MitreThreatId",
+          "documentation":"<p>The MITRE ATT&amp;CK identifier of the tactic or technique, such as <code>TA0002</code> or <code>T1059.004</code>.</p>",
+          "locationName":"uid"
+        }
+      },
+      "documentation":"<p>Contains a reference to a MITRE ATT&amp;CK tactic or technique.</p>"
+    },
     "Threats":{
       "type":"list",
       "member":{"shape":"Threat"}
@@ -13472,6 +16794,41 @@
         }
       },
       "documentation":"<p>Contains total number of infected files.</p>"
+    },
+    "TimeGranularity":{
+      "type":"string",
+      "enum":[
+        "DAY",
+        "WEEK",
+        "MONTH"
+      ]
+    },
+    "TimeWindowGroup":{
+      "type":"structure",
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the time window starts.</p>",
+          "locationName":"startTime"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the time window ends.</p>",
+          "locationName":"endTime"
+        },
+        "FindingCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings in the time window.</p>",
+          "locationName":"findingCount"
+        }
+      },
+      "documentation":"<p>Contains the number of findings in a time window.</p>"
+    },
+    "TimeWindowGroups":{
+      "type":"list",
+      "member":{"shape":"TimeWindowGroup"},
+      "max":100,
+      "min":0
     },
     "Timestamp":{"type":"timestamp"},
     "Total":{
@@ -13489,6 +16846,37 @@
         }
       },
       "documentation":"<p>Contains the total usage with the corresponding currency unit for that value.</p>"
+    },
+    "Trend":{
+      "type":"structure",
+      "members":{
+        "Granularity":{
+          "shape":"TimeGranularity",
+          "documentation":"<p>The length of each time window in the trend. Possible values are <code>DAY</code>, <code>WEEK</code>, and <code>MONTH</code>.</p>",
+          "locationName":"granularity"
+        },
+        "StartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the period of the trend starts.</p>",
+          "locationName":"startTime"
+        },
+        "EndedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the period of the trend ends.</p>",
+          "locationName":"endTime"
+        },
+        "TotalFindings":{
+          "shape":"Count",
+          "documentation":"<p>The total number of findings in the period.</p>",
+          "locationName":"totalFindings"
+        },
+        "ByTimeWindow":{
+          "shape":"TimeWindowGroups",
+          "documentation":"<p>The number of findings in each time window.</p>",
+          "locationName":"byTimeWindow"
+        }
+      },
+      "documentation":"<p>Contains information about the number of findings over time.</p>"
     },
     "TriggerDetails":{
       "type":"structure",
@@ -13560,6 +16948,38 @@
       ],
       "max":300,
       "min":1
+    },
+    "TypeDistribution":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"FindingType",
+          "documentation":"<p>The finding type.</p>",
+          "locationName":"findingType"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The number of findings of this type.</p>",
+          "locationName":"count"
+        },
+        "Percentage":{
+          "shape":"Percentage",
+          "documentation":"<p>The percentage of findings that are of this type, from 0 to 100.</p>",
+          "locationName":"percentage"
+        },
+        "DominantSeverity":{
+          "shape":"String",
+          "documentation":"<p>The most common severity among findings of this type.</p>",
+          "locationName":"dominantSeverity"
+        }
+      },
+      "documentation":"<p>Contains the number and percentage of findings of a finding type.</p>"
+    },
+    "TypeDistributions":{
+      "type":"list",
+      "member":{"shape":"TypeDistribution"},
+      "max":50,
+      "min":0
     },
     "UnarchiveFindingsRequest":{
       "type":"structure",

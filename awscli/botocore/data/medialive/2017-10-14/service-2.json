@@ -973,7 +973,7 @@
           "documentation": "The reservation could not be deleted because it is currently active."
         }
       ],
-      "documentation": "Delete an expired reservation."
+      "documentation": "Delete an expired reservation, or cancel an active reservation during the calendar month (UTC) in which you purchased it. You can't cancel an active reservation that you purchased in an earlier month, including one that renewed automatically. You also can't cancel an active reservation during the last hour of the month, from 23:00 UTC on the last day of the month."
     },
     "DeleteSchedule": {
       "name": "DeleteSchedule",
@@ -29898,6 +29898,11 @@
           "shape": "MediaPackageV2WatermarkingSettings",
           "locationName": "watermarkingSettings",
           "documentation": "Specifies the type of watermarking technology to use."
+        },
+        "CaptionLanguageSetting": {
+          "shape": "MediaPackageV2CaptionLanguageSetting",
+          "locationName": "captionLanguageSetting",
+          "documentation": "Applies only to 608 Embedded output captions. Controls the CLOSED-CAPTIONS signaling that MediaPackage v2 writes into the HLS manifest it delivers.\nauto: The default. If captionLanguageMappings is non-empty, the HLS manifest includes a CLOSED-CAPTIONS line for each mapped caption channel. If captionLanguageMappings is empty, the HLS manifest omits any CLOSED-CAPTIONS line.\nnone: The HLS manifest carries CLOSED-CAPTIONS=NONE on each EXT-X-STREAM-INF tag, which signals to players that the stream has no closed captions, so they stop offering a CC track. The API rejects none combined with a non-empty captionLanguageMappings."
         }
       },
       "documentation": "Media Package V2 Group Settings"
@@ -31316,6 +31321,14 @@
       "enum": [
         "STRENGTH_1",
         "STRENGTH_2"
+      ]
+    },
+    "MediaPackageV2CaptionLanguageSetting": {
+      "type": "string",
+      "documentation": "Media Package V2 Caption Language Setting",
+      "enum": [
+        "AUTO",
+        "NONE"
       ]
     }
   },

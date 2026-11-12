@@ -51,6 +51,24 @@
       ],
       "documentation":"<p>Associates an Amazon Web Services Identity and Access Management (IAM) service role with a specified resource to enable Amazon Web Services service integration.</p>"
     },
+    "AssociateVirtualMachinesToCloudVmCluster":{
+      "name":"AssociateVirtualMachinesToCloudVmCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateVirtualMachinesToCloudVmClusterInput"},
+      "output":{"shape":"AssociateVirtualMachinesToCloudVmClusterOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Adds virtual machines to the specified VM cluster.</p>"
+    },
     "AssociateVirtualMachinesToExadbVmCluster":{
       "name":"AssociateVirtualMachinesToExadbVmCluster",
       "http":{
@@ -449,6 +467,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Disassociates an Amazon Web Services Identity and Access Management (IAM) service role from a specified resource to disable Amazon Web Services service integration.</p>"
+    },
+    "DisassociateVirtualMachinesFromCloudVmCluster":{
+      "name":"DisassociateVirtualMachinesFromCloudVmCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateVirtualMachinesFromCloudVmClusterInput"},
+      "output":{"shape":"DisassociateVirtualMachinesFromCloudVmClusterOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes virtual machines from the specified VM cluster.</p>"
     },
     "DisassociateVirtualMachinesFromExadbVmCluster":{
       "name":"DisassociateVirtualMachinesFromExadbVmCluster",
@@ -1361,6 +1397,25 @@
       ],
       "documentation":"<p>Updates the properties of an Autonomous Database backup.</p>"
     },
+    "UpdateCloudAutonomousVmCluster":{
+      "name":"UpdateCloudAutonomousVmCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCloudAutonomousVmClusterInput"},
+      "output":{"shape":"UpdateCloudAutonomousVmClusterOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the properties of the specified Autonomous VM cluster.</p>",
+      "idempotent":true
+    },
     "UpdateCloudExadataInfrastructure":{
       "name":"UpdateCloudExadataInfrastructure",
       "http":{
@@ -1378,6 +1433,42 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates the properties of an Exadata infrastructure resource.</p>"
+    },
+    "UpdateCloudExadataInfrastructureStorageCapacity":{
+      "name":"UpdateCloudExadataInfrastructureStorageCapacity",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCloudExadataInfrastructureStorageCapacityInput"},
+      "output":{"shape":"UpdateCloudExadataInfrastructureStorageCapacityOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Adds storage capacity to the specified Exadata infrastructure.</p>"
+    },
+    "UpdateCloudVmCluster":{
+      "name":"UpdateCloudVmCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCloudVmClusterInput"},
+      "output":{"shape":"UpdateCloudVmClusterOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the properties of the specified VM cluster.</p>"
     },
     "UpdateExadbVmCluster":{
       "name":"UpdateExadbVmCluster",
@@ -1581,6 +1672,45 @@
     "AssociateIamRoleToResourceOutput":{
       "type":"structure",
       "members":{}
+    },
+    "AssociateVirtualMachinesToCloudVmClusterInput":{
+      "type":"structure",
+      "required":[
+        "cloudVmClusterId",
+        "dbServers"
+      ],
+      "members":{
+        "cloudVmClusterId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the VM cluster to add virtual machines to.</p>"
+        },
+        "dbServers":{
+          "shape":"StringList",
+          "documentation":"<p>The list of database server IDs for the virtual machines to add to the VM cluster.</p>"
+        }
+      }
+    },
+    "AssociateVirtualMachinesToCloudVmClusterOutput":{
+      "type":"structure",
+      "required":["cloudVmClusterId"],
+      "members":{
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The user-friendly name for the VM cluster.</p>"
+        },
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the VM cluster.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the VM cluster, if applicable.</p>"
+        },
+        "cloudVmClusterId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the VM cluster.</p>"
+        }
+      }
     },
     "AssociateVirtualMachinesToExadbVmClusterInput":{
       "type":"structure",
@@ -3155,6 +3285,10 @@
           "shape":"Integer",
           "documentation":"<p>The number of Autonomous CDBs that can't be provisioned because of resource constraints.</p>"
         },
+        "ocpusLowestScaledValue":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum value to which you can scale down the number of CPU cores.</p>"
+        },
         "provisionableAutonomousContainerDatabases":{
           "shape":"Integer",
           "documentation":"<p>The number of Autonomous CDBs that can be provisioned in the Autonomous VM cluster.</p>"
@@ -3391,6 +3525,10 @@
         "nonProvisionableAutonomousContainerDatabases":{
           "shape":"Integer",
           "documentation":"<p>The number of Autonomous CDBs that can't be provisioned because of resource constraints.</p>"
+        },
+        "ocpusLowestScaledValue":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum value to which you can scale down the number of CPU cores.</p>"
         },
         "provisionableAutonomousContainerDatabases":{
           "shape":"Integer",
@@ -6662,6 +6800,45 @@
       "type":"structure",
       "members":{}
     },
+    "DisassociateVirtualMachinesFromCloudVmClusterInput":{
+      "type":"structure",
+      "required":[
+        "cloudVmClusterId",
+        "dbServers"
+      ],
+      "members":{
+        "cloudVmClusterId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the VM cluster to remove virtual machines from.</p>"
+        },
+        "dbServers":{
+          "shape":"StringList",
+          "documentation":"<p>The list of database server IDs for the virtual machines to remove from the VM cluster.</p>"
+        }
+      }
+    },
+    "DisassociateVirtualMachinesFromCloudVmClusterOutput":{
+      "type":"structure",
+      "required":["cloudVmClusterId"],
+      "members":{
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The user-friendly name for the VM cluster.</p>"
+        },
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the VM cluster.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the VM cluster, if applicable.</p>"
+        },
+        "cloudVmClusterId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the VM cluster.</p>"
+        }
+      }
+    },
     "DisassociateVirtualMachinesFromExadbVmClusterInput":{
       "type":"structure",
       "required":[
@@ -9859,7 +10036,7 @@
       "type":"string",
       "max":18,
       "min":1,
-      "pattern":"(?:(?:\\d|[01]?\\d\\d|2[0-4]\\d|25[0-5])\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d|\\d)\\/(?:[1-2][0-9]|3[0-2]|[1-9])"
+      "pattern":"(?:(?:\\d|[01]?\\d\\d|2[0-4]\\d|25[0-5])\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d|\\d)\\/(?:[1-2][0-9]|3[0-2]|[0-9])"
     },
     "PeeredCidrList":{
       "type":"list",
@@ -11048,6 +11225,86 @@
         }
       }
     },
+    "UpdateCloudAutonomousVmClusterInput":{
+      "type":"structure",
+      "required":["cloudAutonomousVmClusterId"],
+      "members":{
+        "cloudAutonomousVmClusterId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the Autonomous VM cluster to update.</p>"
+        },
+        "autonomousDataStorageSizeInTBs":{
+          "shape":"UpdateCloudAutonomousVmClusterInputAutonomousDataStorageSizeInTBsDouble",
+          "documentation":"<p>The data storage size to allocate for Autonomous Databases in the Autonomous VM cluster, in terabytes (TB).</p>"
+        },
+        "cpuCoreCountPerNode":{
+          "shape":"UpdateCloudAutonomousVmClusterInputCpuCoreCountPerNodeInteger",
+          "documentation":"<p>The number of CPU cores to enable per node in the Autonomous VM cluster. If you don't specify a value, the existing number of CPU cores per node is retained.</p>"
+        },
+        "description":{
+          "shape":"UpdateCloudAutonomousVmClusterInputDescriptionString",
+          "documentation":"<p>A user-provided description of the Autonomous VM cluster.</p>"
+        },
+        "displayName":{
+          "shape":"ResourceDisplayName",
+          "documentation":"<p>A new user-friendly name for the Autonomous VM cluster.</p>"
+        },
+        "licenseModel":{
+          "shape":"LicenseModel",
+          "documentation":"<p>The Oracle license model to apply to the Autonomous VM cluster.</p>"
+        },
+        "maintenanceWindow":{
+          "shape":"MaintenanceWindow",
+          "documentation":"<p>The scheduling details for the maintenance window. Patching and system updates take place during the maintenance window.</p>"
+        },
+        "totalContainerDatabases":{
+          "shape":"UpdateCloudAutonomousVmClusterInputTotalContainerDatabasesInteger",
+          "documentation":"<p>The total number of Autonomous Container Databases that can be created in the Autonomous VM cluster.</p>"
+        }
+      }
+    },
+    "UpdateCloudAutonomousVmClusterInputAutonomousDataStorageSizeInTBsDouble":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "UpdateCloudAutonomousVmClusterInputCpuCoreCountPerNodeInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "UpdateCloudAutonomousVmClusterInputDescriptionString":{
+      "type":"string",
+      "max":400,
+      "min":1
+    },
+    "UpdateCloudAutonomousVmClusterInputTotalContainerDatabasesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "UpdateCloudAutonomousVmClusterOutput":{
+      "type":"structure",
+      "required":["cloudAutonomousVmClusterId"],
+      "members":{
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The user-friendly name of the updated Autonomous VM cluster.</p>"
+        },
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the Autonomous VM cluster.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the Autonomous VM cluster, if applicable.</p>"
+        },
+        "cloudAutonomousVmClusterId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the updated Autonomous VM cluster.</p>"
+        }
+      }
+    },
     "UpdateCloudExadataInfrastructureInput":{
       "type":"structure",
       "required":["cloudExadataInfrastructureId"],
@@ -11056,7 +11313,22 @@
           "shape":"ResourceIdOrArn",
           "documentation":"<p>The unique identifier of the Exadata infrastructure to update.</p>"
         },
-        "maintenanceWindow":{"shape":"MaintenanceWindow"}
+        "displayName":{
+          "shape":"ResourceDisplayName",
+          "documentation":"<p>A new user-friendly name for the Exadata infrastructure.</p>"
+        },
+        "computeCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of database servers for the Exadata infrastructure.</p>"
+        },
+        "maintenanceWindow":{
+          "shape":"MaintenanceWindow",
+          "documentation":"<p>The maintenance window configuration for the Exadata Cloud infrastructure.</p> <p>This allows you to define when maintenance operations such as patching and updates can be performed on the infrastructure.</p>"
+        },
+        "storageCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of storage servers to activate for the Exadata infrastructure.</p>"
+        }
       }
     },
     "UpdateCloudExadataInfrastructureOutput":{
@@ -11078,6 +11350,131 @@
         "cloudExadataInfrastructureId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the updated Exadata infrastructure.</p>"
+        }
+      }
+    },
+    "UpdateCloudExadataInfrastructureStorageCapacityInput":{
+      "type":"structure",
+      "required":["cloudExadataInfrastructureId"],
+      "members":{
+        "cloudExadataInfrastructureId":{
+          "shape":"ResourceIdOrArn",
+          "documentation":"<p>The unique identifier or Amazon Resource Name (ARN) of the Exadata infrastructure to update.</p>"
+        }
+      }
+    },
+    "UpdateCloudExadataInfrastructureStorageCapacityOutput":{
+      "type":"structure",
+      "required":["cloudExadataInfrastructureId"],
+      "members":{
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The user-friendly name of the updated Exadata infrastructure.</p>"
+        },
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the Exadata infrastructure.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the Exadata infrastructure, if applicable.</p>"
+        },
+        "cloudExadataInfrastructureId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the updated Exadata infrastructure.</p>"
+        }
+      }
+    },
+    "UpdateCloudVmClusterInput":{
+      "type":"structure",
+      "required":["cloudVmClusterId"],
+      "members":{
+        "cloudVmClusterId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the VM cluster to update.</p>"
+        },
+        "cpuCoreCount":{
+          "shape":"UpdateCloudVmClusterInputCpuCoreCountInteger",
+          "documentation":"<p>The number of CPU cores to enable on the VM cluster. If you don't specify a value, the existing number of CPU cores is retained.</p>"
+        },
+        "dataCollectionOptions":{
+          "shape":"DataCollectionOptions",
+          "documentation":"<p>The set of preferences for the diagnostic collection options for the VM cluster.</p>"
+        },
+        "dataStorageSizeInTBs":{
+          "shape":"UpdateCloudVmClusterInputDataStorageSizeInTBsDouble",
+          "documentation":"<p>The size of the data disk group, in terabytes (TB), to allocate for the VM cluster.</p>"
+        },
+        "dbNodeStorageSizeInGBs":{
+          "shape":"UpdateCloudVmClusterInputDbNodeStorageSizeInGBsInteger",
+          "documentation":"<p>The amount of local node storage, in gigabytes (GB), to allocate for the VM cluster.</p>"
+        },
+        "displayName":{
+          "shape":"ResourceDisplayName",
+          "documentation":"<p>A new user-friendly name for the VM cluster.</p>"
+        },
+        "sshPublicKeys":{
+          "shape":"StringList",
+          "documentation":"<p>The public key portion of one or more key pairs used for SSH access to the VM cluster.</p>"
+        },
+        "licenseModel":{
+          "shape":"LicenseModel",
+          "documentation":"<p>The Oracle license model to apply to the VM cluster.</p>"
+        },
+        "memorySizeInGBs":{
+          "shape":"UpdateCloudVmClusterInputMemorySizeInGBsInteger",
+          "documentation":"<p>The amount of memory, in gigabytes (GB), to allocate for the VM cluster.</p>"
+        },
+        "storageSizeInGBs":{
+          "shape":"UpdateCloudVmClusterInputStorageSizeInGBsInteger",
+          "documentation":"<p>The amount of local node storage, in gigabytes (GB), to allocate to the VM cluster.</p>"
+        }
+      }
+    },
+    "UpdateCloudVmClusterInputCpuCoreCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "UpdateCloudVmClusterInputDataStorageSizeInTBsDouble":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "UpdateCloudVmClusterInputDbNodeStorageSizeInGBsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "UpdateCloudVmClusterInputMemorySizeInGBsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "UpdateCloudVmClusterInputStorageSizeInGBsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "UpdateCloudVmClusterOutput":{
+      "type":"structure",
+      "required":["cloudVmClusterId"],
+      "members":{
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The user-friendly name of the updated VM cluster.</p>"
+        },
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the VM cluster.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the VM cluster, if applicable.</p>"
+        },
+        "cloudVmClusterId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the updated VM cluster.</p>"
         }
       }
     },

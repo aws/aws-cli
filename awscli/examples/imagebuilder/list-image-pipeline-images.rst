@@ -1,9 +1,9 @@
-**To list image pipeline pipeline images**
+**To list the images that an image pipeline created**
 
-The following ``list-image-pipeline-images`` example lists all images that were created by a specific image pipeline. ::
+The following ``list-image-pipeline-images`` example lists the images that the specified pipeline created, including a build that is still in progress. ::
 
     aws imagebuilder list-image-pipeline-images \
-        --image-pipeline-arn arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/mywindows2016pipeline
+        --image-pipeline-arn arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/my-example-pipeline
 
 Output::
 
@@ -11,30 +11,23 @@ Output::
         "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "imageSummaryList": [
             {
-                "arn": "arn:aws:imagebuilder:us-west-2:123456789012:image/mybasicrecipe/2019.12.03/1",
-                "name": "MyBasicRecipe",
-                "version": "2019.12.03/1",
-                "platform": "Windows",
+                "arn": "arn:aws:imagebuilder:us-west-2:123456789012:image/my-example-recipe/1.0.0/1",
+                "name": "my-example-recipe",
+                "type": "AMI",
+                "version": "1.0.0/1",
+                "platform": "Linux",
                 "state": {
-                    "status": "AVAILABLE"
+                    "status": "BUILDING"
                 },
                 "owner": "123456789012",
-                "dateCreated": "2020-02-19T19:04:01.253Z",
+                "dateCreated": "2026-09-09T19:39:20.458Z",
                 "outputResources": {
-                    "amis": [
-                        {
-                            "region": "us-west-2",
-                            "image": "ami-a1b2c3d4567890ab",
-                            "name": "MyBasicRecipe 2020-02-19T19-04-01.253Z",
-                            "description": "Builds Windows 2016 Images"
-                        }
-                    ]
+                    "amis": []
                 },
-                "tags": {
-                    "KeyName": "KeyValue"
-                }
+                "tags": {},
+                "buildType": "USER_INITIATED"
             }
         ]
     }
 
-For more information, see `Manage custom image creation in Image Builder through a repeatable pipeline process <https://docs.aws.amazon.com/imagebuilder/latest/userguide/manage-pipelines.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `List and view pipeline details <https://docs.aws.amazon.com/imagebuilder/latest/userguide/pipeline-details.html>`__ in the *EC2 Image Builder User Guide*.

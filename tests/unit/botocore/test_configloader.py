@@ -60,6 +60,26 @@ class TestConfigLoader(BaseEnvVar):
             f.write(contents)
         return full_path
 
+    def create_config_file_with_bom(self, filename, contents=None):
+        if contents is None:
+            contents = (
+                '[default]\n'
+                'aws_access_key_id = foo\n'
+                'aws_secret_access_key = bar\n\n'
+                '[profile "personal"]\n'
+                'aws_access_key_id = fie\n'
+                'aws_secret_access_key = baz\n'
+                'aws_security_token = fiebaz\n'
+            )
+        directory = self.tempdir
+        if isinstance(filename, bytes):
+            directory = directory.encode('latin-1')
+        full_path = os.path.join(directory, filename)
+
+        with open(full_path, 'wb') as f:
+            f.write(b'\xef\xbb\xbf' + contents.encode('utf-8'))
+        return full_path
+
     def test_config_not_found(self):
         with self.assertRaises(botocore.exceptions.ConfigNotFound):
             raw_config_parse(path('aws_config_notfound'))
@@ -205,6 +225,62 @@ class TestConfigLoader(BaseEnvVar):
         self.assertEqual(
             services_config['dynamodb']['endpoint_url'],
             'https://localhost:8888/',
+        )
+
+    def test_raw_config_parse_with_utf8_bom(self):
+        filename = self.create_config_file_with_bom('aws_config_bom')
+        loaded_config = raw_config_parse(filename)
+        self.assertIn('default', loaded_config)
+        self.assertIn('profile "personal"', loaded_config)
+        self.assertEqual(
+            loaded_config['default']['aws_access_key_id'], 'foo'
+        )
+        self.assertEqual(
+            loaded_config['default']['aws_secret_access_key'], 'bar'
+        )
+
+    def test_load_config_with_utf8_bom(self):
+        filename = self.create_config_file_with_bom('aws_config_bom')
+        loaded_config = load_config(filename)
+        self.assertIn('profiles', loaded_config)
+        self.assertEqual(
+            sorted(loaded_config['profiles'].keys()), ['default', 'personal']
+        )
+        self.assertEqual(
+            loaded_config['profiles']['default']['aws_access_key_id'], 'foo'
+        )
+        self.assertEqual(
+            loaded_config['profiles']['personal']['aws_security_token'],
+            'fiebaz',
+        )
+
+    def test_nested_hierarchy_parsing_with_utf8_bom(self):
+        contents = (
+            '[default]\n'
+            'aws_access_key_id = foo\n'
+            'region = us-west-2\n'
+            's3 =\n'
+            '   signature_version = s3v4\n'
+        )
+        filename = self.create_config_file_with_bom(
+            'aws_config_nested_bom', contents
+        )
+        loaded_config = load_config(filename)
+        config = loaded_config['profiles']['default']
+        self.assertEqual(config['aws_access_key_id'], 'foo')
+        self.assertEqual(config['region'], 'us-west-2')
+        self.assertEqual(config['s3']['signature_version'], 's3v4')
+
+    def test_multi_file_load_with_utf8_bom(self):
+        bom_file = self.create_config_file_with_bom('aws_config_bom')
+        non_bom_file = path('aws_third_config')
+        loaded_config = multi_file_load_config(bom_file, non_bom_file)
+        self.assertEqual(
+            loaded_config['profiles']['default']['aws_access_key_id'], 'foo'
+        )
+        self.assertEqual(
+            loaded_config['profiles']['third']['aws_access_key_id'],
+            'third_fie',
         )
 
 

@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 from argparse import Namespace
 from unittest.mock import MagicMock
 
@@ -34,3 +35,18 @@ def test_defaults_region_when_none_configured():
 def test_honors_explicit_region():
     args = _create_client(region='us-west-2')
     assert args.kwargs.get('region_name') == 'us-west-2'
+
+
+def test_logs_when_defaulting_region(caplog):
+    with caplog.at_level(logging.DEBUG):
+        _create_client(region=None)
+    assert caplog.messages == [
+        'No --region given, using us-east-1, the only region Agent Toolkit '
+        'is available in.'
+    ]
+
+
+def test_does_not_log_with_explicit_region(caplog):
+    with caplog.at_level(logging.DEBUG):
+        _create_client(region='us-west-2')
+    assert caplog.messages == []

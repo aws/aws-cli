@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import os
 
 import pytest
@@ -1017,10 +1016,12 @@ async def test_mv_download_checksum_mismatch_fails(aws_cli, tmp_path):
 
     assert rc == 1
     assert len(server.requests) == 2, format_requests(server)
+    # The classic transfer client reports both checksums, while the CRT
+    # transfer client only reports that they did not match.
     assert (
         b"Expected checksum AAAAAA== did not "
         b"match calculated checksum: jHNlIQ=="
-    ) in stderr
+    ) in stderr or b"AWS_ERROR_S3_RESPONSE_CHECKSUM_MISMATCH" in stderr, stderr
 
 
 @pytest.mark.asyncio
@@ -1065,40 +1066,43 @@ async def test_mv_download_content_length_mismatch_fails(aws_cli, tmp_path):
         server,
         proxy,
     ):
-        setup_responses(
-            server,
-            [
-                head_object_response(content_length=100),
-                HTTPResponse.raw(
-                    b"foo",
-                    status=200,
-                    headers={
-                        "Content-Length": "100",
-                        "ETag": '"foo-1"',
-                    },
-                ),
-            ],
-        )
-
-        async def inject_fault():
-            # HeadObject completes
-            await server.next_request()
-            server.set_transmission_strategy(
-                FaultyTransmission([DropConnection(after_bytes=3)])
+        def handler(ctx):
+            if ctx.request.method == "HEAD":
+                return head_object_response(content_length=100)
+            # Content-Length says 100 but body is only 3 bytes
+            return HTTPResponse.raw(
+                b"foo",
+                status=200,
+                headers={
+                    "Content-Length": "100",
+                    "ETag": '"foo-1"',
+                },
             )
 
-        (stdout, stderr, rc), _ = await asyncio.gather(
-            run_cli(
-                aws_cli,
-                ["s3", "mv", "s3://bucket/key.txt", str(tmp_path)],
-                cli_env(proxy),
-            ),
-            inject_fault(),
+        # Every GET is truncated, so the download fails however many
+        # times the CLI retries it.
+        server.handler = handler
+        # Drop connection after sending the short body so the
+        # CLI sees EOF instead of blocking for remaining bytes.
+        server.set_transmission_strategy(
+            FaultyTransmission([DropConnection(after_bytes=3)])
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "mv", "s3://bucket/key.txt", str(tmp_path)],
+            cli_env(proxy),
         )
 
-    assert rc == 1
-    assert len(server.requests) == 2, format_requests(server)
+    assert rc == 1, stderr.decode()
     assert b"move failed" in stderr
+    # Both transfer clients retry a truncated download before giving up.
+    get_requests = [r for r in server.requests if r.method == "GET"]
+    assert len(get_requests) > 1, format_requests(server)
+    # The source is only deleted after a successful download.
+    assert not any(
+        r.method == "DELETE" for r in server.requests
+    ), format_requests(server)
+    assert not (tmp_path / "key.txt").exists()
 
 
 @pytest.mark.asyncio

@@ -106,17 +106,24 @@ class TestRBCommand:
 
     async def test_rb_failed_rc(self, aws_cli):
         async with mock_server() as (server, proxy):
-            setup_responses(server, [error_response()])
+            # Fail every attempt so the result doesn't depend on how many
+            # times the CLI retries a 500.
+            server.set_default_response(error_response())
             env = cli_env(proxy)
             stdout, stderr, rc = await run_cli(
                 aws_cli, ["s3", "rb", "s3://bucket"], env
             )
             assert rc == 1
             assert b"remove_bucket failed:" in stderr
+            assert server.requests, format_requests(server)
+            for request in server.requests:
+                assert_delete_bucket(request, Bucket="bucket")
 
     async def test_rb_force_with_failed_rm(self, aws_cli):
         async with mock_server() as (server, proxy):
-            setup_responses(server, [error_response()])
+            # Fail every attempt so the result doesn't depend on how many
+            # times the CLI retries a 500.
+            server.set_default_response(error_response())
             env = cli_env(proxy)
             stdout, stderr, rc = await run_cli(
                 aws_cli, ["s3", "rb", "s3://bucket", "--force"], env
@@ -124,10 +131,9 @@ class TestRBCommand:
             assert rc == 255
             assert b"remove_bucket failed:" in stderr
             # Should have attempted ListObjectsV2 only (failed there)
-            assert len(server.requests) == 1, format_requests(server)
-            assert_list_objects_v2(
-                server.requests[0], Bucket="bucket"
-            )
+            assert server.requests, format_requests(server)
+            for request in server.requests:
+                assert_list_objects_v2(request, Bucket="bucket")
 
     async def test_nonzero_exit_if_uri_scheme_not_provided(self, aws_cli):
         async with mock_server() as (server, proxy):

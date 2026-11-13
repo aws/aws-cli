@@ -19,7 +19,6 @@ def cli_env(proxy: AsyncTLSInterceptProxy) -> dict[str, str]:
         "AWS_SECRET_ACCESS_KEY": "test",
         "AWS_REGION": "us-east-1",
         "AWS_DEFAULT_REGION": "us-east-1",
-        "AWS_MAX_ATTEMPTS": "1",
         "AWS_CONFIG_FILE": "",
         "AWS_SHARED_CREDENTIALS_FILE": "",
         "HTTPS_PROXY": proxy.endpoint_url,
@@ -211,8 +210,19 @@ def complete_mpu_response() -> HTTPResponse:
     )
 
 
+def no_content_response() -> HTTPResponse:
+    """A 204 response with the request ID header S3 always sends.
+
+    The CRT transfer client fails a 204 response that has no headers at
+    all with AWS_ERROR_S3_INVALID_RESPONSE_STATUS.
+    """
+    return HTTPResponse.raw(
+        b"", status=204, headers={"x-amz-request-id": "test-request-id"}
+    )
+
+
 def abort_mpu_response() -> HTTPResponse:
-    return HTTPResponse.raw(b"", status=204)
+    return no_content_response()
 
 
 def copy_object_response() -> HTTPResponse:
@@ -283,7 +293,7 @@ def get_path(request) -> str:
 
 
 def delete_response() -> HTTPResponse:
-    return HTTPResponse.raw(b"", status=204)
+    return no_content_response()
 
 
 def error_response(
@@ -307,4 +317,4 @@ def create_bucket_response() -> HTTPResponse:
 
 
 def delete_bucket_response() -> HTTPResponse:
-    return HTTPResponse.raw(b"", status=204)
+    return no_content_response()

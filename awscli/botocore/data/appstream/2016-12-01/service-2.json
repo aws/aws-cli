@@ -791,7 +791,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves a list that describes one or more specified image builders, if the image builder names are provided. Otherwise, all image builders in the account are described.</p>"
+      "documentation":"<p>Retrieves a list that describes one or more specified image builders, if the image builder names are provided. Otherwise, all image builders in the account are described.</p> <p>The description of each image builder includes its agent access configuration, if agent access is enabled.</p>"
     },
     "DescribeImagePermissions":{
       "name":"DescribeImagePermissions",
@@ -1360,6 +1360,25 @@
       ],
       "documentation":"<p>Updates the specified fleet.</p> <p>If the fleet is in the <code>STOPPED</code> state, you can update any attribute except the fleet name.</p> <p>If the fleet is in the <code>RUNNING</code> state, you can update the following based on the fleet type:</p> <ul> <li> <p>Always-On and On-Demand fleet types</p> <p>You can update the <code>DisplayName</code>, <code>ComputeCapacity</code>, <code>ImageARN</code>, <code>ImageName</code>, <code>IdleDisconnectTimeoutInSeconds</code>, and <code>DisconnectTimeoutInSeconds</code> attributes.</p> </li> <li> <p>Elastic fleet type</p> <p>You can update the <code>DisplayName</code>, <code>IdleDisconnectTimeoutInSeconds</code>, <code>DisconnectTimeoutInSeconds</code>, <code>MaxConcurrentSessions</code>, <code>SessionScriptS3Location</code> and <code>UsbDeviceFilterStrings</code> attributes.</p> </li> </ul> <p>If the fleet is in the <code>STARTING</code> or <code>STOPPED</code> state, you can't update it.</p>"
     },
+    "UpdateImageBuilder":{
+      "name":"UpdateImageBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateImageBuilderRequest"},
+      "output":{"shape":"UpdateImageBuilderResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"IncompatibleImageException"},
+        {"shape":"InvalidAccountStatusException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"RequestLimitExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the specified fields for the specified image builder. The image builder must be in the STOPPED state.</p>"
+    },
     "UpdateImagePermissions":{
       "name":"UpdateImagePermissions",
       "http":{
@@ -1522,15 +1541,23 @@
       "members":{
         "Settings":{
           "shape":"AgentAccessSettingList",
-          "documentation":"<p>The list of agent access settings that define permissions for each agent action. You must specify at least one setting.</p>"
+          "documentation":"<p>The list of agent access settings that define permissions for each agent action. You must specify at least one setting, and at least one agent action must be enabled.</p>"
         },
         "S3BucketArn":{
           "shape":"S3BucketArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots are stored. Required when ScreenshotsUploadEnabled is true.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots and Replay Session artifacts are stored. Required when ScreenshotsUploadEnabled or ReplaySessionEnabled is true.</p>"
         },
         "ScreenshotsUploadEnabled":{
           "shape":"BooleanObject",
           "documentation":"<p>Indicates whether screenshot uploads to Amazon S3 are enabled for agent sessions.</p>"
+        },
+        "ReplaySessionEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether Replay Session is enabled for agent sessions. WorkSpaces Applications delivers a video combining session screenshots, a transcript, and a report for each session. Requires the COMPUTER_VISION agent action.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed symmetric encryption KMS key that encrypts Replay Session artifacts while WorkSpaces Applications processes them. The key must be in the same Region as the stack, and ReplaySessionEnabled must be true.</p>"
         },
         "ScreenResolution":{
           "shape":"ScreenResolution",
@@ -1552,15 +1579,23 @@
       "members":{
         "Settings":{
           "shape":"AgentAccessSettingList",
-          "documentation":"<p>The list of agent access settings that define permissions for each agent action.</p>"
+          "documentation":"<p>The list of agent access settings that define permissions for each agent action. The merged settings must have at least one agent action enabled.</p>"
         },
         "S3BucketArn":{
           "shape":"S3BucketArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots are stored.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots and Replay Session artifacts are stored.</p>"
         },
         "ScreenshotsUploadEnabled":{
           "shape":"BooleanObject",
           "documentation":"<p>Indicates whether screenshot uploads to Amazon S3 are enabled for agent sessions.</p>"
+        },
+        "ReplaySessionEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether Replay Session is enabled for agent sessions. Setting this attribute to false also removes the KmsKeyArn value from the stack.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed symmetric encryption KMS key that encrypts Replay Session artifacts while WorkSpaces Applications processes them. To remove the key, use AttributesToDelete with the AGENT_ACCESS_CONFIG_KMS_KEY_ARN value.</p>"
         },
         "ScreenResolution":{
           "shape":"ScreenResolution",
@@ -2869,6 +2904,10 @@
         "DisableIMDSV1":{
           "shape":"BooleanObject",
           "documentation":"<p>Set to true to disable Instance Metadata Service Version 1 (IMDSv1) and enforce IMDSv2. Set to false to enable both IMDSv1 and IMDSv2.</p> <note> <p>Before disabling IMDSv1, ensure your WorkSpaces Applications images are running the agent version or managed image update released on or after January 16, 2024 to support IMDSv2 enforcement.</p> </note>"
+        },
+        "AgentAccessConfig":{
+          "shape":"ImageBuilderAgentAccessConfig",
+          "documentation":"<p>The configuration for agent access on the image builder. If specified, agent access is enabled for the image builder.</p>"
         }
       }
     },
@@ -4971,9 +5010,89 @@
         "DisableIMDSV1":{
           "shape":"BooleanObject",
           "documentation":"<p>Indicates whether Instance Metadata Service Version 1 (IMDSv1) is disabled for the image builder.</p>"
+        },
+        "AgentAccessConfig":{
+          "shape":"ImageBuilderAgentAccessConfig",
+          "documentation":"<p>The agent access configuration of the image builder, if agent access is enabled.</p>"
         }
       },
       "documentation":"<p>Describes a virtual machine that is used to create an image. </p>"
+    },
+    "ImageBuilderAgentAccessConfig":{
+      "type":"structure",
+      "required":[
+        "Settings",
+        "ScreenResolution",
+        "ScreenImageFormat"
+      ],
+      "members":{
+        "Settings":{
+          "shape":"AgentAccessSettingList",
+          "documentation":"<p>The list of agent access settings that define permissions for each agent action. You must specify at least one setting, and at least one agent action must be enabled.</p>"
+        },
+        "S3BucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots are stored. Required when ScreenshotsUploadEnabled is true.</p>"
+        },
+        "ScreenshotsUploadEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Specifies whether screenshot uploads to Amazon S3 are enabled for agent sessions.</p>"
+        },
+        "ScreenResolution":{
+          "shape":"ScreenResolution",
+          "documentation":"<p>The screen resolution for the agent streaming environment.</p> <ul> <li> <p>W_1280xH_720 - 1280 x 720 pixels.</p> </li> </ul>"
+        },
+        "ScreenImageFormat":{
+          "shape":"ScreenImageFormat",
+          "documentation":"<p>The image format for agent screen captures.</p> <ul> <li> <p>PNG - PNG format.</p> </li> <li> <p>JPEG - JPEG format.</p> </li> </ul>"
+        },
+        "UserControlMode":{
+          "shape":"UserControlMode",
+          "documentation":"<p>The user control mode for agent sessions. This setting determines how users can interact with agent sessions.</p> <ul> <li> <p>VIEW_ONLY - Users can view and observe agent actions as they happen.</p> </li> <li> <p>VIEW_STOP - Users can view agent actions and stop the agent if needed.</p> </li> <li> <p>DISABLED - Users cannot view or stop the agent session.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The configuration for agent access on an image builder. Agent access enables AI agents to interact with desktop applications during streaming sessions to the image builder.</p>"
+    },
+    "ImageBuilderAgentAccessConfigForUpdate":{
+      "type":"structure",
+      "members":{
+        "Settings":{
+          "shape":"AgentAccessSettingList",
+          "documentation":"<p>The list of agent access settings that define permissions for each agent action. These settings are merged with the stored settings by agent action. A setting that you specify replaces the stored setting for the same agent action. The merged settings must have at least one agent action enabled.</p>"
+        },
+        "S3BucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots are stored. If ScreenshotsUploadEnabled is false after the merge, the stored bucket ARN is removed.</p>"
+        },
+        "ScreenshotsUploadEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Specifies whether screenshot uploads to Amazon S3 are enabled for agent sessions.</p>"
+        },
+        "ScreenResolution":{
+          "shape":"ScreenResolution",
+          "documentation":"<p>The screen resolution for the agent streaming environment.</p> <ul> <li> <p>W_1280xH_720 - 1280 x 720 pixels.</p> </li> </ul>"
+        },
+        "ScreenImageFormat":{
+          "shape":"ScreenImageFormat",
+          "documentation":"<p>The image format for agent screen captures.</p> <ul> <li> <p>PNG - PNG format.</p> </li> <li> <p>JPEG - JPEG format.</p> </li> </ul>"
+        },
+        "UserControlMode":{
+          "shape":"UserControlMode",
+          "documentation":"<p>The user control mode for agent sessions. This setting determines how users can interact with agent sessions.</p> <ul> <li> <p>VIEW_ONLY - Users can view and observe agent actions as they happen.</p> </li> <li> <p>VIEW_STOP - Users can view agent actions and stop the agent if needed.</p> </li> <li> <p>DISABLED - Users cannot view or stop the agent session.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The configuration for updating agent access on an image builder. This type supports partial updates, so you only need to specify the fields you want to change. Fields that you omit keep their stored values.</p>"
+    },
+    "ImageBuilderAttribute":{
+      "type":"string",
+      "documentation":"<p>An image builder attribute that you can delete by using the AttributesToDelete parameter of UpdateImageBuilder.</p> <ul> <li> <p>AGENT_ACCESS_CONFIG - Removes the stored agent access configuration from the image builder.</p> </li> </ul>",
+      "enum":["AGENT_ACCESS_CONFIG"]
+    },
+    "ImageBuilderAttributes":{
+      "type":"list",
+      "member":{"shape":"ImageBuilderAttribute"},
+      "documentation":"<p>The image builder attributes.</p>",
+      "max":2
     },
     "ImageBuilderList":{
       "type":"list",
@@ -5161,6 +5280,10 @@
       "documentation":"<p>The specified role is invalid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "pattern":"^arn:aws(?:\\-cn|\\-iso\\-b|\\-iso|\\-us\\-gov)?:kms:[a-z0-9\\-]+:\\d{12}:key/[A-Za-z0-9\\-]+$"
     },
     "LastReportGenerationExecutionError":{
       "type":"structure",
@@ -5858,7 +5981,7 @@
     },
     "StackAttribute":{
       "type":"string",
-      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> <li> <p>STORAGE_CONNECTOR_AUTHENTICATION</p> </li> </ul>",
+      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> <li> <p>AGENT_ACCESS_CONFIG_KMS_KEY_ARN</p> </li> <li> <p>STORAGE_CONNECTOR_AUTHENTICATION</p> </li> </ul>",
       "enum":[
         "STORAGE_CONNECTORS",
         "STORAGE_CONNECTOR_HOMEFOLDERS",
@@ -5874,7 +5997,8 @@
         "STREAMING_EXPERIENCE_SETTINGS",
         "CONTENT_REDIRECTION",
         "AGENT_ACCESS_CONFIG",
-        "STORAGE_CONNECTOR_AUTHENTICATION"
+        "STORAGE_CONNECTOR_AUTHENTICATION",
+        "AGENT_ACCESS_CONFIG_KMS_KEY_ARN"
       ]
     },
     "StackAttributes":{
@@ -6563,6 +6687,41 @@
         "Fleet":{
           "shape":"Fleet",
           "documentation":"<p>Information about the fleet.</p>"
+        }
+      }
+    },
+    "UpdateImageBuilderRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the image builder.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description to display.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The image builder name to display.</p>"
+        },
+        "AgentAccessConfig":{
+          "shape":"ImageBuilderAgentAccessConfigForUpdate",
+          "documentation":"<p>The configuration for agent access on the image builder. Specify this to update agent access settings. To remove agent access, use AttributesToDelete with the AGENT_ACCESS_CONFIG value.</p>"
+        },
+        "AttributesToDelete":{
+          "shape":"ImageBuilderAttributes",
+          "documentation":"<p>The image builder attributes to delete.</p>"
+        }
+      }
+    },
+    "UpdateImageBuilderResult":{
+      "type":"structure",
+      "members":{
+        "ImageBuilder":{
+          "shape":"ImageBuilder",
+          "documentation":"<p>Information about the image builder.</p>"
         }
       }
     },

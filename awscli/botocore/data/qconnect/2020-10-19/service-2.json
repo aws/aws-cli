@@ -3195,9 +3195,27 @@
       "type":"boolean",
       "box":true
     },
+    "CalculatedAttributes":{
+      "type":"map",
+      "key":{"shape":"MessageTemplateAttributeKey"},
+      "value":{"shape":"MessageTemplateAttributeValue"},
+      "documentation":"<p>The calculated attributes that are used with the message template. Each key is a calculated attribute name and each value is the corresponding value.</p>",
+      "max":100,
+      "min":0,
+      "sensitive":true
+    },
     "CaseArn":{
       "type":"string",
       "pattern":"arn:[a-z-]*?:cases:[a-z0-9-]*?:[0-9]{12}:domain/.{1,500}/case/[A-Za-z0-9\\-._/:#=+-]{1,500}"
+    },
+    "CaseAttributes":{
+      "type":"map",
+      "key":{"shape":"MessageTemplateAttributeKey"},
+      "value":{"shape":"MessageTemplateAttributeValue"},
+      "documentation":"<p>The case attributes that are used with the message template. Each key is a case field identifier and each value is the corresponding field value.</p>",
+      "max":220,
+      "min":0,
+      "sensitive":true
     },
     "CaseSummarizationAIAgentConfiguration":{
       "type":"structure",
@@ -4919,6 +4937,14 @@
         "custom":{
           "shape":"CustomAttributes",
           "documentation":"<p>The custom attributes in customer profile attributes.</p>"
+        },
+        "recommendations":{
+          "shape":"ProfileRecommendations",
+          "documentation":"<p>The recommendations that are associated with the customer profile.</p>"
+        },
+        "calculatedAttributes":{
+          "shape":"CalculatedAttributes",
+          "documentation":"<p>The calculated attributes from the customer profile that are used with the message template.</p>"
         }
       },
       "documentation":"<p>The customer profile attributes that are used with the message template.</p>"
@@ -8439,7 +8465,8 @@
         "SYSTEM",
         "AGENT",
         "CUSTOMER_PROFILE",
-        "CUSTOM"
+        "CUSTOM",
+        "CASE"
       ]
     },
     "MessageTemplateAttributeTypeList":{
@@ -8470,6 +8497,10 @@
         "customAttributes":{
           "shape":"CustomAttributes",
           "documentation":"<p>The custom attributes that are used with the message template.</p>"
+        },
+        "caseAttributes":{
+          "shape":"CaseAttributes",
+          "documentation":"<p>The case attributes that are used with the message template.</p>"
         }
       },
       "documentation":"<p>The attributes that are used with the message template.</p>"
@@ -9406,6 +9437,97 @@
       "max":1,
       "min":0,
       "sensitive":true
+    },
+    "ProfileCatalogItem":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The unique identifier of the catalog item.</p>"
+        },
+        "name":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The name of the catalog item.</p>"
+        },
+        "code":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The code of the catalog item.</p>"
+        },
+        "type":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The type of the catalog item.</p>"
+        },
+        "category":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The category of the catalog item.</p>"
+        },
+        "description":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The description of the catalog item.</p>"
+        },
+        "additionalInformation":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>Additional information about the catalog item.</p>"
+        },
+        "imageLink":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The URL of the image of the catalog item.</p>"
+        },
+        "link":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The URL of the catalog item.</p>"
+        },
+        "createdAt":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The timestamp when the catalog item was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The timestamp when the catalog item was last updated.</p>"
+        },
+        "price":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The price of the catalog item.</p>"
+        },
+        "attributes":{
+          "shape":"ProfileCatalogItemAttributes",
+          "documentation":"<p>The custom attributes of the catalog item.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a catalog item, including its identifier, name, price, and other attributes that are used in recommendations.</p>"
+    },
+    "ProfileCatalogItemAttributes":{
+      "type":"map",
+      "key":{"shape":"MessageTemplateAttributeKey"},
+      "value":{"shape":"MessageTemplateAttributeValue"},
+      "documentation":"<p>A map of custom attributes for a catalog item. Each key is an attribute name and each value is the corresponding attribute value.</p>"
+    },
+    "ProfileRecommendation":{
+      "type":"structure",
+      "members":{
+        "score":{
+          "shape":"ProfileRecommendationScore",
+          "documentation":"<p>The relevance score of the recommendation.</p>"
+        },
+        "catalogItem":{
+          "shape":"ProfileCatalogItem",
+          "documentation":"<p>The catalog item that is associated with the recommendation.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a recommendation that is associated with a customer profile, including the relevance score and the associated catalog item.</p>"
+    },
+    "ProfileRecommendationScore":{
+      "type":"double",
+      "documentation":"<p>The relevance score of a recommendation.</p>",
+      "min":0.0,
+      "sensitive":true
+    },
+    "ProfileRecommendations":{
+      "type":"list",
+      "member":{"shape":"ProfileRecommendation"},
+      "documentation":"<p>A list of recommendations that are associated with a customer profile.</p>",
+      "max":50,
+      "min":0
     },
     "PushADMMessageTemplateContent":{
       "type":"structure",

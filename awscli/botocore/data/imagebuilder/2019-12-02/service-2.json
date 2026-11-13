@@ -1449,7 +1449,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Updates a distribution configuration. Distribution configurations define and configure the outputs for your images, including the target Regions, accounts, and settings for each Region.</p> <note> <p>This operation doesn't support selective updates. The request replaces the stored configuration, so include every setting that you want to keep.</p> </note>"
+      "documentation":"<p>Updates a distribution configuration. Distribution configurations define and configure the outputs for your images, including the target Regions, accounts, and settings for each Region.</p> <note> <p>This operation doesn't support selective updates. The request replaces the entire distribution configuration, so include every setting that you want to keep. Any optional property that you omit is removed or reset to its default.</p> </note>"
     },
     "UpdateImagePipeline":{
       "name":"UpdateImagePipeline",
@@ -1469,7 +1469,7 @@
         {"shape":"CallRateLimitExceededException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Updates an image pipeline. Use image pipelines to automate the creation and distribution of images. You must specify exactly one recipe for your image, using either a <code>containerRecipeArn</code> or an <code>imageRecipeArn</code>. The recipe must be the same type, image or container, as the pipeline's current recipe.</p> <note> <p>UpdateImagePipeline does not support selective updates. The request replaces the pipeline's entire configuration, so include every setting that you want to keep. Any optional property that you omit is removed or reset to its default.</p> </note>"
+      "documentation":"<p>Updates an image pipeline. Use image pipelines to automate the creation and distribution of images. You must specify exactly one recipe for your image, using either a <code>containerRecipeArn</code> or an <code>imageRecipeArn</code>. The recipe must be the same type, image or container, as the pipeline's current recipe.</p> <note> <p>This operation doesn't support selective updates. The request replaces the entire pipeline configuration, so include every setting that you want to keep. Any optional property that you omit is removed or reset to its default.</p> </note>"
     },
     "UpdateInfrastructureConfiguration":{
       "name":"UpdateInfrastructureConfiguration",
@@ -1489,7 +1489,7 @@
         {"shape":"CallRateLimitExceededException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Updates an infrastructure configuration. An infrastructure configuration defines the environment in which Image Builder builds and tests your image.</p> <note> <p>This operation doesn't support selective updates. The request replaces the configuration, so include every setting that you want to keep. Omitted optional properties are cleared.</p> </note>"
+      "documentation":"<p>Updates an infrastructure configuration. An infrastructure configuration defines the environment in which Image Builder builds and tests your image.</p> <note> <p>This operation doesn't support selective updates. The request replaces the entire infrastructure configuration, so include every setting that you want to keep. Any optional property that you omit is removed or reset to its default.</p> </note>"
     },
     "UpdateLifecyclePolicy":{
       "name":"UpdateLifecyclePolicy",
@@ -1510,7 +1510,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Updates the specified lifecycle policy. The request replaces the existing policy configuration rather than merging changes, so re-specify every setting that you want to keep. The <code>resourceType</code> must match the existing policy's value.</p>"
+      "documentation":"<p>Updates the specified lifecycle policy. The <code>resourceType</code> must match the existing policy's value.</p> <note> <p>This operation doesn't support selective updates. The request replaces the entire lifecycle policy configuration, so include every setting that you want to keep. Any optional property that you omit is removed or reset to its default.</p> </note>"
     }
   },
   "shapes":{
@@ -2627,7 +2627,7 @@
         },
         "workflows":{
           "shape":"WorkflowConfigurationList",
-          "documentation":"<p>The array of workflow configuration objects for builds that this pipeline starts. You must also specify <code>executionRole</code> when you provide workflows.</p>"
+          "documentation":"<p>The array of workflow configuration objects for builds that this pipeline starts. If you specify workflows, they replace the default workflows that Image Builder otherwise runs for the pipeline's builds. For example, if your list doesn't include a test workflow, the pipeline's builds don't run one. You must also specify <code>executionRole</code> when you provide workflows.</p>"
         },
         "executionRole":{
           "shape":"RoleNameOrArn",
@@ -3718,7 +3718,7 @@
       "members":{
         "name":{
           "shape":"FilterName",
-          "documentation":"<p>The name of the filter. Filter names are case-sensitive.</p>"
+          "documentation":"<p>The name of the filter. Filter names are case-sensitive.</p> <p>The <code>name</code> filter matches the name that you gave the resource when you created it, exactly as you entered it. It doesn't match the name segment of the resource ARN, which Image Builder converts to lowercase with hyphens in place of spaces and underscores. For example, a resource named <code>My Image</code> has an ARN that contains <code>my-image</code> – filter on <code>My Image</code> to find it.</p>"
         },
         "values":{
           "shape":"FilterValues",
@@ -4936,7 +4936,7 @@
       "members":{
         "imageScanningEnabled":{
           "shape":"NullableBoolean",
-          "documentation":"<p>Specifies whether Amazon Inspector scans for vulnerabilities when you create a new image. You must also enable image tests. For AMI output, <code>imageScanningTypes</code> sets whether Amazon Inspector scans the test instance or the output AMI. For container output, Amazon Inspector scans the container image that Image Builder pushes to the Amazon ECR repository from your <code>ecrConfiguration</code> settings.</p> <p>To use container image scans, you must activate Amazon Inspector for Amazon ECR scanning in your account. The Image Builder <code>ListImageScanFindings</code> operation returns the findings of these scans.</p>"
+          "documentation":"<p>Specifies whether Amazon Inspector scans for vulnerabilities when you create a new image. You must also enable image tests. For AMI output, <code>imageScanningTypes</code> sets whether Amazon Inspector scans the test instance or the output AMI. For container output, Amazon Inspector scans the container image that Image Builder pushes to the Amazon ECR repository from your <code>ecrConfiguration</code> settings.</p> <p>To use container image scans, you must activate Amazon Inspector for Amazon ECR scanning in the account and Amazon Web Services Region where the build runs. Amazon Inspector activation is Regional. The Image Builder <code>ListImageScanFindings</code> operation returns the findings of these scans.</p>"
         },
         "ecrConfiguration":{
           "shape":"EcrConfiguration",
@@ -4944,7 +4944,7 @@
         },
         "imageScanningTypes":{
           "shape":"ImageScanningTypeList",
-          "documentation":"<p>The type of vulnerability scan that Image Builder runs for AMI output when <code>imageScanningEnabled</code> is <code>true</code>. Specify a single value. If you omit <code>imageScanningTypes</code>, Image Builder uses <code>TEST_INSTANCE_CVE</code>. The scan types work as follows:</p> <ul> <li> <p>With <code>TEST_INSTANCE_CVE</code>, Amazon Inspector scans the test instance during image tests. To use this scan, you must activate Amazon Inspector for Amazon EC2 scanning in your account. The Image Builder <code>ListImageScanFindings</code> operation returns the findings.</p> </li> <li> <p>With <code>ON_DEMAND_AMI_CVE</code>, Amazon Inspector starts an on-demand scan of the output AMI during image tests. To use this scan, you must build from an image recipe, but you do not need to activate Amazon Inspector in your account. The Amazon EC2 <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetImageFindings.html\">GetImageFindings</a> operation returns the findings.</p> </li> </ul>"
+          "documentation":"<p>The type of vulnerability scan that Image Builder runs for AMI output when <code>imageScanningEnabled</code> is <code>true</code>. Specify a single value. If you omit <code>imageScanningTypes</code>, Image Builder uses <code>TEST_INSTANCE_CVE</code>. The scan types work as follows:</p> <ul> <li> <p>With <code>TEST_INSTANCE_CVE</code>, Amazon Inspector scans the test instance during image tests. To use this scan, you must activate Amazon Inspector for Amazon EC2 scanning in the account and Amazon Web Services Region where the build runs. The Image Builder <code>ListImageScanFindings</code> operation returns the findings.</p> </li> <li> <p>With <code>ON_DEMAND_AMI_CVE</code>, Amazon Inspector starts an on-demand scan of the output AMI during image tests. To use this scan, you must build from an image recipe, but you do not need to activate Amazon Inspector in your account. The Amazon EC2 <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetImageFindings.html\">GetImageFindings</a> operation returns the findings.</p> </li> </ul>"
         },
         "scanResultCondition":{
           "shape":"ScanResultCondition",
@@ -6293,7 +6293,7 @@
       "members":{
         "componentVersionArn":{
           "shape":"ComponentVersionArn",
-          "documentation":"<p>The component version ARN whose build versions you want to list. The ARN must specify an exact version, without a build number suffix. If you don't specify an ARN, Image Builder returns build versions for the components that your account owns.</p>"
+          "documentation":"<p>The component version ARN whose build versions you want to list. The ARN must specify an exact version, without a build number suffix. If you don't specify an ARN, Image Builder returns build versions for the components that your account owns.</p> <p>If the ARN that you specify doesn't exist, Image Builder returns an empty list rather than a <code>ResourceNotFoundException</code> error.</p>"
         },
         "maxResults":{
           "shape":"RestrictedInteger",
@@ -6445,7 +6445,7 @@
       "members":{
         "imageVersionArn":{
           "shape":"ImageVersionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image version whose build versions you want to retrieve. The ARN must specify an exact version (<code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>) - wildcards aren't allowed. This parameter is optional. If you don't specify it, Image Builder returns build versions for all of the images in your account.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the image version whose build versions you want to retrieve. The ARN must specify an exact version (<code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>) - wildcards aren't allowed. This parameter is optional. If you don't specify it, Image Builder returns build versions for all of the images in your account.</p> <p>If the ARN that you specify doesn't exist, Image Builder returns an empty list rather than a <code>ResourceNotFoundException</code> error.</p>"
         },
         "filters":{
           "shape":"FilterList",
@@ -6521,7 +6521,7 @@
       "members":{
         "imagePipelineArn":{
           "shape":"ImagePipelineArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image pipeline whose images you want to view.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the image pipeline whose images you want to view.</p> <p>If the ARN that you specify doesn't exist, Image Builder returns an empty list rather than a <code>ResourceNotFoundException</code> error.</p>"
         },
         "filters":{
           "shape":"FilterList",
@@ -8277,7 +8277,7 @@
         },
         "workflows":{
           "shape":"WorkflowConfigurationList",
-          "documentation":"<p>The array of workflow configuration objects for builds that this pipeline starts. You must also specify <code>executionRole</code> when you provide workflows.</p>"
+          "documentation":"<p>The array of workflow configuration objects for builds that this pipeline starts. If you specify workflows, they replace the default workflows that Image Builder otherwise runs for the pipeline's builds. For example, if your list doesn't include a test workflow, the pipeline's builds don't run one. You must also specify <code>executionRole</code> when you provide workflows.</p>"
         },
         "loggingConfiguration":{
           "shape":"PipelineLoggingConfiguration",

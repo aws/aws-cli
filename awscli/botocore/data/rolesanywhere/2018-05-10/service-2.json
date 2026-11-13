@@ -534,6 +534,12 @@
       },
       "exception":true
     },
+    "AliasName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"(?!.*//)([A-Za-z]([A-Za-z0-9_/-]*[A-Za-z0-9_-])?)?"
+    },
     "AmazonResourceName":{
       "type":"string",
       "max":1011,
@@ -612,6 +618,10 @@
         "acceptRoleSessionName":{
           "shape":"Boolean",
           "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>An alias for the profile. When you set an alias, the response includes the alias ARN of the profile in <code>aliasArn</code>.</p> <p>An alias name contains 1 to 256 characters. It must begin with a letter (A-Z or a-z). It can contain only letters (A-Z and a-z), numbers (0-9), underscores (_), hyphens (-), and forward slashes (/). A forward slash can appear only between two other characters, so an alias name can't end with a forward slash or contain two in a row. Alias names that begin with <code>aws/</code>, in any combination of uppercase and lowercase letters, are reserved. Alias names are case sensitive.</p> <p>The alias name must be unique among resources of the same type in your account and Region. If another resource of the same type already has the alias, the request fails with a <code>ValidationException</code>. An invalid or reserved alias name also causes a <code>ValidationException</code>.</p> <p>If you omit this parameter or specify an empty string, the resource is created without an alias.</p>"
         }
       }
     },
@@ -651,6 +661,10 @@
         "notificationSettings":{
           "shape":"NotificationSettings",
           "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>An alias for the trust anchor. When you set an alias, the response includes the alias ARN of the trust anchor in <code>aliasArn</code>.</p> <p>An alias name contains 1 to 256 characters. It must begin with a letter (A-Z or a-z). It can contain only letters (A-Z and a-z), numbers (0-9), underscores (_), hyphens (-), and forward slashes (/). A forward slash can appear only between two other characters, so an alias name can't end with a forward slash or contain two in a row. Alias names that begin with <code>aws/</code>, in any combination of uppercase and lowercase letters, are reserved. Alias names are case sensitive.</p> <p>The alias name must be unique among resources of the same type in your account and Region. If another resource of the same type already has the alias, the request fails with a <code>ValidationException</code>. An invalid or reserved alias name also causes a <code>ValidationException</code>.</p> <p>If you omit this parameter or specify an empty string, the resource is created without an alias.</p>"
         }
       }
     },
@@ -688,6 +702,12 @@
       },
       "documentation":"<p>A record of a presented X509 credential from a temporary credential request. </p>"
     },
+    "CrlAliasArn":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:alias/crl/.*)"
+    },
     "CrlDetail":{
       "type":"structure",
       "members":{
@@ -696,7 +716,7 @@
           "documentation":"<p>The unique identifier of the certificate revocation list (CRL).</p>"
         },
         "crlArn":{
-          "shape":"String",
+          "shape":"CrlResourceArn",
           "documentation":"<p>The ARN of the certificate revocation list (CRL).</p>"
         },
         "name":{
@@ -712,7 +732,7 @@
           "documentation":"<p>The state of the certificate revocation list (CRL) after a read or write operation.</p>"
         },
         "trustAnchorArn":{
-          "shape":"String",
+          "shape":"TrustAnchorResourceArn",
           "documentation":"<p>The ARN of the TrustAnchor the certificate revocation list (CRL) will provide revocation for. </p>"
         },
         "createdAt":{
@@ -722,6 +742,18 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The ISO-8601 timestamp when the certificate revocation list (CRL) was last updated. </p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias of the certificate revocation list (CRL). Present only if the CRL has an alias.</p>"
+        },
+        "aliasArn":{
+          "shape":"CrlAliasArn",
+          "documentation":"<p>The alias ARN of the certificate revocation list (CRL), in the form <code>arn:<i>partition</i>:rolesanywhere:<i>region</i>:<i>account</i>:alias/crl/<i>alias-name</i> </code>. Present only if the CRL has an alias.</p> <p>You can use the alias ARN in place of the resource ID or ARN in the request parameters whose descriptions say that they accept an alias ARN. Don't use the alias ARN in Identity and Access Management (IAM) policies. A policy statement that names an alias ARN doesn't apply to the resource that holds the alias. Write policies with the ARN that contains the resource ID instead.</p>"
+        },
+        "previousAliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias that the resource had before the update request. IAM Roles Anywhere returns this value only in the response to an update request that changed or removed an existing alias. It isn't returned when the alias was unchanged, when the resource had no alias before the request, or by other operations.</p>"
         }
       },
       "documentation":"<p>The state of the certificate revocation list (CRL) after a read or write operation.</p>"
@@ -740,6 +772,18 @@
       "type":"list",
       "member":{"shape":"CrlDetail"}
     },
+    "CrlIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"([a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}|arn:aws(-[^:]+)?:rolesanywhere(:.*){2}:(crl|alias/crl)/.*)"
+    },
+    "CrlResourceArn":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:crl/.*)"
+    },
     "DeleteAttributeMappingRequest":{
       "type":"structure",
       "required":[
@@ -748,8 +792,8 @@
       ],
       "members":{
         "profileId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the profile.</p>",
+          "shape":"ProfileIdentifier",
+          "documentation":"<p>The profile to act on. You can specify one of the following:</p> <ul> <li> <p>The profile ID.</p> </li> <li> <p>The profile ARN.</p> </li> <li> <p>The alias ARN of the profile.</p> </li> </ul> <p>An ARN must be for a profile in your account and Region.</p>",
           "location":"uri",
           "locationName":"profileId"
         },
@@ -802,8 +846,12 @@
           "documentation":"<p>A list of tags to attach to the certificate revocation list (CRL).</p>"
         },
         "trustAnchorArn":{
-          "shape":"TrustAnchorArn",
-          "documentation":"<p>The ARN of the TrustAnchor the certificate revocation list (CRL) will provide revocation for.</p>"
+          "shape":"TrustAnchorIdentifierArn",
+          "documentation":"<p>The ARN of the trust anchor that the certificate revocation list (CRL) provides revocation for. Specify the trust anchor ARN that contains the trust anchor ID. This parameter doesn't support alias ARNs. If you specify an alias ARN, the request fails with <code>ResourceNotFoundException</code>.</p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>An alias for the certificate revocation list (CRL). When you set an alias, the response includes the alias ARN of the CRL in <code>aliasArn</code>.</p> <p>An alias name contains 1 to 256 characters. It must begin with a letter (A-Z or a-z). It can contain only letters (A-Z and a-z), numbers (0-9), underscores (_), hyphens (-), and forward slashes (/). A forward slash can appear only between two other characters, so an alias name can't end with a forward slash or contain two in a row. Alias names that begin with <code>aws/</code>, in any combination of uppercase and lowercase letters, are reserved. Alias names are case sensitive.</p> <p>The alias name must be unique among resources of the same type in your account and Region. If another resource of the same type already has the alias, the request fails with a <code>ValidationException</code>. An invalid or reserved alias name also causes a <code>ValidationException</code>.</p> <p>If you omit this parameter or specify an empty string, the resource is created without an alias.</p>"
         }
       }
     },
@@ -1098,11 +1146,11 @@
       "max":50,
       "min":0
     },
-    "ProfileArn":{
+    "ProfileAliasArn":{
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:profile.*)"
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:alias/profile/.*)"
     },
     "ProfileDetail":{
       "type":"structure",
@@ -1112,7 +1160,7 @@
           "documentation":"<p>The unique identifier of the profile.</p>"
         },
         "profileArn":{
-          "shape":"ProfileArn",
+          "shape":"ProfileResourceArn",
           "documentation":"<p>The ARN of the profile.</p>"
         },
         "name":{
@@ -1162,6 +1210,18 @@
         "attributeMappings":{
           "shape":"AttributeMappings",
           "documentation":"<p>A mapping applied to the authenticating end-entity certificate.</p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias of the profile. Present only if the profile has an alias.</p>"
+        },
+        "aliasArn":{
+          "shape":"ProfileAliasArn",
+          "documentation":"<p>The alias ARN of the profile, in the form <code>arn:<i>partition</i>:rolesanywhere:<i>region</i>:<i>account</i>:alias/profile/<i>alias-name</i> </code>. Present only if the profile has an alias.</p> <p>You can use the alias ARN in place of the resource ID or ARN in the request parameters whose descriptions say that they accept an alias ARN. Don't use the alias ARN in Identity and Access Management (IAM) policies. A policy statement that names an alias ARN doesn't apply to the resource that holds the alias. Write policies with the ARN that contains the resource ID instead.</p>"
+        },
+        "previousAliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias that the resource had before the update request. IAM Roles Anywhere returns this value only in the response to an update request that changed or removed an existing alias. It isn't returned when the alias was unchanged, when the resource had no alias before the request, or by other operations.</p>"
         }
       },
       "documentation":"<p>The state of the profile after a read or write operation.</p>"
@@ -1179,6 +1239,18 @@
       "type":"list",
       "member":{"shape":"ProfileDetail"}
     },
+    "ProfileIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"([a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}|arn:aws(-[^:]+)?:rolesanywhere(:.*){2}:(profile|alias/profile)/.*)"
+    },
+    "ProfileResourceArn":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:profile/.*)"
+    },
     "PutAttributeMappingRequest":{
       "type":"structure",
       "required":[
@@ -1188,8 +1260,8 @@
       ],
       "members":{
         "profileId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the profile.</p>",
+          "shape":"ProfileIdentifier",
+          "documentation":"<p>The profile to act on. You can specify one of the following:</p> <ul> <li> <p>The profile ID.</p> </li> <li> <p>The profile ARN.</p> </li> <li> <p>The alias ARN of the profile.</p> </li> </ul> <p>An ARN must be for a profile in your account and Region.</p>",
           "location":"uri",
           "locationName":"profileId"
         },
@@ -1296,8 +1368,8 @@
       "required":["crlId"],
       "members":{
         "crlId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the certificate revocation list (CRL).</p>",
+          "shape":"CrlIdentifier",
+          "documentation":"<p>The certificate revocation list (CRL) to act on. You can specify one of the following:</p> <ul> <li> <p>The CRL ID.</p> </li> <li> <p>The CRL ARN.</p> </li> <li> <p>The alias ARN of the CRL.</p> </li> </ul> <p>An ARN must be for a CRL in your account and Region.</p>",
           "location":"uri",
           "locationName":"crlId"
         }
@@ -1308,8 +1380,8 @@
       "required":["profileId"],
       "members":{
         "profileId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the profile.</p>",
+          "shape":"ProfileIdentifier",
+          "documentation":"<p>The profile to act on. You can specify one of the following:</p> <ul> <li> <p>The profile ID.</p> </li> <li> <p>The profile ARN.</p> </li> <li> <p>The alias ARN of the profile.</p> </li> </ul> <p>An ARN must be for a profile in your account and Region.</p>",
           "location":"uri",
           "locationName":"profileId"
         }
@@ -1332,8 +1404,8 @@
       "required":["trustAnchorId"],
       "members":{
         "trustAnchorId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the trust anchor.</p>",
+          "shape":"TrustAnchorIdentifier",
+          "documentation":"<p>The trust anchor to act on. You can specify one of the following:</p> <ul> <li> <p>The trust anchor ID.</p> </li> <li> <p>The trust anchor ARN.</p> </li> <li> <p>The alias ARN of the trust anchor.</p> </li> </ul> <p>An ARN must be for a trust anchor in your account and Region.</p>",
           "location":"uri",
           "locationName":"trustAnchorId"
         }
@@ -1567,11 +1639,11 @@
       },
       "exception":true
     },
-    "TrustAnchorArn":{
+    "TrustAnchorAliasArn":{
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:trust-anchor.*)"
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:alias/trust-anchor/.*)"
     },
     "TrustAnchorDetail":{
       "type":"structure",
@@ -1581,7 +1653,7 @@
           "documentation":"<p>The unique identifier of the trust anchor.</p>"
         },
         "trustAnchorArn":{
-          "shape":"String",
+          "shape":"TrustAnchorResourceArn",
           "documentation":"<p>The ARN of the trust anchor.</p>"
         },
         "name":{
@@ -1611,6 +1683,18 @@
         "notificationSettings":{
           "shape":"NotificationSettingDetails",
           "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias of the trust anchor. Present only if the trust anchor has an alias.</p>"
+        },
+        "aliasArn":{
+          "shape":"TrustAnchorAliasArn",
+          "documentation":"<p>The alias ARN of the trust anchor, in the form <code>arn:<i>partition</i>:rolesanywhere:<i>region</i>:<i>account</i>:alias/trust-anchor/<i>alias-name</i> </code>. Present only if the trust anchor has an alias.</p> <p>You can use the alias ARN in place of the resource ID or ARN in the request parameters whose descriptions say that they accept an alias ARN. Don't use the alias ARN in Identity and Access Management (IAM) policies. A policy statement that names an alias ARN doesn't apply to the resource that holds the alias. Write policies with the ARN that contains the resource ID instead.</p>"
+        },
+        "previousAliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias that the resource had before the update request. IAM Roles Anywhere returns this value only in the response to an update request that changed or removed an existing alias. It isn't returned when the alias was unchanged, when the resource had no alias before the request, or by other operations.</p>"
         }
       },
       "documentation":"<p>The state of the trust anchor after a read or write operation. </p>"
@@ -1628,6 +1712,24 @@
     "TrustAnchorDetails":{
       "type":"list",
       "member":{"shape":"TrustAnchorDetail"}
+    },
+    "TrustAnchorIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"([a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}|arn:aws(-[^:]+)?:rolesanywhere(:.*){2}:(trust-anchor|alias/trust-anchor)/.*)"
+    },
+    "TrustAnchorIdentifierArn":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:trust-anchor.*|:alias/trust-anchor/.*)"
+    },
+    "TrustAnchorResourceArn":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:trust-anchor/.*)"
     },
     "TrustAnchorType":{
       "type":"string",
@@ -1663,8 +1765,8 @@
       "required":["crlId"],
       "members":{
         "crlId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the certificate revocation list (CRL).</p>",
+          "shape":"CrlIdentifier",
+          "documentation":"<p>The certificate revocation list (CRL) to act on. You can specify one of the following:</p> <ul> <li> <p>The CRL ID.</p> </li> <li> <p>The CRL ARN.</p> </li> <li> <p>The alias ARN of the CRL.</p> </li> </ul> <p>An ARN must be for a CRL in your account and Region.</p>",
           "location":"uri",
           "locationName":"crlId"
         },
@@ -1675,6 +1777,10 @@
         "crlData":{
           "shape":"UpdateCrlRequestCrlDataBlob",
           "documentation":"<p>The x509 v3 specified certificate revocation list (CRL).</p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias for the certificate revocation list (CRL).</p> <p>You can use this parameter in the following ways:</p> <ul> <li> <p>To set or change the alias, specify the new alias name. After the change, the previous alias ARN no longer identifies the resource. You can then assign the previous alias to another resource of the same type. A change can take a short time to take effect for requests that use an alias ARN.</p> </li> <li> <p>To remove the alias, specify an empty string.</p> </li> <li> <p>To keep the current alias, omit this parameter.</p> </li> </ul> <p>An alias name contains 1 to 256 characters. It must begin with a letter (A-Z or a-z). It can contain only letters (A-Z and a-z), numbers (0-9), underscores (_), hyphens (-), and forward slashes (/). A forward slash can appear only between two other characters, so an alias name can't end with a forward slash or contain two in a row. Alias names that begin with <code>aws/</code>, in any combination of uppercase and lowercase letters, are reserved. Alias names are case sensitive.</p> <p>The alias name must be unique among resources of the same type in your account and Region. If another resource of the same type already has the alias, the request fails with a <code>ValidationException</code>. An invalid or reserved alias name also causes a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -1688,8 +1794,8 @@
       "required":["profileId"],
       "members":{
         "profileId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the profile.</p>",
+          "shape":"ProfileIdentifier",
+          "documentation":"<p>The profile to act on. You can specify one of the following:</p> <ul> <li> <p>The profile ID.</p> </li> <li> <p>The profile ARN.</p> </li> <li> <p>The alias ARN of the profile.</p> </li> </ul> <p>An ARN must be for a profile in your account and Region.</p>",
           "location":"uri",
           "locationName":"profileId"
         },
@@ -1716,6 +1822,10 @@
         "acceptRoleSessionName":{
           "shape":"Boolean",
           "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias for the profile.</p> <p>You can use this parameter in the following ways:</p> <ul> <li> <p>To set or change the alias, specify the new alias name. After the change, the previous alias ARN no longer identifies the resource. You can then assign the previous alias to another resource of the same type. A change can take a short time to take effect for requests that use an alias ARN.</p> </li> <li> <p>To remove the alias, specify an empty string.</p> </li> <li> <p>To keep the current alias, omit this parameter.</p> </li> </ul> <p>An alias name contains 1 to 256 characters. It must begin with a letter (A-Z or a-z). It can contain only letters (A-Z and a-z), numbers (0-9), underscores (_), hyphens (-), and forward slashes (/). A forward slash can appear only between two other characters, so an alias name can't end with a forward slash or contain two in a row. Alias names that begin with <code>aws/</code>, in any combination of uppercase and lowercase letters, are reserved. Alias names are case sensitive.</p> <p>The alias name must be unique among resources of the same type in your account and Region. If another resource of the same type already has the alias, the request fails with a <code>ValidationException</code>. An invalid or reserved alias name also causes a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -1735,8 +1845,8 @@
       "required":["trustAnchorId"],
       "members":{
         "trustAnchorId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the trust anchor.</p>",
+          "shape":"TrustAnchorIdentifier",
+          "documentation":"<p>The trust anchor to act on. You can specify one of the following:</p> <ul> <li> <p>The trust anchor ID.</p> </li> <li> <p>The trust anchor ARN.</p> </li> <li> <p>The alias ARN of the trust anchor.</p> </li> </ul> <p>An ARN must be for a trust anchor in your account and Region.</p>",
           "location":"uri",
           "locationName":"trustAnchorId"
         },
@@ -1751,6 +1861,10 @@
         "crlDpRevocationEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the trust anchor checks certificate revocation status against CRL distribution points.</p>"
+        },
+        "aliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias for the trust anchor.</p> <p>You can use this parameter in the following ways:</p> <ul> <li> <p>To set or change the alias, specify the new alias name. After the change, the previous alias ARN no longer identifies the resource. You can then assign the previous alias to another resource of the same type. A change can take a short time to take effect for requests that use an alias ARN.</p> </li> <li> <p>To remove the alias, specify an empty string.</p> </li> <li> <p>To keep the current alias, omit this parameter.</p> </li> </ul> <p>An alias name contains 1 to 256 characters. It must begin with a letter (A-Z or a-z). It can contain only letters (A-Z and a-z), numbers (0-9), underscores (_), hyphens (-), and forward slashes (/). A forward slash can appear only between two other characters, so an alias name can't end with a forward slash or contain two in a row. Alias names that begin with <code>aws/</code>, in any combination of uppercase and lowercase letters, are reserved. Alias names are case sensitive.</p> <p>The alias name must be unique among resources of the same type in your account and Region. If another resource of the same type already has the alias, the request fails with a <code>ValidationException</code>. An invalid or reserved alias name also causes a <code>ValidationException</code>.</p>"
         }
       }
     },

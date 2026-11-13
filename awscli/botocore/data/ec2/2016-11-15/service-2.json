@@ -293,6 +293,16 @@
       "output":{"shape":"AssociateNatGatewayAddressResult"},
       "documentation":"<p>Associates Elastic IP addresses (EIPs) and private IPv4 addresses with a public NAT gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html\">Work with NAT gateways</a> in the <i>Amazon VPC User Guide</i>.</p> <p>By default, you can associate up to 2 Elastic IP addresses per public NAT gateway. You can increase the limit by requesting a quota adjustment. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-eips\">Elastic IP address quotas</a> in the <i>Amazon VPC User Guide</i>.</p> <important> <p>When you associate an EIP or secondary EIPs with a public NAT gateway, the network border group of the EIPs must match the network border group of the Availability Zone (AZ) that the public NAT gateway is in. If it's not the same, the EIP will fail to associate. You can see the network border group for the subnet's AZ by viewing the details of the subnet. Similarly, you can view the network border group of an EIP by viewing the details of the EIP address. For more information about network border groups and EIPs, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithEIPs.html\">Allocate an Elastic IP address</a> in the <i>Amazon VPC User Guide</i>. </p> </important>"
     },
+    "AssociateNetworkingFlexCostAllocationPolicy":{
+      "name":"AssociateNetworkingFlexCostAllocationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateNetworkingFlexCostAllocationPolicyRequest"},
+      "output":{"shape":"AssociateNetworkingFlexCostAllocationPolicyResult"},
+      "documentation":"<p>Associates a flex cost allocation policy with one or more network resources. You can associate the policy directly with specific resources by resource ID, or you can associate it with a scope of resources in an account, Amazon VPC, or subnet.</p> <p>The following limits apply:</p> <ul> <li> <p>A request can associate up to 20 resources.</p> </li> <li> <p>A policy can have up to 100 active associations.</p> </li> <li> <p>A network resource can have only one active association, across all policies. If a resource is already associated, the response includes it in the failures with the code <code>ResourceAlreadyAssociated</code>.</p> </li> </ul>"
+    },
     "AssociateRouteServer":{
       "name":"AssociateRouteServer",
       "http":{
@@ -1228,6 +1238,16 @@
       "input":{"shape":"CreateNetworkInterfacePermissionRequest"},
       "output":{"shape":"CreateNetworkInterfacePermissionResult"},
       "documentation":"<p>Grants an Amazon Web Services-authorized account permission to attach the specified network interface to an instance in their account.</p> <p>You can grant permission to a single Amazon Web Services account only, and only one account at a time.</p>"
+    },
+    "CreateNetworkingFlexCostAllocationPolicy":{
+      "name":"CreateNetworkingFlexCostAllocationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateNetworkingFlexCostAllocationPolicyRequest"},
+      "output":{"shape":"CreateNetworkingFlexCostAllocationPolicyResult"},
+      "documentation":"<p>Creates a flex cost allocation policy for Networking Flexible Cost Allocation (FCA), a feature of Amazon Virtual Private Cloud (Amazon VPC). The policy allocates the charges of a shared networking resource at the reporting granularity that you specify. You can create a policy for one of the following resource types: NAT gateways, Amazon VPC peering connections, or EC2 instances. Policies can allocate data transfer charges for all three types, and data processing charges for NAT gateways.</p> <p>You can have up to 100 policies per account in each Amazon Web Services Region, plus one additional policy per network resource type created by a declarative policy, for a maximum of 103 policies in an Amazon Web Services Region.</p>"
     },
     "CreatePlacementGroup":{
       "name":"CreatePlacementGroup",
@@ -2240,6 +2260,16 @@
       "input":{"shape":"DeleteNetworkInterfacePermissionRequest"},
       "output":{"shape":"DeleteNetworkInterfacePermissionResult"},
       "documentation":"<p>Deletes a permission for a network interface. By default, you cannot delete the permission if the account for which you're removing the permission has attached the network interface to an instance. However, you can force delete the permission, regardless of any attachment.</p>"
+    },
+    "DeleteNetworkingFlexCostAllocationPolicies":{
+      "name":"DeleteNetworkingFlexCostAllocationPolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteNetworkingFlexCostAllocationPoliciesRequest"},
+      "output":{"shape":"DeleteNetworkingFlexCostAllocationPoliciesResult"},
+      "documentation":"<p>Deletes one or more flex cost allocation policies.</p>"
     },
     "DeletePlacementGroup":{
       "name":"DeletePlacementGroup",
@@ -3947,7 +3977,27 @@
       },
       "input":{"shape":"DescribeNetworkInterfacesRequest"},
       "output":{"shape":"DescribeNetworkInterfacesResult"},
-      "documentation":"<p>Describes the specified network interfaces or all your network interfaces.</p> <p>If you have a large number of network interfaces, the operation fails unless you use pagination or one of the following filters: <code>group-id</code>, <code>mac-address</code>, <code>private-dns-name</code>, <code>private-ip-address</code>, <code>subnet-id</code>, or <code>vpc-id</code>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important>"
+      "documentation":"<p>Describes the specified network interfaces or all your network interfaces.</p> <p>If you have a large number of network interfaces, the operation fails unless you use pagination or one of the following filters: <code>attachment.instance-id</code>, <code>group-id</code>, <code>mac-address</code>, <code>private-dns-name</code>, <code>private-ip-address</code>, <code>subnet-id</code>, or <code>vpc-id</code>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important>"
+    },
+    "DescribeNetworkingFlexCostAllocationPolicies":{
+      "name":"DescribeNetworkingFlexCostAllocationPolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeNetworkingFlexCostAllocationPoliciesRequest"},
+      "output":{"shape":"DescribeNetworkingFlexCostAllocationPoliciesResult"},
+      "documentation":"<p>Describes one or more of your flex cost allocation policies. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
+    "DescribeNetworkingFlexCostAllocationPolicyAssociations":{
+      "name":"DescribeNetworkingFlexCostAllocationPolicyAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeNetworkingFlexCostAllocationPolicyAssociationsRequest"},
+      "output":{"shape":"DescribeNetworkingFlexCostAllocationPolicyAssociationsResult"},
+      "documentation":"<p>Describes the associations between your flex cost allocation policies and network resources. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
     },
     "DescribeOutpostLags":{
       "name":"DescribeOutpostLags",
@@ -5144,6 +5194,16 @@
       "output":{"shape":"DisassociateNatGatewayAddressResult"},
       "documentation":"<p>Disassociates secondary Elastic IP addresses (EIPs) from a public NAT gateway. You cannot disassociate your primary EIP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon VPC User Guide</i>.</p> <p>While disassociating is in progress, you cannot associate/disassociate additional EIPs while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>An EIP is released only at the end of MaxDrainDurationSeconds. It stays associated and supports the existing connections but does not support any new connections (new connections are distributed across the remaining associated EIPs). As the existing connections drain out, the EIPs (and the corresponding private IP addresses mapped to them) are released.</p>"
     },
+    "DisassociateNetworkingFlexCostAllocationPolicy":{
+      "name":"DisassociateNetworkingFlexCostAllocationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateNetworkingFlexCostAllocationPolicyRequest"},
+      "output":{"shape":"DisassociateNetworkingFlexCostAllocationPolicyResult"},
+      "documentation":"<p>Disassociates a flex cost allocation policy from one or more network resources.</p>"
+    },
     "DisassociateRouteServer":{
       "name":"DisassociateRouteServer",
       "http":{
@@ -5739,7 +5799,7 @@
       },
       "input":{"shape":"GetFlowLogsIntegrationTemplateRequest"},
       "output":{"shape":"GetFlowLogsIntegrationTemplateResult"},
-      "documentation":"<p>Generates a CloudFormation template that streamlines and automates the integration of VPC flow logs with Amazon Athena. This make it easier for you to query and gain insights from VPC flow logs data. Based on the information that you provide, we configure resources in the template to do the following:</p> <ul> <li> <p>Create a table in Athena that maps fields to a custom log format</p> </li> <li> <p>Create a Lambda function that updates the table with new partitions on a daily, weekly, or monthly basis</p> </li> <li> <p>Create a table partitioned between two timestamps in the past</p> </li> <li> <p>Create a set of named queries in Athena that you can use to get started quickly</p> </li> </ul> <note> <p> <code>GetFlowLogsIntegrationTemplate</code> does not support integration between Amazon Web Services Transit Gateway Flow Logs and Amazon Athena.</p> </note>"
+      "documentation":"<p>Generates a CloudFormation template that streamlines and automates the integration of VPC flow logs with Amazon Athena. This make it easier for you to query and gain insights from VPC flow logs data. Based on the information that you provide, we configure resources in the template to do the following:</p> <ul> <li> <p>Create a table in Athena that maps fields to a custom log format</p> </li> <li> <p>Create a Lambda function that updates the table with new partitions on a daily, weekly, or monthly basis</p> </li> <li> <p>Create a table partitioned between two timestamps in the past</p> </li> <li> <p>Create a set of named queries in Athena that you can use to get started quickly</p> </li> </ul> <note> <p> <code>GetFlowLogsIntegrationTemplate</code> does not support integration between Amazon Web Services Transit Gateway Flow Logs or Amazon Web Services Cloud WAN Flow Logs and Amazon Athena.</p> </note>"
     },
     "GetGroupsForCapacityReservation":{
       "name":"GetGroupsForCapacityReservation",
@@ -6080,6 +6140,16 @@
       "input":{"shape":"GetNetworkInsightsAccessScopeContentRequest"},
       "output":{"shape":"GetNetworkInsightsAccessScopeContentResult"},
       "documentation":"<p>Gets the content for the specified Network Access Scope.</p>"
+    },
+    "GetNetworkingFlexCostAllocationPolicyVersions":{
+      "name":"GetNetworkingFlexCostAllocationPolicyVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetNetworkingFlexCostAllocationPolicyVersionsRequest"},
+      "output":{"shape":"GetNetworkingFlexCostAllocationPolicyVersionsResult"},
+      "documentation":"<p>Retrieves the versions of a flex cost allocation policy.</p>"
     },
     "GetPasswordData":{
       "name":"GetPasswordData",
@@ -6875,6 +6945,16 @@
       },
       "input":{"shape":"ModifyNetworkInterfaceAttributeRequest"},
       "documentation":"<p>Modifies the specified network interface attribute. You can specify only one attribute at a time. You can use this action to attach and detach security groups from an existing EC2 instance.</p>"
+    },
+    "ModifyNetworkingFlexCostAllocationPolicy":{
+      "name":"ModifyNetworkingFlexCostAllocationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyNetworkingFlexCostAllocationPolicyRequest"},
+      "output":{"shape":"ModifyNetworkingFlexCostAllocationPolicyResult"},
+      "documentation":"<p>Modifies a flex cost allocation policy. Changing a policy document or <code>ShowBackEnabled</code> creates a new version of the policy. Changing only the description doesn't create a new version.</p> <p>A policy can have up to 100 versions. Versions are never removed, so after a policy reaches 100 versions, you can't change its policy document or <code>ShowBackEnabled</code>. Policies that are managed by a declarative policy aren't subject to this limit.</p>"
     },
     "ModifyPrivateDnsNameOptions":{
       "name":"ModifyPrivateDnsNameOptions",
@@ -10943,6 +11023,48 @@
           "shape":"NatGatewayAddressList",
           "documentation":"<p>The IP addresses.</p>",
           "locationName":"natGatewayAddressSet"
+        }
+      }
+    },
+    "AssociateNetworkingFlexCostAllocationPolicyRequest":{
+      "type":"structure",
+      "required":["FcaPolicyId"],
+      "members":{
+        "FcaPolicyId":{
+          "shape":"FlexCostAllocationPolicyId",
+          "documentation":"<p>The ID of the flex cost allocation policy to associate. This parameter is required.</p>"
+        },
+        "NetworkResourceIds":{
+          "shape":"FlexCostAllocationNetworkResourceIdList",
+          "documentation":"<p>The IDs of the network resources to associate with the policy. You can specify from 1 to 20 resource IDs.</p> <p>You must specify <code>NetworkResourceIds</code>, <code>NetworkResourceScope</code>, or both. A request can include at most 20 distinct resources in total.</p>"
+        },
+        "NetworkResourceScope":{
+          "shape":"FlexCostAllocationNetworkResourceScope",
+          "documentation":"<p>The scope of network resources to associate with the policy. Use a scope to associate the policy with the resources in an account, Amazon VPC, or subnet.</p> <p>You must specify <code>NetworkResourceScope</code>, <code>NetworkResourceIds</code>, or both.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AssociateNetworkingFlexCostAllocationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyAssociations":{
+          "shape":"FlexCostAllocationPolicyAssociationSet",
+          "documentation":"<p>Information about the policy associations that were created.</p>",
+          "locationName":"fcaPolicyAssociations"
+        },
+        "FcaPolicyAssociationFailures":{
+          "shape":"FlexCostAllocationOperationFailureList",
+          "documentation":"<p>Information about the network resources that could not be associated with the policy.</p>",
+          "locationName":"fcaPolicyAssociationFailures"
         }
       }
     },
@@ -16584,7 +16706,7 @@
         },
         "DestinationRegion":{
           "shape":"String",
-          "documentation":"<p>The destination Region to use in the <code>PresignedUrl</code> parameter of a snapshot copy operation. This parameter is only valid for specifying the destination Region in a <code>PresignedUrl</code> parameter, where it is required.</p> <p>The snapshot copy is sent to the regional endpoint that you sent the HTTP request to (for example, <code>ec2.us-east-1.amazonaws.com</code>). With the CLI, this is specified using the <code>--region</code> parameter or the default Region in your Amazon Web Services configuration file.</p>",
+          "documentation":"<p>Deprecated.</p>",
           "locationName":"destinationRegion"
         },
         "Encrypted":{
@@ -16599,7 +16721,7 @@
         },
         "PresignedUrl":{
           "shape":"CopySnapshotRequestPSU",
-          "documentation":"<p>When you copy an encrypted source snapshot using the Amazon EC2 Query API, you must supply a pre-signed URL. This parameter is optional for unencrypted snapshots. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html\">Query requests</a>.</p> <p>The <code>PresignedUrl</code> should use the snapshot source endpoint, the <code>CopySnapshot</code> action, and include the <code>SourceRegion</code>, <code>SourceSnapshotId</code>, and <code>DestinationRegion</code> parameters. The <code>PresignedUrl</code> must be signed using Amazon Web Services Signature Version 4. Because EBS snapshots are stored in Amazon S3, the signing algorithm for this parameter uses the same logic that is described in <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html\"> Authenticating Requests: Using Query Parameters (Amazon Web Services Signature Version 4)</a> in the <i>Amazon S3 API Reference</i>. An invalid or improperly signed <code>PresignedUrl</code> will cause the copy operation to fail asynchronously, and the snapshot will move to an <code>error</code> state.</p>",
+          "documentation":"<p>Deprecated.</p>",
           "locationName":"presignedUrl"
         },
         "SourceRegion":{
@@ -17989,7 +18111,7 @@
         },
         "TrafficType":{
           "shape":"TrafficType",
-          "documentation":"<p>The type of traffic to monitor (accepted traffic, rejected traffic, or all traffic). This parameter is not supported for transit gateway resource types. It is required for the other resource types.</p>"
+          "documentation":"<p>The type of traffic to monitor (accepted traffic, rejected traffic, or all traffic). This parameter is not supported for transit gateway or Cloud WAN resource types. It is required for the other resource types.</p>"
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
@@ -18001,7 +18123,7 @@
         },
         "LogFormat":{
           "shape":"String",
-          "documentation":"<p>The fields to include in the flow log record. List the fields in the order in which they should appear. If you omit this parameter, the flow log is created using the default format. If you specify this parameter, you must include at least one field. For more information about the available fields, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html\">Flow log records</a> in the <i>Amazon VPC User Guide</i> or <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-log-records\">Transit Gateway Flow Log records</a> in the <i>Amazon Web Services Transit Gateway Guide</i>.</p> <p>Specify the fields using the <code>${field-id}</code> format, separated by spaces.</p>"
+          "documentation":"<p>The fields to include in the flow log record. List the fields in the order in which they should appear. If you omit this parameter, the flow log is created using the default format. If you specify this parameter, you must include at least one field. For more information about the available fields, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html\">Flow log records</a> in the <i>Amazon VPC User Guide</i>, <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-log-records\">Transit Gateway Flow Log records</a> in the <i>Amazon Web Services Transit Gateway Guide</i>, or <a href=\"https://docs.aws.amazon.com/network-manager/latest/cloudwan/cwan-flow-logs.html\">Cloud WAN Flow Log records</a> in the <i>Amazon Web Services Cloud WAN User Guide</i>.</p> <p>Specify the fields using the <code>${field-id}</code> format, separated by spaces.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -18010,7 +18132,7 @@
         },
         "MaxAggregationInterval":{
           "shape":"Integer",
-          "documentation":"<p>The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. The possible values are 60 seconds (1 minute) or 600 seconds (10 minutes). This parameter must be 60 seconds for transit gateway resource types.</p> <p>When a network interface is attached to a <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html\">Nitro-based instance</a>, the aggregation interval is always 60 seconds or less, regardless of the value that you specify.</p> <p>Default: 600</p>"
+          "documentation":"<p>The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. The possible values are 60 seconds (1 minute) or 600 seconds (10 minutes). This parameter must be 60 seconds for transit gateway and Cloud WAN resource types.</p> <p>When a network interface is attached to a <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html\">Nitro-based instance</a>, the aggregation interval is always 60 seconds or less, regardless of the value that you specify.</p> <p>Default: 600</p>"
         },
         "DestinationOptions":{
           "shape":"DestinationOptionsRequest",
@@ -18478,7 +18600,7 @@
         },
         "Rir":{
           "shape":"Rir",
-          "documentation":"<p>The Regional Internet Registry to associate with. Possible values:</p> <ul> <li> <p> <code>ripe</code> - RIPE NCC (Europe, the Middle East, and Central Asia).</p> </li> <li> <p> <code>apnic</code> - APNIC (Asia Pacific).</p> </li> <li> <p> <code>arin</code> - ARIN (North America).</p> </li> <li> <p> <code>lacnic</code> - LACNIC (Latin America and the Caribbean).</p> </li> </ul>"
+          "documentation":"<p>The internet registry to associate with. Possible values:</p> <ul> <li> <p> <code>ripe</code> - RIPE NCC (Europe, the Middle East, and Central Asia).</p> </li> <li> <p> <code>apnic</code> - APNIC (Asia Pacific).</p> </li> <li> <p> <code>arin</code> - ARIN (North America).</p> </li> <li> <p> <code>lacnic</code> - LACNIC (Latin America and the Caribbean).</p> </li> <li> <p> <code>nicbr</code> - NIC.br (Brazil).</p> </li> </ul>"
         },
         "OrganizationHandle":{
           "shape":"String",
@@ -19878,6 +20000,74 @@
           "shape":"String",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
           "locationName":"clientToken"
+        }
+      }
+    },
+    "CreateNetworkingFlexCostAllocationPolicyRequest":{
+      "type":"structure",
+      "required":["NetworkResourceType"],
+      "members":{
+        "NetworkResourceType":{
+          "shape":"FlexCostAllocationNetworkResourceType",
+          "documentation":"<p>The type of network resource that the policy applies to. This parameter is required. Valid values are <code>natgw</code> (NAT gateway), <code>pcx</code> (Amazon VPC peering connection), and <code>ec2</code> (EC2 instance).</p> <p>Specify the policy document that matches the resource type: <code>NatFcaPolicyDocument</code> for <code>natgw</code>, <code>InstanceFcaPolicyDocument</code> for <code>ec2</code>, or <code>PcxFcaPolicyDocument</code> for <code>pcx</code>. Don't specify a policy document for a different resource type.</p>"
+        },
+        "NatFcaPolicyDocument":{
+          "shape":"NatFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for NAT gateways. Provide this document when <code>NetworkResourceType</code> is <code>natgw</code>.</p>"
+        },
+        "InstanceFcaPolicyDocument":{
+          "shape":"InstanceFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for EC2 instances. Provide this document when <code>NetworkResourceType</code> is <code>ec2</code>.</p>"
+        },
+        "PcxFcaPolicyDocument":{
+          "shape":"PcxFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for Amazon VPC peering connections. Provide this document when <code>NetworkResourceType</code> is <code>pcx</code>.</p>"
+        },
+        "ShowBackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether showback reporting is enabled for the policy.</p> <p>Default: <code>true</code> </p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the policy. The description can be up to 1024 characters long.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to assign to the policy.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateNetworkingFlexCostAllocationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyId":{
+          "shape":"FlexCostAllocationPolicyId",
+          "documentation":"<p>The ID of the flex cost allocation policy.</p>",
+          "locationName":"fcaPolicyId"
+        },
+        "FcaPolicyArn":{
+          "shape":"FlexCostAllocationPolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flex cost allocation policy.</p>",
+          "locationName":"fcaPolicyArn"
+        },
+        "CreatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the policy was created.</p>",
+          "locationName":"createdAt"
+        },
+        "ExpectedEffectiveAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the policy is expected to apply to network traffic.</p>",
+          "locationName":"expectedEffectiveAt"
         }
       }
     },
@@ -24536,6 +24726,35 @@
       },
       "documentation":"<p>Contains the parameters for DeleteNetworkInterface.</p>"
     },
+    "DeleteNetworkingFlexCostAllocationPoliciesRequest":{
+      "type":"structure",
+      "required":["FcaPolicyIds"],
+      "members":{
+        "FcaPolicyIds":{
+          "shape":"FlexCostAllocationPolicyIdList",
+          "documentation":"<p>The IDs of the flex cost allocation policies to delete. You can specify up to 50 policy IDs. This parameter is required.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteNetworkingFlexCostAllocationPoliciesResult":{
+      "type":"structure",
+      "members":{
+        "Successful":{
+          "shape":"FlexCostAllocationPolicyIdList",
+          "documentation":"<p>The IDs of the policies that were successfully deleted.</p>",
+          "locationName":"successful"
+        },
+        "Failed":{
+          "shape":"FlexCostAllocationOperationFailureList",
+          "documentation":"<p>Information about the policies that could not be deleted.</p>",
+          "locationName":"failed"
+        }
+      }
+    },
     "DeletePlacementGroupRequest":{
       "type":"structure",
       "required":["GroupName"],
@@ -28312,6 +28531,11 @@
         }
       }
     },
+    "DescribeFlexCostAllocationPoliciesMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
     "DescribeFlowLogsRequest":{
       "type":"structure",
       "members":{
@@ -31281,6 +31505,86 @@
         }
       }
     },
+    "DescribeNetworkingFlexCostAllocationPoliciesRequest":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyIds":{
+          "shape":"FlexCostAllocationPolicyIdSet",
+          "documentation":"<p>The IDs of the flex cost allocation policies to describe.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeFlexCostAllocationPoliciesMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. The range is 5 to 1000. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>Default: 100</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>fca-policy-id</code> - The ID of the policy.</p> </li> <li> <p> <code>managed-by</code> - The entity that manages the policy (<code>account</code> | <code>declarative-policy</code>).</p> </li> <li> <p> <code>network-resource-type</code> - The type of network resource that the policy applies to (<code>natgw</code> | <code>ec2</code> | <code>pcx</code>).</p> </li> <li> <p> <code>showback-enabled</code> - Indicates whether showback reporting is enabled for the policy (<code>true</code> | <code>false</code>).</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeNetworkingFlexCostAllocationPoliciesResult":{
+      "type":"structure",
+      "members":{
+        "FlexCostAllocationPolicies":{
+          "shape":"FlexCostAllocationPolicySet",
+          "documentation":"<p>Information about the flex cost allocation policies.</p>",
+          "locationName":"flexCostAllocationPolicies"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeNetworkingFlexCostAllocationPolicyAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyAssociationIds":{
+          "shape":"FlexCostAllocationPolicyAssociationIdList",
+          "documentation":"<p>The IDs of the policy associations to describe.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeFlexCostAllocationPoliciesMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. The range is 5 to 1000. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>Default: 100</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>fca-policy-id</code> - The ID of the policy.</p> </li> <li> <p> <code>managed-by</code> - The entity that manages the association (<code>account</code> | <code>declarative-policy</code>).</p> </li> <li> <p> <code>resource-id</code> - The ID of the associated network resource.</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeNetworkingFlexCostAllocationPolicyAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyAssociations":{
+          "shape":"FlexCostAllocationPolicyAssociationSet",
+          "documentation":"<p>Information about the policy associations.</p>",
+          "locationName":"fcaPolicyAssociations"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeOutpostLagsRequest":{
       "type":"structure",
       "members":{
@@ -34010,7 +34314,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>action.code</code> - The action code for the event (for example, <code>enable-volume-io</code>).</p> </li> <li> <p> <code>action.description</code> - A description of the action.</p> </li> <li> <p> <code>action.event-id</code> - The event ID associated with the action.</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the instance.</p> </li> <li> <p> <code>event.description</code> - A description of the event.</p> </li> <li> <p> <code>event.event-id</code> - The event ID.</p> </li> <li> <p> <code>event.event-type</code> - The event type (for <code>io-enabled</code>: <code>passed</code> | <code>failed</code>; for <code>io-performance</code>: <code>io-performance:degraded</code> | <code>io-performance:severely-degraded</code> | <code>io-performance:stalled</code>).</p> </li> <li> <p> <code>event.not-after</code> - The latest end time for the event.</p> </li> <li> <p> <code>event.not-before</code> - The earliest start time for the event.</p> </li> <li> <p> <code>volume-status.details-name</code> - The cause for <code>volume-status.status</code> (<code>io-enabled</code> | <code>io-performance</code>).</p> </li> <li> <p> <code>volume-status.details-status</code> - The status of <code>volume-status.details-name</code> (for <code>io-enabled</code>: <code>passed</code> | <code>failed</code>; for <code>io-performance</code>: <code>normal</code> | <code>degraded</code> | <code>severely-degraded</code> | <code>stalled</code>).</p> </li> <li> <p> <code>volume-status.status</code> - The status of the volume (<code>ok</code> | <code>impaired</code> | <code>warning</code> | <code>insufficient-data</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>action.code</code> - The action code for the event (for example, <code>enable-volume-io</code>).</p> </li> <li> <p> <code>action.description</code> - A description of the action.</p> </li> <li> <p> <code>action.event-id</code> - The event ID associated with the action.</p> </li> <li> <p> <code>attachment-status.instance-id</code> - The ID of the instance that the volume is attached to.</p> </li> <li> <p> <code>attachment-status.io-performance</code> - The I/O performance status of the volume's attachment to the instance.</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the instance.</p> </li> <li> <p> <code>event.description</code> - A description of the event.</p> </li> <li> <p> <code>event.event-id</code> - The event ID.</p> </li> <li> <p> <code>event.event-type</code> - The event type (for <code>io-enabled</code>: <code>passed</code> | <code>failed</code>; for <code>io-performance</code>: <code>io-performance:degraded</code> | <code>io-performance:severely-degraded</code> | <code>io-performance:stalled</code>).</p> </li> <li> <p> <code>event.not-after</code> - The latest end time for the event.</p> </li> <li> <p> <code>event.not-before</code> - The earliest start time for the event.</p> </li> <li> <p> <code>volume-status.details-name</code> - The cause for <code>volume-status.status</code> (<code>io-enabled</code> | <code>io-performance</code>).</p> </li> <li> <p> <code>volume-status.details-status</code> - The status of <code>volume-status.details-name</code> (for <code>io-enabled</code>: <code>passed</code> | <code>failed</code>; for <code>io-performance</code>: <code>normal</code> | <code>degraded</code> | <code>severely-degraded</code> | <code>stalled</code>).</p> </li> <li> <p> <code>volume-status.status</code> - The status of the volume (<code>ok</code> | <code>impaired</code> | <code>warning</code> | <code>insufficient-data</code>).</p> </li> </ul>",
           "locationName":"Filter"
         }
       }
@@ -36335,6 +36639,35 @@
           "shape":"NatGatewayAddressList",
           "documentation":"<p>Information about the NAT gateway IP addresses.</p>",
           "locationName":"natGatewayAddressSet"
+        }
+      }
+    },
+    "DisassociateNetworkingFlexCostAllocationPolicyRequest":{
+      "type":"structure",
+      "required":["FcaPolicyAssociationIds"],
+      "members":{
+        "FcaPolicyAssociationIds":{
+          "shape":"FlexCostAllocationPolicyDisassociateAssociationIdList",
+          "documentation":"<p>The IDs of the policy associations to remove. You can specify up to 100 association IDs. This parameter is required.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisassociateNetworkingFlexCostAllocationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyDisassociations":{
+          "shape":"FlexCostAllocationPolicyAssociationIdList",
+          "documentation":"<p>The IDs of the policy associations that were removed.</p>",
+          "locationName":"fcaPolicyDisassociations"
+        },
+        "FcaPolicyDisassociationFailures":{
+          "shape":"FlexCostAllocationOperationFailureList",
+          "documentation":"<p>Information about the policy associations that could not be removed.</p>",
+          "locationName":"fcaPolicyDisassociationFailures"
         }
       }
     },
@@ -40532,6 +40865,468 @@
         "instant"
       ]
     },
+    "FlexCostAllocationAssociationMode":{
+      "type":"string",
+      "documentation":"<p>The mode of a policy association. Valid values:</p> <ul> <li> <p> <code>direct</code> - The policy is associated with specific resources by resource ID.</p> </li> <li> <p> <code>scope</code> - The policy is associated with a scope of resources.</p> </li> </ul>",
+      "enum":[
+        "direct",
+        "scope"
+      ]
+    },
+    "FlexCostAllocationCidrLabel":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_\\-]{0,63}"
+    },
+    "FlexCostAllocationCidrMapping":{
+      "type":"structure",
+      "required":[
+        "CidrRange",
+        "CidrLabel"
+      ],
+      "members":{
+        "CidrRange":{
+          "shape":"FlexCostAllocationCidrMappingCidrRangeString",
+          "documentation":"<p>The CIDR range. This parameter is required.</p>"
+        },
+        "CidrLabel":{
+          "shape":"FlexCostAllocationCidrLabel",
+          "documentation":"<p>The label to assign to the CIDR range. The label can be up to 64 characters long. It can contain letters, numbers, hyphens (<code>-</code>), and underscores (<code>_</code>), and must start with a letter or a number. This parameter is required.</p>"
+        }
+      },
+      "documentation":"<p>Maps a CIDR range to a label for cost allocation reporting.</p>"
+    },
+    "FlexCostAllocationCidrMappingCidrRangeString":{
+      "type":"string",
+      "max":43,
+      "min":1
+    },
+    "FlexCostAllocationCidrMappingList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationCidrMapping",
+        "locationName":"item"
+      },
+      "max":100,
+      "min":1
+    },
+    "FlexCostAllocationCidrRangeSpecifications":{
+      "type":"structure",
+      "required":[
+        "PrefixesType",
+        "Prefixes"
+      ],
+      "members":{
+        "PrefixesType":{
+          "shape":"FlexCostAllocationCidrRangeSpecificationsPrefixesTypeString",
+          "documentation":"<p>The type of prefixes to use. This parameter is required. Valid values are <code>source-prefixes</code> and <code>destination-prefixes</code>.</p>"
+        },
+        "Prefixes":{
+          "shape":"FlexCostAllocationCidrMappingList",
+          "documentation":"<p>The CIDR range to label mappings. You can specify from 1 to 100 mappings. This parameter is required.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the CIDR ranges and labels to use for cost allocation when the reporting granularity is <code>cidr</code>.</p>"
+    },
+    "FlexCostAllocationCidrRangeSpecificationsPrefixesTypeString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "FlexCostAllocationCostDimension":{
+      "type":"string",
+      "documentation":"<p>A cost dimension used for allocation. Valid values are <code>data-transfer</code> and <code>data-processing</code>. <code>data-processing</code> is valid only in a <code>NatFcaPolicyDocument</code>.</p>",
+      "enum":[
+        "data-transfer",
+        "data-processing"
+      ]
+    },
+    "FlexCostAllocationCostDimensionList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationCostDimension",
+        "locationName":"item"
+      },
+      "max":2,
+      "min":1
+    },
+    "FlexCostAllocationNetworkResourceId":{"type":"string"},
+    "FlexCostAllocationNetworkResourceIdList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationNetworkResourceId",
+        "locationName":"item"
+      },
+      "max":20,
+      "min":1
+    },
+    "FlexCostAllocationNetworkResourceScope":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "ResourceIds"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"FlexCostAllocationNetworkResourceScopeType",
+          "documentation":"<p>The type of scope. This parameter is required. Valid values are <code>account</code>, <code>vpc</code>, and <code>subnet</code>.</p>"
+        },
+        "ResourceIds":{
+          "shape":"FlexCostAllocationNetworkResourceScopeIdList",
+          "documentation":"<p>The IDs of the resources owned by you that define the scope. You can specify from 1 to 20 IDs. This parameter is required.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a scope of network resources for a scope-based policy association.</p>"
+    },
+    "FlexCostAllocationNetworkResourceScopeIdList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      },
+      "max":20,
+      "min":1
+    },
+    "FlexCostAllocationNetworkResourceScopeType":{
+      "type":"string",
+      "documentation":"<p>The type of scope used for a scope-based policy association. Valid values are <code>account</code>, <code>vpc</code>, and <code>subnet</code>.</p>",
+      "enum":[
+        "account",
+        "vpc",
+        "subnet"
+      ]
+    },
+    "FlexCostAllocationNetworkResourceType":{
+      "type":"string",
+      "documentation":"<p>The type of network resource that a flex cost allocation policy applies to. Valid values are <code>natgw</code> (NAT gateway), <code>pcx</code> (Amazon VPC peering connection), and <code>ec2</code> (EC2 instance).</p>",
+      "enum":[
+        "natgw",
+        "pcx",
+        "ec2"
+      ]
+    },
+    "FlexCostAllocationOperationFailure":{
+      "type":"structure",
+      "members":{
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource that could not be processed.</p>",
+          "locationName":"resourceId"
+        },
+        "FailureCode":{
+          "shape":"String",
+          "documentation":"<p>The code that identifies the type of failure. Possible values are:</p> <ul> <li> <p> <code>ResourceNotFound</code> - (<code>DeleteNetworkingFlexCostAllocationPolicies</code>) The policy doesn't exist or isn't owned by your account.</p> </li> <li> <p> <code>InvalidResourceState</code> - (<code>DeleteNetworkingFlexCostAllocationPolicies</code>) The policy has active associations.</p> </li> <li> <p> <code>InvalidResource</code> - (<code>AssociateNetworkingFlexCostAllocationPolicy</code>) The resource ID is malformed, the resource type doesn't match the policy, or the scope is an account other than yours. (<code>DisassociateNetworkingFlexCostAllocationPolicy</code>) The association doesn't exist or was already removed.</p> </li> <li> <p> <code>ResourceAlreadyAssociated</code> - (<code>AssociateNetworkingFlexCostAllocationPolicy</code>) The resource already has an active association.</p> </li> <li> <p> <code>InternalError</code> - An internal error occurred. Retry the request.</p> </li> </ul>",
+          "locationName":"failureCode"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the failure.</p>",
+          "locationName":"failureReason"
+        }
+      },
+      "documentation":"<p>Describes a policy, association, or network resource that a Networking Flexible Cost Allocation operation failed to process.</p>"
+    },
+    "FlexCostAllocationOperationFailureList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationOperationFailure",
+        "locationName":"item"
+      }
+    },
+    "FlexCostAllocationPolicyArn":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "FlexCostAllocationPolicyAssociationDescription":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyAssociationId":{
+          "shape":"FlexCostAllocationPolicyAssociationId",
+          "documentation":"<p>The ID of the policy association.</p>",
+          "locationName":"fcaPolicyAssociationId"
+        },
+        "FcaPolicyId":{
+          "shape":"FlexCostAllocationPolicyId",
+          "documentation":"<p>The ID of the policy.</p>",
+          "locationName":"fcaPolicyId"
+        },
+        "NetworkResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the associated network resource.</p>",
+          "locationName":"networkResourceId"
+        },
+        "OwnerAccount":{
+          "shape":"String",
+          "documentation":"<p>The ID of the account that owns the association.</p>",
+          "locationName":"ownerAccount"
+        },
+        "AssociatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the association was created.</p>",
+          "locationName":"associatedAt"
+        },
+        "ExpectedEffectiveAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the association is expected to apply to network traffic.</p>",
+          "locationName":"expectedEffectiveAt"
+        },
+        "AssociationMode":{
+          "shape":"FlexCostAllocationAssociationMode",
+          "documentation":"<p>The mode of the association. Valid values:</p> <ul> <li> <p> <code>direct</code> - The policy is associated with specific resources by resource ID.</p> </li> <li> <p> <code>scope</code> - The policy is associated with a scope of resources in an account, Amazon VPC, or subnet.</p> </li> </ul>",
+          "locationName":"associationMode"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>The entity that manages the association. Valid values are:</p> <ul> <li> <p> <code>account</code> - The account that owns the association created it.</p> </li> <li> <p> <code>declarative-policy</code> - An Amazon Web Services Organizations declarative policy created the association. You can't remove the association.</p> </li> </ul>",
+          "locationName":"managedBy"
+        }
+      },
+      "documentation":"<p>Describes an association between a flex cost allocation policy and a network resource.</p>"
+    },
+    "FlexCostAllocationPolicyAssociationId":{
+      "type":"string",
+      "max":27,
+      "min":27,
+      "pattern":"fcapassoc-[a-f0-9]{17}"
+    },
+    "FlexCostAllocationPolicyAssociationIdList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationPolicyAssociationId",
+        "locationName":"item"
+      },
+      "max":1000,
+      "min":1
+    },
+    "FlexCostAllocationPolicyAssociationSet":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationPolicyAssociationDescription",
+        "locationName":"item"
+      }
+    },
+    "FlexCostAllocationPolicyDescription":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyId":{
+          "shape":"FlexCostAllocationPolicyId",
+          "documentation":"<p>The ID of the policy.</p>",
+          "locationName":"fcaPolicyId"
+        },
+        "FcaPolicyArn":{
+          "shape":"FlexCostAllocationPolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy.</p>",
+          "locationName":"fcaPolicyArn"
+        },
+        "NetworkResourceType":{
+          "shape":"FlexCostAllocationNetworkResourceType",
+          "documentation":"<p>The type of network resource that the policy applies to.</p>",
+          "locationName":"networkResourceType"
+        },
+        "NatFcaPolicyDocument":{
+          "shape":"NatFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for NAT gateways.</p>",
+          "locationName":"natFcaPolicyDocument"
+        },
+        "InstanceFcaPolicyDocument":{
+          "shape":"InstanceFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for EC2 instances.</p>",
+          "locationName":"instanceFcaPolicyDocument"
+        },
+        "PcxFcaPolicyDocument":{
+          "shape":"PcxFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for Amazon VPC peering connections.</p>",
+          "locationName":"pcxFcaPolicyDocument"
+        },
+        "ShowBackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether showback reporting is enabled for the policy.</p>",
+          "locationName":"showBackEnabled"
+        },
+        "OwnerAccount":{
+          "shape":"String",
+          "documentation":"<p>The ID of the account that owns the policy.</p>",
+          "locationName":"ownerAccount"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the policy.</p>",
+          "locationName":"description"
+        },
+        "LatestVersion":{
+          "shape":"FlexCostAllocationPolicyVersionNumber",
+          "documentation":"<p>The number of the latest version of the policy.</p>",
+          "locationName":"latestVersion"
+        },
+        "VersionExpectedEffectiveAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the latest version of the policy is expected to apply to network traffic. The policy configuration in this response is from the latest version.</p>",
+          "locationName":"versionExpectedEffectiveAt"
+        },
+        "PolicyCreatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the policy was created.</p>",
+          "locationName":"policyCreatedAt"
+        },
+        "UpdatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the policy was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>The entity that manages the policy. Valid values are:</p> <ul> <li> <p> <code>account</code> - The account that owns the policy created it.</p> </li> <li> <p> <code>declarative-policy</code> - An Amazon Web Services Organizations declarative policy created the policy. You can't modify or delete the policy.</p> </li> </ul>",
+          "locationName":"managedBy"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the policy.</p>",
+          "locationName":"tags"
+        }
+      },
+      "documentation":"<p>Describes a flex cost allocation policy.</p>"
+    },
+    "FlexCostAllocationPolicyDisassociateAssociationIdList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationPolicyAssociationId",
+        "locationName":"item"
+      },
+      "max":100,
+      "min":1
+    },
+    "FlexCostAllocationPolicyId":{
+      "type":"string",
+      "max":22,
+      "min":22,
+      "pattern":"fcap-[a-f0-9]{17}"
+    },
+    "FlexCostAllocationPolicyIdList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationPolicyId",
+        "locationName":"item"
+      },
+      "max":50,
+      "min":1
+    },
+    "FlexCostAllocationPolicyIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationPolicyId",
+        "locationName":"item"
+      },
+      "max":1000,
+      "min":1
+    },
+    "FlexCostAllocationPolicySet":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationPolicyDescription",
+        "locationName":"item"
+      }
+    },
+    "FlexCostAllocationPolicyVersion":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyId":{
+          "shape":"FlexCostAllocationPolicyId",
+          "documentation":"<p>The ID of the policy.</p>",
+          "locationName":"fcaPolicyId"
+        },
+        "Version":{
+          "shape":"FlexCostAllocationPolicyVersionNumber",
+          "documentation":"<p>The version number.</p>",
+          "locationName":"version"
+        },
+        "NetworkResourceType":{
+          "shape":"FlexCostAllocationNetworkResourceType",
+          "documentation":"<p>The type of network resource that the policy applies to.</p>",
+          "locationName":"networkResourceType"
+        },
+        "NatFcaPolicyDocument":{
+          "shape":"NatFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for NAT gateways.</p>",
+          "locationName":"natFcaPolicyDocument"
+        },
+        "InstanceFcaPolicyDocument":{
+          "shape":"InstanceFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for EC2 instances.</p>",
+          "locationName":"instanceFcaPolicyDocument"
+        },
+        "PcxFcaPolicyDocument":{
+          "shape":"PcxFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The policy document that defines cost allocation for Amazon VPC peering connections.</p>",
+          "locationName":"pcxFcaPolicyDocument"
+        },
+        "ShowBackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether showback reporting is enabled for this version of the policy.</p>",
+          "locationName":"showBackEnabled"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of this version of the policy.</p>",
+          "locationName":"description"
+        },
+        "ExpectedEffectiveAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when this version of the policy is expected to apply to network traffic.</p>",
+          "locationName":"expectedEffectiveAt"
+        },
+        "CreatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when this version of the policy was created.</p>",
+          "locationName":"createdAt"
+        }
+      },
+      "documentation":"<p>Describes a version of a flex cost allocation policy.</p>"
+    },
+    "FlexCostAllocationPolicyVersionNumber":{
+      "type":"integer",
+      "max":2147483647,
+      "min":1
+    },
+    "FlexCostAllocationPolicyVersionSet":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationPolicyVersion",
+        "locationName":"item"
+      }
+    },
+    "FlexCostAllocationReportingGranularity":{
+      "type":"string",
+      "documentation":"<p>The resource granularity level at which networking costs are allocated. Valid values are <code>eni</code>, <code>ec2</code>, <code>subnet</code>, <code>vpc</code>, <code>account</code>, <code>peering-id</code>, and <code>cidr</code>.</p> <p>Which values you can use depends on the policy document. <code>peering-id</code> is valid only in a <code>PcxFcaPolicyDocument</code>.</p>",
+      "enum":[
+        "eni",
+        "ec2",
+        "subnet",
+        "vpc",
+        "account",
+        "peering-id",
+        "cidr"
+      ]
+    },
+    "FlexCostAllocationReportingGranularityList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationReportingGranularity",
+        "locationName":"item"
+      },
+      "max":1,
+      "min":1
+    },
+    "FlexCostAllocationVersionsToIncludeList":{
+      "type":"list",
+      "member":{
+        "shape":"FlexCostAllocationPolicyVersionNumber",
+        "locationName":"item"
+      },
+      "max":100,
+      "min":1
+    },
     "FlexibleEnaQueuesSupport":{
       "type":"string",
       "enum":[
@@ -43230,6 +44025,34 @@
           "shape":"NetworkInsightsAccessScopeContent",
           "documentation":"<p>The Network Access Scope content.</p>",
           "locationName":"networkInsightsAccessScopeContent"
+        }
+      }
+    },
+    "GetNetworkingFlexCostAllocationPolicyVersionsRequest":{
+      "type":"structure",
+      "required":["FcaPolicyId"],
+      "members":{
+        "FcaPolicyId":{
+          "shape":"FlexCostAllocationPolicyId",
+          "documentation":"<p>The ID of the flex cost allocation policy. This parameter is required.</p>"
+        },
+        "VersionsToInclude":{
+          "shape":"FlexCostAllocationVersionsToIncludeList",
+          "documentation":"<p>The policy versions to include in the results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetNetworkingFlexCostAllocationPolicyVersionsResult":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyVersions":{
+          "shape":"FlexCostAllocationPolicyVersionSet",
+          "documentation":"<p>Information about the policy versions.</p>",
+          "locationName":"fcaPolicyVersions"
         }
       }
     },
@@ -48120,6 +48943,28 @@
       },
       "documentation":"<p>Describes the default credit option for CPU usage of a burstable performance instance family.</p>"
     },
+    "InstanceFlexCostAllocationPolicyDocument":{
+      "type":"structure",
+      "required":[
+        "ReportingGranularity",
+        "Dimensions"
+      ],
+      "members":{
+        "ReportingGranularity":{
+          "shape":"FlexCostAllocationReportingGranularityList",
+          "documentation":"<p>The resource granularity level at which networking costs are allocated. This parameter is required. Specify exactly one value. Valid values are <code>eni</code>, <code>ec2</code>, <code>subnet</code>, <code>vpc</code>, <code>account</code>, and <code>cidr</code>.</p>"
+        },
+        "Dimensions":{
+          "shape":"FlexCostAllocationCostDimensionList",
+          "documentation":"<p>The cost dimensions to report. This parameter is required. The only valid value is <code>data-transfer</code>.</p>"
+        },
+        "CidrRangeSpecifications":{
+          "shape":"FlexCostAllocationCidrRangeSpecifications",
+          "documentation":"<p>The CIDR range mappings to use for cost allocation. Specify this value when <code>ReportingGranularity</code> is <code>cidr</code>, and omit it otherwise.</p>"
+        }
+      },
+      "documentation":"<p>Describes the cost allocation policy document for EC2 instances.</p>"
+    },
     "InstanceGeneration":{
       "type":"string",
       "enum":[
@@ -52455,7 +53300,7 @@
         },
         "Rir":{
           "shape":"Rir",
-          "documentation":"<p>The Regional Internet Registry. Possible values:</p> <ul> <li> <p> <code>ripe</code> - RIPE NCC (Europe, the Middle East, and Central Asia).</p> </li> <li> <p> <code>apnic</code> - APNIC (Asia Pacific).</p> </li> <li> <p> <code>arin</code> - ARIN (North America).</p> </li> <li> <p> <code>lacnic</code> - LACNIC (Latin America and the Caribbean).</p> </li> </ul>",
+          "documentation":"<p>The internet registry. Possible values:</p> <ul> <li> <p> <code>ripe</code> - RIPE NCC (Europe, the Middle East, and Central Asia).</p> </li> <li> <p> <code>apnic</code> - APNIC (Asia Pacific).</p> </li> <li> <p> <code>arin</code> - ARIN (North America).</p> </li> <li> <p> <code>lacnic</code> - LACNIC (Latin America and the Caribbean).</p> </li> <li> <p> <code>nicbr</code> - NIC.br (Brazil).</p> </li> </ul>",
           "locationName":"rir"
         },
         "OrganizationHandle":{
@@ -52470,7 +53315,7 @@
         },
         "State":{
           "shape":"IpamInternetRegistryAssociationState",
-          "documentation":"<p>The state of the internet registry association. Valid values: <code>pending-activation</code> | <code>pending-enable</code> | <code>create-in-progress</code> | <code>create-failed</code> | <code>enable-in-progress</code> | <code>enable-complete</code> | <code>enable-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>.</p>",
+          "documentation":"<p>The state of the internet registry association. Valid values: <code>pending-enable</code> | <code>create-in-progress</code> | <code>create-failed</code> | <code>enable-in-progress</code> | <code>enable-complete</code> | <code>enable-failed</code> | <code>disable-in-progress</code> | <code>disable-complete</code> | <code>disable-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>.</p>",
           "locationName":"state"
         },
         "StateMessage":{
@@ -54204,7 +55049,7 @@
         },
         "State":{
           "shape":"IpamRoutingPolicyRegistrationState",
-          "documentation":"<p>The state of the routing policy registration. Valid values: <code>pending-activate</code> | <code>activate-failed</code> | <code>create-in-progress</code> | <code>create-complete</code> | <code>update-in-progress</code> | <code>update-complete</code> | <code>delete-in-progress</code> | <code>delete-complete</code>.</p>",
+          "documentation":"<p>The state of the routing policy registration. Valid values: <code>pending-activate</code> | <code>activate-failed</code> | <code>create-in-progress</code> | <code>create-complete</code> | <code>update-in-progress</code> | <code>update-complete</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>disable-complete</code>.</p>",
           "locationName":"state"
         }
       },
@@ -60138,6 +60983,70 @@
       },
       "documentation":"<p>Contains the parameters for ModifyNetworkInterfaceAttribute.</p>"
     },
+    "ModifyNetworkingFlexCostAllocationPolicyRequest":{
+      "type":"structure",
+      "required":["FcaPolicyId"],
+      "members":{
+        "FcaPolicyId":{
+          "shape":"FlexCostAllocationPolicyId",
+          "documentation":"<p>The ID of the flex cost allocation policy to modify. This parameter is required.</p>"
+        },
+        "NatFcaPolicyDocument":{
+          "shape":"NatFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The updated policy document that defines cost allocation for NAT gateways.</p>"
+        },
+        "InstanceFcaPolicyDocument":{
+          "shape":"InstanceFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The updated policy document that defines cost allocation for EC2 instances.</p>"
+        },
+        "PcxFcaPolicyDocument":{
+          "shape":"PcxFlexCostAllocationPolicyDocument",
+          "documentation":"<p>The updated policy document that defines cost allocation for Amazon VPC peering connections.</p>"
+        },
+        "ShowBackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether showback reporting is enabled for the policy. If you omit this parameter, the current setting is unchanged.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the policy. The description can be up to 1024 characters long.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyNetworkingFlexCostAllocationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "FcaPolicyId":{
+          "shape":"FlexCostAllocationPolicyId",
+          "documentation":"<p>The ID of the flex cost allocation policy.</p>",
+          "locationName":"fcaPolicyId"
+        },
+        "UpdatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the policy was updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "Version":{
+          "shape":"FlexCostAllocationPolicyVersionNumber",
+          "documentation":"<p>The version number of the policy that this modification created.</p>",
+          "locationName":"version"
+        },
+        "VersionExpectedEffectiveAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the new version of the policy is expected to apply to network traffic.</p>",
+          "locationName":"versionExpectedEffectiveAt"
+        }
+      }
+    },
     "ModifyPrivateDnsNameOptionsRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -62474,6 +63383,28 @@
         "disable"
       ]
     },
+    "NatFlexCostAllocationPolicyDocument":{
+      "type":"structure",
+      "required":[
+        "ReportingGranularity",
+        "Dimensions"
+      ],
+      "members":{
+        "ReportingGranularity":{
+          "shape":"FlexCostAllocationReportingGranularityList",
+          "documentation":"<p>The resource granularity level at which networking costs are allocated. This parameter is required. Specify exactly one value. Valid values are <code>eni</code>, <code>ec2</code>, <code>subnet</code>, <code>vpc</code>, <code>account</code>, and <code>cidr</code>.</p>"
+        },
+        "Dimensions":{
+          "shape":"FlexCostAllocationCostDimensionList",
+          "documentation":"<p>The cost dimensions to report. This parameter is required. Valid values are <code>data-transfer</code> and <code>data-processing</code>.</p>"
+        },
+        "CidrRangeSpecifications":{
+          "shape":"FlexCostAllocationCidrRangeSpecifications",
+          "documentation":"<p>The CIDR range mappings to use for cost allocation. Specify this value when <code>ReportingGranularity</code> is <code>cidr</code>, and omit it otherwise.</p>"
+        }
+      },
+      "documentation":"<p>Describes the cost allocation policy document for NAT gateways.</p>"
+    },
     "NatGateway":{
       "type":"structure",
       "members":{
@@ -64805,6 +65736,28 @@
         }
       },
       "documentation":"<p>Describes the data that identifies an Amazon FPGA image (AFI) on the PCI bus.</p>"
+    },
+    "PcxFlexCostAllocationPolicyDocument":{
+      "type":"structure",
+      "required":[
+        "ReportingGranularity",
+        "Dimensions"
+      ],
+      "members":{
+        "ReportingGranularity":{
+          "shape":"FlexCostAllocationReportingGranularityList",
+          "documentation":"<p>The resource granularity level at which networking costs are allocated. This parameter is required. Specify exactly one value. Valid values are <code>eni</code>, <code>ec2</code>, <code>subnet</code>, <code>vpc</code>, <code>account</code>, <code>peering-id</code>, and <code>cidr</code>.</p>"
+        },
+        "Dimensions":{
+          "shape":"FlexCostAllocationCostDimensionList",
+          "documentation":"<p>The cost dimensions to report. This parameter is required. The only valid value is <code>data-transfer</code>.</p>"
+        },
+        "CidrRangeSpecifications":{
+          "shape":"FlexCostAllocationCidrRangeSpecifications",
+          "documentation":"<p>The CIDR range mappings to use for cost allocation. Specify this value when <code>ReportingGranularity</code> is <code>cidr</code>, and omit it otherwise.</p>"
+        }
+      },
+      "documentation":"<p>Describes the cost allocation policy document for Amazon VPC peering connections.</p>"
     },
     "PeakBandwidthInGbps":{"type":"double"},
     "PeeringAttachmentStatus":{
@@ -69306,6 +70259,7 @@
         "elastic-gpu",
         "export-image-task",
         "export-instance-task",
+        "fca-policy",
         "fleet",
         "fpga-image",
         "host-reservation",

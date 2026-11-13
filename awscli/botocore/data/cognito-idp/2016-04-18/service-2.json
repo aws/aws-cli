@@ -4740,6 +4740,13 @@
       "pattern":"[\\w+]+",
       "sensitive":true
     },
+    "ClientTypeType":{
+      "type":"string",
+      "enum":[
+        "REGULAR",
+        "DCR"
+      ]
+    },
     "CloudWatchLogsConfigurationType":{
       "type":"structure",
       "members":{
@@ -5582,6 +5589,10 @@
           "shape":"UserPoolAddOnsType",
           "documentation":"<p>Contains settings for activation of threat protection, including the operating mode and additional authentication types. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to potentially unwanted traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html\">Adding advanced security to a user pool</a>. To activate this setting, your user pool must be on the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html\"> Plus tier</a>.</p>"
         },
+        "DcrConfiguration":{
+          "shape":"DcrConfigurationType",
+          "documentation":"<p>The dynamic client registration configuration for the user pool. With dynamic client registration, applications can register their own app clients at runtime through the registration endpoint of your user pool domain. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
+        },
         "UsernameConfiguration":{
           "shape":"UsernameConfigurationType",
           "documentation":"<p>Sets the case sensitivity option for sign-in usernames. When <code>CaseSensitive</code> is <code>false</code> (case insensitive), users can sign in with any combination of capital and lowercase letters. For example, <code>username</code>, <code>USERNAME</code>, or <code>UserName</code>, or for email, <code>email@example.com</code> or <code>EMaiL@eXamplE.Com</code>. For most use cases, set case sensitivity to <code>false</code> as a best practice. When usernames and email addresses are case insensitive, Amazon Cognito treats any variation in case as the same user, and prevents a case variation from being assigned to the same attribute for a different user.</p> <p>When <code>CaseSensitive</code> is <code>true</code> (case sensitive), Amazon Cognito interprets <code>USERNAME</code> and <code>UserName</code> as distinct users.</p> <p>This configuration is immutable after you set it.</p>"
@@ -5691,6 +5702,32 @@
       "enum":["V1_0"]
     },
     "DateType":{"type":"timestamp"},
+    "DcrConfigurationType":{
+      "type":"structure",
+      "members":{
+        "EnableStatus":{
+          "shape":"StatusType",
+          "documentation":"<p>Specifies whether dynamic client registration is turned on for the user pool. If you provide a dynamic client registration configuration without this value, Amazon Cognito turns dynamic client registration on.</p>"
+        },
+        "OpenDcrEnabled":{
+          "shape":"BooleanType",
+          "documentation":"<p>Specifies whether open registration is turned on. When open registration is on, applications can register app clients without an initial access token. The default value is <code>false</code>.</p>"
+        },
+        "AuthenticatedGrantTypes":{
+          "shape":"OAuthFlowsType",
+          "documentation":"<p>The OAuth grant types that an app client created through authenticated registration can request. If you don't set this value, authenticated registration permits the <code>code</code> and <code>client_credentials</code> grant types. If you set an empty list, Amazon Cognito rejects authenticated registration requests. Dynamic client registration supports the following values. Amazon Cognito accepts <code>implicit</code> in this list but ignores it.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>"
+        },
+        "OpenDcrGrantTypes":{
+          "shape":"OAuthFlowsType",
+          "documentation":"<p>The OAuth grant types that an app client created through open registration can request. If you don't set this value, open registration permits only the <code>code</code> grant type. If you set an empty list, Amazon Cognito rejects open registration requests. If you add <code>client_credentials</code>, anyone can register an app client that requests machine-to-machine (M2M) access tokens, and you pay for the M2M token requests that those app clients make. Dynamic client registration supports the following values. Amazon Cognito accepts <code>implicit</code> in this list but ignores it.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>"
+        },
+        "AllowedScopes":{
+          "shape":"ScopeListType",
+          "documentation":"<p>The scopes that an app client created through dynamic client registration can request, in addition to the standard OpenID Connect (OIDC) scopes. You can include custom scopes from your resource servers and <code>aws.cognito.signin.user.admin</code>. Registered app clients can request the OIDC scopes <code>openid</code>, <code>email</code>, <code>phone</code>, and <code>profile</code> without listing them here. If you don't set this value, registered app clients can request only the OIDC scopes. A registered app client can't request the <code>aws.cognito/dcr/register</code> scope, even if you include it in this list.</p>"
+        }
+      },
+      "documentation":"<p>The dynamic client registration configuration for a user pool. Dynamic client registration lets applications register their own app clients at runtime through the registration endpoint of your user pool domain. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p> <p>Applications register app clients at the <code>/oauth2/register</code> endpoint of your user pool domain. In authenticated registration, the application sends an access token from your user pool that has the <code>aws.cognito/dcr/register</code> scope. In open registration, the application doesn't send a token.</p> <p>When you include this configuration in an <code>UpdateUserPool</code> request, Amazon Cognito replaces the existing configuration with the one that you provide.</p>"
+    },
     "DefaultEmailOptionType":{
       "type":"string",
       "enum":[
@@ -8133,6 +8170,10 @@
         "NextToken":{
           "shape":"PaginationKey",
           "documentation":"<p>This API operation returns a limited number of results. The pagination token is an identifier that you can present in an additional API request with the same parameters. When you include the pagination token, Amazon Cognito returns the next set of items after the current list. Subsequent requests return a new pagination token. By use of this token, you can paginate through the full list of items.</p>"
+        },
+        "ClientType":{
+          "shape":"ClientTypeType",
+          "documentation":"<p>Returns only app clients of this type. For dynamic client registration (<code>DCR</code>) and other app clients, the following values are valid.</p> <dl> <dt>REGULAR</dt> <dd> <p>An app client not created through dynamic client registration.</p> </dd> <dt>DCR</dt> <dd> <p>An app client created through dynamic client registration.</p> </dd> </dl> <p>If you omit <code>ClientType</code>, the response includes app clients of all types. When you set this filter, a page of results can contain fewer app clients than <code>MaxResults</code>, or none, while the response still includes a <code>NextToken</code>. Continue to request pages until the response has no <code>NextToken</code>. The app clients in the response don't include their type. To get the type of an app client, call <code>DescribeUserPoolClient</code>.</p>"
         }
       },
       "documentation":"<p>Represents the request to list the user pool clients.</p>"
@@ -9029,6 +9070,10 @@
       "min":1,
       "pattern":"[\\x21\\x23-\\x5B\\x5D-\\x7E]+"
     },
+    "ResourceServerManagedByType":{
+      "type":"string",
+      "enum":["COGNITO"]
+    },
     "ResourceServerNameType":{
       "type":"string",
       "max":256,
@@ -9087,6 +9132,10 @@
         "Scopes":{
           "shape":"ResourceServerScopeListType",
           "documentation":"<p>A list of scopes that are defined for the resource server.</p>"
+        },
+        "ManagedBy":{
+          "shape":"ResourceServerManagedByType",
+          "documentation":"<p>This value is reserved for resource servers that Amazon Cognito manages. Resource servers that you create don't have this value.</p>"
         }
       },
       "documentation":"<p>The details of a resource server configuration and associated custom scopes in a user pool.</p>"
@@ -11025,6 +11074,10 @@
           "shape":"UserPoolAddOnsType",
           "documentation":"<p>Contains settings for activation of threat protection, including the operating mode and additional authentication types. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to potentially unwanted traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html\">Adding advanced security to a user pool</a>. To activate this setting, your user pool must be on the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html\"> Plus tier</a>.</p>"
         },
+        "DcrConfiguration":{
+          "shape":"DcrConfigurationType",
+          "documentation":"<p>The dynamic client registration configuration for the user pool. With dynamic client registration, applications can register their own app clients at runtime through the registration endpoint of your user pool domain. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p> <p>If you omit this parameter, Amazon Cognito keeps the existing configuration. If you include it, Amazon Cognito replaces the existing configuration with the one that you provide. Members that you omit revert to their default values, and an omitted <code>EnableStatus</code> turns dynamic client registration on.</p> <p>To change the feature plan of the user pool to Lite, you must also set <code>EnableStatus</code> to <code>Disabled</code>.</p>"
+        },
         "AccountRecoverySetting":{
           "shape":"AccountRecoverySettingType",
           "documentation":"<p>The available verified method a user can use to recover their password when they call <code>ForgotPassword</code>. You can use this setting to define a preferred method when a user has more than one method available. With this setting, SMS doesn't qualify for a valid password recovery mechanism if the user also has SMS multi-factor authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy behavior to determine the recovery method where SMS is preferred through email.</p>"
@@ -11379,6 +11432,10 @@
         "RefreshTokenRotation":{
           "shape":"RefreshTokenRotationType",
           "documentation":"<p>The configuration of your app client for refresh token rotation. When enabled, your app client issues new ID, access, and refresh tokens when users renew their sessions with refresh tokens. When disabled, token refresh issues only ID and access tokens.</p>"
+        },
+        "ClientType":{
+          "shape":"ClientTypeType",
+          "documentation":"<p>How the app client was created.</p> <dl> <dt>REGULAR</dt> <dd> <p>The app client wasn't created through dynamic client registration. For example, you created it with <code>CreateUserPoolClient</code>.</p> </dd> <dt>DCR</dt> <dd> <p>An application registered the app client through dynamic client registration. These app clients don't support client secret operations such as <code>AddUserPoolClientSecret</code>, and they can't hold the <code>aws.cognito/dcr/register</code> scope.</p> </dd> </dl>"
         }
       },
       "documentation":"<p>The configuration of a user pool client.</p>"
@@ -11643,6 +11700,10 @@
         "UserPoolAddOns":{
           "shape":"UserPoolAddOnsType",
           "documentation":"<p>Contains settings for activation of threat protection, including the operating mode and additional authentication types. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to potentially unwanted traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html\">Adding advanced security to a user pool</a>. To activate this setting, your user pool must be on the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html\"> Plus tier</a>.</p>"
+        },
+        "DcrConfiguration":{
+          "shape":"DcrConfigurationType",
+          "documentation":"<p>The dynamic client registration configuration for the user pool. With dynamic client registration, applications can register their own app clients at runtime through the registration endpoint of your user pool domain. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
         },
         "UsernameConfiguration":{
           "shape":"UsernameConfigurationType",

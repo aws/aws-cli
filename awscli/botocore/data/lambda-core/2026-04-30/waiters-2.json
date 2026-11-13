@@ -1,0 +1,34 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "RuntimeAliasActive" : {
+      "description" : "Wait until a runtime alias has finished provisioning/updating and reached the ACTIVE state.",
+      "delay" : 2,
+      "maxAttempts" : 60,
+      "operation" : "GetRuntimeAlias",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "State",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      } ]
+    },
+    "RuntimeVersionActive" : {
+      "description" : "Wait until a runtime version has finished provisioning and reached the ACTIVE state.",
+      "delay" : 2,
+      "maxAttempts" : 60,
+      "operation" : "GetRuntimeVersion",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "State",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      }, {
+        "matcher" : "path",
+        "argument" : "State",
+        "state" : "failure",
+        "expected" : "FAILED"
+      } ]
+    }
+  }
+}

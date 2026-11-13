@@ -1202,6 +1202,15 @@
       "documentation":"<p>Registers an extension with the CloudFormation service. Registering an extension makes it available for use in CloudFormation templates in your Amazon Web Services account, and includes:</p> <ul> <li> <p>Validating the extension schema.</p> </li> <li> <p>Determining which handlers, if any, have been specified for the extension.</p> </li> <li> <p>Making the extension available for use in your account.</p> </li> </ul> <p>For more information about how to develop extensions and ready them for registration, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-types.html\">Creating resource types using the CloudFormation CLI</a> in the <i>CloudFormation Command Line Interface (CLI) User Guide</i>.</p> <p>You can have a maximum of 50 resource extension versions registered at a time. This maximum is per account and per Region. Use <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeregisterType.html\">DeregisterType</a> to deregister specific extension versions if necessary.</p> <p>Once you have initiated a registration request using <a>RegisterType</a>, you can use <a>DescribeTypeRegistration</a> to monitor the progress of the registration request.</p> <p>Once you have registered a private extension in your account and Region, use <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetTypeConfiguration.html\">SetTypeConfiguration</a> to specify configuration properties for the extension. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-set-configuration.html\">Edit configuration data for extensions in your account</a> in the <i>CloudFormation User Guide</i>.</p>",
       "idempotent":true
     },
+    "RemoveAlias":{
+      "name":"RemoveAlias",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RemoveAliasInput"},
+      "documentation":"<p>Removes an alias from a stack. After the alias is removed successfully, it can no longer be used to reference the stack in API calls.</p>"
+    },
     "RollbackStack":{
       "name":"RollbackStack",
       "http":{
@@ -1217,6 +1226,19 @@
         {"shape":"TokenAlreadyExistsException"}
       ],
       "documentation":"<p>When specifying <code>RollbackStack</code>, you preserve the state of previously provisioned resources when an operation fails. You can check the status of the stack through the <a>DescribeStacks</a> operation.</p> <p>Rolls back the specified stack to the last known stable state from <code>CREATE_FAILED</code> or <code>UPDATE_FAILED</code> stack statuses.</p> <p>This operation will delete a stack if it doesn't contain a last known stable state. A last known stable state includes any status in a <code>*_COMPLETE</code>. This includes the following stack statuses.</p> <ul> <li> <p> <code>CREATE_COMPLETE</code> </p> </li> <li> <p> <code>UPDATE_COMPLETE</code> </p> </li> <li> <p> <code>UPDATE_ROLLBACK_COMPLETE</code> </p> </li> <li> <p> <code>IMPORT_COMPLETE</code> </p> </li> <li> <p> <code>IMPORT_ROLLBACK_COMPLETE</code> </p> </li> </ul>"
+    },
+    "SetAlias":{
+      "name":"SetAlias",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetAliasInput"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Assigns an alias to an existing stack. An alias is an alternative name for a stack that can be used in place of the stack name in any CloudFormation API call that accepts the <code>StackName</code> parameter. This enables you to effectively rename a stack without recreating it.</p> <p>After setting an alias, both the original stack name and the alias resolve to the same stack. Setting an alias does not change the stack's ARN, physical resource IDs, or any deployed resources.</p> <note> <p>Each stack can have at most one alias. To change a stack's alias, first remove the existing alias using <a>RemoveAlias</a>, then set a new one.</p> </note>"
     },
     "SetStackPolicy":{
       "name":"SetStackPolicy",
@@ -1561,6 +1583,11 @@
     "AfterValueFrom":{
       "type":"string",
       "enum":["TEMPLATE"]
+    },
+    "AliasName":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "AllowedValue":{"type":"string"},
     "AllowedValues":{
@@ -6201,6 +6228,17 @@
       "max":16384,
       "min":1
     },
+    "RemoveAliasInput":{
+      "type":"structure",
+      "required":["AliasName"],
+      "members":{
+        "AliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias name to remove.</p>"
+        }
+      },
+      "documentation":"<p>The input for the <a>RemoveAlias</a> action.</p>"
+    },
     "Replacement":{
       "type":"string",
       "enum":[
@@ -6958,6 +6996,24 @@
       "type":"list",
       "member":{"shape":"ResourceAttribute"}
     },
+    "SetAliasInput":{
+      "type":"structure",
+      "required":[
+        "StackName",
+        "AliasName"
+      ],
+      "members":{
+        "StackName":{
+          "shape":"StackName",
+          "documentation":"<p>The name or unique stack ID of the stack to assign an alias to.</p>"
+        },
+        "AliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias to assign to the stack. The alias can then be used in place of the stack name in any API call that accepts <code>StackName</code>.</p> <p>The name must be unique within the same account and Region. It cannot match an existing stack name or another active alias.</p> <note> <p>An alias name can contain only alphanumeric characters (case-sensitive) and hyphens. It must start with an alphabetic character and can't be longer than 128 characters.</p> </note>"
+        }
+      },
+      "documentation":"<p>The input for the <a>SetAlias</a> action.</p>"
+    },
     "SetStackPolicyInput":{
       "type":"structure",
       "required":["StackName"],
@@ -7180,6 +7236,10 @@
         "LastOperations":{
           "shape":"LastOperations",
           "documentation":"<p>Information about the most recent operations performed on this stack.</p>"
+        },
+        "AliasName":{
+          "shape":"AliasName",
+          "documentation":"<p>The alias assigned to the stack, if one has been set. An alias is an alternative name that can be used in place of the stack name in any CloudFormation API call that accepts the <code>StackName</code> parameter.</p>"
         }
       },
       "documentation":"<p>The <code>Stack</code> data type.</p>"

@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "waiters": {
+    "ImageAvailable": {
+      "description": "Wait until an image build version reaches the AVAILABLE state, meaning the build completed, including distribution and integration of output resources. The waiter fails if the image reaches the FAILED or CANCELLED state. Specify the full image build version ARN; wildcard version ARNs only resolve to images that are already available.",
+      "operation": "GetImage",
+      "delay": 60,
+      "maxAttempts": 360,
+      "acceptors": [
+        {
+          "state": "success",
+          "matcher": "path",
+          "argument": "image.state.status",
+          "expected": "AVAILABLE"
+        },
+        {
+          "state": "failure",
+          "matcher": "path",
+          "argument": "image.state.status",
+          "expected": "FAILED"
+        },
+        {
+          "state": "failure",
+          "matcher": "path",
+          "argument": "image.state.status",
+          "expected": "CANCELLED"
+        }
+      ]
+    }
+  }
+}

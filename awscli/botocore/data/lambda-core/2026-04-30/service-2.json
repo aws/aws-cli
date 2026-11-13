@@ -32,6 +32,65 @@
       "documentation":"<p>Creates a network connector that enables Lambda compute resources to route outbound traffic through your Amazon VPC. The network connector provisions elastic network interfaces (ENIs) in the subnets you specify, providing a managed network path to private resources such as databases, caches, and internal APIs.</p> <p>This operation is asynchronous. The network connector starts in <code>PENDING</code> state while ENIs are provisioned in your VPC (provisioning typically takes up to 10 minutes). Use <code>GetNetworkConnector</code> to poll the connector state until it reaches <code>ACTIVE</code>. Once active, you can attach the connector to supported Lambda compute resources — such as MicroVMs and WebFunctions — at run time. For how to attach a connector, see the documentation for the specific compute type.</p> <p>This operation is idempotent when you provide a <code>ClientToken</code> — if you retry a request that completed successfully using the same client token, the operation returns the existing connector without creating a duplicate.</p>",
       "idempotent":true
     },
+    "CreateRuntime":{
+      "name":"CreateRuntime",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2026-10-01/runtimes",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateRuntimeRequest"},
+      "output":{"shape":"CreateRuntimeResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Creates a customer-managed runtime, a resource providing a centrally managed execution environment for your Lambda functions. The runtime resource is the parent of the runtime version and runtime alias child resources.</p>",
+      "idempotent":true
+    },
+    "CreateRuntimeAlias":{
+      "name":"CreateRuntimeAlias",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/aliases",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRuntimeAliasRequest"},
+      "output":{"shape":"CreateRuntimeAliasResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a new customer-managed runtime alias. The alias is a named pointer to a runtime version. Functions consume the customer-managed runtime through the runtime alias.</p>",
+      "idempotent":true
+    },
+    "CreateRuntimeVersion":{
+      "name":"CreateRuntimeVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/versions",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRuntimeVersionRequest"},
+      "output":{"shape":"CreateRuntimeVersionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a new runtime version. A runtime version defines the function execution environment by referencing a container image. Runtime versions are immutable. To update the runtime, create a new runtime version and migrate functions by updating the runtime aliases to point to the new runtime version.</p>",
+      "idempotent":true
+    },
     "DeleteNetworkConnector":{
       "name":"DeleteNetworkConnector",
       "http":{
@@ -51,6 +110,63 @@
       "documentation":"<p>Initiates deletion of a network connector. The connector transitions to <code>DELETING</code> state while elastic network interfaces are cleaned up asynchronously. After deletion completes, subsequent calls to <code>GetNetworkConnector</code> return <code>ResourceNotFoundException</code>.</p> <p>This operation is idempotent — calling delete on a connector that is already deleting or has been deleted succeeds without error. You can delete connectors in <code>ACTIVE</code> or <code>FAILED</code> states. Before deleting a connector, ensure that no Lambda compute resources are using it, as they will lose VPC egress connectivity immediately.</p> <p>Deleting with an unqualified identifier removes the connector and all of its versions. To remove a single historical version, supply its version-qualified ARN; the connector and its remaining versions are unaffected. You can't delete the latest version on its own — delete the connector to remove it.</p>",
       "idempotent":true
     },
+    "DeleteRuntime":{
+      "name":"DeleteRuntime",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteRuntimeRequest"},
+      "output":{"shape":"DeleteRuntimeResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Schedules a customer-managed runtime to be deleted. Runtimes scheduled for deletion enter the PENDING_DELETION state and can be restored during the scheduled deletion window. Runtime versions and aliases must be deleted or scheduled for deletion before deleting the runtime. Function invokes fail for functions using runtime versions or aliases that are deleted or pending deletion.</p>",
+      "idempotent":true
+    },
+    "DeleteRuntimeAlias":{
+      "name":"DeleteRuntimeAlias",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/aliases/{Name}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteRuntimeAliasRequest"},
+      "output":{"shape":"DeleteRuntimeAliasResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Schedules a runtime alias to be deleted. Runtime aliases scheduled for deletion enter the PENDING_DELETION state and can be restored during the scheduled deletion window. Function invokes fail for functions using runtime aliases that are deleted or pending deletion.</p>",
+      "idempotent":true
+    },
+    "DeleteRuntimeVersion":{
+      "name":"DeleteRuntimeVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/versions/{Name}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteRuntimeVersionRequest"},
+      "output":{"shape":"DeleteRuntimeVersionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Schedules a runtime version to be deleted. Runtime versions scheduled for deletion enter the PENDING_DELETION state and can be restored during the scheduled deletion window. Function invokes fail for functions using a runtime version that is deleted or pending deletion.</p>",
+      "idempotent":true
+    },
     "GetNetworkConnector":{
       "name":"GetNetworkConnector",
       "http":{
@@ -67,6 +183,60 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves the current configuration, state, and metadata of a network connector. The <code>Identifier</code> parameter accepts the connector ID, name, or full ARN. Use this operation to poll connector state after creation or update, or to inspect the current VPC configuration and any failure reasons.</p> <p>The response includes the full connector configuration, current state, and — if the connector has been updated — the <code>LastUpdateStatus</code> and <code>LastUpdateStatusReasonCode</code> fields that indicate whether the most recent update succeeded or failed.</p>",
+      "readonly":true
+    },
+    "GetRuntime":{
+      "name":"GetRuntime",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRuntimeRequest"},
+      "output":{"shape":"GetRuntimeResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the configuration and metadata of a runtime.</p>",
+      "readonly":true
+    },
+    "GetRuntimeAlias":{
+      "name":"GetRuntimeAlias",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/aliases/{Name}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRuntimeAliasRequest"},
+      "output":{"shape":"GetRuntimeAliasResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the configuration, state, and metadata of a runtime alias.</p>",
+      "readonly":true
+    },
+    "GetRuntimeVersion":{
+      "name":"GetRuntimeVersion",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/versions/{Name}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRuntimeVersionRequest"},
+      "output":{"shape":"GetRuntimeVersionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the configuration, state, and metadata of a runtime version.</p>",
       "readonly":true
     },
     "ListNetworkConnectorVersions":{
@@ -104,6 +274,78 @@
       "documentation":"<p>Returns a paginated list of network connectors in your account for the current Region. You can optionally filter results by connector state. Use the <code>Marker</code> parameter from a previous response to retrieve the next page of results.</p> <p>Each item in the response includes the connector ARN, name, ID, type, current state, and last modified timestamp. To retrieve full configuration details for a specific connector, use <code>GetNetworkConnector</code>.</p>",
       "readonly":true
     },
+    "ListRuntimeAliases":{
+      "name":"ListRuntimeAliases",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/aliases",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRuntimeAliasesRequest"},
+      "output":{"shape":"ListRuntimeAliasesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a paginated list of aliases for the specified runtime.</p>",
+      "readonly":true
+    },
+    "ListRuntimeVersions":{
+      "name":"ListRuntimeVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRuntimeVersionsRequest"},
+      "output":{"shape":"ListRuntimeVersionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a paginated list of versions for the specified runtime.</p>",
+      "readonly":true
+    },
+    "ListRuntimes":{
+      "name":"ListRuntimes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2026-10-01/runtimes",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRuntimesRequest"},
+      "output":{"shape":"ListRuntimesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Returns a paginated list of runtimes in your account for the current Region.</p>",
+      "readonly":true
+    },
+    "RestoreRuntime":{
+      "name":"RestoreRuntime",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/restore",
+        "responseCode":200
+      },
+      "input":{"shape":"RestoreRuntimeRequest"},
+      "output":{"shape":"RestoreRuntimeResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Cancels a pending scheduled deletion, returning the resource to the ACTIVE state. Scope is determined by the RuntimeName path parameter plus an optional, mutually exclusive RuntimeVersion or RuntimeAlias query parameter: with neither, the runtime itself is restored; with RuntimeVersion, the named runtime version; with RuntimeAlias, the named runtime alias. Restoring a resource that is already ACTIVE is a no-op success. Restore only works while the target is PENDING_DELETION; once the scheduled deletion has begun executing (DELETING) or has completed, the call fails.</p>",
+      "idempotent":true
+    },
     "UpdateNetworkConnector":{
       "name":"UpdateNetworkConnector",
       "http":{
@@ -122,6 +364,63 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates the VPC configuration or operator role of an existing network connector. You can modify the subnet IDs, security group IDs, network protocol, or operator role. The connector must be in <code>ACTIVE</code> state to accept updates.</p> <p>This operation is asynchronous. The connector remains in <code>ACTIVE</code> state during the update — existing workloads that reference this connector are not disrupted. Use <code>GetNetworkConnector</code> to monitor the <code>LastUpdateStatus</code> field, which transitions through <code>InProgress</code> to <code>Successful</code> or <code>Failed</code>. If the update fails, the <code>LastUpdateStatusReasonCode</code> field provides a specific error code for troubleshooting. This operation is idempotent when you provide a <code>ClientToken</code>.</p> <p>Each successful configuration change creates a new immutable version. A connector can have a limited number of versions; once that limit is reached, further updates fail with <code>NetworkConnectorLimitExceededException</code> until you delete older versions.</p>"
+    },
+    "UpdateRuntime":{
+      "name":"UpdateRuntime",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRuntimeRequest"},
+      "output":{"shape":"UpdateRuntimeResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the properties of an existing customer-managed runtime, such as its description, license information, or lifecycle information.</p>",
+      "idempotent":true
+    },
+    "UpdateRuntimeAlias":{
+      "name":"UpdateRuntimeAlias",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/aliases/{Name}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRuntimeAliasRequest"},
+      "output":{"shape":"UpdateRuntimeAliasResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates an existing runtime alias to point to a different runtime version or to change its description or lifecycle information.</p>",
+      "idempotent":true
+    },
+    "UpdateRuntimeVersion":{
+      "name":"UpdateRuntimeVersion",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/2026-10-01/runtimes/{RuntimeName}/versions/{Name}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRuntimeVersionRequest"},
+      "output":{"shape":"UpdateRuntimeVersionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the runtime version release notes. The runtime version must be in the ACTIVE state. The runtime version image is immutable. To change the runtime contents, create a new runtime version.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -131,10 +430,40 @@
       "max":1,
       "min":1
     },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
     "ClientTokenString":{
       "type":"string",
       "max":64,
       "min":1
+    },
+    "Compatibility":{
+      "type":"structure",
+      "members":{
+        "IntegrationModels":{
+          "shape":"IntegrationModelList",
+          "documentation":"<p>Supported integration models for the runtime version.</p>"
+        },
+        "Architectures":{
+          "shape":"RuntimeArchitectureList",
+          "documentation":"<p>Supported architectures for the runtime version.</p>"
+        },
+        "ManagedInstances":{
+          "shape":"CompatibilityPolicy",
+          "documentation":"<p>Whether the runtime version is compatible with managed instances.</p>"
+        }
+      },
+      "documentation":"<p>Defines the compatibility matrix for a runtime version, indicating supported integration models, architectures, and feature availability.</p>"
+    },
+    "CompatibilityPolicy":{
+      "type":"string",
+      "documentation":"<p>Indicates whether a runtime version supports a feature.</p>",
+      "enum":[
+        "Supported",
+        "NotSupported"
+      ]
     },
     "ComputeResourceType":{
       "type":"string",
@@ -220,6 +549,234 @@
         }
       }
     },
+    "CreateRuntimeAliasRequest":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "RuntimeVersion",
+        "Name"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime to create an alias for.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "RuntimeVersion":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version the alias points to.</p>"
+        },
+        "Name":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>The name to assign to the new runtime alias.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeAliasDescription",
+          "documentation":"<p>A description of the runtime alias.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the alias. By default, this is inherited from the runtime lifecycle. Optionally, you can override the lifecycle information at the alias level, if required.</p>"
+        }
+      }
+    },
+    "CreateRuntimeAliasResponse":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "RuntimeVersion",
+        "RuntimeVersionArn",
+        "State",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>The name of the runtime alias.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime alias.</p>"
+        },
+        "RuntimeVersion":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version the alias points to.</p>"
+        },
+        "RuntimeVersionArn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime version the alias points to.</p>"
+        },
+        "State":{
+          "shape":"RuntimeAliasState",
+          "documentation":"<p>The current state of the runtime alias.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeAliasDescription",
+          "documentation":"<p>A description of the runtime alias.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the alias. By default, this is inherited from the runtime lifecycle. Optionally, you can override the lifecycle information at the alias level, if required.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime alias was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime alias was last modified.</p>"
+        }
+      }
+    },
+    "CreateRuntimeRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"RuntimeName",
+          "documentation":"<p>The name of the runtime to create.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A map of tag keys and values to associate with the runtime.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeDescription",
+          "documentation":"<p>A description of the runtime.</p>"
+        },
+        "LicenseInfo":{
+          "shape":"RuntimeLicenseInfo",
+          "documentation":"<p>The license information for the runtime.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the runtime (optional). Use this to schedule runtime deprecation.</p>"
+        }
+      }
+    },
+    "CreateRuntimeResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime.</p>"
+        },
+        "Name":{
+          "shape":"RuntimeName",
+          "documentation":"<p>The name of the runtime.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeDescription",
+          "documentation":"<p>The description of the runtime.</p>"
+        },
+        "LicenseInfo":{
+          "shape":"RuntimeLicenseInfo",
+          "documentation":"<p>The license information for the runtime.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the runtime. Used to schedule runtime deprecation.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime was last modified.</p>"
+        }
+      }
+    },
+    "CreateRuntimeVersionRequest":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "ImageUri",
+        "Name"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime to create a version for.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "ImageUri":{
+          "shape":"String",
+          "documentation":"<p>The URI of the container image used to define the function execution environment for this runtime version.</p>"
+        },
+        "Name":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name to assign to the new runtime version.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"String",
+          "documentation":"<p>The release notes to associate with the runtime version.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to true, the request is validated without creating a new runtime version. Use this to check that the request would succeed. No runtime version is created and no changes are made.</p>"
+        }
+      }
+    },
+    "CreateRuntimeVersionResponse":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "ResolvedUri",
+        "State",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime version.</p>"
+        },
+        "ResolvedUri":{
+          "shape":"String",
+          "documentation":"<p>The resolved image URI of the runtime version.</p>"
+        },
+        "State":{
+          "shape":"RuntimeVersionState",
+          "documentation":"<p>The current state of the runtime version.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"String",
+          "documentation":"<p>The release notes associated with the runtime version.</p>"
+        },
+        "Platforms":{
+          "shape":"PlatformList",
+          "documentation":"<p>The platforms (architecture and OS combinations) available for the runtime version.</p>"
+        },
+        "Compatibility":{
+          "shape":"Compatibility",
+          "documentation":"<p>The compatibility matrix of the runtime version.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime version was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime version was last modified.</p>"
+        }
+      }
+    },
     "DeleteNetworkConnectorRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -273,6 +830,108 @@
           "documentation":"<p>The current state of the network connector. The State field is typically <code>DELETING</code> after this call.</p>"
         }
       }
+    },
+    "DeleteRuntimeAliasRequest":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "Name"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "Name":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>The name of the runtime alias to delete.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "RecoveryWindowInDays":{
+          "shape":"DeleteRuntimeAliasRequestRecoveryWindowInDaysInteger",
+          "documentation":"<p>Optional. The waiting period, in days (7-30), before the runtime alias is permanently deleted.</p>",
+          "location":"header",
+          "locationName":"x-amzn-runtime-recovery-window-in-days"
+        }
+      }
+    },
+    "DeleteRuntimeAliasRequestRecoveryWindowInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30,
+      "min":7
+    },
+    "DeleteRuntimeAliasResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteRuntimeRequest":{
+      "type":"structure",
+      "required":["RuntimeName"],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime to delete.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "RecoveryWindowInDays":{
+          "shape":"DeleteRuntimeRequestRecoveryWindowInDaysInteger",
+          "documentation":"<p>Optional. The waiting period, in days (7-30), before the runtime is permanently deleted.</p>",
+          "location":"header",
+          "locationName":"x-amzn-runtime-recovery-window-in-days"
+        }
+      }
+    },
+    "DeleteRuntimeRequestRecoveryWindowInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30,
+      "min":7
+    },
+    "DeleteRuntimeResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteRuntimeVersionRequest":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "Name"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "Name":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version to delete.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "RecoveryWindowInDays":{
+          "shape":"DeleteRuntimeVersionRequestRecoveryWindowInDaysInteger",
+          "documentation":"<p>Optional. The waiting period, in days (7-30), before the runtime version is permanently deleted.</p>",
+          "location":"header",
+          "locationName":"x-amzn-runtime-recovery-window-in-days"
+        }
+      }
+    },
+    "DeleteRuntimeVersionRequestRecoveryWindowInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30,
+      "min":7
+    },
+    "DeleteRuntimeVersionResponse":{
+      "type":"structure",
+      "members":{}
     },
     "GetNetworkConnectorRequest":{
       "type":"structure",
@@ -360,6 +1019,235 @@
         }
       }
     },
+    "GetRuntimeAliasRequest":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "Name"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "Name":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>The name of the runtime alias to retrieve.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        }
+      }
+    },
+    "GetRuntimeAliasResponse":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "RuntimeVersion",
+        "RuntimeVersionArn",
+        "State",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>The name of the runtime alias.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime alias.</p>"
+        },
+        "RuntimeVersion":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version the alias points to.</p>"
+        },
+        "RuntimeVersionArn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime version the alias points to.</p>"
+        },
+        "State":{
+          "shape":"RuntimeAliasState",
+          "documentation":"<p>The current state of the runtime alias.</p>"
+        },
+        "PendingDeletionAt":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>Present only when State is PENDING_DELETION. The date and time at which the runtime alias will be permanently deleted.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeAliasDescription",
+          "documentation":"<p>A description of the runtime alias.</p>"
+        },
+        "Compatibility":{
+          "shape":"Compatibility",
+          "documentation":"<p>The compatibility matrix of the runtime version the alias points to.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the alias. By default, this is inherited from the runtime lifecycle. Optionally, you can override the lifecycle information at the alias level, if required.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime alias was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime alias was last modified.</p>"
+        }
+      }
+    },
+    "GetRuntimeRequest":{
+      "type":"structure",
+      "required":["RuntimeName"],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime to retrieve.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        }
+      }
+    },
+    "GetRuntimeResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime.</p>"
+        },
+        "Name":{
+          "shape":"RuntimeName",
+          "documentation":"<p>The name of the runtime.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeDescription",
+          "documentation":"<p>The description of the runtime.</p>"
+        },
+        "LicenseInfo":{
+          "shape":"RuntimeLicenseInfo",
+          "documentation":"<p>The license information for the runtime.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the runtime. Used to schedule runtime deprecation.</p>"
+        },
+        "State":{
+          "shape":"RuntimeState",
+          "documentation":"<p>The current state of the runtime.</p>"
+        },
+        "PendingDeletionAt":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>Present only when State is PENDING_DELETION. The date and time at which the runtime will be permanently deleted.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime was last modified.</p>"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the runtime.</p>"
+        }
+      }
+    },
+    "GetRuntimeVersionRequest":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "Name"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "Name":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version to retrieve.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        }
+      }
+    },
+    "GetRuntimeVersionResponse":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "ResolvedUri",
+        "State",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime version.</p>"
+        },
+        "ResolvedUri":{
+          "shape":"String",
+          "documentation":"<p>The resolved image URI of the runtime version.</p>"
+        },
+        "State":{
+          "shape":"RuntimeVersionState",
+          "documentation":"<p>The current state of the runtime version.</p>"
+        },
+        "PendingDeletionAt":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>Present only when State is PENDING_DELETION. The date and time at which the runtime version will be permanently deleted.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"String",
+          "documentation":"<p>The release notes associated with the runtime version.</p>"
+        },
+        "Platforms":{
+          "shape":"PlatformList",
+          "documentation":"<p>The platforms (architecture and OS combinations) available for the runtime version.</p>"
+        },
+        "Compatibility":{
+          "shape":"Compatibility",
+          "documentation":"<p>The compatibility matrix of the runtime version.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime version was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime version was last modified.</p>"
+        }
+      }
+    },
+    "IntegrationModel":{
+      "type":"string",
+      "documentation":"<p>Supported integration model for a runtime.</p>",
+      "enum":["RuntimeAPI"]
+    },
+    "IntegrationModelList":{
+      "type":"list",
+      "member":{
+        "shape":"IntegrationModel",
+        "documentation":"<p>A supported integration model.</p>"
+      },
+      "documentation":"<p>A list of supported integration models.</p>"
+    },
     "InvalidParameterValueException":{
       "type":"structure",
       "members":{
@@ -367,7 +1255,10 @@
           "shape":"String",
           "documentation":"<p>The exception type.</p>"
         },
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes the exception.</p>"
+        }
       },
       "documentation":"<p>One of the parameters in the request is not valid. Check the error message for details about which parameter failed validation.</p>",
       "error":{
@@ -454,6 +1345,131 @@
         "NextMarker":{
           "shape":"String",
           "documentation":"<p>The pagination token to include in a subsequent request to retrieve the next page. This value is null when there are no more results.</p>"
+        }
+      }
+    },
+    "ListRuntimeAliasesRequest":{
+      "type":"structure",
+      "required":["RuntimeName"],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime whose aliases to list.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token from a previous response. Use it to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"ListRuntimeAliasesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of runtime aliases to return per page. Valid range: 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListRuntimeAliasesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRuntimeAliasesResponse":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"RuntimeAliasList",
+          "documentation":"<p>The list of runtime aliases for the current page of results.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to include in a subsequent request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListRuntimeVersionsRequest":{
+      "type":"structure",
+      "required":["RuntimeName"],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime whose versions to list.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token from a previous response. Use it to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"ListRuntimeVersionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of runtime versions to return per page. Valid range: 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListRuntimeVersionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRuntimeVersionsResponse":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"RuntimeVersionList",
+          "documentation":"<p>The list of runtime versions for the current page of results.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to include in a subsequent request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListRuntimesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token from a previous response. Use it to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"ListRuntimesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of runtimes to return per page. Valid range: 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListRuntimesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRuntimesResponse":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to include in a subsequent request to retrieve the next page of results.</p>"
+        },
+        "Items":{
+          "shape":"RuntimeList",
+          "documentation":"<p>The list of runtimes for the current page of results.</p>"
         }
       }
     },
@@ -760,6 +1776,37 @@
         "DualStack"
       ]
     },
+    "Platform":{
+      "type":"structure",
+      "required":[
+        "Architecture",
+        "Os",
+        "Digest"
+      ],
+      "members":{
+        "Architecture":{
+          "shape":"String",
+          "documentation":"<p>The CPU architecture of the platform, for example x86_64 or arm64.</p>"
+        },
+        "Os":{
+          "shape":"String",
+          "documentation":"<p>The operating system of the platform.</p>"
+        },
+        "Digest":{
+          "shape":"String",
+          "documentation":"<p>The content digest of the platform-specific image.</p>"
+        }
+      },
+      "documentation":"<p>Describes a single OCI platform (CPU architecture and operating system) available for a runtime version.</p>"
+    },
+    "PlatformList":{
+      "type":"list",
+      "member":{
+        "shape":"Platform",
+        "documentation":"<p>A platform available for the runtime version.</p>"
+      },
+      "documentation":"<p>The list of platforms available for a runtime version.</p>"
+    },
     "ResourceConflictException":{
       "type":"structure",
       "members":{
@@ -767,9 +1814,12 @@
           "shape":"String",
           "documentation":"<p>The exception type.</p>"
         },
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes the exception.</p>"
+        }
       },
-      "documentation":"<p>The request could not be completed due to a conflict with the current state of the resource. For example, attempting to update a connector that is not in <code>ACTIVE</code> state.</p>",
+      "documentation":"<p>The request could not be completed due to a conflict with the current state of the resource. For example, attempting to modify a resource that is not in a state that permits the operation.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -783,14 +1833,403 @@
           "shape":"String",
           "documentation":"<p>The exception type.</p>"
         },
-        "Message":{"shape":"String"}
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes the exception.</p>"
+        }
       },
-      "documentation":"<p>The specified network connector does not exist. Verify the identifier (ID, name, or ARN) and Region.</p>",
+      "documentation":"<p>The specified resource does not exist. Verify the identifier and Region.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
       },
       "exception":true
+    },
+    "RestoreRuntimeRequest":{
+      "type":"structure",
+      "required":["RuntimeName"],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime to restore. When RuntimeVersion or RuntimeAlias is specified, the runtime that owns the runtime version or runtime alias to restore.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "RuntimeVersion":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>Optional. Restores the named RuntimeVersion under RuntimeName. Mutually exclusive with RuntimeAlias; supplying both is rejected with InvalidParameterValueException.</p>",
+          "location":"querystring",
+          "locationName":"RuntimeVersion"
+        },
+        "RuntimeAlias":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>Optional. Restores the named RuntimeAlias under RuntimeName. Mutually exclusive with RuntimeVersion; supplying both is rejected with InvalidParameterValueException.</p>",
+          "location":"querystring",
+          "locationName":"RuntimeAlias"
+        }
+      }
+    },
+    "RestoreRuntimeResponse":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "Arn",
+        "State",
+        "LastModified"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime.</p>"
+        },
+        "RuntimeVersion":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>Echoed back only when the request supplied a RuntimeVersion qualifier.</p>"
+        },
+        "RuntimeAlias":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>Echoed back only when the request supplied a RuntimeAlias qualifier.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The fully qualified ARN of the resource that was restored (runtime, version, or alias).</p>"
+        },
+        "State":{
+          "shape":"RuntimeState",
+          "documentation":"<p>The state of the restored resource, ACTIVE on success.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the restored resource was last modified.</p>"
+        }
+      }
+    },
+    "RuntimeAliasDescription":{
+      "type":"string",
+      "documentation":"<p>A description of the runtime alias.</p>",
+      "max":1024,
+      "min":0,
+      "pattern":"[^\\p{C}]*"
+    },
+    "RuntimeAliasInfo":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "RuntimeVersion",
+        "RuntimeVersionArn",
+        "State",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>The name of the runtime alias.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime alias.</p>"
+        },
+        "RuntimeVersion":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version the alias points to.</p>"
+        },
+        "RuntimeVersionArn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime version the alias points to.</p>"
+        },
+        "State":{
+          "shape":"RuntimeAliasState",
+          "documentation":"<p>The current state of the runtime alias.</p>"
+        },
+        "PendingDeletionAt":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>Present only when State is PENDING_DELETION. The date and time at which the runtime alias will be permanently deleted.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeAliasDescription",
+          "documentation":"<p>A description of the runtime alias.</p>"
+        },
+        "Compatibility":{
+          "shape":"Compatibility",
+          "documentation":"<p>The compatibility matrix of the runtime version the alias points to.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The lifecycle for the alias. By default, this is inherited from the runtime lifecycle. Optionally, you can override the lifecycle information at the alias level, if required.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime alias was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime alias was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a runtime alias returned by ListRuntimeAliases.</p>"
+    },
+    "RuntimeAliasList":{
+      "type":"list",
+      "member":{
+        "shape":"RuntimeAliasInfo",
+        "documentation":"<p>Summary information about a runtime alias.</p>"
+      },
+      "documentation":"<p>A list of runtime alias summaries.</p>"
+    },
+    "RuntimeAliasName":{
+      "type":"string",
+      "documentation":"<p>The name of a runtime alias.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]([A-Za-z0-9_.-]{0,126}[A-Za-z0-9_])?"
+    },
+    "RuntimeAliasState":{
+      "type":"string",
+      "documentation":"<p>The state of a runtime alias.</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "PENDING_DELETION"
+      ]
+    },
+    "RuntimeArchitecture":{
+      "type":"string",
+      "documentation":"<p>Supported CPU architecture for a runtime.</p>",
+      "enum":[
+        "x86_64",
+        "arm64"
+      ]
+    },
+    "RuntimeArchitectureList":{
+      "type":"list",
+      "member":{
+        "shape":"RuntimeArchitecture",
+        "documentation":"<p>A supported CPU architecture.</p>"
+      },
+      "documentation":"<p>A list of supported CPU architectures.</p>"
+    },
+    "RuntimeArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of a runtime resource.</p>",
+      "max":2048,
+      "min":48,
+      "pattern":"arn:(aws[a-zA-Z-]*):lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:runtime/[a-z0-9]([a-z0-9_.-]{0,126})?[a-z0-9](/(version|alias)/[^/]{1,128})?"
+    },
+    "RuntimeDescription":{
+      "type":"string",
+      "documentation":"<p>A description of the runtime.</p>",
+      "max":1024,
+      "min":0
+    },
+    "RuntimeIdentifier":{
+      "type":"string",
+      "documentation":"<p>The identifier for a runtime. This can be either the runtime name or the fully qualified runtime ARN.</p>",
+      "max":2048,
+      "min":2,
+      "pattern":"(arn:(aws[a-zA-Z-]*):lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:runtime/)?[a-z0-9]([a-z0-9_.-]{0,126})?[a-z0-9]"
+    },
+    "RuntimeInfo":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime.</p>"
+        },
+        "Name":{
+          "shape":"RuntimeName",
+          "documentation":"<p>The name of the runtime.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeDescription",
+          "documentation":"<p>The description of the runtime.</p>"
+        },
+        "LicenseInfo":{
+          "shape":"RuntimeLicenseInfo",
+          "documentation":"<p>The license information for the runtime.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the runtime. Used to schedule runtime deprecation.</p>"
+        },
+        "State":{
+          "shape":"RuntimeState",
+          "documentation":"<p>The current state of the runtime.</p>"
+        },
+        "PendingDeletionAt":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>Present only when State is PENDING_DELETION. The date and time at which the runtime will be permanently deleted.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a runtime returned by ListRuntimes.</p>"
+    },
+    "RuntimeLicenseInfo":{
+      "type":"string",
+      "documentation":"<p>The license information for the runtime.</p>",
+      "max":1024,
+      "min":0
+    },
+    "RuntimeLifecycleDate":{
+      "type":"string",
+      "documentation":"<p>A UTC calendar date, yyyy-mm-dd.</p>",
+      "max":10,
+      "min":10,
+      "pattern":"\\d{4}-\\d{2}-\\d{2}"
+    },
+    "RuntimeList":{
+      "type":"list",
+      "member":{
+        "shape":"RuntimeInfo",
+        "documentation":"<p>Summary information about a runtime.</p>"
+      },
+      "documentation":"<p>A list of runtime summaries.</p>"
+    },
+    "RuntimeName":{
+      "type":"string",
+      "documentation":"<p>The name of a runtime. Must be 2 to 128 characters.</p>",
+      "max":128,
+      "min":2,
+      "pattern":"[a-z0-9]([a-z0-9_.-]{0,126})?[a-z0-9]"
+    },
+    "RuntimeReleaseLifecycle":{
+      "type":"structure",
+      "members":{
+        "ReleaseState":{
+          "shape":"RuntimeReleaseState",
+          "documentation":"<p>Optional, with no default applied. DEPRECATED requires a DeprecationDate on or before today (UTC); PREVIEW and GA require a later one, or none. Reads report DEPRECATED once DeprecationDate is reached.</p>"
+        },
+        "DeprecationDate":{
+          "shape":"RuntimeLifecycleDate",
+          "documentation":"<p>The date (UTC) on which the runtime or alias becomes deprecated.</p>"
+        },
+        "FunctionCreateBlockDate":{
+          "shape":"RuntimeLifecycleDate",
+          "documentation":"<p>The date (UTC) on which creating new functions that use this runtime or alias is blocked.</p>"
+        },
+        "FunctionUpdateBlockDate":{
+          "shape":"RuntimeLifecycleDate",
+          "documentation":"<p>The date (UTC) on which updating existing functions that use this runtime or alias is blocked.</p>"
+        }
+      },
+      "documentation":"<p>The runtime lifecycle for the runtime or alias. Optional. Used to schedule runtime deprecation. Omitting or providing an empty object removes the existing lifecycle.</p>"
+    },
+    "RuntimeReleaseState":{
+      "type":"string",
+      "documentation":"<p>The release state declared by a runtime publisher for a runtime or runtime alias.</p>",
+      "enum":[
+        "PREVIEW",
+        "GA",
+        "DEPRECATED"
+      ]
+    },
+    "RuntimeState":{
+      "type":"string",
+      "documentation":"<p>The state of the runtime. The state is automatically managed by the service and indicates the current status of the runtime.</p>",
+      "enum":[
+        "ACTIVE",
+        "PENDING_DELETION",
+        "DELETING",
+        "FAILED"
+      ]
+    },
+    "RuntimeTimestamp":{
+      "type":"string",
+      "documentation":"<p>A timestamp, represented as a string.</p>",
+      "max":64,
+      "min":1
+    },
+    "RuntimeVersionInfo":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "ResolvedUri",
+        "State",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime version.</p>"
+        },
+        "ResolvedUri":{
+          "shape":"String",
+          "documentation":"<p>The resolved image URI of the runtime version.</p>"
+        },
+        "State":{
+          "shape":"RuntimeVersionState",
+          "documentation":"<p>The current state of the runtime version.</p>"
+        },
+        "PendingDeletionAt":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>Present only when State is PENDING_DELETION. The date and time at which the runtime version will be permanently deleted.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"String",
+          "documentation":"<p>The release notes associated with the runtime version.</p>"
+        },
+        "Compatibility":{
+          "shape":"Compatibility",
+          "documentation":"<p>The compatibility matrix of the runtime version.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime version was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime version was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a runtime version returned by ListRuntimeVersions.</p>"
+    },
+    "RuntimeVersionList":{
+      "type":"list",
+      "member":{
+        "shape":"RuntimeVersionInfo",
+        "documentation":"<p>Summary information about a runtime version.</p>"
+      },
+      "documentation":"<p>A list of runtime version summaries.</p>"
+    },
+    "RuntimeVersionName":{
+      "type":"string",
+      "documentation":"<p>The name of a runtime version.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]([A-Za-z0-9_.-]{0,126}[A-Za-z0-9_])?"
+    },
+    "RuntimeVersionState":{
+      "type":"string",
+      "documentation":"<p>The state of a runtime version.</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "FAILED",
+        "DELETING",
+        "PENDING_DELETION"
+      ]
     },
     "ServiceException":{
       "type":"structure",
@@ -799,14 +2238,48 @@
           "shape":"String",
           "documentation":"<p>The exception type.</p>"
         },
-        "Message":{"shape":"String"}
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes the exception.</p>"
+        }
       },
       "documentation":"<p>An internal service error occurred. Retry the request with exponential backoff.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes the exception.</p>"
+        }
+      },
+      "documentation":"<p>The request would exceed a service quota for your account. Request a quota increase or reduce the number of resources in use, then retry the request.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "String":{"type":"string"},
+    "TagMap":{
+      "type":"map",
+      "key":{
+        "shape":"String",
+        "documentation":"<p>A tag key.</p>"
+      },
+      "value":{
+        "shape":"String",
+        "documentation":"<p>A tag value.</p>"
+      },
+      "documentation":"<p>A map of tag keys to tag values to associate with the resource.</p>"
+    },
     "ThrottleReason":{
       "type":"string",
       "enum":[
@@ -831,7 +2304,10 @@
           "shape":"String",
           "documentation":"<p>The exception type.</p>"
         },
-        "message":{"shape":"String"},
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes the exception.</p>"
+        },
         "Reason":{
           "shape":"ThrottleReason",
           "documentation":"<p>The reason for the throttling.</p>"
@@ -922,7 +2398,238 @@
           "documentation":"<p>The timestamp of this update.</p>"
         }
       }
+    },
+    "UpdateRuntimeAliasRequest":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "Name",
+        "RuntimeVersion"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "Name":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>The name of the runtime alias to update.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "RuntimeVersion":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version the alias should point to.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeAliasDescription",
+          "documentation":"<p>A description of the runtime alias.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The lifecycle for the alias. By default, this is inherited from the runtime lifecycle. Optionally, you can override the lifecycle information at the alias level, if required. Omitting or providing an empty object removes the existing lifecycle override.</p>"
+        }
+      }
+    },
+    "UpdateRuntimeAliasResponse":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "Name",
+        "Arn",
+        "RuntimeVersion",
+        "RuntimeVersionArn",
+        "State",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name of the runtime.</p>"
+        },
+        "Name":{
+          "shape":"RuntimeAliasName",
+          "documentation":"<p>The name of the runtime alias.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime alias.</p>"
+        },
+        "RuntimeVersion":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version the alias points to.</p>"
+        },
+        "RuntimeVersionArn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime version the alias points to.</p>"
+        },
+        "State":{
+          "shape":"RuntimeAliasState",
+          "documentation":"<p>The current state of the runtime alias.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeAliasDescription",
+          "documentation":"<p>A description of the runtime alias.</p>"
+        },
+        "Compatibility":{
+          "shape":"Compatibility",
+          "documentation":"<p>The compatibility matrix of the runtime version the alias points to.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the alias. By default, this is inherited from the runtime lifecycle. Optionally, you can override the lifecycle information at the alias level, if required.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime alias was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime alias was last modified.</p>"
+        }
+      }
+    },
+    "UpdateRuntimeRequest":{
+      "type":"structure",
+      "required":["RuntimeName"],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime to update.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "Description":{
+          "shape":"RuntimeDescription",
+          "documentation":"<p>The updated description of the runtime.</p>"
+        },
+        "LicenseInfo":{
+          "shape":"RuntimeLicenseInfo",
+          "documentation":"<p>The updated license information for the runtime.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the runtime. Optional. Used to schedule runtime deprecation. Omitting or providing an empty object removes the existing lifecycle.</p>"
+        }
+      }
+    },
+    "UpdateRuntimeResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime.</p>"
+        },
+        "Name":{
+          "shape":"RuntimeName",
+          "documentation":"<p>The name of the runtime.</p>"
+        },
+        "Description":{
+          "shape":"RuntimeDescription",
+          "documentation":"<p>The description of the runtime.</p>"
+        },
+        "LicenseInfo":{
+          "shape":"RuntimeLicenseInfo",
+          "documentation":"<p>The license information for the runtime.</p>"
+        },
+        "ReleaseLifecycle":{
+          "shape":"RuntimeReleaseLifecycle",
+          "documentation":"<p>The runtime lifecycle for the runtime. Used to schedule runtime deprecation.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime was last modified.</p>"
+        }
+      }
+    },
+    "UpdateRuntimeVersionRequest":{
+      "type":"structure",
+      "required":[
+        "RuntimeName",
+        "Name",
+        "ReleaseNotes"
+      ],
+      "members":{
+        "RuntimeName":{
+          "shape":"RuntimeIdentifier",
+          "documentation":"<p>The name or ARN of the runtime.</p>",
+          "location":"uri",
+          "locationName":"RuntimeName"
+        },
+        "Name":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version to update.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "ReleaseNotes":{
+          "shape":"String",
+          "documentation":"<p>The release notes to associate with the runtime version.</p>"
+        }
+      }
+    },
+    "UpdateRuntimeVersionResponse":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "ResolvedUri",
+        "State",
+        "Created",
+        "LastModified"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuntimeVersionName",
+          "documentation":"<p>The name of the runtime version.</p>"
+        },
+        "Arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime version.</p>"
+        },
+        "ResolvedUri":{
+          "shape":"String",
+          "documentation":"<p>The resolved image URI of the runtime version.</p>"
+        },
+        "State":{
+          "shape":"RuntimeVersionState",
+          "documentation":"<p>The current state of the runtime version.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"String",
+          "documentation":"<p>The release notes associated with the runtime version.</p>"
+        },
+        "Platforms":{
+          "shape":"PlatformList",
+          "documentation":"<p>The platforms (architecture and OS combinations) available for the runtime version.</p>"
+        },
+        "Compatibility":{
+          "shape":"Compatibility",
+          "documentation":"<p>The compatibility matrix of the runtime version.</p>"
+        },
+        "Created":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime version was created.</p>"
+        },
+        "LastModified":{
+          "shape":"RuntimeTimestamp",
+          "documentation":"<p>The date and time when the runtime version was last modified.</p>"
+        }
+      }
     }
   },
-  "documentation":"<p><fullname>Lambda</fullname> <p> <b>Overview</b> </p> <p>AWS Lambda Core is a set of APIs for managing shared infrastructure resources used by Lambda. The Lambda Core API provides operations for creating and managing network connectors that enable Lambda compute resources to access resources in your Amazon Virtual Private Cloud (Amazon VPC).</p> <p>Network connectors provision elastic network interfaces (ENIs) in your VPC subnets, providing a managed network path from Lambda compute environments to private resources such as Amazon RDS databases, Amazon ElastiCache clusters, and internal APIs. You create a network connector once and attach it to one or more Lambda compute resources at run time.</p> <p>The <i>Lambda Core API Reference</i> provides information about each of the API methods, including details about the parameters in each API request and response.</p> <p/> <p>You can use Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools to access the API. For installation instructions, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> <p>For a list of Region-specific endpoints that Lambda supports, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lambda-service.html\">Lambda endpoints and quotas</a> in the <i>Amazon Web Services General Reference.</i> </p> <p>When making the API calls, you will need to authenticate your request by providing a signature. Lambda supports signature version 4. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 signing process</a> in the <i>Amazon Web Services General Reference.</i> </p></p>"
+  "documentation":"<p><fullname>Lambda</fullname> <p> <b>Overview</b> </p> <p>Lambda Core is a set of APIs for managing shared infrastructure resources used by Lambda. The Lambda Core API provides operations for:</p> <ol> <li> <p>Creating and managing network connectors that enable Lambda MicroVMs and Lambda Web Functions to access resources in your Amazon Virtual Private Cloud (Amazon VPC).</p> </li> <li> <p>Creating customer-managed runtimes which can be used with Lambda Event Functions.</p> </li> </ol> <p>Network connectors provision elastic network interfaces (ENIs) in your VPC subnets, providing a managed network path from Lambda compute environments to private resources such as Amazon RDS databases, Amazon ElastiCache clusters, and internal APIs. You create a network connector once and attach it to one or more Lambda MicroVMs or Lambda Web Functions at run time.</p> <p>A customer-managed runtime is a Lambda runtime that you create and manage as a standalone resource. Lambda Event Functions can use your customer-managed runtime instead of using one of the built-in Lambda-managed runtimes. Customer-managed runtimes enable you to create customized runtimes for your workloads, and give you control over runtime updates and the deprecation lifecycle.</p> <p>The <i>Lambda Core API Reference</i> provides information about each of the API methods, including details about the parameters in each API request and response.</p> <p>You can use Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools to access the API. For installation instructions, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> <p>For a list of Region-specific endpoints that Lambda supports, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lambda-service.html\">Lambda endpoints and quotas</a> in the <i>Amazon Web Services General Reference.</i> </p> <p>When making the API calls, you will need to authenticate your request by providing a signature. Lambda supports signature version 4. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 signing process</a> in the <i>Amazon Web Services General Reference.</i> </p></p>"
 }

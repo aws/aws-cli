@@ -840,6 +840,7 @@
       "input":{"shape":"InvocationRequest"},
       "output":{"shape":"InvocationResponse"},
       "errors":[
+        {"shape":"RuntimeAliasDeletedException"},
         {"shape":"CodeArtifactUserDeletedException"},
         {"shape":"ResourceNotReadyException"},
         {"shape":"ServiceQuotaExceededException"},
@@ -865,6 +866,7 @@
         {"shape":"EFSIOException"},
         {"shape":"KMSInvalidStateException"},
         {"shape":"ResourceConflictException"},
+        {"shape":"RuntimeVersionDeletedException"},
         {"shape":"ENILimitReachedException"},
         {"shape":"SnapStartNotReadyException"},
         {"shape":"ServiceException"},
@@ -939,6 +941,7 @@
       "input":{"shape":"InvokeWithResponseStreamRequest"},
       "output":{"shape":"InvokeWithResponseStreamResponse"},
       "errors":[
+        {"shape":"RuntimeAliasDeletedException"},
         {"shape":"CodeArtifactUserDeletedException"},
         {"shape":"ResourceNotReadyException"},
         {"shape":"ServiceQuotaExceededException"},
@@ -964,6 +967,7 @@
         {"shape":"EFSIOException"},
         {"shape":"KMSInvalidStateException"},
         {"shape":"ResourceConflictException"},
+        {"shape":"RuntimeVersionDeletedException"},
         {"shape":"ENILimitReachedException"},
         {"shape":"SnapStartNotReadyException"},
         {"shape":"ServiceException"},
@@ -1445,6 +1449,7 @@
       "input":{"shape":"RemoveLayerVersionPermissionRequest"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"},
@@ -1799,7 +1804,7 @@
       ],
       "members":{
         "LayerName":{
-          "shape":"LayerName",
+          "shape":"LayerNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
           "location":"uri",
           "locationName":"LayerName"
@@ -3068,7 +3073,7 @@
         },
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsEventSourceMapping",
-          "documentation":"<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p> <p>For Kafka <code>Stream</code> consumption mode, the default is <code>-1</code> (infinite retries; capped at 10 when an on-failure destination is configured). For Kafka <code>Queue</code> consumption mode, the default is <code>0</code>, and if no on-failure destination is configured the Kafka broker performs retries.</p>"
+          "documentation":"<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p> <p>For Kafka event source mappings with <code>ConsumptionMode</code> set to <code>Queue</code>, the value -1 (infinite retries) is not supported and the default is 0 (no retries). Lambda releases failed records back to the broker, which redelivers them up to the share group's <code>group.share.delivery.count.limit</code>.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -3235,6 +3240,10 @@
         "DurableConfig":{
           "shape":"DurableConfig",
           "documentation":"<p>Configuration settings for durable functions. Enables creating functions with durability that can remember their state and continue execution even after interruptions.</p>"
+        },
+        "RuntimeConfig":{
+          "shape":"FunctionRuntimeConfig",
+          "documentation":"<p>The customer-managed runtime configuration for your function. Specifies the customer-managed runtime and the runtime alias that your function uses.</p>"
         }
       }
     },
@@ -3490,7 +3499,7 @@
       ],
       "members":{
         "LayerName":{
-          "shape":"LayerName",
+          "shape":"LayerNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
           "location":"uri",
           "locationName":"LayerName"
@@ -4779,6 +4788,10 @@
         "DurableConfig":{
           "shape":"DurableConfig",
           "documentation":"<p>The function's durable execution configuration settings, if the function is configured for durability.</p>"
+        },
+        "RuntimeConfig":{
+          "shape":"FunctionRuntimeConfig",
+          "documentation":"<p>The customer-managed runtime configuration for your function. Specifies the customer-managed runtime and the runtime alias that your function uses.</p>"
         }
       },
       "documentation":"<p>Details about a function's configuration.</p>"
@@ -4831,6 +4844,35 @@
       "member":{"shape":"FunctionResponseType"},
       "max":1,
       "min":0
+    },
+    "FunctionRuntimeAlias":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "FunctionRuntimeArn":{
+      "type":"string",
+      "max":2048,
+      "min":48,
+      "pattern":"arn:[a-z-]+:lambda:[a-z0-9-]+:\\d{12}:runtime/.+"
+    },
+    "FunctionRuntimeConfig":{
+      "type":"structure",
+      "required":[
+        "RuntimeArn",
+        "RuntimeAlias"
+      ],
+      "members":{
+        "RuntimeArn":{
+          "shape":"FunctionRuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer-managed runtime that your function uses.</p>"
+        },
+        "RuntimeAlias":{
+          "shape":"FunctionRuntimeAlias",
+          "documentation":"<p>The name of the customer-managed runtime alias that your function uses. A runtime alias is a name that points to a runtime version.</p>"
+        }
+      },
+      "documentation":"<p>The customer-managed runtime configuration for your function. Specifies the customer-managed runtime and the runtime alias that your function uses.</p>"
     },
     "FunctionScalingConfig":{
       "type":"structure",
@@ -5511,7 +5553,7 @@
       ],
       "members":{
         "LayerName":{
-          "shape":"LayerName",
+          "shape":"LayerNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
           "location":"uri",
           "locationName":"LayerName"
@@ -5545,7 +5587,7 @@
       ],
       "members":{
         "LayerName":{
-          "shape":"LayerName",
+          "shape":"LayerNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
           "location":"uri",
           "locationName":"LayerName"
@@ -6477,6 +6519,12 @@
       "min":1,
       "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:layer:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+"
     },
+    "LayerNameOrArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:layer:[a-zA-Z0-9-_]{1,140}|[a-zA-Z0-9-_]{1,140})"
+    },
     "LayerPermissionAllowedAction":{
       "type":"string",
       "max":22,
@@ -7065,7 +7113,7 @@
           "locationName":"CompatibleRuntime"
         },
         "LayerName":{
-          "shape":"LayerName",
+          "shape":"LayerNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
           "location":"uri",
           "locationName":"LayerName"
@@ -7728,9 +7776,9 @@
     },
     "PolicyResourceArn":{
       "type":"string",
-      "max":256,
+      "max":512,
       "min":0,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(runtime/|function:)[a-zA-Z0-9-_]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_])+)?"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(function:[a-zA-Z0-9-_]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_])+)?|runtime/[a-zA-Z0-9-_./]+)"
     },
     "PositiveInteger":{
       "type":"integer",
@@ -7906,7 +7954,7 @@
       ],
       "members":{
         "LayerName":{
-          "shape":"LayerName",
+          "shape":"LayerNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
           "location":"uri",
           "locationName":"LayerName"
@@ -8349,7 +8397,7 @@
       ],
       "members":{
         "LayerName":{
-          "shape":"LayerName",
+          "shape":"LayerNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
           "location":"uri",
           "locationName":"LayerName"
@@ -8617,8 +8665,25 @@
         "python3.15",
         "java8.al2023",
         "java11.al2023",
-        "java17.al2023"
+        "java17.al2023",
+        "custom"
       ]
+    },
+    "RuntimeAliasDeletedException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>Indicates the exception type for a deleted runtime alias.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The runtime alias for your function is no longer available. Update your function to use an available runtime alias.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
     },
     "RuntimeVersionArn":{
       "type":"string",
@@ -8639,6 +8704,22 @@
         }
       },
       "documentation":"<p>The ARN of the runtime and any errors that occured.</p>"
+    },
+    "RuntimeVersionDeletedException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>Indicates the exception type for a deleted runtime version.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The runtime version used by your function is no longer available. Update your function to use an available runtime version or runtime alias.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
     },
     "RuntimeVersionError":{
       "type":"structure",
@@ -8805,7 +8886,7 @@
         },
         "ConsumptionMode":{
           "shape":"KafkaEventSourceMappingConsumptionMode",
-          "documentation":"<p>The mode that Lambda uses to consume records from your self-managed Apache Kafka topic. The default is <code>Stream</code>.</p> <ul> <li> <p> <code>Stream</code> – Lambda consumes records using a Kafka consumer group and preserves the order of records within each partition. This is the default when you omit <code>ConsumptionMode</code>.</p> </li> <li> <p> <code>Queue</code> – Lambda consumes records using a Kafka share group. Multiple consumers can process records from the same partitions concurrently. Queue mode does not preserve per-partition order. Queue mode requires an Apache Kafka cluster running version 4.2 or later with share groups enabled.</p> </li> </ul> <p>You cannot change <code>ConsumptionMode</code> after you create the event source mapping. To use a different consumption mode, create a new event source mapping.</p> <p>When <code>ConsumptionMode</code> is <code>Queue</code>, the <code>StartingPosition</code>, <code>StartingPositionTimestamp</code>, and <code>MaximumBatchingWindowInSeconds</code> parameters are not supported.</p>"
+          "documentation":"<p>The mode that Lambda uses to consume records from your self-managed Apache Kafka topic. Valid values are the following:</p> <ul> <li> <p> <code>Stream</code> (default) – Lambda consumes records using a Kafka consumer group and preserves the order of records within each partition.</p> </li> <li> <p> <code>Queue</code> – Lambda consumes records using a Kafka share group. Multiple consumers can process records from the same partition concurrently, so Lambda doesn't preserve per-partition order. To use Queue mode, your cluster must run Apache Kafka version 4.2 or later with share groups enabled.</p> </li> </ul> <p>If you omit this parameter, Lambda uses <code>Stream</code>.</p> <p>You cannot change <code>ConsumptionMode</code> after you create the event source mapping. To use a different consumption mode, create a new event source mapping.</p> <p>When <code>ConsumptionMode</code> is <code>Queue</code>, the <code>StartingPosition</code>, <code>StartingPositionTimestamp</code>, and <code>MaximumBatchingWindowInSeconds</code> parameters are not supported.</p>"
         }
       },
       "documentation":"<p>Specific configuration settings for a self-managed Apache Kafka event source.</p>"
@@ -9724,7 +9805,7 @@
         },
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsEventSourceMapping",
-          "documentation":"<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p> <p>For Kafka <code>Stream</code> consumption mode, the default is <code>-1</code> (infinite retries; capped at 10 when an on-failure destination is configured). For Kafka <code>Queue</code> consumption mode, the default is <code>0</code>, and if no on-failure destination is configured the Kafka broker performs retries.</p>"
+          "documentation":"<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p> <p>For Kafka event source mappings with <code>ConsumptionMode</code> set to <code>Queue</code>, the value -1 (infinite retries) is not supported and the default is 0 (no retries). Lambda releases failed records back to the broker, which redelivers them up to the share group's <code>group.share.delivery.count.limit</code>.</p>"
         },
         "TumblingWindowInSeconds":{
           "shape":"TumblingWindowInSeconds",
@@ -9899,6 +9980,10 @@
         "DurableConfig":{
           "shape":"DurableConfig",
           "documentation":"<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
+        },
+        "RuntimeConfig":{
+          "shape":"FunctionRuntimeConfig",
+          "documentation":"<p>The customer-managed runtime configuration for your function. Specifies the customer-managed runtime and the runtime alias that your function uses.</p>"
         }
       }
     },

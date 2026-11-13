@@ -2236,6 +2236,7 @@
       "errors":[
         {"shape":"InternalServerError"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Updates an existing cloud connector with new configuration details.</p>"
@@ -3530,7 +3531,7 @@
     },
     "AutomationActionName":{
       "type":"string",
-      "pattern":"^aws:[a-zA-Z]{3,25}$"
+      "pattern":"^aws:[a-zA-Z]{3,40}$"
     },
     "AutomationDefinitionNotApprovedException":{
       "type":"structure",
@@ -3703,6 +3704,10 @@
         "Variables":{
           "shape":"AutomationParameterMap",
           "documentation":"<p>Variables defined for the automation.</p>"
+        },
+        "TargetsSummary":{
+          "shape":"TargetsSummary",
+          "documentation":"<p>A summary of the child executions that a rate control execution started for its targets. This field is returned only for rate control executions.</p>"
         }
       },
       "documentation":"<p>Detailed information about the current state of an individual Automation execution.</p>"
@@ -4298,6 +4303,10 @@
         "AzureConfiguration":{
           "shape":"AzureConfiguration",
           "documentation":"<p>The access details and targets for connecting to a Microsoft Azure environment.</p>"
+        },
+        "GcpConfiguration":{
+          "shape":"GcpConfiguration",
+          "documentation":"<p>The access details and targets for connecting to a Google Cloud Platform (GCP) environment.</p>"
         }
       },
       "documentation":"<p>The configuration that provides access details and targets for connecting to a third-party cloud environment.</p>",
@@ -4318,7 +4327,7 @@
         },
         "FilterValues":{
           "shape":"CloudConnectorFilterValues",
-          "documentation":"<p>The filter values. Valid values for each filter key are as follows:</p> <dl> <dt>SubscriptionId</dt> <dd> <p>The Azure subscription ID to filter by. To return only tenant-level connectors, specify <code>NONE</code>.</p> </dd> <dt>TenantId</dt> <dd> <p>The Azure tenant ID to filter by. Filters the results to connectors that target the specified tenant.</p> </dd> </dl>"
+          "documentation":"<p>The filter values. Valid values for each filter key are as follows:</p> <dl> <dt>SubscriptionId</dt> <dd> <p>The Azure subscription ID to filter by. To return only tenant-level connectors, specify <code>NONE</code>.</p> </dd> <dt>TenantId</dt> <dd> <p>The Azure tenant ID to filter by. Filters the results to connectors that target the specified tenant.</p> </dd> <dt>ProjectId</dt> <dd> <p>The Google Cloud Platform (GCP) project ID to filter by. Filters the results to connectors that target the specified project.</p> </dd> <dt>OrganizationId</dt> <dd> <p>The GCP organization ID to filter by. Filters the results to connectors that target the entire specified organization.</p> </dd> </dl> <p>You can't combine Azure filter keys (<code>SubscriptionId</code> and <code>TenantId</code>) with GCP filter keys (<code>ProjectId</code> and <code>OrganizationId</code>) in the same request.</p>"
         }
       },
       "documentation":"<p>A filter for listing cloud connectors.</p>"
@@ -4327,7 +4336,9 @@
       "type":"string",
       "enum":[
         "SubscriptionId",
-        "TenantId"
+        "TenantId",
+        "ProjectId",
+        "OrganizationId"
       ]
     },
     "CloudConnectorFilterList":{
@@ -4390,6 +4401,14 @@
         "UpdatedAt":{
           "shape":"DateTime",
           "documentation":"<p>The date and time the cloud connector was last updated.</p>"
+        },
+        "Provider":{
+          "shape":"Provider",
+          "documentation":"<p>The third-party cloud provider that the cloud connector connects to. Valid values: <code>Azure</code> | <code>GCP</code>.</p>"
+        },
+        "ConfigConnectorArn":{
+          "shape":"ConfigConnectorArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector associated with this cloud connector. This value is returned only if the cloud connector was created with an Amazon Web Services Config connector.</p>"
         }
       },
       "documentation":"<p>Summary information about a cloud connector.</p>"
@@ -5341,8 +5360,7 @@
       "required":[
         "DisplayName",
         "RoleArn",
-        "Configuration",
-        "ConfigConnectorArn"
+        "Configuration"
       ],
       "members":{
         "DisplayName":{
@@ -5363,7 +5381,7 @@
         },
         "ConfigConnectorArn":{
           "shape":"ConfigConnectorArn",
-          "documentation":"<p>The ARN of the Amazon Web Services Config connector associated with this cloud connector.</p>"
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector to associate with this cloud connector. If you omit it, the cloud connector is created without Amazon Web Services Config integration.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -8249,6 +8267,94 @@
       "documentation":"<p>You attempted to register a <code>LAMBDA</code> or <code>STEP_FUNCTIONS</code> task in a region where the corresponding service isn't available. </p>",
       "exception":true
     },
+    "GcpConfiguration":{
+      "type":"structure",
+      "required":[
+        "WorkloadIdentityPoolProvider",
+        "ServiceAccountEmail"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"GcpOrganizationId",
+          "documentation":"<p>The ID of the GCP organization.</p>"
+        },
+        "WorkloadIdentityPoolProvider":{
+          "shape":"GcpWorkloadIdentityPoolProvider",
+          "documentation":"<p>The full resource name of the GCP workload identity pool provider used for authentication.</p>"
+        },
+        "ServiceAccountEmail":{
+          "shape":"GcpServiceAccountEmail",
+          "documentation":"<p>The email address of the GCP service account used for authentication.</p>"
+        },
+        "Targets":{
+          "shape":"GcpConfigurationTargets",
+          "documentation":"<p>The target GCP projects for the cloud connector.</p>"
+        }
+      },
+      "documentation":"<p>The access details and targets for connecting to a Google Cloud Platform (GCP) environment, including the workload identity pool provider and service account used for authentication and the projects to target.</p>"
+    },
+    "GcpConfigurationTargets":{
+      "type":"structure",
+      "members":{
+        "Projects":{
+          "shape":"GcpProjectList",
+          "documentation":"<p>A list of GCP projects to target.</p>"
+        }
+      },
+      "documentation":"<p>The target resources in the GCP environment.</p>",
+      "union":true
+    },
+    "GcpOrganizationId":{
+      "type":"string",
+      "max":19,
+      "min":1,
+      "pattern":"^[1-9][0-9]{0,18}$"
+    },
+    "GcpProject":{
+      "type":"structure",
+      "required":["ProjectId"],
+      "members":{
+        "ProjectId":{
+          "shape":"GcpProjectId",
+          "documentation":"<p>The ID of the GCP project.</p>"
+        },
+        "ProjectDisplayName":{
+          "shape":"GcpProjectDisplayName",
+          "documentation":"<p>The display name of the GCP project.</p>"
+        }
+      },
+      "documentation":"<p>Information about a GCP project targeted by the cloud connector.</p>"
+    },
+    "GcpProjectDisplayName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}\\p{P}\\p{M}]*)$"
+    },
+    "GcpProjectId":{
+      "type":"string",
+      "max":30,
+      "min":6,
+      "pattern":"^[a-z][a-z0-9-]{4,28}[a-z0-9]$"
+    },
+    "GcpProjectList":{
+      "type":"list",
+      "member":{"shape":"GcpProject"},
+      "max":75,
+      "min":1
+    },
+    "GcpServiceAccountEmail":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-z][a-z0-9\\-]*[a-z0-9]@[a-z][a-z0-9\\-]*[a-z0-9]\\.iam\\.gserviceaccount\\.com$"
+    },
+    "GcpWorkloadIdentityPoolProvider":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^projects/[1-9][0-9]{0,18}/locations/global/workloadIdentityPools\\/[a-z0-9-]{4,32}/providers/[a-z0-9-]{4,32}$"
+    },
     "GetAccessTokenRequest":{
       "type":"structure",
       "required":["AccessRequestId"],
@@ -8357,7 +8463,7 @@
         },
         "ConfigConnectorArn":{
           "shape":"ConfigConnectorArn",
-          "documentation":"<p>The ARN of the Amazon Web Services Config connector associated with this cloud connector.</p>"
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector associated with this cloud connector. This value is returned only if the cloud connector was created with an Amazon Web Services Config connector.</p>"
         },
         "CreatedAt":{
           "shape":"DateTime",
@@ -9797,7 +9903,7 @@
         },
         "SourceType":{
           "shape":"SourceType",
-          "documentation":"<p>The type of the source resource. For IoT Greengrass devices, <code>SourceType</code> is <code>AWS::IoT::Thing</code>.</p>"
+          "documentation":"<p>The type of the source resource. For IoT Greengrass devices, <code>SourceType</code> is <code>AWS::IoT::Thing</code>. For Azure Virtual Machines, <code>SourceType</code> is <code>Microsoft.Compute/virtualMachines</code>. For Google Cloud Platform (GCP) Compute Engine Virtual Machines, <code>SourceType</code> is <code>compute.googleapis.com/Instance</code>.</p>"
         },
         "SourceId":{
           "shape":"SourceId",
@@ -9906,7 +10012,7 @@
         },
         "SourceType":{
           "shape":"SourceType",
-          "documentation":"<p>The type of the source resource. For IoT Greengrass devices, <code>SourceType</code> is <code>AWS::IoT::Thing</code>. For Azure Virtual Machines, <code>SourceType</code> is <code>Microsoft.Compute/virtualMachines</code>.</p>"
+          "documentation":"<p>The type of the source resource. For IoT Greengrass devices, <code>SourceType</code> is <code>AWS::IoT::Thing</code>. For Azure Virtual Machines, <code>SourceType</code> is <code>Microsoft.Compute/virtualMachines</code>. For Google Cloud Platform (GCP) Compute Engine Virtual Machines, <code>SourceType</code> is <code>compute.googleapis.com/Instance</code>.</p>"
         },
         "SourceLocation":{
           "shape":"SourceLocation",
@@ -9974,7 +10080,7 @@
       "members":{
         "Key":{
           "shape":"InstanceInformationStringFilterKey",
-          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformTypes | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformTypes</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing | Microsoft.Compute/virtualMachines</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
+          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformTypes | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformTypes</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing | Microsoft.Compute/virtualMachines | compute.googleapis.com/Instance</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
         },
         "Values":{
           "shape":"InstanceInformationFilterValueSet",
@@ -10275,7 +10381,7 @@
         },
         "SourceType":{
           "shape":"SourceType",
-          "documentation":"<p>The type of the source resource. Valid values: <code>AWS::EC2::Instance</code> | <code>AWS::SSM::ManagedInstance</code> | <code>AWS::IoT::Thing</code> | <code>Microsoft.Compute/virtualMachines</code>.</p>"
+          "documentation":"<p>The type of the source resource. Valid values: <code>AWS::EC2::Instance</code> | <code>AWS::SSM::ManagedInstance</code> | <code>AWS::IoT::Thing</code> | <code>Microsoft.Compute/virtualMachines</code> | <code>compute.googleapis.com/Instance</code>.</p>"
         },
         "SourceLocation":{
           "shape":"SourceLocation",
@@ -14216,7 +14322,7 @@
         },
         "DataType":{
           "shape":"ParameterDataType",
-          "documentation":"<p>The data type of the parameter, such as <code>text</code> or <code>aws:ec2:image</code>. The default is <code>text</code>.</p>"
+          "documentation":"<p>The data type of the parameter, such as <code>text</code>, <code>aws:ec2:image</code>, or <code>json</code>. The default is <code>text</code>. For the list of data types, see the <code>DataType</code> parameter of <code>PutParameter</code>.</p>"
         }
       },
       "documentation":"<p>An Amazon Web Services Systems Manager parameter in Parameter Store.</p>"
@@ -14292,7 +14398,7 @@
         },
         "DataType":{
           "shape":"ParameterDataType",
-          "documentation":"<p>The data type of the parameter, such as <code>text</code> or <code>aws:ec2:image</code>. The default is <code>text</code>.</p>"
+          "documentation":"<p>The data type of the parameter, such as <code>text</code>, <code>aws:ec2:image</code>, or <code>json</code>. The default is <code>text</code>. For the list of data types, see the <code>DataType</code> parameter of <code>PutParameter</code>.</p>"
         }
       },
       "documentation":"<p>Information about parameter usage.</p>"
@@ -14405,7 +14511,7 @@
         },
         "DataType":{
           "shape":"ParameterDataType",
-          "documentation":"<p>The data type of the parameter, such as <code>text</code> or <code>aws:ec2:image</code>. The default is <code>text</code>.</p>"
+          "documentation":"<p>The data type of the parameter, such as <code>text</code>, <code>aws:ec2:image</code>, or <code>json</code>. The default is <code>text</code>. For the list of data types, see the <code>DataType</code> parameter of <code>PutParameter</code>.</p>"
         }
       },
       "documentation":"<p>Metadata includes information like the Amazon Resource Name (ARN) of the last user to update the parameter and the date and time the parameter was last used.</p>"
@@ -15252,6 +15358,13 @@
       },
       "documentation":"<p>An aggregate of step execution statuses displayed in the Amazon Web Services Systems Manager console for a multi-Region and multi-account Automation execution.</p>"
     },
+    "Provider":{
+      "type":"string",
+      "enum":[
+        "Azure",
+        "GCP"
+      ]
+    },
     "PutComplianceItemsRequest":{
       "type":"structure",
       "required":[
@@ -15366,7 +15479,7 @@
         },
         "Tier":{
           "shape":"ParameterTier",
-          "documentation":"<p>The parameter tier to assign to a parameter.</p> <p>Parameter Store offers a standard tier and an advanced tier for parameters. Standard parameters have a content size limit of 4 KB and can't be configured to use parameter policies. You can create a maximum of 10,000 standard parameters for each Region in an Amazon Web Services account. Standard parameters are offered at no additional cost. </p> <p>Advanced parameters have a content size limit of 8 KB and can be configured to use parameter policies. You can create a maximum of 100,000 advanced parameters for each Region in an Amazon Web Services account. Advanced parameters incur a charge. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html\">Managing parameter tiers</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>You can change a standard parameter to an advanced parameter any time. But you can't revert an advanced parameter to a standard parameter. Reverting an advanced parameter to a standard parameter would result in data loss because the system would truncate the size of the parameter from 8 KB to 4 KB. Reverting would also remove any policies attached to the parameter. Lastly, advanced parameters use a different form of encryption than standard parameters. </p> <p>If you no longer need an advanced parameter, or if you no longer want to incur charges for an advanced parameter, you must delete it and recreate it as a new standard parameter. </p> <p> <b>Using the Default Tier Configuration</b> </p> <p>In <code>PutParameter</code> requests, you can specify the tier to create the parameter in. Whenever you specify a tier in the request, Parameter Store creates or updates the parameter according to that request. However, if you don't specify a tier in a request, Parameter Store assigns the tier based on the current Parameter Store default tier configuration.</p> <p>The default tier when you begin using Parameter Store is the standard-parameter tier. If you use the advanced-parameter tier, you can specify one of the following as the default:</p> <ul> <li> <p> <b>Advanced</b>: With this option, Parameter Store evaluates all requests as advanced parameters. </p> </li> <li> <p> <b>Intelligent-Tiering</b>: With this option, Parameter Store evaluates each request to determine if the parameter is standard or advanced. </p> <p>If the request doesn't include any options that require an advanced parameter, the parameter is created in the standard-parameter tier. If one or more options requiring an advanced parameter are included in the request, Parameter Store create a parameter in the advanced-parameter tier.</p> <p>This approach helps control your parameter-related costs by always creating standard parameters unless an advanced parameter is necessary. </p> </li> </ul> <p>Options that require an advanced parameter include the following:</p> <ul> <li> <p>The content size of the parameter is more than 4 KB.</p> </li> <li> <p>The parameter uses a parameter policy.</p> </li> <li> <p>More than 10,000 parameters already exist in your Amazon Web Services account in the current Amazon Web Services Region.</p> </li> </ul> <p>For more information about configuring the default tier option, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html#ps-default-tier\">Specifying a default parameter tier</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The parameter tier to assign to a parameter.</p> <p>Parameter Store offers a standard tier and an advanced tier for parameters. Standard parameters have a content size limit of 4 KB and can't be configured to use parameter policies. You can create a maximum of 10,000 standard parameters for each Region in an Amazon Web Services account. Standard parameters are offered at no additional cost. </p> <p>Advanced parameters have a content size limit of 8 KB and can be configured to use parameter policies. You can create a maximum of 100,000 advanced parameters for each Region in an Amazon Web Services account. Advanced parameters incur a charge. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html\">Managing parameter tiers</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>You can change a standard parameter to an advanced parameter any time. But you can't revert an advanced parameter to a standard parameter. Reverting an advanced parameter to a standard parameter would result in data loss because the system would truncate the size of the parameter from 8 KB to 4 KB. Reverting would also remove any policies attached to the parameter. Lastly, advanced parameters use a different form of encryption than standard parameters. </p> <p>If you no longer need an advanced parameter, or if you no longer want to incur charges for an advanced parameter, you must delete it and recreate it as a new standard parameter. </p> <p> <b>Using the Default Tier Configuration</b> </p> <p>In <code>PutParameter</code> requests, you can specify the tier to create the parameter in. Whenever you specify a tier in the request, Parameter Store creates or updates the parameter according to that request. However, if you don't specify a tier in a request, Parameter Store assigns the tier based on the current Parameter Store default tier configuration.</p> <p>The default tier when you begin using Parameter Store is the standard-parameter tier. If you use the advanced-parameter tier, you can specify one of the following as the default:</p> <ul> <li> <p> <b>Advanced</b>: With this option, Parameter Store evaluates all requests as advanced parameters. </p> </li> <li> <p> <b>Intelligent-Tiering</b>: With this option, Parameter Store evaluates each request to determine if the parameter is standard or advanced. </p> <p>If the request doesn't include any options that require an advanced parameter, the parameter is created in the standard-parameter tier. If one or more options requiring an advanced parameter are included in the request, Parameter Store create a parameter in the advanced-parameter tier.</p> <p>This approach helps control your parameter-related costs by always creating standard parameters unless an advanced parameter is necessary. </p> </li> </ul> <p>Options that require an advanced parameter include the following:</p> <ul> <li> <p>The content size of the parameter is more than 4 KB.</p> </li> <li> <p>The parameter uses a parameter policy.</p> </li> <li> <p>The parameter uses the <code>url</code>, <code>json</code>, or <code>jsonc</code> data type.</p> </li> <li> <p>More than 10,000 parameters already exist in your Amazon Web Services account in the current Amazon Web Services Region.</p> </li> </ul> <p>For more information about configuring the default tier option, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html#ps-default-tier\">Specifying a default parameter tier</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "Policies":{
           "shape":"ParameterPolicies",
@@ -15374,7 +15487,7 @@
         },
         "DataType":{
           "shape":"ParameterDataType",
-          "documentation":"<p>The data type for a <code>String</code> parameter. Supported data types include plain text and Amazon Machine Image (AMI) IDs.</p> <p> <b>The following data type values are supported.</b> </p> <ul> <li> <p> <code>text</code> </p> </li> <li> <p> <code>aws:ec2:image</code> </p> </li> <li> <p> <code>aws:ssm:integration</code> </p> </li> </ul> <p>When you create a <code>String</code> parameter and specify <code>aws:ec2:image</code>, Amazon Web Services Systems Manager validates the parameter value is in the required format, such as <code>ami-12345abcdeEXAMPLE</code>, and that the specified AMI is available in your Amazon Web Services account.</p> <note> <p>If the action is successful, the service sends back an HTTP 200 response which indicates a successful <code>PutParameter</code> call for all cases except for data type <code>aws:ec2:image</code>. If you call <code>PutParameter</code> with <code>aws:ec2:image</code> data type, a successful HTTP 200 response does not guarantee that your parameter was successfully created or updated. The <code>aws:ec2:image</code> value is validated asynchronously, and the <code>PutParameter</code> call returns before the validation is complete. If you submit an invalid AMI value, the PutParameter operation will return success, but the asynchronous validation will fail and the parameter will not be created or updated. To monitor whether your <code>aws:ec2:image</code> parameters are created successfully, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-cwe.html\">Setting up notifications or trigger actions based on Parameter Store events</a>. For more information about AMI format validation , see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-ec2-aliases.html\">Native parameter support for Amazon Machine Image IDs</a>. </p> </note>"
+          "documentation":"<p>The data type of the parameter value. Parameter Store validates the value against the data type when you create or update the parameter. The default is <code>text</code>, which performs no validation.</p> <p> <b>The following data type values are supported.</b> </p> <ul> <li> <p> <code>text</code> </p> </li> <li> <p> <code>aws:ec2:image</code> </p> </li> <li> <p> <code>aws:ssm:integration</code> </p> </li> <li> <p> <code>aws:region</code> </p> </li> <li> <p> <code>aws:account:id</code> </p> </li> <li> <p> <code>boolean</code> </p> </li> <li> <p> <code>integer</code> </p> </li> <li> <p> <code>float</code> </p> </li> <li> <p> <code>binary</code> </p> </li> <li> <p> <code>hostname</code> </p> </li> <li> <p> <code>email</code> </p> </li> <li> <p> <code>ipv4-address</code> </p> </li> <li> <p> <code>ipv6-address</code> </p> </li> <li> <p> <code>url</code> </p> </li> <li> <p> <code>json</code> </p> </li> <li> <p> <code>jsonc</code> </p> </li> </ul> <p>For more information about the supported data types, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-data-types.html\">Working with parameter data types in Parameter Store</a>.</p> <note> <p>Regardless of a parameter's data type, the Parameter Store API operations that retrieve parameters, such as <code>GetParameter</code>, <code>GetParameters</code>, and <code>GetParametersByPath</code>, return the parameter value as a string. For example, if a parameter has the data type <code>integer</code> and the value <code>443</code>, <code>GetParameter</code> returns the value as the string <code>\"443\"</code>. Convert the value to the type your application needs after you retrieve it.</p> </note> <p>When you create a <code>String</code> parameter and specify <code>aws:ec2:image</code>, Amazon Web Services Systems Manager validates the parameter value is in the required format, such as <code>ami-12345abcdeEXAMPLE</code>, and that the specified AMI is available in your Amazon Web Services account.</p> <note> <p>If the action is successful, the service sends back an HTTP 200 response which indicates a successful <code>PutParameter</code> call for all cases except for data type <code>aws:ec2:image</code>. If you call <code>PutParameter</code> with <code>aws:ec2:image</code> data type, a successful HTTP 200 response does not guarantee that your parameter was successfully created or updated. The <code>aws:ec2:image</code> value is validated asynchronously, and the <code>PutParameter</code> call returns before the validation is complete. If you submit an invalid AMI value, the PutParameter operation will return success, but the asynchronous validation will fail and the parameter will not be created or updated. To monitor whether your <code>aws:ec2:image</code> parameters are created successfully, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-cwe.html\">Setting up notifications or trigger actions based on Parameter Store events</a>. For more information about AMI format validation , see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-ec2-aliases.html\">Native parameter support for Amazon Machine Image IDs</a>. </p> </note>"
         }
       }
     },
@@ -16895,7 +17008,8 @@
         "AWS::EC2::Instance",
         "AWS::IoT::Thing",
         "AWS::SSM::ManagedInstance",
-        "Microsoft.Compute/virtualMachines"
+        "Microsoft.Compute/virtualMachines",
+        "compute.googleapis.com/Instance"
       ]
     },
     "StandardErrorContent":{
@@ -17439,7 +17553,7 @@
           "documentation":"<p>User-defined criteria that maps to <code>Key</code>. For example, if you specified <code>tag:ServerRole</code>, you could specify <code>value:WebServer</code> to run a command on instances that include EC2 tags of <code>ServerRole,WebServer</code>. </p> <p>Depending on the type of target, the maximum number of values for a key might be lower than the global maximum of 50.</p>"
         }
       },
-      "documentation":"<p>An array of search criteria that targets managed nodes using a key-value pair that you specify.</p> <note> <p> One or more targets must be specified for maintenance window Run Command-type tasks. Depending on the task, targets are optional for other maintenance window task types (Automation, Lambda, and Step Functions). For more information about running tasks that don't specify targets, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-targetless-tasks.html\">Registering maintenance window tasks without targets</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note> <p>Supported formats include the following.</p> <p> <b>For all Systems Manager tools:</b> </p> <ul> <li> <p> <code>Key=tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> </ul> <p> <b>For Automation and Change Manager:</b> </p> <ul> <li> <p> <code>Key=tag:tag-key,Values=tag-value</code> </p> </li> <li> <p> <code>Key=ResourceGroup,Values=resource-group-name</code> </p> </li> <li> <p> <code>Key=ParameterValues,Values=value-1,value-2,value-3</code> </p> </li> <li> <p>To target all instances in the Amazon Web Services Region:</p> <ul> <li> <p> <code>Key=AWS::EC2::Instance,Values=*</code> </p> </li> <li> <p> <code>Key=InstanceIds,Values=*</code> </p> </li> </ul> </li> </ul> <p> <b>For Run Command and Maintenance Windows:</b> </p> <ul> <li> <p> <code>Key=InstanceIds,Values=instance-id-1,instance-id-2,instance-id-3</code> </p> </li> <li> <p> <code>Key=tag:tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> <li> <p> <code>Key=resource-groups:Name,Values=resource-group-name</code> </p> </li> <li> <p>Additionally, Maintenance Windows support targeting resource types:</p> <ul> <li> <p> <code>Key=resource-groups:ResourceTypeFilters,Values=resource-type-1,resource-type-2</code> </p> </li> </ul> </li> </ul> <p> <b>For State Manager:</b> </p> <ul> <li> <p> <code>Key=InstanceIds,Values=instance-id-1,instance-id-2,instance-id-3</code> </p> </li> <li> <p> <code>Key=tag:tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> <li> <p>To target all instances in the Amazon Web Services Region:</p> <ul> <li> <p> <code>Key=InstanceIds,Values=*</code> </p> </li> </ul> </li> </ul> <p>For more information about how to send commands that target managed nodes using <code>Key,Value</code> parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/send-commands-multiple.html#send-commands-targeting\">Targeting multiple managed nodes</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+      "documentation":"<p>An array of search criteria that targets managed nodes using a key-value pair that you specify.</p> <note> <p> One or more targets must be specified for maintenance window Run Command-type tasks. Depending on the task, targets are optional for other maintenance window task types (Automation, Lambda, and Step Functions). For more information about running tasks that don't specify targets, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-targetless-tasks.html\">Registering maintenance window tasks without targets</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note> <p>Supported formats include the following.</p> <p> <b>For all Systems Manager tools:</b> </p> <ul> <li> <p> <code>Key=tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> </ul> <p> <b>For Automation and Change Manager:</b> </p> <ul> <li> <p> <code>Key=tag:tag-key,Values=tag-value</code> </p> </li> <li> <p> <code>Key=ResourceGroup,Values=resource-group-name</code> </p> </li> <li> <p> <code>Key=ParameterValues,Values=value-1,value-2,value-3</code> </p> </li> <li> <p>To target all instances in the Amazon Web Services Region:</p> <ul> <li> <p> <code>Key=AWS::EC2::Instance,Values=*</code> </p> </li> <li> <p> <code>Key=InstanceIds,Values=*</code> </p> </li> </ul> </li> <li> <p>Automation only, to target Microsoft Azure or Google Cloud Platform (GCP) resources:</p> <ul> <li> <p> <code>Key=CloudConnector,Values=cloud-connector-id</code> </p> </li> <li> <p> <code>Key=CloudConnector,Values={\"CloudConnectorId\":\"cloud-connector-id\",\"SsmManagedNodeFilter\":\"MANAGED\",\"CloudProviderRegions\":[\"eastus\"]}</code> </p> </li> </ul> <p>Supported JSON keys: <code>CloudConnectorId</code> (required), <code>SsmManagedNodeFilter</code>, <code>CloudProviderRegions</code>, and, for GCP, <code>IncludesLabels</code>, <code>ExcludesLabels</code>, <code>OsPolicyComplianceFilter</code>, and <code>OsPolicyOrchestratorId</code>.</p> </li> </ul> <p> <b>For Run Command and Maintenance Windows:</b> </p> <ul> <li> <p> <code>Key=InstanceIds,Values=instance-id-1,instance-id-2,instance-id-3</code> </p> </li> <li> <p> <code>Key=tag:tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> <li> <p> <code>Key=resource-groups:Name,Values=resource-group-name</code> </p> </li> <li> <p>Additionally, Maintenance Windows support targeting resource types:</p> <ul> <li> <p> <code>Key=resource-groups:ResourceTypeFilters,Values=resource-type-1,resource-type-2</code> </p> </li> </ul> </li> </ul> <p> <b>For State Manager:</b> </p> <ul> <li> <p> <code>Key=InstanceIds,Values=instance-id-1,instance-id-2,instance-id-3</code> </p> </li> <li> <p> <code>Key=tag:tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> <li> <p>To target all instances in the Amazon Web Services Region:</p> <ul> <li> <p> <code>Key=InstanceIds,Values=*</code> </p> </li> </ul> </li> <li> <p>For associations that run an Automation runbook, to target Microsoft Azure or Google Cloud Platform (GCP) resources:</p> <ul> <li> <p> <code>Key=CloudConnector,Values=cloud-connector-id</code> </p> </li> <li> <p> <code>Key=CloudConnector,Values={\"CloudConnectorId\":\"cloud-connector-id\",\"SsmManagedNodeFilter\":\"UNMANAGED\"}</code> </p> </li> </ul> <p>Supported JSON keys: <code>CloudConnectorId</code> (required), <code>SsmManagedNodeFilter</code>, and <code>CloudProviderRegions</code>.</p> </li> </ul> <p>For more information about how to send commands that target managed nodes using <code>Key,Value</code> parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/send-commands-multiple.html#send-commands-targeting\">Targeting multiple managed nodes</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
     },
     "TargetCount":{"type":"integer"},
     "TargetInUseException":{
@@ -17597,6 +17711,32 @@
       "member":{"shape":"Target"},
       "max":5,
       "min":0
+    },
+    "TargetsSummary":{
+      "type":"structure",
+      "members":{
+        "TotalCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of targets in the rate control execution.</p>"
+        },
+        "StartedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of child executions that started.</p>"
+        },
+        "CompletedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of child executions that finished, whether they succeeded or failed.</p>"
+        },
+        "SuccessfulCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of child executions that succeeded.</p>"
+        },
+        "FailedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of child executions that failed, timed out, or were canceled.</p>"
+        }
+      },
+      "documentation":"<p>The number of targets in a rate control execution, and the status of the child executions that it started for those targets.</p>"
     },
     "TerminateSessionRequest":{
       "type":"structure",
@@ -18753,6 +18893,8 @@
       "enum":[
         "TargetInaccessible",
         "TargetUnusable",
+        "TargetMissingPermissions",
+        "TargetApiDisabled",
         "TargetStateWarning",
         "AwsRoleAssumptionFailed",
         "WebIdentityTokenFailed",
@@ -18784,7 +18926,9 @@
       "type":"string",
       "enum":[
         "azure:tenant",
-        "azure:subscription"
+        "azure:subscription",
+        "gcp:organization",
+        "gcp:project"
       ]
     },
     "ValidationFindingType":{

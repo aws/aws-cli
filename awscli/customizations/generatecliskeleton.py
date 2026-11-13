@@ -20,6 +20,9 @@ from ruamel.yaml import YAML
 
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
+from awscli.customizations.multiregion.caller import (
+    MultiRegionOperationCaller,
+)
 from awscli.customizations.utils import get_shape_doc_overview
 from awscli.utils import json_encoder
 
@@ -128,7 +131,17 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
     ):
         service_name = self._operation_model.service_model.service_name
         operation_name = self._operation_model.name
-        return StubbedCLIOperationCaller(self._session).invoke(
+        operation_caller = StubbedCLIOperationCaller(self._session)
+        spec = getattr(parsed_globals, 'multi_regions', None)
+        if spec is not None:
+            # The stubbed response of every region, labelled and merged
+            # the way --multi-regions merges real responses.
+            return MultiRegionOperationCaller(
+                self._session, operation_caller, spec, offline=True
+            ).invoke(
+                service_name, operation_name, call_parameters, parsed_globals
+            )
+        return operation_caller.invoke(
             service_name, operation_name, call_parameters, parsed_globals
         )
 

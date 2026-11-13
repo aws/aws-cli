@@ -108,6 +108,7 @@ PLUGIN_REGISTRY = {
             'awscli.customizations.generatecliskeleton',
             'register_generate_cli_skeleton',
         ),
+        ('awscli.customizations.multiregion', 'register_multi_region'),
     ],
     'building-argument-table.*': [
         (

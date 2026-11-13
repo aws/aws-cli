@@ -43,6 +43,7 @@ from awscli.argparser import (
     SubCommandArgParser,
     format_unknown_options_error,
     get_option_suggestion_candidates,
+    get_valid_options,
 )
 from awscli.argprocess import unpack_argument
 from awscli.arguments import (
@@ -961,6 +962,7 @@ class ServiceOperation:
                     get_option_suggestion_candidates(
                         self.arg_table, self._session
                     ),
+                    get_valid_options(self.arg_table),
                 )
             )
         event = f'operation-args-parsed.{self._parent_name}.{self._name}'

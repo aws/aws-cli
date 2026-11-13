@@ -13,6 +13,7 @@
 from argparse import ArgumentParser
 
 from awscli.argparser import (
+    _MAX_LISTED_OPTIONS,
     ArgParseException,
     CommandAction,
     FirstPassGlobalArgParser,
@@ -20,8 +21,13 @@ from awscli.argparser import (
     ServiceArgParser,
     format_unknown_options_error,
     get_option_suggestion_candidates,
+    get_valid_options,
 )
-from awscli.arguments import CustomArgument
+from awscli.arguments import (
+    CLIArgument,
+    CustomArgument,
+    create_argument_model_from_schema,
+)
 from awscli.testutils import mock, unittest
 
 
@@ -236,3 +242,104 @@ class TestFormatUnknownOptionsError(unittest.TestCase):
     def test_does_not_match_values(self):
         msg = format_unknown_options_error(['region'], self.candidates)
         self.assertNotIn('Maybe you meant', msg)
+
+
+class TestFormatUnknownOptionsErrorListsOptions(unittest.TestCase):
+    def test_lists_command_options(self):
+        msg = format_unknown_options_error(
+            ['--foo'], ['cidr'], ['--cidr', '--[no-]dry-run']
+        )
+        self.assertEqual(
+            msg,
+            'Unknown options: --foo\n\n'
+            'Valid options for this command:\n'
+            '  --cidr, --[no-]dry-run',
+        )
+
+    def test_lists_options_after_suggestions(self):
+        msg = format_unknown_options_error(
+            ['--regoin'], ['region', 'cidr'], ['--cidr']
+        )
+        self.assertEqual(
+            msg,
+            'Unknown options: --regoin\n\n'
+            'Maybe you meant:\n'
+            '  * --region (instead of --regoin)\n\n'
+            'Valid options for this command:\n'
+            '  --cidr',
+        )
+
+    def test_lists_up_to_max_options(self):
+        options = [f'--option-{i}' for i in range(_MAX_LISTED_OPTIONS)]
+        msg = format_unknown_options_error(['--foo'], [], options)
+        self.assertIn(f'--option-{_MAX_LISTED_OPTIONS - 1}', msg)
+
+    def test_wraps_long_list(self):
+        options = [f'--option-number-{i}' for i in range(10)]
+        msg = format_unknown_options_error(['--foo'], [], options)
+        lines = msg.split('\n')[3:]
+        self.assertGreater(len(lines), 1)
+        for line in lines:
+            self.assertLessEqual(len(line), 79)
+            self.assertTrue(line.startswith('  --'))
+
+    def test_does_not_list_more_than_max_options(self):
+        options = [f'--option-{i}' for i in range(_MAX_LISTED_OPTIONS + 1)]
+        msg = format_unknown_options_error(['--foo'], [], options)
+        self.assertEqual(msg, 'Unknown options: --foo')
+
+    def test_does_not_list_when_command_has_no_options(self):
+        msg = format_unknown_options_error(['--foo'], [], [])
+        self.assertEqual(msg, 'Unknown options: --foo')
+
+
+class TestGetValidOptions(unittest.TestCase):
+    def test_lists_documented_options_in_order(self):
+        arg_table = {
+            'instance-ids': CustomArgument('instance-ids'),
+            'filters': CustomArgument('filters'),
+        }
+        self.assertEqual(
+            get_valid_options(arg_table), ['--instance-ids', '--filters']
+        )
+
+    def test_excludes_positional_hidden_and_standard_options(self):
+        hidden = CustomArgument('marker')
+        hidden._UNDOCUMENTED = True
+        arg_table = {
+            'outfile': CustomArgument('outfile', positional_arg=True),
+            'marker': hidden,
+            'cli-input-json': CustomArgument('cli-input-json'),
+            'generate-cli-skeleton': CustomArgument('generate-cli-skeleton'),
+            'max-items': CustomArgument('max-items'),
+            'filters': CustomArgument('filters'),
+        }
+        self.assertEqual(get_valid_options(arg_table), ['--filters'])
+
+    def test_combines_boolean_pair(self):
+        arg_table = {
+            'dry-run': CustomArgument('dry-run'),
+            'no-dry-run': CustomArgument('no-dry-run'),
+            'cidr': CustomArgument('cidr'),
+        }
+        self.assertEqual(
+            get_valid_options(arg_table), ['--[no-]dry-run', '--cidr']
+        )
+
+    def test_lists_service_options_with_standard_names(self):
+        argument_model = create_argument_model_from_schema({'type': 'integer'})
+        for name in ('max-items', 'page-size', 'starting-token'):
+            with self.subTest(name=name):
+                argument = CLIArgument(
+                    name,
+                    argument_model,
+                    operation_model=None,
+                    event_emitter=None,
+                )
+                self.assertEqual(
+                    get_valid_options({name: argument}), [f'--{name}']
+                )
+
+    def test_keeps_no_prefixed_option_without_pair(self):
+        arg_table = {'no-sign-request': CustomArgument('no-sign-request')}
+        self.assertEqual(get_valid_options(arg_table), ['--no-sign-request'])

@@ -40,7 +40,7 @@ class TestConfigLoader(BaseEnvVar):
     def tearDown(self):
         shutil.rmtree(self.tempdir)
 
-    def create_config_file(self, filename):
+    def create_config_file(self, filename, encoding=None):
         contents = (
             '[default]\n'
             'aws_access_key_id = foo\n'
@@ -56,7 +56,7 @@ class TestConfigLoader(BaseEnvVar):
             directory = directory.encode('latin-1')
         full_path = os.path.join(directory, filename)
 
-        with open(full_path, 'w') as f:
+        with open(full_path, 'w', encoding=encoding) as f:
             f.write(contents)
         return full_path
 
@@ -85,6 +85,22 @@ class TestConfigLoader(BaseEnvVar):
         loaded_config = raw_config_parse(path('aws_config'))
         self.assertIn('default', loaded_config)
         self.assertIn('profile "personal"', loaded_config)
+
+    def test_config_with_utf8_bom(self):
+        # Editors such as Notepad++ ("UTF-8 BOM") can start the file with a
+        # byte order mark, which must not hide the first section header.
+        filename = self.create_config_file(
+            'aws_config_bom', encoding='utf-8-sig'
+        )
+        loaded_config = raw_config_parse(filename)
+        self.assertEqual(loaded_config['default']['aws_access_key_id'], 'foo')
+        self.assertIn('profile "personal"', loaded_config)
+
+    def test_config_that_cannot_be_opened_is_skipped(self):
+        filename = self.create_config_file('aws_config_unreadable')
+        with mock.patch('builtins.open', side_effect=PermissionError):
+            loaded_config = raw_config_parse(filename)
+        self.assertEqual(loaded_config, {})
 
     def test_profile_map_conversion(self):
         loaded_config = load_config(path('aws_config'))

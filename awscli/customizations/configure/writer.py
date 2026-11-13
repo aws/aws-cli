@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import codecs
 import os
 import re
 
@@ -105,16 +106,19 @@ class ConfigFileWriter:
             self._create_file(config_filename)
             self._write_new_section(section_name, new_values, config_filename)
             return
-        with open(config_filename) as f:
+        encoding = self._get_file_encoding(config_filename)
+        with open(config_filename, encoding=encoding) as f:
             contents = f.readlines()
         # We can only update a single section at a time so we first need
         # to find the section in question
         try:
             self._update_section_contents(contents, section_name, new_values)
-            with open(config_filename, 'w') as f:
+            with open(config_filename, 'w', encoding=encoding) as f:
                 f.write(''.join(contents))
         except SectionNotFoundError:
-            self._write_new_section(section_name, new_values, config_filename)
+            self._write_new_section(
+                section_name, new_values, config_filename, encoding=encoding
+            )
         if check_permissions:
             warn_if_permissive(config_filename)
 
@@ -139,9 +143,23 @@ class ConfigFileWriter:
             last = f.read()
             return last != b'\n'
 
-    def _write_new_section(self, section_name, new_values, config_filename):
+    def _get_file_encoding(self, filename):
+        # A file that starts with a UTF-8 byte order mark (saved as
+        # "UTF-8 BOM" in Notepad++, for example) is read and written as
+        # 'utf-8-sig'. That drops the mark when reading, so the section
+        # header on the first line is found, and puts it back when writing.
+        # Any other file uses the default encoding, as before.
+        with open(filename, 'rb') as f:
+            if f.read(len(codecs.BOM_UTF8)) == codecs.BOM_UTF8:
+                return 'utf-8-sig'
+        return None
+
+    def _write_new_section(
+        self, section_name, new_values, config_filename, encoding=None
+    ):
         needs_newline = self._check_file_needs_newline(config_filename)
-        with open(config_filename, 'a') as f:
+        # Appending with 'utf-8-sig' does not write a second byte order mark.
+        with open(config_filename, 'a', encoding=encoding) as f:
             if needs_newline:
                 f.write('\n')
             f.write(f'[{section_name}]\n')

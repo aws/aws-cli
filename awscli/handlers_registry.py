@@ -535,6 +535,9 @@ PLUGIN_REGISTRY = {
             'register_agent_toolkit_commands',
         )
     ],
+    'building-command-table.athena': [
+        ('awscli.customizations.athena', 'register')
+    ],
     'building-command-table.bedrock-agent-runtime': [
         ('awscli.customizations.removals', 'register_removals')
     ],
@@ -557,7 +560,11 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.cloudtrail', 'initialize')
     ],
     'building-command-table.cloudwatch': [
-        ('awscli.customizations.cloudwatch', 'register_rename_otel_commands')
+        ('awscli.customizations.cloudwatch', 'register_rename_otel_commands'),
+        (
+            'awscli.customizations.cloudwatch_alarm_metric_sweep',
+            'register',
+        ),
     ],
     'building-command-table.codeartifact': [
         (
@@ -618,7 +625,8 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.ecr_public', 'register_ecr_public_commands')
     ],
     'building-command-table.ecs': [
-        ('awscli.customizations.ecs', 'initialize')
+        ('awscli.customizations.ecs', 'initialize'),
+        ('awscli.customizations.ecs.diagnose_service', 'register'),
     ],
     'building-command-table.eks': [
         ('awscli.customizations.eks', 'initialize')
@@ -664,6 +672,7 @@ PLUGIN_REGISTRY = {
     'building-command-table.logs': [
         ('awscli.customizations.removals', 'register_removals'),
         ('awscli.customizations.logs', 'register_logs_commands'),
+        ('awscli.customizations.logs.run_insights_query', 'register'),
     ],
     'building-command-table.main': [
         ('awscli.customizations.s3.s3', 'register_s3_main'),

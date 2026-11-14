@@ -957,6 +957,15 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
         self.assertEqual(first, second)
         self.assertEqual(len(self.cache_files()), 1)
 
+    def test_custom_location_reuses_cached_credentials(self):
+        location = os.path.join(self.tempdir, 'role-cache')
+        self.write_role_config(f'credential_cache_location = {location}\n')
+        first = self.run_command('A', 'assume_role', responses=1)
+        second = self.run_command('A', 'assume_role', responses=0)
+        self.assertEqual(first, second)
+        self.assertEqual(self.cache_files(), [])
+        self.assertEqual(len(os.listdir(location)), 1)
+
     def test_invalid_value_raises(self):
         self.write_role_config('credential_cache = off\n')
         session = StubbedSession(profile='A')
@@ -1021,6 +1030,21 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
         self.run_command(None, operation, responses=0)
         self.assertEqual(len(self.cache_files()), 1)
 
+    def test_relative_location_raises(self):
+        self.write_role_config('credential_cache_location = relcache\n')
+        session = StubbedSession(profile='A')
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'credential_cache_location'
+        ):
+            session.get_credentials()
+
+    def test_memory_ignores_empty_location(self):
+        self.write_role_config(
+            'credential_cache = memory\ncredential_cache_location =\n'
+        )
+        self.run_command('A', 'assume_role', responses=1)
+        self.assertEqual(self.cache_files(), [])
+
     def write_web_identity_source_hop_config(self, extra=''):
         self.write_config(
             '[profile A]\n'
@@ -1060,13 +1084,33 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
         self.assertEqual(len(self.cache_files()), 2)
 
     def test_explicit_file_reuses_injected_cache(self):
-        # An explicit file behaves as unset: the injected
+        # Explicit file with no location behaves as unset: the injected
         # ~/.aws/cli/cache is used.
         self.write_role_config('credential_cache = file\n')
         first = self.run_command('A', 'assume_role', responses=1)
         second = self.run_command('A', 'assume_role', responses=0)
         self.assertEqual(first, second)
         self.assertEqual(len(self.cache_files()), 1)
+
+    def test_web_identity_source_hop_location_writes_there(self):
+        # A location on the hop applies, as on a top-level profile.
+        location = os.path.join(self.tempdir, 'hop-cache')
+        self.write_web_identity_source_hop_config(
+            f'credential_cache_location = {location}\n'
+        )
+        self.run_command_with_calls('A', self.source_hop_calls())
+        self.assertEqual(len(self.cache_files()), 1)
+        self.assertEqual(len(os.listdir(location)), 1)
+
+    def test_web_identity_source_hop_relative_location_raises(self):
+        self.write_web_identity_source_hop_config(
+            'credential_cache_location = relcache\n'
+        )
+        session = StubbedSession(profile='A')
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'credential_cache_location'
+        ):
+            session.get_credentials().get_frozen_credentials()
 
 
 class TestProcessProvider(unittest.TestCase):

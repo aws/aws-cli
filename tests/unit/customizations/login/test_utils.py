@@ -5,16 +5,19 @@ import datetime
 from unittest import mock
 
 import pytest
+from awscrt.crypto import EC, ECExportFormat, ECType
 from botocore.utils import LoginCredentialsLoader
 from dateutil.tz import tzutc
 
 from awscli.botocore.exceptions import (
     ClientError,
     LoginAuthorizationCodeError,
+    LoginError,
 )
 from awscli.customizations.login.utils import (
     CrossDeviceLoginTokenFetcher,
     SameDeviceLoginTokenFetcher,
+    _generate_dpop_private_key,
 )
 
 ID_TOKEN = (
@@ -329,3 +332,56 @@ def test_same_device_fetch_token_expired_auth_code(
         LoginAuthorizationCodeError, match="expired authorization code"
     ):
         mock_same_device_fetcher.fetch_token()
+
+
+def _private_key_with_short_scalar_der():
+    """Generate a P-256 key whose SEC1 export has a 31-byte privateKey.
+
+    awscrt on Linux can export such a key (about 1 in 256 generated keys),
+    and its own importer then refuses it (aws-c-cal#262).
+    """
+    for _ in range(5000):
+        der = EC.new_generate(ECType.P_256).export_key(ECExportFormat.SEC1)
+        if der[6] == 31:
+            return der
+    raise AssertionError('No key with a 31-byte privateKey was generated')
+
+
+def test_generate_dpop_private_key_regenerates_unloadable_key():
+    bad_key = mock.Mock()
+    bad_key.export_key.return_value = _private_key_with_short_scalar_der()
+    good_key = EC.new_generate(ECType.P_256)
+    with mock.patch(
+        'awscli.customizations.login.utils.EC.new_generate',
+        side_effect=[bad_key, good_key],
+    ):
+        assert _generate_dpop_private_key() is good_key
+
+
+def test_generate_dpop_private_key_raises_after_repeated_failures():
+    bad_key = mock.Mock()
+    bad_key.export_key.return_value = _private_key_with_short_scalar_der()
+    with mock.patch(
+        'awscli.customizations.login.utils.EC.new_generate',
+        return_value=bad_key,
+    ):
+        with pytest.raises(LoginError):
+            _generate_dpop_private_key()
+
+
+def test_fetcher_generates_loadable_private_key_when_none_given(
+    mock_client, mock_auth_code_fetcher, mock_on_pending_auth
+):
+    with mock.patch(
+        'awscli.customizations.login.utils.secrets.choice', return_value='a'
+    ):
+        fetcher = SameDeviceLoginTokenFetcher(
+            mock_client,
+            mock_auth_code_fetcher,
+            mock_on_pending_auth,
+            None,
+            base_uri_builder=fake_get_base_sign_in_uri,
+        )
+    der = fetcher._private_key.export_key(ECExportFormat.SEC1)
+    # The exported key must load back; a 31-byte privateKey would fail.
+    assert EC.new_key_from_der_data(der) is not None

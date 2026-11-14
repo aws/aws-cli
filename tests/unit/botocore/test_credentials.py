@@ -11,6 +11,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
 import logging
 import os
 import shutil
@@ -21,6 +22,7 @@ from datetime import datetime, timedelta
 import botocore.exceptions
 import botocore.session
 import pytest
+from awscrt.crypto import EC, ECExportFormat, ECType
 from botocore import credentials
 from botocore.compat import json
 from botocore.configprovider import (
@@ -4558,3 +4560,46 @@ def test_login_refresh_without_sign_in_region(extra):
 
     client_creator.assert_called_once_with('signin', config=mock.ANY)
     assert 'region_name' not in client_creator.call_args.kwargs
+
+
+def _private_key_with_short_scalar_der():
+    """Generate a P-256 key whose SEC1 export has a 31-byte privateKey.
+
+    awscrt on Linux can export such a key (about 1 in 256 generated keys),
+    and its own importer then refuses it (aws-c-cal#262).
+    """
+    for _ in range(5000):
+        der = EC.new_generate(ECType.P_256).export_key(ECExportFormat.SEC1)
+        if der[6] == 31:
+            return der
+    raise AssertionError('No key with a 31-byte privateKey was generated')
+
+
+def test_load_private_key_with_unparsable_key_raises_login_token_load_error():
+    token = {'dpopKey': SAMPLE_SIGN_IN_DPOP_PEM}
+    with mock.patch(
+        'botocore.credentials.EC.new_key_from_der_data',
+        side_effect=RuntimeError(
+            '7178 (AWS_ERROR_CAL_UNSUPPORTED_KEY_FORMAT): '
+            'Key format is not supported.'
+        ),
+    ):
+        with pytest.raises(
+            botocore.exceptions.LoginTokenLoadError,
+            match='Unable to load private key from cached token',
+        ):
+            credentials.LoginCredentialFetcher._load_private_key(token)
+
+
+def test_load_private_key_with_short_scalar_key_raises_login_token_load_error():
+    der = _private_key_with_short_scalar_der()
+    pem = (
+        '-----BEGIN EC PRIVATE KEY-----\n'
+        + base64.b64encode(der).decode()
+        + '\n-----END EC PRIVATE KEY-----\n'
+    )
+    with pytest.raises(
+        botocore.exceptions.LoginTokenLoadError,
+        match='Unable to load private key from cached token',
+    ):
+        credentials.LoginCredentialFetcher._load_private_key({'dpopKey': pem})

@@ -519,6 +519,12 @@ PLUGIN_REGISTRY = {
             'register_translate_import_terminology',
         )
     ],
+    'building-argument-table.wait.image-version-created': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'building-argument-table.wait.image-version-deleted': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
     'building-argument-table.workdocs.create-notification-subscription': [
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],

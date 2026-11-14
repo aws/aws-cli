@@ -4,7 +4,6 @@ import os
 import webbrowser
 
 import botocore
-from awscrt.crypto import EC, ECType
 from botocore.configprovider import ConfiguredEndpointProvider
 from botocore.exceptions import ProfileNotFound
 from botocore.utils import (
@@ -24,6 +23,7 @@ from awscli.customizations.login.utils import (
     CrossDeviceLoginTokenFetcher,
     LoginType,
     SameDeviceLoginTokenFetcher,
+    _generate_dpop_private_key,
 )
 from awscli.customizations.prompts import yes_no_choice
 from awscli.customizations.sso.utils import (
@@ -118,7 +118,7 @@ class LoginCommand(BasicCommand):
             verify=parsed_globals.verify_ssl,
         )
 
-        private_key = EC.new_generate(ECType.P_256)
+        private_key = _generate_dpop_private_key()
 
         if sign_in_type is LoginType.SAME_DEVICE:
             token_fetcher = SameDeviceLoginTokenFetcher(

@@ -1027,6 +1027,56 @@ class AssumeRoleWithWebIdentityCredentialFetcher(
         return assume_role_kwargs
 
 
+_CREDENTIAL_CACHE_FILE = 'file'
+_CREDENTIAL_CACHE_MEMORY = 'memory'
+_CREDENTIAL_CACHE_VALUES = (_CREDENTIAL_CACHE_FILE, _CREDENTIAL_CACHE_MEMORY)
+# Used by ``credential_cache = file`` where no cache was injected. It's the
+# directory the AWS CLI's injected role cache uses.
+_DEFAULT_CREDENTIAL_CACHE_DIR = os.path.join('~', '.aws', 'cli', 'cache')
+
+
+def _get_credential_cache_config(profile_name, profile):
+    """Read and validate a role profile's ``credential_cache`` setting.
+
+    The setting controls whether a role profile's temporary credentials
+    are cached on disk or only in memory. Returns ``file``, ``memory`` or
+    ``None`` when unset.
+    """
+    credential_cache = profile.get('credential_cache')
+    if (
+        credential_cache is not None
+        and credential_cache not in _CREDENTIAL_CACHE_VALUES
+    ):
+        valid = ', '.join(_CREDENTIAL_CACHE_VALUES)
+        raise InvalidConfigError(
+            error_msg=(
+                f'The credential_cache "{credential_cache}" in profile '
+                f'"{profile_name}" is not valid. Valid values are: {valid}.'
+            )
+        )
+    return credential_cache
+
+
+def _select_credential_cache(credential_cache, default_cache, memory_cache):
+    """Pick the cache a role hop uses, from its profile's setting.
+
+    ``memory`` uses ``memory_cache`` (a ``dict`` owned by the provider), so
+    nothing reaches the file cache. A profile that doesn't set the key, or
+    sets ``file``, uses the provider's injected cache (``default_cache``),
+    which is the behavior before this setting existed. Where nothing was
+    injected (``default_cache`` is the plain ``dict`` default, as on a web
+    identity source hop), an explicit ``file`` still caches on disk, in a
+    plain ``JSONFileCache`` in ``~/.aws/cli/cache``.
+    """
+    if credential_cache == _CREDENTIAL_CACHE_MEMORY:
+        return memory_cache
+    if credential_cache == _CREDENTIAL_CACHE_FILE and (
+        default_cache is None or isinstance(default_cache, dict)
+    ):
+        return JSONFileCache(os.path.expanduser(_DEFAULT_CREDENTIAL_CACHE_DIR))
+    return default_cache
+
+
 class CredentialProvider:
     # A short name to identify the provider within botocore.
     METHOD = None
@@ -1622,6 +1672,8 @@ class AssumeRoleProvider(CredentialProvider):
         self._profile_provider_builder = profile_provider_builder
         self._visited_profiles = [self._profile_name]
         self._feature_ids = set()
+        # Used by profiles that set ``credential_cache = memory``.
+        self._memory_cache = {}
 
     def load(self):
         self._loaded_config = self._load_config()
@@ -1670,7 +1722,11 @@ class AssumeRoleProvider(CredentialProvider):
             role_arn=role_config['role_arn'],
             extra_args=extra_args,
             mfa_prompter=self._prompter,
-            cache=self.cache,
+            cache=_select_credential_cache(
+                role_config['credential_cache'],
+                default_cache=self.cache,
+                memory_cache=self._memory_cache,
+            ),
         )
         fetcher.feature_ids = self._feature_ids.copy()
         refresher = fetcher.fetch_credentials
@@ -1700,6 +1756,7 @@ class AssumeRoleProvider(CredentialProvider):
         external_id = profile.get('external_id')
         role_session_name = profile.get('role_session_name')
         duration_seconds = profile.get('duration_seconds')
+        credential_cache = _get_credential_cache_config(profile_name, profile)
 
         role_config = {
             'role_arn': role_arn,
@@ -1708,6 +1765,7 @@ class AssumeRoleProvider(CredentialProvider):
             'role_session_name': role_session_name,
             'source_profile': source_profile,
             'credential_source': credential_source,
+            'credential_cache': credential_cache,
         }
 
         if duration_seconds is not None:
@@ -1911,6 +1969,8 @@ class AssumeRoleWithWebIdentityProvider(CredentialProvider):
             token_loader_cls = FileWebIdentityTokenLoader
         self._token_loader_cls = token_loader_cls
         self._feature_ids = set()
+        # Used by profiles that set ``credential_cache = memory``.
+        self._memory_cache = {}
 
     def load(self):
         return self._assume_role_with_web_identity()
@@ -1943,6 +2003,20 @@ class AssumeRoleWithWebIdentityProvider(CredentialProvider):
 
         return None
 
+    def _get_cache(self):
+        # credential_cache is a key of the profile in use, even when the
+        # token file or role ARN comes from the environment. A profile
+        # without it (or no profile) keeps the injected cache.
+        credential_cache = _get_credential_cache_config(
+            self._profile_name,
+            {'credential_cache': self._get_profile_config('credential_cache')},
+        )
+        return _select_credential_cache(
+            credential_cache,
+            default_cache=self.cache,
+            memory_cache=self._memory_cache,
+        )
+
     def _assume_role_with_web_identity(self):
         token_path = self._get_config('web_identity_token_file')
         if not token_path:
@@ -1969,7 +2043,7 @@ class AssumeRoleWithWebIdentityProvider(CredentialProvider):
             web_identity_token_loader=token_loader,
             role_arn=role_arn,
             extra_args=extra_args,
-            cache=self.cache,
+            cache=self._get_cache(),
         )
         fetcher.feature_ids = self._feature_ids.copy()
 

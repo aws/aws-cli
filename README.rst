@@ -327,4 +327,3 @@ More Resources
 .. |Build Status| image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
    :target: https://travis-ci.org/aws/aws-cli
 .. |Gitter| image:: https://badges.gitter.im/aws/aws-cli.svg
-   :target: https://gitter.im/aws/aws-cli

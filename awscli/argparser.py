@@ -28,6 +28,19 @@ USAGE = (
 )
 
 
+# Verbs that are easy to confuse because services pick different ones
+# for the same kind of operation (e.g. glue get-tables vs. list-tables).
+_INTERCHANGEABLE_VERBS = [
+    {'list', 'describe', 'get', 'search', 'query'},
+    {'update', 'modify', 'put'},
+    {'create', 'start'},
+    {'create', 'register'},
+    {'delete', 'deregister'},
+    {'stop', 'cancel'},
+]
+_MAX_VERB_SWAP_SUGGESTIONS = 3
+
+
 class ArgParseException(Exception):
     pass
 
@@ -116,7 +129,7 @@ class CLIArgParser(argparse.ArgumentParser):
         # converted value must be one of the choices (if specified)
         if action.choices is not None and value not in action.choices:
             msg = [f"Found invalid choice '{value}'\n"]
-            possible = get_close_matches(value, action.choices, cutoff=0.8)
+            possible = suggest_choices(value, action.choices)
             if possible:
                 extra = ['Maybe you meant:\n']
                 for word in possible:
@@ -391,3 +404,73 @@ class FirstPassGlobalArgParser(CLIArgParser):
     def _build(self):
         self.add_argument('--profile', type=str)
         self.add_argument('--debug', action='store_true', default=False)
+
+
+def suggest_choices(value, choices):
+    """Return valid choices to suggest for an invalid ``value``.
+
+    Operations whose noun matches but whose verb is an interchangeable
+    one (``list-tables`` -> ``get-tables``) come first, followed by
+    spelling-level matches.
+    """
+    choices = list(choices)
+    suggestions = _get_verb_swap_matches(value, choices)
+    for match in get_close_matches(value, choices, cutoff=0.8):
+        if match not in suggestions:
+            suggestions.append(match)
+    return suggestions
+
+
+def _get_verb_swap_matches(value, choices):
+    verb, _, noun = value.partition('-')
+    alternatives = {
+        alt
+        for group in _INTERCHANGEABLE_VERBS
+        if verb in group
+        for alt in group
+    }
+    # Without a noun (e.g. a bare "search") there's nothing to tell the
+    # intended operation apart from every other one with a swapped verb.
+    if not alternatives or not noun:
+        return []
+    words = _noun_words(noun)
+    scored = []
+    for choice in choices:
+        choice_verb, _, choice_noun = choice.partition('-')
+        if choice_verb not in alternatives or not choice_noun:
+            continue
+        choice_words = _noun_words(choice_noun)
+        # The last word is the thing being operated on ("components" in
+        # "list-image-builder-components"), so it has to match. The
+        # choice may drop qualifiers that were typed, but not add its
+        # own, which would make it a different operation
+        # (get-column-statistics-for-table for list-tables).
+        if choice_words[-1] != words[-1] or not set(choice_words) <= set(
+            words
+        ):
+            continue
+        score = (
+            # Same noun, including plurality: describe-channels typed,
+            # so list-channels outranks describe-channel.
+            choice_noun == noun,
+            choice_words == words,
+            len(choice_words),
+            choice_verb == verb,
+        )
+        scored.append((score, choice))
+    # Best score first; ties stay in alphabetical order.
+    scored.sort(key=lambda item: item[1])
+    scored.sort(key=lambda item: item[0], reverse=True)
+    return [choice for _, choice in scored[:_MAX_VERB_SWAP_SUGGESTIONS]]
+
+
+def _noun_words(noun):
+    return [_singularize(word) for word in noun.split('-')]
+
+
+def _singularize(word):
+    # Only needs to make "tables" and "table" compare equal; both sides
+    # of every comparison go through it, so odd stems don't matter.
+    if len(word) > 3 and word.endswith('s'):
+        return word[:-1]
+    return word

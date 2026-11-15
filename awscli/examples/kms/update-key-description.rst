@@ -24,6 +24,6 @@ The following ``update-key-description`` example deletes the description to a cu
         --key-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
         --description ''
 
-This command produces no output. To view the description of a KMS key, use the the describe-key command.
+This command produces no output. To view the description of a KMS key, use the ``describe-key`` command.
 
 For more information, see `Access and list KMS key details <https://docs.aws.amazon.com/kms/latest/developerguide/finding-keys.html>`__ in the *AWS Key Management Service Developer Guide*.

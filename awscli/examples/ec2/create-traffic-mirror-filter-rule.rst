@@ -1,6 +1,6 @@
 **To create a filter rule for incoming TCP traffic**
 
-The following ``create-traffic-mirror-filter-rule`` example creates a rule that you can use to mirror all incoming TCP traffic. Before you run this command, use ``create-traffic-mirror-filter`` to create the the traffic mirror filter. ::
+The following ``create-traffic-mirror-filter-rule`` example creates a rule that you can use to mirror all incoming TCP traffic. Before you run this command, use ``create-traffic-mirror-filter`` to create the traffic mirror filter. ::
 
     aws ec2 create-traffic-mirror-filter-rule \
         --description 'TCP Rule' \

@@ -1,6 +1,6 @@
 **To add tags to an existing resource**
 
-The following ``tag-resource`` example add tags to an existing subscriber resource. To create a new resource and add one or more tags to it, don't use this operation. Instead, use the appropriate Create operation for the the type of resource that you want to create. ::
+The following ``tag-resource`` example adds tags to an existing subscriber resource. To create a new resource and add one or more tags to it, don't use this operation. Instead, use the appropriate Create operation for the type of resource that you want to create. ::
 
     aws securitylake tag-resource \
         --resource-arn "arn:aws:securitylake:us-west-2:123456789012:subscriber/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111" \

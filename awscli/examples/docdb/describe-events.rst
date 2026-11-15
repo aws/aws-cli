@@ -1,6 +1,6 @@
 **To list Amazon DocumentDB events**
 
-The following ``describe-events`` example list all the Amazon DocumentDB events for the last 24 hours (1440 minutes). ::
+The following ``describe-events`` example lists all the Amazon DocumentDB events for the last 24 hours (1440 minutes). ::
 
     aws docdb describe-events \
         --duration 1440

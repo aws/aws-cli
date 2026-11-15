@@ -1,6 +1,6 @@
 **To get the information about an IoT Device Advisor test suite**
 
-The following ``get-suite-definition`` example get the information about a aevice advisor test suite with the specified suite definition ID. ::
+The following ``get-suite-definition`` example gets the information about a device advisor test suite with the specified suite definition ID. ::
 
     aws iotdeviceadvisor get-suite-definition \
         --suite-definition-id qqcsmtyyjabl

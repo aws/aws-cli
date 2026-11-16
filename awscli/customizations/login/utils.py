@@ -53,9 +53,11 @@ class BaseLoginTokenFetcher:
         on_pending_authorization,
         private_key=None,
         base_uri_builder=None,
+        prompt=None,
     ):
         self._client = client
         self._on_pending_authorization = on_pending_authorization
+        self._authorize_prompt = prompt
         self._expected_state = uuid.uuid4()
 
         self._code_verifier = ''.join(
@@ -170,6 +172,9 @@ class BaseLoginTokenFetcher:
         if redirect_uri:
             query_params['redirect_uri'] = redirect_uri
 
+        if self._authorize_prompt:
+            query_params['prompt'] = self._authorize_prompt
+
         return (
             f'{self._base_endpoint}/v1/authorize?'
             f'{percent_encode_sequence(query_params)}'
@@ -179,11 +184,7 @@ class BaseLoginTokenFetcher:
     @staticmethod
     def _extract_login_session_from_id_token(id_token):
         # Extract the subject arn from the JWT payload
-        parts = id_token.split('.')
-        if len(parts) != 3:
-            raise ValueError('Invalid JWT token - cannot extract payload')
-        payload_bytes = base64_url_decode(parts[1])
-        payload_json = json.loads(payload_bytes)
+        payload_json = decode_id_token_payload(id_token)
 
         if 'sub' not in payload_json:
             raise ValueError('Invalid JWT token - missing sub')
@@ -220,12 +221,14 @@ class SameDeviceLoginTokenFetcher(BaseLoginTokenFetcher):
         on_pending_authorization,
         private_key=None,
         base_uri_builder=None,
+        prompt=None,
     ):
         super().__init__(
             client,
             on_pending_authorization,
             private_key=private_key,
             base_uri_builder=base_uri_builder,
+            prompt=prompt,
         )
         self._auth_code_fetcher = auth_code_fetcher
 
@@ -340,3 +343,10 @@ class CrossDeviceLoginTokenFetcher(BaseLoginTokenFetcher):
 def base64_url_decode(data):
     data += '=' * (-len(data) % 4)  # restore '=' padding
     return base64.urlsafe_b64decode(data)
+
+
+def decode_id_token_payload(id_token):
+    parts = id_token.split('.')
+    if len(parts) != 3:
+        raise ValueError('Invalid JWT token - cannot extract payload')
+    return json.loads(base64_url_decode(parts[1]))

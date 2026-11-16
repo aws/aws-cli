@@ -1,5 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
+import base64
+import json
 import os
 import webbrowser
 from argparse import Namespace
@@ -36,6 +38,16 @@ def mock_auth_code_fetcher():
         'awscli.customizations.login.login.AuthCodeFetcher', autospec=True
     ) as auth_code_fetcher:
         yield auth_code_fetcher
+
+
+@pytest.fixture(autouse=True)
+def mock_region_prompt():
+    # Accept the default at the region prompt, as pressing Enter would
+    with mock.patch(
+        'awscli.customizations.configure.sso.PTKPrompt.get_value',
+        side_effect=lambda default, *args, **kwargs: default,
+    ) as get_value:
+        yield get_value
 
 
 @pytest.fixture
@@ -126,6 +138,7 @@ def test_run_main_same_device_flow(
         {
             '__section__': "profile profile-name",
             'login_session': 'arn:aws:iam::0123456789012:user/Admin',
+            'region': 'us-east-1',
         },
         'configfile',
     )
@@ -190,6 +203,7 @@ def test_run_main_cross_device_flow(
         {
             '__section__': "profile profile-name",
             'login_session': 'arn:aws:iam::0123456789012:user/Admin',
+            'region': 'us-east-1',
         },
         'configfile',
     )
@@ -502,3 +516,205 @@ def test_sign_in_region_when_configured_endpoints_ignored(
 
     saved_token = mock_token_loader.save_token.call_args[0][1]
     assert saved_token['signInRegion'] == 'us-east-1'
+
+
+def _id_token(**claims):
+    payload = base64.urlsafe_b64encode(
+        json.dumps(
+            {'sub': 'arn:aws:iam::0123456789012:user/Admin', **claims}
+        ).encode()
+    ).decode()
+    return f'header.{payload.rstrip("=")}.signature'
+
+
+@pytest.fixture
+def mock_fetch_token():
+    with mock.patch(
+        'awscli.customizations.login.utils.get_base_sign_in_uri',
+        return_value='https://foo',
+    ):
+        with mock.patch(
+            'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher'
+            '.fetch_token'
+        ) as fetch_token:
+            fetch_token.return_value = _login_token()
+            yield fetch_token
+
+
+def _login_token(**claims):
+    return (
+        {'accessToken': 'access_token', 'idToken': _id_token(**claims)},
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+
+
+def _expected_profile(region=None):
+    expected = {
+        '__section__': 'profile profile-name',
+        'login_session': 'arn:aws:iam::0123456789012:user/Admin',
+    }
+    if region:
+        expected['region'] = region
+    return expected
+
+
+def test_prompts_for_profile_region_after_region_arg(
+    mock_login_command,
+    mock_fetch_token,
+    mock_token_loader,
+    mock_config_file_writer,
+    mock_region_prompt,
+):
+    mock_region_prompt.side_effect = None
+    mock_region_prompt.return_value = 'eu-west-1'
+
+    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    # The prompt offers the region we signed in with, but the answer is
+    # only the profile's default and doesn't change where refresh goes.
+    assert mock_region_prompt.call_count == 1
+    assert mock_region_prompt.call_args[0][0] == 'us-east-1'
+    saved_token = mock_token_loader.save_token.call_args[0][1]
+    assert saved_token['signInRegion'] == 'us-east-1'
+    mock_config_file_writer.update_config.assert_called_once_with(
+        _expected_profile('eu-west-1'), 'configfile'
+    )
+
+
+def test_prompts_for_profile_region_after_environment_region(
+    mock_login_command,
+    mock_session,
+    mock_fetch_token,
+    mock_config_file_writer,
+    mock_region_prompt,
+):
+    mock_session.get_config_variable.side_effect = {
+        'config_file': 'configfile',
+        'region': 'us-west-2',
+    }.get
+    global_args = Namespace(region=None, endpoint_url=None, verify_ssl=None)
+
+    mock_login_command._run_main(DEFAULT_ARGS, global_args)
+
+    assert mock_region_prompt.call_count == 1
+    assert mock_region_prompt.call_args[0][0] == 'us-west-2'
+    mock_config_file_writer.update_config.assert_called_once_with(
+        _expected_profile('us-west-2'), 'configfile'
+    )
+
+
+def test_profile_region_prompt_defaults_to_home_region(
+    mock_login_command,
+    mock_fetch_token,
+    mock_config_file_writer,
+    mock_region_prompt,
+):
+    mock_fetch_token.return_value = _login_token(aws_home_region='us-east-2')
+
+    with mock.patch(
+        'awscli.customizations.login.login.yes_no_choice'
+    ) as choice:
+        mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    # The prompt already offered the home region, so there's no question
+    assert mock_region_prompt.call_args[0][0] == 'us-east-2'
+    assert choice.call_count == 0
+    mock_config_file_writer.update_config.assert_called_once_with(
+        _expected_profile('us-east-2'), 'configfile'
+    )
+
+
+@pytest.mark.parametrize(
+    'accepts,expected_region',
+    [(True, 'us-east-2'), (False, 'us-east-1')],
+    ids=['accepted', 'declined'],
+)
+def test_asks_to_use_home_region_after_initial_prompt(
+    mock_login_command,
+    mock_session,
+    mock_fetch_token,
+    mock_config_file_writer,
+    mock_region_prompt,
+    accepts,
+    expected_region,
+):
+    mock_session.profile = 'new-profile'
+    mock_fetch_token.return_value = _login_token(aws_home_region='us-east-2')
+    global_args = Namespace(region=None, endpoint_url=None, verify_ssl=None)
+
+    with mock.patch(
+        'awscli.customizations.login.login.yes_no_choice',
+        return_value=accepts,
+    ) as choice:
+        mock_login_command._run_main(DEFAULT_ARGS, global_args)
+
+    assert mock_region_prompt.call_count == 1
+    assert choice.call_count == 1
+    mock_config_file_writer.update_config.assert_called_once_with(
+        {
+            '__section__': 'profile new-profile',
+            'login_session': 'arn:aws:iam::0123456789012:user/Admin',
+            'region': expected_region,
+        },
+        'configfile',
+    )
+
+
+@pytest.mark.parametrize(
+    'accepts,expected_region',
+    [(True, 'us-east-2'), (False, None)],
+    ids=['accepted', 'declined'],
+)
+def test_asks_before_overriding_profile_region_with_home_region(
+    mock_login_command,
+    mock_session,
+    mock_fetch_token,
+    mock_config_file_writer,
+    mock_region_prompt,
+    accepts,
+    expected_region,
+):
+    mock_session.full_config = {
+        'profiles': {'profile-name': {'region': 'us-east-1'}}
+    }
+    mock_fetch_token.return_value = _login_token(aws_home_region='us-east-2')
+
+    with mock.patch(
+        'awscli.customizations.login.login.yes_no_choice',
+        return_value=accepts,
+    ) as choice:
+        mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    assert mock_region_prompt.call_count == 0
+    assert choice.call_count == 1
+    mock_config_file_writer.update_config.assert_called_once_with(
+        _expected_profile(expected_region), 'configfile'
+    )
+
+
+@pytest.mark.parametrize(
+    'claims', [{}, {'aws_home_region': ''}, {'aws_home_region': 'us-west-2'}]
+)
+def test_no_home_region_question_when_missing_or_matching(
+    mock_login_command,
+    mock_session,
+    mock_fetch_token,
+    mock_config_file_writer,
+    mock_region_prompt,
+    claims,
+):
+    mock_session.full_config = {
+        'profiles': {'profile-name': {'region': 'us-west-2'}}
+    }
+    mock_fetch_token.return_value = _login_token(**claims)
+
+    with mock.patch(
+        'awscli.customizations.login.login.yes_no_choice'
+    ) as choice:
+        mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    assert mock_region_prompt.call_count == 0
+    assert choice.call_count == 0
+    mock_config_file_writer.update_config.assert_called_once_with(
+        _expected_profile(), 'configfile'
+    )

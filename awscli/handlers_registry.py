@@ -915,6 +915,12 @@ MAIN_COMMAND_TABLE_OPS: list[
         'LogoutCommand',
     ),
     (
+        CommandTableOp.ADD,
+        'signup',
+        'awscli.customizations.login.signup',
+        'SignupCommand',
+    ),
+    (
         CommandTableOp.RENAME,
         'agenttoolkit',
         'agent-toolkit',

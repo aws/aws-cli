@@ -1067,28 +1067,24 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
         # The source hop (W) is resolved first.
         return ['assume_role_with_web_identity', 'assume_role']
 
-    def test_web_identity_source_hop_unset_stays_in_memory(self):
-        # Pre-existing behavior: a web identity source hop with no setting
-        # isn't cached in ~/.aws/cli/cache. Only A is cached.
-        self.write_web_identity_source_hop_config()
-        with patch(
-            'botocore.credentials._DEFAULT_CREDENTIAL_CACHE_DIR',
-            self.cache_dir,
-        ):
-            self.run_command_with_calls('A', self.source_hop_calls())
+    def assert_source_hop_stays_in_memory(self):
+        # Only A is cached: the web identity source hop W gets no injected
+        # cache, and nothing is written to ~/.aws/cli/cache.
+        self.run_command_with_calls('A', self.source_hop_calls())
         self.assertEqual(len(self.cache_files()), 1)
+        default_dir = os.path.join(self.tempdir, '.aws', 'cli', 'cache')
+        self.assertFalse(os.path.exists(default_dir))
 
-    def test_web_identity_source_hop_explicit_file_uses_default_dir(self):
-        # An explicit file on the hop caches it in ~/.aws/cli/cache too.
+    def test_web_identity_source_hop_unset_stays_in_memory(self):
+        # Pre-existing behavior.
+        self.write_web_identity_source_hop_config()
+        self.assert_source_hop_stays_in_memory()
+
+    def test_web_identity_source_hop_explicit_file_stays_in_memory(self):
+        # An explicit file behaves as unset: the hop keeps its existing
+        # memory-only behavior.
         self.write_web_identity_source_hop_config('credential_cache = file\n')
-        with patch(
-            'botocore.credentials._DEFAULT_CREDENTIAL_CACHE_DIR',
-            self.cache_dir,
-        ):
-            self.run_command_with_calls('A', self.source_hop_calls())
-            # Both hops are cached, so the next command calls no STS API.
-            self.run_command_with_calls('A', [])
-        self.assertEqual(len(self.cache_files()), 2)
+        self.assert_source_hop_stays_in_memory()
 
     def test_explicit_file_reuses_injected_cache(self):
         # An explicit file behaves as unset: the injected

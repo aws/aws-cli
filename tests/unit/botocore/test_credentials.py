@@ -3279,20 +3279,11 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         self.assertEqual(creds.access_key, 'foo')
         self.assertEqual(len(cache.entries), 1)
 
-    def test_credential_cache_file_without_injected_cache_uses_default_dir(
-        self,
-    ):
-        # Where nothing was injected (the plain dict default), an explicit
-        # file still caches on disk, in ~/.aws/cli/cache.
-        tempdir = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, tempdir)
-        default_dir = os.path.join(tempdir, 'cli', 'cache')
-        with mock.patch.object(
-            credentials, '_DEFAULT_CREDENTIAL_CACHE_DIR', default_dir
-        ):
-            cache = self._load_with_cache_config(credential_cache='file')
-        self.assertEqual(cache, {})
-        self.assertEqual(len(os.listdir(default_dir)), 1)
+    def test_credential_cache_file_uses_plain_dict_cache(self):
+        # A plain dict cache (botocore's default) is used as given, the
+        # same as unset.
+        cache = self._load_with_cache_config(credential_cache='file')
+        self.assertEqual(len(cache), 1)
 
     def test_credential_cache_memory_skips_injected_cache(self):
         cache = self._load_with_cache_config(credential_cache='memory')

@@ -324,10 +324,9 @@ profile's ``AssumeRole`` call. Credentials cached on disk for a lower hop
 can be used to assume the roles above it, so to keep a whole chain off disk,
 set ``credential_cache = memory`` in every role profile of the chain.
 
-When the ``source_profile`` is an assume role with web identity profile that
-doesn't set ``credential_cache``, its credentials are cached only in memory,
-as in earlier versions of the AWS CLI. To cache that hop on disk in
-``~/.aws/cli/cache``, set ``credential_cache = file`` in that profile.
+When the ``source_profile`` is an assume role with web identity profile, its
+credentials are cached only in memory, as in earlier versions of the AWS CLI,
+whatever its ``credential_cache`` says.
 
 .. warning::
 

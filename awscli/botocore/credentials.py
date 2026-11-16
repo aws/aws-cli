@@ -301,8 +301,6 @@ def _get_client_creator(session, region_name):
 _CREDENTIAL_CACHE_FILE = 'file'
 _CREDENTIAL_CACHE_MEMORY = 'memory'
 _CREDENTIAL_CACHE_VALUES = (_CREDENTIAL_CACHE_FILE, _CREDENTIAL_CACHE_MEMORY)
-# The directory of the AWS CLI's injected role cache.
-_DEFAULT_CREDENTIAL_CACHE_DIR = os.path.join('~', '.aws', 'cli', 'cache')
 
 
 def _validate_credential_cache(profile_name, credential_cache):
@@ -325,13 +323,7 @@ def _select_credential_cache(credential_cache, default_cache, memory_cache):
     """Return the cache a role hop uses for its ``credential_cache`` value."""
     if credential_cache == _CREDENTIAL_CACHE_MEMORY:
         return memory_cache
-    # A plain dict (or None) means no file cache was injected, as on a web
-    # identity source_profile hop, so an explicit file uses the CLI's
-    # cache directory.
-    if credential_cache == _CREDENTIAL_CACHE_FILE and (
-        default_cache is None or isinstance(default_cache, dict)
-    ):
-        return JSONFileCache(os.path.expanduser(_DEFAULT_CREDENTIAL_CACHE_DIR))
+    # file, or unset, keeps the cache the provider was given.
     return default_cache
 
 

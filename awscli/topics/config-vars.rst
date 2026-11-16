@@ -325,14 +325,16 @@ If you do not have MFA authentication required, then you only need to specify a
 When you specify a profile that has IAM role configuration, the AWS CLI
 will make an ``AssumeRole`` call to retrieve temporary credentials.  These
 credentials are then stored (in ``~/.aws/cli/cache``, unless the profile sets
-``credential_cache = memory``).  Subsequent AWS CLI
-commands will use the cached temporary credentials until they expire, in which
-case the AWS CLI will automatically refresh credentials.
+``credential_cache = memory``).  Subsequent AWS CLI commands will use the
+cached temporary credentials until they expire, in which case the AWS CLI will
+automatically refresh credentials.
 
 If you specify an ``mfa_serial``, then the first time an ``AssumeRole`` call is
 made, you will be prompted to enter the MFA code.  Subsequent commands will use
 the cached temporary credentials.  However, when the temporary credentials
-expire, you will be re-prompted for another MFA code.
+expire, you will be re-prompted for another MFA code.  With
+``credential_cache = memory``, nothing is cached between commands, so you are
+prompted on every command.
 
 
 Example configuration using ``source_profile``::
@@ -365,9 +367,10 @@ STS on your behalf.
 
 When you specify a profile that has IAM role configuration, the AWS CLI will
 make an ``AssumeRoleWithWebIdentity`` call to retrieve temporary credentials.
-These credentials are then stored (in ``~/.aws/cli/cache``).  Subsequent AWS
-CLI commands will use the cached temporary credentials until they expire, in
-which case the AWS CLI will automatically refresh credentials.
+These credentials are then stored (in ``~/.aws/cli/cache``, unless the profile
+sets ``credential_cache = memory``).  Subsequent AWS CLI commands will use the
+cached temporary credentials until they expire, in which case the AWS CLI will
+automatically refresh credentials.
 
 You can specify the following configuration values for configuring an
 assume role with web identity profile in the shared config:

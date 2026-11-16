@@ -319,11 +319,57 @@ def _validate_credential_cache(profile_name, credential_cache):
     return credential_cache
 
 
-def _select_credential_cache(credential_cache, default_cache, memory_cache):
-    """Return the cache a role hop uses for its ``credential_cache`` value."""
+def _validate_credential_cache_location(
+    profile_name, credential_cache, location
+):
+    """Return a profile's ``credential_cache_location``, ``~`` expanded.
+
+    Returns None when the key is unset, or with ``memory``, which ignores
+    it. Raises if the value is empty, relative or can't be expanded.
+    """
+    if credential_cache == _CREDENTIAL_CACHE_MEMORY or location is None:
+        return None
+    if not location.strip():
+        raise InvalidConfigError(
+            error_msg=(
+                f'The credential_cache_location in profile "{profile_name}" '
+                'is empty. Set it to a directory or remove it.'
+            )
+        )
+    expanded = os.path.expanduser(location)
+    if expanded.startswith('~'):
+        # expanduser leaves ~user unchanged when it can't find that user's
+        # home directory.
+        raise InvalidConfigError(
+            error_msg=(
+                f'The credential_cache_location "{location}" in profile '
+                f'"{profile_name}" could not be expanded: the home directory '
+                'for that user can\'t be found. Use an absolute path or a '
+                'path that starts with ~/.'
+            )
+        )
+    if not os.path.isabs(expanded):
+        message = (
+            f'The credential_cache_location "{location}" in profile '
+            f'"{profile_name}" is not an absolute path. Use an absolute '
+            'path or a path that starts with ~/.'
+        )
+        if '$' in location or '%' in location:
+            message += " Environment variables aren't expanded."
+        raise InvalidConfigError(error_msg=message)
+    return expanded
+
+
+def _select_credential_cache(
+    credential_cache, credential_cache_location, default_cache, memory_cache
+):
+    """Return the cache a role hop uses for its cache settings."""
     if credential_cache == _CREDENTIAL_CACHE_MEMORY:
         return memory_cache
-    # file, or unset, keeps the cache the provider was given.
+    if credential_cache_location is not None:
+        # Used like the default folder: created on first write, files 0600.
+        return JSONFileCache(credential_cache_location)
+    # file, or unset, with no location keeps the cache the provider was given.
     return default_cache
 
 
@@ -1703,6 +1749,7 @@ class AssumeRoleProvider(CredentialProvider):
             mfa_prompter=self._prompter,
             cache=_select_credential_cache(
                 role_config['credential_cache'],
+                role_config['credential_cache_location'],
                 default_cache=self.cache,
                 memory_cache=self._memory_cache,
             ),
@@ -1738,6 +1785,11 @@ class AssumeRoleProvider(CredentialProvider):
         credential_cache = _validate_credential_cache(
             profile_name, profile.get('credential_cache')
         )
+        credential_cache_location = _validate_credential_cache_location(
+            profile_name,
+            credential_cache,
+            profile.get('credential_cache_location'),
+        )
 
         role_config = {
             'role_arn': role_arn,
@@ -1747,6 +1799,7 @@ class AssumeRoleProvider(CredentialProvider):
             'source_profile': source_profile,
             'credential_source': credential_source,
             'credential_cache': credential_cache,
+            'credential_cache_location': credential_cache_location,
         }
 
         if duration_seconds is not None:
@@ -1985,14 +2038,20 @@ class AssumeRoleWithWebIdentityProvider(CredentialProvider):
         return None
 
     def _get_cache(self):
-        # credential_cache is a key of the profile in use, even when the
+        # The cache settings are keys of the profile in use, even when the
         # token file or role ARN comes from the environment. A profile
-        # without it (or no profile) keeps the injected cache.
+        # without them (or no profile) keeps the injected cache.
         credential_cache = _validate_credential_cache(
             self._profile_name, self._get_profile_config('credential_cache')
         )
+        credential_cache_location = _validate_credential_cache_location(
+            self._profile_name,
+            credential_cache,
+            self._get_profile_config('credential_cache_location'),
+        )
         return _select_credential_cache(
             credential_cache,
+            credential_cache_location,
             default_cache=self.cache,
             memory_cache=self._memory_cache,
         )

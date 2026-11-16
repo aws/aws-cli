@@ -108,6 +108,8 @@ ARGUMENT_RENAMES = {
     'glue.get-unfiltered-table-metadata.region': 'resource-region',
     'agent-toolkit.*.name': 'skill-name',
     'agent-toolkit.search-skills.query': 'search-query',
+    'opensearchmemory.search-memories.query': 'search-query',
+    'opensearchmemory.search-events.query': 'search-query',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

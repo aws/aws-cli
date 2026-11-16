@@ -384,6 +384,12 @@ PLUGIN_REGISTRY = {
     'building-argument-table.mturk.list-qualification-types': [
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],
+    'building-argument-table.opensearchmemory.search-events': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'building-argument-table.opensearchmemory.search-memories': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
     'building-argument-table.pinpoint.delete-email-template': [
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],

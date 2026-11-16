@@ -52,6 +52,24 @@
       ],
       "documentation":"<p>Associates a core network Connect peer with a device and optionally, with a link. </p> <p>If you specify a link, it must be associated with the specified device. You can only associate core network Connect peers that have been created on a core network Connect attachment on a core network. </p>"
     },
+    "AssociateContextStore":{
+      "name":"AssociateContextStore",
+      "http":{
+        "method":"POST",
+        "requestUri":"/context-stores/{contextStoreId}/associations"
+      },
+      "input":{"shape":"AssociateContextStoreRequest"},
+      "output":{"shape":"AssociateContextStoreResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Associates a transit gateway with a context store. The transit gateway must be registered with the global network of the context store, and can't be associated with more than one context store. The context store must be in the <code>AVAILABLE</code> state.</p> <p>The association is in the <code>ASSOCIATING</code> state when it's created, and changes to <code>ASSOCIATED</code> when it's complete.</p>"
+    },
     "AssociateCustomerGateway":{
       "name":"AssociateCustomerGateway",
       "http":{
@@ -162,6 +180,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a connection between two devices. The devices can be a physical or virtual appliance that connects to a third-party appliance in a VPC, or a physical appliance that connects to another physical appliance in an on-premises network.</p>"
+    },
+    "CreateContextStore":{
+      "name":"CreateContextStore",
+      "http":{
+        "method":"POST",
+        "requestUri":"/global-networks/{globalNetworkId}/context-stores"
+      },
+      "input":{"shape":"CreateContextStoreRequest"},
+      "output":{"shape":"CreateContextStoreResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a context store in a global network. A context store maintains context entries, such as security groups, subnets, and attachments, for the resources connected to the transit gateways that you associate with it.</p> <p>The context store is in the <code>PENDING</code> state when it's created, and changes to <code>AVAILABLE</code> when it's ready to use.</p>"
     },
     "CreateCoreNetwork":{
       "name":"CreateCoreNetwork",
@@ -420,6 +457,24 @@
       ],
       "documentation":"<p>Deletes the specified connection in your global network.</p>"
     },
+    "DeleteContextStore":{
+      "name":"DeleteContextStore",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/context-stores/{contextStoreId}"
+      },
+      "input":{"shape":"DeleteContextStoreRequest"},
+      "output":{"shape":"DeleteContextStoreResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a context store. The context store must be in the <code>AVAILABLE</code> state. You must disassociate all transit gateways from the context store before you can delete it.</p>"
+    },
     "DeleteCoreNetwork":{
       "name":"DeleteCoreNetwork",
       "http":{
@@ -635,6 +690,24 @@
       ],
       "documentation":"<p>Disassociates a core network Connect peer from a device and a link. </p>"
     },
+    "DisassociateContextStore":{
+      "name":"DisassociateContextStore",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/context-stores/{contextStoreId}/associations/{transitGatewayArn}"
+      },
+      "input":{"shape":"DisassociateContextStoreRequest"},
+      "output":{"shape":"DisassociateContextStoreResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disassociates a transit gateway from a context store. The association must be in the <code>ASSOCIATED</code> or <code>FAILED</code> state. The association stays in the <code>DISASSOCIATING</code> state until the disassociation completes.</p>"
+    },
     "DisassociateCustomerGateway":{
       "name":"DisassociateCustomerGateway",
       "http":{
@@ -775,6 +848,57 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets information about one or more of your connections in a global network.</p>"
+    },
+    "GetContextStore":{
+      "name":"GetContextStore",
+      "http":{
+        "method":"GET",
+        "requestUri":"/context-stores/{contextStoreId}"
+      },
+      "input":{"shape":"GetContextStoreRequest"},
+      "output":{"shape":"GetContextStoreResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about a context store.</p>"
+    },
+    "GetContextStoreAssociation":{
+      "name":"GetContextStoreAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/context-stores/{contextStoreId}/associations/{transitGatewayArn}"
+      },
+      "input":{"shape":"GetContextStoreAssociationRequest"},
+      "output":{"shape":"GetContextStoreAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about the association between a context store and a transit gateway.</p>"
+    },
+    "GetContextVersion":{
+      "name":"GetContextVersion",
+      "http":{
+        "method":"GET",
+        "requestUri":"/context-stores/{contextStoreId}/context-version"
+      },
+      "input":{"shape":"GetContextVersionRequest"},
+      "output":{"shape":"GetContextVersionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the current version of the context entries of a context store. The context store must be in the <code>AVAILABLE</code> state.</p>"
     },
     "GetCoreNetwork":{
       "name":"GetCoreNetwork",
@@ -1233,6 +1357,74 @@
       ],
       "documentation":"<p>Returns a list of core network Connect peers.</p>"
     },
+    "ListContextChanges":{
+      "name":"ListContextChanges",
+      "http":{
+        "method":"GET",
+        "requestUri":"/context-stores/{contextStoreId}/context-changes"
+      },
+      "input":{"shape":"ListContextChangesRequest"},
+      "output":{"shape":"ListContextChangesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the context entries that were added to or removed from a context store after the specified version. The context store must be in the <code>AVAILABLE</code> state.</p>"
+    },
+    "ListContextStoreAssociations":{
+      "name":"ListContextStoreAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/context-stores/{contextStoreId}/associations"
+      },
+      "input":{"shape":"ListContextStoreAssociationsRequest"},
+      "output":{"shape":"ListContextStoreAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the transit gateway associations of a context store.</p>"
+    },
+    "ListContextStores":{
+      "name":"ListContextStores",
+      "http":{
+        "method":"GET",
+        "requestUri":"/context-stores"
+      },
+      "input":{"shape":"ListContextStoresRequest"},
+      "output":{"shape":"ListContextStoresResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the context stores in your account. You can optionally return only the context stores in a specific global network.</p>"
+    },
+    "ListContexts":{
+      "name":"ListContexts",
+      "http":{
+        "method":"GET",
+        "requestUri":"/context-stores/{contextStoreId}/contexts"
+      },
+      "input":{"shape":"ListContextsRequest"},
+      "output":{"shape":"ListContextsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the context entries of a context store, and the version of the context entries. To get the context entries that were added or removed after this version, specify the returned <code>VersionId</code> in a <code>ListContextChanges</code> request. The context store must be in the <code>AVAILABLE</code> state.</p>"
+    },
     "ListCoreNetworkPolicyVersions":{
       "name":"ListCoreNetworkPolicyVersions",
       "http":{
@@ -1582,6 +1774,24 @@
       ],
       "documentation":"<p>Updates the information for an existing connection. To remove information for any of the parameters, specify an empty string.</p>"
     },
+    "UpdateContextStore":{
+      "name":"UpdateContextStore",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/context-stores/{contextStoreId}"
+      },
+      "input":{"shape":"UpdateContextStoreRequest"},
+      "output":{"shape":"UpdateContextStoreResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the description of a context store. The context store must be in the <code>AVAILABLE</code> state.</p>"
+    },
     "UpdateCoreNetwork":{
       "name":"UpdateCoreNetwork",
       "http":{
@@ -1842,6 +2052,31 @@
         "ConnectPeerAssociation":{
           "shape":"ConnectPeerAssociation",
           "documentation":"<p>The response to the Connect peer request.</p>"
+        }
+      }
+    },
+    "AssociateContextStoreRequest":{
+      "type":"structure",
+      "required":["ContextStoreId"],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        },
+        "TransitGatewayArn":{
+          "shape":"TransitGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the transit gateway to associate with the context store.</p>"
+        }
+      }
+    },
+    "AssociateContextStoreResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStoreAssociation":{
+          "shape":"ContextStoreAssociation",
+          "documentation":"<p>Information about the context store association.</p>"
         }
       }
     },
@@ -2667,6 +2902,164 @@
       "type":"list",
       "member":{"shape":"ConstrainedString"}
     },
+    "ContextChange":{
+      "type":"structure",
+      "members":{
+        "ChangeType":{
+          "shape":"ContextChangeType",
+          "documentation":"<p>The type of change. The possible values are the following:</p> <ul> <li> <p> <code>ADDED</code>: The context entry was added to the context store.</p> </li> <li> <p> <code>REMOVED</code>: The context entry was removed from the context store.</p> </li> </ul>"
+        },
+        "Context":{
+          "shape":"ContextEntry",
+          "documentation":"<p>The context entry that was added or removed.</p>"
+        }
+      },
+      "documentation":"<p>Describes a context entry that was added to or removed from a context store.</p>"
+    },
+    "ContextChangeList":{
+      "type":"list",
+      "member":{"shape":"ContextChange"}
+    },
+    "ContextChangeType":{
+      "type":"string",
+      "enum":[
+        "ADDED",
+        "REMOVED"
+      ]
+    },
+    "ContextEntry":{
+      "type":"structure",
+      "members":{
+        "ContextId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The ID of the context entry.</p>"
+        },
+        "ContextType":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The type of the context entry, for example <code>SegmentId</code>, <code>Subnet</code>, or <code>Attachment</code>.</p>"
+        },
+        "SegmentType":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The type of the segment, for example <code>SecurityGroup</code>. Network Manager returns this value only when the context type is <code>SegmentId</code>.</p>"
+        },
+        "PublicId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The ID of the resource, for example a security group ID, subnet ID, or transit gateway attachment ID.</p>"
+        },
+        "Region":{
+          "shape":"ExternalRegionCode",
+          "documentation":"<p>The Amazon Web Services Region of the resource.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The ID of the Availability Zone of the resource, for example <code>use1-az2</code>. Network Manager returns this value only when the context type is <code>Subnet</code>.</p>"
+        },
+        "AttachmentType":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The type of the attachment, for example <code>VPC</code>. Network Manager returns this value only when the context type is <code>Attachment</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes a context entry in a context store. A context entry describes a resource, such as a security group, subnet, or attachment.</p>"
+    },
+    "ContextList":{
+      "type":"list",
+      "member":{"shape":"ContextEntry"}
+    },
+    "ContextStore":{
+      "type":"structure",
+      "members":{
+        "GlobalNetworkId":{
+          "shape":"GlobalNetworkId",
+          "documentation":"<p>The ID of the global network that the context store belongs to.</p>"
+        },
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>"
+        },
+        "ContextStoreArn":{
+          "shape":"ContextStoreArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the context store.</p>"
+        },
+        "Description":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The description of the context store.</p>"
+        },
+        "CreatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the context store was created.</p>"
+        },
+        "State":{
+          "shape":"ContextStoreState",
+          "documentation":"<p>The state of the context store. The possible values are the following:</p> <ul> <li> <p> <code>PENDING</code>: The context store is being created.</p> </li> <li> <p> <code>AVAILABLE</code>: The context store is ready to use.</p> </li> <li> <p> <code>UPDATING</code>: The context store is being updated.</p> </li> <li> <p> <code>DELETING</code>: The context store is being deleted.</p> </li> <li> <p> <code>DELETED</code>: The context store is deleted.</p> </li> </ul>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the context store.</p>"
+        }
+      },
+      "documentation":"<p>Describes a context store.</p>"
+    },
+    "ContextStoreArn":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
+    "ContextStoreAssociation":{
+      "type":"structure",
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>"
+        },
+        "TransitGatewayArn":{
+          "shape":"TransitGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the transit gateway.</p>"
+        },
+        "CreatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the association was created.</p>"
+        },
+        "State":{
+          "shape":"ContextStoreAssociationState",
+          "documentation":"<p>The state of the association. The possible values are the following:</p> <ul> <li> <p> <code>ASSOCIATING</code>: The transit gateway is being associated with the context store.</p> </li> <li> <p> <code>ASSOCIATED</code>: The transit gateway is associated with the context store.</p> </li> <li> <p> <code>DISASSOCIATING</code>: The transit gateway is being disassociated from the context store.</p> </li> <li> <p> <code>FAILED</code>: The association failed. To remove it, disassociate the transit gateway.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Describes the association between a context store and a transit gateway.</p>"
+    },
+    "ContextStoreAssociationList":{
+      "type":"list",
+      "member":{"shape":"ContextStoreAssociation"}
+    },
+    "ContextStoreAssociationState":{
+      "type":"string",
+      "enum":[
+        "ASSOCIATING",
+        "ASSOCIATED",
+        "DISASSOCIATING",
+        "FAILED"
+      ]
+    },
+    "ContextStoreId":{
+      "type":"string",
+      "max":50,
+      "min":0,
+      "pattern":"^context-store-([0-9a-f]{8,17})$"
+    },
+    "ContextStoreList":{
+      "type":"list",
+      "member":{"shape":"ContextStore"}
+    },
+    "ContextStoreState":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "AVAILABLE",
+        "UPDATING",
+        "DELETING",
+        "DELETED"
+      ]
+    },
     "CoreNetwork":{
       "type":"structure",
       "members":{
@@ -3379,6 +3772,40 @@
         }
       }
     },
+    "CreateContextStoreRequest":{
+      "type":"structure",
+      "required":["GlobalNetworkId"],
+      "members":{
+        "GlobalNetworkId":{
+          "shape":"GlobalNetworkId",
+          "documentation":"<p>The ID of the global network to create the context store in.</p>",
+          "location":"uri",
+          "locationName":"globalNetworkId"
+        },
+        "Description":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>A description of the context store.</p> <p>Constraints: Maximum length of 256 characters. Only printable ASCII characters are allowed.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to apply to the context store during creation.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateContextStoreResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStore":{
+          "shape":"ContextStore",
+          "documentation":"<p>Information about the context store.</p>"
+        }
+      }
+    },
     "CreateCoreNetworkPrefixListAssociationRequest":{
       "type":"structure",
       "required":[
@@ -3979,6 +4406,27 @@
         }
       }
     },
+    "DeleteContextStoreRequest":{
+      "type":"structure",
+      "required":["ContextStoreId"],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store to delete.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        }
+      }
+    },
+    "DeleteContextStoreResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStore":{
+          "shape":"ContextStore",
+          "documentation":"<p>Information about the context store.</p>"
+        }
+      }
+    },
     "DeleteCoreNetworkPolicyVersionRequest":{
       "type":"structure",
       "required":[
@@ -4416,6 +4864,36 @@
         }
       }
     },
+    "DisassociateContextStoreRequest":{
+      "type":"structure",
+      "required":[
+        "ContextStoreId",
+        "TransitGatewayArn"
+      ],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        },
+        "TransitGatewayArn":{
+          "shape":"TransitGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the transit gateway to disassociate from the context store.</p>",
+          "location":"uri",
+          "locationName":"transitGatewayArn"
+        }
+      }
+    },
+    "DisassociateContextStoreResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStoreAssociation":{
+          "shape":"ContextStoreAssociation",
+          "documentation":"<p>Information about the context store association.</p>"
+        }
+      }
+    },
     "DisassociateCustomerGatewayRequest":{
       "type":"structure",
       "required":[
@@ -4727,6 +5205,78 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to use for the next page of results.</p>"
+        }
+      }
+    },
+    "GetContextStoreAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "ContextStoreId",
+        "TransitGatewayArn"
+      ],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        },
+        "TransitGatewayArn":{
+          "shape":"TransitGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the transit gateway.</p>",
+          "location":"uri",
+          "locationName":"transitGatewayArn"
+        }
+      }
+    },
+    "GetContextStoreAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStoreAssociation":{
+          "shape":"ContextStoreAssociation",
+          "documentation":"<p>Information about the context store association.</p>"
+        }
+      }
+    },
+    "GetContextStoreRequest":{
+      "type":"structure",
+      "required":["ContextStoreId"],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        }
+      }
+    },
+    "GetContextStoreResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStore":{
+          "shape":"ContextStore",
+          "documentation":"<p>Information about the context store.</p>"
+        }
+      }
+    },
+    "GetContextVersionRequest":{
+      "type":"structure",
+      "required":["ContextStoreId"],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        }
+      }
+    },
+    "GetContextVersionResponse":{
+      "type":"structure",
+      "members":{
+        "VersionId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The current version of the context entries.</p>"
         }
       }
     },
@@ -6090,6 +6640,174 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListContextChangesRequest":{
+      "type":"structure",
+      "required":[
+        "ContextStoreId",
+        "FromVersionId"
+      ],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        },
+        "FromVersionId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The version to return changes from. Specify a version returned by <code>ListContexts</code>, <code>GetContextVersion</code>, or the <code>ToVersionId</code> of a previous <code>ListContextChanges</code> request. If the version is no longer available, the request fails, and you must call <code>ListContexts</code> to get the current context entries.</p>",
+          "location":"querystring",
+          "locationName":"fromVersionId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListContextChangesResponse":{
+      "type":"structure",
+      "members":{
+        "ContextChanges":{
+          "shape":"ContextChangeList",
+          "documentation":"<p>The context entries that were added or removed.</p>"
+        },
+        "FromVersionId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The version that the changes start from.</p>"
+        },
+        "ToVersionId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The version that the changes bring the context entries up to. To get later changes, specify this value as <code>FromVersionId</code> in your next request. All pages of the same request return the same version.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListContextStoreAssociationsRequest":{
+      "type":"structure",
+      "required":["ContextStoreId"],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListContextStoreAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStoreAssociations":{
+          "shape":"ContextStoreAssociationList",
+          "documentation":"<p>The context store associations.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListContextStoresRequest":{
+      "type":"structure",
+      "members":{
+        "GlobalNetworkId":{
+          "shape":"GlobalNetworkId",
+          "documentation":"<p>The ID of a global network. If you specify this parameter, only the context stores in the global network are returned.</p>",
+          "location":"querystring",
+          "locationName":"globalNetworkId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListContextStoresResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStores":{
+          "shape":"ContextStoreList",
+          "documentation":"<p>The context stores.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListContextsRequest":{
+      "type":"structure",
+      "required":["ContextStoreId"],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListContextsResponse":{
+      "type":"structure",
+      "members":{
+        "Contexts":{
+          "shape":"ContextList",
+          "documentation":"<p>The context entries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "VersionId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The version of the returned context entries. All pages of the same request return the same version.</p>"
         }
       }
     },
@@ -8160,6 +8878,31 @@
         "Connection":{
           "shape":"Connection",
           "documentation":"<p>Information about the connection.</p>"
+        }
+      }
+    },
+    "UpdateContextStoreRequest":{
+      "type":"structure",
+      "required":["ContextStoreId"],
+      "members":{
+        "ContextStoreId":{
+          "shape":"ContextStoreId",
+          "documentation":"<p>The ID of the context store.</p>",
+          "location":"uri",
+          "locationName":"contextStoreId"
+        },
+        "Description":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The new description of the context store.</p> <p>Constraints: Maximum length of 256 characters. Only printable ASCII characters are allowed.</p>"
+        }
+      }
+    },
+    "UpdateContextStoreResponse":{
+      "type":"structure",
+      "members":{
+        "ContextStore":{
+          "shape":"ContextStore",
+          "documentation":"<p>Information about the context store.</p>"
         }
       }
     },

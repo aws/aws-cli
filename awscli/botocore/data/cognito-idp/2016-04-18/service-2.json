@@ -1595,6 +1595,29 @@
       ],
       "documentation":"<p>Issues an access token for machine-to-machine (M2M) authorization. Your app client provides its client ID and secret, and receives an access token that authorizes requests to your resource servers.</p> <p>To use this operation, you must configure the app client with a client secret and enable the <code>ALLOW_CLIENT_TOKEN_AUTH</code> authentication flow. The <code>ALLOW_CLIENT_TOKEN_AUTH</code> flow is mutually exclusive with user authentication flows. It must be the only authentication flow that you configure for the app client. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html\">Scopes, M2M, and resource servers</a>.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note>"
     },
+    "GetDerivedToken":{
+      "name":"GetDerivedToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDerivedTokenRequest"},
+      "output":{"shape":"GetDerivedTokenResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"UnexpectedLambdaException"},
+        {"shape":"UserLambdaValidationException"},
+        {"shape":"InvalidLambdaResponseException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"ForbiddenException"}
+      ],
+      "documentation":"<p>Exchanges an existing token for a new token that is scoped and audience-bound for a specific downstream service, following the OAuth 2.0 Token Exchange grant type. For more information about the OAuth 2.0 Token Exchange grant type, see <a href=\"https://tools.ietf.org/html/rfc8693\">RFC 8693 - OAuth 2.0 Token Exchange</a> on the IETF website. Present a <code>SubjectToken</code>, the credential that you already hold, to receive a new token appropriate for calling a specific resource server or audience.</p> <p>If you also present an <code>ActorToken</code> that identifies an intermediary service, the issued token carries an <code>act</code> claim that identifies the intermediary, and downstream services can distinguish a user acting directly from an intermediary acting on the user's behalf. If you don't present an <code>ActorToken</code>, the issued token appears as if the user acted directly.</p> <p>To use this operation, you must have IAM credentials, or you must present the requesting app client's <code>ClientId</code> and, if the client has a secret, <code>ClientSecret</code>, in the request.</p> <p>The requesting app client must have <code>ALLOW_TOKEN_EXCHANGE_IMPERSONATION</code> or <code>ALLOW_TOKEN_EXCHANGE_DELEGATION</code> in its <code>ExplicitAuthFlows</code> (depending on whether you include an <code>ActorToken</code>), or the request fails.</p>"
+    },
     "GetDevice":{
       "name":"GetDevice",
       "http":{
@@ -4430,6 +4453,18 @@
       "type":"list",
       "member":{"shape":"VerifiedAttributeType"}
     },
+    "AudienceListType":{
+      "type":"list",
+      "member":{"shape":"AudienceType"},
+      "max":1,
+      "min":0
+    },
+    "AudienceType":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\x21\\x23-\\x5B\\x5D-\\x7E]+"
+    },
     "AuthEventType":{
       "type":"structure",
       "members":{
@@ -5358,7 +5393,7 @@
         },
         "ExplicitAuthFlows":{
           "shape":"ExplicitAuthFlowsListType",
-          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html\">authentication flows</a> that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your app client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>. </p> </note> <p>The values for authentication flow options include the following.</p> <ul> <li> <p> <code>ALLOW_USER_AUTH</code>: Enable selection-based sign-in with <code>USER_AUTH</code>. This setting covers username-password, secure remote password (SRP), passwordless, and passkey authentication. This authentiation flow can do username-password and SRP authentication without other <code>ExplicitAuthFlows</code> permitting them. For example users can complete an SRP challenge through <code>USER_AUTH</code> without the flow <code>USER_SRP_AUTH</code> being active for the app client. This flow doesn't include <code>CUSTOM_AUTH</code>. </p> <p>To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p> </li> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html\">authentication flows</a> that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your app client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>. </p> </note> <p>The values for authentication flow options include the following.</p> <ul> <li> <p> <code>ALLOW_USER_AUTH</code>: Enable selection-based sign-in with <code>USER_AUTH</code>. This setting covers username-password, secure remote password (SRP), passwordless, and passkey authentication. This authentiation flow can do username-password and SRP authentication without other <code>ExplicitAuthFlows</code> permitting them. For example users can complete an SRP challenge through <code>USER_AUTH</code> without the flow <code>USER_SRP_AUTH</code> being active for the app client. This flow doesn't include <code>CUSTOM_AUTH</code>. </p> <p>To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p> </li> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> <li> <p> <code>ALLOW_TOKEN_EXCHANGE_IMPERSONATION</code> – Use this flow to request <code>GetDerivedToken</code> token exchanges without an <code>ActorToken</code>. The issued token represents the subject user directly.</p> </li> <li> <p> <code>ALLOW_TOKEN_EXCHANGE_DELEGATION</code> – Use this flow to request <code>GetDerivedToken</code> token exchanges that include an <code>ActorToken</code>. The issued token carries an <code>act</code> claim that identifies the intermediary acting on the behalf of the subject.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>"
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",
@@ -6764,7 +6799,9 @@
         "ALLOW_USER_PASSWORD_AUTH",
         "ALLOW_USER_SRP_AUTH",
         "ALLOW_REFRESH_TOKEN_AUTH",
-        "ALLOW_USER_AUTH"
+        "ALLOW_USER_AUTH",
+        "ALLOW_TOKEN_EXCHANGE_DELEGATION",
+        "ALLOW_TOKEN_EXCHANGE_IMPERSONATION"
       ]
     },
     "FailoverType":{
@@ -6947,6 +6984,103 @@
           "documentation":"<p>The access token that Amazon Cognito issues for the app client, and its metadata.</p>"
         }
       }
+    },
+    "GetDerivedTokenRequest":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "SubjectToken",
+        "SubjectTokenType"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that requests the token exchange.</p>"
+        },
+        "ClientSecret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>The client secret of the requested app client, if the client has a secret.</p>"
+        },
+        "SubjectToken":{
+          "shape":"GetDerivedTokenTokenModelType",
+          "documentation":"<p>The token that you want to exchange for a new token. This is the credential that represents the identity of the party on behalf of whom the request is being made.</p>"
+        },
+        "SubjectTokenType":{
+          "shape":"TokenTypeIdentifierType",
+          "documentation":"<p>The type of the <code>SubjectToken</code> that you want to exchange. Valid values:</p> <ul> <li> <p> <code>ACCESS_TOKEN</code> – The subject token is an access token.</p> </li> <li> <p> <code>ID_TOKEN</code> – The subject token is an ID token.</p> </li> <li> <p> <code>SAML2</code> – The subject token is a SAML 2.0 assertion.</p> </li> </ul>"
+        },
+        "SubjectTokenProviderName":{
+          "shape":"ProviderNameType",
+          "documentation":"<p>The name of the third-party identity provider that issued the <code>SubjectToken</code>, if the subject token isn't a Amazon Cognito token. Provide this value when your <code>SubjectToken</code> came from a SAML or OIDC provider that you registered with your user pool, so that Amazon Cognito can validate it against that provider's configuration. Omit this parameter for a Amazon Cognito ID or access token.</p>"
+        },
+        "ActorToken":{
+          "shape":"GetDerivedTokenTokenModelType",
+          "documentation":"<p>A token that identifies the intermediary service that is exchanging the token on behalf of the user. When you provide an <code>ActorToken</code>, the token that Amazon Cognito issues carries an <code>act</code> claim that identifies the intermediary, so that downstream services can distinguish a user acting directly from an intermediary acting on the user's behalf.</p>"
+        },
+        "ActorTokenType":{
+          "shape":"TokenTypeIdentifierType",
+          "documentation":"<p>The type of the <code>ActorToken</code> that you provide. Required when you provide an <code>ActorToken</code>. Valid values:</p> <ul> <li> <p> <code>ACCESS_TOKEN</code> – The actor token is an access token.</p> </li> <li> <p> <code>ID_TOKEN</code> – The actor token is an ID token.</p> </li> <li> <p> <code>SAML2</code> – The actor token is a SAML 2.0 assertion.</p> </li> </ul>"
+        },
+        "ActorTokenProviderName":{
+          "shape":"ProviderNameType",
+          "documentation":"<p>The name of the third-party identity provider that issued the <code>ActorToken</code>, if the actor token isn't a Amazon Cognito token.</p>"
+        },
+        "Scopes":{
+          "shape":"ScopeListType",
+          "documentation":"<p>The scopes that you want the new token to have. Amazon Cognito issues a token with the intersection of these requested scopes, the scopes of your <code>SubjectToken</code>, and the scopes that are allowed for the requesting app client. If you don't specify any scopes, Amazon Cognito issues a token with the same scopes as your <code>SubjectToken</code>.</p>"
+        },
+        "Audiences":{
+          "shape":"AudienceListType",
+          "documentation":"<p>The logical name of the target service where you intend to use the issued token. You can't request both <code>Audiences</code> and <code>Resources</code> in the same request.</p>"
+        },
+        "Resources":{
+          "shape":"ResourceListType",
+          "documentation":"<p>The identifier of a resource server in your user pool where you intend to use the issued token. You can't request both <code>Resources</code> and <code>Audiences</code> in the same request.</p>"
+        },
+        "RequestedTokenType":{
+          "shape":"IssuedTokenTypeIdentifierType",
+          "documentation":"<p>The type of token that you want Amazon Cognito to issue. Valid values:</p> <ul> <li> <p> <code>ACCESS_TOKEN</code> – Issues an access token.</p> </li> <li> <p> <code>ID_TOKEN</code> – Issues an ID token.</p> </li> </ul> <p>Amazon Cognito can't issue a SAML assertion, so <code>SAML2</code> isn't a valid value for this parameter.</p>"
+        }
+      },
+      "documentation":"<p>Represents the request to exchange a subject token for a new token.</p>"
+    },
+    "GetDerivedTokenResponse":{
+      "type":"structure",
+      "required":[
+        "IssuedToken",
+        "IssuedTokenType",
+        "TokenType"
+      ],
+      "members":{
+        "IssuedToken":{
+          "shape":"TokenModelType",
+          "documentation":"<p>The token that Amazon Cognito issued in response to the token exchange request.</p>"
+        },
+        "IssuedTokenType":{
+          "shape":"IssuedTokenTypeIdentifierType",
+          "documentation":"<p>The type of the token in the <code>IssuedToken</code> parameter. Valid values:</p> <ul> <li> <p> <code>ACCESS_TOKEN</code> – The issued token is an access token.</p> </li> <li> <p> <code>ID_TOKEN</code> – The issued token is an ID token.</p> </li> </ul>"
+        },
+        "TokenType":{
+          "shape":"OAuthTokenTypeType",
+          "documentation":"<p>The type of the issued token. For example, <code>Bearer</code>.</p>"
+        },
+        "ExpiresIn":{
+          "shape":"IntegerType",
+          "documentation":"<p>The number of seconds until the issued token expires.</p>"
+        },
+        "Scopes":{
+          "shape":"ScopeListType",
+          "documentation":"<p>The scopes that Amazon Cognito granted in the issued token.</p>"
+        }
+      },
+      "documentation":"<p>Represents the response to a token exchange request.</p>"
+    },
+    "GetDerivedTokenTokenModelType":{
+      "type":"string",
+      "max":131072,
+      "min":0,
+      "pattern":"[A-Za-z0-9-_+/=.]+",
+      "sensitive":true
     },
     "GetDeviceRequest":{
       "type":"structure",
@@ -7714,6 +7848,13 @@
       },
       "documentation":"<p>This exception is thrown when the user pool configuration is not valid.</p>",
       "exception":true
+    },
+    "IssuedTokenTypeIdentifierType":{
+      "type":"string",
+      "enum":[
+        "ACCESS_TOKEN",
+        "ID_TOKEN"
+      ]
     },
     "IssuerConfigurationType":{
       "type":"structure",
@@ -8663,6 +8804,13 @@
       "max":3,
       "min":0
     },
+    "OAuthTokenTypeType":{
+      "type":"string",
+      "enum":[
+        "Bearer",
+        "N_A"
+      ]
+    },
     "OperationNotEnabledException":{
       "type":"structure",
       "members":{
@@ -9052,6 +9200,12 @@
       "max":40,
       "min":1,
       "pattern":"^[\\w\\- ]+$"
+    },
+    "ResourceListType":{
+      "type":"list",
+      "member":{"shape":"ResourceServerIdentifierType"},
+      "max":1,
+      "min":0
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -10336,6 +10490,14 @@
       "pattern":"[A-Za-z0-9-_=.]+",
       "sensitive":true
     },
+    "TokenTypeIdentifierType":{
+      "type":"string",
+      "enum":[
+        "ACCESS_TOKEN",
+        "ID_TOKEN",
+        "SAML2"
+      ]
+    },
     "TokenValidityUnitsType":{
       "type":"structure",
       "members":{
@@ -10852,7 +11014,7 @@
         },
         "ExplicitAuthFlows":{
           "shape":"ExplicitAuthFlowsListType",
-          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html\">authentication flows</a> that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your app client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>. </p> </note> <p>The values for authentication flow options include the following.</p> <ul> <li> <p> <code>ALLOW_USER_AUTH</code>: Enable selection-based sign-in with <code>USER_AUTH</code>. This setting covers username-password, secure remote password (SRP), passwordless, and passkey authentication. This authentiation flow can do username-password and SRP authentication without other <code>ExplicitAuthFlows</code> permitting them. For example users can complete an SRP challenge through <code>USER_AUTH</code> without the flow <code>USER_SRP_AUTH</code> being active for the app client. This flow doesn't include <code>CUSTOM_AUTH</code>. </p> <p>To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p> </li> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html\">authentication flows</a> that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your app client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>. </p> </note> <p>The values for authentication flow options include the following.</p> <ul> <li> <p> <code>ALLOW_USER_AUTH</code>: Enable selection-based sign-in with <code>USER_AUTH</code>. This setting covers username-password, secure remote password (SRP), passwordless, and passkey authentication. This authentiation flow can do username-password and SRP authentication without other <code>ExplicitAuthFlows</code> permitting them. For example users can complete an SRP challenge through <code>USER_AUTH</code> without the flow <code>USER_SRP_AUTH</code> being active for the app client. This flow doesn't include <code>CUSTOM_AUTH</code>. </p> <p>To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p> </li> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> <li> <p> <code>ALLOW_TOKEN_EXCHANGE_IMPERSONATION</code> – Use this flow to request <code>GetDerivedToken</code> token exchanges without an <code>ActorToken</code>. The issued token represents the subject user directly.</p> </li> <li> <p> <code>ALLOW_TOKEN_EXCHANGE_DELEGATION</code> – Use this flow to request <code>GetDerivedToken</code> token exchanges that include an <code>ActorToken</code>. The issued token carries an <code>act</code> claim that identifies the intermediary acting on the behalf of the subject.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>"
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",
@@ -11378,7 +11540,7 @@
         },
         "ExplicitAuthFlows":{
           "shape":"ExplicitAuthFlowsListType",
-          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html\">authentication flows</a> that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your app client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>. </p> </note> <p>The values for authentication flow options include the following.</p> <ul> <li> <p> <code>ALLOW_USER_AUTH</code>: Enable selection-based sign-in with <code>USER_AUTH</code>. This setting covers username-password, secure remote password (SRP), passwordless, and passkey authentication. This authentiation flow can do username-password and SRP authentication without other <code>ExplicitAuthFlows</code> permitting them. For example users can complete an SRP challenge through <code>USER_AUTH</code> without the flow <code>USER_SRP_AUTH</code> being active for the app client. This flow doesn't include <code>CUSTOM_AUTH</code>. </p> <p>To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p> </li> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html\">authentication flows</a> that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your app client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>. </p> </note> <p>The values for authentication flow options include the following.</p> <ul> <li> <p> <code>ALLOW_USER_AUTH</code>: Enable selection-based sign-in with <code>USER_AUTH</code>. This setting covers username-password, secure remote password (SRP), passwordless, and passkey authentication. This authentiation flow can do username-password and SRP authentication without other <code>ExplicitAuthFlows</code> permitting them. For example users can complete an SRP challenge through <code>USER_AUTH</code> without the flow <code>USER_SRP_AUTH</code> being active for the app client. This flow doesn't include <code>CUSTOM_AUTH</code>. </p> <p>To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p> </li> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> <li> <p> <code>ALLOW_TOKEN_EXCHANGE_IMPERSONATION</code> – Use this flow to request <code>GetDerivedToken</code> token exchanges without an <code>ActorToken</code>. The issued token represents the subject user directly.</p> </li> <li> <p> <code>ALLOW_TOKEN_EXCHANGE_DELEGATION</code> – Use this flow to request <code>GetDerivedToken</code> token exchanges that include an <code>ActorToken</code>. The issued token carries an <code>act</code> claim that identifies the intermediary acting on the behalf of the subject.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>"
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",

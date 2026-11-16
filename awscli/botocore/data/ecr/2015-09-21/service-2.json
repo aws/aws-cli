@@ -1746,6 +1746,18 @@
         }
       }
     },
+    "DeleteReplication":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"DeleteReplicationFlag",
+          "documentation":"<p>Specifies whether delete replication is enabled. If set to <code>true</code>, the service replicates image deletions and image tag removals from the source registry to each replication destination. If set to <code>false</code>, the service does not replicate image deletions or image tag removals.</p>"
+        }
+      },
+      "documentation":"<p>The delete replication configuration for a replication rule. When delete replication is enabled, the service replicates image deletions and image tag removals in the source registry to the replication destinations.</p>"
+    },
+    "DeleteReplicationFlag":{"type":"boolean"},
     "DeleteRepositoryCreationTemplateRequest":{
       "type":"structure",
       "required":["prefix"],
@@ -4542,6 +4554,10 @@
         "repositoryFilters":{
           "shape":"RepositoryFilterList",
           "documentation":"<p>An array of objects representing the filters for a replication rule. Specifying a repository filter for a replication rule provides a method for controlling which repositories in a private registry are replicated.</p>"
+        },
+        "deleteReplication":{
+          "shape":"DeleteReplication",
+          "documentation":"<p>The delete replication settings for the replication rule. When delete replication is enabled, the service replicates image deletions and image tag removals from the source registry to the replication destinations. If you do not specify this parameter, the service does not replicate image deletions or image tag removals for the replication rule.</p>"
         }
       },
       "documentation":"<p>An array of objects representing the replication destinations and repository filters for a replication configuration.</p>"

@@ -1,0 +1,818 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2026-07-16",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"connect",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Amazon Connect Scheduling",
+    "serviceId":"ConnectScheduling",
+    "signatureVersion":"v4",
+    "signingName":"connect",
+    "uid":"connectscheduling-2026-07-16"
+  },
+  "operations":{
+    "ApproveTimeOff":{
+      "name":"ApproveTimeOff",
+      "http":{
+        "method":"POST",
+        "requestUri":"/scheduling/instances/{InstanceId}/users/{UserId}/timeoffs/{TimeOffId}/approve",
+        "responseCode":200
+      },
+      "input":{"shape":"ApproveTimeOffRequest"},
+      "output":{"shape":"ApproveTimeOffResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Approves a time off request. Evaluates agent time off balances and group time off allowances before approving. <code>RuleFailureAction</code> controls what happens when these evaluations fail. The request is rejected with <code>CONFLICTING_TIME_OFF_REQUEST</code> if it overlaps another time off request for the user that is <code>APPROVED</code> or being approved.</p> <p>The time off request is processed asynchronously, so a successful call doesn't indicate the final status. Read the resulting status with <code>GetTimeOff</code> or from the time off state-change events.</p> <p>Approving an <code>APPROVED</code> request succeeds without a change. Approving a <code>REJECTED</code> request evaluates the rules again, so it can end <code>APPROVED</code> or <code>REJECTED</code>, and repeating the call can give a different result. Check the status with <code>GetTimeOff</code> before you retry.</p> <p>Returns <code>ConflictException</code> if the request is <code>PENDING</code> or <code>CANCELLED</code>. <code>PENDING</code> means Connect Customer is still processing the request asynchronously. Wait until <code>GetTimeOff</code> returns a status other than <code>PENDING</code>, and then retry.</p> <important> <p>When the approval succeeds, Connect Customer cancels any overtime or voluntary time off activity that overlaps the approved window.</p> </important> <note> <p>Connect Customer doesn't check whether the principal that calls this operation supervises the user. The staffing group's approval settings also don't apply. IAM permissions are the only control. If you allow a principal to call this operation, that principal can send <code>RuleFailureAction</code> <code>OVERRIDE</code> and approve a request past failed rules. Grant permission for this operation only to principals that you trust to override time off rules.</p> </note>"
+    },
+    "CancelTimeOff":{
+      "name":"CancelTimeOff",
+      "http":{
+        "method":"POST",
+        "requestUri":"/scheduling/instances/{InstanceId}/users/{UserId}/timeoffs/{TimeOffId}/cancel",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelTimeOffRequest"},
+      "output":{"shape":"CancelTimeOffResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Cancels a time off request.</p> <p>Cancelling a <code>CANCELLED</code> request succeeds without a change. Returns <code>ConflictException</code> if the request is <code>PENDING</code>, which means Connect Customer is still processing the request asynchronously. Wait until <code>GetTimeOff</code> returns a status other than <code>PENDING</code>, and then retry.</p>",
+      "idempotent":true
+    },
+    "CreateTimeOff":{
+      "name":"CreateTimeOff",
+      "http":{
+        "method":"POST",
+        "requestUri":"/scheduling/instances/{InstanceId}/users/{UserId}/timeoffs",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTimeOffRequest"},
+      "output":{"shape":"CreateTimeOffResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a time off request for a user. You don't provide a status, because Connect Customer owns the request lifecycle. To get the decided status, call <code>GetTimeOff</code> or use the time off state-change events.</p> <p> <code>ApprovalType</code> controls who approves the request. You can specify one of the following values:</p> <ul> <li> <p> <code>AWAIT_APPROVAL</code>: the request waits in <code>AWAITING_APPROVAL</code> until you call <code>ApproveTimeOff</code> or <code>RejectTimeOff</code>. Rule evaluation and the overlap check run at approval, not at creation. A waiting request doesn't reserve its window, so another request for the same window can be approved first.</p> </li> <li> <p> <code>AUTOMATIC</code>: Connect Customer evaluates the rules (time off balances and group allowances) and decides the request. The request can be <code>PENDING</code> while Connect Customer decides, and then ends <code>APPROVED</code> or <code>REJECTED</code>. If it overlaps another time off request for the user, the requested time off ends <code>REJECTED</code> with <code>CONFLICTING_TIME_OFF_REQUEST</code>. It also ends <code>REJECTED</code> if it overlaps overtime or voluntary time off. If the whole window is in the past, Connect Customer records failed rules as <code>WARNING</code> and doesn't reject the request, whatever the <code>RuleFailureAction</code>.</p> </li> </ul> <p>The staffing group's <i>Supervisor approval needed</i> setting doesn't apply to this operation. <code>ApprovalType</code> alone decides whether the request waits for approval. The operation fails with <code>ValidationException</code> on <code>UserId</code> in the following cases:</p> <ul> <li> <p>The user isn't in a staffing group, or the staffing group isn't associated with a forecast group.</p> </li> <li> <p>Time off isn't <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-to.html\">enabled</a> for the user's staffing group, or the user's staff rules don't allow time off.</p> </li> </ul> <p>To change the dates of a request, cancel it with <code>CancelTimeOff</code> and create a new request. The new request has a new <code>TimeOffId</code>.</p> <note> <p>Connect Customer doesn't check whether the principal that calls this operation supervises the user. The staffing group's approval settings also don't apply. IAM permissions are the only control. If you allow a principal to call this operation, that principal can send <code>ApprovalType</code> <code>AUTOMATIC</code> with <code>RuleFailureAction</code> <code>OVERRIDE</code> and approve a request past failed rules. Grant permission for this operation only to principals that you trust to override time off rules.</p> </note> <p>For information about time off in the Connect Customer admin website, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/scheduling-time-off.html\">Time off management</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
+    },
+    "GetTimeOff":{
+      "name":"GetTimeOff",
+      "http":{
+        "method":"GET",
+        "requestUri":"/scheduling/instances/{InstanceId}/users/{UserId}/timeoffs/{TimeOffId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTimeOffRequest"},
+      "output":{"shape":"GetTimeOffResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a time off request, including its current status and validation results.</p>",
+      "readonly":true
+    },
+    "PutTimeOffBalance":{
+      "name":"PutTimeOffBalance",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/scheduling/instances/{InstanceId}/users/{UserId}/timeoff-balances/{ShiftActivityId}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTimeOffBalanceRequest"},
+      "output":{"shape":"PutTimeOffBalanceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Sets the time off balance for one user and shift activity. The value replaces the existing balance rather than adjusting it, so you can safely retry the call. This operation can't remove a balance. To remove one, upload a blank balance in the Connect Customer admin website. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/upload-timeoff-balance.html\">Import an agent's time off balance</a> in the <i>Connect Customer Administrator Guide</i>.</p>",
+      "idempotent":true
+    },
+    "RejectTimeOff":{
+      "name":"RejectTimeOff",
+      "http":{
+        "method":"POST",
+        "requestUri":"/scheduling/instances/{InstanceId}/users/{UserId}/timeoffs/{TimeOffId}/reject",
+        "responseCode":200
+      },
+      "input":{"shape":"RejectTimeOffRequest"},
+      "output":{"shape":"RejectTimeOffResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Rejects a time off request.</p> <p>Rejecting a <code>REJECTED</code> request succeeds without a change. Returns <code>ConflictException</code> if the request is <code>PENDING</code> or <code>CANCELLED</code>. <code>PENDING</code> means Connect Customer is still processing the request asynchronously. Wait until <code>GetTimeOff</code> returns a status other than <code>PENDING</code>, and then retry.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "ARN":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>You do not have sufficient permissions to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ActorInfo":{
+      "type":"structure",
+      "members":{
+        "ConnectUserArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the Connect Customer user who performed the action.</p>"
+        },
+        "AWSIdentityArn":{
+          "shape":"ARN",
+          "documentation":"<p>The IAM or AWS STS ARN of the identity that performed the action. Present when that identity is not a Connect Customer user.</p>"
+        }
+      },
+      "documentation":"<p>Information about the identity that performed an action on a time off request: a Connect Customer user or an IAM or AWS STS identity. Exactly one member is set.</p>",
+      "union":true
+    },
+    "ApprovalType":{
+      "type":"string",
+      "documentation":"<p>Controls who approves a time off request. Use it on <code>CreateTimeOff</code> only, because <code>ApproveTimeOff</code> already names its own decision. <code>AWAIT_APPROVAL</code> waits for an <code>ApproveTimeOff</code> or <code>RejectTimeOff</code> call. <code>AUTOMATIC</code> has Connect Customer decide the request.</p>",
+      "enum":[
+        "AWAIT_APPROVAL",
+        "AUTOMATIC"
+      ]
+    },
+    "ApproveTimeOffRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "TimeOffId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. This can be the ID or the ARN of the instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserIdOrArn",
+          "documentation":"<p>The identifier of the user who the time off request belongs to. This can be the ID or the ARN of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "TimeOffId":{
+          "shape":"TimeOffId",
+          "documentation":"<p>The unique identifier of the time off request to approve. If the time off request doesn't belong to <code>UserId</code>, the operation returns <code>ResourceNotFoundException</code>.</p>",
+          "location":"uri",
+          "locationName":"TimeOffId"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description recorded with the approval. <code>GetTimeOff</code> doesn't return it.</p>"
+        },
+        "RuleFailureAction":{
+          "shape":"RuleFailureAction",
+          "documentation":"<p>Controls what happens when a configured rule fails. <code>REJECT</code>, the default, records an <code>ERROR</code> and leaves the request <code>REJECTED</code>. <code>OVERRIDE</code> records a <code>WARNING</code> and approves the request, like the <i>Override time off rules</i> option in the Connect Customer admin website. <code>OVERRIDE</code> never waives <code>CONFLICTING_TIME_OFF_REQUEST</code>.</p>"
+        }
+      },
+      "documentation":"<p>The request for <code>ApproveTimeOff</code>.</p>"
+    },
+    "ApproveTimeOffResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response for <code>ApproveTimeOff</code>.</p>"
+    },
+    "CancelTimeOffRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "TimeOffId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. This can be the ID or the ARN of the instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserIdOrArn",
+          "documentation":"<p>The identifier of the user who the time off request belongs to. This can be the ID or the ARN of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "TimeOffId":{
+          "shape":"TimeOffId",
+          "documentation":"<p>The unique identifier of the time off request to cancel. If the time off request doesn't belong to <code>UserId</code>, the operation returns <code>ResourceNotFoundException</code>.</p>",
+          "location":"uri",
+          "locationName":"TimeOffId"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description recorded with the cancellation. It replaces the description of the time off request. If you omit it, the request's description is removed.</p>"
+        }
+      },
+      "documentation":"<p>The request for <code>CancelTimeOff</code>.</p>"
+    },
+    "CancelTimeOffResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response for <code>CancelTimeOff</code>.</p>"
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"Message"},
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier or ARN of the resource that is in conflict.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that is in conflict.</p>"
+        }
+      },
+      "documentation":"<p>The request could not be processed because of a conflict with the current state of the resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateTimeOffRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "ShiftActivityId",
+        "StartAt",
+        "EndAt",
+        "ApprovalType"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. This can be the ID or the ARN of the instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserIdOrArn",
+          "documentation":"<p>The identifier of the user who the time off request is for. This can be the ID or the ARN of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "ShiftActivityId":{
+          "shape":"ShiftActivityIdOrArn",
+          "documentation":"<p>The identifier of the shift activity that defines the type of time off being requested. This can be the ID or the ARN of the shift activity. It must be a time off activity. Activities that aren't set as <i>Requestable</i> are accepted.</p>"
+        },
+        "StartAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time off window, inclusive. It must be no earlier than one year before the current date. Connect Customer stores the value as sent, to the millisecond.</p>"
+        },
+        "EndAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time off window, exclusive. It must be after <code>StartAt</code> and no later than 24 months after the current date. Connect Customer stores the value as sent, to the millisecond.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description recorded on the time off request. If you omit it, the request has no description.</p>"
+        },
+        "ApprovalType":{
+          "shape":"ApprovalType",
+          "documentation":"<p>Controls who approves the request. <code>AWAIT_APPROVAL</code> waits for an <code>ApproveTimeOff</code> or <code>RejectTimeOff</code> call. <code>AUTOMATIC</code> has Connect Customer decide the request. For details, see <code>CreateTimeOff</code>.</p>"
+        },
+        "RuleFailureAction":{
+          "shape":"RuleFailureAction",
+          "documentation":"<p>Controls what happens when a configured rule fails. <code>REJECT</code>, the default, records an <code>ERROR</code> and ends the request <code>REJECTED</code>, unless the whole window is in the past. <code>OVERRIDE</code> records a <code>WARNING</code> and ends the request <code>APPROVED</code>, like the <i>Override time off rules</i> option in the Connect Customer admin website. <code>OVERRIDE</code> requires <code>AUTOMATIC</code>. With <code>AWAIT_APPROVAL</code>, <code>OVERRIDE</code> fails with <code>ValidationException</code>. Set it on <code>ApproveTimeOff</code> instead. <code>OVERRIDE</code> never waives <code>CONFLICTING_TIME_OFF_REQUEST</code>.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If this token matches a previous request, Connect Customer returns the result of that request and doesn't create another time off request. If you don't provide a token, the AWS SDK populates this field. If you reuse a client token with a different request body, the request fails with <code>ValidationException</code>. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>The request for <code>CreateTimeOff</code>.</p>"
+    },
+    "CreateTimeOffResponse":{
+      "type":"structure",
+      "required":["TimeOffId"],
+      "members":{
+        "TimeOffId":{
+          "shape":"TimeOffId",
+          "documentation":"<p>The identifier of the time off request.</p>"
+        }
+      },
+      "documentation":"<p>The response for <code>CreateTimeOff</code>.</p>"
+    },
+    "Description":{
+      "type":"string",
+      "documentation":"<p>A description recorded on a time off request. This field is sensitive, and CloudTrail redacts it. To send no description, omit the member instead of sending an empty string.</p>",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
+    "Duration":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Unit"
+      ],
+      "members":{
+        "Value":{
+          "shape":"DurationValue",
+          "documentation":"<p>The number of units of time. You can use a negative value to report an overdrawn balance. The value must be within 876,000 hours (100 years) of zero: at most 52,560,000 <code>MINUTES</code>, 876,000 <code>HOURS</code>, or 36,500 <code>DAYS</code>.</p>"
+        },
+        "Unit":{
+          "shape":"DurationUnit",
+          "documentation":"<p>The unit the value is counted in.</p>"
+        }
+      },
+      "documentation":"<p>A length of time, expressed as a value and the unit it is counted in.</p>"
+    },
+    "DurationUnit":{
+      "type":"string",
+      "documentation":"<p>The unit a Duration value is counted in.</p>",
+      "enum":[
+        "MINUTES",
+        "HOURS",
+        "DAYS"
+      ]
+    },
+    "DurationValue":{
+      "type":"integer",
+      "documentation":"<p>A number of time units, which can be negative. It must stay within 876,000 hours (100 years) of zero: at most 52,560,000 <code>MINUTES</code>, 876,000 <code>HOURS</code>, or 36,500 <code>DAYS</code>.</p>",
+      "box":true,
+      "max":52560000,
+      "min":-52560000
+    },
+    "GetTimeOffRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "TimeOffId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. This can be the ID or the ARN of the instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserIdOrArn",
+          "documentation":"<p>The identifier of the user who the time off request belongs to. This can be the ID or the ARN of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "TimeOffId":{
+          "shape":"TimeOffId",
+          "documentation":"<p>The identifier of the time off request. If the time off request doesn't belong to <code>UserId</code>, the operation returns <code>ResourceNotFoundException</code>.</p>",
+          "location":"uri",
+          "locationName":"TimeOffId"
+        }
+      },
+      "documentation":"<p>The request for <code>GetTimeOff</code>.</p>"
+    },
+    "GetTimeOffResponse":{
+      "type":"structure",
+      "required":[
+        "TimeOffId",
+        "UserId",
+        "ShiftActivityId",
+        "StartAt",
+        "EndAt",
+        "Status",
+        "CreatedBy",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "TimeOffId":{
+          "shape":"TimeOffId",
+          "documentation":"<p>The identifier of the time off request.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user the time off is for.</p>"
+        },
+        "ShiftActivityId":{
+          "shape":"ShiftActivityId",
+          "documentation":"<p>The identifier of the shift activity for the time off request.</p>"
+        },
+        "StartAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time off window, inclusive, as sent to <code>CreateTimeOff</code>.</p>"
+        },
+        "EndAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time off window, exclusive, as sent to <code>CreateTimeOff</code>.</p>"
+        },
+        "Status":{
+          "shape":"TimeOffStatus",
+          "documentation":"<p>The status of the time off request.</p> <ul> <li> <p> <code>PENDING</code>: Connect Customer is processing a change to the request, which then changes to another status. An edit in the Connect Customer admin website can also make a request <code>PENDING</code>, so an <code>APPROVED</code> request can become <code>PENDING</code> and then end <code>APPROVED</code> or <code>REJECTED</code>.</p> </li> <li> <p> <code>AWAITING_APPROVAL</code>: the request is waiting for an <code>ApproveTimeOff</code> or <code>RejectTimeOff</code> call.</p> </li> </ul>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the time off request. <code>CreateTimeOff</code> sets it, and <code>CancelTimeOff</code> replaces or removes it. An edit in the Connect Customer admin website can also change it. <code>GetTimeOff</code> doesn't return descriptions sent with <code>ApproveTimeOff</code> or <code>RejectTimeOff</code>.</p>"
+        },
+        "ValidationResults":{
+          "shape":"TimeOffValidationResults",
+          "documentation":"<p>Warnings or failures produced while processing the time off request.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ActorInfo",
+          "documentation":"<p>The identity that created the request. Immutable for the life of the request.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the time off request was created.</p>"
+        },
+        "UpdatedBy":{
+          "shape":"ActorInfo",
+          "documentation":"<p>The identity that made the most recent <code>ApproveTimeOff</code>, <code>RejectTimeOff</code>, or <code>CancelTimeOff</code> call on the request, or took the same action in the Connect Customer admin website. Absent until one of those actions is taken, including after Connect Customer decides an <code>AUTOMATIC</code> request. <code>UpdatedAt</code> also changes when a <code>PENDING</code> request changes to another status and for other edits, which don't set <code>UpdatedBy</code>.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the time off request was last modified.</p>"
+        }
+      },
+      "documentation":"<p>The response for <code>GetTimeOff</code>.</p>"
+    },
+    "InstanceIdOrArn":{
+      "type":"string",
+      "max":250,
+      "min":1,
+      "pattern":"(arn:(aws|aws-us-gov):connect:[a-z]{2}(-[a-z]+){1,2}-[0-9]{1}:[0-9]{1,20}:instance/)?[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"Message"},
+        "RetryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>The request processing failed because of an error or failure with the service.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "Message":{"type":"string"},
+    "PutTimeOffBalanceRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "ShiftActivityId",
+        "Balance"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. This can be the ID or the ARN of the instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserIdOrArn",
+          "documentation":"<p>The identifier of the user whose balance is being updated. This can be the ID or the ARN of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "ShiftActivityId":{
+          "shape":"ShiftActivityIdOrArn",
+          "documentation":"<p>The identifier of the shift activity that the balance applies to. This can be the ID or the ARN of the shift activity.</p>",
+          "location":"uri",
+          "locationName":"ShiftActivityId"
+        },
+        "Balance":{
+          "shape":"Duration",
+          "documentation":"<p>The new time off balance for the user and activity. It replaces the existing balance.</p>"
+        }
+      },
+      "documentation":"<p>The request for <code>PutTimeOffBalance</code>.</p>"
+    },
+    "PutTimeOffBalanceResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response for <code>PutTimeOffBalance</code>.</p>"
+    },
+    "RejectTimeOffRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "TimeOffId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. This can be the ID or the ARN of the instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserIdOrArn",
+          "documentation":"<p>The identifier of the user who the time off request belongs to. This can be the ID or the ARN of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "TimeOffId":{
+          "shape":"TimeOffId",
+          "documentation":"<p>The unique identifier of the time off request to reject. If the time off request doesn't belong to <code>UserId</code>, the operation returns <code>ResourceNotFoundException</code>.</p>",
+          "location":"uri",
+          "locationName":"TimeOffId"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description recorded with the rejection, such as the reason. <code>GetTimeOff</code> doesn't return it.</p>"
+        }
+      },
+      "documentation":"<p>The request for <code>RejectTimeOff</code>.</p>"
+    },
+    "RejectTimeOffResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response for <code>RejectTimeOff</code>.</p>"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"Message"},
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier or ARN of the resource that was not found.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that was not found.</p>"
+        }
+      },
+      "documentation":"<p>The specified resource was not found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RuleFailureAction":{
+      "type":"string",
+      "documentation":"<p>Controls what happens when a configured rule fails during rule evaluation. <code>REJECT</code> records the failure as an <code>ERROR</code> and ends the request <code>REJECTED</code>. <code>OVERRIDE</code> records it as a <code>WARNING</code> and ends the request <code>APPROVED</code>.</p>",
+      "enum":[
+        "REJECT",
+        "OVERRIDE"
+      ]
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"Message"},
+        "QuotaCode":{
+          "shape":"String",
+          "documentation":"<p>The code of the quota that would be exceeded, for use with the Service Quotas API.</p>"
+        },
+        "ServiceCode":{
+          "shape":"String",
+          "documentation":"<p>The code of the service that owns the quota.</p>"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier or ARN of the resource whose quota would be exceeded.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource whose quota would be exceeded.</p>"
+        }
+      },
+      "documentation":"<p>The request would cause a service quota to be exceeded.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ShiftActivityId":{
+      "type":"string",
+      "documentation":"<p>The identifier of the shift activity associated with the time off request.</p>",
+      "max":255,
+      "min":1
+    },
+    "ShiftActivityIdOrArn":{
+      "type":"string",
+      "documentation":"<p>The identifier of the shift activity. You can specify either of the following:</p> <ul> <li> <p>The shift activity ID.</p> </li> <li> <p>The ARN of the shift activity.</p> </li> </ul> <p>The response returns <code>ShiftActivityId</code>.</p>",
+      "max":255,
+      "min":1
+    },
+    "String":{"type":"string"},
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"Message"},
+        "QuotaCode":{
+          "shape":"String",
+          "documentation":"<p>The code of the quota that was throttled, for use with the Service Quotas API.</p>"
+        },
+        "ServiceCode":{
+          "shape":"String",
+          "documentation":"<p>The code of the service that owns the quota.</p>"
+        },
+        "RetryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "TimeOffId":{
+      "type":"string",
+      "documentation":"<p>The identifier of the time off request. Connect Customer generates it.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9-]+"
+    },
+    "TimeOffStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a time off request. <code>PENDING</code> means Connect Customer is processing a change to the request. <code>AWAITING_APPROVAL</code> means the request is waiting for a decision.</p>",
+      "enum":[
+        "PENDING",
+        "APPROVED",
+        "REJECTED",
+        "CANCELLED",
+        "AWAITING_APPROVAL"
+      ]
+    },
+    "TimeOffValidationCode":{
+      "type":"string",
+      "documentation":"<p>The specific reason for a time off validation result. New values may be added over time, so treat an unrecognized value as a generic failure of the severity reported with it.</p>",
+      "enum":[
+        "INSUFFICIENT_USER_TIME_OFF_BALANCE",
+        "INSUFFICIENT_GROUP_TIME_OFF_ALLOWANCE",
+        "INSUFFICIENT_STAFFING_GROUP_TIME_OFF_ALLOWANCE",
+        "CONFLICTING_TIME_OFF_REQUEST"
+      ]
+    },
+    "TimeOffValidationResult":{
+      "type":"structure",
+      "required":[
+        "Severity",
+        "Code"
+      ],
+      "members":{
+        "Severity":{
+          "shape":"TimeOffValidationSeverity",
+          "documentation":"<p>The severity of the validation result. <code>WARNING</code> is a breach of the configured rules that is not enough to reject the request, either because of the rules configuration or because the caller sent <code>RuleFailureAction</code> <code>OVERRIDE</code>. <code>ERROR</code> is a reason the request was rejected.</p>"
+        },
+        "Code":{
+          "shape":"TimeOffValidationCode",
+          "documentation":"<p>The specific reason for the validation result. New values may be added, so treat an unrecognized value as a generic failure of the reported severity.</p> <ul> <li> <p> <code>INSUFFICIENT_USER_TIME_OFF_BALANCE</code>: the user's time off balance for the activity is less than the time this request deducts. Connect Customer deducts only working time in the window. For details, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/upload-timeoff-balance.html#how-system-calculates-time-off-deductions\">How the system calculates time off deductions</a> in the <i>Connect Customer Administrator Guide</i>.</p> </li> <li> <p> <code>INSUFFICIENT_GROUP_TIME_OFF_ALLOWANCE</code>: the time off allowance of the user's forecast group or demand group for the activity is too low for this request.</p> </li> <li> <p> <code>INSUFFICIENT_STAFFING_GROUP_TIME_OFF_ALLOWANCE</code>: the daily time off allowance of the user's staffing group for the activity is too low for this request.</p> </li> <li> <p> <code>CONFLICTING_TIME_OFF_REQUEST</code>: the request overlaps another time off request for the user that is <code>APPROVED</code> or being approved. Requests in <code>AWAITING_APPROVAL</code> don't count. For <code>CreateTimeOff</code> with <code>AUTOMATIC</code>, overlapping overtime and voluntary time off also count.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A warning or failure produced while processing the time off request.</p>"
+    },
+    "TimeOffValidationResults":{
+      "type":"list",
+      "member":{"shape":"TimeOffValidationResult"},
+      "documentation":"<p>A list of warnings or failures produced while processing the time off request.</p>"
+    },
+    "TimeOffValidationSeverity":{
+      "type":"string",
+      "documentation":"<p>The severity of a time off validation result.</p>",
+      "enum":[
+        "WARNING",
+        "ERROR"
+      ]
+    },
+    "Timestamp":{"type":"timestamp"},
+    "UserId":{
+      "type":"string",
+      "documentation":"<p>The identifier of the user.</p>",
+      "max":255,
+      "min":1
+    },
+    "UserIdOrArn":{
+      "type":"string",
+      "documentation":"<p>The identifier of the user. You can specify either of the following:</p> <ul> <li> <p>The user ID.</p> </li> <li> <p>The ARN of the user.</p> </li> </ul> <p>The response returns <code>UserId</code>.</p>",
+      "max":255,
+      "min":1
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"Message"},
+        "Reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason the input failed validation. Branch on this value rather than on the message wording.</p>"
+        },
+        "FieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The specific input fields that failed validation, when <code>Reason</code> is <code>FIELD_VALIDATION_FAILED</code>.</p>"
+        }
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by an AWS service.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Message"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The path to the field that failed validation, using JSON pointer-style dotted notation for nested members.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message describing why the field failed validation.</p>"
+        }
+      },
+      "documentation":"<p>An input field that failed validation.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"},
+      "documentation":"<p>A list of input fields that failed validation.</p>"
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "documentation":"<p>The reason an input failed validation. New values may be added over time, so treat an unrecognized value as a generic validation failure.</p>",
+      "enum":[
+        "UNKNOWN_OPERATION",
+        "CANNOT_PARSE",
+        "FIELD_VALIDATION_FAILED",
+        "OTHER"
+      ]
+    }
+  },
+  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Scheduling.html\">Scheduling actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Scheduling.html\">Scheduling data types</a> </p> </li> </ul> <p>Use the Amazon Connect Scheduling API to work programmatically with Connect Customer forecasting, capacity planning, and scheduling, and to integrate these capabilities with your own systems. In the Connect Customer admin website, you use them to forecast contact volume, plan capacity, and create and manage agent schedules.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/forecasting-capacity-planning-scheduling.html\">Forecasting &amp; agent scheduling</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
+}

@@ -283,6 +283,16 @@
       "output":{"shape":"AssociateIpamResourceDiscoveryResult"},
       "documentation":"<p>Associates an IPAM resource discovery with an Amazon VPC IPAM. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
+    "AssociateKmsKeyId":{
+      "name":"AssociateKmsKeyId",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateKmsKeyIdRequest"},
+      "output":{"shape":"AssociateKmsKeyIdResult"},
+      "documentation":"<p>Associates an additional KMS key with an encrypted Amazon EBS snapshot. With the associated key, you have a second, independent way to access the snapshot's data, in addition to the key the snapshot is already encrypted under. Associating a key doesn't re-encrypt the snapshot or grant access to its original key.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/associated-kms-keys.html\">Associated KMS keys</a> in the <i>Amazon EBS User Guide</i>.</p>"
+    },
     "AssociateNatGatewayAddress":{
       "name":"AssociateNatGatewayAddress",
       "http":{
@@ -1548,6 +1558,16 @@
       "output":{"shape":"CreateTransitGatewayMulticastDomainResult"},
       "documentation":"<p>Creates a multicast domain using the specified transit gateway.</p> <p>The transit gateway must be in the available state before you create a domain. Use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeTransitGateways.html\">DescribeTransitGateways</a> to see the state of transit gateway.</p>"
     },
+    "CreateTransitGatewayNetworkFunctionAttachment":{
+      "name":"CreateTransitGatewayNetworkFunctionAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTransitGatewayNetworkFunctionAttachmentRequest"},
+      "output":{"shape":"CreateTransitGatewayNetworkFunctionAttachmentResult"},
+      "documentation":"<p>Creates a network function attachment that connects the specified transit gateway to a Gateway Load Balancer endpoint service. Traffic that you route to the attachment is sent to the network function appliances behind the endpoint service. To use this operation, you must be the owner of the transit gateway.</p> <p>You can create one network function attachment for each combination of transit gateway and endpoint service. The attachment remains in the <code>pendingAcceptance</code> state until the endpoint service owner accepts the endpoint connection.</p>"
+    },
     "CreateTransitGatewayPeeringAttachment":{
       "name":"CreateTransitGatewayPeeringAttachment",
       "http":{
@@ -2533,6 +2553,16 @@
       "input":{"shape":"DeleteTransitGatewayMulticastDomainRequest"},
       "output":{"shape":"DeleteTransitGatewayMulticastDomainResult"},
       "documentation":"<p>Deletes the specified transit gateway multicast domain.</p>"
+    },
+    "DeleteTransitGatewayNetworkFunctionAttachment":{
+      "name":"DeleteTransitGatewayNetworkFunctionAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTransitGatewayNetworkFunctionAttachmentRequest"},
+      "output":{"shape":"DeleteTransitGatewayNetworkFunctionAttachmentResult"},
+      "documentation":"<p>Deletes the specified network function attachment. The attachment must be in the <code>available</code> or <code>pendingAcceptance</code> state.</p>"
     },
     "DeleteTransitGatewayPeeringAttachment":{
       "name":"DeleteTransitGatewayPeeringAttachment",
@@ -4469,6 +4499,16 @@
       "output":{"shape":"DescribeTransitGatewayMulticastDomainsResult"},
       "documentation":"<p>Describes one or more transit gateway multicast domains.</p>"
     },
+    "DescribeTransitGatewayNetworkFunctionAttachments":{
+      "name":"DescribeTransitGatewayNetworkFunctionAttachments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTransitGatewayNetworkFunctionAttachmentsRequest"},
+      "output":{"shape":"DescribeTransitGatewayNetworkFunctionAttachmentsResult"},
+      "documentation":"<p>Describes one or more network function attachments. You can describe attachments that you own or that are attached to a transit gateway that you own.</p>"
+    },
     "DescribeTransitGatewayPeeringAttachments":{
       "name":"DescribeTransitGatewayPeeringAttachments",
       "http":{
@@ -5183,6 +5223,16 @@
       "input":{"shape":"DisassociateIpamResourceDiscoveryRequest"},
       "output":{"shape":"DisassociateIpamResourceDiscoveryResult"},
       "documentation":"<p>Disassociates a resource discovery from an Amazon VPC IPAM. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
+    },
+    "DisassociateKmsKeyId":{
+      "name":"DisassociateKmsKeyId",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateKmsKeyIdRequest"},
+      "output":{"shape":"DisassociateKmsKeyIdResult"},
+      "documentation":"<p>Removes an associated KMS key from an Amazon EBS snapshot. After you disassociate the key, it can no longer be used to access the snapshot's data. The snapshot's original encryption key is unaffected.</p>"
     },
     "DisassociateNatGatewayAddress":{
       "name":"DisassociateNatGatewayAddress",
@@ -7104,6 +7154,16 @@
       "output":{"shape":"ModifyTransitGatewayMeteringPolicyResult"},
       "documentation":"<p>Modifies a transit gateway metering policy.</p>"
     },
+    "ModifyTransitGatewayNetworkFunctionAttachment":{
+      "name":"ModifyTransitGatewayNetworkFunctionAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyTransitGatewayNetworkFunctionAttachmentRequest"},
+      "output":{"shape":"ModifyTransitGatewayNetworkFunctionAttachmentResult"},
+      "documentation":"<p>Adds Availability Zones to or removes Availability Zones from the specified network function attachment. The attachment must be in the <code>available</code> state. You must specify at least one Availability Zone to add or remove, and the attachment must keep at least one Availability Zone.</p> <p>Adding an Availability Zone provisions a new Gateway Load Balancer endpoint in that Availability Zone. If the endpoint service doesn't automatically accept connection requests, the endpoint service owner must accept the endpoint connection for each Availability Zone that you add.</p>"
+    },
     "ModifyTransitGatewayPolicyTableEntry":{
       "name":"ModifyTransitGatewayPolicyTableEntry",
       "http":{
@@ -7320,7 +7380,7 @@
       },
       "input":{"shape":"ModifyVpcEndpointServicePermissionsRequest"},
       "output":{"shape":"ModifyVpcEndpointServicePermissionsResult"},
-      "documentation":"<p>Modifies the permissions for your VPC endpoint service. You can add or remove permissions for service consumers (Amazon Web Services accounts, users, and IAM roles) to connect to your endpoint service. Principal ARNs with path components aren't supported.</p> <p>If you grant permissions to all principals, the service is public. Any users who know the name of a public service can send a request to attach an endpoint. If the service does not require manual approval, attachments are automatically approved.</p>"
+      "documentation":"<p>Modifies the permissions for your VPC endpoint service. You can add or remove permissions for service consumers (Amazon Web Services accounts, users, and IAM roles) to connect to your endpoint service. Principal ARNs with path components aren't supported.</p> <p>If you grant permissions to all principals, the service is public. Any users who know the name of a public service can send a request to attach an endpoint. If the service does not require manual approval, attachments are automatically approved.</p> <p>By default, principals that you grant permissions to can create VPC endpoints that connect to your endpoint service. For Gateway Load Balancer endpoint services, you can instead grant permissions so that principals can create transit gateway attachments that connect to your endpoint service. To do so, specify <code>transit-gateway-attachment</code> for <code>PermissionType</code>. The two permission types are independent. A principal can have either or both.</p>"
     },
     "ModifyVpcPeeringConnectionOptions":{
       "name":"ModifyVpcPeeringConnectionOptions",
@@ -8522,8 +8582,13 @@
         },
         "VpcEndpointIds":{
           "shape":"VpcEndpointIdList",
-          "documentation":"<p>The IDs of the interface VPC endpoints.</p>",
+          "documentation":"<p>The IDs of the interface VPC endpoints.</p> <p>You must specify either <code>VpcEndpointIds</code> or <code>TransitGatewayAttachmentIds</code>, but not both.</p>",
           "locationName":"VpcEndpointId"
+        },
+        "TransitGatewayAttachmentIds":{
+          "shape":"TransitGatewayAttachmentIdList",
+          "documentation":"<p>The IDs of the transit gateway attachments to accept. This parameter is supported only for Gateway Load Balancer endpoint services.</p> <p>You must specify either <code>VpcEndpointIds</code> or <code>TransitGatewayAttachmentIds</code>, but not both.</p>",
+          "locationName":"TransitGatewayAttachmentId"
         }
       }
     },
@@ -8984,6 +9049,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the service.</p>",
           "locationName":"serviceId"
+        },
+        "PermissionType":{
+          "shape":"PermissionType",
+          "documentation":"<p>The type of permission granted to the principal.</p>",
+          "locationName":"permissionType"
         }
       },
       "documentation":"<p>Describes a principal.</p>"
@@ -9605,6 +9675,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the service.</p>",
           "locationName":"serviceId"
+        },
+        "PermissionType":{
+          "shape":"PermissionType",
+          "documentation":"<p>The type of permission granted to the principal.</p>",
+          "locationName":"permissionType"
         }
       },
       "documentation":"<p>Describes a principal.</p>"
@@ -10976,6 +11051,34 @@
         }
       }
     },
+    "AssociateKmsKeyIdRequest":{
+      "type":"structure",
+      "required":["KmsKeyId"],
+      "members":{
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the Amazon EBS snapshot.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ID, alias, or ARN of the KMS key to associate with the snapshot. You can specify a key ID, key alias, key ARN, or alias ARN.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AssociateKmsKeyIdResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
+        }
+      }
+    },
     "AssociateNatGatewayAddressRequest":{
       "type":"structure",
       "required":[
@@ -11426,6 +11529,24 @@
           "documentation":"<p>The ID of the VPC.</p>",
           "locationName":"vpcId"
         }
+      }
+    },
+    "AssociatedKmsKey":{
+      "type":"structure",
+      "members":{
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the associated KMS key.</p>",
+          "locationName":"kmsKeyId"
+        }
+      },
+      "documentation":"<p>Describes an KMS key that is associated with an Amazon EBS snapshot, in addition to the key the snapshot is encrypted under. An associated key provides a second way to access the snapshot's data for cross-account sharing and copying.</p>"
+    },
+    "AssociatedKmsKeySet":{
+      "type":"list",
+      "member":{
+        "shape":"AssociatedKmsKey",
+        "locationName":"item"
       }
     },
     "AssociatedNetworkType":{
@@ -21481,6 +21602,52 @@
         }
       }
     },
+    "CreateTransitGatewayNetworkFunctionAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayId",
+        "ServiceName"
+      ],
+      "members":{
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the transit gateway. The transit gateway must be in the <code>available</code> state.</p>"
+        },
+        "ServiceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Gateway Load Balancer endpoint service.</p>"
+        },
+        "AvailabilityZones":{
+          "shape":"NetworkFunctionAttachmentAZNameList",
+          "documentation":"<p>The names of the Availability Zones for the attachment. You must specify at least one Availability Zone, using this parameter, <code>AvailabilityZoneIds</code>, or both. Each Availability Zone must be supported by both the transit gateway and the endpoint service.</p>",
+          "locationName":"AvailabilityZone"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"NetworkFunctionAttachmentAZIdList",
+          "documentation":"<p>The IDs of the Availability Zones for the attachment. You must specify at least one Availability Zone, using this parameter, <code>AvailabilityZones</code>, or both. Each Availability Zone must be supported by both the transit gateway and the endpoint service.</p>",
+          "locationName":"AvailabilityZoneId"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the network function attachment.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateTransitGatewayNetworkFunctionAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayNetworkFunctionAttachment":{
+          "shape":"TransitGatewayNetworkFunctionAttachment",
+          "documentation":"<p>Information about the network function attachment.</p>",
+          "locationName":"transitGatewayNetworkFunctionAttachment"
+        }
+      }
+    },
     "CreateTransitGatewayPeeringAttachmentRequest":{
       "type":"structure",
       "required":[
@@ -25434,6 +25601,30 @@
           "shape":"TransitGatewayMulticastDomain",
           "documentation":"<p>Information about the deleted transit gateway multicast domain.</p>",
           "locationName":"transitGatewayMulticastDomain"
+        }
+      }
+    },
+    "DeleteTransitGatewayNetworkFunctionAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the network function attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteTransitGatewayNetworkFunctionAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayNetworkFunctionAttachment":{
+          "shape":"TransitGatewayNetworkFunctionAttachment",
+          "documentation":"<p>Information about the deleted network function attachment.</p>",
+          "locationName":"transitGatewayNetworkFunctionAttachment"
         }
       }
     },
@@ -33705,6 +33896,48 @@
         }
       }
     },
+    "DescribeTransitGatewayNetworkFunctionAttachmentsRequest":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayAttachmentIds":{
+          "shape":"TransitGatewayNetworkFunctionAttachmentIdList",
+          "documentation":"<p>The IDs of the network function attachments.</p>",
+          "locationName":"TransitGatewayAttachmentId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters. The possible values are:</p> <ul> <li> <p> <code>service-name</code> - The name of the Gateway Load Balancer endpoint service.</p> </li> <li> <p> <code>state</code> - The state of the attachment. Valid values are <code>available</code> | <code>deleted</code> | <code>deleting</code> | <code>failed</code> | <code>failing</code> | <code>modifying</code> | <code>pendingAcceptance</code> | <code>pending</code> | <code>rollingBack</code> | <code>rejected</code> | <code>rejecting</code>.</p> </li> <li> <p> <code>transit-gateway-attachment-id</code> - The ID of the attachment.</p> </li> <li> <p> <code>transit-gateway-id</code> - The ID of the transit gateway.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"TransitGatewayMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeTransitGatewayNetworkFunctionAttachmentsResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayNetworkFunctionAttachments":{
+          "shape":"TransitGatewayNetworkFunctionAttachmentList",
+          "documentation":"<p>Information about the network function attachments.</p>",
+          "locationName":"transitGatewayNetworkFunctionAttachmentSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeTransitGatewayPeeringAttachmentsRequest":{
       "type":"structure",
       "members":{
@@ -34760,7 +34993,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-id</code> - The ID of the service.</p> </li> <li> <p> <code>vpc-endpoint-owner</code> - The ID of the Amazon Web Services account ID that owns the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-region</code> - The Region of the endpoint or <code>cross-region</code> to find endpoints for other Regions.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-id</code> - The ID of the service.</p> </li> <li> <p> <code>transit-gateway-attachment-id</code> - The ID of the transit gateway attachment.</p> </li> <li> <p> <code>vpc-endpoint-owner</code> - The ID of the Amazon Web Services account ID that owns the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-region</code> - The Region of the endpoint or <code>cross-region</code> to find endpoints for other Regions.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -34844,7 +35077,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>principal</code> - The ARN of the principal.</p> </li> <li> <p> <code>principal-type</code> - The principal type (<code>All</code> | <code>Service</code> | <code>OrganizationUnit</code> | <code>Account</code> | <code>User</code> | <code>Role</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>permission-type</code> - The permission type (<code>vpc-endpoint</code> | <code>transit-gateway-attachment</code>).</p> </li> <li> <p> <code>principal</code> - The ARN of the principal.</p> </li> <li> <p> <code>principal-type</code> - The principal type (<code>All</code> | <code>Service</code> | <code>OrganizationUnit</code> | <code>Account</code> | <code>User</code> | <code>Role</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -36598,6 +36831,34 @@
           "shape":"IpamResourceDiscoveryAssociation",
           "documentation":"<p>A resource discovery association.</p>",
           "locationName":"ipamResourceDiscoveryAssociation"
+        }
+      }
+    },
+    "DisassociateKmsKeyIdRequest":{
+      "type":"structure",
+      "required":["KmsKeyId"],
+      "members":{
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the Amazon EBS snapshot.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ID, alias, or ARN of the associated KMS key to remove from the snapshot.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisassociateKmsKeyIdResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
         }
       }
     },
@@ -61627,6 +61888,50 @@
         }
       }
     },
+    "ModifyTransitGatewayNetworkFunctionAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the network function attachment.</p>"
+        },
+        "AddAvailabilityZones":{
+          "shape":"NetworkFunctionAttachmentAZNameList",
+          "documentation":"<p>The names of the Availability Zones to add to the attachment. You can't add and remove the same Availability Zone in a single request.</p>",
+          "locationName":"AddAvailabilityZone"
+        },
+        "AddAvailabilityZoneIds":{
+          "shape":"NetworkFunctionAttachmentAZIdList",
+          "documentation":"<p>The IDs of the Availability Zones to add to the attachment. You can't add and remove the same Availability Zone in a single request.</p>",
+          "locationName":"AddAvailabilityZoneId"
+        },
+        "RemoveAvailabilityZones":{
+          "shape":"NetworkFunctionAttachmentAZNameList",
+          "documentation":"<p>The names of the Availability Zones to remove from the attachment. Each Availability Zone must be currently in the attachment.</p>",
+          "locationName":"RemoveAvailabilityZone"
+        },
+        "RemoveAvailabilityZoneIds":{
+          "shape":"NetworkFunctionAttachmentAZIdList",
+          "documentation":"<p>The IDs of the Availability Zones to remove from the attachment. Each Availability Zone must be currently in the attachment.</p>",
+          "locationName":"RemoveAvailabilityZoneId"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyTransitGatewayNetworkFunctionAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayNetworkFunctionAttachment":{
+          "shape":"TransitGatewayNetworkFunctionAttachment",
+          "documentation":"<p>Information about the network function attachment.</p>",
+          "locationName":"transitGatewayNetworkFunctionAttachment"
+        }
+      }
+    },
     "ModifyTransitGatewayOptions":{
       "type":"structure",
       "members":{
@@ -62837,6 +63142,10 @@
         "RemoveAllowedPrincipals":{
           "shape":"ValueStringList",
           "documentation":"<p>The Amazon Resource Names (ARN) of the principals. Permissions are revoked for principals in this list.</p>"
+        },
+        "PermissionType":{
+          "shape":"PermissionType",
+          "documentation":"<p>The type of permission to add or remove. The permission type applies to all principals in <code>AddAllowedPrincipals</code> and <code>RemoveAllowedPrincipals</code>.</p> <ul> <li> <p> <code>vpc-endpoint</code> - Principals can create VPC endpoints that connect to the endpoint service.</p> </li> <li> <p> <code>transit-gateway-attachment</code> - Principals can create transit gateway attachments that connect to the endpoint service. This permission type is supported only for Gateway Load Balancer endpoint services. You can grant it only to Amazon Web Services accounts (<code>arn:aws:iam::account-id:root</code>). You can't grant it to users, IAM roles, organizations, organizational units, or all principals (*).</p> </li> </ul> <p>Default: <code>vpc-endpoint</code> </p>"
         }
       }
     },
@@ -63960,6 +64269,20 @@
       "type":"list",
       "member":{
         "shape":"NetworkCardInterfaceType",
+        "locationName":"item"
+      }
+    },
+    "NetworkFunctionAttachmentAZIdList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
+    },
+    "NetworkFunctionAttachmentAZNameList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
         "locationName":"item"
       }
     },
@@ -65915,6 +66238,13 @@
     "PermissionGroup":{
       "type":"string",
       "enum":["all"]
+    },
+    "PermissionType":{
+      "type":"string",
+      "enum":[
+        "vpc-endpoint",
+        "transit-gateway-attachment"
+      ]
     },
     "Phase1DHGroupNumbersList":{
       "type":"list",
@@ -68173,8 +68503,13 @@
         },
         "VpcEndpointIds":{
           "shape":"VpcEndpointIdList",
-          "documentation":"<p>The IDs of the VPC endpoints.</p>",
+          "documentation":"<p>The IDs of the VPC endpoints.</p> <p>You must specify either <code>VpcEndpointIds</code> or <code>TransitGatewayAttachmentIds</code>, but not both.</p>",
           "locationName":"VpcEndpointId"
+        },
+        "TransitGatewayAttachmentIds":{
+          "shape":"TransitGatewayAttachmentIdList",
+          "documentation":"<p>The IDs of the transit gateway attachments to reject. This parameter is supported only for Gateway Load Balancer endpoint services.</p> <p>You must specify either <code>VpcEndpointIds</code> or <code>TransitGatewayAttachmentIds</code>, but not both.</p>",
+          "locationName":"TransitGatewayAttachmentId"
         }
       }
     },
@@ -74463,6 +74798,11 @@
           "documentation":"<p>The full size of the snapshot, in bytes.</p> <important> <p>This is <b>not</b> the incremental size of the snapshot. This is the full snapshot size and represents the size of all the blocks that were written to the source volume at the time the snapshot was created.</p> </important>",
           "locationName":"fullSnapshotSizeInBytes"
         },
+        "AssociatedKmsKeys":{
+          "shape":"AssociatedKmsKeySet",
+          "documentation":"<p>The additional KMS keys that are associated with the snapshot.</p>",
+          "locationName":"associatedKmsKeySet"
+        },
         "SnapshotId":{
           "shape":"String",
           "documentation":"<p>The ID of the snapshot. Each snapshot receives a unique identifier when it is created.</p>",
@@ -77938,6 +78278,15 @@
       }
     },
     "TransitGatewayAttachmentId":{"type":"string"},
+    "TransitGatewayAttachmentIdList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayAttachmentId",
+        "locationName":"item"
+      },
+      "max":50,
+      "min":0
+    },
     "TransitGatewayAttachmentIdStringList":{
       "type":"list",
       "member":{"shape":"TransitGatewayAttachmentId"}
@@ -78876,6 +79225,76 @@
         "deactivated",
         "deleting"
       ]
+    },
+    "TransitGatewayNetworkFunctionAttachment":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "TransitGatewayId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the transit gateway.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "TransitGatewayOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the transit gateway.</p>",
+          "locationName":"transitGatewayOwnerId"
+        },
+        "ResourceOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the attachment.</p>",
+          "locationName":"resourceOwnerId"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The name of the Gateway Load Balancer endpoint service.</p>",
+          "locationName":"resourceId"
+        },
+        "AvailabilityZones":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The names of the Availability Zones for the attachment.</p>",
+          "locationName":"availabilityZoneSet"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the Availability Zones for the attachment.</p>",
+          "locationName":"availabilityZoneIdSet"
+        },
+        "State":{
+          "shape":"TransitGatewayAttachmentState",
+          "documentation":"<p>The state of the attachment.</p>",
+          "locationName":"state"
+        },
+        "CreationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time the attachment was created.</p>",
+          "locationName":"creationTime"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags for the attachment.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Contains information about a transit gateway network function attachment, including the attachment ID, the transit gateway, the endpoint service, the Availability Zones, and the state of the attachment.</p>"
+    },
+    "TransitGatewayNetworkFunctionAttachmentIdList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayAttachmentId",
+        "locationName":"item"
+      }
+    },
+    "TransitGatewayNetworkFunctionAttachmentList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayNetworkFunctionAttachment",
+        "locationName":"item"
+      }
     },
     "TransitGatewayNetworkInterfaceIdList":{
       "type":"list",
@@ -83455,6 +83874,16 @@
           "shape":"PayerResponsibilitySet",
           "documentation":"<p>The payer responsibility settings for the endpoint.</p>",
           "locationName":"payerResponsibilitySet"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment, if the connection is for a transit gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "TransitGatewayAttachmentOwner":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the transit gateway attachment, if the connection is for a transit gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentOwner"
         }
       },
       "documentation":"<p>Describes a VPC endpoint connection to a service.</p>"

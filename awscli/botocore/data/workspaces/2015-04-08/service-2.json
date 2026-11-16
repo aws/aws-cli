@@ -5534,6 +5534,10 @@
           "shape":"UserIdentityType",
           "documentation":"<p>The type of identity management the user is using.</p>"
         },
+        "WorkspaceOsUserMode":{
+          "shape":"WorkspaceOSUserMode",
+          "documentation":"<p>Indicates how users are set up on the WorkSpace operating system. To use local users with an AWS IAM Identity Center directory, specify <code>LOCAL_USER</code>.</p>"
+        },
         "IdcInstanceArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) of the identity center instance.</p>"
@@ -6981,6 +6985,10 @@
           "shape":"StreamingProperties",
           "documentation":"<p>The streaming properties to configure.</p>"
         },
+        "WorkspaceOsUserMode":{
+          "shape":"WorkspaceOSUserMode",
+          "documentation":"<p>Indicates how users are set up on the WorkSpace operating system.</p>"
+        },
         "ErrorMessage":{
           "shape":"Description",
           "documentation":"<p>The error message returned.</p>"
@@ -7201,6 +7209,15 @@
     "WorkspaceName":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_()][a-zA-Z0-9_.()-]{1,63}$"
+    },
+    "WorkspaceOSUserMode":{
+      "type":"string",
+      "enum":[
+        "LOCAL_USER",
+        "DOMAIN_JOIN",
+        "ENTRA_JOIN",
+        "SELF_MANAGED"
+      ]
     },
     "WorkspaceProperties":{
       "type":"structure",

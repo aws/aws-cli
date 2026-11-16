@@ -1,0 +1,2434 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2026-08-24",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"osm",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "protocols":["json"],
+    "serviceFullName":"Amazon OpenSearch Memory",
+    "serviceId":"OpenSearchMemory",
+    "signatureVersion":"v4",
+    "signingName":"osm",
+    "targetPrefix":"OpenSearchMemory",
+    "uid":"opensearchmemory-2026-08-24"
+  },
+  "operations":{
+    "BatchGetEvent":{
+      "name":"BatchGetEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetEventInput"},
+      "output":{"shape":"BatchGetEventOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets up to 10 events by ID, each as <code>GetEvent</code> returns it, including its payload.</p> <p>If you supply <code>actorId</code> or <code>sessionId</code>, every requested event must match it. Each event has its own outcome. The operation reports an event that it can't return in <code>errors</code> instead of failing, with an error code named for the exception that <code>GetEvent</code> would return for it. The operation reports both an event that doesn't exist and an event outside the supplied scope as <code>RESOURCE_NOT_FOUND</code>.</p> <p>The exception is the space's customer managed AWS KMS key: if it is disabled, pending deletion, can't be used for decryption, or was deleted, the whole call fails with <code>ValidationException</code>, as <code>GetEvent</code> does.</p>",
+      "readonly":true
+    },
+    "CreateEvent":{
+      "name":"CreateEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEventInput"},
+      "output":{"shape":"CreateEventOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Submits an event (conversation turns, structured data, or a PDF document stored in Amazon S3) to a session in a space.</p> <p>The operation returns as soon as the event is saved. <code>GetEvent</code> and <code>ListEvents</code> return it immediately. <code>SearchEvents</code> returns it after it's indexed. <code>SearchMemories</code> returns memories extracted from it only after a strategy's extraction trigger fires and the memories are indexed.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>"
+    },
+    "CreateMemory":{
+      "name":"CreateMemory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateMemoryInput"},
+      "output":{"shape":"CreateMemoryOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Writes a memory that you have already formed, without extracting it from events. The service embeds the text as given and stores it as a memory of the named strategy. To have the service extract memories from conversation turns, use <code>CreateEvent</code> instead.</p> <p>The operation returns before the memory is searchable. The returned <code>memoryId</code> is final, but until the memory is indexed, <code>GetMemory</code>, <code>UpdateMemory</code>, and <code>DeleteMemory</code> return <code>ResourceNotFoundException</code> for it.</p> <p>If the request would exceed the service's rate for embedding requests, it fails with <code>ThrottlingException</code>. Retry with exponential backoff.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>"
+    },
+    "CreateSpace":{
+      "name":"CreateSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSpaceRequest"},
+      "output":{"shape":"CreateSpaceResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a space. A space is an AWS resource that stores the events you send and the memories extracted from them, and defines the memory strategies that extract those memories.</p> <p>The operation returns before provisioning finishes, with <code>status</code> <code>CREATING</code>. Call <code>GetSpace</code> until the status is <code>ACTIVE</code>, and then use the space. If provisioning fails, the status becomes <code>FAILED</code> and <code>statusReason</code> says why.</p>",
+      "idempotent":true
+    },
+    "DeleteEvent":{
+      "name":"DeleteEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEventInput"},
+      "output":{"shape":"DeleteEventOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes an event. Deletion can't be undone. The event stops appearing in <code>SearchEvents</code> results shortly after you delete it. Deleting an event that doesn't exist returns <code>ResourceNotFoundException</code>.</p> <p>Deleting an event doesn't delete the memories derived from it, because a memory can combine content from several events. To remove them, use <code>DeleteMemory</code>.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>"
+    },
+    "DeleteMemory":{
+      "name":"DeleteMemory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMemoryInput"},
+      "output":{"shape":"DeleteMemoryOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a memory, including its content and embedding. Deletion can't be undone. Searches stop returning the memory shortly after you delete it.</p> <p>Deleting a memory that no longer exists returns <code>ResourceNotFoundException</code>, so the operation is not idempotent. If you retry deletes, treat that error as success.</p> <p>A memory past its expiry (set from the space's <code>memoryExpiryDays</code> when the memory is written) reads as not found: the operation returns <code>ResourceNotFoundException</code>, as for a memory that was already deleted.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>"
+    },
+    "DeleteSpace":{
+      "name":"DeleteSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSpaceRequest"},
+      "output":{"shape":"DeleteSpaceResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a space and its memories. Deletion can't be undone. After you delete the space, you can't retrieve its events, and the service removes them when they reach their expiry.</p> <p>The operation returns with <code>status</code> <code>DELETING</code>. When deletion finishes, <code>GetSpace</code> returns <code>ResourceNotFoundException</code>. If deletion fails, the status becomes <code>FAILED</code>. A space that is <code>CREATING</code> or <code>UPDATING</code> can't be deleted until that finishes: the request fails with <code>ConflictException</code>. Deleting a space that is already <code>DELETING</code> returns <code>DELETING</code> again.</p>",
+      "idempotent":true
+    },
+    "GetEvent":{
+      "name":"GetEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEventInput"},
+      "output":{"shape":"GetEventOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets an event by ID, including its payload.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>",
+      "readonly":true
+    },
+    "GetMemory":{
+      "name":"GetMemory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetMemoryInput"},
+      "output":{"shape":"GetMemoryOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets a memory by ID, as returned by <code>SearchMemories</code> or <code>ListMemories</code>. A memory that doesn't exist returns <code>ResourceNotFoundException</code>. Unlike <code>SearchMemories</code>, this operation also returns memories that consolidation has superseded.</p> <p>A memory past its expiry (set from the space's <code>memoryExpiryDays</code> when the memory is written) reads as not found: <code>ResourceNotFoundException</code>, the same answer as for an ID that does not exist.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>",
+      "readonly":true
+    },
+    "GetSpace":{
+      "name":"GetSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSpaceRequest"},
+      "output":{"shape":"GetSpaceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a space's configuration and status.</p>",
+      "readonly":true
+    },
+    "ListEvents":{
+      "name":"ListEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEventsInput"},
+      "output":{"shape":"ListEventsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the events in a session, sorted by time. Optionally limit the results to events whose <code>eventTimestamp</code> falls between <code>eventTimestampAfter</code> and <code>eventTimestampBefore</code>. Returns event metadata only. Call <code>GetEvent</code> for the payload. For full-text or relevance search, use <code>SearchEvents</code>.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>",
+      "readonly":true
+    },
+    "ListMemories":{
+      "name":"ListMemories",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMemoriesInput"},
+      "output":{"shape":"ListMemoriesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists a space's memories without a query, for example the most recent memories or the memories of one strategy. Filter by strategy and optionally by owning actor or session, sort by creation or update time, and page through the results. Results have no relevance score. To query or filter by metadata, use <code>SearchMemories</code>.</p> <p>If memories are written or deleted while you page, the results can skip a memory or return it twice. You can page through only a limited number of results. A request past that limit fails with <code>ValidationException</code> (reason <code>invalidNextToken</code>), and the message gives the limit.</p> <p>Memories past their expiry (set from the space's <code>memoryExpiryDays</code> when each memory is written) are left out. Unlike <code>SearchMemories</code>, this operation also returns memories that consolidation has superseded.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>",
+      "readonly":true
+    },
+    "ListSpaces":{
+      "name":"ListSpaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSpacesRequest"},
+      "output":{"shape":"ListSpacesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the spaces in your account in the current Region.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the tags for the specified space.</p>",
+      "readonly":true
+    },
+    "SearchEvents":{
+      "name":"SearchEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchEventsInput"},
+      "output":{"shape":"SearchEventsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Searches a space's events by relevance. It works like <code>SearchMemories</code> without the memory type and strategy selector. The query is a subset of the OpenSearch Query DSL. The service validates it, limits the search to the actor in <code>actorId</code> and the sessions in <code>sessionIds</code>, and returns ranked results. Each result is the matching chunk of an event, not the whole event. You can page through only a limited number of results. A request past that limit fails with <code>ValidationException</code> (reason <code>invalidNextToken</code>), and the message gives the limit.</p> <p>If the results are larger than 5 MiB, the request fails with <code>ValidationException</code> (reason <code>queryBodyTooLarge</code>). Lower <code>maxResults</code>.</p> <p>If the request would exceed the service's rate for embedding requests, it fails with <code>ThrottlingException</code>. Retry with exponential backoff.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>",
+      "readonly":true
+    },
+    "SearchMemories":{
+      "name":"SearchMemories",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchMemoriesInput"},
+      "output":{"shape":"SearchMemoriesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Searches a space's memories by relevance. The query is a subset of the OpenSearch Query DSL. The service validates it, limits the search to the requested strategies and to the actor in <code>actorId</code>, and returns one ranked list of memories. You can page through only a limited number of results. A request past that limit fails with <code>ValidationException</code> (reason <code>invalidNextToken</code>), and the message gives the limit.</p> <p>Memories past their expiry (set from the space's <code>memoryExpiryDays</code> when each memory is written) are left out of the results. Only current memories are returned: a memory that consolidation has superseded (an older version of a fact that a newer memory replaced) is left out.</p> <p>If the results are larger than 5 MiB, the request fails with <code>ValidationException</code> (reason <code>queryBodyTooLarge</code>). Lower <code>maxResults</code>.</p> <p>If the request would exceed the service's rate for embedding requests, it fails with <code>ThrottlingException</code>. Retry with exponential backoff.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>",
+      "readonly":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Adds the specified tags to the specified space.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes the specified tags from the specified space.</p>",
+      "idempotent":true
+    },
+    "UpdateMemory":{
+      "name":"UpdateMemory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateMemoryInput"},
+      "output":{"shape":"UpdateMemoryOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates a memory in place. Supply only the fields to change. Omitted fields keep their stored values. A request must supply <code>content</code> or <code>metadata</code>, or it fails with <code>ValidationException</code>. Supplying <code>content</code> re-embeds the memory. A change to metadata alone doesn't.</p> <p>The memory keeps its <code>memoryId</code> across updates. Shortly after an update, searches stop returning the previous content.</p> <p> <code>memoryType</code> can't be changed. To change it, delete the memory and create a new one.</p> <p>A memory past its expiry (set from the space's <code>memoryExpiryDays</code> when the memory is written) reads as not found: the operation fails with <code>ResourceNotFoundException</code> and changes nothing. An update does not move the expiry.</p> <p>Concurrent updates to one memory are last-writer-wins. There is no version check. To avoid lost updates, serialize your updates to a memory.</p> <p>If you supply <code>content</code> and the request would exceed the service's rate for embedding requests, it fails with <code>ThrottlingException</code>. Retry with exponential backoff.</p> <p>If the space uses a customer managed AWS KMS key, the call can also fail because of the key. It fails with <code>AccessDeniedException</code> if you aren't allowed to use the key, and with <code>ThrottlingException</code> if AWS KMS throttles the request. It fails with <code>ValidationException</code> if the key is disabled, pending deletion, or deleted.</p>"
+    },
+    "UpdateSpace":{
+      "name":"UpdateSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateSpaceRequest"},
+      "output":{"shape":"UpdateSpaceResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates a space's memory strategies, retention settings, or extraction model. Supply only the fields to change. Omitted fields keep their current values.</p> <p>If the request changes the set of strategies, a strategy's configuration, a retention setting, or the extraction model, the space moves to <code>UPDATING</code>. When the change is complete, the space returns to <code>ACTIVE</code>, or moves to <code>FAILED</code> if the change can't be applied. While the space is <code>UPDATING</code>, <code>GetSpace</code> returns the previous configuration. A request that only changes strategy descriptions or repeats the values the space has stored is applied immediately and doesn't change the status. Sending a retention value that the space never set also moves the space to <code>UPDATING</code>, even one that matches the behavior without it, such as 90 for <code>eventExpiryDays</code> or 0 for <code>memoryExpiryDays</code>. A space that is <code>CREATING</code>, <code>UPDATING</code>, or <code>DELETING</code> can't be updated: the request fails with <code>ConflictException</code>.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes which access the request is missing.</p>"
+        }
+      },
+      "documentation":"<p>You don't have sufficient access to perform this operation. To use this operation, you must have AWS Identity and Access Management (IAM) permissions for the operation, and on the resource it acts on. If the space uses a customer managed AWS Key Management Service (AWS KMS) key, you must also have permission to use the key.</p>",
+      "exception":true
+    },
+    "ActorId":{
+      "type":"string",
+      "documentation":"<p>The ID of an actor: the end user or agent that events and memories belong to.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
+    "ActorIdList":{
+      "type":"list",
+      "member":{"shape":"ActorId"},
+      "documentation":"<p>A list of 1 to 10 actor IDs. A memory or event matches when it belongs to any of them.</p>",
+      "max":10,
+      "min":1
+    },
+    "BatchGetEventError":{
+      "type":"structure",
+      "required":[
+        "eventId",
+        "errorCode",
+        "message"
+      ],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The ID of the requested event.</p>"
+        },
+        "errorCode":{
+          "shape":"BatchGetEventErrorCode",
+          "documentation":"<p>The reason that the call didn't return the event.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description.</p>"
+        }
+      },
+      "documentation":"<p>A requested event that the call didn't return, and the reason.</p>"
+    },
+    "BatchGetEventErrorCode":{
+      "type":"string",
+      "documentation":"<p>Why an event was not returned, named for the exception <code>GetEvent</code> would return for it.</p>",
+      "enum":[
+        "RESOURCE_NOT_FOUND",
+        "THROTTLING",
+        "ACCESS_DENIED",
+        "INTERNAL_SERVER"
+      ]
+    },
+    "BatchGetEventErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetEventError"},
+      "documentation":"<p>A list of requested events that the call didn't return, each with the reason.</p>",
+      "max":10,
+      "min":0
+    },
+    "BatchGetEventIdList":{
+      "type":"list",
+      "member":{"shape":"EventId"},
+      "documentation":"<p>A list of event IDs to get.</p>",
+      "max":10,
+      "min":1
+    },
+    "BatchGetEventInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "eventIds"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The actor that every requested event must belong to. Omit it to skip this check. The operation reports an event that doesn't match in <code>errors</code> as <code>RESOURCE_NOT_FOUND</code>.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session that every requested event must belong to. Omit it to skip this check. The operation reports an event that doesn't match in <code>errors</code> as <code>RESOURCE_NOT_FOUND</code>.</p>"
+        },
+        "eventIds":{
+          "shape":"BatchGetEventIdList",
+          "documentation":"<p>The IDs of the events to get: 1 to 10, without duplicates.</p>"
+        }
+      }
+    },
+    "BatchGetEventOutput":{
+      "type":"structure",
+      "required":[
+        "events",
+        "errors"
+      ],
+      "members":{
+        "events":{
+          "shape":"EventList",
+          "documentation":"<p>The events found, in the order that you requested their IDs.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetEventErrorList",
+          "documentation":"<p>An entry for each requested event that the call didn't return. Empty when the call returned every event.</p>"
+        }
+      }
+    },
+    "BlobContentType":{
+      "type":"string",
+      "documentation":"<p>The media type of a document submitted as a <code>blob</code>. Only PDF is supported.</p>",
+      "enum":[
+        "application/pdf",
+        "image/png",
+        "image/jpeg"
+      ]
+    },
+    "BlobPayload":{
+      "type":"structure",
+      "required":[
+        "contentType",
+        "source"
+      ],
+      "members":{
+        "contentType":{
+          "shape":"BlobContentType",
+          "documentation":"<p>The document's media type. Only <code>application/pdf</code> is supported. Any other value fails with <code>ValidationException</code>.</p>"
+        },
+        "source":{
+          "shape":"BlobSource",
+          "documentation":"<p>The location of the document.</p>"
+        }
+      },
+      "documentation":"<p>A document stored in Amazon S3, such as a PDF, and its media type.</p>"
+    },
+    "BlobSource":{
+      "type":"structure",
+      "members":{
+        "s3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The S3 object holding the document.</p>"
+        }
+      },
+      "documentation":"<p>The source of a blob's content. Set exactly one member. Currently, the only member is <code>s3Location</code>.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ClientToken":{
+      "type":"string",
+      "documentation":"<p>A unique, case-sensitive identifier that makes a request idempotent. It consists of printable ASCII characters, without spaces or control characters.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[!-~]+"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the conflict.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource that caused the conflict.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that caused the conflict.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource. For example, the space is being created, updated, or deleted, a space with the same name already exists, or you reused a client token with different parameters. Wait for the space to finish being created, updated, or deleted, or use a different name or client token, and then retry.</p>",
+      "exception":true
+    },
+    "ConversationalPayload":{
+      "type":"structure",
+      "members":{
+        "unified":{
+          "shape":"UnifiedConversational",
+          "documentation":"<p>Conversation turns in the service's own format.</p>"
+        }
+      },
+      "documentation":"<p>Conversational content. Exactly one member is set.</p>",
+      "union":true
+    },
+    "CreateEventInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "actorId",
+        "payload"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space that owns the event, for example <code>sp-02864597b164</code>.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The ID of the actor (end user or agent) that the event belongs to.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session the event belongs to. Send every event of one conversation with the same session ID, so that <code>SUMMARY</code> strategies summarize the conversation as one session. If you omit it, the service generates a session ID and returns it.</p>"
+        },
+        "eventTimestamp":{
+          "shape":"EventTimestamp",
+          "documentation":"<p>When the event occurred. The default is the time that the service receives the request.</p>"
+        },
+        "payload":{
+          "shape":"EventPayload",
+          "documentation":"<p>The event content. Set exactly one union member.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>Metadata tags to store with the event. Memories derived from the event carry the same tags. Keys that begin with <code>x-amz-</code>, the keys <code>documentS3Source</code> and <code>documentS3Url</code>, and other keys that the service uses internally are reserved: a request that sets one fails with <code>ValidationException</code>, and the message names the key.</p> <p>A space can use at most 50 distinct metadata keys across all of its events and memories. A request that would add a key beyond that fails with <code>ValidationException</code>. Reuse an existing key instead.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that makes the request idempotent. Within 2 hours of the first request, a retry with the same token and the same request, including the same <code>sessionId</code>, returns the same event. If you omit <code>sessionId</code>, the service generates a new one on each attempt, so a retry fails with <code>ConflictException</code>. Reusing the token with different request content also fails with <code>ConflictException</code>. <code>eventTimestamp</code> isn't compared. After 2 hours, the token starts a new event.</p>",
+          "idempotencyToken":true
+        },
+        "infer":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to extract memories from this event. The default is <code>true</code>. Set it to <code>false</code> to store the event without extraction: the service skips strategies that infer memories, and still indexes the event's turns for <code>SearchEvents</code>. A document submitted as a <code>blob</code> is still extracted.</p>"
+        }
+      }
+    },
+    "CreateEventOutput":{
+      "type":"structure",
+      "required":["event"],
+      "members":{
+        "event":{
+          "shape":"EventDetail",
+          "documentation":"<p>The stored event's identifiers: its ID, session, and timestamp.</p>"
+        }
+      }
+    },
+    "CreateMemoryContent":{
+      "type":"string",
+      "documentation":"<p>The memory text for <code>CreateMemory</code>: 1 to 16,000 characters and at most about 6,000 tokens, not blank, and well-formed Unicode. Longer text fails with <code>ValidationException</code>.</p>",
+      "max":16000,
+      "min":1,
+      "sensitive":true
+    },
+    "CreateMemoryDetail":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "spaceId",
+        "name",
+        "actorId",
+        "sessionId"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The final ID of the memory. Until the memory is indexed, <code>GetMemory</code>, <code>UpdateMemory</code>, and <code>DeleteMemory</code> return <code>ResourceNotFoundException</code> for it.</p>"
+        },
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "name":{
+          "shape":"StrategyName",
+          "documentation":"<p>The name of the strategy the memory belongs to.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The ID of the actor the memory belongs to.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session the memory belongs to, including one the service generated.</p>"
+        }
+      },
+      "documentation":"<p>The memory as <code>CreateMemory</code> acknowledges it: its identifiers. The memory isn't searchable yet when the call returns.</p>"
+    },
+    "CreateMemoryInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "name",
+        "content",
+        "actorId"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space that owns the memory, for example <code>sp-02864597b164</code>.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "name":{
+          "shape":"StrategyName",
+          "documentation":"<p>The name of the strategy that the memory belongs to. The space must already declare the strategy, and the memory's type comes from that strategy. The name must be 1 to 64 characters: letters, digits, periods, hyphens, and underscores, starting with a letter or digit.</p>"
+        },
+        "content":{
+          "shape":"CreateMemoryContent",
+          "documentation":"<p>The memory text, stored and embedded as provided.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The actor (end user or agent) that owns the memory.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session that the memory belongs to. If you omit it, the service generates a session ID and returns it.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>Metadata tags to store with the memory. Keys that begin with <code>x-amz-</code>, the key <code>documentS3Source</code>, and other keys that the service uses internally are reserved: a request that sets one fails with <code>ValidationException</code>, and the message names the key.</p> <p>A space can use at most 50 distinct metadata keys across all of its events and memories. A request that would add a key beyond that fails with <code>ValidationException</code>. Reuse an existing key instead.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that makes the request idempotent. Within 2 hours of the first request, a retry with the same token returns the same <code>memoryId</code> instead of creating a second memory. Reusing the token with a different <code>name</code>, <code>content</code>, <code>metadata</code>, <code>actorId</code>, or <code>sessionId</code> fails with <code>ConflictException</code>. If you omit <code>sessionId</code>, a retry with the same token gets the same session. If you omit the token, each call creates a new memory.</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>The request for <code>CreateMemory</code>.</p>"
+    },
+    "CreateMemoryOutput":{
+      "type":"structure",
+      "required":["memory"],
+      "members":{
+        "memory":{
+          "shape":"CreateMemoryDetail",
+          "documentation":"<p>The memory, identified but not yet indexed.</p>"
+        }
+      },
+      "documentation":"<p>The acknowledged memory. It isn't searchable yet when the call returns.</p>"
+    },
+    "CreateSpaceRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"SpaceName",
+          "documentation":"<p>A name for the space, unique within your account in the Region. If another space already has the name, the request fails with <code>ConflictException</code>.</p>"
+        },
+        "memoryStrategies":{
+          "shape":"MemoryStrategyList",
+          "documentation":"<p>The memory strategies that extract memories from the space's events: up to 10 strategies, each with a name that is unique within the space.</p> <p>Optional. Omit it, or send an empty list, to create a space with no memory strategies. Such a space stores the conversation events you send it and returns them through <code>SearchEvents</code> and <code>ListEvents</code>, but extracts no memories and has none to search. You can add strategies later with <code>UpdateSpace</code>.</p> <p>The serialized list can be at most 384 KiB.</p>"
+        },
+        "eventExpiryDays":{
+          "shape":"EventExpiryDays",
+          "documentation":"<p>How many days the space keeps each event, from 1 to 365. The default is 90.</p>"
+        },
+        "memoryExpiryDays":{
+          "shape":"MemoryExpiryDays",
+          "documentation":"<p>How many days the space keeps each memory, from 0 to 3650, counted from when the service writes the memory. Updating a memory with <code>UpdateMemory</code> doesn't restart the count. 0 means memories never expire. If you omit it, memories never expire.</p> <p>Searches and lists leave out a memory past its expiry, and reading, updating, or deleting it returns <code>ResourceNotFoundException</code>.</p>"
+        },
+        "extractionModelId":{
+          "shape":"ExtractionModelId",
+          "documentation":"<p>The model that extracts and consolidates memories for every strategy in the space, as an Amazon Bedrock model ID without an inference-profile prefix: <code>anthropic.claude-opus-5-5</code> or <code>anthropic.claude-haiku-5-5</code>. Another value fails with <code>ValidationException</code>, and the message lists the supported IDs. Omit it to use the service default, which can change over time and isn't returned by <code>GetSpace</code>. Setting a value pins the model.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The AWS KMS key that encrypts the space's data. Omit it, or omit its <code>kmsKeyArn</code>, to use an AWS owned key. You can't change the key after you create the space.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to add to the space.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that makes the request idempotent. A retry with the same token and the same parameters within 2 hours returns the space that the first request created, instead of creating another. Reusing the token with different parameters, or while the first request is still in progress, fails with <code>ConflictException</code>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateSpaceResponse":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "arn",
+        "name",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "arn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the space.</p>"
+        },
+        "name":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "status":{
+          "shape":"SpaceStatus",
+          "documentation":"<p>The status of the space: <code>CREATING</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the space was created.</p>"
+        }
+      }
+    },
+    "DeleteEventInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "eventId"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The ID of the event to delete.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The actor that the event must belong to. Omit it to skip this check. If it doesn't match the stored event, the call fails with <code>ResourceNotFoundException</code>, as if the event did not exist.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session that the event must belong to. Omit it to skip this check. If it doesn't match the stored event, the call fails with <code>ResourceNotFoundException</code>, as if the event did not exist.</p>"
+        }
+      }
+    },
+    "DeleteEventOutput":{
+      "type":"structure",
+      "required":["eventId"],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The ID of the deleted event.</p>"
+        }
+      }
+    },
+    "DeleteMemoryInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "memoryId"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space that owns the memory.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The ID of the memory to delete.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The ID of the actor that the memory must belong to. Omit it to skip this check. If it doesn't match the stored memory, the call fails with <code>ResourceNotFoundException</code>, as if the memory did not exist.</p>"
+        },
+        "strategyName":{
+          "shape":"StrategyName",
+          "documentation":"<p>The name of the strategy that the memory must belong to. Omit it to skip this check. If it doesn't match the stored memory, the call fails with <code>ResourceNotFoundException</code>, as if the memory did not exist.</p>"
+        }
+      }
+    },
+    "DeleteMemoryOutput":{
+      "type":"structure",
+      "required":["memoryId"],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The ID of the deleted memory.</p>"
+        }
+      }
+    },
+    "DeleteSpaceRequest":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space to delete.</p>"
+        }
+      }
+    },
+    "DeleteSpaceResponse":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "status"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "status":{
+          "shape":"SpaceStatus",
+          "documentation":"<p>The status of the space: <code>DELETING</code>.</p>"
+        }
+      }
+    },
+    "Document":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "Double":{
+      "type":"double",
+      "box":true
+    },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "kmsKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of a customer managed AWS KMS key that encrypts the space's data. The key must be an enabled symmetric encryption key in the space's Region, and you need permission to create grants on it (<code>kms:CreateGrant</code>). Otherwise, the request fails with <code>ValidationException</code> or <code>AccessDeniedException</code>.</p>"
+        }
+      },
+      "documentation":"<p>Encryption settings for a space.</p>"
+    },
+    "Event":{
+      "type":"structure",
+      "required":[
+        "eventId",
+        "spaceId",
+        "actorId",
+        "sessionId",
+        "payload",
+        "eventTimestamp"
+      ],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The event's ID.</p>"
+        },
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The ID of the actor the event belongs to.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session the event belongs to.</p>"
+        },
+        "payload":{
+          "shape":"EventPayload",
+          "documentation":"<p>The event's content, as submitted to <code>CreateEvent</code>.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The event's metadata tags, as supplied to <code>CreateEvent</code>. May be empty.</p>"
+        },
+        "eventTimestamp":{
+          "shape":"EventTimestamp",
+          "documentation":"<p>The time the event occurred.</p>"
+        }
+      },
+      "documentation":"<p>An event, including its payload.</p>"
+    },
+    "EventDetail":{
+      "type":"structure",
+      "required":[
+        "eventId",
+        "spaceId",
+        "actorId",
+        "sessionId",
+        "eventTimestamp"
+      ],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The event's ID, assigned by the service. Use it with <code>GetEvent</code> and <code>DeleteEvent</code>.</p>"
+        },
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The ID of the actor the event belongs to.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session the event belongs to, including one the service generated.</p>"
+        },
+        "eventTimestamp":{
+          "shape":"EventTimestamp",
+          "documentation":"<p>When the event occurred: the value supplied, or the time the request was received.</p>"
+        }
+      },
+      "documentation":"<p>The stored event's identifiers. Call <code>GetEvent</code> for the payload.</p>"
+    },
+    "EventExpiryDays":{
+      "type":"integer",
+      "box":true,
+      "max":365,
+      "min":1
+    },
+    "EventId":{
+      "type":"string",
+      "documentation":"<p>An event ID, assigned by the service.</p>",
+      "max":128,
+      "min":1
+    },
+    "EventList":{
+      "type":"list",
+      "member":{"shape":"Event"},
+      "documentation":"<p>A list of events.</p>",
+      "max":10,
+      "min":0
+    },
+    "EventPayload":{
+      "type":"structure",
+      "members":{
+        "conversational":{
+          "shape":"ConversationalPayload",
+          "documentation":"<p>Conversation turns.</p>"
+        },
+        "structuredData":{
+          "shape":"StructuredDataPayload",
+          "documentation":"<p>Structured (non-conversational) content, for example a deployment result that an agent should remember.</p>"
+        },
+        "blob":{
+          "shape":"BlobPayload",
+          "documentation":"<p>A document stored in Amazon S3, such as a PDF.</p>"
+        }
+      },
+      "documentation":"<p>The event content. Exactly one member must be set.</p>",
+      "union":true
+    },
+    "EventSearchSummary":{
+      "type":"structure",
+      "required":["eventId"],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The ID of the event that the chunk belongs to. Use it with <code>GetEvent</code> or <code>DeleteEvent</code>.</p>"
+        },
+        "score":{
+          "shape":"Double",
+          "documentation":"<p>The relevance score of the result. A higher score is more relevant. Scores aren't normalized to a fixed range and can be greater than 1, so use them only to order results.</p>"
+        },
+        "systemMetadata":{
+          "shape":"SystemMetadata",
+          "documentation":"<p>Provenance for the chunk: the owning actor and session, and when it was created and last updated. It is the same block that <code>ListMemories</code> and <code>SearchMemories</code> return. Event chunks are never modified, so <code>updatedAt</code> always equals <code>createdAt</code>.</p> <p>Absent when the service has no provenance for the chunk.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The event's metadata tags. All values are strings. In a query, filter on a tag as <code>metadata.&lt;key&gt;</code>.</p>"
+        },
+        "matchedContent":{
+          "shape":"SensitiveContent",
+          "documentation":"<p>The text of the matching chunk.</p>"
+        }
+      },
+      "documentation":"<p>A <code>SearchEvents</code> result: the matching chunk of an event and its provenance. Unlike <code>EventSummary</code> from <code>ListEvents</code>, it has a relevance score and the matched content, but not the full payload.</p>"
+    },
+    "EventSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"EventSearchSummary"},
+      "documentation":"<p>A list of <code>SearchEvents</code> results.</p>"
+    },
+    "EventSummary":{
+      "type":"structure",
+      "required":[
+        "eventId",
+        "eventTimestamp"
+      ],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The event's ID.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The event's metadata tags, as supplied to <code>CreateEvent</code>. May be empty.</p>"
+        },
+        "eventTimestamp":{
+          "shape":"EventTimestamp",
+          "documentation":"<p>The time the event occurred.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an event, as returned by <code>ListEvents</code>. It doesn't include the payload.</p>"
+    },
+    "EventSummaryList":{
+      "type":"list",
+      "member":{"shape":"EventSummary"},
+      "documentation":"<p>A list of event summaries.</p>"
+    },
+    "EventTimestamp":{
+      "type":"timestamp",
+      "documentation":"<p>The time of an event or memory.</p>",
+      "timestampFormat":"iso8601"
+    },
+    "ExtractionModelId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9._:-]*"
+    },
+    "ExtractionPrompt":{
+      "type":"string",
+      "max":30720,
+      "min":1,
+      "sensitive":true
+    },
+    "GetEventInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "eventId"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The event's ID, as returned by <code>CreateEvent</code>, <code>ListEvents</code>, or <code>SearchEvents</code>.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The actor the event must belong to. Omit it to skip this check. If it doesn't match the stored event, the call fails with <code>ResourceNotFoundException</code>, as if the event did not exist.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session the event must belong to. Omit it to skip this check. If it doesn't match the stored event, the call fails with <code>ResourceNotFoundException</code>, as if the event did not exist.</p>"
+        }
+      }
+    },
+    "GetEventOutput":{
+      "type":"structure",
+      "required":["event"],
+      "members":{
+        "event":{
+          "shape":"Event",
+          "documentation":"<p>The event, including its payload.</p>"
+        }
+      }
+    },
+    "GetMemoryInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "memoryId"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space that holds the memory.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The memory's ID, as returned by <code>SearchMemories</code> or <code>ListMemories</code>.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The ID of the actor the memory must belong to. Omit it to skip this check. If it doesn't match the stored memory, the call fails with <code>ResourceNotFoundException</code>, as if the memory did not exist.</p>"
+        },
+        "strategyName":{
+          "shape":"StrategyName",
+          "documentation":"<p>The name of the strategy the memory must belong to. Omit it to skip this check. If it doesn't match the stored memory, the call fails with <code>ResourceNotFoundException</code>, as if the memory did not exist.</p>"
+        }
+      }
+    },
+    "GetMemoryOutput":{
+      "type":"structure",
+      "required":["memory"],
+      "members":{
+        "memory":{
+          "shape":"Memory",
+          "documentation":"<p>The memory. Always present: a memory that doesn't exist returns <code>ResourceNotFoundException</code>.</p>"
+        }
+      }
+    },
+    "GetSpaceRequest":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        }
+      }
+    },
+    "GetSpaceResponse":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "arn",
+        "name",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "arn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the space.</p>"
+        },
+        "name":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "status":{
+          "shape":"SpaceStatus",
+          "documentation":"<p>The status of the space.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Details about why the space is <code>FAILED</code>. Read it only when <code>status</code> is <code>FAILED</code>: it can still hold the reason for an earlier failure.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the space was created.</p>"
+        },
+        "memoryStrategies":{
+          "shape":"MemoryStrategyList",
+          "documentation":"<p>The space's memory strategies, including the names the service generated for strategies created without one. Empty for a space that has no memory strategies.</p>"
+        },
+        "eventExpiryDays":{
+          "shape":"EventExpiryDays",
+          "documentation":"<p>How many days the space keeps each event. Absent when it was never set, in which case the default of 90 days applies.</p>"
+        },
+        "memoryExpiryDays":{
+          "shape":"MemoryExpiryDays",
+          "documentation":"<p>How many days the space keeps each memory. 0 means memories never expire. Absent when it was never set, in which case memories never expire.</p>"
+        },
+        "extractionModelId":{
+          "shape":"ExtractionModelId",
+          "documentation":"<p>The model that extracts and consolidates memories for the space. Absent when it was never set, in which case the service default applies.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The AWS KMS key the space was created with. Absent when the space uses an AWS owned key.</p>"
+        }
+      }
+    },
+    "IdleTimeoutSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":86400,
+      "min":1
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the internal error.</p>"
+        }
+      },
+      "documentation":"<p>The service couldn't process the request because of an internal error. Retry the request.</p>",
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "ListEventsInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "actorId",
+        "sessionId"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The actor whose events to list.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session whose events to list. To find events across sessions, use <code>SearchEvents</code>.</p>"
+        },
+        "eventTimestampBefore":{
+          "shape":"EventTimestamp",
+          "documentation":"<p>Inclusive upper bound on <code>eventTimestamp</code>: only events at or before this time are returned. Omit for no upper bound.</p>"
+        },
+        "eventTimestampAfter":{
+          "shape":"EventTimestamp",
+          "documentation":"<p>Inclusive lower bound on <code>eventTimestamp</code>: only events at or after this time are returned. Omit for no lower bound.</p> <p>If it's later than <code>eventTimestampBefore</code>, the request fails with <code>ValidationException</code>.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order of the results by <code>eventTimestamp</code>: <code>ASC</code> or <code>DESC</code>. The default is <code>DESC</code>, most recent first.</p>"
+        },
+        "metadataFilters":{
+          "shape":"MetadataMap",
+          "documentation":"<p>Returns only events whose metadata contains every one of these key-value pairs. Omit, or leave empty, for no metadata filter. The service applies the filter after it reads events, so a page can hold fewer than <code>maxResults</code> events, or none, and still return a <code>nextToken</code>. Keep paging until <code>nextToken</code> is absent.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of events to return, from 1 to 100. The default is 20.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListEventsOutput":{
+      "type":"structure",
+      "required":["events"],
+      "members":{
+        "events":{
+          "shape":"EventSummaryList",
+          "documentation":"<p>The events, without their payloads. Call <code>GetEvent</code> for an event's payload.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "ListMemoriesInput":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The space whose memories to list.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "memoryStrategies":{
+          "shape":"StrategySelectorList",
+          "documentation":"<p>The strategies to list, as selectors. A selector without <code>memoryStrategyNames</code> lists every strategy of its type, and omitting <code>memoryStrategies</code> lists every strategy in the space. A name that is not a declared strategy of that type fails with <code>ValidationException</code>.</p>"
+        },
+        "actorIds":{
+          "shape":"ActorIdList",
+          "documentation":"<p>Lists only memories owned by one of these actors. Combined with <code>sessionIds</code> by AND: a memory must match both filters when both are given. Omit for no actor filter. An empty list fails validation. A memory stored without an actor never matches an actor filter.</p>"
+        },
+        "sessionIds":{
+          "shape":"SessionIdList",
+          "documentation":"<p>Lists only memories from one of these sessions. Combined with <code>actorIds</code> by AND. Omit for no session filter. An empty list fails validation. A memory stored without a session never matches a session filter.</p>"
+        },
+        "sortBy":{
+          "shape":"MemorySortField",
+          "documentation":"<p>The timestamp to sort by, as returned in <code>systemMetadata</code>: <code>CREATED_AT</code> (the default) or <code>UPDATED_AT</code>.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order: <code>ASC</code> or <code>DESC</code>. The default is <code>DESC</code>, most recent first.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of memories to return, from 1 to 100. The default is 20.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListMemoriesOutput":{
+      "type":"structure",
+      "required":["memories"],
+      "members":{
+        "memories":{
+          "shape":"MemoryListSummaryList",
+          "documentation":"<p>The memories, in the requested order. Empty when there are none.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "ListSpacesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of spaces to return, from 1 to 100. The default is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListSpacesResponse":{
+      "type":"structure",
+      "required":["spaces"],
+      "members":{
+        "spaces":{
+          "shape":"SpaceSummaryList",
+          "documentation":"<p>The spaces.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the space.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags for the space.</p>"
+        }
+      }
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "Memory":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "memoryType",
+        "content",
+        "systemMetadata"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The memory's ID, assigned by the service.</p>"
+        },
+        "memoryType":{
+          "shape":"MemoryType",
+          "documentation":"<p>The memory type.</p>"
+        },
+        "strategyName":{
+          "shape":"StrategyName",
+          "documentation":"<p>The name of the strategy the memory belongs to, for example <code>user-facts</code>. A space can hold several strategies of the same type, so this tells them apart. Absent when the memory's strategy is no longer declared on the space, for example right after the strategy is deleted.</p>"
+        },
+        "content":{
+          "shape":"SensitiveContent",
+          "documentation":"<p>The memory text.</p>"
+        },
+        "systemMetadata":{
+          "shape":"SystemMetadata",
+          "documentation":"<p>Provenance for the memory: the owning actor and session, and when it was created and last updated. Always present. <code>updatedAt</code> equals <code>createdAt</code> for a memory that has never been updated.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The memory's metadata tags. All values are strings. May be empty.</p>"
+        }
+      },
+      "documentation":"<p>A memory, as returned by <code>GetMemory</code> and <code>UpdateMemory</code>. Unlike <code>MemoryListSummary</code> it includes <code>content</code>, and unlike <code>MemorySearchSummary</code> it has no relevance score.</p>"
+    },
+    "MemoryExpiryDays":{
+      "type":"integer",
+      "box":true,
+      "max":3650,
+      "min":0
+    },
+    "MemoryId":{
+      "type":"string",
+      "documentation":"<p>A memory ID assigned by the service, for example <code>mem-&lt;uuid&gt;</code>. IDs are opaque and can contain hyphens (<code>-</code>) and underscores (<code>_</code>).</p>",
+      "max":128,
+      "min":1
+    },
+    "MemoryListSummary":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "memoryType",
+        "systemMetadata"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The memory's ID, assigned by the service. IDs are opaque, can contain hyphens and underscores, and can be up to 512 characters long.</p>"
+        },
+        "memoryType":{
+          "shape":"MemoryType",
+          "documentation":"<p>The memory type.</p>"
+        },
+        "strategyName":{
+          "shape":"StrategyName",
+          "documentation":"<p>The name of the strategy the memory belongs to, for example <code>user-facts</code>: the strategy <code>memoryStrategies</code> selects on in <code>ListMemories</code>. Absent when the memory's strategy is no longer declared on the space, for example right after the strategy is deleted.</p>"
+        },
+        "systemMetadata":{
+          "shape":"SystemMetadata",
+          "documentation":"<p>Provenance for the memory: the owning actor and session, and when it was created and last updated. Always present, with both timestamps.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The memory's metadata tags. All values are strings.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a memory, as returned by <code>ListMemories</code>: its ID, type, provenance, and tags. It doesn't include <code>content</code>. Call <code>GetMemory</code> for the full memory.</p>"
+    },
+    "MemoryListSummaryList":{
+      "type":"list",
+      "member":{"shape":"MemoryListSummary"},
+      "documentation":"<p>A list of memory summaries.</p>"
+    },
+    "MemorySearchSummary":{
+      "type":"structure",
+      "required":["memoryId"],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The memory's ID, assigned by the service. Always present.</p>"
+        },
+        "memoryType":{
+          "shape":"MemoryType",
+          "documentation":"<p>The memory type of the result.</p>"
+        },
+        "strategyName":{
+          "shape":"StrategyName",
+          "documentation":"<p>The name of the strategy the memory belongs to, for example <code>user-facts</code>: the strategy <code>memoryStrategies</code> selects on in <code>SearchMemories</code>. Absent when the memory's strategy is no longer declared on the space, for example right after the strategy is deleted.</p>"
+        },
+        "content":{
+          "shape":"SensitiveContent",
+          "documentation":"<p>The memory text.</p>"
+        },
+        "score":{
+          "shape":"Double",
+          "documentation":"<p>The relevance score of the result. A higher score is more relevant. Scores aren't normalized to a fixed range and can be greater than 1, so use them only to order results.</p>"
+        },
+        "systemMetadata":{
+          "shape":"SystemMetadata",
+          "documentation":"<p>Provenance for the memory: the actor and session that own it, and when it was created and last updated. It is the same block that <code>ListMemories</code>, <code>GetMemory</code>, and <code>SearchEvents</code> return.</p> <p>In a query, filter or sort on the timestamps as <code>system_metadata.created_at</code> and <code>system_metadata.updated_at</code>. Scope by owner with the top-level <code>actorId</code>, not in the query. Searching memories doesn't filter by session.</p> <p>Absent when the service has no provenance for the memory.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The memory's metadata tags. All values are strings. In a query, filter on a tag as <code>metadata.&lt;key&gt;</code>.</p>"
+        },
+        "sourceEventIds":{
+          "shape":"SourceEventIdList",
+          "documentation":"<p>The IDs of the events the memory was derived from, without duplicates. Use them with <code>GetEvent</code> or <code>BatchGetEvent</code>, or to search those events' content with <code>SearchEvents</code> by filtering on <code>event_ids</code> in the query. Absent for a memory created directly with <code>CreateMemory</code>. A memory can be derived from several events. The service sets this value.</p>"
+        }
+      },
+      "documentation":"<p>A <code>SearchMemories</code> result: a matching memory and its relevance score.</p>"
+    },
+    "MemorySearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"MemorySearchSummary"},
+      "documentation":"<p>A list of <code>SearchMemories</code> results.</p>"
+    },
+    "MemorySortField":{
+      "type":"string",
+      "documentation":"<p>The timestamp that <code>ListMemories</code> sorts by.</p>",
+      "enum":[
+        "CREATED_AT",
+        "UPDATED_AT"
+      ]
+    },
+    "MemoryStrategy":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"MemoryStrategyType",
+          "documentation":"<p>The type of memory the strategy extracts.</p>"
+        },
+        "name":{
+          "shape":"MemoryStrategyName",
+          "documentation":"<p>A name for the strategy, unique within the space. Omit it to have the service generate one from the type, for example <code>semantic_1</code>. The name must be 1 to 64 characters: letters, digits, periods, hyphens, and underscores, starting with a letter or digit. A strategy's name can't be changed, and the strategy's memories are stored under it: a strategy added under a new name starts with no memories.</p>"
+        },
+        "description":{
+          "shape":"MemoryStrategyDescription",
+          "documentation":"<p>A description of the strategy.</p>"
+        },
+        "configuration":{
+          "shape":"MemoryStrategyConfiguration",
+          "documentation":"<p>Settings for the strategy. When you create a strategy, omit it to use the defaults for the strategy's type.</p> <p>A <code>CUSTOM</code> strategy must set <code>extractionPrompt</code>.</p>"
+        }
+      },
+      "documentation":"<p>A memory strategy: how a space extracts one kind of memory from its events.</p>"
+    },
+    "MemoryStrategyConfiguration":{
+      "type":"structure",
+      "members":{
+        "extractionPrompt":{
+          "shape":"ExtractionPrompt",
+          "documentation":"<p>Instructions that define what a <code>CUSTOM</code> strategy extracts, up to 30,720 characters. Required for a <code>CUSTOM</code> strategy: <code>CreateSpace</code> and <code>UpdateSpace</code> fail with <code>ValidationException</code> if a <code>CUSTOM</code> strategy has none.</p> <p>Only <code>CUSTOM</code> strategies use it. <code>SEMANTIC</code> and <code>SUMMARY</code> strategies always extract with the service's built-in instructions: the service accepts and stores a prompt on them, and <code>GetSpace</code> returns it, but extraction doesn't use it.</p>"
+        },
+        "extractEveryNMessages":{
+          "shape":"TriggerEveryNMessages",
+          "documentation":"<p>Extract once this many messages have accumulated, from 1 to 1000. Lower values extract more often, in smaller batches. The default is 12.</p> <p>Messages accumulate until the first of <code>extractEveryNMessages</code>, <code>extractEveryNTokens</code>, and <code>idleTimeoutSeconds</code> is reached. The service then extracts them together in one pass.</p>"
+        },
+        "extractEveryNTokens":{
+          "shape":"TokenCount",
+          "documentation":"<p>Extract once this many tokens of conversation have accumulated, from 1 to 80,000, however few messages that takes. Use it to bound how much text one extraction call carries when message sizes vary widely. Omit it to bound a batch only by <code>extractEveryNMessages</code>, <code>idleTimeoutSeconds</code>, and the service's maximum batch size.</p>"
+        },
+        "idleTimeoutSeconds":{
+          "shape":"IdleTimeoutSeconds",
+          "documentation":"<p>Extract what has accumulated once the conversation has been idle for this many seconds, from 1 to 86,400. The default is 60. This is what extracts the end of a conversation that stops. Raise it when the pauses in your conversations are longer than that, so that one exchange isn't split across several extraction passes.</p>"
+        },
+        "extractionSeedTopK":{
+          "shape":"SeedMemoryCount",
+          "documentation":"<p>How many of the strategy's stored memories that are most relevant to the conversation to include in the extraction prompt, from 0 to 20, to improve extraction and reduce duplicates. If you omit this or set it to 0, the service uses its default (see <code>extractionSeedRecentN</code>). When this and <code>extractionSeedRecentN</code> are both set, the two sets of memories are combined without duplicates.</p>"
+        },
+        "extractionSeedRecentN":{
+          "shape":"SeedMemoryCount",
+          "documentation":"<p>How many of the strategy's most recent stored memories to include in the extraction prompt, from 0 to 20. If you omit this or set it to 0, the service uses its default: no seeding for most strategy types, and the 10 most recent memories for a <code>SUMMARY</code> strategy when neither seed setting is given. When this and <code>extractionSeedTopK</code> are both set, the two sets of memories are combined without duplicates.</p>"
+        },
+        "consolidationEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the strategy consolidates memories. With consolidation, each new memory is compared with similar stored memories, and the service adds it, updates a stored memory, or skips it, so duplicate or contradicting facts don't accumulate. Without it, every extracted memory is stored as a new memory, which costs less and keeps a full history.</p> <p>When omitted, the default depends on the strategy's type: on for <code>SEMANTIC</code> and <code>SUMMARY</code>, off for <code>CUSTOM</code>.</p>"
+        }
+      },
+      "documentation":"<p>Settings for a memory strategy. The defaults described here apply when you create a strategy. In <code>UpdateSpace</code>, a member you omit for a kept strategy keeps its current value.</p>"
+    },
+    "MemoryStrategyDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "MemoryStrategyList":{
+      "type":"list",
+      "member":{"shape":"MemoryStrategy"},
+      "documentation":"<p>A list of up to 10 memory strategies. <code>CreateSpace</code> accepts an empty list. <code>UpdateSpace</code> doesn't.</p>",
+      "max":10,
+      "min":0
+    },
+    "MemoryStrategyName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9_.-]*"
+    },
+    "MemoryStrategyType":{
+      "type":"string",
+      "documentation":"<p>The type of memory a strategy extracts.</p>",
+      "enum":[
+        "SEMANTIC",
+        "SUMMARY",
+        "CUSTOM"
+      ]
+    },
+    "MemoryType":{
+      "type":"string",
+      "documentation":"<p>The type of a memory. Matches the type of the memory strategy that produced it.</p>",
+      "enum":[
+        "SEMANTIC",
+        "SUMMARY",
+        "CUSTOM"
+      ]
+    },
+    "MemoryUpdateContent":{
+      "type":"string",
+      "documentation":"<p>Replacement text for a memory, at most about 6,000 tokens. It must not be blank and must be well-formed Unicode. Longer text fails with <code>ValidationException</code>.</p>",
+      "max":16000,
+      "min":1,
+      "sensitive":true
+    },
+    "Message":{
+      "type":"structure",
+      "required":[
+        "role",
+        "content"
+      ],
+      "members":{
+        "role":{
+          "shape":"MessageRole",
+          "documentation":"<p>The author of the turn.</p>"
+        },
+        "content":{
+          "shape":"MessageContent",
+          "documentation":"<p>The content of the turn.</p>"
+        }
+      },
+      "documentation":"<p>A conversation turn.</p>"
+    },
+    "MessageContent":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"MessageText",
+          "documentation":"<p>The text of the turn.</p>"
+        }
+      },
+      "documentation":"<p>The content of a conversation turn.</p>"
+    },
+    "MessageList":{
+      "type":"list",
+      "member":{"shape":"Message"},
+      "documentation":"<p>Ordered conversation turns for a single event.</p>",
+      "max":100,
+      "min":1
+    },
+    "MessageRole":{
+      "type":"string",
+      "documentation":"<p>The author of a turn.</p>",
+      "enum":[
+        "USER",
+        "ASSISTANT",
+        "SYSTEM"
+      ]
+    },
+    "MessageText":{
+      "type":"string",
+      "documentation":"<p>The text of a single turn. It must be well-formed Unicode: text that contains an unpaired UTF-16 surrogate fails with <code>ValidationException</code>.</p> <p>There is no separate limit for one turn. A single turn can use the whole event limit of 5 MiB of UTF-8 text across all turns, and the service splits long turns itself.</p>",
+      "max":5242880,
+      "min":1,
+      "sensitive":true
+    },
+    "MetadataKey":{
+      "type":"string",
+      "documentation":"<p>A metadata key: letters, digits, hyphens (<code>-</code>), and underscores (<code>_</code>). Dots are not allowed, because a query uses dots to separate nested field names.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "MetadataMap":{
+      "type":"map",
+      "key":{"shape":"MetadataKey"},
+      "value":{"shape":"MetadataValue"},
+      "documentation":"<p>Metadata tags: key-value pairs that you attach to an event or memory.</p> <p>A space can use at most 50 distinct metadata keys across all of its events and memories. A request that would add a key beyond that fails with <code>ValidationException</code>. Reuse an existing key instead.</p>",
+      "max":15,
+      "min":0
+    },
+    "MetadataMode":{
+      "type":"string",
+      "documentation":"<p>How an <code>UpdateMemory</code> request's <code>metadata</code> combines with the stored metadata. The default is <code>REPLACE</code>.</p>",
+      "enum":[
+        "REPLACE",
+        "MERGE"
+      ]
+    },
+    "MetadataValue":{
+      "type":"string",
+      "documentation":"<p>The value of a metadata entry.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s._:\\/=+@-]*"
+    },
+    "NextToken":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "PaginationToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes which resource wasn't found.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource that wasn't found.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that wasn't found.</p>"
+        }
+      },
+      "documentation":"<p>The specified resource doesn't exist. Check the IDs in the request.</p>",
+      "exception":true
+    },
+    "S3Location":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"S3LocationUriString",
+          "documentation":"<p>The object's S3 URI, for example <code>s3://bucket/key</code>. The bucket must be in the space's Region. You need <code>s3:GetObject</code> on the object, and <code>kms:Decrypt</code> on its key if the object uses SSE-KMS. The event doesn't store the object itself.</p>"
+        }
+      },
+      "documentation":"<p>An object in Amazon S3.</p>"
+    },
+    "S3LocationUriString":{
+      "type":"string",
+      "max":1024,
+      "min":5,
+      "pattern":"s3://[a-z0-9][a-z0-9.\\-]{1,61}[a-z0-9]/.+"
+    },
+    "SearchEventsInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "actorId",
+        "query"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The space whose events to search. Use <code>actorId</code> and <code>sessionIds</code> to narrow the search within it.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The actor whose events to search (exact match). Required: every search covers exactly one actor, and an event stored without an actor is never returned. Narrow the search further with <code>sessionIds</code>, combined by AND. This is the only way to filter by actor: a query that references <code>system_metadata.actor_id</code> fails with <code>ValidationException</code> (reason <code>nonFilterableField</code>).</p>"
+        },
+        "sessionIds":{
+          "shape":"SessionIdList",
+          "documentation":"<p>Returns only events from one of these sessions (exact match). Combined with <code>actorId</code> by AND. Omit for no session filter. An empty list fails validation. An event stored without a session never matches a session filter. This is the only way to filter by session: a query that references <code>system_metadata.session_id</code> fails with <code>ValidationException</code> (reason <code>nonFilterableField</code>).</p>"
+        },
+        "query":{
+          "shape":"SearchQuery",
+          "documentation":"<p>The query: a subset of the OpenSearch Query DSL (see <code>SearchQuery</code>), validated by the same rules as on <code>SearchMemories</code>. Query event text as <code>text</code> and embeddings as <code>vector</code>. A search covers both conversation turns and chunks of documents submitted as a <code>blob</code>. You can't use actor and session fields here. Use the top-level <code>actorId</code> and <code>sessionIds</code>.</p> <p>To search only the content of particular events, filter on <code>event_ids</code> with <code>term</code> or <code>terms</code>, for example with the <code>sourceEventIds</code> that a <code>SearchMemories</code> result returns. A <code>terms</code> clause on <code>event_ids</code> can list up to 10 event IDs. More IDs fail with <code>ValidationException</code> (reason <code>queryBodyTooLarge</code>). You can use <code>event_ids</code> only in <code>term</code>, <code>terms</code>, and <code>exists</code> queries.</p>"
+        },
+        "sort":{
+          "shape":"SearchSort",
+          "documentation":"<p>The sort order (see <code>SearchSort</code>). Omit to return the most relevant events first.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of events to return, from 1 to 100. The default is 20.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "SearchEventsOutput":{
+      "type":"structure",
+      "required":["events"],
+      "members":{
+        "events":{
+          "shape":"EventSearchSummaryList",
+          "documentation":"<p>The matching event chunks, in the order <code>sort</code> requests, or most relevant first when it has none. Empty when nothing matches. Each result is the matching chunk of an event. Call <code>GetEvent</code> for the whole event.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "SearchMemoriesInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "actorId",
+        "query"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The space to search. Use <code>actorId</code> to narrow the search within it.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "memoryStrategies":{
+          "shape":"StrategySelectorList",
+          "documentation":"<p>The strategies to search, as a list of selectors. Each selector names a memory type and, optionally, specific strategy names of that type. A space can hold several strategies of the same type. A selector without <code>memoryStrategyNames</code> searches every strategy of its type, and omitting <code>memoryStrategies</code> searches every strategy in the space. A name that is not a declared strategy of that type fails with <code>ValidationException</code>.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The actor whose memories to search (exact match). Required: every search covers exactly one actor, and a memory stored without an actor is never returned. This is the only way to filter by actor: a query that references <code>system_metadata.actor_id</code> fails with <code>ValidationException</code> (reason <code>nonFilterableField</code>).</p>"
+        },
+        "query":{
+          "shape":"SearchQuery",
+          "documentation":"<p>The query: a subset of the OpenSearch Query DSL (see <code>SearchQuery</code>). You can't use the actor and session fields <code>system_metadata.actor_id</code> and <code>system_metadata.session_id</code> here. Use the top-level <code>actorId</code> to filter by actor. Searching memories doesn't filter by session.</p>"
+        },
+        "sort":{
+          "shape":"SearchSort",
+          "documentation":"<p>The sort order (see <code>SearchSort</code>). Omit to return the most relevant memories first.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of memories to return, from 1 to 100. The default is 20.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "SearchMemoriesOutput":{
+      "type":"structure",
+      "required":["memories"],
+      "members":{
+        "memories":{
+          "shape":"MemorySearchSummaryList",
+          "documentation":"<p>The matching memories, in the order <code>sort</code> requests, or most relevant first when it has none. Empty when nothing matches.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "SearchQuery":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A query clause in OpenSearch Query DSL (the value of an OpenSearch <code>query</code>). The service accepts a subset of query types whose cost is bounded and rejects anything else with <code>ValidationException</code>. In <code>SearchMemories</code>, query memory text as <code>memory_text</code> and embeddings as <code>memory_vector</code>. In <code>SearchEvents</code>, use <code>text</code> and <code>vector</code>. Supported: <code>match</code>, <code>match_phrase</code>, <code>match_all</code>, <code>term</code>, <code>terms</code>, <code>ids</code>, <code>exists</code>, <code>range</code> (on <code>system_metadata.created_at</code> and <code>system_metadata.updated_at</code> only), <code>neural</code>, <code>hybrid</code>, <code>bool</code>, <code>constant_score</code>, <code>boosting</code>, and <code>function_score</code> (decay functions on the time fields only). The service doesn't support aggregations, highlight, or rescore. If <code>query</code> and <code>sort</code> together are larger than 64 KB, the request fails with <code>ValidationException</code> (reason <code>queryBodyTooLarge</code>).</p> <p>A query can use at most one distinct neural <code>query_text</code>. Repeating the same text is allowed. A <code>bool</code> query can nest at most 5 levels. The whole query can contain at most 32 clauses, counting <code>function_score</code> functions. <code>terms</code> and <code>ids</code> take at most 100 values, and <code>function_score</code> takes at most 3 decay functions. A second distinct neural <code>query_text</code>, more than 32 clauses, too many values, or too many decay functions fails with <code>ValidationException</code> (reason <code>queryBodyTooLarge</code>). A query text longer than 2,048 characters, or a <code>neural</code> <code>k</code> over 100, fails with reason <code>fieldValidationFailed</code>. A <code>bool</code> query nested more than 5 levels fails with reason <code>queryNestingTooDeep</code>.</p> <p>In <code>range</code> and decay functions, give <code>system_metadata.created_at</code> and <code>system_metadata.updated_at</code> values as ISO 8601 strings such as <code>2026-06-01T00:00:00Z</code>, as epoch milliseconds, or as date math such as <code>now-30d</code>.</p>",
+      "document":true,
+      "sensitive":true
+    },
+    "SearchSort":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A sort clause in OpenSearch Query DSL (the value of an OpenSearch <code>sort</code>): a field name, <code>{\"field\": \"asc\"|\"desc\"}</code>, <code>{\"field\": {\"order\": \"asc\"|\"desc\"}}</code>, or an array of these. Sorting is supported on <code>_score</code>, <code>system_metadata.created_at</code>, and <code>system_metadata.updated_at</code>.</p>",
+      "document":true,
+      "sensitive":true
+    },
+    "SeedMemoryCount":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":0
+    },
+    "SensitiveContent":{
+      "type":"string",
+      "documentation":"<p>Free-text memory content.</p>",
+      "max":40000,
+      "min":0,
+      "sensitive":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes which quota the request would exceed.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The Service Quotas code of the quota that the request would exceed. Not currently returned.</p>"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The Service Quotas code of the service. Not currently returned.</p>"
+        }
+      },
+      "documentation":"<p>The request would exceed a quota, such as the number of spaces in your account or the number of strategies in a space.</p>",
+      "exception":true
+    },
+    "SessionId":{
+      "type":"string",
+      "documentation":"<p>The ID of a session, which groups an actor's events.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
+    "SessionIdList":{
+      "type":"list",
+      "member":{"shape":"SessionId"},
+      "documentation":"<p>A list of 1 to 10 session IDs. A memory or event matches when it belongs to any of them.</p>",
+      "max":10,
+      "min":1
+    },
+    "SortOrder":{
+      "type":"string",
+      "documentation":"<p>Sort direction for time-ordered listings.</p>",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "SourceEventIdList":{
+      "type":"list",
+      "member":{"shape":"EventId"},
+      "documentation":"<p>The IDs of the events a memory was derived from.</p>",
+      "max":100,
+      "min":0
+    },
+    "SpaceArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws:osm:[a-z0-9-]+:[0-9]{12}:space/sp-[a-f0-9]{12}"
+    },
+    "SpaceId":{
+      "type":"string",
+      "documentation":"<p>The ID of a space: <code>sp-</code> followed by 12 lowercase hexadecimal characters.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"sp-[a-f0-9]{12}"
+    },
+    "SpaceName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9 _-]*"
+    },
+    "SpaceStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a space.</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "DELETED",
+        "FAILED"
+      ]
+    },
+    "SpaceSummary":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "arn",
+        "name",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "arn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the space.</p>"
+        },
+        "name":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "status":{
+          "shape":"SpaceStatus",
+          "documentation":"<p>The status of the space.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the space was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a space, as returned by <code>ListSpaces</code>.</p>"
+    },
+    "SpaceSummaryList":{
+      "type":"list",
+      "member":{"shape":"SpaceSummary"},
+      "documentation":"<p>A list of space summaries.</p>"
+    },
+    "StrategyName":{
+      "type":"string",
+      "documentation":"<p>The name of a strategy declared on a space, for example <code>user-facts</code>. Names are case-sensitive and must match the declared name exactly.</p>",
+      "max":255,
+      "min":1
+    },
+    "StrategyNameList":{
+      "type":"list",
+      "member":{"shape":"StrategyName"},
+      "documentation":"<p>A list of 1 to 20 strategy names.</p>",
+      "max":20,
+      "min":1
+    },
+    "StrategySelector":{
+      "type":"structure",
+      "required":["memoryType"],
+      "members":{
+        "memoryType":{
+          "shape":"MemoryType",
+          "documentation":"<p>The memory type to search or list.</p>"
+        },
+        "memoryStrategyNames":{
+          "shape":"StrategyNameList",
+          "documentation":"<p>Specific strategy names of <code>memoryType</code>. Omit it to include every strategy of that type.</p>"
+        }
+      },
+      "documentation":"<p>A memory type and, optionally, specific strategy names of that type. A space can hold several strategies of the same type, so the type and its names are given together.</p>"
+    },
+    "StrategySelectorList":{
+      "type":"list",
+      "member":{"shape":"StrategySelector"},
+      "documentation":"<p>A list of 1 to 5 strategy selectors. Omit the list to use every strategy in the space. An empty list fails validation.</p>",
+      "max":5,
+      "min":1
+    },
+    "String":{"type":"string"},
+    "StructuredDataPayload":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "source":{
+          "shape":"StructuredDataSource",
+          "documentation":"<p>The structured content.</p>"
+        }
+      },
+      "documentation":"<p>Structured content, as a JSON object.</p>"
+    },
+    "StructuredDataSource":{
+      "type":"structure",
+      "members":{
+        "json":{
+          "shape":"Document",
+          "documentation":"<p>The structured content, as a JSON object of at most 1 MiB when serialized as UTF-8, nested at most 10 levels deep.</p>"
+        }
+      },
+      "documentation":"<p>The source of structured content. Set exactly one member. Currently, the only member is <code>json</code>.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "SystemMetadata":{
+      "type":"structure",
+      "members":{
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The owning actor. Absent when none was recorded.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The owning session. Absent when none was recorded.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>When the record was created. Always present on <code>ListMemories</code> and <code>GetMemory</code>. It can be absent from search results.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>When the record was last updated. Equals <code>createdAt</code> for a record that has never been updated, and always for a <code>SearchEvents</code> result.</p>"
+        }
+      },
+      "documentation":"<p>System-generated provenance for a memory or event: the owning actor and session, and the creation and last-update timestamps. <code>SearchMemories</code>, <code>SearchEvents</code>, <code>ListMemories</code>, and <code>GetMemory</code> return the same block.</p> <p> <code>ListMemories</code> and <code>GetMemory</code> always return <code>createdAt</code> and <code>updatedAt</code>. The search operations return what is recorded and omit the block when nothing is.</p> <p>In a query, the timestamps are <code>system_metadata.created_at</code> and <code>system_metadata.updated_at</code>. Scope by owner with the top-level parameters (<code>actorId</code> on the search operations, <code>actorIds</code> on <code>ListMemories</code>) and <code>sessionIds</code> (<code>SearchEvents</code> and <code>ListMemories</code>). The search operations reject actor and session fields inside the query or sort.</p>"
+    },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the tag.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the tag.</p>"
+        }
+      },
+      "documentation":"<p>A tag: a key-value pair that you attach to a space.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "documentation":"<p>A list of tag keys.</p>",
+      "max":200,
+      "min":0
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "documentation":"<p>A list of tags.</p>",
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the space.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to add to the space.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the throttling.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before you retry the request.</p>"
+        }
+      },
+      "documentation":"<p>The service throttled the request. Retry the request with exponential backoff.</p>",
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "TokenCount":{
+      "type":"integer",
+      "box":true,
+      "max":80000,
+      "min":1
+    },
+    "TriggerEveryNMessages":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "UnifiedConversational":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "source":{
+          "shape":"UnifiedConversationalSource",
+          "documentation":"<p>The conversation.</p>"
+        }
+      },
+      "documentation":"<p>Conversation turns in the service's own format.</p>"
+    },
+    "UnifiedConversationalObject":{
+      "type":"structure",
+      "required":["messages"],
+      "members":{
+        "messages":{
+          "shape":"MessageList",
+          "documentation":"<p>The conversation turns, in order. The order matters for extraction.</p>"
+        }
+      },
+      "documentation":"<p>Conversation turns.</p>"
+    },
+    "UnifiedConversationalSource":{
+      "type":"structure",
+      "members":{
+        "object":{
+          "shape":"UnifiedConversationalObject",
+          "documentation":"<p>The conversation turns.</p>"
+        }
+      },
+      "documentation":"<p>The source of a conversation. Set exactly one member. Currently, the only member is <code>object</code>.</p>",
+      "union":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the space.</p>"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The keys of the tags to remove from the space.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateMemoryInput":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "memoryId"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space that owns the memory, for example <code>sp-02864597b164</code>.</p>",
+          "contextParam":{"name":"SpaceId"}
+        },
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The ID of the memory to update.</p>"
+        },
+        "content":{
+          "shape":"MemoryUpdateContent",
+          "documentation":"<p>Replacement memory text. Supplying it re-embeds the memory. Omit to leave the text unchanged.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The metadata tags to apply. By default this map replaces the stored metadata, and any key not present is removed. Set <code>metadataMode</code> to <code>MERGE</code> to keep the keys you don't supply. Limits apply to the resulting metadata, not to the request. Keys that begin with <code>x-amz-</code> and the key <code>documentS3Source</code> are reserved: a request that sets one fails with <code>ValidationException</code>.</p> <p>A space can use at most 50 distinct metadata keys across all of its events and memories. A request that would add a key beyond that fails with <code>ValidationException</code>. Reuse an existing key instead.</p>"
+        },
+        "metadataMode":{
+          "shape":"MetadataMode",
+          "documentation":"<p>How <code>metadata</code> combines with what is stored. The default is <code>REPLACE</code>.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The ID of the actor that the memory must belong to. Omit it to skip this check. If it doesn't match the stored memory, the call fails with <code>ResourceNotFoundException</code>, as if the memory did not exist.</p>"
+        },
+        "strategyName":{
+          "shape":"StrategyName",
+          "documentation":"<p>The name of the strategy that the memory must belong to. Omit it to skip this check. If it doesn't match the stored memory, the call fails with <code>ResourceNotFoundException</code>, as if the memory did not exist.</p>"
+        }
+      }
+    },
+    "UpdateMemoryOutput":{
+      "type":"structure",
+      "required":["memory"],
+      "members":{
+        "memory":{
+          "shape":"Memory",
+          "documentation":"<p>The updated memory, in the same shape that <code>GetMemory</code> returns.</p>"
+        }
+      }
+    },
+    "UpdateSpaceRequest":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space to update.</p>"
+        },
+        "memoryStrategies":{
+          "shape":"MemoryStrategyList",
+          "documentation":"<p>The complete new list of memory strategies. The service removes strategies that aren't in the list from the space. Removing a strategy stops extraction for it but doesn't delete its memories: they're kept, until they expire if the space sets <code>memoryExpiryDays</code>, and they're available again if you later add a strategy with the same <code>type</code> and <code>name</code>. To delete them, use <code>DeleteMemory</code> before you remove the strategy, or delete the space.</p> <p>To keep a strategy, include it with the same <code>type</code> and <code>name</code> that <code>GetSpace</code> returns. For a kept strategy, any <code>configuration</code> member you omit keeps its current value. It doesn't return to the default, and you can't clear a member once it's set. Omit this field to leave the strategies unchanged. The list must name at least one strategy. You can't remove every strategy from a space with <code>UpdateSpace</code>.</p> <p>The serialized list can be at most 384 KiB.</p>"
+        },
+        "eventExpiryDays":{
+          "shape":"EventExpiryDays",
+          "documentation":"<p>How many days the space keeps each event, from 1 to 365. Omit it to leave the current value unchanged. Events already stored keep the expiry they were written with.</p>"
+        },
+        "memoryExpiryDays":{
+          "shape":"MemoryExpiryDays",
+          "documentation":"<p>How many days the space keeps each memory, from 0 to 3650. 0 means memories never expire. Omit it to leave the current value unchanged. You can't clear the setting. To make memories written from then on never expire, send 0. <code>GetSpace</code> then returns 0.</p> <p>A change applies to memories written after it. Memories already stored keep the expiry they were written with. A memory the service rewrites later, such as a summary it keeps up to date, takes the setting in force at that rewrite. A change moves the space to <code>UPDATING</code>. Sending the value that the space has stored doesn't.</p>"
+        },
+        "extractionModelId":{
+          "shape":"ExtractionModelId",
+          "documentation":"<p>The model that extracts and consolidates memories for every strategy in the space: <code>anthropic.claude-opus-5-5</code> or <code>anthropic.claude-haiku-5-5</code>. Omit it to leave the current value unchanged. Once set, it can't be cleared back to the service default.</p>"
+        }
+      }
+    },
+    "UpdateSpaceResponse":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "status"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "status":{
+          "shape":"SpaceStatus",
+          "documentation":"<p>The status of the space: <code>UPDATING</code> when the change has to be applied to the space's strategies, retention, or extraction model. Otherwise, the space's current status.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes why the request failed validation, such as the field, key, or limit involved.</p>"
+        },
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason that the request failed validation.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The fields that failed validation, if any.</p>"
+        }
+      },
+      "documentation":"<p>The request isn't valid. The <code>reason</code>, <code>message</code>, and <code>fieldList</code> members describe the problem. Fix the request, and then try again.</p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The field name.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes why the field failed validation.</p>"
+        }
+      },
+      "documentation":"<p>Information about a request field that failed validation.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"},
+      "documentation":"<p>A list of fields.</p>"
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "documentation":"<p>Possible reasons a request failed validation. New values can be added, so treat an unknown value as a general validation failure.</p>",
+      "enum":[
+        "disallowedQueryType",
+        "nonFilterableField",
+        "unknownField",
+        "fieldIndexMismatch",
+        "queryNestingTooDeep",
+        "unboundedPattern",
+        "queryBodyTooLarge",
+        "malformedQueryBody",
+        "invalidNextToken",
+        "fieldValidationFailed",
+        "unsupportedParameter",
+        "unsupportedField",
+        "other"
+      ]
+    }
+  },
+  "documentation":"<p>Amazon OpenSearch Memory lets your AI agents and applications recall facts and summaries across sessions. Your agents send events, such as conversation turns, and search the memories derived from them.</p> <p>A space groups related events and memories, and holds the memory strategies that you configure for them. Use the space operations to create, get, list, update, and delete spaces. Use the event and memory operations to write, read, list, search, update, and delete a space's events and memories.</p>"
+}

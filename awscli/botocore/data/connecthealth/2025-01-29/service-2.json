@@ -31,6 +31,26 @@
       ],
       "documentation":"<p>Activates a Subscription to enable billing for a user.</p>"
     },
+    "CreateDataset":{
+      "name":"CreateDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{domainId}/datasets",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDatasetInput"},
+      "output":{"shape":"CreateDatasetOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a Dataset in a Domain and starts building it. A new dataset has the status CREATING. When it's ready to use, its status changes to ACTIVE, or to CREATE_FAILED if it fails to build. To check the status, call GetDataset.</p> <p>This operation is idempotent: if you retry a request with the same clientToken, it returns the dataset that the first request created.</p> <p>For a medical coding dataset, Amazon Connect Health uses the coded examples that are in the s3InputPath when you create the dataset, and writes evaluation scores to the s3OutputPath. Later changes to the s3InputPath don't change the dataset. To use this operation, you must have s3:GetObject and s3:ListBucket permissions for the input location and s3:PutObject permission for the output location, and kms:Decrypt and kms:GenerateDataKey permissions if you encrypt the locations with an AWS KMS key.</p> <p>Datasets are in preview release and are subject to change.</p>"
+    },
     "CreateDomain":{
       "name":"CreateDomain",
       "http":{
@@ -82,6 +102,26 @@
       "documentation":"<p>Deactivates a Subscription to stop billing for a user.</p>",
       "idempotent":true
     },
+    "DeleteDataset":{
+      "name":"DeleteDataset",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/datasets/{datasetId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteDatasetInput"},
+      "output":{"shape":"DeleteDatasetOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts deleting a Dataset and the resources that Amazon Connect Health built for it. You can delete a dataset whose status is ACTIVE, CREATE_FAILED, or DELETE_FAILED. The dataset moves to DELETING, and then to DELETED. If the delete fails, the dataset moves to DELETE_FAILED, and you can call DeleteDataset again.</p> <p>Medical coding jobs that already use the dataset finish. Amazon Connect Health rejects new requests that specify the dataset.</p> <p>Datasets are in preview release and are subject to change.</p>",
+      "idempotent":true
+    },
     "DeleteDomain":{
       "name":"DeleteDomain",
       "http":{
@@ -97,6 +137,25 @@
       "documentation":"<p>Deletes a Domain and all associated resources.</p>",
       "idempotent":true
     },
+    "GetDataset":{
+      "name":"GetDataset",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{domainId}/datasets/{datasetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDatasetInput"},
+      "output":{"shape":"GetDatasetOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about a Dataset, including its status and, after it is built, its results. A dataset whose status is DELETED returns ResourceNotFoundException.</p> <p>Datasets are in preview release and are subject to change.</p>",
+      "readonly":true
+    },
     "GetDomain":{
       "name":"GetDomain",
       "http":{
@@ -110,6 +169,26 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves information about a Domain.</p>",
+      "readonly":true
+    },
+    "GetMedicalCodingJob":{
+      "name":"GetMedicalCodingJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domain/{domainId}/medical-coding-job/{jobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMedicalCodingJobRequest"},
+      "output":{"shape":"GetMedicalCodingJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about a medical coding job, including its status and, when it succeeds, the location of its results.</p> <p>Medical coding jobs are in preview release and are subject to change.</p>",
+      "endpoint":{"hostPrefix":"runtime."},
       "readonly":true
     },
     "GetMedicalScribeListeningSession":{
@@ -170,6 +249,25 @@
       "documentation":"<p>Retrieves information about a Subscription.</p>",
       "readonly":true
     },
+    "ListDatasets":{
+      "name":"ListDatasets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{domainId}/datasets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDatasetsInput"},
+      "output":{"shape":"ListDatasetsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the Datasets in a Domain. You can list only the datasets of one type. The operation doesn't return datasets whose status is DELETED, and the order of the results isn't specified. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>Datasets are in preview release and are subject to change.</p>",
+      "readonly":true
+    },
     "ListDomains":{
       "name":"ListDomains",
       "http":{
@@ -212,6 +310,26 @@
       "documentation":"<p>Lists the tags associated with the specified resource</p>",
       "readonly":true
     },
+    "StartMedicalCodingJob":{
+      "name":"StartMedicalCodingJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domain/{domainId}/medical-coding-job",
+        "responseCode":200
+      },
+      "input":{"shape":"StartMedicalCodingJobRequest"},
+      "output":{"shape":"StartMedicalCodingJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts an asynchronous job that generates medical codes (ICD-10 and CPT) for clinical text. Call GetMedicalCodingJob to check the status of the job. When the job succeeds, Amazon Connect Health writes the results to the output Amazon S3 location.</p> <p>To tailor the codes to your organization, specify an ACTIVE medical coding dataset in the Domain. If you don't specify a dataset, the job uses the general medical coding knowledge base.</p> <p>Medical coding jobs are in preview release and are subject to change.</p>",
+      "endpoint":{"hostPrefix":"runtime."}
+    },
     "StartMedicalScribeListeningSession":{
       "name":"StartMedicalScribeListeningSession",
       "http":{
@@ -250,6 +368,25 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Starts a new patient insights job.</p>",
+      "endpoint":{"hostPrefix":"runtime."}
+    },
+    "SubmitFeedback":{
+      "name":"SubmitFeedback",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domain/{domainId}/feedback",
+        "responseCode":202
+      },
+      "input":{"shape":"SubmitFeedbackRequest"},
+      "output":{"shape":"SubmitFeedbackResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Submits feedback on a clinical document or a set of medical codes that Amazon Connect Health generated.</p>",
       "endpoint":{"hostPrefix":"runtime."}
     },
     "TagResource":{
@@ -336,10 +473,94 @@
       },
       "documentation":"<p>Details about a generated artifact including location and status</p>"
     },
+    "ArtifactSourceId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+    },
     "AudioChunk":{"type":"blob"},
     "AudioOffset":{
       "type":"double",
       "box":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "BoundedSafeString":{
+      "type":"string",
+      "documentation":"<p>A bounded, safe-character string used for human-readable names and descriptions.</p>",
+      "max":1028,
+      "min":1,
+      "pattern":"[\\x20-\\x21\\x23\\x24\\x2A-\\x3A\\x3F-\\x7E]*"
+    },
+    "Checklist":{
+      "type":"structure",
+      "required":[
+        "checklistId",
+        "items"
+      ],
+      "members":{
+        "checklistId":{
+          "shape":"ChecklistId",
+          "documentation":"<p>The identifier of the checklist. For a managed note template, this value is the template type, such as <code>HISTORY_AND_PHYSICAL</code>. For a custom note template, this value is <code>CUSTOM_</code> followed by the template base, such as <code>CUSTOM_GIRPP</code>.</p>"
+        },
+        "items":{
+          "shape":"ChecklistItemList",
+          "documentation":"<p>The checklist items in template order. The list contains one item for each checklist section, including sections that have not been discussed.</p>"
+        }
+      },
+      "documentation":"<p>Contains the sections of a note template checklist and the discussion status of each section.</p>"
+    },
+    "ChecklistId":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ChecklistItem":{
+      "type":"structure",
+      "required":[
+        "itemKey",
+        "status"
+      ],
+      "members":{
+        "itemKey":{
+          "shape":"ChecklistItemKey",
+          "documentation":"<p>The key that uniquely identifies the item within the checklist. For a managed note template, this value is a service-defined section key, such as <code>CHIEF_COMPLAINT</code>. For a custom note template, this value is the <code>sectionHeader</code> of the section that you defined.</p>"
+        },
+        "status":{
+          "shape":"ChecklistItemStatus",
+          "documentation":"<p>The discussion status of the checklist item. The following values are valid:</p> <ul> <li> <p> <code>DISCUSSED</code>: The conversation has covered the item.</p> </li> <li> <p> <code>PARTIALLY_DISCUSSED</code>: The conversation has covered part of the item.</p> </li> <li> <p> <code>NOT_DISCUSSED</code>: The conversation has not covered the item.</p> </li> </ul> <p>The status usually progresses toward <code>DISCUSSED</code>, but it can return to <code>NOT_DISCUSSED</code> if a speaker retracts a statement.</p>"
+        }
+      },
+      "documentation":"<p>Contains a checklist item and its discussion status.</p>"
+    },
+    "ChecklistItemKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "sensitive":true
+    },
+    "ChecklistItemList":{
+      "type":"list",
+      "member":{"shape":"ChecklistItem"},
+      "max":100,
+      "min":0
+    },
+    "ChecklistItemStatus":{
+      "type":"string",
+      "enum":[
+        "DISCUSSED",
+        "PARTIALLY_DISCUSSED",
+        "NOT_DISCUSSED"
+      ]
+    },
+    "ChecklistList":{
+      "type":"list",
+      "member":{"shape":"Checklist"},
+      "max":20,
+      "min":0
     },
     "ClinicalNoteGenerationResult":{
       "type":"structure",
@@ -391,6 +612,73 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CreateDatasetInput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "name",
+        "config"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the parent Domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "name":{
+          "shape":"BoundedSafeString",
+          "documentation":"<p>A name for the dataset.</p>"
+        },
+        "config":{
+          "shape":"DatasetConfig",
+          "documentation":"<p>The configuration of the dataset. The member that you set determines the dataset type. You can't change the configuration after you create the dataset.</p>"
+        },
+        "clientToken":{
+          "shape":"CreateDatasetInputClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the operation returns the dataset that the first request created. If you reuse a clientToken with different parameters, the request fails with ConflictException. Use a new clientToken for a request with different parameters.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateDatasetInputClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "CreateDatasetOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "datasetId",
+        "type",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"DatasetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "type":{
+          "shape":"DatasetType",
+          "documentation":"<p>The type of the dataset, determined by the configuration that you provided.</p>"
+        },
+        "status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset. A new dataset has the status CREATING.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the dataset was created.</p>"
+        }
+      }
     },
     "CreateDomainInput":{
       "type":"structure",
@@ -597,6 +885,108 @@
       },
       "documentation":"<p>Response containing custom template information</p>"
     },
+    "DatasetArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-z\\-]*:[a-z0-9\\-]+:[a-z0-9\\-]*:[0-9]{12}:.+"
+    },
+    "DatasetArtifacts":{
+      "type":"structure",
+      "members":{
+        "medicalCoding":{
+          "shape":"MedicalCodingDatasetArtifacts",
+          "documentation":"<p>The results of building a medical coding dataset.</p>"
+        }
+      },
+      "documentation":"<p>The results of building a Dataset, by dataset type.</p>",
+      "union":true
+    },
+    "DatasetConfig":{
+      "type":"structure",
+      "members":{
+        "medicalCoding":{
+          "shape":"MedicalCodingDatasetConfig",
+          "documentation":"<p>The configuration of a medical coding dataset, which tailors medical coding jobs to your coded examples.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a Dataset. Set one member, which determines the dataset type.</p>",
+      "union":true
+    },
+    "DatasetId":{
+      "type":"string",
+      "documentation":"<p>The identifier of a Dataset. System-generated, unique within a domain. Contains only lowercase letters and digits.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9]{1,64}"
+    },
+    "DatasetStatus":{
+      "type":"string",
+      "documentation":"<p>Lifecycle status of a Dataset. CREATING -&gt; ACTIVE | CREATE_FAILED; ACTIVE | CREATE_FAILED | DELETE_FAILED -&gt; DELETING -&gt; DELETED | DELETE_FAILED.</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "CREATE_FAILED",
+        "DELETING",
+        "DELETE_FAILED",
+        "DELETED"
+      ]
+    },
+    "DatasetSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "datasetId",
+        "name",
+        "type",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"DatasetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "name":{
+          "shape":"BoundedSafeString",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "type":{
+          "shape":"DatasetType",
+          "documentation":"<p>The type of the dataset.</p>"
+        },
+        "status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset.</p>"
+        },
+        "statusDetails":{
+          "shape":"BoundedSafeString",
+          "documentation":"<p>Details about the status of the dataset, such as the reason that it failed to build or delete.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the dataset was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the dataset was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a Dataset.</p>"
+    },
+    "DatasetSummaryList":{
+      "type":"list",
+      "member":{"shape":"DatasetSummary"},
+      "documentation":"<p>A page of dataset summaries.</p>"
+    },
+    "DatasetType":{
+      "type":"string",
+      "documentation":"<p>The Amazon Connect Health feature a Dataset is for. Set by the service from the DatasetConfig member supplied at create: medicalCoding -&gt; MEDICAL_CODING.</p>",
+      "enum":["MEDICAL_CODING"]
+    },
     "DeactivateSubscriptionInput":{
       "type":"structure",
       "required":[
@@ -624,6 +1014,49 @@
         "subscription":{
           "shape":"SubscriptionDescription",
           "documentation":"<p/>"
+        }
+      }
+    },
+    "DeleteDatasetInput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "datasetId"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the parent Domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset to delete.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        }
+      }
+    },
+    "DeleteDatasetOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "datasetId",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"DatasetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset. After Amazon Connect Health accepts the request, the status is DELETING.</p>"
         }
       }
     },
@@ -727,9 +1160,20 @@
         "unstructuredContext":{
           "shape":"SensitiveMarkdownString",
           "documentation":"<p>Unstructured context information in markdown format</p>"
+        },
+        "medicalCodingContext":{
+          "shape":"MedicalCodingContext",
+          "documentation":"<p>Structured patient and encounter context for medical code generation.</p>"
         }
       },
       "documentation":"<p>Context information about the clinical encounter</p>"
+    },
+    "EncounterType":{
+      "type":"string",
+      "enum":[
+        "TELEHEALTH",
+        "IN_PERSON"
+      ]
     },
     "EncryptionContext":{
       "type":"structure",
@@ -777,6 +1221,95 @@
     "FHIRServerFhirEndpointString":{
       "type":"string",
       "pattern":"https?://[a-zA-Z0-9\\-._~:/?#\\[\\]@!$&'()*+,;=%]+"
+    },
+    "FeedbackArtifactType":{
+      "type":"string",
+      "enum":[
+        "CLINICAL_DOC",
+        "MEDICAL_CODES"
+      ]
+    },
+    "FeedbackComments":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "sensitive":true
+    },
+    "GetDatasetInput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "datasetId"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the parent Domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        }
+      }
+    },
+    "GetDatasetOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "datasetId",
+        "name",
+        "type",
+        "config",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"DatasetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "name":{
+          "shape":"BoundedSafeString",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "type":{
+          "shape":"DatasetType",
+          "documentation":"<p>The type of the dataset.</p>"
+        },
+        "config":{
+          "shape":"DatasetConfig",
+          "documentation":"<p>The configuration that you provided when you created the dataset.</p>"
+        },
+        "status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset.</p>"
+        },
+        "statusDetails":{
+          "shape":"BoundedSafeString",
+          "documentation":"<p>Details about the status of the dataset, such as the reason that it failed to build or delete.</p>"
+        },
+        "artifacts":{
+          "shape":"DatasetArtifacts",
+          "documentation":"<p>The results of building the dataset, such as medical coding evaluation scores. Available after Amazon Connect Health builds the dataset.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the dataset was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the dataset was last updated.</p>"
+        }
+      }
     },
     "GetDomainInput":{
       "type":"structure",
@@ -839,6 +1372,87 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Tags associated with the Domain</p>"
+        }
+      }
+    },
+    "GetMedicalCodingJobRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "jobId"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the parent Domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the medical coding job.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        }
+      }
+    },
+    "GetMedicalCodingJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "jobArn",
+        "jobStatus",
+        "text",
+        "outputDataConfig"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the medical coding job.</p>"
+        },
+        "jobArn":{
+          "shape":"MedicalCodingJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the medical coding job.</p>"
+        },
+        "jobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the medical coding job.</p>"
+        },
+        "creationTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time that the medical coding job was created.</p>"
+        },
+        "updatedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time that the medical coding job was last updated.</p>"
+        },
+        "text":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The clinical text that the medical coding job codes.</p>"
+        },
+        "patientContext":{
+          "shape":"MedicalCodesPatientContext",
+          "documentation":"<p>The patient context that you provided for the job.</p>"
+        },
+        "encounterContext":{
+          "shape":"MedicalCodesEncounterContext",
+          "documentation":"<p>The encounter context that you provided for the job.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"MedicalCodingOutputDataConfig",
+          "documentation":"<p>The output configuration that you provided for the job.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset that the job codes against. Not returned if the job uses the general medical coding knowledge base.</p>"
+        },
+        "medicalCodingOutput":{
+          "shape":"MedicalCodingOutput",
+          "documentation":"<p>The location of the job results. Returned when the job succeeds.</p>"
+        },
+        "statusDetails":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Details about the status of the job, such as the reason that it failed.</p>"
         }
       }
     },
@@ -998,6 +1612,11 @@
         }
       }
     },
+    "IdempotencyToken":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "InputDataConfig":{
       "type":"structure",
       "members":{
@@ -1072,6 +1691,56 @@
     "KmsKeyArn":{
       "type":"string",
       "pattern":"arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key/[a-f0-9-]+"
+    },
+    "ListDatasetsInput":{
+      "type":"structure",
+      "required":["domainId"],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the parent Domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "type":{
+          "shape":"DatasetType",
+          "documentation":"<p>Returns only datasets of this type.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results, from a previous ListDatasets response. If you don't specify a value, the operation returns the first page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListDatasetsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of datasets to return in one page. The default is 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListDatasetsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListDatasetsOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"DatasetSummaryList",
+          "documentation":"<p>A list of dataset summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results. Not returned if there are no more results.</p>"
+        }
+      }
     },
     "ListDomainsInput":{
       "type":"structure",
@@ -1181,6 +1850,10 @@
         }
       }
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "ManagedNoteTemplate":{
       "type":"string",
       "enum":[
@@ -1213,6 +1886,200 @@
         }
       },
       "documentation":"<p>Response containing managed template information</p>"
+    },
+    "MedicalCodeGenerationResult":{
+      "type":"structure",
+      "members":{
+        "medicalCodesResult":{
+          "shape":"ArtifactDetails",
+          "documentation":"<p>Details about the generated medical codes. If the status is SKIPPED, medical codes weren't generated, for example because the clinical note wasn't generated or had no content.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The identifier of the medical coding job that generated the medical codes. To submit feedback on the medical codes, use this value as the artifactSourceId, with the artifactType MEDICAL_CODES, in SubmitFeedback.</p>"
+        }
+      },
+      "documentation":"<p>Results of medical code generation, including the medical codes and the medical coding job.</p>"
+    },
+    "MedicalCodeGenerationSettings":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to generate medical codes for the session. If you set this to true, the service generates medical codes from the clinical note after the session ends, using your permissions for medical coding, the output Amazon S3 location, and the AWS KMS key. You can set this to true only in a Region where medical code generation is available. To provide a medicalCodingContext, you must set this to true.</p>"
+        }
+      },
+      "documentation":"<p>Settings for generating medical codes from the clinical note after the session ends. Medical code generation is in preview release and is subject to change. Medical code generation is available in the US East (N. Virginia) and US West (Oregon) AWS Regions.</p>"
+    },
+    "MedicalCodeGenerationSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"NonNullBoolean",
+          "documentation":"<p>Indicates whether medical code generation was requested for the session.</p>"
+        }
+      },
+      "documentation":"<p>Response containing settings for medical code generation.</p>"
+    },
+    "MedicalCodesEncounterContext":{
+      "type":"structure",
+      "members":{
+        "encounterType":{
+          "shape":"EncounterType",
+          "documentation":"<p>The type of the encounter, either in person or telehealth.</p>"
+        },
+        "encounterReason":{
+          "shape":"MedicalCodesEncounterContextEncounterReasonString",
+          "documentation":"<p>The reason for the encounter. The reason can contain letters, numbers, spaces, periods, commas, and hyphens, and can't contain only spaces.</p>"
+        },
+        "afterHours":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the encounter took place outside regular business hours.</p>"
+        },
+        "encounterDate":{
+          "shape":"SensitiveIsoDateString",
+          "documentation":"<p>The date of the encounter, in YYYY-MM-DD format. The date can't be more than one day after the current date in UTC.</p>"
+        },
+        "encounterDurationMinutes":{
+          "shape":"MedicalCodesEncounterContextEncounterDurationMinutesInteger",
+          "documentation":"<p>The duration of the encounter, in minutes, from 1 to 1440.</p>"
+        }
+      },
+      "documentation":"<p>Encounter context for a medical coding job. All fields are optional.</p>"
+    },
+    "MedicalCodesEncounterContextEncounterDurationMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1440,
+      "min":1,
+      "sensitive":true
+    },
+    "MedicalCodesEncounterContextEncounterReasonString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9 .,-]+",
+      "sensitive":true
+    },
+    "MedicalCodesPatientContext":{
+      "type":"structure",
+      "members":{
+        "sex":{
+          "shape":"Sex",
+          "documentation":"<p>The sex of the patient.</p>"
+        },
+        "status":{
+          "shape":"PatientStatus",
+          "documentation":"<p>The status of the patient, either new or established.</p>"
+        },
+        "dateOfBirth":{
+          "shape":"SensitiveIsoDateString",
+          "documentation":"<p>The date of birth of the patient, in YYYY-MM-DD format. The date can't be after the current date in UTC.</p>"
+        },
+        "insurance":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The insurance of the patient.</p>"
+        }
+      },
+      "documentation":"<p>Patient context for a medical coding job. All fields are optional.</p>"
+    },
+    "MedicalCodingContext":{
+      "type":"structure",
+      "members":{
+        "sex":{
+          "shape":"Sex",
+          "documentation":"<p>The sex of the patient.</p>"
+        },
+        "status":{
+          "shape":"PatientStatus",
+          "documentation":"<p>The status of the patient, either new or established.</p>"
+        },
+        "dateOfBirth":{
+          "shape":"SensitiveIsoDateString",
+          "documentation":"<p>The date of birth of the patient, in YYYY-MM-DD format. The date can't be after the current date in UTC.</p>"
+        },
+        "encounterType":{
+          "shape":"EncounterType",
+          "documentation":"<p>The type of the encounter, either in person or telehealth.</p>"
+        },
+        "encounterReason":{
+          "shape":"MedicalCodingContextEncounterReasonString",
+          "documentation":"<p>The reason for the encounter. The reason can contain letters, numbers, spaces, periods, commas, and hyphens, and can't contain only spaces.</p>"
+        },
+        "afterHours":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the encounter took place outside regular business hours.</p>"
+        },
+        "encounterDate":{
+          "shape":"SensitiveIsoDateString",
+          "documentation":"<p>The date of the encounter, in YYYY-MM-DD format. The date can't be more than one day after the current date in UTC.</p>"
+        }
+      },
+      "documentation":"<p>Patient and encounter context for medical code generation. Providing this information can improve the accuracy of the medical codes. To provide it, you must also set enabled to true in medicalCodeGenerationSettings. All fields are optional. The service generates medical codes without any field that you leave out.</p>"
+    },
+    "MedicalCodingContextEncounterReasonString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9 .,-]+",
+      "sensitive":true
+    },
+    "MedicalCodingDatasetArtifacts":{
+      "type":"structure",
+      "members":{
+        "evaluationS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location, under the s3OutputPath of the dataset, of the evaluation scores for the dataset.</p>"
+        }
+      },
+      "documentation":"<p>The results of building a medical coding dataset.</p>"
+    },
+    "MedicalCodingDatasetConfig":{
+      "type":"structure",
+      "required":[
+        "s3InputPath",
+        "s3OutputPath"
+      ],
+      "members":{
+        "s3InputPath":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location of your coded examples. You need s3:GetObject and s3:ListBucket permissions for it, and kms:Decrypt if you encrypt it with an AWS KMS key.</p>"
+        },
+        "s3OutputPath":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location where Amazon Connect Health writes the evaluation scores for the dataset. You need s3:PutObject permission for it, and kms:GenerateDataKey if you encrypt it with an AWS KMS key.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a medical coding dataset. Amazon Connect Health uses the coded examples that are in the input location when you create the dataset, and writes evaluation scores to the output location, with your permissions. Later changes to the input location don't change the dataset.</p>"
+    },
+    "MedicalCodingJobArn":{
+      "type":"string",
+      "max":200,
+      "min":20,
+      "pattern":"arn:aws[-a-z]*:health-agent:[-a-z0-9]+:[0-9]{12}:domain/[-a-zA-Z0-9-]+/medical-coding-job/[-a-zA-Z0-9_/.]+"
+    },
+    "MedicalCodingOutput":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location of the medical codes that the job generated.</p>"
+        }
+      },
+      "documentation":"<p>The location of the results of a medical coding job.</p>"
+    },
+    "MedicalCodingOutputDataConfig":{
+      "type":"structure",
+      "required":["s3OutputPath"],
+      "members":{
+        "s3OutputPath":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location where Amazon Connect Health writes the results of the job.</p>"
+        }
+      },
+      "documentation":"<p>The output configuration for a medical coding job.</p>"
     },
     "MedicalScribeAudioEvent":{
       "type":"structure",
@@ -1268,6 +2135,25 @@
       "box":true,
       "max":1,
       "min":0
+    },
+    "MedicalScribeChecklistEvent":{
+      "type":"structure",
+      "required":[
+        "snapshotVersion",
+        "checklists"
+      ],
+      "members":{
+        "snapshotVersion":{
+          "shape":"Long",
+          "documentation":"<p>The version of this snapshot. Versions increase within a session and can skip values. Keep the snapshot with the highest version and ignore any event whose version is not higher, including after you reconnect to the session. Versions of checklist events and periodontal chart events are independent.</p>"
+        },
+        "checklists":{
+          "shape":"ChecklistList",
+          "documentation":"<p>The checklists for the session. The list is empty when no checklist is active.</p>"
+        }
+      },
+      "documentation":"<p>Real-time extraction is in preview release for Amazon Connect Health and is subject to change. To request access to this feature, contact your AWS account team.</p> <p>The session's checklist as of this point in the session. Each event carries every item with its current status, not only the items that changed.</p>",
+      "event":true
     },
     "MedicalScribeConfigurationEvent":{
       "type":"structure",
@@ -1362,6 +2248,10 @@
           "shape":"NonNullBoolean",
           "documentation":"<p>Indicates whether encounter context was provided</p>"
         },
+        "medicalCodingContextProvided":{
+          "shape":"NonNullBoolean",
+          "documentation":"<p>Indicates whether medical coding context was provided.</p>"
+        },
         "streamStatus":{
           "shape":"MedicalScribeStreamStatus",
           "documentation":"<p>The current status of the stream</p>"
@@ -1404,9 +2294,17 @@
         "validationException":{
           "shape":"ValidationException",
           "documentation":"<p/>"
+        },
+        "periodontalChartEvent":{
+          "shape":"MedicalScribePeriodontalChartEvent",
+          "documentation":"<p>Real-time extraction is in preview release for Amazon Connect Health and is subject to change. To request access to this feature, contact your AWS account team.</p> <p>A snapshot of the periodontal chart. Amazon Connect Health sends this event only when real-time extraction is enabled for the account and periodontal charting is dictated during the session.</p>"
+        },
+        "checklistEvent":{
+          "shape":"MedicalScribeChecklistEvent",
+          "documentation":"<p>Real-time extraction is in preview release for Amazon Connect Health and is subject to change. To request access to this feature, contact your AWS account team.</p> <p>A snapshot of the session's checklist. Amazon Connect Health sends this event only when real-time extraction is enabled for the account and the session uses a supported note template.</p>"
         }
       },
-      "documentation":"<p>Output stream from Medical Scribe containing transcript events and errors</p>",
+      "documentation":"<p>The output stream of a listening session. It carries transcript events, periodontal chart events, checklist events, and errors.</p>",
       "eventstream":true
     },
     "MedicalScribeParticipantRole":{
@@ -1415,6 +2313,29 @@
         "PATIENT",
         "CLINICIAN"
       ]
+    },
+    "MedicalScribePeriodontalChartEvent":{
+      "type":"structure",
+      "required":[
+        "snapshotVersion",
+        "teeth"
+      ],
+      "members":{
+        "snapshotVersion":{
+          "shape":"Long",
+          "documentation":"<p>The version of this snapshot. Versions increase within a session and can skip values. Keep the snapshot with the highest version and ignore any event whose version is not higher, including after you reconnect to the session. Versions of checklist events and periodontal chart events are independent.</p>"
+        },
+        "teeth":{
+          "shape":"PeriodontalToothList",
+          "documentation":"<p>The teeth that have a recorded value or are marked missing, in ascending <code>toothNumber</code> order.</p>"
+        },
+        "reviewItems":{
+          "shape":"PeriodontalReviewList",
+          "documentation":"<p>Items that need the clinician's confirmation.</p>"
+        }
+      },
+      "documentation":"<p>Real-time extraction is in preview release for Amazon Connect Health and is subject to change. To request access to this feature, contact your AWS account team.</p> <p>The periodontal chart as of this point in the session. Each event carries every tooth charted so far, not only the teeth that changed.</p>",
+      "event":true
     },
     "MedicalScribePostStreamActionSettings":{
       "type":"structure",
@@ -1430,6 +2351,10 @@
         "clinicalNoteGenerationSettings":{
           "shape":"ClinicalNoteGenerationSettings",
           "documentation":"<p>Settings for clinical note generation</p>"
+        },
+        "medicalCodeGenerationSettings":{
+          "shape":"MedicalCodeGenerationSettings",
+          "documentation":"<p>Settings for medical code generation. Medical code generation is in preview release and is subject to change.</p>"
         }
       },
       "documentation":"<p>Settings for actions to perform after the audio stream ends</p>"
@@ -1448,6 +2373,10 @@
         "clinicalNoteGenerationSettings":{
           "shape":"ClinicalNoteGenerationSettingsResponse",
           "documentation":"<p>Settings for clinical note generation</p>"
+        },
+        "medicalCodeGenerationSettings":{
+          "shape":"MedicalCodeGenerationSettingsResponse",
+          "documentation":"<p>Settings for medical code generation. Returned only if you specified medicalCodeGenerationSettings when you started the session.</p>"
         }
       },
       "documentation":"<p>Response containing settings for post-stream actions</p>"
@@ -1458,6 +2387,10 @@
         "clinicalNoteGenerationResult":{
           "shape":"ClinicalNoteGenerationResult",
           "documentation":"<p>Results of clinical note generation</p>"
+        },
+        "medicalCodeGenerationResult":{
+          "shape":"MedicalCodeGenerationResult",
+          "documentation":"<p>Results of medical code generation. Returned if medical code generation runs for the session. Not returned if you set enabled to false in medicalCodeGenerationSettings.</p>"
         }
       },
       "documentation":"<p>Results of post-stream actions performed after the audio stream ended</p>"
@@ -1613,12 +2546,173 @@
       },
       "documentation":"<p>Details for a patient</p>"
     },
+    "PatientStatus":{
+      "type":"string",
+      "enum":[
+        "NEW",
+        "ESTABLISHED"
+      ],
+      "sensitive":true
+    },
+    "PeriodontalGrade":{
+      "type":"integer",
+      "box":true,
+      "max":3,
+      "min":0
+    },
+    "PeriodontalProbingDepthMillimeters":{
+      "type":"integer",
+      "box":true,
+      "max":15,
+      "min":0
+    },
+    "PeriodontalRecessionMillimeters":{
+      "type":"integer",
+      "box":true,
+      "max":15,
+      "min":-5
+    },
+    "PeriodontalReview":{
+      "type":"structure",
+      "required":["reason"],
+      "members":{
+        "reason":{
+          "shape":"PeriodontalReviewReason",
+          "documentation":"<p>The reason for review. The following values are valid:</p> <ul> <li> <p> <code>SITE_NOT_CHARTED</code>: One or more sites have no reading.</p> </li> <li> <p> <code>VALUE_NOT_CHARTED</code>: A dictated value or charting instruction was not charted, for example because the value was out of range or not valid at its position.</p> </li> <li> <p> <code>READING_COUNT_MISMATCH</code>: The number of dictated values did not match the number of open sites. The values were charted as dictated.</p> </li> <li> <p> <code>LINE_UNCLEAR</code>: A line of dictation could not be interpreted and was not charted.</p> </li> <li> <p> <code>TOOTH_UNCLEAR</code>: A line of dictation did not identify the tooth and was not charted.</p> </li> <li> <p> <code>MISSING_TOOTH_CONFLICT</code>: The dictation conflicts with a tooth marked as missing.</p> </li> <li> <p> <code>MEASUREMENT_NOT_CHARTED</code>: The dictation included a measurement that the chart does not record, such as plaque, calculus, or the mucogingival junction.</p> </li> <li> <p> <code>SESSION_ISSUE</code>: The exam setup could not be used and all teeth were assumed to be present, or the earlier chart could not be restored and charting restarted.</p> </li> </ul>"
+        },
+        "toothNumber":{
+          "shape":"PeriodontalToothNumber",
+          "documentation":"<p>The tooth that the item refers to.</p>"
+        },
+        "sites":{
+          "shape":"PeriodontalSiteNameList",
+          "documentation":"<p>The probing sites of that tooth that the item refers to.</p>"
+        }
+      },
+      "documentation":"<p>An item of the periodontal chart that needs the clinician's confirmation.</p>",
+      "sensitive":true
+    },
+    "PeriodontalReviewList":{
+      "type":"list",
+      "member":{"shape":"PeriodontalReview"},
+      "max":100,
+      "min":0
+    },
+    "PeriodontalReviewReason":{
+      "type":"string",
+      "enum":[
+        "SITE_NOT_CHARTED",
+        "VALUE_NOT_CHARTED",
+        "READING_COUNT_MISMATCH",
+        "LINE_UNCLEAR",
+        "TOOTH_UNCLEAR",
+        "MISSING_TOOTH_CONFLICT",
+        "MEASUREMENT_NOT_CHARTED",
+        "SESSION_ISSUE"
+      ]
+    },
+    "PeriodontalSite":{
+      "type":"structure",
+      "required":["site"],
+      "members":{
+        "site":{
+          "shape":"PeriodontalSiteName",
+          "documentation":"<p>The probing site. The following values are valid:</p> <ul> <li> <p> <code>DB</code>: Distobuccal.</p> </li> <li> <p> <code>B</code>: Buccal.</p> </li> <li> <p> <code>MB</code>: Mesiobuccal.</p> </li> <li> <p> <code>DL</code>: Distolingual.</p> </li> <li> <p> <code>L</code>: Lingual.</p> </li> <li> <p> <code>ML</code>: Mesiolingual.</p> </li> </ul>"
+        },
+        "probingDepth":{
+          "shape":"PeriodontalProbingDepthMillimeters",
+          "documentation":"<p>The probing depth, in millimeters. The value ranges from 0 to 15.</p>"
+        },
+        "recession":{
+          "shape":"PeriodontalRecessionMillimeters",
+          "documentation":"<p>The gingival recession, in millimeters. The value ranges from -5 to 15. For example, <code>-1</code> represents \"plus one.\"</p>"
+        },
+        "bleeding":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the site bled during probing.</p>"
+        },
+        "suppuration":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether suppuration was present at the site.</p>"
+        }
+      },
+      "documentation":"<p>The measurements at one probing site of a tooth.</p>",
+      "sensitive":true
+    },
+    "PeriodontalSiteList":{
+      "type":"list",
+      "member":{"shape":"PeriodontalSite"},
+      "max":6,
+      "min":0
+    },
+    "PeriodontalSiteName":{
+      "type":"string",
+      "enum":[
+        "DB",
+        "B",
+        "MB",
+        "DL",
+        "L",
+        "ML"
+      ]
+    },
+    "PeriodontalSiteNameList":{
+      "type":"list",
+      "member":{"shape":"PeriodontalSiteName"},
+      "max":6,
+      "min":0
+    },
+    "PeriodontalTooth":{
+      "type":"structure",
+      "required":[
+        "toothNumber",
+        "missing"
+      ],
+      "members":{
+        "toothNumber":{
+          "shape":"PeriodontalToothNumber",
+          "documentation":"<p>The tooth number in the Universal Numbering System. The value ranges from 1 to 32.</p>"
+        },
+        "missing":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the tooth is missing.</p>"
+        },
+        "mobility":{
+          "shape":"PeriodontalGrade",
+          "documentation":"<p>The tooth mobility grade. The value ranges from 0 to 3.</p>"
+        },
+        "furcation":{
+          "shape":"PeriodontalGrade",
+          "documentation":"<p>The furcation involvement class. The value ranges from 0 to 3.</p>"
+        },
+        "sites":{
+          "shape":"PeriodontalSiteList",
+          "documentation":"<p>The probing sites that have a recorded measurement, in the order <code>MB</code>, <code>B</code>, <code>DB</code>, <code>ML</code>, <code>L</code>, <code>DL</code>.</p>"
+        }
+      },
+      "documentation":"<p>The chart for one tooth.</p>",
+      "sensitive":true
+    },
+    "PeriodontalToothList":{
+      "type":"list",
+      "member":{"shape":"PeriodontalTooth"},
+      "max":32,
+      "min":0
+    },
+    "PeriodontalToothNumber":{
+      "type":"integer",
+      "box":true,
+      "max":32,
+      "min":1
+    },
     "PostStreamArtifactGenerationStatus":{
       "type":"string",
       "enum":[
         "IN_PROGRESS",
         "FAILED",
-        "COMPLETED"
+        "COMPLETED",
+        "PENDING",
+        "SKIPPED"
       ]
     },
     "Pronouns":{
@@ -1670,6 +2764,7 @@
     },
     "S3Uri":{
       "type":"string",
+      "documentation":"<p>An Amazon S3 location as an s3:// URI, for example s3://amzn-s3-demo-bucket/prefix/.</p>",
       "max":1024,
       "min":0,
       "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
@@ -1712,9 +2807,81 @@
       "min":36,
       "pattern":".*[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}.*"
     },
+    "Sex":{
+      "type":"string",
+      "enum":[
+        "MALE",
+        "FEMALE",
+        "NON_BINARY",
+        "UNKNOWN"
+      ],
+      "sensitive":true
+    },
     "Specialty":{
       "type":"string",
       "enum":["PRIMARY_CARE"]
+    },
+    "StartMedicalCodingJobRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "text",
+        "outputDataConfig"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the parent Domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "text":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The clinical text to generate medical codes for, such as a clinical note.</p>"
+        },
+        "patientContext":{
+          "shape":"MedicalCodesPatientContext",
+          "documentation":"<p>Patient context for the job. Providing this information can improve the accuracy of the medical codes.</p>"
+        },
+        "encounterContext":{
+          "shape":"MedicalCodesEncounterContext",
+          "documentation":"<p>Encounter context for the job. Providing this information can improve the accuracy of the medical codes.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"MedicalCodingOutputDataConfig",
+          "documentation":"<p>The output configuration for the job.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of an ACTIVE medical coding dataset in the Domain to code against. If you don't specify a dataset, the job uses the general medical coding knowledge base.</p>"
+        },
+        "clientToken":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartMedicalCodingJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobId"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"MedicalCodingJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the medical coding job.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the medical coding job.</p>"
+        },
+        "creationTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time that the medical coding job was created.</p>"
+        }
+      }
     },
     "StartMedicalScribeListeningSessionInput":{
       "type":"structure",
@@ -1817,7 +2984,7 @@
         },
         "responseStream":{
           "shape":"MedicalScribeOutputStream",
-          "documentation":"<p>The output stream containing transcript events</p>"
+          "documentation":"<p>The output stream that contains transcript events, periodontal chart events, checklist events, and errors.</p>"
         }
       },
       "payload":"responseStream"
@@ -1893,6 +3060,56 @@
       }
     },
     "String":{"type":"string"},
+    "SubmitFeedbackRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "artifactSourceId",
+        "artifactType",
+        "signedArtifactS3Uri"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the parent Domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "artifactSourceId":{
+          "shape":"ArtifactSourceId",
+          "documentation":"<p>The identifier of the artifact source. For a clinical document, this is the session ID. For a set of medical codes, this is the medical coding job ID.</p>"
+        },
+        "subscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The unique identifier of the Subscription.</p>"
+        },
+        "artifactType":{
+          "shape":"FeedbackArtifactType",
+          "documentation":"<p>The type of artifact that you submit feedback for. The following values are valid:</p> <ul> <li> <p>CLINICAL_DOC is the clinical document generated for an ambient documentation session.</p> </li> <li> <p>MEDICAL_CODES is the set of medical codes generated by a medical coding job.</p> </li> </ul>"
+        },
+        "signedArtifactS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon Simple Storage Service (Amazon S3) URI of the final artifact that the clinician signed.</p>"
+        },
+        "generatedArtifactS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI of the clinical document or set of medical codes that Amazon Connect Health generated.</p>"
+        },
+        "comments":{
+          "shape":"FeedbackComments",
+          "documentation":"<p>Optional comments about the feedback.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "SubmitFeedbackResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "SubscriptionArn":{
       "type":"string",
       "pattern":"arn:aws:health-agent:[a-z0-9-]+:[0-9]{12}:domain/(hai-|dom-)[a-z0-9]+/subscription/sub-[a-zA-Z0-9]{21}"

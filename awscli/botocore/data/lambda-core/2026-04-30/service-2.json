@@ -933,6 +933,25 @@
       "type":"structure",
       "members":{}
     },
+    "ElasticIpConfiguration":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"ElasticIpType",
+          "documentation":"<p>The Elastic IP type for the connector's network interfaces.</p>"
+        }
+      },
+      "documentation":"<p>How the connector's network interfaces get an Elastic IP address.</p>"
+    },
+    "ElasticIpType":{
+      "type":"string",
+      "documentation":"<p>The Elastic IP type for a network connector's ENIs.</p>",
+      "enum":[
+        "None",
+        "ServiceManaged"
+      ]
+    },
     "GetNetworkConnectorRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -1526,6 +1545,7 @@
         "Ec2RequestLimitExceeded",
         "InsufficientRolePermissions",
         "InternalError",
+        "InternetGatewayNotAttached",
         "InvalidSecurityGroup",
         "InvalidSubnet",
         "SecurityGroupsPerInterfaceLimitExceeded",
@@ -1595,6 +1615,7 @@
         "Ec2RequestLimitExceeded",
         "InsufficientRolePermissions",
         "InternalError",
+        "InternetGatewayNotAttached",
         "InvalidSecurityGroup",
         "InvalidSubnet",
         "SecurityGroupsPerInterfaceLimitExceeded",
@@ -1758,6 +1779,10 @@
         "AssociatedComputeResourceTypes":{
           "shape":"AssociatedComputeResourceTypesList",
           "documentation":"<p>The types of Lambda compute resources that can use this connector. Valid values are <code>MicroVm</code> and <code>WebFunction</code>. Specify exactly one value.</p>"
+        },
+        "ElasticIpConfiguration":{
+          "shape":"ElasticIpConfiguration",
+          "documentation":"<p>The Elastic IP configuration for the connector's ENIs. Specify <code>ServiceManaged</code> to have Lambda assign a service-managed Elastic IP address to each ENI. The operator role must allow <code>ec2:AllocateAddress</code> and <code>ec2:AssociateAddress</code>.</p>"
         }
       },
       "documentation":"<p>Configuration for a VPC egress network connector. Specifies the VPC subnets, security groups, network protocol, and associated Lambda compute resource types.</p>"

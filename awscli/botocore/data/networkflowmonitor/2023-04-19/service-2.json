@@ -33,6 +33,26 @@
       "documentation":"<p>Create a monitor for specific network flows between local and remote resources, so that you can monitor network performance for one or several of your workloads. For each monitor, Network Flow Monitor publishes detailed end-to-end performance metrics and a network health indicator (NHI) that informs you whether there were Amazon Web Services network issues for one or more of the network flows tracked by a monitor, during a time period that you choose. </p>",
       "idempotent":true
     },
+    "CreatePerformanceMonitor":{
+      "name":"CreatePerformanceMonitor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/performance-monitors",
+        "responseCode":201
+      },
+      "input":{"shape":"CreatePerformanceMonitorInput"},
+      "output":{"shape":"CreatePerformanceMonitorOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a performance monitor to monitor the traffic of the Amazon Virtual Private Clouds (VPCs) that you specify as targets, to determine whether the Amazon Web Services network is causing issues for your workloads. With a performance monitor, you can identify network degradation across paths between Availability Zones and across Amazon Web Services Regions.</p>",
+      "idempotent":true
+    },
     "CreateScope":{
       "name":"CreateScope",
       "http":{
@@ -71,6 +91,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a monitor in Network Flow Monitor.</p>",
+      "idempotent":true
+    },
+    "DeletePerformanceMonitor":{
+      "name":"DeletePerformanceMonitor",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/performance-monitors/{monitorName}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeletePerformanceMonitorInput"},
+      "output":{"shape":"DeletePerformanceMonitorOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete a performance monitor. Network Flow Monitor stops tracking network performance for the resources that the monitor included.</p>",
       "idempotent":true
     },
     "DeleteScope":{
@@ -113,6 +153,44 @@
       "documentation":"<p>Gets information about a monitor in Network Flow Monitor based on a monitor name. The information returned includes the Amazon Resource Name (ARN), create time, modified time, resources included in the monitor, and status information.</p>",
       "readonly":true
     },
+    "GetMonitorScopeSuggestions":{
+      "name":"GetMonitorScopeSuggestions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/monitor-scope-suggestions",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMonitorScopeSuggestionsInput"},
+      "output":{"shape":"GetMonitorScopeSuggestionsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the accounts that are sending traffic to, or receiving traffic from, resources in a monitor, but that aren't included in the monitoring scope for the monitor. By adding the suggested accounts to your scope, you enable Network Flow Monitor to resolve the network paths for that traffic.</p>",
+      "readonly":true
+    },
+    "GetPerformanceMonitor":{
+      "name":"GetPerformanceMonitor",
+      "http":{
+        "method":"GET",
+        "requestUri":"/performance-monitors/{monitorName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPerformanceMonitorInput"},
+      "output":{"shape":"GetPerformanceMonitorOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about a performance monitor, including the resources that it monitors, its status, and the tags for the monitor.</p>",
+      "readonly":true
+    },
     "GetQueryResultsMonitorTopContributors":{
       "name":"GetQueryResultsMonitorTopContributors",
       "http":{
@@ -131,6 +209,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Return the data for a query with the Network Flow Monitor query interface. You specify the query that you want to return results for by providing a query ID and a monitor name. This query returns the top contributors for a specific monitor.</p> <p>Create a query ID for this call by calling the corresponding API call to start the query, <code>StartQueryMonitorTopContributors</code>. Use the scope ID that was returned for your account by <code>CreateScope</code>.</p> <p>Top contributors in Network Flow Monitor are network flows with the highest values for a specific metric type. Top contributors can be across all workload insights, for a given scope, or for a specific monitor. Use the applicable call for the top contributors that you want to be returned.</p>",
+      "readonly":true
+    },
+    "GetQueryResultsPerformanceMonitor":{
+      "name":"GetQueryResultsPerformanceMonitor",
+      "http":{
+        "method":"GET",
+        "requestUri":"/performance-monitors/{monitorName}/queries/{queryId}/results",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQueryResultsPerformanceMonitorInput"},
+      "output":{"shape":"GetQueryResultsPerformanceMonitorOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the results of a query for the Network Flow Monitor query interface, for a specified query ID and performance monitor. This call returns the top paths for a performance monitor.</p> <p>Create a query with <a href=\"https://docs.aws.amazon.com/networkflowmonitor/2.0/APIReference/API_StartQueryPerformanceMonitor.html\"> StartQueryPerformanceMonitor</a>, and then use the query ID with this call to return the results.</p>",
       "readonly":true
     },
     "GetQueryResultsWorkloadInsightsTopContributors":{
@@ -190,6 +288,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns the current status of a query for the Network Flow Monitor query interface, for a specified query ID and monitor. This call returns the query status for the top contributors for a monitor.</p> <p>When you create a query, use this call to check the status of the query to make sure that it has has <code>SUCCEEDED</code> before you review the results. Use the same query ID that you used for the corresponding API call to start (create) the query, <code>StartQueryMonitorTopContributors</code>.</p> <p>When you run a query, use this call to check the status of the query to make sure that the query has <code>SUCCEEDED</code> before you review the results.</p>",
+      "readonly":true
+    },
+    "GetQueryStatusPerformanceMonitor":{
+      "name":"GetQueryStatusPerformanceMonitor",
+      "http":{
+        "method":"GET",
+        "requestUri":"/performance-monitors/{monitorName}/queries/{queryId}/status",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQueryStatusPerformanceMonitorInput"},
+      "output":{"shape":"GetQueryStatusPerformanceMonitorOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the current status of a query for the Network Flow Monitor query interface, for a specified query ID and performance monitor. This call returns the query status for the top paths for a performance monitor.</p> <p>When you run a query, use this call to check the status of the query to make sure that the query has <code>SUCCEEDED</code> before you review the results. Use the same query ID that you used for the corresponding API call to start (create) the query, <code>StartQueryPerformanceMonitor</code>.</p>",
       "readonly":true
     },
     "GetQueryStatusWorkloadInsightsTopContributors":{
@@ -268,6 +386,24 @@
       "documentation":"<p>List all monitors in an account. Optionally, you can list only monitors that have a specific status, by using the <code>STATUS</code> parameter.</p>",
       "readonly":true
     },
+    "ListPerformanceMonitors":{
+      "name":"ListPerformanceMonitors",
+      "http":{
+        "method":"GET",
+        "requestUri":"/performance-monitors",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPerformanceMonitorsInput"},
+      "output":{"shape":"ListPerformanceMonitorsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of the performance monitors in an account. You can optionally return only the monitors that have a specific status or type.</p> <p>Results are paginated. Use the <code>nextToken</code> parameter to return additional results.</p>",
+      "readonly":true
+    },
     "ListScopes":{
       "name":"ListScopes",
       "http":{
@@ -325,6 +461,25 @@
       ],
       "documentation":"<p>Create a query that you can use with the Network Flow Monitor query interface to return the top contributors for a monitor. Specify the monitor that you want to create the query for. </p> <p>The call returns a query ID that you can use with <a href=\"https://docs.aws.amazon.com/networkflowmonitor/2.0/APIReference/API_GetQueryResultsMonitorTopContributors.html\"> GetQueryResultsMonitorTopContributors</a> to run the query and return the top contributors for a specific monitor.</p> <p>Top contributors in Network Flow Monitor are network flows with the highest values for a specific metric type. Top contributors can be across all workload insights, for a given scope, or for a specific monitor. Use the applicable APIs for the top contributors that you want to be returned.</p>"
     },
+    "StartQueryPerformanceMonitor":{
+      "name":"StartQueryPerformanceMonitor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/performance-monitors/{monitorName}/queries",
+        "responseCode":200
+      },
+      "input":{"shape":"StartQueryPerformanceMonitorInput"},
+      "output":{"shape":"StartQueryPerformanceMonitorOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a query that you can use with the Network Flow Monitor query interface to return the top paths for a performance monitor. Specify the performance monitor that you want to create the query for.</p> <p>The call returns a query ID that you can use with <a href=\"https://docs.aws.amazon.com/networkflowmonitor/2.0/APIReference/API_GetQueryResultsPerformanceMonitor.html\"> GetQueryResultsPerformanceMonitor</a> to return the results of the query.</p> <p>Top paths in Network Flow Monitor are the network paths used by the traffic for the resources that a performance monitor tracks, ranked by impact score and then by traffic volume. Each path includes the traffic and round-trip time for the path, together with a breakdown of the subnet pairs that the path includes.</p>"
+    },
     "StartQueryWorkloadInsightsTopContributors":{
       "name":"StartQueryWorkloadInsightsTopContributors",
       "http":{
@@ -380,6 +535,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Stop a top contributors query for a monitor. Specify the query that you want to stop by providing a query ID and a monitor name. </p> <p>Top contributors in Network Flow Monitor are network flows with the highest values for a specific metric type. Top contributors can be across all workload insights, for a given scope, or for a specific monitor. Use the applicable call for the top contributors that you want to be returned.</p>",
+      "idempotent":true
+    },
+    "StopQueryPerformanceMonitor":{
+      "name":"StopQueryPerformanceMonitor",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/performance-monitors/{monitorName}/queries/{queryId}",
+        "responseCode":200
+      },
+      "input":{"shape":"StopQueryPerformanceMonitorInput"},
+      "output":{"shape":"StopQueryPerformanceMonitorOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Stop a query for the Network Flow Monitor query interface, for a specified query ID and performance monitor. Use the same query ID that you used for the corresponding API call to start the query, <code>StartQueryPerformanceMonitor</code>.</p>",
       "idempotent":true
     },
     "StopQueryWorkloadInsightsTopContributors":{
@@ -479,6 +654,27 @@
       "documentation":"<p>Update a monitor to add or remove local or remote resources.</p>",
       "idempotent":true
     },
+    "UpdatePerformanceMonitor":{
+      "name":"UpdatePerformanceMonitor",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/performance-monitors/{monitorName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePerformanceMonitorInput"},
+      "output":{"shape":"UpdatePerformanceMonitorOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update a performance monitor, to add or remove the resources that the monitor tracks network performance for.</p>",
+      "idempotent":true
+    },
     "UpdateScope":{
       "name":"UpdateScope",
       "http":{
@@ -520,6 +716,47 @@
       "min":1,
       "pattern":"[0-9]{12}"
     },
+    "AccountToAdd":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "region",
+        "membership"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that you can add to the monitoring scope.</p>"
+        },
+        "region":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region of the traffic that Network Flow Monitor identified for the account.</p>"
+        },
+        "membership":{
+          "shape":"OrgMembershipStatus",
+          "documentation":"<p>Whether the account is a member of the same organization as the account that owns the monitor. The membership status can be one of the following</p> <ul> <li> <p> <code>IN_ORG</code>: The account is a member of the same organization.</p> </li> <li> <p> <code>NOT_IN_ORG</code>: The account isn't a member of the same organization.</p> </li> <li> <p> <code>UNKNOWN</code>: Network Flow Monitor can't determine the organization membership of the account.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An account that you can add to the monitoring scope for a monitor, so that Network Flow Monitor can resolve the network paths for traffic to and from resources in the account.</p>"
+    },
+    "AccountToAddList":{
+      "type":"list",
+      "member":{"shape":"AccountToAdd"}
+    },
+    "AdditionalFlowInfo":{
+      "type":"structure",
+      "members":{
+        "network":{
+          "shape":"Network",
+          "documentation":"<p>The network that the remote address of the network flow belongs to.</p>"
+        },
+        "clientLocation":{
+          "shape":"ClientLocation",
+          "documentation":"<p>The location of the client for the network flow.</p>"
+        }
+      },
+      "documentation":"<p>Additional information about a network flow, such as the network that the remote address belongs to and the location of the client.</p>"
+    },
     "Arn":{
       "type":"string",
       "max":2048,
@@ -528,6 +765,24 @@
     },
     "AvailabilityZone":{"type":"string"},
     "AwsRegion":{"type":"string"},
+    "ClientLocation":{
+      "type":"structure",
+      "members":{
+        "city":{
+          "shape":"String",
+          "documentation":"<p>The city where the client is located.</p>"
+        },
+        "subdivision":{
+          "shape":"String",
+          "documentation":"<p>The subdivision, such as a state or province, where the client is located.</p>"
+        },
+        "country":{
+          "shape":"String",
+          "documentation":"<p>The country where the client is located.</p>"
+        }
+      },
+      "documentation":"<p>The geographic location of the client for a network flow.</p>"
+    },
     "Component":{"type":"string"},
     "ComponentType":{"type":"string"},
     "ConflictException":{
@@ -628,6 +883,88 @@
         }
       }
     },
+    "CreatePerformanceMonitorInput":{
+      "type":"structure",
+      "required":[
+        "monitorName",
+        "targets"
+      ],
+      "members":{
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>"
+        },
+        "scopeArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scope for the performance monitor.</p>"
+        },
+        "targets":{
+          "shape":"CreatePerformanceMonitorInputTargetsList",
+          "documentation":"<p>The resources to monitor. Each target identifies a resource, currently a VPC, for which you can track network performance. For a VPC, specify the VPC ARN.</p>"
+        },
+        "clientToken":{
+          "shape":"UuidString",
+          "documentation":"<p>A unique, case-sensitive string of up to 64 ASCII characters that you specify to make an idempotent API request. If the token matches a previous request, the service ignores the request without returning an error. Don't reuse the same client token for other API requests.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags for a performance monitor. You can add a maximum of 200 tags.</p>"
+        }
+      }
+    },
+    "CreatePerformanceMonitorInputTargetsList":{
+      "type":"list",
+      "member":{"shape":"PerformanceMonitorTarget"},
+      "max":100,
+      "min":1
+    },
+    "CreatePerformanceMonitorOutput":{
+      "type":"structure",
+      "required":[
+        "monitorArn",
+        "monitorName",
+        "monitorStatus",
+        "monitorType",
+        "targets",
+        "createdAt",
+        "modifiedAt"
+      ],
+      "members":{
+        "monitorArn":{
+          "shape":"MonitorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the performance monitor.</p>"
+        },
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>"
+        },
+        "monitorStatus":{
+          "shape":"MonitorStatus",
+          "documentation":"<p>The status of a performance monitor. The status can be one of the following</p> <ul> <li> <p> <code>PENDING</code>: The performance monitor is in the process of being created.</p> </li> <li> <p> <code>ACTIVE</code>: The performance monitor is active.</p> </li> <li> <p> <code>INACTIVE</code>: The performance monitor is inactive.</p> </li> <li> <p> <code>ERROR</code>: The performance monitor can't be created or updated.</p> </li> <li> <p> <code>DELETING</code>: The performance monitor is in the process of being deleted.</p> </li> </ul>"
+        },
+        "monitorType":{
+          "shape":"PerformanceMonitorType",
+          "documentation":"<p>The type of resource that you monitor determines the type of the performance monitor.</p>"
+        },
+        "targets":{
+          "shape":"PerformanceMonitorTargets",
+          "documentation":"<p>The resources that the performance monitor tracks network performance for.</p>"
+        },
+        "createdAt":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The date and time when the performance monitor was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The date and time when the performance monitor was last modified.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags for a performance monitor.</p>"
+        }
+      }
+    },
     "CreateScopeInput":{
       "type":"structure",
       "required":["targets"],
@@ -650,7 +987,7 @@
     "CreateScopeInputTargetsList":{
       "type":"list",
       "member":{"shape":"TargetResource"},
-      "max":100,
+      "max":1000,
       "min":1
     },
     "CreateScopeOutput":{
@@ -695,6 +1032,22 @@
       "type":"structure",
       "members":{}
     },
+    "DeletePerformanceMonitorInput":{
+      "type":"structure",
+      "required":["monitorName"],
+      "members":{
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>",
+          "location":"uri",
+          "locationName":"monitorName"
+        }
+      }
+    },
+    "DeletePerformanceMonitorOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteScopeInput":{
       "type":"structure",
       "required":["scopeId"],
@@ -720,12 +1073,60 @@
         "UNCLASSIFIED",
         "AMAZON_S3",
         "AMAZON_DYNAMODB",
-        "INTER_REGION"
+        "INTER_REGION",
+        "INTERNET",
+        "AWS_SERVICE",
+        "LOCAL_ZONE",
+        "TRANSIT_GATEWAY"
       ]
     },
     "Double":{
       "type":"double",
       "box":true
+    },
+    "FilterOperator":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "NOT_EQUALS",
+        "IN",
+        "CONTAINS"
+      ]
+    },
+    "FilterParameter":{
+      "type":"structure",
+      "required":[
+        "field",
+        "operator",
+        "values"
+      ],
+      "members":{
+        "field":{
+          "shape":"String",
+          "documentation":"<p>The name of the field that you want to filter on. The fields that you can specify depend on the type of query.</p>"
+        },
+        "operator":{
+          "shape":"FilterOperator",
+          "documentation":"<p>The operator to use to compare the field with the values that you specify. The operator can be one of the following</p> <ul> <li> <p> <code>EQUALS</code>: The field matches a single value.</p> </li> <li> <p> <code>NOT_EQUALS</code>: The field doesn't match a single value.</p> </li> <li> <p> <code>IN</code>: The field matches any one of several values.</p> </li> <li> <p> <code>CONTAINS</code>: The field contains a value.</p> </li> </ul>"
+        },
+        "values":{
+          "shape":"FilterParameterValuesList",
+          "documentation":"<p>The values to compare the field with.</p>"
+        }
+      },
+      "documentation":"<p>A filter for a query, to return a subset of the results.</p>"
+    },
+    "FilterParameterValuesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":1
+    },
+    "FilterParameters":{
+      "type":"list",
+      "member":{"shape":"FilterParameter"},
+      "max":10,
+      "min":0
     },
     "GetMonitorInput":{
       "type":"structure",
@@ -785,6 +1186,113 @@
         }
       }
     },
+    "GetMonitorScopeSuggestionsInput":{
+      "type":"structure",
+      "required":["monitorArn"],
+      "members":{
+        "monitorArn":{
+          "shape":"MonitorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor that you want to return scope suggestions for.</p>",
+          "location":"querystring",
+          "locationName":"monitorArn"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The number of query results that you want to return with this call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetMonitorScopeSuggestionsOutput":{
+      "type":"structure",
+      "required":[
+        "status",
+        "accountsToAdd"
+      ],
+      "members":{
+        "status":{
+          "shape":"ScopeCoverageStatus",
+          "documentation":"<p>The coverage status of the monitoring scope for the monitor. The status can be one of the following</p> <ul> <li> <p> <code>COMPLETE</code>: The scope includes every account that sends traffic to, or receives traffic from, resources in the monitor.</p> </li> <li> <p> <code>INCOMPLETE</code>: There are accounts that you can add to the scope.</p> </li> <li> <p> <code>PENDING</code>: Network Flow Monitor is determining the coverage of the scope.</p> </li> <li> <p> <code>STALE</code>: The coverage of the scope was last determined too long ago to be current.</p> </li> </ul>"
+        },
+        "accountsToAdd":{
+          "shape":"AccountToAddList",
+          "documentation":"<p>The accounts that you can add to the monitoring scope, so that Network Flow Monitor can resolve the network paths for traffic to and from resources in those accounts.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>"
+        },
+        "updatedAt":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The date and time when Network Flow Monitor last determined the coverage of the monitoring scope.</p>"
+        }
+      }
+    },
+    "GetPerformanceMonitorInput":{
+      "type":"structure",
+      "required":["monitorName"],
+      "members":{
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>",
+          "location":"uri",
+          "locationName":"monitorName"
+        }
+      }
+    },
+    "GetPerformanceMonitorOutput":{
+      "type":"structure",
+      "required":[
+        "monitorArn",
+        "monitorName",
+        "monitorStatus",
+        "monitorType",
+        "targets",
+        "createdAt",
+        "modifiedAt"
+      ],
+      "members":{
+        "monitorArn":{
+          "shape":"MonitorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the performance monitor.</p>"
+        },
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>"
+        },
+        "monitorStatus":{
+          "shape":"MonitorStatus",
+          "documentation":"<p>The status of a performance monitor. The status can be one of the following</p> <ul> <li> <p> <code>PENDING</code>: The performance monitor is in the process of being created.</p> </li> <li> <p> <code>ACTIVE</code>: The performance monitor is active.</p> </li> <li> <p> <code>INACTIVE</code>: The performance monitor is inactive.</p> </li> <li> <p> <code>ERROR</code>: The performance monitor can't be created or updated.</p> </li> <li> <p> <code>DELETING</code>: The performance monitor is in the process of being deleted.</p> </li> </ul>"
+        },
+        "monitorType":{
+          "shape":"PerformanceMonitorType",
+          "documentation":"<p>The type of resource that you monitor determines the type of the performance monitor.</p>"
+        },
+        "targets":{
+          "shape":"PerformanceMonitorTargets",
+          "documentation":"<p>The resources that the performance monitor tracks network performance for.</p>"
+        },
+        "createdAt":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The date and time when the performance monitor was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The date and time when the performance monitor was last modified.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags for a performance monitor.</p>"
+        }
+      }
+    },
     "GetQueryResultsMonitorTopContributorsInput":{
       "type":"structure",
       "required":[
@@ -828,6 +1336,60 @@
         "topContributors":{
           "shape":"MonitorTopContributorsRowList",
           "documentation":"<p>The top contributor network flows overall for a specific metric type, for example, the number of retransmissions.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>"
+        }
+      }
+    },
+    "GetQueryResultsPerformanceMonitorInput":{
+      "type":"structure",
+      "required":[
+        "monitorName",
+        "queryId"
+      ],
+      "members":{
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>",
+          "location":"uri",
+          "locationName":"monitorName"
+        },
+        "queryId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the query. A query ID is an internally-generated identifier for a specific query returned from an API call to start a query.</p>",
+          "location":"uri",
+          "locationName":"queryId"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"QueryMaxResults",
+          "documentation":"<p>The number of query results that you want to return with this call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "GetQueryResultsPerformanceMonitorOutput":{
+      "type":"structure",
+      "required":[
+        "fields",
+        "data"
+      ],
+      "members":{
+        "fields":{
+          "shape":"QueryFields",
+          "documentation":"<p>The columns that the query returns, in the order that the values for each row appear in <code>data</code>.</p>"
+        },
+        "data":{
+          "shape":"QueryData",
+          "documentation":"<p>The results of the query. Each row contains the values for the columns that <code>fields</code> describes, in the same order.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -963,6 +1525,37 @@
         "status":{
           "shape":"QueryStatus",
           "documentation":"<p>When you run a query, use this call to check the status of the query to make sure that the query has <code>SUCCEEDED</code> before you review the results.</p> <ul> <li> <p> <code>QUEUED</code>: The query is scheduled to run.</p> </li> <li> <p> <code>RUNNING</code>: The query is in progress but not complete.</p> </li> <li> <p> <code>SUCCEEDED</code>: The query completed sucessfully.</p> </li> <li> <p> <code>FAILED</code>: The query failed due to an error.</p> </li> <li> <p> <code>CANCELED</code>: The query was canceled.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetQueryStatusPerformanceMonitorInput":{
+      "type":"structure",
+      "required":[
+        "monitorName",
+        "queryId"
+      ],
+      "members":{
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>",
+          "location":"uri",
+          "locationName":"monitorName"
+        },
+        "queryId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the query. A query ID is an internally-generated identifier for a specific query returned from an API call to start a query.</p>",
+          "location":"uri",
+          "locationName":"queryId"
+        }
+      }
+    },
+    "GetQueryStatusPerformanceMonitorOutput":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"QueryStatus",
+          "documentation":"<p>When you run a query, use this call to check the status of the query to make sure that the query has <code>SUCCEEDED</code> before you review the results.</p> <ul> <li> <p> <code>QUEUED</code>: The query is scheduled to run.</p> </li> <li> <p> <code>RUNNING</code>: The query is in progress but not complete.</p> </li> <li> <p> <code>SUCCEEDED</code>: The query completed successfully.</p> </li> <li> <p> <code>FAILED</code>: The query failed due to an error.</p> </li> <li> <p> <code>CANCELED</code>: The query was canceled.</p> </li> </ul>"
         }
       }
     },
@@ -1162,6 +1755,49 @@
         "monitors":{
           "shape":"MonitorList",
           "documentation":"<p>The monitors that are in an account.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>"
+        }
+      }
+    },
+    "ListPerformanceMonitorsInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The number of performance monitors that you want to return with this call. If you don't specify a value, the default is 25.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "monitorStatus":{
+          "shape":"MonitorStatus",
+          "documentation":"<p>The status of the performance monitors that you want to return. If you don't specify a status, Network Flow Monitor returns performance monitors with any status.</p>",
+          "location":"querystring",
+          "locationName":"monitorStatus"
+        },
+        "monitorType":{
+          "shape":"PerformanceMonitorType",
+          "documentation":"<p>The type of the performance monitors that you want to return. If you don't specify a type, Network Flow Monitor returns performance monitors of any type.</p>",
+          "location":"querystring",
+          "locationName":"monitorType"
+        }
+      }
+    },
+    "ListPerformanceMonitorsOutput":{
+      "type":"structure",
+      "required":["monitors"],
+      "members":{
+        "monitors":{
+          "shape":"PerformanceMonitorSummaryList",
+          "documentation":"<p>The performance monitors in the account.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -1481,6 +2117,10 @@
         "remoteVpcArn":{
           "shape":"VpcArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of a remote VPC.</p>"
+        },
+        "additionalFlowInfo":{
+          "shape":"AdditionalFlowInfo",
+          "documentation":"<p>Additional information about the network flow, such as the network that the remote address belongs to and the location of the client.</p>"
         }
       },
       "documentation":"<p>A set of information for a top contributor network flow in a monitor. In a monitor, Network Flow Monitor returns information about the network flows for top contributors for each metric. Top contributors are network flows with the top values for each metric type.</p>"
@@ -1488,6 +2128,149 @@
     "MonitorTopContributorsRowList":{
       "type":"list",
       "member":{"shape":"MonitorTopContributorsRow"}
+    },
+    "Network":{
+      "type":"structure",
+      "members":{
+        "asName":{
+          "shape":"String",
+          "documentation":"<p>The name of the autonomous system that the network belongs to.</p>"
+        },
+        "asNumber":{
+          "shape":"Long",
+          "documentation":"<p>The autonomous system number (ASN) of the autonomous system that the network belongs to.</p>"
+        }
+      },
+      "documentation":"<p>The network that an address in a network flow belongs to.</p>"
+    },
+    "OrgMembershipStatus":{
+      "type":"string",
+      "enum":[
+        "IN_ORG",
+        "NOT_IN_ORG",
+        "UNKNOWN"
+      ]
+    },
+    "PerformanceMonitorQueryType":{
+      "type":"string",
+      "enum":["TOP_PATHS"]
+    },
+    "PerformanceMonitorSummary":{
+      "type":"structure",
+      "required":[
+        "monitorArn",
+        "monitorName",
+        "monitorStatus",
+        "monitorType"
+      ],
+      "members":{
+        "monitorArn":{
+          "shape":"MonitorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the performance monitor.</p>"
+        },
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>"
+        },
+        "monitorStatus":{
+          "shape":"MonitorStatus",
+          "documentation":"<p>The status of a performance monitor. The status can be one of the following</p> <ul> <li> <p> <code>PENDING</code>: The performance monitor is in the process of being created.</p> </li> <li> <p> <code>ACTIVE</code>: The performance monitor is active.</p> </li> <li> <p> <code>INACTIVE</code>: The performance monitor is inactive.</p> </li> <li> <p> <code>ERROR</code>: The performance monitor can't be created or updated.</p> </li> <li> <p> <code>DELETING</code>: The performance monitor is in the process of being deleted.</p> </li> </ul>"
+        },
+        "monitorType":{
+          "shape":"PerformanceMonitorType",
+          "documentation":"<p>The type of resource that you monitor determines the type of the performance monitor.</p>"
+        },
+        "targets":{
+          "shape":"PerformanceMonitorTargets",
+          "documentation":"<p>The resources that the performance monitor tracks network performance for.</p>"
+        }
+      },
+      "documentation":"<p>A summary of information about a performance monitor, including the ARN, the name, the status, and the resources that it tracks network performance for.</p>"
+    },
+    "PerformanceMonitorSummaryList":{
+      "type":"list",
+      "member":{"shape":"PerformanceMonitorSummary"}
+    },
+    "PerformanceMonitorTarget":{
+      "type":"structure",
+      "required":[
+        "type",
+        "identifier"
+      ],
+      "members":{
+        "type":{
+          "shape":"PerformanceMonitorTargetType",
+          "documentation":"<p>The type of the resource that you want Network Flow Monitor to track network performance for. Specify <code>AWS::EC2::VPC</code>.</p>"
+        },
+        "identifier":{
+          "shape":"PerformanceMonitorTargetIdentifierString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want Network Flow Monitor to track network performance for.</p>"
+        }
+      },
+      "documentation":"<p>A resource that a performance monitor tracks network performance for.</p>"
+    },
+    "PerformanceMonitorTargetIdentifierString":{
+      "type":"string",
+      "max":128,
+      "min":20,
+      "pattern":"arn:.*"
+    },
+    "PerformanceMonitorTargetType":{
+      "type":"string",
+      "enum":["AWS::EC2::VPC"]
+    },
+    "PerformanceMonitorTargets":{
+      "type":"list",
+      "member":{"shape":"PerformanceMonitorTarget"}
+    },
+    "PerformanceMonitorType":{
+      "type":"string",
+      "enum":["VPC"]
+    },
+    "QueryData":{
+      "type":"list",
+      "member":{"shape":"QueryRow"}
+    },
+    "QueryField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The data type of the values in the column.</p>"
+        }
+      },
+      "documentation":"<p>A column that a query returns, with its name and data type.</p>"
+    },
+    "QueryFields":{
+      "type":"list",
+      "member":{"shape":"QueryField"},
+      "documentation":"<p>Generic column-based result format. Column names are returned in 'fields', row data in 'data'. This allows different QueryTypes to return different schemas without needing separate API operations.</p>"
+    },
+    "QueryLimit":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":1
+    },
+    "QueryMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":1
+    },
+    "QueryRow":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>A single result row: one value per column in 'fields', by position. A cell may be null when no value is available for that column.</p>",
+      "sparse":true
     },
     "QueryStatus":{
       "type":"string",
@@ -1516,6 +2299,15 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ScopeCoverageStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETE",
+        "INCOMPLETE",
+        "PENDING",
+        "STALE"
+      ]
     },
     "ScopeId":{"type":"string"},
     "ScopeStatus":{
@@ -1606,6 +2398,53 @@
       }
     },
     "StartQueryMonitorTopContributorsOutput":{
+      "type":"structure",
+      "required":["queryId"],
+      "members":{
+        "queryId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the query. A query ID is an internally-generated identifier for a specific query returned from an API call to start a query.</p>"
+        }
+      }
+    },
+    "StartQueryPerformanceMonitorInput":{
+      "type":"structure",
+      "required":[
+        "monitorName",
+        "startTime",
+        "endTime",
+        "queryType"
+      ],
+      "members":{
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>",
+          "location":"uri",
+          "locationName":"monitorName"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp that is the date and time that is the beginning of the period that you want to retrieve results for with your query.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp that is the date and time end of the period that you want to retrieve results for with your query.</p>"
+        },
+        "queryType":{
+          "shape":"PerformanceMonitorQueryType",
+          "documentation":"<p>The type of query that you want to create. Specify <code>TOP_PATHS</code> to return the top paths for the performance monitor.</p>"
+        },
+        "filterParameters":{
+          "shape":"FilterParameters",
+          "documentation":"<p>The filters for the query, to return a subset of the top paths. For a <code>TOP_PATHS</code> query, you can filter on the following fields:</p> <ul> <li> <p> <code>local_az_id</code>: The Availability Zone ID of the local end of a path</p> </li> <li> <p> <code>remote_az_id</code>: The Availability Zone ID of the remote end of a path</p> </li> <li> <p> <code>impact_level</code>: The impact level of a path</p> </li> </ul> <p>When you filter on <code>impact_level</code>, Network Flow Monitor compares the filter with the most severe impact level for the path over the time period of the query, and the traffic and round-trip time that Network Flow Monitor returns for each path still cover the full time period. Paths that have no impact data don't match an <code>impact_level</code> filter, including a <code>NOT_EQUALS</code> filter. Network Flow Monitor doesn't filter the subnet pairs within a path by impact level.</p>"
+        },
+        "limit":{
+          "shape":"QueryLimit",
+          "documentation":"<p>The maximum number of top paths that you want the query to return.</p>"
+        }
+      }
+    },
+    "StartQueryPerformanceMonitorOutput":{
       "type":"structure",
       "required":["queryId"],
       "members":{
@@ -1729,6 +2568,31 @@
       }
     },
     "StopQueryMonitorTopContributorsOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "StopQueryPerformanceMonitorInput":{
+      "type":"structure",
+      "required":[
+        "monitorName",
+        "queryId"
+      ],
+      "members":{
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>",
+          "location":"uri",
+          "locationName":"monitorName"
+        },
+        "queryId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the query. A query ID is an internally-generated identifier for a specific query returned from an API call to start a query.</p>",
+          "location":"uri",
+          "locationName":"queryId"
+        }
+      }
+    },
+    "StopQueryPerformanceMonitorOutput":{
       "type":"structure",
       "members":{}
     },
@@ -2036,6 +2900,89 @@
         }
       }
     },
+    "UpdatePerformanceMonitorInput":{
+      "type":"structure",
+      "required":["monitorName"],
+      "members":{
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>",
+          "location":"uri",
+          "locationName":"monitorName"
+        },
+        "targetsToAdd":{
+          "shape":"UpdatePerformanceMonitorInputTargetsToAddList",
+          "documentation":"<p>The resources to add to the performance monitor.</p>"
+        },
+        "targetsToRemove":{
+          "shape":"UpdatePerformanceMonitorInputTargetsToRemoveList",
+          "documentation":"<p>The resources to remove from the performance monitor.</p>"
+        },
+        "clientToken":{
+          "shape":"UuidString",
+          "documentation":"<p>A unique, case-sensitive string of up to 64 ASCII characters that you specify to make an idempotent API request. If the token matches a previous request, the service ignores the request without returning an error. Don't reuse the same client token for other API requests.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdatePerformanceMonitorInputTargetsToAddList":{
+      "type":"list",
+      "member":{"shape":"PerformanceMonitorTarget"},
+      "max":100,
+      "min":0
+    },
+    "UpdatePerformanceMonitorInputTargetsToRemoveList":{
+      "type":"list",
+      "member":{"shape":"PerformanceMonitorTarget"},
+      "max":100,
+      "min":0
+    },
+    "UpdatePerformanceMonitorOutput":{
+      "type":"structure",
+      "required":[
+        "monitorArn",
+        "monitorName",
+        "monitorStatus",
+        "monitorType",
+        "targets",
+        "createdAt",
+        "modifiedAt"
+      ],
+      "members":{
+        "monitorArn":{
+          "shape":"MonitorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the performance monitor.</p>"
+        },
+        "monitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the performance monitor.</p>"
+        },
+        "monitorStatus":{
+          "shape":"MonitorStatus",
+          "documentation":"<p>The status of a performance monitor. The status can be one of the following</p> <ul> <li> <p> <code>PENDING</code>: The performance monitor is in the process of being created.</p> </li> <li> <p> <code>ACTIVE</code>: The performance monitor is active.</p> </li> <li> <p> <code>INACTIVE</code>: The performance monitor is inactive.</p> </li> <li> <p> <code>ERROR</code>: The performance monitor can't be created or updated.</p> </li> <li> <p> <code>DELETING</code>: The performance monitor is in the process of being deleted.</p> </li> </ul>"
+        },
+        "monitorType":{
+          "shape":"PerformanceMonitorType",
+          "documentation":"<p>The type of resource that you monitor determines the type of the performance monitor.</p>"
+        },
+        "targets":{
+          "shape":"PerformanceMonitorTargets",
+          "documentation":"<p>The resources that the performance monitor tracks network performance for.</p>"
+        },
+        "createdAt":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The date and time when the performance monitor was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The date and time when the performance monitor was last modified.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags for a performance monitor.</p>"
+        }
+      }
+    },
     "UpdateScopeInput":{
       "type":"structure",
       "required":["scopeId"],
@@ -2059,13 +3006,13 @@
     "UpdateScopeInputResourcesToAddList":{
       "type":"list",
       "member":{"shape":"TargetResource"},
-      "max":99,
+      "max":1000,
       "min":1
     },
     "UpdateScopeInputResourcesToDeleteList":{
       "type":"list",
       "member":{"shape":"TargetResource"},
-      "max":99,
+      "max":1000,
       "min":1
     },
     "UpdateScopeOutput":{

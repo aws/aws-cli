@@ -655,6 +655,21 @@
       ],
       "documentation":"<p>Starts a recommendation job. You can create either an instance recommendation or load test job.</p>"
     },
+    "CreateInferenceRouter":{
+      "name":"CreateInferenceRouter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateInferenceRouterInput"},
+      "output":{"shape":"CreateInferenceRouterOutput"},
+      "errors":[
+        {"shape":"ResourceAlreadyExists"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates an inference router. An inference router is a Regional SageMaker AI resource that sends each inference request to one of the endpoints or inference components that you list for a routing target. These destinations can be in any Amazon Web Services account, and in any Amazon Web Services Region in the same partition as the router.</p> <p>The router's status is <code>Creating</code> until it's ready to use. SageMaker AI checks that each endpoint is a real-time or asynchronous endpoint, as the routing target requires, and rejects one of the wrong type. It checks endpoints in other accounts with your credentials, so the endpoint policy must allow <code>sagemaker:DescribeEndpoint</code>. SageMaker AI accepts an endpoint that it can't check, for example one that doesn't exist. Requests to it fail if it's the wrong type or doesn't exist. To see the status of each destination, call <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeInferenceRouter.html\">DescribeInferenceRouter</a> and see the <code>RoutingStatus</code> of each destination.</p> <p>To invoke the router, use <code>InvokeInferenceRouter</code> or <code>InvokeInferenceRouterAsync</code>. For information about inference routers, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/inference-router.html\">Route requests across Regions with inference routers</a>.</p>"
+    },
     "CreateJob":{
       "name":"CreateJob",
       "http":{
@@ -668,7 +683,7 @@
         {"shape":"ResourceInUse"},
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Creates a model customization job in Amazon SageMaker. A job runs a workload based on the job category and configuration you provide. You specify the job category, a schema-versioned configuration document, and an IAM role that grants Amazon SageMaker permission to access resources on your behalf.</p> <p>Use the <code>AgentRFT</code> category to fine-tune a model using multi-turn reinforcement learning with reward signals. Use the <code>AgentRFTEvaluation</code> category to evaluate a fine-tuned or base model by running multi-turn rollouts against a held-out prompt dataset and computing metrics such as pass@k and mean reward.</p> <p>Before creating a job, call <code>ListJobSchemaVersions</code> and <code>DescribeJobSchemaVersion</code> to retrieve the configuration schema for your job category. The <code>JobConfigDocument</code> must conform to the schema specified by <code>JobConfigSchemaVersion</code>.</p> <p>The following operations are related to <code>CreateJob</code>:</p> <ul> <li> <p> <code>DescribeJob</code> </p> </li> <li> <p> <code>ListJobs</code> </p> </li> <li> <p> <code>StopJob</code> </p> </li> <li> <p> <code>DeleteJob</code> </p> </li> <li> <p> <code>ListJobSchemaVersions</code> </p> </li> <li> <p> <code>DescribeJobSchemaVersion</code> </p> </li> </ul>"
+      "documentation":"<p>Creates a model customization job in Amazon SageMaker. A job runs a workload based on the job category and configuration you provide. You specify the job category, a schema-versioned configuration document, and an IAM role that grants Amazon SageMaker permission to access resources on your behalf.</p> <p>Specify one of the following job categories, which determines the type of workload that the job runs:</p> <dl> <dt>AgentRFT</dt> <dd> <p>Fine-tune a model using multi-turn reinforcement learning with reward signals.</p> </dd> <dt>AgentRFTEvaluation</dt> <dd> <p>Evaluate a fine-tuned or base model by running multi-turn rollouts against a held-out prompt dataset. This category computes metrics such as pass@k and mean reward.</p> </dd> <dt>DataQualityEvaluation</dt> <dd> <p>Evaluate the quality of a generated or bring-your-own dataset using quality metrics or your own specification.</p> </dd> <dt>DataTransformation</dt> <dd> <p>Transform datasets into the format you need, for example for model customization.</p> </dd> <dt>SyntheticDataGeneration</dt> <dd> <p>Generate synthetic training and testing datasets from your context data and specifications.</p> </dd> </dl> <p>Before creating a job, call <code>ListJobSchemaVersions</code> and <code>DescribeJobSchemaVersion</code> to retrieve the configuration schema for your job category. The <code>JobConfigDocument</code> must conform to the schema specified by <code>JobConfigSchemaVersion</code>.</p> <p>The following operations are related to <code>CreateJob</code>:</p> <ul> <li> <p> <code>DescribeJob</code> </p> </li> <li> <p> <code>ListJobs</code> </p> </li> <li> <p> <code>StopJob</code> </p> </li> <li> <p> <code>DeleteJob</code> </p> </li> <li> <p> <code>ListJobSchemaVersions</code> </p> </li> <li> <p> <code>DescribeJobSchemaVersion</code> </p> </li> </ul>"
     },
     "CreateLabelingJob":{
       "name":"CreateLabelingJob",
@@ -1428,6 +1443,19 @@
       "input":{"shape":"DeleteEndpointConfigInput"},
       "documentation":"<p>Deletes an endpoint configuration. The <code>DeleteEndpointConfig</code> API deletes only the specified configuration. It does not delete endpoints created using the configuration. </p> <p>You must not delete an <code>EndpointConfig</code> in use by an endpoint that is live or while the <code>UpdateEndpoint</code> or <code>CreateEndpoint</code> operations are being performed on the endpoint. If you delete the <code>EndpointConfig</code> of an endpoint that is active or being created or updated you may lose visibility into the instance type the endpoint is using. The endpoint must be deleted in order to stop incurring charges.</p>"
     },
+    "DeleteEndpointPolicy":{
+      "name":"DeleteEndpointPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEndpointPolicyRequest"},
+      "output":{"shape":"DeleteEndpointPolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes the resource-based policy that is attached to an endpoint. After you delete the policy, other accounts can no longer send requests to the endpoint through an inference router. The endpoint continues to serve requests from your account. If the endpoint doesn't have a policy, the operation succeeds.</p> <p>The change typically takes effect within 30 seconds, and can take up to 5 minutes. To revoke access for one account only, use <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_PutEndpointPolicy.html\">PutEndpointPolicy</a> to replace the policy with one that doesn't include that account.</p>"
+    },
     "DeleteExperiment":{
       "name":"DeleteExperiment",
       "http":{
@@ -1577,6 +1605,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Deletes an inference experiment.</p> <note> <p> This operation does not delete your endpoint, variants, or any underlying resources. This operation only deletes the metadata of your experiment. </p> </note>"
+    },
+    "DeleteInferenceRouter":{
+      "name":"DeleteInferenceRouter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteInferenceRouterInput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes an inference router. The endpoints and inference components that the router sends requests to aren't deleted.</p> <p>If the router is being created, updated, or deleted, you get a <code>ConflictException</code>.</p>",
+      "idempotent":true
     },
     "DeleteJob":{
       "name":"DeleteJob",
@@ -2458,6 +2500,20 @@
       ],
       "documentation":"<p>Provides the results of the Inference Recommender job. One or more recommendation jobs are returned.</p>"
     },
+    "DescribeInferenceRouter":{
+      "name":"DescribeInferenceRouter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeInferenceRouterInput"},
+      "output":{"shape":"DescribeInferenceRouterOutput"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns information about an inference router, including the routing status of each destination.</p> <p>SageMaker AI checks each destination with your permissions when you call this operation, so callers with different permissions can see a different <code>RoutingStatus</code>. To get the router's tags, use <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ListTags.html\">ListTags</a>.</p>",
+      "readonly":true
+    },
     "DescribeJob":{
       "name":"DescribeJob",
       "http":{
@@ -2997,6 +3053,19 @@
       "input":{"shape":"GetDeviceFleetReportRequest"},
       "output":{"shape":"GetDeviceFleetReportResponse"},
       "documentation":"<p>Describes a fleet.</p>"
+    },
+    "GetEndpointPolicy":{
+      "name":"GetEndpointPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEndpointPolicyRequest"},
+      "output":{"shape":"GetEndpointPolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns the resource-based policy that is attached to an endpoint. If the endpoint doesn't have a policy, you get a <code>ValidationException</code>.</p>"
     },
     "GetLineageGroupPolicy":{
       "name":"GetLineageGroupPolicy",
@@ -3564,6 +3633,17 @@
       "output":{"shape":"ListInferenceRecommendationsJobsResponse"},
       "documentation":"<p>Lists recommendation jobs that satisfy various filters.</p>"
     },
+    "ListInferenceRouters":{
+      "name":"ListInferenceRouters",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInferenceRoutersInput"},
+      "output":{"shape":"ListInferenceRoutersOutput"},
+      "documentation":"<p>Lists the inference routers in your account in the current Amazon Web Services Region. A router that you just created might not appear in the list right away.</p>",
+      "readonly":true
+    },
     "ListJobSchemaVersions":{
       "name":"ListJobSchemaVersions",
       "http":{
@@ -4098,6 +4178,19 @@
       "input":{"shape":"ListWorkteamsRequest"},
       "output":{"shape":"ListWorkteamsResponse"},
       "documentation":"<p>Gets a list of private work teams that you have defined in a region. The list may be empty if no work team satisfies the filter specified in the <code>NameContains</code> parameter.</p>"
+    },
+    "PutEndpointPolicy":{
+      "name":"PutEndpointPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutEndpointPolicyRequest"},
+      "output":{"shape":"PutEndpointPolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Attaches a resource-based policy to an endpoint. With an endpoint policy, you can allow other Amazon Web Services accounts to send requests to your endpoint, or to inference components on it, through an inference router. The policy that you specify replaces the endpoint's existing policy, if it has one.</p> <p>You can't attach a policy to an endpoint whose status is <code>Deleting</code> or <code>Failed</code>. SageMaker AI rejects a policy that doesn't follow the endpoint policy rules. For information about the policy rules, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/inference-router-cross-account.html\">Use destinations in other accounts</a>.</p> <p>Policy changes typically take effect within 30 seconds, and can take up to 5 minutes. If you delete the endpoint, its policy is also deleted, and a new endpoint with the same name has no policy.</p>"
     },
     "PutModelPackageGroupPolicy":{
       "name":"PutModelPackageGroupPolicy",
@@ -4913,6 +5006,22 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p> Updates an inference experiment that you created. The status of the inference experiment has to be either <code>Created</code>, <code>Running</code>. For more information on the status of an inference experiment, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeInferenceExperiment.html\">DescribeInferenceExperiment</a>. </p>"
+    },
+    "UpdateInferenceRouter":{
+      "name":"UpdateInferenceRouter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateInferenceRouterInput"},
+      "output":{"shape":"UpdateInferenceRouterOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Updates the routing targets of an inference router. The routing targets that you specify replace all of the router's existing routing targets. To change one routing target, call <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeInferenceRouter.html\">DescribeInferenceRouter</a>, edit the routing targets, and send all of them.</p> <p>The update is applied in full or not at all, and each request uses either the previous configuration or the new one. Updates typically take effect within about 2 minutes.</p> <p>If the router is being created, updated, or deleted, or another request changes it at the same time, you get a <code>ConflictException</code>. Describe the router, and then send your update again.</p>",
+      "idempotent":true
     },
     "UpdateMlflowApp":{
       "name":"UpdateMlflowApp",
@@ -14500,6 +14609,10 @@
         "MetricsConfig":{
           "shape":"MetricsConfig",
           "documentation":"<p>The configuration parameters for utilization metrics.</p>"
+        },
+        "CrossRegionTrafficConfig":{
+          "shape":"CrossRegionTrafficConfig",
+          "documentation":"<p>The cross-Region traffic cap for the endpoint. The cap limits the requests per second that the endpoint accepts from inference routers in other Amazon Web Services Regions. If you don't specify it, these requests aren't limited. You can't specify it with serverless variants or with <code>AsyncInferenceConfig</code>. For information about the cross-Region traffic cap, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/inference-router.html#inference-router-cross-region-limit\">Limit requests from other Regions</a>.</p>"
         }
       }
     },
@@ -15165,6 +15278,42 @@
         "JobArn":{
           "shape":"RecommendationJobArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the recommendation job.</p>"
+        }
+      }
+    },
+    "CreateInferenceRouterInput":{
+      "type":"structure",
+      "required":[
+        "InferenceRouterName",
+        "RoutingTargets"
+      ],
+      "members":{
+        "InferenceRouterName":{
+          "shape":"InferenceRouterName",
+          "documentation":"<p>The name of the inference router. The name must be unique within your account in the current Amazon Web Services Region. The name is case sensitive.</p>"
+        },
+        "RoutingTargets":{
+          "shape":"RoutingTargetList",
+          "documentation":"<p>The routing targets of the inference router. Each routing target is a model that callers name when they invoke the router, and the destinations that serve it.</p>"
+        },
+        "ClientToken":{
+          "shape":"InferenceRouterClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you reuse a client token, use the same request parameters. Otherwise, the request fails.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs to apply to the inference router. For information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        }
+      }
+    },
+    "CreateInferenceRouterOutput":{
+      "type":"structure",
+      "required":["InferenceRouterArn"],
+      "members":{
+        "InferenceRouterArn":{
+          "shape":"InferenceRouterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference router.</p>"
         }
       }
     },
@@ -17046,6 +17195,36 @@
         "CrossAccount"
       ]
     },
+    "CrossRegionMaxInvocationsPerSecondPerInstance":{
+      "type":"integer",
+      "box":true,
+      "max":10000,
+      "min":1
+    },
+    "CrossRegionPercentPerEndpoint":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "CrossRegionTrafficConfig":{
+      "type":"structure",
+      "required":[
+        "MaxInvocationsPerSecondPerInstance",
+        "MaxCrossRegionPercentPerEndpoint"
+      ],
+      "members":{
+        "MaxInvocationsPerSecondPerInstance":{
+          "shape":"CrossRegionMaxInvocationsPerSecondPerInstance",
+          "documentation":"<p>The number of invocations per second that you expect one <code>InService</code> instance to serve. One value applies to every production variant, whatever its instance type.</p>"
+        },
+        "MaxCrossRegionPercentPerEndpoint":{
+          "shape":"CrossRegionPercentPerEndpoint",
+          "documentation":"<p>The percentage of the endpoint's capacity that requests from inference routers in other Amazon Web Services Regions can use.</p>"
+        }
+      },
+      "documentation":"<p>The cross-Region traffic cap for an endpoint. The cap limits the requests per second that the endpoint accepts from inference routers in other Amazon Web Services Regions. The cap is <code>MaxCrossRegionPercentPerEndpoint</code> percent of <code>MaxInvocationsPerSecondPerInstance</code> multiplied by the number of <code>InService</code> instances, rounded up. All production variants and inference components of the endpoint share it. Requests that you send to the endpoint directly aren't counted. A request over the cap fails with a <code>ThrottlingException</code>.</p>"
+    },
     "CsvContentType":{
       "type":"string",
       "max":256,
@@ -18050,6 +18229,20 @@
         }
       }
     },
+    "DeleteEndpointPolicyRequest":{
+      "type":"structure",
+      "required":["EndpointName"],
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint. The endpoint must be in your account and in the current Amazon Web Services Region.</p>"
+        }
+      }
+    },
+    "DeleteEndpointPolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteExperimentRequest":{
       "type":"structure",
       "required":["ExperimentName"],
@@ -18239,6 +18432,16 @@
         "InferenceExperimentArn":{
           "shape":"InferenceExperimentArn",
           "documentation":"<p>The ARN of the deleted inference experiment.</p>"
+        }
+      }
+    },
+    "DeleteInferenceRouterInput":{
+      "type":"structure",
+      "required":["InferenceRouterName"],
+      "members":{
+        "InferenceRouterName":{
+          "shape":"InferenceRouterName",
+          "documentation":"<p>The name of the inference router to delete.</p>"
         }
       }
     },
@@ -20686,6 +20889,10 @@
         "MetricsConfig":{
           "shape":"MetricsConfig",
           "documentation":"<p>The configuration parameters for utilization metrics.</p>"
+        },
+        "CrossRegionTrafficConfig":{
+          "shape":"CrossRegionTrafficConfig",
+          "documentation":"<p>The cross-Region traffic cap, if the endpoint configuration sets one.</p>"
         }
       }
     },
@@ -20765,6 +20972,10 @@
         "MetricsConfig":{
           "shape":"MetricsConfig",
           "documentation":"<p>The configuration parameters for utilization metrics.</p>"
+        },
+        "CrossRegionTrafficConfig":{
+          "shape":"CrossRegionTrafficConfig",
+          "documentation":"<p>The cross-Region traffic cap, if the endpoint configuration sets one.</p>"
         }
       }
     },
@@ -21752,6 +21963,57 @@
         "EndpointPerformances":{
           "shape":"EndpointPerformances",
           "documentation":"<p>The performance results from running an Inference Recommender job on an existing endpoint.</p>"
+        }
+      }
+    },
+    "DescribeInferenceRouterInput":{
+      "type":"structure",
+      "required":["InferenceRouterName"],
+      "members":{
+        "InferenceRouterName":{
+          "shape":"InferenceRouterName",
+          "documentation":"<p>The name of the inference router to describe.</p>"
+        }
+      }
+    },
+    "DescribeInferenceRouterOutput":{
+      "type":"structure",
+      "required":[
+        "InferenceRouterName",
+        "InferenceRouterArn",
+        "RoutingTargets",
+        "Status",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "InferenceRouterName":{
+          "shape":"InferenceRouterName",
+          "documentation":"<p>The name of the inference router.</p>"
+        },
+        "InferenceRouterArn":{
+          "shape":"InferenceRouterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference router.</p>"
+        },
+        "RoutingTargets":{
+          "shape":"RoutingTargetList",
+          "documentation":"<p>The routing targets of the inference router. Each destination includes its <code>RoutingStatus</code>. You can send these routing targets back in an <code>UpdateInferenceRouter</code> request without changes.</p>"
+        },
+        "Status":{
+          "shape":"InferenceRouterStatus",
+          "documentation":"<p>The status of the inference router.</p>"
+        },
+        "StatusReason":{
+          "shape":"InferenceRouterStatusReason",
+          "documentation":"<p>If the status is <code>Failed</code>, the reason that the inference router failed.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the inference router was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the inference router was last updated.</p>"
         }
       }
     },
@@ -24449,6 +24711,34 @@
       "member":{"shape":"DesiredWeightAndCapacity"},
       "min":1
     },
+    "Destination":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"DestinationResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint or inference component. The destination can be in any account, and in any Amazon Web Services Region in the same partition as the inference router. To use a destination in another account, its owner must allow your account to invoke it through your router, in an endpoint policy.</p>"
+        },
+        "RoutingStatus":{
+          "shape":"RoutingStatus",
+          "documentation":"<p>Whether the inference router can send requests to the destination, as checked when you called <code>DescribeInferenceRouter</code>. This value isn't the destination's own status. SageMaker AI ignores this field in <code>CreateInferenceRouter</code> and <code>UpdateInferenceRouter</code> requests.</p> <dl> <dt>Routable</dt> <dd> <p>The destination is serving and the router can send it requests. A routable destination can still be overloaded.</p> </dd> <dt>Unroutable</dt> <dd> <p>The destination can't serve requests. For example, it's being created or has failed, or it has no capacity and no way to get any. A destination in your account that doesn't exist is also <code>Unroutable</code>.</p> </dd> <dt>Unknown</dt> <dd> <p>SageMaker AI couldn't check the destination, for example because you aren't allowed to describe it or the check timed out. The destination might still be serving.</p> </dd> </dl>"
+        }
+      },
+      "documentation":"<p>An endpoint or inference component that serves a routing target.</p>"
+    },
+    "DestinationList":{
+      "type":"list",
+      "member":{"shape":"Destination"},
+      "max":10,
+      "min":1
+    },
+    "DestinationResourceArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of an endpoint or inference component.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z-]*:sagemaker:[a-z0-9-]+:[0-9]{12}:(endpoint|inference-component)/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
     "DestinationS3Uri":{
       "type":"string",
       "max":512,
@@ -26075,6 +26365,13 @@
       "max":1,
       "min":0
     },
+    "EndpointPolicyDocument":{
+      "type":"string",
+      "documentation":"<p>A resource-based policy for an endpoint, as a JSON policy document.</p>",
+      "max":20480,
+      "min":1,
+      "pattern":".*(?:[ \\r\\n\\t].*)*.*"
+    },
     "EndpointSortKey":{
       "type":"string",
       "enum":[
@@ -27658,6 +27955,33 @@
         "ModelStats":{
           "shape":"EdgeModelStats",
           "documentation":"<p>Status of model on device.</p>"
+        }
+      }
+    },
+    "GetEndpointPolicyRequest":{
+      "type":"structure",
+      "required":["EndpointName"],
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint. The endpoint must be in your account and in the current Amazon Web Services Region.</p>"
+        }
+      }
+    },
+    "GetEndpointPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint.</p>"
+        },
+        "EndpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        },
+        "ResourcePolicy":{
+          "shape":"EndpointPolicyDocument",
+          "documentation":"<p>The endpoint policy, as a JSON policy document.</p>"
         }
       }
     },
@@ -30507,6 +30831,102 @@
       "type":"list",
       "member":{"shape":"InferenceRecommendationsJob"}
     },
+    "InferenceRouterArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z-]*:sagemaker:[a-z0-9-]+:[0-9]{12}:inference-router/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "InferenceRouterClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "InferenceRouterMaxTimeInBacklogSeconds":{
+      "type":"integer",
+      "documentation":"<p>A time in seconds.</p>",
+      "box":true,
+      "max":21600,
+      "min":60
+    },
+    "InferenceRouterName":{
+      "type":"string",
+      "documentation":"<p>The name of an inference router.</p>",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "InferenceRouterRoutingPreference":{
+      "type":"string",
+      "documentation":"<p>How an inference router chooses among the destinations of a routing target.</p>",
+      "enum":[
+        "LocalRegionFirst",
+        "InstancePoolOrder"
+      ]
+    },
+    "InferenceRouterS3Uri":{
+      "type":"string",
+      "documentation":"<p>An Amazon S3 URI.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"(https|s3)://([^/])/?(.*)"
+    },
+    "InferenceRouterSnsTopicArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of an Amazon SNS topic.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z-]*:sns:[a-z0-9-]*:[0-9]{12}:[a-zA-Z0-9_.-]+"
+    },
+    "InferenceRouterStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an inference router.</p>",
+      "enum":[
+        "InService",
+        "Creating",
+        "Updating",
+        "Failed",
+        "Deleting"
+      ]
+    },
+    "InferenceRouterStatusReason":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InferenceRouterSummary":{
+      "type":"structure",
+      "required":[
+        "InferenceRouterName",
+        "InferenceRouterArn",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "InferenceRouterName":{
+          "shape":"InferenceRouterName",
+          "documentation":"<p>The name of the inference router.</p>"
+        },
+        "InferenceRouterArn":{
+          "shape":"InferenceRouterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference router.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the inference router was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the inference router was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an inference router.</p>"
+    },
+    "InferenceRouterSummaryList":{
+      "type":"list",
+      "member":{"shape":"InferenceRouterSummary"}
+    },
     "InferenceSpecification":{
       "type":"structure",
       "required":["Containers"],
@@ -31301,7 +31721,10 @@
       "type":"string",
       "enum":[
         "AgentRFT",
-        "AgentRFTEvaluation"
+        "SyntheticDataGeneration",
+        "DataQualityEvaluation",
+        "AgentRFTEvaluation",
+        "DataTransformation"
       ]
     },
     "JobConfigDocument":{
@@ -31369,7 +31792,15 @@
         "Completed",
         "Restarting",
         "Pending",
+        "Generating",
+        "PartialGeneration",
         "Evaluating",
+        "Validating",
+        "Preparing",
+        "Executing",
+        "Publishing",
+        "Finalizing",
+        "Transforming",
         "Deleting",
         "DeleteFailed"
       ]
@@ -34546,6 +34977,33 @@
         "CreationTime",
         "Status"
       ]
+    },
+    "ListInferenceRoutersInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of inference routers to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, you receive this token. To get the next set of inference routers, use it in your next request.</p>"
+        }
+      }
+    },
+    "ListInferenceRoutersOutput":{
+      "type":"structure",
+      "required":["InferenceRouters"],
+      "members":{
+        "InferenceRouters":{
+          "shape":"InferenceRouterSummaryList",
+          "documentation":"<p>A list of summaries of the inference routers.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker AI returns this token. To get the next set of inference routers, use it in your next request.</p>"
+        }
+      }
     },
     "ListJobSchemaVersionsRequest":{
       "type":"structure",
@@ -43694,7 +44152,7 @@
       "members":{
         "RoutingStrategy":{
           "shape":"RoutingStrategy",
-          "documentation":"<p>Sets how the endpoint routes incoming traffic:</p> <ul> <li> <p> <code>LEAST_OUTSTANDING_REQUESTS</code>: The endpoint routes requests to the specific instances that have more capacity to process them.</p> </li> <li> <p> <code>RANDOM</code>: The endpoint routes each request to a randomly chosen instance.</p> </li> <li> <p> <code>PREFIX_AWARE</code>: The endpoint routes requests that share the same prompt prefix to the same instance and, when that instance hosts more than one copy of the invoked inference component, to the same copy. When the number of in-flight requests on the selected instance or copy reaches the <code>ConcurrencyThreshold</code> value, the endpoint routes the request to another copy on that instance or to another instance. The endpoint applies prefix-aware routing only when two or more instances can serve the request.</p> </li> </ul>"
+          "documentation":"<p>Sets how the endpoint routes incoming traffic:</p> <ul> <li> <p> <code>LEAST_OUTSTANDING_REQUESTS</code>: The endpoint routes requests to the specific instances that have more capacity to process them.</p> </li> <li> <p> <code>RANDOM</code>: The endpoint routes each request to a randomly chosen instance.</p> </li> <li> <p> <code>PREFIX_AWARE</code>: The endpoint routes requests that share the same prompt prefix to the same instance and, when that instance hosts more than one copy of the invoked inference component, to the same copy. When the number of in-flight requests on the selected instance or copy reaches the <code>ConcurrencyThreshold</code> value, the endpoint routes the request to another copy on that instance or to another instance. The endpoint applies prefix-aware routing only when two or more instances can serve the request.</p> </li> <li> <p> <code>KV_AWARE</code>: The endpoint routes each request to an instance that already holds the start of the request's prompt in its key-value (KV) cache, and weighs the length of that match against how busy each instance is. On an endpoint with inference components, the endpoint chooses among the copies of the invoked inference component in the same way. When the endpoint can't find an instance or copy that holds the start of the prompt and isn't too busy, it chooses an instance as it does with <code>LEAST_OUTSTANDING_REQUESTS</code>. <code>KV_AWARE</code> works only with supported containers, such as the SageMaker AI vLLM Deep Learning Container.</p> </li> </ul>"
         },
         "PrefixAwareRoutingConfig":{
           "shape":"PrefixAwareRoutingConfig",
@@ -44200,6 +44658,32 @@
         }
       },
       "documentation":"<p>Defines the amount of money paid to an Amazon Mechanical Turk worker for each task performed. </p> <p>Use one of the following prices for bounding box tasks. Prices are in US dollars and should be based on the complexity of the task; the longer it takes in your initial testing, the more you should offer.</p> <ul> <li> <p>0.036</p> </li> <li> <p>0.048</p> </li> <li> <p>0.060</p> </li> <li> <p>0.072</p> </li> <li> <p>0.120</p> </li> <li> <p>0.240</p> </li> <li> <p>0.360</p> </li> <li> <p>0.480</p> </li> <li> <p>0.600</p> </li> <li> <p>0.720</p> </li> <li> <p>0.840</p> </li> <li> <p>0.960</p> </li> <li> <p>1.080</p> </li> <li> <p>1.200</p> </li> </ul> <p>Use one of the following prices for image classification, text classification, and custom tasks. Prices are in US dollars.</p> <ul> <li> <p>0.012</p> </li> <li> <p>0.024</p> </li> <li> <p>0.036</p> </li> <li> <p>0.048</p> </li> <li> <p>0.060</p> </li> <li> <p>0.072</p> </li> <li> <p>0.120</p> </li> <li> <p>0.240</p> </li> <li> <p>0.360</p> </li> <li> <p>0.480</p> </li> <li> <p>0.600</p> </li> <li> <p>0.720</p> </li> <li> <p>0.840</p> </li> <li> <p>0.960</p> </li> <li> <p>1.080</p> </li> <li> <p>1.200</p> </li> </ul> <p>Use one of the following prices for semantic segmentation tasks. Prices are in US dollars.</p> <ul> <li> <p>0.840</p> </li> <li> <p>0.960</p> </li> <li> <p>1.080</p> </li> <li> <p>1.200</p> </li> </ul> <p>Use one of the following prices for Textract AnalyzeDocument Important Form Key Amazon Augmented AI review tasks. Prices are in US dollars.</p> <ul> <li> <p>2.400 </p> </li> <li> <p>2.280 </p> </li> <li> <p>2.160 </p> </li> <li> <p>2.040 </p> </li> <li> <p>1.920 </p> </li> <li> <p>1.800 </p> </li> <li> <p>1.680 </p> </li> <li> <p>1.560 </p> </li> <li> <p>1.440 </p> </li> <li> <p>1.320 </p> </li> <li> <p>1.200 </p> </li> <li> <p>1.080 </p> </li> <li> <p>0.960 </p> </li> <li> <p>0.840 </p> </li> <li> <p>0.720 </p> </li> <li> <p>0.600 </p> </li> <li> <p>0.480 </p> </li> <li> <p>0.360 </p> </li> <li> <p>0.240 </p> </li> <li> <p>0.120 </p> </li> <li> <p>0.072 </p> </li> <li> <p>0.060 </p> </li> <li> <p>0.048 </p> </li> <li> <p>0.036 </p> </li> <li> <p>0.024 </p> </li> <li> <p>0.012 </p> </li> </ul> <p>Use one of the following prices for Rekognition DetectModerationLabels Amazon Augmented AI review tasks. Prices are in US dollars.</p> <ul> <li> <p>1.200 </p> </li> <li> <p>1.080 </p> </li> <li> <p>0.960 </p> </li> <li> <p>0.840 </p> </li> <li> <p>0.720 </p> </li> <li> <p>0.600 </p> </li> <li> <p>0.480 </p> </li> <li> <p>0.360 </p> </li> <li> <p>0.240 </p> </li> <li> <p>0.120 </p> </li> <li> <p>0.072 </p> </li> <li> <p>0.060 </p> </li> <li> <p>0.048 </p> </li> <li> <p>0.036 </p> </li> <li> <p>0.024 </p> </li> <li> <p>0.012 </p> </li> </ul> <p>Use one of the following prices for Amazon Augmented AI custom human review tasks. Prices are in US dollars.</p> <ul> <li> <p>1.200 </p> </li> <li> <p>1.080 </p> </li> <li> <p>0.960 </p> </li> <li> <p>0.840 </p> </li> <li> <p>0.720 </p> </li> <li> <p>0.600 </p> </li> <li> <p>0.480 </p> </li> <li> <p>0.360 </p> </li> <li> <p>0.240 </p> </li> <li> <p>0.120 </p> </li> <li> <p>0.072 </p> </li> <li> <p>0.060 </p> </li> <li> <p>0.048 </p> </li> <li> <p>0.036 </p> </li> <li> <p>0.024 </p> </li> <li> <p>0.012 </p> </li> </ul>"
+    },
+    "PutEndpointPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "EndpointName",
+        "ResourcePolicy"
+      ],
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint. The endpoint must be in your account and in the current Amazon Web Services Region.</p>"
+        },
+        "ResourcePolicy":{
+          "shape":"EndpointPolicyDocument",
+          "documentation":"<p>The endpoint policy, as a JSON policy document. The policy can contain only ASCII characters. For information about the policy rules, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/inference-router-cross-account.html\">Use destinations in other accounts</a>.</p>"
+        }
+      }
+    },
+    "PutEndpointPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "EndpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        }
+      }
     },
     "PutModelPackageGroupPolicyInput":{
       "type":"structure",
@@ -45387,6 +45871,14 @@
       },
       "documentation":"<p>The resolved attributes.</p>"
     },
+    "ResourceAlreadyExists":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"FailureReason"}
+      },
+      "documentation":"<p>The resource that you are trying to create already exists. Use a different resource name, or delete the existing resource before retrying.</p>",
+      "exception":true
+    },
     "ResourceArn":{
       "type":"string",
       "max":256,
@@ -45819,13 +46311,127 @@
         "Disabled"
       ]
     },
+    "RoutingStatus":{
+      "type":"string",
+      "documentation":"<p>Whether an inference router can send requests to a destination.</p>",
+      "enum":[
+        "Routable",
+        "Unroutable",
+        "Unknown"
+      ]
+    },
     "RoutingStrategy":{
       "type":"string",
       "enum":[
         "LEAST_OUTSTANDING_REQUESTS",
         "RANDOM",
-        "PREFIX_AWARE"
+        "PREFIX_AWARE",
+        "KV_AWARE"
       ]
+    },
+    "RoutingTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Destinations"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RoutingTargetName",
+          "documentation":"<p>The name of the routing target. Callers specify this name in the <code>RoutingTargetName</code> parameter when they invoke the inference router. The name must be unique within the router.</p>"
+        },
+        "Destinations":{
+          "shape":"DestinationList",
+          "documentation":"<p>The endpoints and inference components that serve the routing target. Each destination can appear only once in a routing target.</p> <p>In an asynchronous routing target, every destination must be an asynchronous inference endpoint. In a real-time routing target, no destination can be one. SageMaker AI checks an endpoint in another account with your credentials, so both your IAM policy and the endpoint policy must allow <code>sagemaker:DescribeEndpoint</code>. If an endpoint can't be checked, for example because it isn't found or can't be read in time, it's accepted, and requests to it fail if it's the wrong mode.</p>"
+        },
+        "AsyncInferenceConfig":{
+          "shape":"RoutingTargetAsyncInferenceConfig",
+          "documentation":"<p>The asynchronous inference settings of the routing target. Specify this setting to make the routing target asynchronous. If you omit it, the routing target serves real-time requests.</p> <p>Asynchronous routing targets aren't available in all Amazon Web Services Regions. For information about asynchronous routing targets and Region availability, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/inference-router-async.html\">Send asynchronous requests through an inference router</a>.</p> <p>Because <code>UpdateInferenceRouter</code> replaces all routing targets, include this setting in every update of an asynchronous routing target.</p> <p>For information about asynchronous routing targets, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/inference-router-async.html\">Send asynchronous requests through an inference router</a>.</p>"
+        },
+        "RoutingPreference":{
+          "shape":"InferenceRouterRoutingPreference",
+          "documentation":"<p>How the inference router chooses among the routing target's destinations. The default is <code>LocalRegionFirst</code>.</p> <dl> <dt>LocalRegionFirst</dt> <dd> <p>The router uses destinations in its own Region first. When the request leaves the Region, the router spreads it across healthy destinations in other Regions.</p> </dd> <dt>InstancePoolOrder</dt> <dd> <p>The router prefers destinations by instance type first and by Region second. Every destination must be an endpoint that lists the same two or more instance types, each with a different priority, in the same priority order. This value is supported only for asynchronous routing targets.</p> </dd> </dl> <p>With either value, the router uses destinations whose health or capacity is reduced after the others, but doesn't exclude them.</p>"
+        }
+      },
+      "documentation":"<p>A model that an inference router serves, and the destinations that can serve it. When you invoke the router, you name the routing target, and the router sends the request to one of its destinations.</p> <p>Every destination in a routing target must serve the same model, with the same request and response format.</p>"
+    },
+    "RoutingTargetAsyncInferenceClientConfig":{
+      "type":"structure",
+      "members":{
+        "MaxTimeInBacklogSeconds":{
+          "shape":"InferenceRouterMaxTimeInBacklogSeconds",
+          "documentation":"<p>The maximum time, in seconds, that a request can wait at a destination before the inference router moves it to another destination. The default is 900 seconds.</p>"
+        }
+      },
+      "documentation":"<p>How the inference router submits asynchronous requests to the destinations of a routing target.</p>"
+    },
+    "RoutingTargetAsyncInferenceConfig":{
+      "type":"structure",
+      "required":["OutputConfig"],
+      "members":{
+        "OutputConfig":{
+          "shape":"RoutingTargetAsyncInferenceOutputConfig",
+          "documentation":"<p>The Amazon S3 locations for the results of asynchronous requests, and the notification settings.</p>"
+        },
+        "ClientConfig":{
+          "shape":"RoutingTargetAsyncInferenceClientConfig",
+          "documentation":"<p>How the inference router submits requests to destinations.</p>"
+        }
+      },
+      "documentation":"<p>The asynchronous inference settings of a routing target.</p>"
+    },
+    "RoutingTargetAsyncInferenceNotificationConfig":{
+      "type":"structure",
+      "members":{
+        "SuccessTopic":{
+          "shape":"InferenceRouterSnsTopicArn",
+          "documentation":"<p>The ARN of the Amazon SNS topic to publish to when a request completes. The topic must be a standard topic, and can be in any Amazon Web Services Region.</p>"
+        },
+        "ErrorTopic":{
+          "shape":"InferenceRouterSnsTopicArn",
+          "documentation":"<p>The ARN of the Amazon SNS topic to publish to when a request fails, or when the router can't place it on any destination. The topic must be a standard topic, and can be in any Amazon Web Services Region.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon SNS topics that the inference router publishes to. The router publishes one notification for each request. The notification contains the location of the result, not the result itself. The destination endpoints also send their own notifications, if they're configured to.</p>"
+    },
+    "RoutingTargetAsyncInferenceOutputConfig":{
+      "type":"structure",
+      "required":[
+        "S3OutputPath",
+        "S3FailurePath"
+      ],
+      "members":{
+        "S3OutputPath":{
+          "shape":"InferenceRouterS3Uri",
+          "documentation":"<p>The Amazon S3 location for the results of successful requests. The bucket must be in the inference router's Amazon Web Services Region and owned by the router's account.</p>"
+        },
+        "S3FailurePath":{
+          "shape":"InferenceRouterS3Uri",
+          "documentation":"<p>The Amazon S3 location for the failure details of failed requests. The bucket must be in the inference router's Amazon Web Services Region and owned by the router's account.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The KMS key that encrypts the results in Amazon S3. You can specify a key ID, key ARN, alias name, or alias ARN. If any destination is in a different account or Amazon Web Services Region from the inference router, specify a key ARN or an alias ARN.</p>"
+        },
+        "NotificationConfig":{
+          "shape":"RoutingTargetAsyncInferenceNotificationConfig",
+          "documentation":"<p>The Amazon SNS topics that the inference router publishes to when a request completes or fails.</p>"
+        }
+      },
+      "documentation":"<p>The output settings for the asynchronous requests of a routing target. Every destination writes to the same locations. <code>CreateInferenceRouter</code> and <code>UpdateInferenceRouter</code> don't check who owns the buckets. If another account owns the output bucket, requests fail.</p>"
+    },
+    "RoutingTargetList":{
+      "type":"list",
+      "member":{"shape":"RoutingTarget"},
+      "max":20,
+      "min":1
+    },
+    "RoutingTargetName":{
+      "type":"string",
+      "documentation":"<p>The name of a routing target.</p>",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
     },
     "RuleConfigurationName":{
       "type":"string",
@@ -52427,6 +53033,33 @@
         "InferenceExperimentArn":{
           "shape":"InferenceExperimentArn",
           "documentation":"<p>The ARN of the updated inference experiment.</p>"
+        }
+      }
+    },
+    "UpdateInferenceRouterInput":{
+      "type":"structure",
+      "required":[
+        "InferenceRouterName",
+        "RoutingTargets"
+      ],
+      "members":{
+        "InferenceRouterName":{
+          "shape":"InferenceRouterName",
+          "documentation":"<p>The name of the inference router to update.</p>"
+        },
+        "RoutingTargets":{
+          "shape":"RoutingTargetList",
+          "documentation":"<p>The complete list of routing targets for the inference router. To remove the last routing target, delete the router.</p>"
+        }
+      }
+    },
+    "UpdateInferenceRouterOutput":{
+      "type":"structure",
+      "required":["InferenceRouterArn"],
+      "members":{
+        "InferenceRouterArn":{
+          "shape":"InferenceRouterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference router.</p>"
         }
       }
     },

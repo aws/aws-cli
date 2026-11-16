@@ -1,0 +1,158 @@
+{
+    "version": "1.0",
+    "parameters": {
+        "Region": {
+            "type": "string",
+            "builtIn": "AWS::Region",
+            "required": true,
+            "documentation": "The AWS Region to send the request to."
+        },
+        "Endpoint": {
+            "type": "string",
+            "builtIn": "SDK::Endpoint",
+            "required": false,
+            "documentation": "An endpoint URL to use instead of the one the rules resolve."
+        },
+        "SpaceId": {
+            "type": "string",
+            "required": false,
+            "documentation": "The ID of the space the request targets. When set, the request goes to that space's endpoint."
+        },
+        "UseFIPS": {
+            "type": "boolean",
+            "builtIn": "AWS::UseFIPS",
+            "required": true,
+            "default": false,
+            "documentation": "When true, send the request to a FIPS endpoint. The service has no FIPS endpoint, so the request fails."
+        }
+    },
+    "rules": [
+        {
+            "documentation": "FIPS with an endpoint override.",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        true
+                    ]
+                }
+            ],
+            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+            "type": "error"
+        },
+        {
+            "documentation": "Endpoint override.",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "{Endpoint}"
+            },
+            "type": "endpoint"
+        },
+        {
+            "documentation": "The service has no FIPS endpoint.",
+            "conditions": [
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        true
+                    ]
+                }
+            ],
+            "error": "Invalid Configuration: FIPS is not supported with OpenSearch Memory.",
+            "type": "error"
+        },
+        {
+            "documentation": "The Region is part of the host name, so it must be a valid host label.",
+            "conditions": [
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isValidHostLabel",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                },
+                                true
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "error": "Invalid Configuration: Region must be a valid host label",
+            "type": "error"
+        },
+        {
+            "documentation": "Event and memory operations: the space's own endpoint.",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "SpaceId"
+                        }
+                    ]
+                },
+                {
+                    "fn": "isValidHostLabel",
+                    "argv": [
+                        {
+                            "ref": "SpaceId"
+                        },
+                        false
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{SpaceId}.osm.{Region}.on.aws"
+            },
+            "type": "endpoint"
+        },
+        {
+            "documentation": "A space ID that is not a single host label is not put in the host name.",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "SpaceId"
+                        }
+                    ]
+                }
+            ],
+            "error": "Invalid SpaceId: must be a valid host label",
+            "type": "error"
+        },
+        {
+            "documentation": "Space and tagging operations: the regional endpoint.",
+            "conditions": [],
+            "endpoint": {
+                "url": "https://osm.{Region}.api.aws"
+            },
+            "type": "endpoint"
+        }
+    ]
+}

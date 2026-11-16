@@ -50,6 +50,29 @@
       ],
       "documentation":"<p>Associate a profile with a workload.</p>"
     },
+    "CreateAgentBasicProfile":{
+      "name":"CreateAgentBasicProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api/v1/agent-basic-profile",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAgentBasicProfileRequest"},
+      "output":{"shape":"CreateAgentBasicProfileResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a Basic profile for the calling account. No configuration input is required because the account and region are inferred from the caller. The profile uses the reserved name <code>basic</code>. This operation is idempotent. Calling it twice returns the same ARN. Each account can have at most one Basic profile.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
     "CreateAgentContext":{
       "name":"CreateAgentContext",
       "http":{
@@ -93,6 +116,53 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates an optimization goal associated with a profile. Goals define specific targets and objectives for the optimization process.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "CreateAgentOrganizationalProfile":{
+      "name":"CreateAgentOrganizationalProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api/v1/agent-organizational-profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAgentOrganizationalProfileRequest"},
+      "output":{"shape":"CreateAgentOrganizationalProfileResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Organizational Profile for use with AWS Organizations integration. Organizational Profiles are scoped to an AWS Organization and do not require an execution role or aggregation configuration. The organization is inferred from the caller's identity.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "CreateAgentOrganizationalReport":{
+      "name":"CreateAgentOrganizationalReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api/v1/agent-organizational-reports",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateAgentOrganizationalReportRequest"},
+      "output":{"shape":"CreateAgentOrganizationalReportResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Organizational Report, which is an asynchronously-materialized, point-in-time snapshot of recommendations across all Agent Profiles within the caller's AWS Organization. You can optionally narrow the scope with filters. The operation is idempotent on the caller-supplied clientToken. The AWS Organization the report belongs to is inferred from the caller's authorization context. Reports are retained for 90 days from creation, after which they are automatically deleted. Use DeleteAgentOrganizationalReport to delete a report earlier.</p>",
       "idempotent":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -344,6 +414,28 @@
         "SubServiceType":{"value":"AGENT"}
       }
     },
+    "DeleteAgentOrganizationalReport":{
+      "name":"DeleteAgentOrganizationalReport",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/api/v1/agent-organizational-reports/{reportId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAgentOrganizationalReportRequest"},
+      "output":{"shape":"DeleteAgentOrganizationalReportResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an Organizational Report and its associated artifacts. The operation is idempotent, so repeated calls for a report that has already been deleted return success.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
     "DeleteAgentProfile":{
       "name":"DeleteAgentProfile",
       "http":{
@@ -362,6 +454,50 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes an optimization profile and its associated configuration. This action cannot be undone.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "DeleteAgentProfilePolicy":{
+      "name":"DeleteAgentProfilePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/api/v1/agent-profiles/{profileArn}/policy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAgentProfilePolicyRequest"},
+      "output":{"shape":"DeleteAgentProfilePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes the resource-based policy from an Agent Profile. This revokes all cross-account access previously granted by the policy. Only the profile owner can call this operation.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "DeleteAgentRecommendationPolicy":{
+      "name":"DeleteAgentRecommendationPolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/api/v1/agent-recommendations/{recommendationArn}/policy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAgentRecommendationPolicyRequest"},
+      "output":{"shape":"DeleteAgentRecommendationPolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes the resource-based policy from an individual Agent Recommendation. This revokes all cross-account access previously granted by the policy. The recommendation owner or any principal with profile write access on the parent profile can call this operation.</p>",
       "idempotent":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -609,6 +745,71 @@
         "SubServiceType":{"value":"AGENT"}
       }
     },
+    "GetAgentOrganizationalReport":{
+      "name":"GetAgentOrganizationalReport",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api/v1/agent-organizational-reports/{reportId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentOrganizationalReportRequest"},
+      "output":{"shape":"GetAgentOrganizationalReportResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves metadata and current state for a single Organizational Report. The coverageSummary is populated once the report reaches COMPLETED and is absent for reports still in progress or in a failed state.</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "GetAgentOrganizationalReportData":{
+      "name":"GetAgentOrganizationalReportData",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api/v1/agent-organizational-reports/{reportId}/data",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentOrganizationalReportDataRequest"},
+      "output":{"shape":"GetAgentOrganizationalReportDataResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the data artifact for a completed Organizational Report as a short-lived presigned S3 URL. The response contains the URL in downloadUrl and its expiration in expiresAt. To have the service write the artifact directly into a caller-owned bucket instead, use SendAgentOrganizationalReportDataToS3.</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "GetAgentPreferences":{
+      "name":"GetAgentPreferences",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api/v1/agent-preferences",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentPreferencesRequest"},
+      "output":{"shape":"GetAgentPreferencesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the caller's complete set of Well-Architected Agent preferences with their current states.</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
     "GetAgentProfile":{
       "name":"GetAgentProfile",
       "http":{
@@ -631,6 +832,28 @@
         "SubServiceType":{"value":"AGENT"}
       }
     },
+    "GetAgentProfilePolicy":{
+      "name":"GetAgentProfilePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api/v1/agent-profiles/{profileArn}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentProfilePolicyRequest"},
+      "output":{"shape":"GetAgentProfilePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the resource-based policy attached to an Agent Profile. Only the profile owner can call this operation.</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
     "GetAgentRecommendation":{
       "name":"GetAgentRecommendation",
       "http":{
@@ -647,7 +870,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves detailed information about a specific optimization recommendation, including its impact analysis, content, and implementation guidance.</p>",
+      "documentation":"<p><important> <p>Application-level recommendations are a new recommendation format currently in beta. We are actively seeking customer feedback to improve their quality and relevance. As with any AI-generated content, please thoroughly review each recommendation before taking any action based on it.</p> </important> <p>Retrieves detailed information about a specific optimization recommendation, including its impact analysis, content, and implementation guidance.</p></p>",
       "readonly":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -669,7 +892,29 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves information about a recommendation generation process, including its status, progress, and results. Recommendation generation is asynchronous: poll this operation until status reaches a terminal value of COMPLETED (results are ready) or ERROR (see errorDetails). Intermediate values are QUEUED and IN_PROGRESS.</p>",
+      "documentation":"<p><important> <p>Application-level recommendations are a new recommendation format currently in beta. We are actively seeking customer feedback to improve their quality and relevance. As with any AI-generated content, please thoroughly review each recommendation before taking any action based on it.</p> </important> <p>Retrieves information about a recommendation generation process, including its status, progress, and results. Recommendation generation is asynchronous: poll this operation until status reaches a terminal value of COMPLETED (results are ready) or ERROR (see errorDetails). Intermediate values are QUEUED and IN_PROGRESS.</p></p>",
+      "readonly":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "GetAgentRecommendationPolicy":{
+      "name":"GetAgentRecommendationPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api/v1/agent-recommendations/{recommendationArn}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentRecommendationPolicyRequest"},
+      "output":{"shape":"GetAgentRecommendationPolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the resource-based policy attached to an individual Agent Recommendation. The recommendation owner or any principal with profile write access on the parent profile can call this operation.</p>",
       "readonly":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -987,6 +1232,27 @@
         "SubServiceType":{"value":"AGENT"}
       }
     },
+    "ListAgentOrganizationalReports":{
+      "name":"ListAgentOrganizationalReports",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api/v1/agent-organizational-reports",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAgentOrganizationalReportsRequest"},
+      "output":{"shape":"ListAgentOrganizationalReportsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists Organizational Reports owned by the caller's account within the caller's AWS Organization, ordered by most recently created first. Supports pagination and an optional state filter.</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
     "ListAgentProfiles":{
       "name":"ListAgentProfiles",
       "http":{
@@ -1024,7 +1290,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists recommendation generation processes for a specified profile.</p>",
+      "documentation":"<p><important> <p>Application-level recommendations are a new recommendation format currently in beta. We are actively seeking customer feedback to improve their quality and relevance. As with any AI-generated content, please thoroughly review each recommendation before taking any action based on it.</p> </important> <p>Lists recommendation generation processes for a specified profile.</p></p>",
       "readonly":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -1046,7 +1312,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists recommendation items for a specific recommendation. Recommendation items provide detailed information about individual optimization opportunities.</p>",
+      "documentation":"<p><important> <p>Application-level recommendations are a new recommendation format currently in beta. We are actively seeking customer feedback to improve their quality and relevance. As with any AI-generated content, please thoroughly review each recommendation before taking any action based on it.</p> </important> <p>Lists recommendation items for a specific recommendation. Recommendation items provide detailed information about individual optimization opportunities.</p></p>",
       "readonly":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -1068,7 +1334,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists active optimization recommendations for a specified profile with optional filtering by state.</p>",
+      "documentation":"<p><important> <p>Application-level recommendations are a new recommendation format currently in beta. We are actively seeking customer feedback to improve their quality and relevance. As with any AI-generated content, please thoroughly review each recommendation before taking any action based on it.</p> </important> <p>Lists active optimization recommendations for a specified profile with optional filtering by state.</p></p>",
       "readonly":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -1406,6 +1672,50 @@
       ],
       "documentation":"<p>Paginated list of workloads.</p>"
     },
+    "PutAgentPreferences":{
+      "name":"PutAgentPreferences",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/api/v1/agent-preferences",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAgentPreferencesRequest"},
+      "output":{"shape":"PutAgentPreferencesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or replaces the caller's Well-Architected Agent preferences. Each supplied update sets the desired state of one preference. Preferences not named in the request are left unchanged. Enabling or disabling is performed synchronously, so a failure to reach the requested state is returned as a modeled exception rather than a FAILED status. On success the operation returns an empty response. Call GetAgentPreferences to read the resulting state. The account the preferences belong to is inferred from the caller's authorization context.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "PutAgentProfilePolicy":{
+      "name":"PutAgentProfilePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/api/v1/agent-profiles/{profileArn}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAgentProfilePolicyRequest"},
+      "output":{"shape":"PutAgentProfilePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Attaches or replaces a resource-based policy on an Agent Profile. The policy controls cross-account access to the profile and its child resources such as recommendations, goals, and contexts. Only the profile owner can call this operation. The policy must be valid IAM JSON with Allow-only statements and no negation condition operators.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
     "PutAgentRecommendationFeedback":{
       "name":"PutAgentRecommendationFeedback",
       "http":{
@@ -1428,6 +1738,49 @@
         "SubServiceType":{"value":"AGENT"}
       }
     },
+    "PutAgentRecommendationPolicy":{
+      "name":"PutAgentRecommendationPolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/api/v1/agent-recommendations/{recommendationArn}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAgentRecommendationPolicyRequest"},
+      "output":{"shape":"PutAgentRecommendationPolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Attaches or replaces a resource-based policy on an individual Agent Recommendation. The policy controls cross-account access to the recommendation and its child resources such as items and remediations. The recommendation owner or any principal with profile write access on the parent profile can call this operation. The policy must be valid IAM JSON with Allow-only statements and no negation condition operators.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
+    "SendAgentOrganizationalReportDataToS3":{
+      "name":"SendAgentOrganizationalReportDataToS3",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api/v1/agent-organizational-reports/{reportId}/send-to-s3",
+        "responseCode":200
+      },
+      "input":{"shape":"SendAgentOrganizationalReportDataToS3Request"},
+      "output":{"shape":"SendAgentOrganizationalReportDataToS3Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Writes the data artifact for a completed Organizational Report directly into a caller-owned S3 bucket. The artifact is written in the requested format to the supplied bucketArn and objectKey, and the resulting S3 location is returned in deliveredTo. This operation creates an S3 object and should not be retried indiscriminately. To download the artifact through a short-lived presigned URL instead, use GetAgentOrganizationalReportData.</p>",
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
     "StartAgentRecommendationGeneration":{
       "name":"StartAgentRecommendationGeneration",
       "http":{
@@ -1445,7 +1798,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Initiates a new recommendation generation process for the specified optimization profile. This asynchronous operation analyzes your Amazon Web Services resources and generates optimization recommendations based on the configured pillars and scope. Use GetAgentRecommendationGeneration to check status.</p>",
+      "documentation":"<p>Starts a recommendation generation process for the specified agent profile. This asynchronous operation returns immediately. Use <code>GetAgentRecommendationGeneration</code> to check the status of the generation.</p> <p>Currently, only the <code>ARCHITECTURE</code> recommendation type is supported. <code>RESOURCE</code> and <code>APPLICATION</code> recommendations are generated only by the scheduled generation cycle and cannot be started with this operation.</p> <p>For the <code>ARCHITECTURE</code> type, the generation analyzes the infrastructure as code (IaC) template that you specify in <code>additionalContext</code>, and returns updated templates with best practice fixes applied. You must specify <code>scope</code> and <code>additionalContext</code>. You can optionally specify <code>name</code>.</p> <p>Architecture review generations are subject to a daily quota for each profile. For more information, see <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/agent-quotas.html\">Quotas and limits</a> in the Amazon Web Services Well-Architected User Guide.</p>",
       "idempotent":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -1525,6 +1878,28 @@
         "SubServiceType":{"value":"AGENT"}
       }
     },
+    "UpdateAgentOrganizationalProfile":{
+      "name":"UpdateAgentOrganizationalProfile",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/api/v1/agent-organizational-profiles/{profileArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAgentOrganizationalProfileRequest"},
+      "output":{"shape":"UpdateAgentOrganizationalProfileResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates an Organizational Profile. Organizational Profiles are specific to Profiles created using AWS Organizations integration. Include only the fields you want to change; any field you omit from the request keeps its current value.</p> <p>To clear an optional text field, supply an empty string for it; the field is then unset, and a subsequent read omits it rather than returning an empty string. Omitting the field from the request leaves the stored value in place. <code>description</code> and <code>businessOverview</code> can be cleared this way. <code>displayName</code> cannot be cleared because a display name is required, though you can change it. <code>pillars</code> cannot be cleared because a profile must target at least one pillar.</p> <p> <code>organizationalAggregationConfiguration</code> behaves differently because it is a structure rather than a text field. Supplying it with both its <code>organizationalUnits</code> and <code>accounts</code> lists empty removes every monitored organizational unit and account, but the field itself remains set: a subsequent read returns the structure with two empty lists rather than omitting it. Omitting the field from the request keeps the stored boundary.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "SubServiceType":{"value":"AGENT"}
+      }
+    },
     "UpdateAgentProfile":{
       "name":"UpdateAgentProfile",
       "http":{
@@ -1538,10 +1913,11 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates an existing optimization profile's configuration, including its pillars, execution role, and aggregation settings.</p>",
+      "documentation":"<p>Updates an existing optimization profile's configuration, including its pillars, execution role, and aggregation settings. Include only the fields you want to change. Any field you omit from the request keeps its current value, so you do not need to retrieve the profile first and resend the fields you are not changing.</p> <p>To clear an optional text field, supply an empty string for it; the field is then unset, and a subsequent read omits it rather than returning an empty string. Omitting the field from the request leaves the stored value in place. <code>description</code> and <code>businessOverview</code> can be cleared this way. <code>displayName</code> cannot be cleared because a display name is required, though you can change it. <code>pillars</code> cannot be cleared because a profile must target at least one pillar.</p> <p> <code>aggregationConfiguration</code> behaves differently because it is a list of per-account configurations rather than a text field. Supplying an empty list removes every account entry, but the field itself remains set: a subsequent read returns an empty list rather than omitting the field. Omitting it from the request keeps the stored entries.</p>",
       "idempotent":true,
       "staticContextParams":{
         "SubServiceType":{"value":"AGENT"}
@@ -1954,9 +2330,6 @@
       "type":"structure",
       "required":[
         "name",
-        "pillars",
-        "executionRoleArn",
-        "aggregationConfiguration",
         "arn",
         "createdBy",
         "createdAt"
@@ -1980,19 +2353,23 @@
         },
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The Well-Architected Tool Framework pillars associated with this profile.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars associated with this profile. Not present for basic profiles.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether deletion protection is enabled for the profile.</p>"
         },
+        "profileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>The type of the profile.</p>"
+        },
         "executionRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The ARN of the IAM execution role used for recommendation actions.</p>"
+          "documentation":"<p>The ARN of the IAM execution role used for recommendation actions. Not present for basic profiles.</p>"
         },
         "aggregationConfiguration":{
           "shape":"AggregationConfigurations",
-          "documentation":"<p>The aggregation configuration that defines which Amazon Web Services accounts and Regions to analyze.</p>"
+          "documentation":"<p>The aggregation configuration that defines which Amazon Web Services accounts and Regions to analyze. Not present for basic profiles.</p>"
         },
         "arn":{
           "shape":"AgentProfileArn",
@@ -2010,10 +2387,6 @@
           "shape":"FieldErrors",
           "documentation":"<p>A map of field paths to error messages for invalid or missing input fields.</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>The tags associated with the profile.</p>"
-        },
         "createdBy":{
           "shape":"AgentProfileSummaryCreatedByString",
           "documentation":"<p>The identifier of the user or system that created this profile.</p>"
@@ -2029,6 +2402,10 @@
         "lastModifiedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp when the profile was last modified.</p>"
+        },
+        "organizationalAggregationConfiguration":{
+          "shape":"OrganizationalAggregationConfiguration",
+          "documentation":"<p>The organizational monitoring boundary. Present only for organizational profiles.</p>"
         }
       },
       "documentation":"<p>Summary of an optimization profile, including its configuration, metadata, and audit information.</p>"
@@ -2125,6 +2502,26 @@
         "lastModifiedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp when the generation was last modified.</p>"
+        },
+        "generationType":{
+          "shape":"GenerationType",
+          "documentation":"<p>How the generation was started.</p>"
+        },
+        "generationRecommendationTypes":{
+          "shape":"GenerationRecommendationTypes",
+          "documentation":"<p>The recommendation types the generation covers.</p>"
+        },
+        "startedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the recommendation generation process started.</p>"
+        },
+        "endedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the recommendation generation process completed.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>Details about the error if the generation status is ERROR.</p>"
         }
       },
       "documentation":"<p>Summary of a recommendation generation process initiated through the agent API.</p>"
@@ -2185,6 +2582,10 @@
         "lastModifiedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp when the recommendation item was last modified.</p>"
+        },
+        "autoRemediation":{
+          "shape":"AutoRemediation",
+          "documentation":"<p>The optional per-resource auto-remediation for this affected resource, representing an SSM runbook execution. Present only when the item's check is backed by an SSM automation runbook.</p>"
         }
       },
       "documentation":"<p>Summary of an agent recommendation item, representing an Amazon Web Services resource or recommendation affected by the optimization recommendation.</p>"
@@ -2291,7 +2692,7 @@
         },
         "generationId":{
           "shape":"UUID",
-          "documentation":"<p>The identifier of the generation process that produced this recommendation.</p>"
+          "documentation":"<p>The identifier of the generation that produced this recommendation.</p>"
         },
         "title":{
           "shape":"AgentRecommendationSummaryTitleString",
@@ -2307,7 +2708,7 @@
         },
         "pillar":{
           "shape":"Pillar",
-          "documentation":"<p>The Well-Architected Tool Framework pillar that the recommendation addresses.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillar that the recommendation addresses.</p>"
         },
         "priority":{
           "shape":"Priority",
@@ -2426,7 +2827,7 @@
     "AggregationConfigurations":{
       "type":"list",
       "member":{"shape":"AggregationConfiguration"},
-      "max":100,
+      "max":1000,
       "min":0
     },
     "Answer":{
@@ -2514,6 +2915,7 @@
     },
     "ApplicationType":{
       "type":"string",
+      "documentation":"<p>The type of application described by an application context.</p>",
       "enum":[
         "SAS",
         "DESKTOP_APPLICATION",
@@ -2553,6 +2955,30 @@
           "documentation":"<p>The list of profile ARNs to associate with the workload.</p>"
         }
       }
+    },
+    "AutoRemediation":{
+      "type":"structure",
+      "members":{
+        "deepLink":{
+          "shape":"AutoRemediationDeepLinkString",
+          "documentation":"<p>A deep link to the SSM runbook execution page in the AWS Management Console for this resource, with the execution parameters prefilled.</p>"
+        },
+        "cliCommand":{
+          "shape":"AutoRemediationCliCommandString",
+          "documentation":"<p>The AWS CLI command that triggers the same SSM runbook execution for this resource. You can copy and run this command as-is.</p>"
+        }
+      },
+      "documentation":"<p>The per-resource auto-remediation for a single affected resource. Represents one AWS Systems Manager (SSM) runbook execution that targets the resource. Present only when the resource's check is backed by an SSM automation runbook.</p>"
+    },
+    "AutoRemediationCliCommandString":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "AutoRemediationDeepLinkString":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "AwsAccountId":{
       "type":"string",
@@ -2966,6 +3392,10 @@
           "shape":"ContextContentResourceTagsList",
           "documentation":"<p>Resource tags used to scope this application context.</p>"
         },
+        "organizationalUnitIds":{
+          "shape":"ContextContentOrganizationalUnitIdsList",
+          "documentation":"<p>The AWS Organizations organizational unit (OU) IDs associated with this application context. Valid only for organizational profiles; rejected for standard profiles.</p>"
+        },
         "applicationOverview":{
           "shape":"ContextContentApplicationOverviewString",
           "documentation":"<p>A free-form overview of the application.</p>"
@@ -3044,6 +3474,18 @@
       "min":0,
       "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}\\r\\n])*",
       "sensitive":true
+    },
+    "ContextContentOrganizationalUnitIdsList":{
+      "type":"list",
+      "member":{"shape":"ContextContentOrganizationalUnitIdsListMemberString"},
+      "max":2500,
+      "min":0
+    },
+    "ContextContentOrganizationalUnitIdsListMemberString":{
+      "type":"string",
+      "max":68,
+      "min":1,
+      "pattern":"(ou-[a-z0-9]{4,32}-[a-z0-9]{8,32}|r-[a-z0-9]{4,32})"
     },
     "ContextContentRegionsList":{
       "type":"list",
@@ -3187,6 +3629,7 @@
     },
     "ContextType":{
       "type":"string",
+      "documentation":"<p>The type of a context, describing the kind of application or environment metadata it carries.</p>",
       "enum":["APPLICATION"]
     },
     "Count":{
@@ -3194,6 +3637,109 @@
       "documentation":"<p>A non-negative integer that denotes how many.</p>",
       "box":true,
       "min":0
+    },
+    "CoverageSummary":{
+      "type":"structure",
+      "required":[
+        "totalAccountsInScope",
+        "accountsWithProfile",
+        "accountsWithoutProfile",
+        "failedAccountCount",
+        "totalProfiles",
+        "totalRecommendations"
+      ],
+      "members":{
+        "totalAccountsInScope":{
+          "shape":"Long",
+          "documentation":"<p>Total number of accounts that were in scope for the report after applying all filters and AWS Organizations membership validation.</p>"
+        },
+        "accountsWithProfile":{
+          "shape":"Long",
+          "documentation":"<p>Number of in-scope accounts that had an Agent Profile and were successfully processed.</p>"
+        },
+        "accountsWithoutProfile":{
+          "shape":"Long",
+          "documentation":"<p>Number of in-scope accounts that had no Agent Profile at the time of the snapshot.</p>"
+        },
+        "failedAccountCount":{
+          "shape":"Long",
+          "documentation":"<p>Number of in-scope accounts that errored during processing. Equal to the length of failedAccounts.</p>"
+        },
+        "totalProfiles":{
+          "shape":"Long",
+          "documentation":"<p>Total number of Agent Profiles contributing to the report.</p>"
+        },
+        "totalRecommendations":{
+          "shape":"Long",
+          "documentation":"<p>Total number of recommendations included in the report across all profiles and all pillars.</p>"
+        },
+        "recommendationCountByPillar":{
+          "shape":"PillarCountList",
+          "documentation":"<p>Recommendation count grouped by Well-Architected pillar. Each entry pairs a Pillar enum value with a non-negative long. The counts sum to totalRecommendations.</p>"
+        },
+        "recommendationCountByPriority":{
+          "shape":"PriorityCountList",
+          "documentation":"<p>Recommendation count grouped by Priority. Each entry pairs a Priority enum value with a non-negative long. The counts sum to totalRecommendations.</p>"
+        },
+        "failedAccounts":{
+          "shape":"FailedAccountList",
+          "documentation":"<p>Accounts that errored during processing and the reason they failed.</p>"
+        },
+        "failedOrganizationalUnits":{
+          "shape":"FailedOrganizationalUnitList",
+          "documentation":"<p>Organizational units named in the report's filters that could not be expanded into their member accounts, along with the reason each failed. A failed OU means the report is missing whatever accounts it contained. Absent or empty when every requested OU expanded successfully.</p>"
+        }
+      },
+      "documentation":"<p>Counts describing the coverage of a completed Organizational Report. Includes the number of accounts in scope, how many had a profile, how many failed, and aggregated recommendation counts by pillar and priority. Returned only by GetAgentOrganizationalReport after the report reaches COMPLETED status. Not returned on the list response.</p>"
+    },
+    "CreateAgentBasicProfileRequest":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags to apply to the Basic profile at creation time.</p>"
+        }
+      }
+    },
+    "CreateAgentBasicProfileResponse":{
+      "type":"structure",
+      "required":[
+        "createdBy",
+        "createdAt",
+        "arn"
+      ],
+      "members":{
+        "createdBy":{
+          "shape":"CreateAgentBasicProfileResponseCreatedByString",
+          "documentation":"<p>The identifier of the user or system that created this resource.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the resource was created.</p>"
+        },
+        "lastModifiedBy":{
+          "shape":"CreateAgentBasicProfileResponseLastModifiedByString",
+          "documentation":"<p>The identifier of the user or system that last modified this resource.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the resource was last modified.</p>"
+        },
+        "arn":{
+          "shape":"AgentProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created Basic profile.</p>"
+        }
+      }
+    },
+    "CreateAgentBasicProfileResponseCreatedByString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateAgentBasicProfileResponseLastModifiedByString":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "CreateAgentContextRequest":{
       "type":"structure",
@@ -3273,7 +3819,7 @@
         },
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The Well-Architected Tool Framework pillars to associate with this goal.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars to associate with this goal.</p>"
         },
         "title":{
           "shape":"CreateAgentGoalRequestTitleString",
@@ -3315,6 +3861,244 @@
         }
       }
     },
+    "CreateAgentOrganizationalProfileRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "pillars"
+      ],
+      "members":{
+        "name":{
+          "shape":"CreateAgentOrganizationalProfileRequestNameString",
+          "documentation":"<p>The system name of the organizational profile.</p>"
+        },
+        "displayName":{
+          "shape":"CreateAgentOrganizationalProfileRequestDisplayNameString",
+          "documentation":"<p>The display name of the organizational profile shown to users.</p>"
+        },
+        "description":{
+          "shape":"CreateAgentOrganizationalProfileRequestDescriptionString",
+          "documentation":"<p>A description of the organizational profile.</p>"
+        },
+        "businessOverview":{
+          "shape":"CreateAgentOrganizationalProfileRequestBusinessOverviewString",
+          "documentation":"<p>The business overview for this organizational profile.</p>"
+        },
+        "pillars":{
+          "shape":"Pillars",
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars to associate with this organizational profile.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether deletion protection is enabled for the organizational profile.</p>"
+        },
+        "clientToken":{
+          "shape":"CreateAgentOrganizationalProfileRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "organizationalAggregationConfiguration":{
+          "shape":"OrganizationalAggregationConfiguration",
+          "documentation":"<p>The organizational monitoring boundary. Contains organizational unit or root entries and individual account entries that define the scope for the profile.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to associate with the organizational profile.</p>"
+        }
+      }
+    },
+    "CreateAgentOrganizationalProfileRequestBusinessOverviewString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])*",
+      "sensitive":true
+    },
+    "CreateAgentOrganizationalProfileRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "CreateAgentOrganizationalProfileRequestDescriptionString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])*",
+      "sensitive":true
+    },
+    "CreateAgentOrganizationalProfileRequestDisplayNameString":{
+      "type":"string",
+      "max":128,
+      "min":3,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])+",
+      "sensitive":true
+    },
+    "CreateAgentOrganizationalProfileRequestNameString":{
+      "type":"string",
+      "max":128,
+      "min":3,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "CreateAgentOrganizationalProfileResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "pillars",
+        "organizationId",
+        "arn",
+        "createdBy",
+        "createdAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"CreateAgentOrganizationalProfileResponseNameString",
+          "documentation":"<p>The system name of the created organizational profile.</p>"
+        },
+        "displayName":{
+          "shape":"CreateAgentOrganizationalProfileResponseDisplayNameString",
+          "documentation":"<p>The display name of the created organizational profile.</p>"
+        },
+        "description":{
+          "shape":"CreateAgentOrganizationalProfileResponseDescriptionString",
+          "documentation":"<p>A description of the created organizational profile.</p>"
+        },
+        "businessOverview":{
+          "shape":"CreateAgentOrganizationalProfileResponseBusinessOverviewString",
+          "documentation":"<p>The business overview of the created organizational profile.</p>"
+        },
+        "pillars":{
+          "shape":"Pillars",
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars associated with the created organizational profile.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether deletion protection is enabled.</p>"
+        },
+        "organizationId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the Amazon Web Services Organization this profile belongs to.</p>"
+        },
+        "organizationalAggregationConfiguration":{
+          "shape":"OrganizationalAggregationConfiguration",
+          "documentation":"<p>The organizational monitoring boundary for the created profile. Present only for organizational profiles.</p>"
+        },
+        "arn":{
+          "shape":"AgentProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created organizational profile.</p>"
+        },
+        "eligibleForScheduledGeneration":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the profile is valid for scheduled recommendation generation.</p>"
+        },
+        "eligibleForArchitectureGeneration":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the profile is valid for manual architecture generation.</p>"
+        },
+        "fieldErrors":{
+          "shape":"FieldErrors",
+          "documentation":"<p>A map of field paths to error messages for invalid or missing input fields.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags associated with the created organizational profile.</p>"
+        },
+        "createdBy":{
+          "shape":"CreateAgentOrganizationalProfileResponseCreatedByString",
+          "documentation":"<p>The identifier of the user or system that created this organizational profile.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the organizational profile was created.</p>"
+        },
+        "lastModifiedBy":{
+          "shape":"CreateAgentOrganizationalProfileResponseLastModifiedByString",
+          "documentation":"<p>The identifier of the user or system that last modified this organizational profile.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the organizational profile was last modified.</p>"
+        }
+      }
+    },
+    "CreateAgentOrganizationalProfileResponseBusinessOverviewString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])*",
+      "sensitive":true
+    },
+    "CreateAgentOrganizationalProfileResponseCreatedByString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateAgentOrganizationalProfileResponseDescriptionString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])*",
+      "sensitive":true
+    },
+    "CreateAgentOrganizationalProfileResponseDisplayNameString":{
+      "type":"string",
+      "max":128,
+      "min":3,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])+",
+      "sensitive":true
+    },
+    "CreateAgentOrganizationalProfileResponseLastModifiedByString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateAgentOrganizationalProfileResponseNameString":{
+      "type":"string",
+      "max":128,
+      "min":3,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "CreateAgentOrganizationalReportRequest":{
+      "type":"structure",
+      "members":{
+        "clientToken":{
+          "shape":"CreateAgentOrganizationalReportRequestClientTokenString",
+          "documentation":"<p>A caller-supplied idempotency token. Two create calls sharing the same token within the service's idempotency window return the same reportId.</p>",
+          "idempotencyToken":true
+        },
+        "label":{
+          "shape":"ReportLabel",
+          "documentation":"<p>Optional human-readable label (1-500 characters) that helps callers distinguish reports created with the same filters. Carried through list and get responses.</p>"
+        },
+        "filters":{
+          "shape":"OrganizationalReportFilters",
+          "documentation":"<p>Optional filters narrowing the report's scope. Absent means the report covers the whole organization.</p>"
+        }
+      }
+    },
+    "CreateAgentOrganizationalReportRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "CreateAgentOrganizationalReportResponse":{
+      "type":"structure",
+      "required":[
+        "reportId",
+        "state"
+      ],
+      "members":{
+        "reportId":{
+          "shape":"UUID",
+          "documentation":"<p>Unique identifier assigned to the newly-created report.</p>"
+        },
+        "state":{
+          "shape":"OrganizationalReportState",
+          "documentation":"<p>Lifecycle state of the report at the moment the create call returned. For a freshly-created report this is typically DISCOVERING.</p>"
+        }
+      }
+    },
     "CreateAgentProfileRequest":{
       "type":"structure",
       "required":[
@@ -3342,7 +4126,7 @@
         },
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The Well-Architected Tool Framework pillars to associate with this profile.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars to associate with this profile.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
@@ -3430,7 +4214,7 @@
         },
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The Well-Architected Tool Framework pillars associated with the created profile.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars associated with the created profile.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
@@ -3856,6 +4640,7 @@
     },
     "Criticality":{
       "type":"string",
+      "documentation":"<p>The business criticality of an application context.</p>",
       "enum":[
         "MISSION_CRITICAL",
         "BUSINESS_CRITICAL",
@@ -3962,6 +4747,38 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteAgentOrganizationalReportRequest":{
+      "type":"structure",
+      "required":["reportId"],
+      "members":{
+        "reportId":{
+          "shape":"UUID",
+          "documentation":"<p>Identifier of the report to delete.</p>",
+          "location":"uri",
+          "locationName":"reportId"
+        }
+      }
+    },
+    "DeleteAgentOrganizationalReportResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteAgentProfilePolicyRequest":{
+      "type":"structure",
+      "required":["profileArn"],
+      "members":{
+        "profileArn":{
+          "shape":"AgentProfileArn",
+          "documentation":"<p>The ARN of the Agent Profile whose policy to delete.</p>",
+          "location":"uri",
+          "locationName":"profileArn"
+        }
+      }
+    },
+    "DeleteAgentProfilePolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteAgentProfileRequest":{
       "type":"structure",
       "required":["profileArn"],
@@ -3975,6 +4792,22 @@
       }
     },
     "DeleteAgentProfileResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteAgentRecommendationPolicyRequest":{
+      "type":"structure",
+      "required":["recommendationArn"],
+      "members":{
+        "recommendationArn":{
+          "shape":"AgentRecommendationArn",
+          "documentation":"<p>The ARN of the Agent Recommendation whose policy to delete.</p>",
+          "location":"uri",
+          "locationName":"recommendationArn"
+        }
+      }
+    },
+    "DeleteAgentRecommendationPolicyResponse":{
       "type":"structure",
       "members":{}
     },
@@ -4240,6 +5073,7 @@
     },
     "Effort":{
       "type":"string",
+      "documentation":"<p>The level of effort required to implement a recommendation.</p>",
       "enum":[
         "LARGE",
         "MEDIUM",
@@ -4302,8 +5136,57 @@
         }
       }
     },
+    "FailedAccount":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "reason"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID that failed.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable explanation of why the account could not be processed.</p>"
+        }
+      },
+      "documentation":"<p>An account that was in scope for an Organizational Report but could not be processed, along with the reason for the failure.</p>"
+    },
+    "FailedAccountList":{
+      "type":"list",
+      "member":{"shape":"FailedAccount"},
+      "max":1000,
+      "min":0
+    },
+    "FailedOrganizationalUnit":{
+      "type":"structure",
+      "required":[
+        "organizationalUnitId",
+        "reason"
+      ],
+      "members":{
+        "organizationalUnitId":{
+          "shape":"OrganizationalUnitId",
+          "documentation":"<p>The AWS Organizations OU ID that could not be expanded.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable explanation of why the organizational unit could not be expanded.</p>"
+        }
+      },
+      "documentation":"<p>An organizational unit that was requested in an Organizational Report's filters but could not be expanded into its member accounts. A failed OU means the report is missing the accounts it contained.</p>"
+    },
+    "FailedOrganizationalUnitList":{
+      "type":"list",
+      "member":{"shape":"FailedOrganizationalUnit"},
+      "max":1000,
+      "min":0
+    },
     "FeedbackCategory":{
       "type":"string",
+      "documentation":"<p>A category that classifies the specific nature of recommendation feedback. Used to provide structured feedback that the recommendation engine can act upon in subsequent generation cycles.</p>",
       "enum":[
         "OTHER",
         "RECOMMENDATION_NOT_RELEVANT",
@@ -4335,13 +5218,29 @@
       "max":9999,
       "min":1
     },
+    "GenerationRecommendationTypes":{
+      "type":"list",
+      "member":{"shape":"RecommendationType"},
+      "max":3,
+      "min":0
+    },
     "GenerationStatus":{
       "type":"string",
+      "documentation":"<p>The status of a recommendation generation process.</p>",
       "enum":[
         "QUEUED",
         "IN_PROGRESS",
         "COMPLETED",
         "ERROR"
+      ]
+    },
+    "GenerationType":{
+      "type":"string",
+      "documentation":"<p>How a recommendation generation was started.</p>",
+      "enum":[
+        "ONDEMAND",
+        "SCHEDULED",
+        "BASIC"
       ]
     },
     "GetAgentContextRequest":{
@@ -4406,6 +5305,143 @@
         }
       }
     },
+    "GetAgentOrganizationalReportDataRequest":{
+      "type":"structure",
+      "required":[
+        "reportId",
+        "format"
+      ],
+      "members":{
+        "reportId":{
+          "shape":"UUID",
+          "documentation":"<p>Identifier of the report whose data is being retrieved.</p>",
+          "location":"uri",
+          "locationName":"reportId"
+        },
+        "format":{
+          "shape":"OrganizationalReportFormat",
+          "documentation":"<p>Format of the returned artifact (CSV, JSON, or PARQUET).</p>",
+          "location":"querystring",
+          "locationName":"format"
+        }
+      }
+    },
+    "GetAgentOrganizationalReportDataResponse":{
+      "type":"structure",
+      "required":[
+        "downloadUrl",
+        "expiresAt"
+      ],
+      "members":{
+        "downloadUrl":{
+          "shape":"String",
+          "documentation":"<p>Presigned URL that can be used to download the artifact.</p>"
+        },
+        "expiresAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Expiration time of downloadUrl.</p>"
+        }
+      }
+    },
+    "GetAgentOrganizationalReportRequest":{
+      "type":"structure",
+      "required":["reportId"],
+      "members":{
+        "reportId":{
+          "shape":"UUID",
+          "documentation":"<p>Identifier of the report to retrieve.</p>",
+          "location":"uri",
+          "locationName":"reportId"
+        }
+      }
+    },
+    "GetAgentOrganizationalReportResponse":{
+      "type":"structure",
+      "required":[
+        "reportId",
+        "ownerAccountId",
+        "organizationId",
+        "state",
+        "createdAt"
+      ],
+      "members":{
+        "reportId":{
+          "shape":"UUID",
+          "documentation":"<p>Unique identifier of the Organizational Report assigned by the service at creation time.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>AWS account ID of the caller that created the report. Only this account or a delegated administrator of the same organization may retrieve or delete the report.</p>"
+        },
+        "organizationId":{
+          "shape":"String",
+          "documentation":"<p>Identifier of the AWS Organization the report belongs to. Derived from the caller's authorization context at creation time and not accepted as a client-supplied input.</p>"
+        },
+        "label":{
+          "shape":"ReportLabel",
+          "documentation":"<p>Optional human-readable label supplied by the caller at creation time.</p>"
+        },
+        "state":{
+          "shape":"OrganizationalReportState",
+          "documentation":"<p>Current lifecycle state of the report.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Timestamp at which the report was created.</p>"
+        },
+        "filters":{
+          "shape":"OrganizationalReportFilters",
+          "documentation":"<p>Filters captured when the report was created. Absent when no filters were supplied (meaning the report covered the whole organization).</p>"
+        },
+        "coverageSummary":{
+          "shape":"CoverageSummary",
+          "documentation":"<p>Coverage and aggregate counts for the report. Present only after the report reaches COMPLETED.</p>"
+        }
+      }
+    },
+    "GetAgentPreferencesRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetAgentPreferencesResponse":{
+      "type":"structure",
+      "required":["preferences"],
+      "members":{
+        "preferences":{
+          "shape":"PreferenceEntries",
+          "documentation":"<p>The caller's complete set of preferences.</p>"
+        }
+      }
+    },
+    "GetAgentProfilePolicyRequest":{
+      "type":"structure",
+      "required":["profileArn"],
+      "members":{
+        "profileArn":{
+          "shape":"AgentProfileArn",
+          "documentation":"<p>The ARN of the Agent Profile whose policy to retrieve.</p>",
+          "location":"uri",
+          "locationName":"profileArn"
+        }
+      }
+    },
+    "GetAgentProfilePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "profileArn",
+        "policy"
+      ],
+      "members":{
+        "profileArn":{
+          "shape":"AgentProfileArn",
+          "documentation":"<p>The ARN of the Agent Profile.</p>"
+        },
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The IAM resource-based policy document in JSON format.</p>"
+        }
+      }
+    },
     "GetAgentProfileRequest":{
       "type":"structure",
       "required":["profileArn"],
@@ -4422,9 +5458,6 @@
       "type":"structure",
       "required":[
         "name",
-        "pillars",
-        "executionRoleArn",
-        "aggregationConfiguration",
         "arn",
         "createdBy",
         "createdAt"
@@ -4448,19 +5481,23 @@
         },
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The Well-Architected Tool Framework pillars associated with the profile.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars associated with the profile. Not present for basic profiles.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether deletion protection is enabled.</p>"
         },
+        "profileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>The type of the profile.</p>"
+        },
         "executionRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The ARN of the IAM execution role.</p>"
+          "documentation":"<p>The ARN of the IAM execution role. Not present for basic profiles.</p>"
         },
         "aggregationConfiguration":{
           "shape":"AggregationConfigurations",
-          "documentation":"<p>The aggregation configuration.</p>"
+          "documentation":"<p>The aggregation configuration. Not present for basic profiles.</p>"
         },
         "arn":{
           "shape":"AgentProfileArn",
@@ -4497,6 +5534,10 @@
         "lastModifiedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp when the profile was last modified.</p>"
+        },
+        "organizationalAggregationConfiguration":{
+          "shape":"OrganizationalAggregationConfiguration",
+          "documentation":"<p>The organizational monitoring boundary. Present only for organizational profiles.</p>"
         }
       }
     },
@@ -4604,13 +5645,13 @@
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp when the generation was last modified.</p>"
         },
-        "additionalContext":{
-          "shape":"Document",
-          "documentation":"<p>Additional context information provided to guide the recommendation generation process.</p>"
+        "generationType":{
+          "shape":"GenerationType",
+          "documentation":"<p>How the generation was started.</p>"
         },
-        "scope":{
-          "shape":"Scope",
-          "documentation":"<p>The scope configuration that defines which pillars and goals to focus on during generation.</p>"
+        "generationRecommendationTypes":{
+          "shape":"GenerationRecommendationTypes",
+          "documentation":"<p>The recommendation types the generation covers.</p>"
         },
         "startedAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -4620,13 +5661,21 @@
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp when the recommendation generation process completed.</p>"
         },
-        "progress":{
-          "shape":"Progress",
-          "documentation":"<p>Current progress information including steps completed and completion percentage.</p>"
-        },
         "errorDetails":{
           "shape":"ErrorDetails",
           "documentation":"<p>Details about the error if the generation status is ERROR.</p>"
+        },
+        "additionalContext":{
+          "shape":"SensitiveDocument",
+          "documentation":"<p>The additional context that was provided when the generation was started. For <code>ARCHITECTURE</code> generations, this includes the location of the reviewed IaC template and the lenses used.</p>"
+        },
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>The scope configuration that defines which pillars and goals to focus on during generation.</p>"
+        },
+        "progress":{
+          "shape":"Progress",
+          "documentation":"<p>Current progress information including steps completed and completion percentage.</p>"
         }
       }
     },
@@ -4639,6 +5688,35 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "GetAgentRecommendationPolicyRequest":{
+      "type":"structure",
+      "required":["recommendationArn"],
+      "members":{
+        "recommendationArn":{
+          "shape":"AgentRecommendationArn",
+          "documentation":"<p>The ARN of the Agent Recommendation whose policy to retrieve.</p>",
+          "location":"uri",
+          "locationName":"recommendationArn"
+        }
+      }
+    },
+    "GetAgentRecommendationPolicyResponse":{
+      "type":"structure",
+      "required":[
+        "recommendationArn",
+        "policy"
+      ],
+      "members":{
+        "recommendationArn":{
+          "shape":"AgentRecommendationArn",
+          "documentation":"<p>The ARN of the Agent Recommendation.</p>"
+        },
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The IAM resource-based policy document in JSON format.</p>"
+        }
+      }
     },
     "GetAgentRecommendationRequest":{
       "type":"structure",
@@ -4691,7 +5769,7 @@
         },
         "generationId":{
           "shape":"UUID",
-          "documentation":"<p>The identifier of the generation process that produced this recommendation.</p>"
+          "documentation":"<p>The identifier of the generation that produced this recommendation.</p>"
         },
         "title":{
           "shape":"GetAgentRecommendationResponseTitleString",
@@ -4707,7 +5785,7 @@
         },
         "pillar":{
           "shape":"Pillar",
-          "documentation":"<p>The Well-Architected Tool Framework pillar that the recommendation addresses.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillar that the recommendation addresses.</p>"
         },
         "priority":{
           "shape":"Priority",
@@ -5300,7 +6378,7 @@
         },
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The Well-Architected Tool Framework pillars associated with this goal.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars associated with this goal.</p>"
         },
         "title":{
           "shape":"GoalSummaryTitleString",
@@ -5372,6 +6450,7 @@
     },
     "ImpactCategory":{
       "type":"string",
+      "documentation":"<p>The severity of a recommendation's impact.</p>",
       "enum":[
         "HIGH",
         "MEDIUM",
@@ -5889,11 +6968,13 @@
         },
         "maxResults":{
           "shape":"ListAgentContextsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of contexts to return in a single call. Default is 100.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
           "shape":"ListAgentContextsRequestNextTokenString",
+          "documentation":"<p>A pagination token returned from a previous call to continue retrieving results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -5920,7 +7001,10 @@
           "shape":"ContextSummaries",
           "documentation":"<p>A list of context summaries associated with the profile.</p>"
         },
-        "nextToken":{"shape":"ListAgentContextsResponseNextTokenString"}
+        "nextToken":{
+          "shape":"ListAgentContextsResponseNextTokenString",
+          "documentation":"<p>A pagination token to retrieve the next set of results, if available.</p>"
+        }
       }
     },
     "ListAgentContextsResponseNextTokenString":{
@@ -5981,6 +7065,62 @@
       }
     },
     "ListAgentGoalsResponseNextTokenString":{
+      "type":"string",
+      "documentation":"<p>The token to use to retrieve the next set of results.</p>",
+      "min":1,
+      "pattern":"[A-Za-z0-9+\\/=_-]+"
+    },
+    "ListAgentOrganizationalReportsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListAgentOrganizationalReportsRequestMaxResultsInteger",
+          "documentation":"<p>Maximum number of items to return in a single page. Defaults to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"ListAgentOrganizationalReportsRequestNextTokenString",
+          "documentation":"<p>Pagination token from a previous ListAgentOrganizationalReports response. Absent on the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "state":{
+          "shape":"OrganizationalReportState",
+          "documentation":"<p>Optional filter restricting the response to reports in a single lifecycle state.</p>",
+          "location":"querystring",
+          "locationName":"state"
+        }
+      }
+    },
+    "ListAgentOrganizationalReportsRequestMaxResultsInteger":{
+      "type":"integer",
+      "documentation":"<p>The maximum number of results to return for this request.</p>",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListAgentOrganizationalReportsRequestNextTokenString":{
+      "type":"string",
+      "documentation":"<p>The token to use to retrieve the next set of results.</p>",
+      "min":1,
+      "pattern":"[A-Za-z0-9+\\/=_-]+"
+    },
+    "ListAgentOrganizationalReportsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"OrganizationalReportSummaryList",
+          "documentation":"<p>Page of report summaries, most-recently-created first.</p>"
+        },
+        "nextToken":{
+          "shape":"ListAgentOrganizationalReportsResponseNextTokenString",
+          "documentation":"<p>Pagination token to supply on the next request, or absent when there are no more pages.</p>"
+        }
+      }
+    },
+    "ListAgentOrganizationalReportsResponseNextTokenString":{
       "type":"string",
       "documentation":"<p>The token to use to retrieve the next set of results.</p>",
       "min":1,
@@ -7097,6 +8237,10 @@
       },
       "documentation":"<p>Output of a list workloads call.</p>"
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "MaxSelectedProfileChoices":{
       "type":"integer",
       "box":true,
@@ -7198,6 +8342,191 @@
         "DISABLED"
       ]
     },
+    "OrganizationalAccountEntry":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "regions"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID to include in the monitoring boundary.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of regions to monitor for this account.</p>"
+        }
+      },
+      "documentation":"<p>An individual account entry in the organizational monitoring boundary, with its associated regions.</p>"
+    },
+    "OrganizationalAccountEntryList":{
+      "type":"list",
+      "member":{"shape":"OrganizationalAccountEntry"},
+      "max":2500,
+      "min":0
+    },
+    "OrganizationalAggregationConfiguration":{
+      "type":"structure",
+      "members":{
+        "organizationalUnits":{
+          "shape":"OrganizationalUnitEntryList",
+          "documentation":"<p>A list of organizational unit or root entries that define the organizational scope. Each entry specifies an OU or root ID and the regions to monitor within it.</p>"
+        },
+        "accounts":{
+          "shape":"OrganizationalAccountEntryList",
+          "documentation":"<p>A list of individual account entries that define additional accounts to include. Each entry specifies an account ID and the regions to monitor within it.</p>"
+        }
+      },
+      "documentation":"<p>The organizational monitoring boundary configuration. Contains organizational unit entries and individual account entries, each with their own region selections, that define the scope for organizational profile analysis.</p>"
+    },
+    "OrganizationalNodeId":{
+      "type":"string",
+      "max":68,
+      "min":1,
+      "pattern":"(r-[a-z0-9]{4,32}|ou-[a-z0-9]{4,32}-[a-z0-9]{8,32})"
+    },
+    "OrganizationalReportAccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":10000,
+      "min":0
+    },
+    "OrganizationalReportFilters":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"OrganizationalReportAccountIdList",
+          "documentation":"<p>AWS account IDs to include in the report. Absent or empty means all accounts in the organization are in scope. Each supplied account is validated against AWS Organizations membership. Accounts that do not belong to the caller's organization are excluded and recorded on the report's coverage summary.</p>"
+        },
+        "organizationalUnitIds":{
+          "shape":"OrganizationalUnitIdList",
+          "documentation":"<p>AWS Organizational Unit IDs whose member accounts are included in the report. Absent or empty means no OU-based scoping is applied. Account and OU filters combine as a union.</p>"
+        },
+        "pillars":{
+          "shape":"PillarList",
+          "documentation":"<p>Well-Architected pillars to include. Absent or empty means all pillars.</p>"
+        },
+        "recommendationTypes":{
+          "shape":"RecommendationTypeList",
+          "documentation":"<p>Recommendation types (RESOURCE, ARCHITECTURE, APPLICATION) to include. Absent or empty means all types.</p>"
+        },
+        "statuses":{
+          "shape":"RecommendationStatusList",
+          "documentation":"<p>Recommendation statuses (ACTIVE, SUPPRESSED, COMPLETED) to include. Absent or empty means all statuses.</p>"
+        },
+        "priorities":{
+          "shape":"PriorityList",
+          "documentation":"<p>Recommendation priorities (HIGH, MEDIUM, LOW) to include. Absent or empty means all priorities.</p>"
+        },
+        "createdAtRange":{
+          "shape":"TimeWindow",
+          "documentation":"<p>Inclusive window on recommendation creation time. Absent means no lower or upper bound on createdAt.</p>"
+        },
+        "updatedAtRange":{
+          "shape":"TimeWindow",
+          "documentation":"<p>Inclusive window on recommendation last-updated time. Absent means no lower or upper bound on updatedAt.</p>"
+        }
+      },
+      "documentation":"<p>Filters narrowing the scope of an Organizational Report. Every member is optional. An absent or empty member places no constraint on that dimension. When the entire structure is absent, the report covers every account and every recommendation in the organization.</p>"
+    },
+    "OrganizationalReportFormat":{
+      "type":"string",
+      "documentation":"<p>The output format for an Organizational Report artifact retrieved through GetAgentOrganizationalReportData or delivered through SendAgentOrganizationalReportDataToS3.</p>",
+      "enum":[
+        "CSV",
+        "JSON",
+        "PARQUET"
+      ]
+    },
+    "OrganizationalReportState":{
+      "type":"string",
+      "documentation":"<p>The lifecycle state of an Organizational Report. The state advances through the asynchronous pipeline: <code>DISCOVERING</code> (expanding the caller-supplied scope into the full list of in-scope accounts and profiles), <code>SNAPSHOTTING</code> (materializing per-account profile and recommendation snapshots), <code>AGGREGATING</code> (merging snapshots into the final artifact), <code>COMPRESSING</code> (writing the final CSV, JSON, or Parquet artifacts to Amazon S3), <code>COMPLETED</code> (the report is ready to download), <code>FAILED</code> (terminal failure), and <code>DELETING</code> (the report is being removed).</p>",
+      "enum":[
+        "DISCOVERING",
+        "SNAPSHOTTING",
+        "AGGREGATING",
+        "COMPRESSING",
+        "COMPLETED",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "OrganizationalReportSummary":{
+      "type":"structure",
+      "required":[
+        "reportId",
+        "ownerAccountId",
+        "organizationId",
+        "state",
+        "createdAt"
+      ],
+      "members":{
+        "reportId":{
+          "shape":"UUID",
+          "documentation":"<p>Unique identifier of the Organizational Report assigned by the service at creation time.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>AWS account ID of the caller that created the report. Only this account or a delegated administrator of the same organization may retrieve or delete the report.</p>"
+        },
+        "organizationId":{
+          "shape":"String",
+          "documentation":"<p>Identifier of the AWS Organization the report belongs to. Derived from the caller's authorization context at creation time and not accepted as a client-supplied input.</p>"
+        },
+        "label":{
+          "shape":"ReportLabel",
+          "documentation":"<p>Optional human-readable label supplied by the caller at creation time.</p>"
+        },
+        "state":{
+          "shape":"OrganizationalReportState",
+          "documentation":"<p>Current lifecycle state of the report.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Timestamp at which the report was created.</p>"
+        }
+      },
+      "documentation":"<p>Summary of an Organizational Report returned in a list response. Includes the core fields of the full report and the optional label, but omits the filters and coverage summary. The filters and coverage summary are available through GetAgentOrganizationalReport. The coverage summary is populated once the report reaches COMPLETED.</p>"
+    },
+    "OrganizationalReportSummaryList":{
+      "type":"list",
+      "member":{"shape":"OrganizationalReportSummary"}
+    },
+    "OrganizationalUnitEntry":{
+      "type":"structure",
+      "required":[
+        "organizationalUnitId",
+        "regions"
+      ],
+      "members":{
+        "organizationalUnitId":{
+          "shape":"OrganizationalNodeId",
+          "documentation":"<p>The AWS Organizations organizational unit ID or root ID. Must match the pattern <code>r-[a-z0-9]{4,32}</code> for roots or <code>ou-[a-z0-9]{4,32}-[a-z0-9]{8,32}</code> for OUs.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of regions to monitor for this organizational unit or root.</p>"
+        }
+      },
+      "documentation":"<p>An organizational unit or root entry in the organizational monitoring boundary, with its associated regions.</p>"
+    },
+    "OrganizationalUnitEntryList":{
+      "type":"list",
+      "member":{"shape":"OrganizationalUnitEntry"},
+      "max":2500,
+      "min":0
+    },
+    "OrganizationalUnitId":{
+      "type":"string",
+      "pattern":"ou-[0-9a-z]{4,32}-[a-z0-9]{8,32}"
+    },
+    "OrganizationalUnitIdList":{
+      "type":"list",
+      "member":{"shape":"OrganizationalUnitId"},
+      "max":10000,
+      "min":0
+    },
     "PermissionType":{
       "type":"string",
       "documentation":"<p>Permission granted on a share request.</p>",
@@ -7208,6 +8537,7 @@
     },
     "Pillar":{
       "type":"string",
+      "documentation":"<p><note> <p> <code>OPERATIONAL_EXCELLENCE</code> can appear in recommendation results but cannot be specified as a request parameter. The requestable values are <code>COST_OPTIMIZATION</code>, <code>SECURITY</code>, <code>RESILIENCE</code>, and <code>PERFORMANCE</code>.</p> </note> <p>A pillar of the Amazon Web Services Well-Architected Framework, used to scope recommendation generation.</p></p>",
       "enum":[
         "COST_OPTIMIZATION",
         "SECURITY",
@@ -7215,6 +8545,30 @@
         "PERFORMANCE",
         "OPERATIONAL_EXCELLENCE"
       ]
+    },
+    "PillarCount":{
+      "type":"structure",
+      "required":[
+        "pillar",
+        "count"
+      ],
+      "members":{
+        "pillar":{
+          "shape":"Pillar",
+          "documentation":"<p>Well-Architected pillar this count is attributed to.</p>"
+        },
+        "count":{
+          "shape":"Long",
+          "documentation":"<p>Non-negative count of recommendations in the report that are attributed to this pillar.</p>"
+        }
+      },
+      "documentation":"<p>Pair of a Well-Architected pillar and the number of recommendations attributed to it in a CoverageSummary.</p>"
+    },
+    "PillarCountList":{
+      "type":"list",
+      "member":{"shape":"PillarCount"},
+      "max":10,
+      "min":0
     },
     "PillarDifference":{
       "type":"structure",
@@ -7258,11 +8612,17 @@
           "documentation":"<p>A list of item IDs to process for this pillar, such as best practice IDs, Amazon Web Services service names, or resource ARNs.</p>"
         }
       },
-      "documentation":"<p>Item configuration for a specific Well-Architected Tool Framework pillar.</p>"
+      "documentation":"<p>Item configuration for a specific Amazon Web Services Well-Architected Framework pillar.</p>"
     },
     "PillarItems":{
       "type":"list",
       "member":{"shape":"PillarItem"}
+    },
+    "PillarList":{
+      "type":"list",
+      "member":{"shape":"Pillar"},
+      "max":10,
+      "min":0
     },
     "PillarMetric":{
       "type":"structure",
@@ -7314,13 +8674,121 @@
       "max":5,
       "min":1
     },
+    "PreferenceEntries":{
+      "type":"list",
+      "member":{"shape":"PreferenceEntry"}
+    },
+    "PreferenceEntry":{
+      "type":"structure",
+      "required":[
+        "key",
+        "status"
+      ],
+      "members":{
+        "key":{
+          "shape":"PreferenceKey",
+          "documentation":"<p>Which preference this entry describes.</p>"
+        },
+        "status":{
+          "shape":"PreferenceStatus",
+          "documentation":"<p>Current state of the preference. ENABLED and DISABLED reflect the result of the most recent successful change. FAILED reflects a stored failure surfaced on a read and is accompanied by a detail message.</p>"
+        },
+        "detail":{
+          "shape":"PreferenceEntryDetailString",
+          "documentation":"<p>A human-readable explanation present only when status is FAILED, describing what went wrong and how to recover.</p>"
+        }
+      },
+      "documentation":"<p>A single Well-Architected Agent preference and its current state.</p>"
+    },
+    "PreferenceEntryDetailString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "PreferenceKey":{
+      "type":"string",
+      "documentation":"<p>Identifies one of the caller's Well-Architected Agent preferences. A new preference is introduced as a new enum value, which is a backward-compatible change. Existing values are never removed or renamed.</p>",
+      "enum":["ORG_INTEGRATION"]
+    },
+    "PreferenceState":{
+      "type":"string",
+      "documentation":"<p><note> <p>This is the writable subset of <code>PreferenceStatus</code>: you can set a preference to <code>ENABLED</code> or <code>DISABLED</code>, but you cannot set <code>FAILED</code>, which is an observed state only.</p> </note> <p>The settable state of a preference, supplied to <code>PutAgentPreferences</code>.</p></p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "PreferenceStatus":{
+      "type":"string",
+      "documentation":"<p>The observed state of a preference. Because enabling and disabling are performed synchronously by <code>PutAgentPreferences</code>, this value is both what the caller requested and what the system achieved. <code>FAILED</code> is never an accepted input; it reflects a stored failure (for example, an onboarding-time auto-creation that failed) surfaced on a read, and is accompanied by a <code>statusMessage</code>.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "FAILED"
+      ]
+    },
+    "PreferenceUpdate":{
+      "type":"structure",
+      "required":[
+        "key",
+        "state"
+      ],
+      "members":{
+        "key":{
+          "shape":"PreferenceKey",
+          "documentation":"<p>Which preference to update.</p>"
+        },
+        "state":{
+          "shape":"PreferenceState",
+          "documentation":"<p>State to set the preference to. FAILED is an observed state only and cannot be requested.</p>"
+        }
+      },
+      "documentation":"<p>A caller's requested change to one preference, supplied to PutAgentPreferences.</p>"
+    },
+    "PreferenceUpdates":{
+      "type":"list",
+      "member":{"shape":"PreferenceUpdate"},
+      "max":50,
+      "min":1
+    },
     "Priority":{
       "type":"string",
+      "documentation":"<p>The priority of a recommendation.</p>",
       "enum":[
         "HIGH",
         "MEDIUM",
         "LOW"
       ]
+    },
+    "PriorityCount":{
+      "type":"structure",
+      "required":[
+        "priority",
+        "count"
+      ],
+      "members":{
+        "priority":{
+          "shape":"Priority",
+          "documentation":"<p>Priority this count is attributed to.</p>"
+        },
+        "count":{
+          "shape":"Long",
+          "documentation":"<p>Non-negative count of recommendations in the report that are attributed to this priority.</p>"
+        }
+      },
+      "documentation":"<p>Pair of a recommendation Priority and the number of recommendations attributed to it in a CoverageSummary.</p>"
+    },
+    "PriorityCountList":{
+      "type":"list",
+      "member":{"shape":"PriorityCount"},
+      "max":10,
+      "min":0
+    },
+    "PriorityList":{
+      "type":"list",
+      "member":{"shape":"Priority"},
+      "max":10,
+      "min":0
     },
     "Profile":{
       "type":"structure",
@@ -7602,6 +9070,15 @@
       "type":"list",
       "member":{"shape":"ProfileTemplateChoice"}
     },
+    "ProfileType":{
+      "type":"string",
+      "documentation":"<p>The type of a profile.</p>",
+      "enum":[
+        "STANDARD",
+        "BASIC",
+        "ORGANIZATIONAL"
+      ]
+    },
     "ProfileVersion":{
       "type":"string",
       "max":32,
@@ -7630,6 +9107,43 @@
         }
       },
       "documentation":"<p>Progress information for a recommendation generation process.</p>"
+    },
+    "PutAgentPreferencesRequest":{
+      "type":"structure",
+      "required":["preferences"],
+      "members":{
+        "preferences":{
+          "shape":"PreferenceUpdates",
+          "documentation":"<p>Preference updates to apply. A given preference key may appear at most once.</p>"
+        }
+      }
+    },
+    "PutAgentPreferencesResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "PutAgentProfilePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "profileArn",
+        "policy"
+      ],
+      "members":{
+        "profileArn":{
+          "shape":"AgentProfileArn",
+          "documentation":"<p>The ARN of the Agent Profile to attach the policy to.</p>",
+          "location":"uri",
+          "locationName":"profileArn"
+        },
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The IAM resource-based policy document in JSON format. Maximum size 50KB.</p>"
+        }
+      }
+    },
+    "PutAgentProfilePolicyResponse":{
+      "type":"structure",
+      "members":{}
     },
     "PutAgentRecommendationFeedbackRequest":{
       "type":"structure",
@@ -7662,9 +9176,33 @@
       "type":"string",
       "max":4096,
       "min":1,
-      "pattern":"[\\P{C}]+"
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}\\r\\n])+",
+      "sensitive":true
     },
     "PutAgentRecommendationFeedbackResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "PutAgentRecommendationPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "recommendationArn",
+        "policy"
+      ],
+      "members":{
+        "recommendationArn":{
+          "shape":"AgentRecommendationArn",
+          "documentation":"<p>The ARN of the Agent Recommendation to attach the policy to.</p>",
+          "location":"uri",
+          "locationName":"recommendationArn"
+        },
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The IAM resource-based policy document in JSON format. Maximum size 50KB.</p>"
+        }
+      }
+    },
+    "PutAgentRecommendationPolicyResponse":{
       "type":"structure",
       "members":{}
     },
@@ -7756,6 +9294,7 @@
     },
     "RecommendationFeedbackType":{
       "type":"string",
+      "documentation":"<p>The type of feedback provided for a recommendation.</p>",
       "enum":[
         "USEFUL",
         "NOT_USEFUL"
@@ -7778,6 +9317,7 @@
     },
     "RecommendationItemType":{
       "type":"string",
+      "documentation":"<p>The type of a recommendation item.</p>",
       "enum":[
         "AWS_RESOURCE",
         "RECOMMENDATION"
@@ -7785,6 +9325,7 @@
     },
     "RecommendationSource":{
       "type":"string",
+      "documentation":"<p>The origin system that produced a recommendation.</p>",
       "enum":[
         "TRUSTED_ADVISOR",
         "COST_EXPLORER",
@@ -7800,6 +9341,7 @@
     },
     "RecommendationState":{
       "type":"string",
+      "documentation":"<p>The state of a recommendation.</p>",
       "enum":[
         "OPEN",
         "CLOSED"
@@ -7807,24 +9349,38 @@
     },
     "RecommendationStatus":{
       "type":"string",
+      "documentation":"<p>The status of a recommendation.</p>",
       "enum":[
         "ACTIVE",
         "SUPPRESSED",
         "COMPLETED"
       ]
     },
+    "RecommendationStatusList":{
+      "type":"list",
+      "member":{"shape":"RecommendationStatus"},
+      "max":10,
+      "min":0
+    },
     "RecommendationType":{
       "type":"string",
+      "documentation":"<p>The type of a recommendation.</p>",
       "enum":[
         "RESOURCE",
         "ARCHITECTURE",
         "APPLICATION"
       ]
     },
+    "RecommendationTypeList":{
+      "type":"list",
+      "member":{"shape":"RecommendationType"},
+      "max":10,
+      "min":0
+    },
     "RecommendationTypes":{
       "type":"list",
       "member":{"shape":"RecommendationType"},
-      "max":1,
+      "max":2,
       "min":1
     },
     "RecommendedFixStep":{
@@ -7908,6 +9464,7 @@
     },
     "RemediationType":{
       "type":"string",
+      "documentation":"<p>The method by which a recommendation is remediated.</p>",
       "enum":[
         "AUTO_REMEDIATION",
         "CONSOLE",
@@ -7923,6 +9480,11 @@
         "PDF",
         "JSON"
       ]
+    },
+    "ReportLabel":{
+      "type":"string",
+      "max":500,
+      "min":1
     },
     "ResourceArn":{
       "type":"string",
@@ -7952,7 +9514,7 @@
     },
     "ResourceLinkUrlString":{
       "type":"string",
-      "max":500,
+      "max":16384,
       "min":10
     },
     "ResourceLinks":{
@@ -7979,6 +9541,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":51200,
+      "min":1,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"
     },
     "ReviewTemplate":{
       "type":"structure",
@@ -8223,6 +9791,7 @@
     },
     "RiskRating":{
       "type":"string",
+      "documentation":"<p>The risk rating for automated remediation.</p>",
       "enum":[
         "LOW",
         "MEDIUM",
@@ -8260,21 +9829,32 @@
       "min":0,
       "pattern":"arn:([a-z\\-]+):iam::\\d{12}:role/(service-role/)?[a-zA-Z0-9+=,.@\\-_]+"
     },
+    "S3BucketArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:[^:]+:s3:::.+"
+    },
+    "S3ObjectKey":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "Scope":{
       "type":"structure",
       "required":["pillars"],
       "members":{
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The Well-Architected Tool Framework pillars to include in the generation scope.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars to include in the generation scope.</p>"
         },
         "goalIds":{
           "shape":"GoalIdList",
-          "documentation":"<p>Specific goal IDs to focus on during recommendation generation.</p>"
+          "documentation":"<p>Specific goal IDs to focus on during recommendation generation. Use <code>ListAgentGoals</code> to retrieve goal IDs.</p>"
         },
         "items":{
           "shape":"PillarItems",
-          "documentation":"<p>Optional per-pillar item filtering configuration.</p>"
+          "documentation":"<p>An optional per-pillar filter. When you specify items, only the listed items are processed for each pillar. When you omit items, all items are processed.</p>"
         }
       },
       "documentation":"<p>Defines the scope for recommendation generation, specifying which pillars and goals to focus on.</p>"
@@ -8311,6 +9891,51 @@
     "SelectedQuestionIds":{
       "type":"list",
       "member":{"shape":"SelectedQuestionId"}
+    },
+    "SendAgentOrganizationalReportDataToS3Request":{
+      "type":"structure",
+      "required":[
+        "reportId",
+        "format",
+        "bucketArn",
+        "objectKey"
+      ],
+      "members":{
+        "reportId":{
+          "shape":"UUID",
+          "documentation":"<p>Identifier of the report whose data is being delivered.</p>",
+          "location":"uri",
+          "locationName":"reportId"
+        },
+        "format":{
+          "shape":"OrganizationalReportFormat",
+          "documentation":"<p>Format of the delivered artifact (CSV, JSON, or PARQUET).</p>"
+        },
+        "bucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>ARN of the caller-owned S3 bucket that will receive the artifact.</p>"
+        },
+        "objectKey":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>S3 object key under bucketArn where the artifact will be written.</p>"
+        }
+      }
+    },
+    "SendAgentOrganizationalReportDataToS3Response":{
+      "type":"structure",
+      "required":["deliveredTo"],
+      "members":{
+        "deliveredTo":{
+          "shape":"String",
+          "documentation":"<p>S3 URI (format s3://bucket/key) where the artifact was written.</p>"
+        }
+      }
+    },
+    "SensitiveDocument":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
     },
     "ServiceCode":{
       "type":"string",
@@ -8464,8 +10089,7 @@
       "type":"structure",
       "required":[
         "profileArn",
-        "types",
-        "scope"
+        "types"
       ],
       "members":{
         "profileArn":{
@@ -8476,19 +10100,19 @@
         },
         "types":{
           "shape":"RecommendationTypes",
-          "documentation":"<p>The types of recommendations to generate.</p>"
+          "documentation":"<p>The types of recommendations to generate. You can specify up to two types in a single request. Currently, only <code>ARCHITECTURE</code> is supported for this operation.</p>"
         },
         "name":{
           "shape":"StartAgentRecommendationGenerationRequestNameString",
-          "documentation":"<p>An optional name for this generation process to help identify it in lists and logs.</p>"
+          "documentation":"<p>An optional name for this generation that identifies the architecture review in the console and in <code>ListAgentRecommendationGenerations</code> results. Applies to <code>ARCHITECTURE</code> type only. Must be absent for other types.</p>"
         },
         "additionalContext":{
-          "shape":"Document",
-          "documentation":"<p>Optional additional context to guide the recommendation generation, such as specific business requirements or constraints.</p>"
+          "shape":"SensitiveDocument",
+          "documentation":"<p>The location of the infrastructure as code (IaC) template to review, and the lenses to review it against. Required for the <code>ARCHITECTURE</code> type. Must be absent for other types. Specify a JSON object with the following members:</p> <ul> <li> <p> <code>s3Uri</code>: The Amazon S3 URI of the IaC template, .zip archive, or folder to review.</p> </li> <li> <p> <code>s3VersionId</code>: The version ID of the Amazon S3 object. If you omit this member, the current version is used.</p> </li> <li> <p> <code>lensArns</code>: The ARNs of the lenses to review against. Only <code>arn:aws:wellarchitected::aws:lens/wellarchitected</code> is supported.</p> </li> </ul>"
         },
         "scope":{
           "shape":"Scope",
-          "documentation":"<p>Scope configuration to focus the generation on specific pillars or goals.</p>"
+          "documentation":"<p>Defines which pillars, goals, and items the review covers. Required for the <code>ARCHITECTURE</code> type. Must be absent for other types.</p>"
         }
       }
     },
@@ -8715,6 +10339,20 @@
       },
       "exception":true
     },
+    "TimeWindow":{
+      "type":"structure",
+      "members":{
+        "from":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Lower bound of the window (inclusive). Absent means no lower bound.</p>"
+        },
+        "to":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Upper bound of the window (inclusive). Absent means no upper bound.</p>"
+        }
+      },
+      "documentation":"<p>An inclusive time window used by Organizational Report filters. Both bounds are optional, but at least one of from or to must be set when the structure is present.</p>"
+    },
     "Timestamp":{"type":"timestamp"},
     "TradeOff":{
       "type":"structure",
@@ -8937,6 +10575,188 @@
         }
       }
     },
+    "UpdateAgentOrganizationalProfileRequest":{
+      "type":"structure",
+      "required":["profileArn"],
+      "members":{
+        "clientToken":{
+          "shape":"UpdateAgentOrganizationalProfileRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "profileArn":{
+          "shape":"AgentProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the organizational profile to update.</p>",
+          "location":"uri",
+          "locationName":"profileArn"
+        },
+        "displayName":{
+          "shape":"UpdateAgentOrganizationalProfileRequestDisplayNameString",
+          "documentation":"<p>The updated display name of the organizational profile. Omit this field to keep the current display name. A display name is required, so it cannot be cleared.</p>"
+        },
+        "description":{
+          "shape":"UpdateAgentOrganizationalProfileRequestDescriptionString",
+          "documentation":"<p>The updated description of the organizational profile. Omit this field to keep the current description, or supply an empty string to clear it; a cleared description is read back as absent rather than as an empty string.</p>"
+        },
+        "businessOverview":{
+          "shape":"UpdateAgentOrganizationalProfileRequestBusinessOverviewString",
+          "documentation":"<p>The updated business overview for the organizational profile. Omit this field to keep the current business overview, or supply an empty string to clear it; a cleared business overview is read back as absent rather than as an empty string.</p>"
+        },
+        "pillars":{
+          "shape":"Pillars",
+          "documentation":"<p>The updated Amazon Web Services Well-Architected Framework pillars for the organizational profile. Omit this field to keep the current pillars. A profile must target at least one pillar, so an empty list is rejected.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether deletion protection is enabled for the organizational profile.</p>"
+        },
+        "organizationalAggregationConfiguration":{
+          "shape":"OrganizationalAggregationConfiguration",
+          "documentation":"<p>The organizational monitoring boundary. Contains organizational unit or root entries and individual account entries that define the scope for the profile. Omit this field to keep the current boundary, or supply this structure with both its <code>organizationalUnits</code> and <code>accounts</code> lists empty to remove every monitored organizational unit and account. The field remains set either way — an emptied boundary is read back as a structure with two empty lists, not as an absent field.</p>"
+        }
+      }
+    },
+    "UpdateAgentOrganizationalProfileRequestBusinessOverviewString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"[\\P{C}]*",
+      "sensitive":true
+    },
+    "UpdateAgentOrganizationalProfileRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "UpdateAgentOrganizationalProfileRequestDescriptionString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"[\\P{C}]*",
+      "sensitive":true
+    },
+    "UpdateAgentOrganizationalProfileRequestDisplayNameString":{
+      "type":"string",
+      "max":128,
+      "min":3,
+      "pattern":"[\\P{C}]+",
+      "sensitive":true
+    },
+    "UpdateAgentOrganizationalProfileResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "pillars",
+        "organizationId",
+        "arn",
+        "createdBy",
+        "createdAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"UpdateAgentOrganizationalProfileResponseNameString",
+          "documentation":"<p>The system name of the updated organizational profile.</p>"
+        },
+        "displayName":{
+          "shape":"UpdateAgentOrganizationalProfileResponseDisplayNameString",
+          "documentation":"<p>The display name of the updated organizational profile.</p>"
+        },
+        "description":{
+          "shape":"UpdateAgentOrganizationalProfileResponseDescriptionString",
+          "documentation":"<p>A description of the updated organizational profile.</p>"
+        },
+        "businessOverview":{
+          "shape":"UpdateAgentOrganizationalProfileResponseBusinessOverviewString",
+          "documentation":"<p>The business overview of the updated organizational profile.</p>"
+        },
+        "pillars":{
+          "shape":"Pillars",
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars associated with the updated organizational profile.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether deletion protection is enabled.</p>"
+        },
+        "organizationId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the Amazon Web Services Organization this profile belongs to.</p>"
+        },
+        "organizationalAggregationConfiguration":{
+          "shape":"OrganizationalAggregationConfiguration",
+          "documentation":"<p>The organizational monitoring boundary for the updated profile.</p>"
+        },
+        "arn":{
+          "shape":"AgentProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated organizational profile.</p>"
+        },
+        "eligibleForScheduledGeneration":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the profile is valid for scheduled recommendation generation.</p>"
+        },
+        "eligibleForArchitectureGeneration":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the profile is valid for manual architecture generation.</p>"
+        },
+        "fieldErrors":{
+          "shape":"FieldErrors",
+          "documentation":"<p>A map of field paths to error messages for invalid or missing input fields.</p>"
+        },
+        "createdBy":{
+          "shape":"UpdateAgentOrganizationalProfileResponseCreatedByString",
+          "documentation":"<p>The identifier of the user or system that created this organizational profile.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the organizational profile was created.</p>"
+        },
+        "lastModifiedBy":{
+          "shape":"UpdateAgentOrganizationalProfileResponseLastModifiedByString",
+          "documentation":"<p>The identifier of the user or system that last modified this organizational profile.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the organizational profile was last modified.</p>"
+        }
+      }
+    },
+    "UpdateAgentOrganizationalProfileResponseBusinessOverviewString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])*",
+      "sensitive":true
+    },
+    "UpdateAgentOrganizationalProfileResponseCreatedByString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateAgentOrganizationalProfileResponseDescriptionString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])*",
+      "sensitive":true
+    },
+    "UpdateAgentOrganizationalProfileResponseDisplayNameString":{
+      "type":"string",
+      "max":128,
+      "min":3,
+      "pattern":"(?:(?!\\$\\{[a-zA-Z]+:)[\\P{C}])+",
+      "sensitive":true
+    },
+    "UpdateAgentOrganizationalProfileResponseLastModifiedByString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateAgentOrganizationalProfileResponseNameString":{
+      "type":"string",
+      "max":128,
+      "min":3,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
     "UpdateAgentProfileRequest":{
       "type":"structure",
       "required":["profileArn"],
@@ -8954,27 +10774,27 @@
         },
         "displayName":{
           "shape":"UpdateAgentProfileRequestDisplayNameString",
-          "documentation":"<p>The updated display name of the profile.</p>"
+          "documentation":"<p>The updated display name of the profile. Omit this field to keep the current display name. A display name is required, so it cannot be cleared.</p>"
         },
         "description":{
           "shape":"UpdateAgentProfileRequestDescriptionString",
-          "documentation":"<p>The updated description of the profile.</p>"
+          "documentation":"<p>The updated description of the profile. Omit this field to keep the current description, or supply an empty string to clear it; a cleared description is read back as absent rather than as an empty string.</p>"
         },
         "executionRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The updated ARN of the IAM execution role.</p>"
+          "documentation":"<p>The updated ARN of the IAM execution role. Omit this field to keep the current execution role.</p>"
         },
         "aggregationConfiguration":{
           "shape":"AggregationConfigurations",
-          "documentation":"<p>The updated aggregation configuration.</p>"
+          "documentation":"<p>The updated aggregation configuration, as a list of per-account entries. Omit this field to keep the current entries, or supply an empty list to remove them all. The field remains set either way — an emptied configuration is read back as an empty list, not as an absent field.</p>"
         },
         "businessOverview":{
           "shape":"UpdateAgentProfileRequestBusinessOverviewString",
-          "documentation":"<p>The updated business overview for the profile.</p>"
+          "documentation":"<p>The updated business overview for the profile. Omit this field to keep the current business overview, or supply an empty string to clear it; a cleared business overview is read back as absent rather than as an empty string.</p>"
         },
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The updated Well-Architected Tool Framework pillars for the profile.</p>"
+          "documentation":"<p>The updated Amazon Web Services Well-Architected Framework pillars for the profile. Omit this field to keep the current pillars. A profile must target at least one pillar, so an empty list is rejected.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
@@ -9039,7 +10859,7 @@
         },
         "pillars":{
           "shape":"Pillars",
-          "documentation":"<p>The Well-Architected Tool Framework pillars associated with the updated profile.</p>"
+          "documentation":"<p>The Amazon Web Services Well-Architected Framework pillars associated with the updated profile.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
@@ -9068,10 +10888,6 @@
         "fieldErrors":{
           "shape":"FieldErrors",
           "documentation":"<p>A map of field paths to error messages for invalid or missing input fields.</p>"
-        },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>The tags associated with the updated profile.</p>"
         },
         "createdBy":{
           "shape":"UpdateAgentProfileResponseCreatedByString",
@@ -9998,5 +11814,5 @@
       "documentation":"<p>A workload summary return object.</p>"
     }
   },
-  "documentation":"<p><fullname>Amazon Web Services Well-Architected</fullname> <p>Amazon Web Services Well-Architected helps you evaluate your architectures against Amazon Web Services best practices across operational excellence, security, reliability, performance efficiency, cost optimization, and sustainability. The service includes the Amazon Web Services Well-Architected Agent for AI-powered recommendations tailored to your specific environment, and the <a href=\"http://aws.amazon.com/well-architected-tool\">Well-Architected Tool</a> for conducting reviews and tracking improvements.</p> <p>This is the <i>Amazon Web Services Well-Architected API Reference</i>. Through this API, you can programmatically access personalized recommendations and automation scripts from the Amazon Web Services Well-Architected Agent, and create and manage workloads, conduct lens reviews, track milestones, manage custom lenses, share workloads across accounts, and manage profiles with the Well-Architected Tool.</p> <p>For more information about the service, see the <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/intro.html\">Amazon Web Services Well-Architected User Guide</a>.</p></p>"
+  "documentation":"<p><fullname>Amazon Web Services Well-Architected</fullname> <p>This is the <i>Amazon Web Services Well-Architected API Reference</i>. Amazon Web Services Well-Architected helps you evaluate your architectures against Amazon Web Services best practices across operational excellence, security, reliability, performance efficiency, cost optimization, and sustainability.</p> <p>To view API actions organized by service, see <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/wa-api-actions.html\">API actions</a>.</p> <p> <b>Amazon Web Services Well-Architected Agent (preview)</b> </p> <p>Describes the API operations for managing optimization profiles, goals, application context, and recommendations in the Amazon Web Services Well-Architected Agent. Through this API, you can create and configure agent profiles that define the scope of your Amazon Web Services environment to analyze, set optimization goals across cost, security, performance, and resilience pillars, start recommendation generation, retrieve prioritized recommendations with ready-to-deploy remediation scripts, and provide feedback to improve future recommendations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/agent.html\">What is Amazon Web Services Well-Architected Agent?</a> </p> <p> <b>Well-Architected Tool</b> </p> <p>Describes the API operations for creating and managing workloads, conducting lens reviews, tracking milestones, managing custom lenses, sharing workloads across accounts, and managing profiles with the Well-Architected Tool.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/tool.html\">What is Well-Architected Tool?</a> </p></p>"
 }

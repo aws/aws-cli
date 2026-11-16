@@ -1012,6 +1012,16 @@
       "pattern":".*\\S.*",
       "sensitive":true
     },
+    "FlexExecution":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables Amazon EMR Serverless Flex capacity for the job run and defaults to false. If set to true, the job run uses Flex capacity.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon EMR Serverless Flex settings for the job run.</p>"
+    },
     "GetApplicationRequest":{
       "type":"structure",
       "required":["applicationId"],
@@ -1577,6 +1587,10 @@
         "workerTypeSpecifications":{
           "shape":"WorkerTypeSpecificationMap",
           "documentation":"<p>The specification applied to each worker type. Includes the JobRun-level ImageConfiguration when the applicationLevelDigestResolution is false for the application.</p>"
+        },
+        "flexExecution":{
+          "shape":"FlexExecution",
+          "documentation":"<p>The Amazon EMR Serverless Flex settings for the job run.</p>"
         }
       },
       "documentation":"<p>Information about a job run. A job run is a unit of work, such as a Spark JAR, Hive query, or SparkSQL query, that you submit to an Amazon EMR Serverless application.</p>"
@@ -1656,6 +1670,10 @@
         "attempt":{
           "shape":"AttemptNumber",
           "documentation":"<p>The attempt number of the job run execution.</p>"
+        },
+        "flexExecution":{
+          "shape":"FlexExecution",
+          "documentation":"<p>The Amazon EMR Serverless Flex settings for the job run attempt.</p>"
         }
       },
       "documentation":"<p>The summary of attributes associated with a job run attempt.</p>"
@@ -1789,6 +1807,10 @@
         "attemptUpdatedAt":{
           "shape":"Date",
           "documentation":"<p>The date and time of when the job run attempt was last updated.</p>"
+        },
+        "flexExecution":{
+          "shape":"FlexExecution",
+          "documentation":"<p>The Amazon EMR Serverless Flex settings for the job run.</p>"
         }
       },
       "documentation":"<p>The summary of attributes associated with a job run.</p>"
@@ -2656,6 +2678,10 @@
         "retryPolicy":{
           "shape":"RetryPolicy",
           "documentation":"<p>The retry policy when job run starts.</p>"
+        },
+        "flexExecution":{
+          "shape":"FlexExecution",
+          "documentation":"<p>The Amazon EMR Serverless Flex settings for the job run. If you don't specify these settings, the job run doesn't use Flex capacity.</p>"
         }
       }
     },

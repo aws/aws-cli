@@ -1422,6 +1422,24 @@
       ],
       "documentation":"<p>Deactivates an evaluation form in the specified Connect Customer instance. After a form is deactivated, it is no longer available for users to start new evaluations based on the form. </p>"
     },
+    "DeleteAllEntitySessions":{
+      "name":"DeleteAllEntitySessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/auth/sessions/delete-all-entity-sessions"
+      },
+      "input":{"shape":"DeleteAllEntitySessionsRequest"},
+      "output":{"shape":"DeleteAllEntitySessionsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes all active sessions for the specified entity in the specified Connect Customer instance. The operation supports only the <code>USER</code> entity type, so you can use it to sign out all of a user's active sessions. Use it when you need to end a user's access right away, for example when they leave your organization or you suspect that their credentials are compromised.</p>"
+    },
     "DeleteAttachedFile":{
       "name":"DeleteAttachedFile",
       "http":{
@@ -15552,6 +15570,32 @@
       "type":"integer",
       "max":9999,
       "min":0
+    },
+    "DeleteAllEntitySessionsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EntityId",
+        "EntityType"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "EntityId":{
+          "shape":"EntityId",
+          "documentation":"<p>The identifier of the entity whose sessions you want to delete. For <code>USER</code>, use the user ID or the user ARN.</p>"
+        },
+        "EntityType":{
+          "shape":"SessionEntityType",
+          "documentation":"<p>The type of entity whose sessions you want to delete.</p> <note> <p>The only valid value is <code>USER</code>, which signs out a user in your Connect Customer instance.</p> </note>"
+        }
+      }
+    },
+    "DeleteAllEntitySessionsResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteAttachedFileRequest":{
       "type":"structure",
@@ -35611,6 +35655,11 @@
       },
       "documentation":"<p>The reason for the exception.</p>",
       "union":true
+    },
+    "SessionEntityType":{
+      "type":"string",
+      "documentation":"<p>Specifies the type of entity whose sessions you delete when you call <code>DeleteAllEntitySessions</code>. The only valid value is <code>USER</code>, which targets a user in your Connect Customer instance.</p>",
+      "enum":["USER"]
     },
     "SessionId":{
       "type":"string",

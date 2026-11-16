@@ -6698,9 +6698,29 @@
         "filters":{
           "shape":"GatewayConnectorFilters",
           "documentation":"<p>The filters that control which gateway ingress paths the connector applies to.</p>"
+        },
+        "deregistrationDelay":{
+          "shape":"GatewayConnectorDeregistrationDelay",
+          "documentation":"<p>The deregistration delay settings for the targets of this connector.</p>"
         }
       },
       "documentation":"<p>A gateway connector that attaches an Amazon ECS service to a gateway ingress path. The connector specifies the service port that receives gateway-managed ingress traffic, along with the health check and traffic filters that the gateway applies. A service can have at most one gateway connector.</p>"
+    },
+    "GatewayConnectorDeregistrationDelay":{
+      "type":"structure",
+      "members":{
+        "timeoutSeconds":{
+          "shape":"GatewayConnectorDeregistrationDelayTimeoutSecondsInteger",
+          "documentation":"<p>The amount of time, in seconds, to wait before a deregistering target is removed. A value of <code>0</code> removes the target immediately. The valid range is 0-3600 seconds. The default value is 300 seconds.</p>"
+        }
+      },
+      "documentation":"<p>The amount of time to allow in-flight requests to complete before a deregistering target is removed.</p>"
+    },
+    "GatewayConnectorDeregistrationDelayTimeoutSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":0
     },
     "GatewayConnectorFilters":{
       "type":"structure",

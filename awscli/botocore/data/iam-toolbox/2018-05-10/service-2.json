@@ -28,7 +28,25 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the authorization details for a specific access denied request. The details include the request context, the evaluations performed, and the policies that were evaluated.</p> <p>Use this operation to understand why a request was denied. Supported services include an authorization ID in the access denied error message. Pass that ID to this operation to retrieve the details.</p> <p>Authorization details are available for at least 24 hours after the denial.</p> <p>To use this operation, you must have the <code>iam:GetRequestAuthorizationDetails</code> permission.</p>",
+      "documentation":"<p>Retrieves the authorization details for a specific access denied request. The details include the request context, the evaluations performed, and the policies that were evaluated.</p> <p>Use this operation to understand why a request was denied. Supported services include an authorization ID in the access denied error message. Pass that ID to this operation to retrieve the details.</p> <p>To retrieve the content for a policy in the <code>policies</code> list, call <code>GetRequestAuthorizationPolicy</code>.</p> <p>Authorization details are available for at least 24 hours after the denial.</p> <p>To use this operation, you must have the <code>iam:GetRequestAuthorizationDetails</code> permission.</p>",
+      "readonly":true
+    },
+    "GetRequestAuthorizationPolicy":{
+      "name":"GetRequestAuthorizationPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/authorization-details/{authorizationId}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRequestAuthorizationPolicyInput"},
+      "output":{"shape":"GetRequestAuthorizationPolicyOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a policy that was evaluated for a specific access denied request. The operation returns the structured JSON document of the policy that was captured with the original authorization request. It doesn't retrieve the current version of the policy.</p> <p>For some AWS services and policy types, the returned policy document includes all actions relevant to the service that processed the denied request, but might omit actions for other services.</p> <p>Specify the authorization ID from the access denied error message and the policy URI returned by <code>GetRequestAuthorizationDetails</code> for the same authorization ID.</p> <p>Access depends on the account and organization recorded for the principal that made the denied request. If an organization was recorded, the calling principal must belong to that organization. Otherwise, the calling principal must belong to the recorded account.</p> <p>To use this operation, you must have the <code>iam:GetRequestAuthorizationPolicy</code> permission.</p>",
       "readonly":true
     }
   },
@@ -71,9 +89,73 @@
       "value":{"shape":"Document"},
       "documentation":"<p>The map of context keys and their values in the request context. Context keys vary by service and request type.</p>"
     },
+    "AuthorizationId":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[0123456789abcdefghijklmnopqrstuvwxyz]+"
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "Check":{
+      "type":"structure",
+      "required":[
+        "checkType",
+        "evaluatedEffect"
+      ],
+      "members":{
+        "checkType":{
+          "shape":"CheckType",
+          "documentation":"<p>The type of requirement that the check evaluates. Valid values:</p> <ul> <li> <p> <code>SERVICE_CONTROL_POLICY</code> - The service control policies (SCPs) attached to one organization target, such as a root, organizational unit, or account, that apply to the principal.</p> </li> <li> <p> <code>RESOURCE_CONTROL_POLICY</code> - The resource control policies (RCPs) attached to one organization target that apply to the resource.</p> </li> <li> <p> <code>VPC_ENDPOINT</code> - The VPC endpoint policy for the endpoint through which the request passes.</p> </li> <li> <p> <code>RESOURCE</code> - The resource owner's resource-based policies, when the owner must allow the request separately, such as a cross-account request or a request to an AWS KMS key.</p> </li> <li> <p> <code>PRINCIPAL</code> - The principal's identity-based policies attached to the IAM user or role.</p> </li> <li> <p> <code>PERMISSIONS_BOUNDARY</code> - The permissions boundary on the IAM user or role.</p> </li> <li> <p> <code>SESSION</code> - The role session that made the request, decided by its session policies.</p> </li> </ul>"
+        },
+        "evaluatedEffect":{
+          "shape":"CheckEffect",
+          "documentation":"<p>The result of evaluating this requirement. Valid values:</p> <ul> <li> <p> <code>ALLOW</code> - A statement that applies to this check allows the request.</p> </li> <li> <p> <code>EXPLICIT_DENY</code> - A deny statement that applies to this check matches.</p> </li> <li> <p> <code>IMPLICIT_DENY</code> - The check required an allow and nothing that applies to it allows the request.</p> </li> <li> <p> <code>NO_IMPACT</code> - No statement in this check matched, and no allow was needed because another path allowed the request.</p> </li> </ul>"
+        },
+        "targetArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN that distinguishes this check from other checks of the same type. This value is absent when the check type alone identifies the check. For SCP and RCP checks, this is the AWS Organizations ARN of the root, organizational unit, or account that the evaluated policies are attached to.</p>"
+        },
+        "relevantPolicyTypes":{
+          "shape":"PolicyTypeList",
+          "documentation":"<p>The policy types used to satisfy this check, plus the type of every policy with a statement that matched in it. <code>matchedPolicies</code> lists matching policies in the top-level <code>policies</code> list.</p>"
+        },
+        "matchedPolicies":{
+          "shape":"MatchedPolicyList",
+          "documentation":"<p>Policies in this list have statements that matched for this check. Each URI corresponds to an entry in the top-level <code>policies</code> list. Only policies in the top-level list are included. The check effect can reflect a matched policy omitted from this list, so this list can be empty even when the effect is <code>ALLOW</code>.</p>"
+        }
+      },
+      "documentation":"<p>Represents one authorization requirement considered during an evaluation and its result.</p>"
+    },
+    "CheckEffect":{
+      "type":"string",
+      "documentation":"<p>Whether the check allowed the request, denied it explicitly or implicitly, or did not affect the outcome.</p>",
+      "enum":[
+        "ALLOW",
+        "NO_IMPACT",
+        "IMPLICIT_DENY",
+        "EXPLICIT_DENY"
+      ]
+    },
+    "CheckList":{
+      "type":"list",
+      "member":{"shape":"Check"},
+      "documentation":"<p>A list of authorization checks within an evaluation.</p>"
+    },
+    "CheckType":{
+      "type":"string",
+      "documentation":"<p>The authorization requirement that a check evaluates, such as SCPs at one organization target, principal permissions, or the session.</p>",
+      "enum":[
+        "SERVICE_CONTROL_POLICY",
+        "RESOURCE_CONTROL_POLICY",
+        "VPC_ENDPOINT",
+        "RESOURCE",
+        "PRINCIPAL",
+        "PERMISSIONS_BOUNDARY",
+        "SESSION"
+      ]
     },
     "Document":{
       "type":"structure",
@@ -110,11 +192,18 @@
         },
         "evaluatedEffect":{
           "shape":"EvaluatedEffect",
-          "documentation":"<p>The result of the evaluation. Valid values:</p> <ul> <li> <p> <code>ALLOW</code> - The action was allowed.</p> </li> <li> <p> <code>EXPLICIT_DENY</code> - The action was explicitly denied by a policy.</p> </li> <li> <p> <code>IMPLICIT_DENY</code> - The action was denied because no policy allowed it.</p> </li> </ul>"
+          "documentation":"<p>The result of the evaluation. Valid values:</p> <ul> <li> <p> <code>ALLOW</code> - The action was allowed.</p> </li> <li> <p> <code>EXPLICIT_DENY</code> - The action was explicitly denied by a policy.</p> </li> <li> <p> <code>IMPLICIT_DENY</code> - The action was denied because at least one required authorization check had no matching allow statement.</p> </li> </ul>"
         },
         "matchedPolicies":{
           "shape":"MatchedPolicyList",
-          "documentation":"<p>The policies that matched during evaluation of this action and resource. An implicit denial produces no matched policies.</p>"
+          "documentation":"<p> <code>matchedPolicies</code> is deprecated. Use <code>checks</code> instead. This value contains the policies that matched during evaluation of this action and resource.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use checks, which group matched policies by the requirement they apply to.",
+          "deprecatedSince":"2026-11-13"
+        },
+        "checks":{
+          "shape":"CheckList",
+          "documentation":"<p> <code>checks</code> contains the authorization checks that explain an evaluation result. Each check is one authorization requirement and reports its result and policies from the top-level <code>policies</code> list with matching statements. The output lists RCP checks from the organization root to the account, then SCP checks from the organization root to the account. It then lists VPC endpoint, resource, principal, permissions boundary, and session checks. When <code>checks</code> is present, an <code>EXPLICIT_DENY</code> evaluation includes an <code>EXPLICIT_DENY</code> check. When <code>checks</code> is present for an <code>IMPLICIT_DENY</code> evaluation, it includes an <code>IMPLICIT_DENY</code> check and no <code>EXPLICIT_DENY</code> check. For more information about how IAM evaluates policies, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic_policy-eval-denyallow.html\">Policy evaluation logic</a>.</p> <p> <code>PRINCIPAL</code>, <code>PERMISSIONS_BOUNDARY</code>, and <code>SESSION</code> checks appear when they apply to the principal that made the request, even if none of their policies matched. A missing allow produces <code>IMPLICIT_DENY</code>, or <code>NO_IMPACT</code> when another path already allowed the request.</p> <p>Returned when the caller is in the request principal's account or organization. The absence of <code>checks</code> does not mean no authorization checks applied.</p>"
         }
       },
       "documentation":"<p>Represents an individual evaluation for a single action and resource pair. This includes the context, the resulting effect, and any policies that matched.</p>"
@@ -129,7 +218,7 @@
       "required":["authorizationId"],
       "members":{
         "authorizationId":{
-          "shape":"GetRequestAuthorizationDetailsInputAuthorizationIdString",
+          "shape":"AuthorizationId",
           "documentation":"<p>The authorization ID received in the access denied error message. This ID identifies the specific request to retrieve details for.</p>",
           "location":"uri",
           "locationName":"authorizationId"
@@ -141,10 +230,6 @@
           "locationName":"nextToken"
         }
       }
-    },
-    "GetRequestAuthorizationDetailsInputAuthorizationIdString":{
-      "type":"string",
-      "pattern":"[0123456789abcdefghijklmnopqrstuvwxyz]+"
     },
     "GetRequestAuthorizationDetailsOutput":{
       "type":"structure",
@@ -169,6 +254,37 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The pagination token for retrieving the next page of evaluations. This value is absent when there are no more results.</p>"
+        }
+      }
+    },
+    "GetRequestAuthorizationPolicyInput":{
+      "type":"structure",
+      "required":[
+        "authorizationId",
+        "policyUri"
+      ],
+      "members":{
+        "authorizationId":{
+          "shape":"AuthorizationId",
+          "documentation":"<p>The authorization ID received in the access denied error message. This ID identifies the request whose evaluated policy you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"authorizationId"
+        },
+        "policyUri":{
+          "shape":"PolicyUri",
+          "documentation":"<p>The URI of the policy to retrieve. Use the <code>uri</code> value from the <code>policies</code> list returned by <code>GetRequestAuthorizationDetails</code> for the same authorization ID.</p>",
+          "location":"querystring",
+          "locationName":"policyUri"
+        }
+      }
+    },
+    "GetRequestAuthorizationPolicyOutput":{
+      "type":"structure",
+      "required":["policyDocument"],
+      "members":{
+        "policyDocument":{
+          "shape":"Document",
+          "documentation":"<p>The policy document evaluated for the denied request, returned as a JSON object.</p> <p>For some AWS services and policy types, this document includes all actions relevant to the service that processed the denied request, but might omit actions for other services.</p>"
         }
       }
     },
@@ -227,7 +343,7 @@
       "members":{
         "type":{
           "shape":"PolicyType",
-          "documentation":"<p>The type of policy. Valid values:</p> <ul> <li> <p> <code>IDENTITY_BASED_POLICY</code> - An identity-based policy attached to an IAM user, group, or role.</p> </li> <li> <p> <code>PERMISSIONS_BOUNDARY</code> - A permissions boundary for an IAM entity.</p> </li> <li> <p> <code>RESOURCE_BASED_POLICY</code> - A resource-based policy attached to a resource.</p> </li> <li> <p> <code>RESOURCE_CONTROL_POLICY</code> - A resource control policy (RCP) in AWS Organizations.</p> </li> <li> <p> <code>SERVICE_CONTROL_POLICY</code> - A service control policy (SCP) in AWS Organizations.</p> </li> <li> <p> <code>SESSION_POLICY</code> - A session policy passed during role assumption or federation.</p> </li> <li> <p> <code>VPC_ENDPOINT_POLICY</code> - A VPC endpoint policy.</p> </li> </ul>"
+          "documentation":"<p>The type of policy. Valid values:</p> <ul> <li> <p> <code>IDENTITY_BASED_POLICY</code> - An identity-based policy attached to an IAM user, group, or role.</p> </li> <li> <p> <code>PERMISSIONS_BOUNDARY</code> - A permissions boundary for an IAM entity.</p> </li> <li> <p> <code>RESOURCE_BASED_POLICY</code> - A resource-based policy attached to a resource. An AWS service can evaluate and report a policy kind it defines, such as a KMS grant, as <code>RESOURCE_BASED_POLICY</code>. <code>policySource</code> identifies the kind.</p> </li> <li> <p> <code>RESOURCE_CONTROL_POLICY</code> - A resource control policy (RCP) in AWS Organizations.</p> </li> <li> <p> <code>SERVICE_CONTROL_POLICY</code> - A service control policy (SCP) in AWS Organizations.</p> </li> <li> <p> <code>SESSION_POLICY</code> - A session policy passed during role assumption or federation.</p> </li> <li> <p> <code>VPC_ENDPOINT_POLICY</code> - A VPC endpoint policy.</p> </li> </ul>"
         },
         "inline":{
           "shape":"Boolean",
@@ -235,19 +351,29 @@
         },
         "uri":{
           "shape":"String",
-          "documentation":"<p>A URI that identifies the policy. Use this URI to cross-reference the policy with the matching policies in each evaluation. The value depends on the policy type:</p> <ul> <li> <p>For managed policies, this is the policy ARN.</p> </li> <li> <p>For inline policies, which have no ARN, this is an opaque identifier.</p> </li> </ul>"
+          "documentation":"<p>A URI that identifies the policy. Use this URI to cross-reference the policy with the matching policies in each evaluation. To retrieve the policy document, pass this URI as the <code>policyUri</code> parameter of <code>GetRequestAuthorizationPolicy</code>, together with the same authorization ID. The value depends on the policy type:</p> <ul> <li> <p>For managed policies, this is the policy ARN.</p> </li> <li> <p>For inline policies, which have no ARN, this is an opaque identifier.</p> </li> </ul>"
         },
         "attachedTo":{
           "shape":"AttachedToList",
           "documentation":"<p>The entities that the policy is attached to. For identity, session, and resource-based policies, this is typically a single entity. For organization control policies (SCPs and RCPs), it can be multiple entities at different levels of the organization hierarchy.</p>"
+        },
+        "policySource":{
+          "shape":"PolicySource",
+          "documentation":"<p>What the policy was built from, such as a KMS key policy or grant. Absent for other policies.</p> <p>The <code>type</code> and <code>typeName</code> keys are always present. <code>type</code> identifies the policy-source kind. <code>typeName</code> is its readable name. Compare <code>type</code>, not <code>typeName</code>.</p> <p>A policy source can include additional keys that depend on its type. For example, a KMS grant includes a <code>grantId</code> key that identifies the grant. A grant has no ARN. Use the grant ID with the KMS key ARN in <code>attachedTo</code> to find the grant with the AWS KMS <code>ListGrants</code> operation.</p> <p>New types and keys can be added, so clients should ignore types and keys they don't recognize.</p>"
         }
       },
-      "documentation":"<p>Contains details about a policy evaluated during authorization. Details include the policy type, whether it is inline or managed, a URI that identifies it, and the entities it is attached to.</p>"
+      "documentation":"<p>Contains details about a policy evaluated during authorization. Details include the policy type, whether it is inline or managed, a URI that identifies it, the entities it is attached to, and its source, if present.</p>"
     },
     "PolicyInfoList":{
       "type":"list",
       "member":{"shape":"PolicyInfo"},
       "documentation":"<p>A list of policy details.</p>"
+    },
+    "PolicySource":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"},
+      "documentation":"<p>Contains string keys and values that describe a policy source.</p>"
     },
     "PolicyType":{
       "type":"string",
@@ -262,13 +388,23 @@
         "VPC_ENDPOINT_POLICY"
       ]
     },
+    "PolicyTypeList":{
+      "type":"list",
+      "member":{"shape":"PolicyType"},
+      "documentation":"<p>A list of policy types.</p>"
+    },
+    "PolicyUri":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "required":["message"],
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The requested authorization details do not exist in this region or have expired. Verify that the authorization ID from the access denied error message is correct and the call is made in the region where the denial occurred. Ensure that the calling principal belongs to the same account or organization as the original denied request.</p>",
+      "documentation":"<p>The requested policy or authorization details do not exist in this region or have expired. Verify that the authorization ID from the access denied error message is correct and the call is made in the region where the denial occurred. Ensure that the calling principal belongs to the same account or organization as the original denied request. If you specified a policy URI, verify that it is from the <code>policies</code> list that <code>GetRequestAuthorizationDetails</code> returns for the same authorization ID.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true

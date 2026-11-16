@@ -465,6 +465,10 @@
           "shape":"PolicyDocument",
           "documentation":"<p>An optional resource-based policy document in JSON format that defines access permissions for the cluster.</p>"
         },
+        "metricGroups":{
+          "shape":"MetricGroupRequestList",
+          "documentation":"<p>The metric groups to enable for advanced monitoring on the cluster. Advanced monitoring collects detailed, query-level database metrics to help you analyze and resolve performance issues. If you omit this parameter, no metric groups are enabled.</p>"
+        },
         "bypassPolicyLockoutSafetyCheck":{
           "shape":"BypassPolicyLockoutSafetyCheck",
           "documentation":"<p>An optional field that controls whether to bypass the lockout prevention check. When set to true, this parameter allows you to apply a policy that might lock you out of the cluster. Use with caution.</p>"
@@ -512,6 +516,10 @@
         "endpoint":{
           "shape":"Endpoint",
           "documentation":"<p>The connection endpoint for the created cluster.</p>"
+        },
+        "metricGroups":{
+          "shape":"MetricGroupResponseList",
+          "documentation":"<p>The metric groups that you enabled for advanced monitoring on the created cluster.</p>"
         }
       },
       "documentation":"<p>The output of a created cluster.</p>"
@@ -839,6 +847,10 @@
         "endpoint":{
           "shape":"Endpoint",
           "documentation":"<p>The connection endpoint for the cluster.</p>"
+        },
+        "metricGroups":{
+          "shape":"MetricGroupResponseList",
+          "documentation":"<p>The metric groups that you enabled for advanced monitoring on the cluster. If you haven't enabled any metric groups, the list is empty.</p>"
         }
       },
       "documentation":"<p>The output of a cluster.</p>"
@@ -1124,6 +1136,47 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "MetricGroup":{
+      "type":"string",
+      "documentation":"<p>The name of an advanced monitoring metric group. Advanced monitoring collects detailed, query-level database metrics to help you analyze and resolve performance issues. You choose which metric groups to collect for each cluster.</p> <p>The following metric groups are available:</p> <dl> <dt>STATEMENT_STATISTICS</dt> <dd> <p>Shows which SQL statements run most often or take the most time. Collects execution count, execution time, and rows for each statement.</p> </dd> </dl>",
+      "enum":["STATEMENT_STATISTICS"]
+    },
+    "MetricGroupRequest":{
+      "type":"structure",
+      "required":["metricGroup"],
+      "members":{
+        "metricGroup":{
+          "shape":"MetricGroup",
+          "documentation":"<p>The name of the metric group to enable.</p>"
+        }
+      },
+      "documentation":"<p>A metric group to enable for advanced monitoring.</p>"
+    },
+    "MetricGroupRequestList":{
+      "type":"list",
+      "member":{"shape":"MetricGroupRequest"},
+      "documentation":"<p>A list of metric groups to enable for advanced monitoring. Each metric group can appear only once.</p>",
+      "max":20,
+      "min":0
+    },
+    "MetricGroupResponse":{
+      "type":"structure",
+      "required":["metricGroup"],
+      "members":{
+        "metricGroup":{
+          "shape":"MetricGroup",
+          "documentation":"<p>The name of the metric group that you enabled.</p>"
+        }
+      },
+      "documentation":"<p>A metric group that you enabled for advanced monitoring on a cluster.</p>"
+    },
+    "MetricGroupResponseList":{
+      "type":"list",
+      "member":{"shape":"MetricGroupResponse"},
+      "documentation":"<p>A list of metric groups that you enabled for advanced monitoring on a cluster.</p>",
+      "max":20,
+      "min":0
     },
     "MultiRegionProperties":{
       "type":"structure",
@@ -1518,6 +1571,10 @@
         "multiRegionProperties":{
           "shape":"MultiRegionProperties",
           "documentation":"<p>The new multi-Region cluster configuration settings to be applied during an update operation.</p>"
+        },
+        "metricGroups":{
+          "shape":"MetricGroupRequestList",
+          "documentation":"<p>The complete set of metric groups to enable for advanced monitoring on the cluster. This list replaces the current set, so any metric group that you don't include is disabled. To disable all metric groups, specify an empty list (<code>[]</code>). If you omit this parameter, the current setting doesn't change.</p> <p>To view the metric groups enabled on a cluster, use <i>GetCluster</i>.</p>"
         }
       }
     },

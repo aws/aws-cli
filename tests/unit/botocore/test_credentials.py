@@ -1236,6 +1236,12 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         self._load_with_cache(cache)
         self.assertEqual(cache, {})
 
+    def test_credential_cache_file_uses_injected_cache(self):
+        self.config['credential_cache'] = 'file'
+        cache = InjectedCache()
+        self._load_with_cache(cache)
+        self.assertEqual(len(cache.entries), 1)
+
     def test_credential_cache_invalid_value_raises(self):
         self.config['credential_cache'] = 'none'
         provider = credentials.AssumeRoleWithWebIdentityProvider(
@@ -1348,6 +1354,21 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         self.assertEqual(client.assume_role_with_web_identity.call_count, 1)
         self.assertEqual(cache, {})
         self.assertEqual(len(provider._memory_cache), 1)
+
+
+class InjectedCache:
+    # Stands in for the CLI's JSONFileCache: not a plain dict.
+    def __init__(self):
+        self.entries = {}
+
+    def __contains__(self, key):
+        return key in self.entries
+
+    def __getitem__(self, key):
+        return self.entries[key]
+
+    def __setitem__(self, key, value):
+        self.entries[key] = value
 
 
 class TestEnvVar(BaseEnvVar):
@@ -3246,20 +3267,6 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
     def test_credential_cache_file_uses_injected_cache(self):
         # An explicit file behaves as unset: the injected cache (the CLI's
         # ~/.aws/cli/cache) is used.
-        class InjectedCache:
-            # Stands in for the CLI's JSONFileCache: not a plain dict.
-            def __init__(self):
-                self.entries = {}
-
-            def __contains__(self, key):
-                return key in self.entries
-
-            def __getitem__(self, key):
-                return self.entries[key]
-
-            def __setitem__(self, key, value):
-                self.entries[key] = value
-
         self.fake_config['profiles']['development']['credential_cache'] = (
             'file'
         )
@@ -3395,6 +3402,73 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             r'valid\. Valid values are: file, memory\.',
         ):
             provider.load()
+
+    def test_credential_cache_empty_value_raises(self):
+        # An empty value is an error, not the default.
+        self.fake_config['profiles']['development']['credential_cache'] = ''
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'The credential_cache "" in profile'
+        ):
+            provider.load()
+
+    def test_credential_cache_memory_with_credential_source(self):
+        config = {
+            'profiles': {
+                'sourced': {
+                    'role_arn': 'myrole',
+                    'credential_source': 'CustomMockProvider',
+                    'credential_cache': 'memory',
+                }
+            }
+        }
+        fake_provider = mock.Mock()
+        fake_provider.CANONICAL_NAME = 'CustomMockProvider'
+        fake_provider.load.return_value = credentials.Credentials(
+            'akid', 'skid', 'token'
+        )
+        cache = {}
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(with_config=config),
+            self.create_client_creator(
+                with_response=self._assume_role_response()
+            ),
+            cache=cache,
+            profile_name='sourced',
+            credential_sourcer=credentials.CanonicalNameCredentialSourcer(
+                [fake_provider]
+            ),
+        )
+        creds = provider.load().get_frozen_credentials()
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(cache, {})
+
+    def test_credential_cache_memory_with_mfa_prompts_each_command(self):
+        # Each command builds new providers, so with nothing cached the MFA
+        # code is asked for every time.
+        profile = self.fake_config['profiles']['development']
+        profile['mfa_serial'] = 'mfa'
+        profile['credential_cache'] = 'memory'
+        prompter = mock.Mock(return_value='token-code')
+        cache = {}
+        for _ in range(2):
+            provider = credentials.AssumeRoleProvider(
+                self.create_config_loader(),
+                self.create_client_creator(
+                    with_response=self._assume_role_response()
+                ),
+                cache=cache,
+                profile_name='development',
+                prompter=prompter,
+            )
+            provider.load().get_frozen_credentials()
+        self.assertEqual(prompter.call_count, 2)
+        self.assertEqual(cache, {})
 
 
 class ProfileProvider:

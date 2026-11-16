@@ -72,6 +72,15 @@ def mock_fetch_token():
 
 
 @pytest.fixture(autouse=True)
+def mock_stdin_a_tty():
+    # The prompts below only run on a terminal, which tests don't have
+    with mock.patch(
+        'awscli.customizations.login.login.is_stdin_a_tty', return_value=True
+    ) as is_a_tty:
+        yield is_a_tty
+
+
+@pytest.fixture(autouse=True)
 def no_agent_toolkit_prompt():
     with mock.patch(
         'awscli.customizations.login.login.maybe_prompt_agent_toolkit'

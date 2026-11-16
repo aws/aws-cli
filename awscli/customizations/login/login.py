@@ -36,6 +36,7 @@ from awscli.customizations.sso.utils import (
     validate_redirect_port,
 )
 from awscli.customizations.utils import load_all_regions, uni_print
+from awscli.utils import is_stdin_a_tty
 
 DEFAULT_REGION_FOR_PROMPT = 'us-east-1'
 
@@ -319,9 +320,17 @@ class LoginCommand(BasicCommand):
         # saving it, since the region used to sign in isn't necessarily the
         # one the customer wants as the profile's default. The home region
         # is the better default, as regional services only work there.
-        return self._prompt_for_profile_region(
-            profile_name, home_region or region
-        )
+        if not is_stdin_a_tty():
+            # Passing --region is how a login runs without a terminal, so
+            # leave the region unset rather than prompting where no one can
+            # answer. The sign-in has already succeeded either way.
+            return None
+        try:
+            return self._prompt_for_profile_region(
+                profile_name, home_region or region
+            )
+        except (KeyboardInterrupt, EOFError):
+            return None
 
     def _get_profile_region(self, profile_name):
         profile = self._session.full_config['profiles'].get(profile_name, {})
@@ -337,12 +346,18 @@ class LoginCommand(BasicCommand):
     def _should_use_home_region(self, profile_name, region, home_region):
         if not home_region or home_region == region:
             return False
-        if not yes_no_choice(
-            f'\nProfile {profile_name} is configured for region {region}, '
-            f'but the home region for this account is {home_region}. '
-            'Regional services outside the home region are denied. '
-            f'Do you want to set the region to {home_region}? (y/n): '
-        ):
+        if not is_stdin_a_tty():
+            return False
+        try:
+            if not yes_no_choice(
+                f'\nProfile {profile_name} is configured for region '
+                f'{region}, but the home region for this account is '
+                f'{home_region}. Regional services outside the home region '
+                f'are denied. Do you want to set the region to '
+                f'{home_region}? (y/n): '
+            ):
+                return False
+        except (KeyboardInterrupt, EOFError):
             return False
         self._print_home_region_set(home_region)
         return True

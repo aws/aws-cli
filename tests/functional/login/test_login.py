@@ -41,6 +41,15 @@ def mock_auth_code_fetcher():
 
 
 @pytest.fixture(autouse=True)
+def mock_stdin_a_tty():
+    # The prompts below only run on a terminal, which tests don't have
+    with mock.patch(
+        'awscli.customizations.login.login.is_stdin_a_tty', return_value=True
+    ) as is_a_tty:
+        yield is_a_tty
+
+
+@pytest.fixture(autouse=True)
 def mock_region_prompt():
     # Accept the default at the region prompt, as pressing Enter would
     with mock.patch(
@@ -715,6 +724,72 @@ def test_no_home_region_question_when_missing_or_matching(
 
     assert mock_region_prompt.call_count == 0
     assert choice.call_count == 0
+    mock_config_file_writer.update_config.assert_called_once_with(
+        _expected_profile(), 'configfile'
+    )
+
+
+def test_no_region_prompt_without_a_terminal(
+    mock_login_command,
+    mock_fetch_token,
+    mock_token_loader,
+    mock_config_file_writer,
+    mock_region_prompt,
+    mock_stdin_a_tty,
+):
+    # Passing --region is how a login runs without a terminal, so there is
+    # nobody to answer a prompt and no region is saved.
+    mock_stdin_a_tty.return_value = False
+
+    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    mock_region_prompt.assert_not_called()
+    mock_token_loader.save_token.assert_called_once()
+    mock_config_file_writer.update_config.assert_called_once_with(
+        _expected_profile(), 'configfile'
+    )
+
+
+def test_no_home_region_question_without_a_terminal(
+    mock_login_command,
+    mock_session,
+    mock_fetch_token,
+    mock_config_file_writer,
+    mock_stdin_a_tty,
+):
+    mock_stdin_a_tty.return_value = False
+    mock_session.full_config = {
+        'profiles': {'profile-name': {'region': 'us-east-1'}}
+    }
+    mock_fetch_token.return_value = _login_token(aws_home_region='us-east-2')
+
+    with mock.patch(
+        'awscli.customizations.login.login.yes_no_choice'
+    ) as choice:
+        mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    choice.assert_not_called()
+    mock_config_file_writer.update_config.assert_called_once_with(
+        _expected_profile(), 'configfile'
+    )
+
+
+@pytest.mark.parametrize('error', [KeyboardInterrupt, EOFError])
+def test_login_completes_when_region_prompt_is_declined(
+    mock_login_command,
+    mock_fetch_token,
+    mock_token_loader,
+    mock_config_file_writer,
+    mock_region_prompt,
+    error,
+):
+    # The sign-in cannot be undone by the time we prompt, so declining the
+    # region leaves the login intact and only omits the region.
+    mock_region_prompt.side_effect = error
+
+    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    mock_token_loader.save_token.assert_called_once()
     mock_config_file_writer.update_config.assert_called_once_with(
         _expected_profile(), 'configfile'
     )

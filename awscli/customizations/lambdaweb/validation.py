@@ -11,14 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import dataclasses
-import os
 import re
 
 from awscli.customizations.lambdaweb import (
     args,
     constants,
     model,
-    output,
+    runtimes,
     scaffold,
 )
 from awscli.customizations.lambdaweb.endpoint_plan import EndpointAction
@@ -135,41 +134,11 @@ def _split_regions(value):
     )
 
 
-def entrypoint_conflict_error():
+def entrypoint_conflict_error(env_var):
     return InvalidArgumentValueError(
-        'Use either --entry-point or the '
-        f'{constants.ENTRYPOINT_ENV_VAR} environment variable, not both. '
-        'Remove one of them and retry.'
+        f'Use either --entry-point or the {env_var} environment variable, '
+        'not both. Remove one of them and retry.'
     )
-
-
-def verify_entrypoint_in_tree(source_dir, value):
-    """Warn (or error) if a customer-set entry-point file is not bundled.
-
-    A missing in-tree file is a hard error. A value whose on-disk mapping
-    cannot be resolved with certainty only warns.
-    """
-    rel = value[2:] if value.startswith('./') else value
-    uncertain = (
-        os.path.isabs(rel)
-        or rel.startswith('/')
-        or '..' in rel.replace('\\', '/').split('/')
-        or '#' in rel
-        or '?' in rel
-        or rel != rel.strip()
-    )
-    local = os.path.join(source_dir, *rel.split('/'))
-    if os.path.isfile(local):
-        return
-    message = (
-        f"{constants.ENTRYPOINT_ENV_VAR} points at '{value}', but no such "
-        f"file exists under --code '{source_dir}'. Include the file in the "
-        'deployment package or specify a different entry point.'
-    )
-    if uncertain:
-        output.progress(f'Warning: {message}')
-        return
-    raise InvalidSourceError(message)
 
 
 def validate_reuse_code_args(parsed_args, norm):
@@ -187,8 +156,9 @@ def validate_reuse_code_args(parsed_args, norm):
         offenders.append('--force-include')
     if parsed_args.bucket_name:
         offenders.append('--bucket-name')
-    if constants.ENTRYPOINT_ENV_VAR in norm.env:
-        offenders.append(f'--env {constants.ENTRYPOINT_ENV_VAR}')
+    for env_var in runtimes.entry_env_vars():
+        if env_var in norm.env:
+            offenders.append(f'--env {env_var}')
     if offenders:
         raise LambdaWebError(
             f'{", ".join(offenders)} requires --code. When you omit --code, '
@@ -216,14 +186,14 @@ def validate_hello_world_args(parsed_args):
             '--hello-world accepts a path that does not exist or identifies '
             'an existing empty directory.'
         )
-    if (
-        parsed_args.runtime
-        and parsed_args.runtime != constants.DEFAULT_RUNTIME
+    requested = runtimes.resolve_requested(parsed_args.runtime)
+    if requested is not None and not requested[1].accepts_hello_world(
+        requested[0]
     ):
+        accepted = ', '.join(runtimes.hello_world_values())
         raise LambdaWebError(
-            f'--hello-world uses the {constants.DEFAULT_RUNTIME} runtime. '
-            f'Remove --runtime, or set --runtime to '
-            f'{constants.DEFAULT_RUNTIME}.'
+            f"--hello-world doesn't support --runtime {parsed_args.runtime}. "
+            f'Remove --runtime, or set it to one of: {accepted}.'
         )
     if not scaffold.is_empty_dir(parsed_args.code):
         raise InvalidSourceError(

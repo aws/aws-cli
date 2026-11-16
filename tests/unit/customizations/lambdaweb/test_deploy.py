@@ -868,7 +868,9 @@ def test_customer_entrypoint_skips_wrapper(harness, source_dir, capsys):
         rc = _run(harness, args, _make_globals())
 
     assert rc == 0
-    assert build_mock.call_args[0][1] is None
+    selection = build_mock.call_args[0][1]
+    assert selection.wrapper is None
+    assert selection.bundle_path is None
     request = _request_for(harness, 'create_web_function')
     assert (
         request['revisionConfig']['serviceConfig']['environmentVariables'][
@@ -2403,3 +2405,586 @@ def test_hello_world_rejects_nondefault_runtime(harness, tmp_path, capsys):
     assert '--runtime' in error
     assert constants.DEFAULT_RUNTIME in error
     assert harness.lambda_web.calls == []
+
+
+# --- runtime families ---------------------------------------------------------
+
+
+@pytest.fixture
+def python_dir(tmp_path):
+    """Minimal Python source tree whose entry is the default ``main:app``."""
+    (tmp_path / 'main.py').write_text('app = object()\n')
+    return str(tmp_path)
+
+
+def _stub_create_tail(harness):
+    harness.lambda_web.add_response(
+        'create_web_function', _create_web_function_response()
+    )
+    harness.lambda_web.add_response(
+        'get_web_function_endpoint', _endpoint_response()
+    )
+
+
+def _create_request_env(harness):
+    request = _request_for(harness, 'create_web_function')
+    return request['revisionConfig']['serviceConfig'].get(
+        'environmentVariables', {}
+    )
+
+
+def _create_request_runtime(harness):
+    request = _request_for(harness, 'create_web_function')
+    return request['revisionConfig']['buildConfig']['runtimeConfig']['runtime']
+
+
+def test_create_python_runtime_with_default_entry(harness, python_dir, capsys):
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    rc = _run(
+        harness, _make_args(python_dir, runtime='python'), _make_globals()
+    )
+
+    assert rc == 0
+    assert _create_request_runtime(harness) == 'python3.15'
+    assert 'AWS_LAMBDA_PYTHON_ENTRYPOINT' not in _create_request_env(harness)
+    selection = deploy.bundle.build_zip.call_args[0][1]
+    assert selection.bundle_path == 'main.py'
+    assert selection.wrapper is None
+    exclude = deploy.bundle.build_zip.call_args.kwargs['exclude_patterns']
+    assert 'venv/' in exclude
+    assert '.git/' in exclude
+    assert 'Using entry point' not in capsys.readouterr().err
+
+
+def test_create_python_sets_entrypoint_env_for_other_module(
+    harness, tmp_path, capsys
+):
+    (tmp_path / 'app.py').write_text('app = object()\n')
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    args = _make_args(str(tmp_path), runtime='python3.15', env=['A=1'])
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    assert _create_request_env(harness) == {
+        'A': '1',
+        'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'app:app',
+    }
+    assert "Using entry point 'app:app'." in capsys.readouterr().err
+
+
+def test_create_python_explicit_entry_point(harness, tmp_path):
+    (tmp_path / 'svc').mkdir()
+    (tmp_path / 'svc' / 'api.py').write_text('application = object()\n')
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    args = _make_args(
+        str(tmp_path), runtime='python', entry_point='asgi:svc.api:application'
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    assert _create_request_env(harness) == {
+        'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'asgi:svc.api:application'
+    }
+    selection = deploy.bundle.build_zip.call_args[0][1]
+    assert selection.bundle_path == 'svc/api.py'
+
+
+def test_create_node_alias_selects_latest(harness, source_dir):
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    rc = _run(harness, _make_args(source_dir, runtime='node'), _make_globals())
+
+    assert rc == 0
+    assert _create_request_runtime(harness) == constants.DEFAULT_RUNTIME
+    exclude = deploy.bundle.build_zip.call_args.kwargs['exclude_patterns']
+    assert exclude == constants.DEFAULT_EXCLUDE_PATTERNS
+
+
+def test_create_detects_python_project(harness, python_dir, capsys):
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    rc = _run(harness, _make_args(python_dir), _make_globals())
+
+    assert rc == 0
+    assert _create_request_runtime(harness) == 'python3.15'
+    assert 'Detected a Python application; using the python3.15 runtime.' in (
+        capsys.readouterr().err
+    )
+
+
+def test_create_detected_node_project_is_silent(harness, source_dir, capsys):
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    rc = _run(harness, _make_args(source_dir), _make_globals())
+
+    assert rc == 0
+    assert _create_request_runtime(harness) == constants.DEFAULT_RUNTIME
+    assert 'Detected' not in capsys.readouterr().err
+
+
+def test_create_mixed_project_requires_runtime(harness, source_dir, capsys):
+    with open(deploy.os.path.join(source_dir, 'requirements.txt'), 'w') as f:
+        f.write('flask\n')
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+
+    rc = _run(harness, _make_args(source_dir), _make_globals())
+
+    assert rc == 252
+    error = capsys.readouterr().err
+    assert 'both Node.js and Python' in error
+    assert '--runtime node' in error
+    assert '--runtime python' in error
+    assert _mutating_calls(harness) == []
+    deploy.bundle.build_zip.assert_not_called()
+
+
+def test_create_mixed_project_with_runtime_proceeds(harness, source_dir):
+    with open(deploy.os.path.join(source_dir, 'requirements.txt'), 'w') as f:
+        f.write('flask\n')
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    rc = _run(harness, _make_args(source_dir, runtime='node'), _make_globals())
+
+    assert rc == 0
+    assert _create_request_runtime(harness) == constants.DEFAULT_RUNTIME
+
+
+def test_create_unknown_runtime_passes_through_to_service(
+    harness, source_dir, capsys
+):
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    rc = _run(
+        harness, _make_args(source_dir, runtime='ruby3.4'), _make_globals()
+    )
+
+    assert rc == 0
+    assert _create_request_runtime(harness) == 'ruby3.4'
+    # packaged with the default (Node.js) rules, as before runtime families.
+    assert deploy.bundle.build_zip.call_args[0][1].bundle_path == 'index.js'
+    note = capsys.readouterr().err
+    assert "Runtime 'ruby3.4' isn't recognized" in note
+    assert 'Node.js rules' in note
+
+
+def test_update_unknown_inherited_runtime_notes_packaging(
+    harness, source_dir, capsys
+):
+    existing = _existing_revision()
+    existing['buildConfig']['runtimeConfig']['runtime'] = 'ruby3.4'
+    _stub_update_prelude(harness, existing=existing)
+    _stub_bucket_ok(harness)
+    _stub_update_tail(harness)
+
+    rc = _run(
+        harness,
+        _make_args(source_dir, execution_role_arn=None),
+        _make_globals(),
+    )
+
+    assert rc == 0
+    request = _request_for(harness, 'create_web_function_revision')
+    assert request['buildConfig']['runtimeConfig']['runtime'] == 'ruby3.4'
+    assert "Runtime 'ruby3.4' isn't recognized" in capsys.readouterr().err
+
+
+def test_update_reuse_code_unknown_runtime_is_silent(harness, capsys):
+    existing = _existing_revision()
+    existing['buildConfig']['runtimeConfig']['runtime'] = 'ruby3.4'
+    _stub_update_prelude(harness, existing=existing)
+    harness.lambda_web.add_response(
+        'create_web_function_revision', _new_revision_response()
+    )
+    harness.lambda_web.add_response(
+        'get_web_function_revision', _new_revision_response(state='Active')
+    )
+    harness.lambda_web.add_response(
+        'get_web_function_endpoint', _endpoint_response()
+    )
+
+    args = _make_args(
+        None,
+        code=None,
+        bucket_name=None,
+        execution_role_arn=None,
+        env=['A=1'],
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    assert "isn't recognized" not in capsys.readouterr().err
+
+
+def test_entry_point_conflicts_with_python_entrypoint_env(
+    harness, python_dir, capsys
+):
+    args = _make_args(
+        python_dir,
+        runtime='python',
+        entry_point='main:app',
+        env=['AWS_LAMBDA_PYTHON_ENTRYPOINT=main:app'],
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 252
+    assert 'AWS_LAMBDA_PYTHON_ENTRYPOINT' in capsys.readouterr().err
+    assert harness.lambda_web.calls == []
+
+
+def test_create_python_honors_customer_entrypoint_env(
+    harness, tmp_path, capsys
+):
+    (tmp_path / 'svc').mkdir()
+    (tmp_path / 'svc' / 'api.py').write_text('app = object()\n')
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    args = _make_args(
+        str(tmp_path),
+        runtime='python',
+        env=['AWS_LAMBDA_PYTHON_ENTRYPOINT=wsgi:svc.api:app'],
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    assert _create_request_env(harness) == {
+        'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'wsgi:svc.api:app'
+    }
+    assert (
+        "Using entry point 'wsgi:svc.api:app' from AWS_LAMBDA_PYTHON_ENTRYPOINT."
+    ) in capsys.readouterr().err
+
+
+def test_create_python_warns_about_missing_dependencies(
+    harness, python_dir, capsys
+):
+    with open(deploy.os.path.join(python_dir, 'requirements.txt'), 'w') as f:
+        f.write('fastapi\n')
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    rc = _run(
+        harness, _make_args(python_dir, runtime='python'), _make_globals()
+    )
+
+    assert rc == 0
+    error = capsys.readouterr().err
+    assert 'requirements.txt declares dependencies' in error
+    assert '--target .' in error
+
+
+def _existing_python_revision(env_vars=None):
+    existing = _existing_revision(env_vars=env_vars)
+    existing['buildConfig']['runtimeConfig']['runtime'] = 'python3.14'
+    return existing
+
+
+def test_update_inherits_python_runtime(harness, tmp_path):
+    (tmp_path / 'app.py').write_text('app = object()\n')
+    _stub_update_prelude(
+        harness, existing=_existing_python_revision(env_vars={'KEEP': '1'})
+    )
+    _stub_bucket_ok(harness)
+    _stub_update_tail(harness)
+
+    rc = _run(
+        harness,
+        _make_args(str(tmp_path), execution_role_arn=None),
+        _make_globals(),
+    )
+
+    assert rc == 0
+    request = _request_for(harness, 'create_web_function_revision')
+    assert request['buildConfig']['runtimeConfig']['runtime'] == 'python3.14'
+    assert request['serviceConfig']['environmentVariables'] == {
+        'KEEP': '1',
+        'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'app:app',
+    }
+
+
+def test_update_python_entry_point_replaces_inherited_env(harness, tmp_path):
+    (tmp_path / 'svc').mkdir()
+    (tmp_path / 'svc' / 'api.py').write_text('app = object()\n')
+    _stub_update_prelude(
+        harness,
+        existing=_existing_python_revision(
+            env_vars={'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'old:app'}
+        ),
+    )
+    _stub_bucket_ok(harness)
+    _stub_update_tail(harness)
+
+    args = _make_args(
+        str(tmp_path), execution_role_arn=None, entry_point='svc.api:app'
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    request = _request_for(harness, 'create_web_function_revision')
+    assert request['serviceConfig']['environmentVariables'] == {
+        'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'svc.api:app'
+    }
+
+
+def test_update_python_inherited_env_entry_is_honored(harness, tmp_path):
+    (tmp_path / 'svc').mkdir()
+    (tmp_path / 'svc' / 'api.py').write_text('app = object()\n')
+    _stub_update_prelude(
+        harness,
+        existing=_existing_python_revision(
+            env_vars={'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'svc.api:app'}
+        ),
+    )
+    _stub_bucket_ok(harness)
+    _stub_update_tail(harness)
+
+    rc = _run(
+        harness,
+        _make_args(str(tmp_path), execution_role_arn=None),
+        _make_globals(),
+    )
+
+    assert rc == 0
+    selection = deploy.bundle.build_zip.call_args[0][1]
+    assert selection.display == 'svc.api:app'
+    assert selection.bundle_path == 'svc/api.py'
+
+
+def test_update_node_entry_point_still_conflicts_with_inherited_env(
+    harness, source_dir, capsys
+):
+    _stub_update_prelude(
+        harness,
+        existing=_existing_revision(
+            env_vars={'AWS_LAMBDA_NODEJS_ENTRYPOINT': 'server.js'}
+        ),
+    )
+
+    args = _make_args(
+        source_dir, execution_role_arn=None, entry_point='index.js'
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 252
+    assert 'AWS_LAMBDA_NODEJS_ENTRYPOINT' in capsys.readouterr().err
+    assert _mutating_calls(harness) == []
+
+
+def test_update_warns_when_code_looks_like_other_runtime(
+    harness, python_dir, capsys
+):
+    _stub_update_prelude(harness)
+
+    rc = _run(
+        harness,
+        _make_args(python_dir, execution_role_arn=None),
+        _make_globals(),
+    )
+
+    # Node entry resolution fails for a Python tree; the warning explains why.
+    assert rc == 252
+    error = capsys.readouterr().err
+    assert 'looks like a Python application' in error
+    assert f'uses the {EXISTING_RUNTIME} runtime' in error
+    assert '--runtime python' in error
+    assert _mutating_calls(harness) == []
+
+
+def test_update_explicit_runtime_switches_family(harness, python_dir, capsys):
+    _stub_update_prelude(harness)
+    _stub_bucket_ok(harness)
+    _stub_update_tail(harness)
+
+    rc = _run(
+        harness,
+        _make_args(python_dir, execution_role_arn=None, runtime='python'),
+        _make_globals(),
+    )
+
+    assert rc == 0
+    request = _request_for(harness, 'create_web_function_revision')
+    assert request['buildConfig']['runtimeConfig']['runtime'] == 'python3.15'
+    assert 'looks like' not in capsys.readouterr().err
+
+
+def test_update_reuse_code_rejects_python_entry_env(harness, capsys):
+    args = _make_args(
+        None,
+        code=None,
+        execution_role_arn=None,
+        env=['AWS_LAMBDA_PYTHON_ENTRYPOINT=app:app'],
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 255
+    assert '--env AWS_LAMBDA_PYTHON_ENTRYPOINT requires --code' in (
+        capsys.readouterr().err
+    )
+
+
+def test_hello_world_python_scaffolds_and_creates(harness, tmp_path, capsys):
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    target = str(tmp_path / 'fresh-app')
+    args = _make_args(target, hello_world=True, create=False, runtime='python')
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    assert (tmp_path / 'fresh-app' / 'main.py').exists()
+    assert not (tmp_path / 'fresh-app' / 'package.json').exists()
+    assert _create_request_runtime(harness) == 'python3.15'
+    assert 'AWS_LAMBDA_PYTHON_ENTRYPOINT' not in _create_request_env(harness)
+
+
+def test_hello_world_accepts_exact_latest_python(harness, tmp_path):
+    _stub_sts(harness)
+    _stub_probe_not_found(harness)
+    _stub_bucket_ok(harness)
+    _stub_role_ok(harness)
+    _stub_create_tail(harness)
+
+    target = str(tmp_path / 'fresh-app')
+    args = _make_args(
+        target, hello_world=True, create=False, runtime='python3.15'
+    )
+    assert _run(harness, args, _make_globals()) == 0
+
+
+def test_hello_world_rejects_unknown_runtime(harness, tmp_path, capsys):
+    args = _make_args(
+        str(tmp_path / 'fresh'), hello_world=True, runtime='ruby3.4'
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 255
+    error = capsys.readouterr().err
+    assert '--runtime ruby3.4' in error
+    assert 'python3.15, python' in error
+    assert not (tmp_path / 'fresh').exists()
+    assert harness.lambda_web.calls == []
+
+
+def test_update_python_entry_point_survives_unset_env_of_same_key(
+    harness, tmp_path
+):
+    (tmp_path / 'svc').mkdir()
+    (tmp_path / 'svc' / 'api.py').write_text('app = object()\n')
+    _stub_update_prelude(
+        harness,
+        existing=_existing_python_revision(
+            env_vars={'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'old:app', 'KEEP': '1'}
+        ),
+    )
+    _stub_bucket_ok(harness)
+    _stub_update_tail(harness)
+
+    args = _make_args(
+        str(tmp_path),
+        execution_role_arn=None,
+        entry_point='svc.api:app',
+        unset_env=['AWS_LAMBDA_PYTHON_ENTRYPOINT'],
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    request = _request_for(harness, 'create_web_function_revision')
+    assert request['serviceConfig']['environmentVariables'] == {
+        'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'svc.api:app',
+        'KEEP': '1',
+    }
+
+
+def test_update_python_resolved_entry_survives_unset_env_of_same_key(
+    harness, tmp_path
+):
+    (tmp_path / 'app.py').write_text('app = object()\n')
+    _stub_update_prelude(
+        harness,
+        existing=_existing_python_revision(
+            env_vars={'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'old:app'}
+        ),
+    )
+    _stub_bucket_ok(harness)
+    _stub_update_tail(harness)
+
+    args = _make_args(
+        str(tmp_path),
+        execution_role_arn=None,
+        unset_env=['AWS_LAMBDA_PYTHON_ENTRYPOINT'],
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    request = _request_for(harness, 'create_web_function_revision')
+    assert request['serviceConfig']['environmentVariables'] == {
+        'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'app:app'
+    }
+
+
+def test_update_python_default_entry_point_clears_inherited_env(
+    harness, tmp_path
+):
+    (tmp_path / 'main.py').write_text('app = object()\n')
+    _stub_update_prelude(
+        harness,
+        existing=_existing_python_revision(
+            env_vars={'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'old:app', 'KEEP': '1'}
+        ),
+    )
+    _stub_bucket_ok(harness)
+    _stub_update_tail(harness)
+
+    args = _make_args(
+        str(tmp_path), execution_role_arn=None, entry_point='main:app'
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    request = _request_for(harness, 'create_web_function_revision')
+    assert request['serviceConfig']['environmentVariables'] == {'KEEP': '1'}

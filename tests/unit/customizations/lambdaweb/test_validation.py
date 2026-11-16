@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
+import os
 from unittest import mock
 
 import pytest
@@ -19,7 +20,6 @@ from awscli.customizations.lambdaweb import constants, validation
 from awscli.customizations.lambdaweb.exceptions import (
     InvalidArgumentValueError,
     InvalidKeyValueError,
-    InvalidSourceError,
     LambdaWebError,
 )
 
@@ -156,24 +156,6 @@ def test_reject_unreadable_environment_reports_matching_error():
     assert 'run the command again' in message
 
 
-def test_verify_entrypoint_accepts_existing_file(tmp_path):
-    entrypoint = tmp_path / 'server.js'
-    entrypoint.write_text('export default {};\n')
-
-    validation.verify_entrypoint_in_tree(str(tmp_path), 'server.js')
-
-
-def test_verify_entrypoint_rejects_missing_file(tmp_path):
-    with pytest.raises(InvalidSourceError, match='no such file'):
-        validation.verify_entrypoint_in_tree(str(tmp_path), 'server.js')
-
-
-def test_verify_entrypoint_warns_for_uncertain_path(tmp_path, capsys):
-    validation.verify_entrypoint_in_tree(str(tmp_path), '../server.js')
-
-    assert 'Warning:' in capsys.readouterr().err
-
-
 @pytest.mark.parametrize(
     ('field', 'value', 'flag'),
     [
@@ -288,3 +270,70 @@ def test_immutable_regions_error_leads_with_nondestructive_recovery():
     assert "existing endpoint wasn't changed" in message
     assert 'AWS Regions you specified' in message
     assert message.index('create a new endpoint') < message.index('delete it')
+
+
+def _hello_world_args(**overrides):
+    values = {
+        'entry_point': None,
+        'force_include': None,
+        'runtime': None,
+        'code': os.path.join(os.sep, 'nonexistent', 'starter'),
+    }
+    values.update(overrides)
+    return argparse.Namespace(**values)
+
+
+@pytest.mark.parametrize(
+    'runtime',
+    [None, 'nodejs24.x', 'node', 'nodejs', 'python', 'python3.15'],
+)
+def test_validate_hello_world_args_accepts_latest_runtimes(runtime):
+    validation.validate_hello_world_args(_hello_world_args(runtime=runtime))
+
+
+def test_validate_hello_world_args_rejects_older_runtime():
+    with pytest.raises(LambdaWebError) as excinfo:
+        validation.validate_hello_world_args(
+            _hello_world_args(runtime='nodejs22.x')
+        )
+    message = str(excinfo.value)
+    assert '--runtime nodejs22.x' in message
+    assert 'nodejs24.x, node, nodejs, python3.15, python' in message
+
+
+def test_validate_hello_world_args_rejects_unknown_runtime():
+    with pytest.raises(LambdaWebError) as excinfo:
+        validation.validate_hello_world_args(
+            _hello_world_args(runtime='ruby3.4')
+        )
+    message = str(excinfo.value)
+    assert '--runtime ruby3.4' in message
+    assert 'nodejs24.x, node, nodejs, python3.15, python' in message
+
+
+@pytest.mark.parametrize(
+    'env_var',
+    ['AWS_LAMBDA_NODEJS_ENTRYPOINT', 'AWS_LAMBDA_PYTHON_ENTRYPOINT'],
+)
+def test_validate_reuse_code_args_rejects_entry_env_vars(env_var):
+    parsed_args = argparse.Namespace(
+        entry_point=None,
+        include_hidden_files=False,
+        force_include=None,
+        bucket_name=None,
+    )
+    norm = validation.NormalizedArgs(
+        env={env_var: 'x'}, unset_env=[], regions=[]
+    )
+    with pytest.raises(LambdaWebError) as excinfo:
+        validation.validate_reuse_code_args(parsed_args, norm)
+    assert f'--env {env_var} requires --code' in str(excinfo.value)
+
+
+def test_entrypoint_conflict_error_names_the_variable():
+    error = validation.entrypoint_conflict_error(
+        'AWS_LAMBDA_PYTHON_ENTRYPOINT'
+    )
+    assert isinstance(error, InvalidArgumentValueError)
+    assert 'AWS_LAMBDA_PYTHON_ENTRYPOINT' in str(error)
+    assert '--entry-point' in str(error)

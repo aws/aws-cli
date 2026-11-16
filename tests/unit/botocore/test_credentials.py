@@ -1251,7 +1251,10 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
     def test_env_token_file_honors_profile_memory(self):
         # AWS_PROFILE (or default) with the token file from the environment,
         # as on EKS or CI runners: the profile's setting still applies.
-        self.config['credential_cache'] = 'memory'
+        self.config = {
+            'role_arn': 'arn:aws:iam::123:role/role-name',
+            'credential_cache': 'memory',
+        }
         cache = {}
         self._load_with_cache(
             cache, env={'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt'}
@@ -1259,7 +1262,9 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         self.assertEqual(cache, {})
 
     def test_env_token_file_and_role_honor_profile_memory(self):
-        self.config['credential_cache'] = 'memory'
+        # The profile holds only credential_cache; everything else comes
+        # from the environment.
+        self.config = {'credential_cache': 'memory'}
         cache = {}
         self._load_with_cache(
             cache,
@@ -1292,7 +1297,12 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         self.assertEqual(len(cache), 1)
 
     def test_env_token_file_invalid_profile_value_raises(self):
-        self.config['credential_cache'] = 'Memory'
+        # Applies to any profile in use, even one that isn't a web identity
+        # profile, once web identity comes from the environment.
+        self.config = {
+            'credential_process': 'some-command',
+            'credential_cache': 'Memory',
+        }
         provider = credentials.AssumeRoleWithWebIdentityProvider(
             load_config=self._load_config,
             client_creator=self.create_client_creator(with_response={}),
@@ -1300,7 +1310,10 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
             profile_name=self.profile_name,
             token_loader_cls=self._mock_loader_cls('totally.a.token'),
         )
-        env = {'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt'}
+        env = {
+            'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt',
+            'AWS_ROLE_ARN': 'arn:aws:iam::123:role/env-role',
+        }
         with mock.patch.dict(os.environ, env, clear=True):
             with self.assertRaisesRegex(
                 InvalidConfigError, 'credential_cache'

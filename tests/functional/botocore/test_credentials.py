@@ -995,9 +995,11 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
         )
 
     def test_aws_profile_with_env_token_file_honors_memory(self):
-        # No --profile, so env vars stay enabled (EKS/IRSA, CI runners).
-        self.write_web_identity_config('credential_cache = memory\n')
+        # No --profile, so env vars stay enabled (EKS/IRSA, CI runners). The
+        # profile holds only credential_cache; the rest is from the env.
+        self.write_config('[profile W]\ncredential_cache = memory\n')
         self.environ['AWS_PROFILE'] = 'W'
+        self.environ['AWS_ROLE_ARN'] = 'arn:aws:iam::123456789:role/RoleW'
         self.environ['AWS_WEB_IDENTITY_TOKEN_FILE'] = self.token_file
         operation = 'assume_role_with_web_identity'
         self.run_command(None, operation, responses=1)
@@ -1010,6 +1012,35 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
         self.environ['AWS_WEB_IDENTITY_TOKEN_FILE'] = self.token_file
         session = StubbedSession()
         with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
+            session.get_credentials()
+
+    def write_static_keys_config(self, extra=''):
+        self.write_config(
+            '[profile S]\n'
+            'aws_access_key_id = abc123\n'
+            'aws_secret_access_key = def456\n'
+            f'{extra}\n'
+        )
+
+    def test_invalid_value_on_static_keys_profile_is_ignored(self):
+        # Only the role providers read the key, so a profile they don't
+        # handle resolves as before.
+        self.write_static_keys_config('credential_cache = disk\n')
+        self.environ['AWS_PROFILE'] = 'S'
+        creds = self.run_command_with_calls(None, [])
+        self.assertEqual(creds.access_key, 'abc123')
+
+    def test_invalid_value_on_profile_in_use_raises_with_env_web_identity(
+        self,
+    ):
+        # With web identity from the environment, the provider reads the
+        # key from the profile in use, whatever else the profile holds.
+        self.write_static_keys_config('credential_cache = disk\n')
+        self.environ['AWS_PROFILE'] = 'S'
+        self.environ['AWS_ROLE_ARN'] = 'arn:aws:iam::123456789:role/RoleE'
+        self.environ['AWS_WEB_IDENTITY_TOKEN_FILE'] = self.token_file
+        session = StubbedSession()
+        with self.assertRaisesRegex(InvalidConfigError, '"S"'):
             session.get_credentials()
 
     def test_env_only_web_identity_uses_default_cache(self):

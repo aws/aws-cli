@@ -17,6 +17,7 @@ import re
 from collections.abc import Mapping
 
 _REDACTIONS = []
+_REDACTED_KEYS = {}
 
 
 def register_redaction(pattern, replacement):
@@ -46,6 +47,23 @@ def register_redaction(pattern, replacement):
     _REDACTIONS.append((pattern, replacement))
 
 
+def register_redacted_key(name, replacement):
+    """Register a mapping key whose text values are replaced.
+
+    :type name: str
+    :param name: The key to redact the values of, matched without regard
+        to case, such as a response field or a request header name.
+
+    :type replacement: str
+    :param replacement: The literal text to replace each value with.
+
+    Patterns only see a mapping's values, not its keys, so a secret kept
+    under a known key, as in a parsed response or a dict of headers, needs
+    this as well as a pattern.
+    """
+    _REDACTED_KEYS[name.lower()] = replacement
+
+
 def redact(value):
     """Return ``value`` with every registered pattern redacted.
 
@@ -64,8 +82,18 @@ def redact(value):
         items = [redact(item) for item in value]
         return items if isinstance(value, list) else tuple(items)
     if isinstance(value, Mapping):
-        return {key: redact(item) for key, item in value.items()}
+        return {key: _redact_item(key, item) for key, item in value.items()}
     return value
+
+
+def _redact_item(key, item):
+    if isinstance(key, str) and isinstance(item, (str, bytes, bytearray)):
+        replacement = _REDACTED_KEYS.get(key.lower())
+        if replacement is not None:
+            if isinstance(item, str):
+                return replacement
+            return type(item)(replacement.encode('utf-8'))
+    return redact(item)
 
 
 def _redact_text(text):
@@ -103,3 +131,49 @@ register_redaction(
     r'(?<![A-Za-z0-9+/])LS0tLS1CRUdJTi[A-Za-z0-9+/]*={0,2}',
     _redact_base64_private_key,
 )
+
+# Temporary AWS credentials, as in the responses of the AWS STS AssumeRole*,
+# GetSessionToken and GetFederationToken operations (XML), of IAM Identity
+# Center GetRoleCredentials (JSON, camel case) and of Amazon Cognito
+# GetCredentialsForIdentity (SecretKey), and the session token of a signed
+# request (the SigV4 header or the SigV2 parameter). The access key ID and the
+# expiration aren't secret and stay visible.
+_REDACTED_CREDENTIAL = '<redacted credential>'
+_SECRET_CREDENTIAL_FIELDS = ('SecretAccessKey', 'SecretKey', 'SessionToken')
+_SECURITY_TOKEN_NAMES = ('X-Amz-Security-Token', 'SecurityToken')
+_FIELDS = '|'.join(_SECRET_CREDENTIAL_FIELDS)
+_TOKENS = '|'.join(_SECURITY_TOKEN_NAMES)
+# A quoted value, up to its closing quote, which may be escaped when the
+# text is itself inside a JSON string.
+_QUOTED_VALUE = r'[^"\']+?(?=\\?["\'])'
+
+
+def _keep_prefix(match):
+    # Redacting text twice gives the same text as redacting it once.
+    return match.group(1) + _REDACTED_CREDENTIAL
+
+
+# An XML element, such as <SessionToken>...</SessionToken>, also with a
+# namespace prefix or attributes.
+register_redaction(
+    re.compile(rf'(<(?:\w+:)?(?:{_FIELDS})(?:\s[^>]*)?>)[^<]+', re.IGNORECASE),
+    _keep_prefix,
+)
+# A quoted key and value, as in JSON or a Python dict's repr, and the
+# session token header in a dict of headers.
+register_redaction(
+    re.compile(
+        rf'(\\?["\'](?:{_FIELDS}|{_TOKENS})\\?["\']\s*:\s*'
+        rf'b?\\?["\']){_QUOTED_VALUE}',
+        re.IGNORECASE,
+    ),
+    _keep_prefix,
+)
+# The session token in the signature's canonical request or string to
+# sign, a presigned URL's query string, or a SigV2 form body.
+register_redaction(
+    re.compile(rf'((?:{_TOKENS})[:=])[^\s"\',&}}\\<]+', re.IGNORECASE),
+    _keep_prefix,
+)
+for _name in _SECRET_CREDENTIAL_FIELDS + _SECURITY_TOKEN_NAMES:
+    register_redacted_key(_name, _REDACTED_CREDENTIAL)

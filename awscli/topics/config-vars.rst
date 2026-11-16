@@ -288,14 +288,16 @@ in the AWS CLI config file:
   (the default) and ``memory``. With ``file``, the credentials are stored on
   disk, in ``~/.aws/cli/cache``, and reused by later commands until they
   expire. With ``memory``, they are kept only for the duration of a single
-  AWS CLI command and are not written to the credential cache. This is an
-  optional parameter.
+  AWS CLI command and are not written to the credential cache. Values are
+  case-sensitive. This is an optional parameter.
 
 Switching a profile to ``credential_cache = memory`` does not delete the
 credentials it has already cached. To remove them, delete the files in
 ``~/.aws/cli/cache``; the AWS CLI recreates the ones it needs.
 
-Only the AWS CLI reads ``credential_cache``. The AWS SDKs and other tools
+Only the AWS CLI reads ``credential_cache``, and only for assume role and
+assume role with web identity profiles. It has no effect on IAM Identity
+Center (SSO) or ``credential_process`` profiles. The AWS SDKs and other tools
 that read the shared config file ignore it, so a tool that keeps its own file
 cache may still write credentials to disk for a profile set to ``memory``.
 
@@ -431,9 +433,11 @@ This provider can also be configured via the environment:
     These environment variables currently only apply to the assume role with
     web identity provider and do not apply to the general assume role provider
     configuration. When the provider is configured through these environment
-    variables, the ``credential_cache`` setting of the profile in use still
-    applies. If the profile does not set it, credentials are cached in
-    ``~/.aws/cli/cache``.
+    variables, the ``credential_cache`` setting of the profile in use (from
+    ``AWS_PROFILE``, or ``default``) still applies, even if that profile has
+    no other web identity settings. If the profile does not set it,
+    credentials are cached in ``~/.aws/cli/cache``. With ``--profile``, the
+    AWS CLI ignores these environment variables.
 
 
 Sourcing Credentials From External Processes

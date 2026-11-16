@@ -288,8 +288,8 @@ in the AWS CLI config file:
   (the default) and ``memory``. With ``file``, the credentials are stored on
   disk, in ``~/.aws/cli/cache``, and reused by later commands until they
   expire. With ``memory``, they are kept only for the duration of a single
-  AWS CLI command and are never written to disk. This is an optional
-  parameter.
+  AWS CLI command and are not written to the credential cache. This is an
+  optional parameter.
 
 Switching a profile to ``credential_cache = memory`` does not delete the
 credentials it has already cached. To remove them, delete the files in
@@ -301,7 +301,9 @@ cache may still write credentials to disk for a profile set to ``memory``.
 
 In a chain of roles, where a ``source_profile`` is itself a profile that
 assumes a role, each profile's ``credential_cache`` applies only to that
-profile's ``AssumeRole`` call.
+profile's ``AssumeRole`` call. Credentials cached on disk for a lower hop
+can be used to assume the roles above it, so to keep a whole chain off disk,
+set ``credential_cache = memory`` in every role profile of the chain.
 
 When the ``source_profile`` is an assume role with web identity profile that
 doesn't set ``credential_cache``, its credentials are cached only in memory,
@@ -318,6 +320,14 @@ as in earlier versions of the AWS CLI. To cache that hop on disk in
     parallel can lead to throttling. If the profile sets ``mfa_serial``, you
     are prompted for an MFA code on every command, and commands that cannot
     prompt (for example, those run without a terminal) fail.
+
+.. note::
+
+    ``credential_cache = memory`` only keeps credentials out of the
+    credential cache. Features that record API calls still see the STS
+    response, which includes the credentials: with ``cli_history`` set to
+    ``enabled``, it is saved in the AWS CLI history database
+    (``~/.aws/cli/history``), and ``--debug`` prints it.
 
 If you do not have MFA authentication required, then you only need to specify a
 ``role_arn`` and either a ``source_profile`` or a ``credential_source``.

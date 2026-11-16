@@ -358,11 +358,13 @@ whatever its ``credential_cache`` says. To cache that hop on disk, set
 
 .. note::
 
-    ``credential_cache = memory`` only keeps credentials out of the
-    credential cache. Features that record API calls still see the STS
-    response, which includes the credentials: with ``cli_history`` set to
-    ``enabled``, it is saved in the AWS CLI history database
-    (``~/.aws/cli/history``), and ``--debug`` prints it.
+    ``credential_cache = memory`` keeps credentials out of the credential
+    cache. Features that record API calls still see the STS response: with
+    ``cli_history`` set to ``enabled``, it is saved in the AWS CLI history
+    database (``~/.aws/cli/history``), and ``--debug`` prints it. Both
+    replace the secret access key and session token with
+    ``<redacted credential>``. History saved by earlier versions of the AWS
+    CLI is not changed.
 
 
 Example configuration using ``source_profile``::

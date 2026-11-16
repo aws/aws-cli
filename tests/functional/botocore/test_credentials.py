@@ -963,6 +963,20 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
         with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
             session.get_credentials()
 
+    def test_empty_value_raises(self):
+        # Like retry_mode and the other settings with a fixed set of values,
+        # an empty value is invalid, not unset.
+        self.write_role_config('credential_cache =\n')
+        session = StubbedSession(profile='A')
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache ""'):
+            session.get_credentials()
+
+    def test_web_identity_empty_value_raises(self):
+        self.write_web_identity_config('credential_cache =\n')
+        session = StubbedSession(profile='W')
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache ""'):
+            session.get_credentials()
+
     def test_web_identity_memory_calls_sts_on_every_command(self):
         self.write_config(
             '[profile W]\n'

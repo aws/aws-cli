@@ -311,12 +311,13 @@ as in earlier versions of the AWS CLI. To cache that hop on disk in
 .. warning::
 
     With ``credential_cache = memory``, every AWS CLI command makes its own
-    ``AssumeRole`` call for each role in the chain. These calls count against
-    the AWS STS request quota for the account, which is shared with every
-    other workload in the account, so running many commands in parallel can
-    lead to throttling. If the profile sets ``mfa_serial``, you are prompted
-    for an MFA code on every command, and commands that cannot prompt (for
-    example, those run without a terminal) fail.
+    ``AssumeRole`` (or ``AssumeRoleWithWebIdentity``) call for each profile
+    in the chain that sets ``credential_cache = memory``. These calls count
+    against the AWS STS request quota for the account, which is shared with
+    every other workload in the account, so running many commands in
+    parallel can lead to throttling. If the profile sets ``mfa_serial``, you
+    are prompted for an MFA code on every command, and commands that cannot
+    prompt (for example, those run without a terminal) fail.
 
 If you do not have MFA authentication required, then you only need to specify a
 ``role_arn`` and either a ``source_profile`` or a ``credential_source``.

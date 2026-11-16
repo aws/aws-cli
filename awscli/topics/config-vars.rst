@@ -291,6 +291,23 @@ in the AWS CLI config file:
   AWS CLI command and are not written to the credential cache. Values are
   case-sensitive. This is an optional parameter.
 
+If you do not have MFA authentication required, then you only need to specify a
+``role_arn`` and either a ``source_profile`` or a ``credential_source``.
+
+When you specify a profile that has IAM role configuration, the AWS CLI
+will make an ``AssumeRole`` call to retrieve temporary credentials.  These
+credentials are then stored (in ``~/.aws/cli/cache``, unless the profile sets
+``credential_cache = memory``).  Subsequent AWS CLI commands will use the
+cached temporary credentials until they expire, in which case the AWS CLI will
+automatically refresh credentials.
+
+If you specify an ``mfa_serial``, then the first time an ``AssumeRole`` call is
+made, you will be prompted to enter the MFA code.  Subsequent commands will use
+the cached temporary credentials.  However, when the temporary credentials
+expire, you will be re-prompted for another MFA code.  With
+``credential_cache = memory``, nothing is cached between commands, so you are
+prompted on every command.
+
 Switching a profile to ``credential_cache = memory`` does not delete the
 credentials it has already cached. To remove them, delete the files in
 ``~/.aws/cli/cache``; the AWS CLI recreates the ones it needs.
@@ -331,23 +348,6 @@ as in earlier versions of the AWS CLI. To cache that hop on disk in
     ``enabled``, it is saved in the AWS CLI history database
     (``~/.aws/cli/history``), and ``--debug`` prints it.
 
-If you do not have MFA authentication required, then you only need to specify a
-``role_arn`` and either a ``source_profile`` or a ``credential_source``.
-
-When you specify a profile that has IAM role configuration, the AWS CLI
-will make an ``AssumeRole`` call to retrieve temporary credentials.  These
-credentials are then stored (in ``~/.aws/cli/cache``, unless the profile sets
-``credential_cache = memory``).  Subsequent AWS CLI commands will use the
-cached temporary credentials until they expire, in which case the AWS CLI will
-automatically refresh credentials.
-
-If you specify an ``mfa_serial``, then the first time an ``AssumeRole`` call is
-made, you will be prompted to enter the MFA code.  Subsequent commands will use
-the cached temporary credentials.  However, when the temporary credentials
-expire, you will be re-prompted for another MFA code.  With
-``credential_cache = memory``, nothing is cached between commands, so you are
-prompted on every command.
-
 
 Example configuration using ``source_profile``::
 
@@ -368,6 +368,15 @@ the source credentials for the assume role call::
   [profile crossaccount]
   role_arn=arn:aws:iam:...
   credential_source=Ec2InstanceMetadata
+
+Example configuration that keeps the role's temporary credentials only in
+memory::
+
+  # In ~/.aws/config
+  [profile crossaccount]
+  role_arn=arn:aws:iam:...
+  source_profile=development
+  credential_cache=memory
 
 Assume Role With Web Identity
 --------------------------------------
@@ -401,13 +410,10 @@ assume role with web identity profile in the shared config:
   you do not provide this value, a session name will be automatically
   generated.
 * ``credential_cache`` - Where the AWS CLI caches the temporary credentials
-  from the ``AssumeRoleWithWebIdentity`` call: ``file`` (the default) or
-  ``memory``. See ``credential_cache`` under `Using AWS IAM Roles`_, including
-  the warning about AWS STS quotas.
-
-Only the AWS CLI reads ``credential_cache``. The AWS SDKs and other tools
-that read the shared config file ignore it, so a tool that keeps its own file
-cache may still write credentials to disk for a profile set to ``memory``.
+  from the ``AssumeRoleWithWebIdentity`` call. Valid values are ``file`` (the
+  default) and ``memory``. This is an optional parameter. See
+  ``credential_cache`` under `Using AWS IAM Roles`_, including the notes on
+  other tools and the warning about AWS STS quotas.
 
 Below is an example configuration for the minimal amount of configuration
 needed to configure an assume role with web identity profile::

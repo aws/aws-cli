@@ -960,7 +960,7 @@ class TestCredentialCacheSetting(BaseAssumeRoleTest):
     def test_invalid_value_raises(self):
         self.write_role_config('credential_cache = off\n')
         session = StubbedSession(profile='A')
-        with self.assertRaises(InvalidConfigError):
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
             session.get_credentials()
 
     def test_web_identity_memory_calls_sts_on_every_command(self):

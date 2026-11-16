@@ -1205,8 +1205,8 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         with self.assertRaises(botocore.exceptions.InvalidConfigError):
             provider.load()
 
-    def _load_with_cache(self, cache, env=None):
-        response = {
+    def _web_identity_response(self):
+        return {
             'Credentials': {
                 'AccessKeyId': 'foo',
                 'SecretAccessKey': 'bar',
@@ -1214,6 +1214,9 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
                 'Expiration': self.some_future_time().isoformat(),
             },
         }
+
+    def _load_with_cache(self, cache, env=None):
+        response = self._web_identity_response()
         provider = credentials.AssumeRoleWithWebIdentityProvider(
             load_config=self._load_config,
             client_creator=self.create_client_creator(with_response=response),
@@ -1330,14 +1333,7 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         # A second load from the same provider (one CLI command) hits the
         # provider's memory cache, so STS is called once.
         self.config['credential_cache'] = 'memory'
-        response = {
-            'Credentials': {
-                'AccessKeyId': 'foo',
-                'SecretAccessKey': 'bar',
-                'SessionToken': 'baz',
-                'Expiration': self.some_future_time().isoformat(),
-            },
-        }
+        response = self._web_identity_response()
         client_creator = self.create_client_creator(with_response=response)
         cache = {}
         provider = credentials.AssumeRoleWithWebIdentityProvider(
@@ -3244,8 +3240,8 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             },
         }
 
-    def _load_with_cache_config(self, profile_name='development', **settings):
-        self.fake_config['profiles'][profile_name].update(settings)
+    def _load_with_cache_config(self, **settings):
+        self.fake_config['profiles']['development'].update(settings)
         cache = {}
         client_creator = self.create_client_creator(
             with_response=self._assume_role_response()
@@ -3254,7 +3250,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             self.create_config_loader(),
             client_creator,
             cache=cache,
-            profile_name=profile_name,
+            profile_name='development',
         )
         creds = provider.load().get_frozen_credentials()
         self.assertEqual(creds.access_key, 'foo')

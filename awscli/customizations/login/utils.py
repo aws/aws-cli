@@ -20,6 +20,7 @@ from dateutil.tz.tz import tzutc
 
 from awscli.botocore.exceptions import (
     LoginAuthorizationCodeError,
+    LoginError,
     LoginInsufficientPermissions,
 )
 from awscli.botocore.utils import (
@@ -42,6 +43,29 @@ CLIENT_ID = {
     LoginType.SAME_DEVICE: 'arn:aws:signin:::devtools/same-device',
     LoginType.CROSS_DEVICE: 'arn:aws:signin:::devtools/cross-device',
 }
+
+
+def _generate_dpop_private_key():
+    """Generate a P-256 DPoP key that awscrt can load back from its export.
+
+    awscrt on Linux can export a key whose private scalar starts with a
+    zero byte with a 31-byte privateKey OCTET STRING, which its own
+    importer then refuses with ``AWS_ERROR_CAL_UNSUPPORTED_KEY_FORMAT``
+    (aws-c-cal#262). Such a key would be written to the login cache by
+    ``aws login`` and break every later command until the next login.
+    Validate the SEC1 export once and regenerate if it cannot be loaded
+    back, so a bad key never reaches the cache.
+    """
+    for _ in range(10):
+        private_key = EC.new_generate(ECType.P_256)
+        try:
+            EC.new_key_from_der_data(
+                private_key.export_key(ECExportFormat.SEC1)
+            )
+        except RuntimeError:
+            continue
+        return private_key
+    raise LoginError(error_msg='Unable to generate a valid DPoP private key.')
 
 
 class BaseLoginTokenFetcher:
@@ -67,7 +91,7 @@ class BaseLoginTokenFetcher:
         ).decode()
 
         if private_key is None:
-            private_key = EC.new_generate(ECType.P_256)
+            private_key = _generate_dpop_private_key()
         self._private_key = private_key
 
         if base_uri_builder is None:

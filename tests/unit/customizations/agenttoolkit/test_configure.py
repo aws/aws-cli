@@ -11,12 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import subprocess
 from io import StringIO
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from awscli.customizations.agenttoolkit.agents import AgentConfig
+from awscli.customizations.agenttoolkit.agents import (
+    AgentConfig,
+    DetectedAgent,
+)
 from awscli.customizations.agenttoolkit.configure import (
     ConfigureAgentToolkitCommand,
 )
@@ -267,3 +271,77 @@ def test_skill_checksum_failure_reported(tmp_path):
     assert '[1/1] aws-bad' in stream.getvalue()
     skill_path = tmp_path / '.agent-0' / 'skills' / 'aws-bad'
     assert not skill_path.exists()
+
+
+def test_mcp_invalid_config_reported_and_subsequent_agent_configured(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=2)
+    bad_mcp = tmp_path / '.agent-0' / 'mcp.json'
+    invalid_content = '{\n  // comments not allowed in pure json\n  "theme": "Default"\n}\n'
+    bad_mcp.write_text(invalid_content)
+
+    _, stream = _run(configs, yes_no_return=True)
+    output = stream.getvalue()
+
+    # Agent 0 fails to parse and is reported under unconfigured agents
+    assert 'Agent 0' in output
+    assert str(bad_mcp) in output or '.agent-0' in output
+    assert bad_mcp.read_text() == invalid_content
+
+    # Agent 1 is still successfully configured
+    good_mcp = tmp_path / '.agent-1' / 'mcp.json'
+    assert good_mcp.exists()
+    data = json.loads(good_mcp.read_text())
+    assert 'aws-mcp' in data['mcpServers']
+    assert '\u2713 Agent 1' in output
+
+
+def test_mcp_os_error_reported_and_subsequent_agent_configured(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=2)
+    with patch.object(
+        configs[0],
+        'detect',
+        side_effect=lambda: _make_detected_agent_with_error(
+            configs[0], tmp_path / '.agent-0', OSError('Permission denied')
+        ),
+    ):
+        _, stream = _run(configs, yes_no_return=True)
+    output = stream.getvalue()
+
+    assert 'Agent 0' in output
+    assert 'Permission denied' in output
+
+    good_mcp = tmp_path / '.agent-1' / 'mcp.json'
+    assert good_mcp.exists()
+    data = json.loads(good_mcp.read_text())
+    assert 'aws-mcp' in data['mcpServers']
+
+
+def test_mcp_subprocess_error_reported_and_subsequent_agent_configured(
+    tmp_path,
+):
+    configs = _make_agent_configs(tmp_path, count=2)
+    error = subprocess.CalledProcessError(1, ['bad-cli'], output='failed')
+    with patch.object(
+        configs[0],
+        'detect',
+        side_effect=lambda: _make_detected_agent_with_error(
+            configs[0], tmp_path / '.agent-0', error
+        ),
+    ):
+        _, stream = _run(configs, yes_no_return=True)
+    output = stream.getvalue()
+
+    assert 'Agent 0' in output
+    assert 'bad-cli' in output
+
+    good_mcp = tmp_path / '.agent-1' / 'mcp.json'
+    assert good_mcp.exists()
+    data = json.loads(good_mcp.read_text())
+    assert 'aws-mcp' in data['mcpServers']
+
+
+def _make_detected_agent_with_error(config, base_dir, error):
+    agent = DetectedAgent(config, str(base_dir))
+    agent.configure_mcp_server = MagicMock(side_effect=error)
+    return agent
+

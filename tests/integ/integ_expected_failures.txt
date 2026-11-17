@@ -1,0 +1,53 @@
+# Conformance ledger for `cargo xtask integ` (tests/integ/run_integ_tests.py).
+#
+# One pytest node id per line, with a trailing "# reason" naming the
+# unimplemented feature or the issue tracking the bug. Every listed test
+# is deselected by default, so a test belongs here only while the native
+# CLI cannot pass it; removing a line is the definition of progress.
+#
+# `cargo xtask integ -- --run-all` ignores this manifest so the baseline can
+# be re-measured; a deselected test that quietly started passing is
+# invisible otherwise. Re-running the ledger is therefore expected to end
+# non-zero: --run-all reports every entry below as a failure until the
+# capability it names is implemented. Only integ_unsupported_win32.txt
+# still applies under --run-all.
+#
+# Each entry is passed to pytest verbatim as `--deselect`, so a node id
+# must match a collected id exactly, parameterization included. pytest
+# silently ignores a `--deselect` that matches nothing, so an id that
+# drifts out of date stops hiding anything rather than failing loudly:
+# the test simply starts failing again in the default run.
+#
+# Everything here is a platform-independent native parity gap, not a
+# Windows limitation, even though the baseline was first measured on
+# Windows. These commands execute fine and return the wrong answer, so the
+# same assertion fails on any host. The one other kind of entry is an
+# upstream test bug: a test that fails against upstream Python too, so
+# nothing in this repo can fix it. Its line goes away when a re-vendored
+# aws-cli/ carries the upstream fix. By contrast,
+# integ_unsupported_win32.txt is only for tests that provably cannot
+# execute on the platform, and says nothing about the native CLI.
+#
+# The [classic] and [crt] parameterizations set
+# s3.preferred_transfer_client. Native routes any value other than `auto`
+# or `crt` to the embedded Python fallback for `s3 cp`, so a [classic]
+# case exercises upstream and passes; only the [crt] case runs the native
+# transfer path and can belong here. The setting does not reach `s3 ls`,
+# and TestLs is not parameterized. The [shared_dir_bucket-*] cases are
+# absent for the same reason as [classic]: a `--x-s3` directory-bucket
+# operand routes to the fallback (`supports_native_bucket` in
+# crates/s3/src/uri.rs), so those cases exercise upstream and pass.
+#
+# Entry format:
+# tests/integration/customizations/s3/test_plugin.py::TestClass::test_name  # reason
+
+# Upstream test bug: the 136 MB peak-memory limit is outdated. `s3 cp -`
+# routes to the embedded Python fallback, and upstream Python fails the
+# same assertion at the same ~168 MB peak.
+tests/integration/customizations/s3/test_plugin.py::TestMemoryUtilization::test_stream_large_file  # upstream test bug; fails on upstream Python too
+
+# Native parity gap: `s3 mv` of an 80 MB file routes to the embedded
+# Python fallback, which peaks at ~247 MB against the 120 MB limit;
+# upstream Python stays under it on the same host.
+# Measured on Linux x86-64 musl only; macOS is unverified. No issue filed.
+tests/integration/customizations/s3/test_plugin.py::TestMemoryUtilization::test_transfer_single_large_file  # embedded Python fallback peaks at ~2x upstream memory during s3 mv

@@ -1,0 +1,124 @@
+# Known native gaps, launcher differences, and upstream issues for this
+# directory's run.py. A `parity-gap` entry is a test the public AWS CLI of
+# the in-tree version passes and the built binary fails on its native route;
+# the built binary passes it on the Python route. A `launcher-difference`
+# entry is a test the public AWS CLI passes and the built binary fails on
+# both routes, because the launcher both share deliberately differs from the
+# public AWS CLI's. An `upstream-issue` entry is a repo test every binary
+# fails because the released AWS CLI has the behavior the test rejects.
+#
+# The run against the built binary marks every entry as a strict expected
+# failure on the routes it fails on, so a gap that closes fails the run until
+# its entry goes: by default every entry, and with
+# `--env AWS_CLI_NATIVE_ROUTER=python` every entry but the parity gaps. A
+# run against another AWS CLI applies only the upstream issues here: that
+# binary must pass every other test but the ones upstream-failures.txt
+# lists. Each entry has one pytest node id followed by its category and the
+# reason.
+#
+# Rebaseline from `--run-all` and `--junit-dir` reports of the built binary
+# on both routes and of the public AWS CLI, comparing the three.
+
+# Repo tests of the CRT client `s3 cp` runs, which native does not match.
+s3/test_cp.py::test_cp_download_into_unsearchable_directory_fails_before_get  # parity-gap: upstream's CRT client fails to open its file before the GET; native sends the GET first
+s3/test_cp_output.py::test_cp_glacier_handling[unsearchable-force-quiet]  # parity-gap: upstream's CRT client fails to open its file before the GET; native sends the GET first and fails on its 403
+s3/test_cp_output.py::test_cp_glacier_handling[unsearchable-force-default]  # parity-gap: upstream's CRT client fails to open its file before the GET with AWS_ERROR_NO_PERMISSION; native sends the GET first and reports its InvalidObjectState 403
+s3/test_cp_output.py::test_cp_output_under_output_mode[download-recursive-unwritable-no-progress]  # parity-gap: upstream's CRT client fails to open each file before its GET and reports `43 (AWS_ERROR_NO_PERMISSION): User does not have permission to perform the requested action.`; native sends each GET first and reports the error without its number and name
+s3/test_cp.py::test_cp_recursive_repeated_continuation_token_cancels_downloads  # parity-gap: upstream reports each transfer the pagination error cancels; native reports only the error
+s3/test_cp.py::test_cp_upload_of_directory_fails_opening_it[default-directory]  # parity-gap: upstream's CRT client reports `Unknown Error Code`; native reports the EISDIR error
+s3/test_cp.py::test_cp_upload_of_directory_fails_opening_it[default-trailing-separator]  # parity-gap: upstream's CRT client reports `Unknown Error Code`; native reports the EISDIR error
+s3/test_cp.py::test_cp_upload_of_directory_fails_opening_it[default-symlink]  # parity-gap: upstream's CRT client reports `Unknown Error Code`; native reports the EISDIR error
+
+# The AWS CLI's executable is a PyInstaller bootloader, which rejects an
+# argument that is not UTF-8 before the CLI starts. The built binary's
+# launcher decodes it for either route.
+s3/test_ls.py::test_ls_object_listing_refuses_non_utf8_bucket_filters  # launcher-difference: the AWS CLI's executable cannot decode the argument into sys.argv and exits 255 before the CLI starts; the built binary starts on either route, lists the objects, and exits 0
+
+# Native deliberately writes nothing outside a recursive download's root.
+s3/test_cp.py::test_cp_recursive_download_of_key_normalizing_to_parent_fails[sibling]  # parity-gap: the AWS CLI creates the sibling directory the key maps through, outside the destination; native deliberately creates nothing outside it
+
+# Native deliberately shares one discovered bucket region between the
+# command's own requests and its transfers; upstream's botocore client and
+# CRT transfer manager each keep a region cache and each look the bucket up.
+s3/test_redirect.py::test_cp_transfer_redirects_to_bucket_region[download-single-lookup]  # parity-gap: the AWS CLI sends two HeadBucket lookups, one for the command's HeadObject and one for the CRT client's GET; native sends one and its CRT GET goes straight to us-west-2
+s3/test_redirect.py::test_cp_transfer_redirects_to_bucket_region[download-recursive-lookup]  # parity-gap: the AWS CLI sends two HeadBucket lookups, one for the listing and one for the CRT client's downloads; native sends one and every download goes straight to us-west-2
+
+# Native deliberately never routes on a redirect body it cannot parse.
+s3/test_redirect.py::test_unparseable_redirect_body_falls_back_to_lookup[paginated-list-truncated-region]  # parity-gap: the AWS CLI ignores the unparseable body, looks the bucket up with HeadBucket, and lists it; native sends no lookup and exits 254 with `(301) ... Moved Permanently`
+s3/test_redirect.py::test_unparseable_redirect_body_falls_back_to_lookup[paginated-list-invalid-entity]  # parity-gap: the AWS CLI ignores the unparseable body, looks the bucket up with HeadBucket, and lists it; native sends no lookup and exits 254 with `(301) ... Moved Permanently`
+s3/test_redirect.py::test_unparseable_redirect_body_falls_back_to_lookup[upload-single-truncated-region]  # parity-gap: the AWS CLI ignores the unparseable body, looks the bucket up with HeadBucket, and uploads; native sends no lookup and the upload fails with `(301) ... Moved Permanently`
+s3/test_redirect.py::test_unparseable_redirect_body_falls_back_to_lookup[upload-single-invalid-entity]  # parity-gap: the AWS CLI ignores the unparseable body, looks the bucket up with HeadBucket, and uploads; native sends no lookup and the upload fails with `(301) ... Moved Permanently`
+
+# Native reports a malformed redirect region as the redirect's own error.
+s3/test_redirect.py::test_ls_malformed_redirect_region_is_not_used_for_a_request  # parity-gap: the AWS CLI exits 255 with `Provided region_name 'bad/region' doesn't match a supported format.`; native also sends nothing for the region but exits 254 with the PermanentRedirect error
+
+# Native names a listing's retried 500 by its status, not by its error body.
+s3/test_retry_attempts.py::test_ls_retries_internal_errors_up_to_max_attempts[default]  # parity-gap: the AWS CLI exits 254 with `An error occurred (InternalError) when calling the ListObjectsV2 operation (reached max retries: 2): We encountered an internal error. Please try again.`; native makes the same 3 attempts and exits 254 with `(500) when calling the ListObjectsV2 operation: Internal Server Error`
+s3/test_retry_attempts.py::test_ls_retries_internal_errors_up_to_max_attempts[2]  # parity-gap: the AWS CLI reports the InternalError code and message with `(reached max retries: 1)`; native makes the same 2 attempts and reports `(500) when calling the ListObjectsV2 operation: Internal Server Error`
+s3/test_retry_attempts.py::test_ls_retries_internal_errors_up_to_max_attempts[5]  # parity-gap: the AWS CLI reports the InternalError code and message with `(reached max retries: 4)`; native makes the same 5 attempts and reports `(500) when calling the ListObjectsV2 operation: Internal Server Error`
+s3/test_retry_attempts.py::test_ls_cut_during_error_body_fails_with_client_error  # parity-gap: the AWS CLI reports the 500 whose body was cut as a ClientError and exits 254 with `(500) ... (reached max retries: 1): Internal Server Error`; native makes the same 2 attempts but exits 255 with `socket is closed.`
+
+# Native reports an upload's refused connection as botocore does, naming the
+# proxy or endpoint it tried; the CRT client the AWS CLI uploads with reports
+# every refused connection alike.
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[http-upload-upper]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Failed to connect to proxy URL: "http://***:***@127.0.0.1:<port>"`
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[http-upload-lower]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Failed to connect to proxy URL: "http://***:***@127.0.0.1:<port>"`
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[http-upload-direct]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Could not connect to the endpoint URL: "http://127.0.0.1:<port>/bucket/object"`
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[http-upload-bypassed]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Could not connect to the endpoint URL: "http://127.0.0.1:<port>/bucket/object"`
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[https-upload-upper]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Failed to connect to proxy URL: "http://***:***@127.0.0.1:<port>"`
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[https-upload-lower]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Failed to connect to proxy URL: "http://***:***@127.0.0.1:<port>"`
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[https-upload-direct]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Could not connect to the endpoint URL: "https://127.0.0.1:<port>/bucket/object"`
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[https-upload-bypassed]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Could not connect to the endpoint URL: "https://127.0.0.1:<port>/bucket/object"`
+s3/test_client_transport.py::test_proxy_settings_choose_which_refusing_address_fails[http-upload-recursive-upper]  # parity-gap: the AWS CLI ends the failed line with `AWS_IO_SOCKET_CONNECTION_REFUSED: socket connection refused.`; native exits 1 too but ends it with `Failed to connect to proxy URL: "http://***:***@127.0.0.1:<port>"`
+
+# Native reports Ctrl-C as the classic client's printer does; the CRT client
+# the AWS CLI transfers with fails each cancelled transfer with its own error,
+# and its driver ends an interrupted listing with status 130.
+s3/test_interrupts.py::test_ctrl_c_cancels_a_download_in_flight[single-before-headers]  # parity-gap: the AWS CLI exits 1 with `download failed: ... AWS_ERROR_S3_CANCELED: Request successfully cancelled`; native exits 1 too but prints `cancelled: ctrl-c received`
+s3/test_interrupts.py::test_ctrl_c_cancels_a_download_in_flight[single-before-body]  # parity-gap: the AWS CLI exits 1 with `download failed: ... AWS_ERROR_S3_CANCELED: Request successfully cancelled`; native exits 1 too but prints `cancelled: ctrl-c received`
+s3/test_interrupts.py::test_ctrl_c_cancels_a_download_in_flight[recursive-before-headers]  # parity-gap: the AWS CLI exits 1 with `download failed: ... AWS_ERROR_S3_CANCELED: Request successfully cancelled`; native exits 1 too but prints `cancelled: ctrl-c received`
+s3/test_interrupts.py::test_ctrl_c_cancels_a_download_in_flight[recursive-before-body]  # parity-gap: the AWS CLI exits 1 with `download failed: ... AWS_ERROR_S3_CANCELED: Request successfully cancelled`; native exits 1 too but prints `cancelled: ctrl-c received`
+s3/test_interrupts.py::test_ctrl_c_ends_a_listing_in_flight  # parity-gap: the AWS CLI catches the KeyboardInterrupt, writes a newline to stdout, and exits 130; native dies of SIGINT with no output
+s3/test_interrupts.py::test_ctrl_c_ends_an_upload_waiting_to_start  # parity-gap: the AWS CLI exits 1 with `upload failed: ./input to s3://bucket/new AWS_ERROR_S3_CANCELED: Request successfully cancelled`; native exits 1 too but prints `cancelled: ctrl-c received`
+
+# Native reports a local filesystem error by its error name.
+s3/test_cp_output.py::test_cp_recursive_download_prepares_raw_destination  # parity-gap: the AWS CLI reports `[Errno 20] Not a directory: 'regular-file/..'`; native exits 255 too but reports `NotDir`
+s3/test_cp_output.py::test_cp_download_beneath_an_unsearchable_directory[recursive]  # parity-gap: the AWS CLI reports `[Errno 13] Permission denied: 'unsearchable/sub'`; native exits 255 too but reports `AccessDenied`
+test_working_directory.py::test_recursive_upload_of_nothing_from_a_removed_directory[default]  # parity-gap: the AWS CLI uploads nothing from a removed working directory and exits 0 silently; native exits 255 with `Current directory was removed`
+
+# Native reports a certificate it cannot verify as the TLS negotiation
+# failure, where botocore names the request and OpenSSL's reason.
+
+# Credential providers. Native walks botocore's chain itself. What is left
+# is the CRT's credentials type, a boto config path the router reads
+# without expanding, and what is not an AWS product: a proxy in front of
+# the instance metadata service that takes a username and password, and a
+# custom endpoint for that service whose URL has a username and password.
+# Native also does not check two things the AWS CLI does before its session
+# starts and refuses that service's settings: that a --query compiles, and
+# that an --endpoint-url's host keeps its characters under NFKC.
+credentials/providers/test_process.py::test_process_credential_values_sign_listing_unvalidated[access-key-empty]  # parity-gap: the AWS CLI signs with a helper's empty AccessKeyId; native's chain takes it too, but aws-c-auth builds no credentials from an empty access key, so the request is not signed and native exits 253 with NoCredentials
+credentials/providers/test_imds.py::test_imds_credentials_not_used_after_empty_profile_secret[shared]  # parity-gap: the AWS CLI signs with the profile's key and empty secret; native's chain stops at the same profile, but aws-c-auth builds no credentials from an empty secret key, so the request is not signed and native exits 253 with NoCredentials
+credentials/providers/test_imds.py::test_imds_credentials_not_used_after_empty_profile_secret[config]  # parity-gap: the AWS CLI signs with the profile's key and empty secret; native's chain stops at the same profile, but aws-c-auth builds no credentials from an empty secret key, so the request is not signed and native exits 253 with NoCredentials
+credentials/providers/test_imds.py::test_imds_proxy_with_credentials_signs_listing  # parity-gap: the AWS CLI logs in to an HTTP_PROXY whose URL has a username and password and fetches the instance role's credentials through it; native deliberately uses no such proxy, does not ask the instance metadata service, and so finds no credentials: "Unable to locate credentials", exit 253
+credentials/providers/test_imds.py::test_imds_invalid_endpoint_with_login_is_named_as_configured  # parity-gap: the AWS CLI names the ec2_metadata_service_endpoint it refuses as configured, with the URL's username and password; native deliberately never prints them and exits 255 too with `Invalid endpoint EC2 Instance Metadata endpoint: http://***@bad_host`
+credentials/providers/test_imds.py::test_imds_invalid_query_is_reported_ahead_of_failing_command[valid-settings]  # parity-gap: the AWS CLI compiles --query before the command parses its arguments and reports `Bad value for --query [: Invalid jmespath expression`, exit 252; native does not compile JMESPath and reports the usage error of the command that fails in its own parse, exit 252 too
+credentials/providers/test_imds.py::test_imds_invalid_query_is_reported_ahead_of_failing_command[refused-setting]  # parity-gap: the AWS CLI compiles --query before its session starts and reports `Bad value for --query [: Invalid jmespath expression`, exit 252; native does not compile JMESPath, reaches the session's start as it does for an expression that compiles, and reports the instance metadata setting botocore refuses, exit 255
+credentials/providers/test_imds.py::test_imds_config_error_follows_endpoint_url_normalization_error  # parity-gap: the AWS CLI's urlparse raises for an --endpoint-url host whose NFKC form gains a `/`, `?`, `#`, `@`, or `:`, `netloc 'a\u2100b' contains invalid characters under NFKC normalization`, exit 255; native has no Unicode normalization tables, takes the URL, and reports the instance metadata setting botocore refuses, exit 255 too
+credentials/providers/test_shared_files.py::test_shared_credentials_file_section_keys_sign_listing[empty-values]  # parity-gap: the AWS CLI signs with the profile's empty access key; native's chain takes the empty keys too, but aws-c-auth builds no credentials from them, so the request is not signed and native exits 253 with NoCredentials
+credentials/providers/test_shared_files.py::test_boto_config_credentials_section_signs_listing[home-variable-expanded]  # parity-gap: the AWS CLI expands $HOME in BOTO_CONFIG; native does not and finds no credentials
+
+# Profile settings the AWS CLI validates as its session starts, for every
+# command. An s3 command uses neither, and native does not read them.
+test_config_resolution.py::test_config_unknown_cli_format_fails_before_request[timestamp-format]  # parity-gap: the AWS CLI fails every command for a cli_timestamp_format that is neither `wire` nor `iso8601`, `An error occurred (Configuration): Unknown cli_timestamp_format value: bogus, valid values are "wire" or "iso8601"`, exit 253; native ignores the setting, so the listing runs and exits 0
+test_config_resolution.py::test_config_unknown_cli_format_fails_before_request[binary-format]  # parity-gap: the AWS CLI fails every command for a cli_binary_format that is neither `base64` nor `raw-in-base64-out`, with the KeyError's text `'bogus'`, exit 255; native ignores the setting, so the listing runs and exits 0
+
+# Ports of upstream's TestCPCommand whose CRT client variant native does not
+# match (tests/functional/s3/test_cp_command.py).
+s3/test_cp_requests.py::test_operations_used_in_recursive_download[crt]  # parity-gap: the AWS CLI reads the empty listing `<ListBucketResult xmlns="..." />` and exits 0 after one ListObjectsV2; native cannot parse the self-closing element, retries it as a 500, and exits 1
+s3/test_cp_requests.py::test_crt_download_to_dev_null_fails_creating_its_temporary_file  # parity-gap: upstream's CRT client fails to create its temporary file beside /dev/null before its first request and reports `43 (AWS_ERROR_NO_PERMISSION)`; native sends its HeadObject and GetObject first
+
+# Ports of upstream's s3 mv/rm CRT client tests: botocore, not the CRT
+# client, sends the command's own requests.
+s3/test_mv_requests.py::test_mv_download_on_crt_client_gets_the_key  # parity-gap: the AWS CLI sends the move's HeadObject and its source's DeleteObject through botocore, without the CRT client's User-Agent suffix; native names the CRT client in both
+s3/test_rm_requests.py::test_rm_recursive_on_crt_client_deletes_each_key  # parity-gap: the AWS CLI lists the bucket through botocore, without the CRT client's User-Agent suffix; native names the CRT client in the ListObjectsV2 User-Agent

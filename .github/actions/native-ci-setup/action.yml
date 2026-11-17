@@ -1,0 +1,219 @@
+name: Native CI setup
+description: >
+  Prepare a native runner for `cargo xtask ci <lane>`: host tools, the pinned
+  Rust toolchains, the Cargo registry, and the native dependency snapshot.
+  This is the one place where platforms differ in setup.
+
+inputs:
+  target:
+    description: The native Rust target triple of the runner.
+    required: true
+  macos-sdk:
+    description: >
+      The major macOS SDK version the runner's default Xcode must provide.
+      Required on macOS, where it also separates the dependency snapshots,
+      and empty elsewhere.
+    required: false
+    default: ""
+  save-cache:
+    description: >
+      Whether this job publishes the Cargo registry and a new dependency
+      snapshot generation. Exactly one lane per platform should.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    # The expanded LLVM release alone takes 11 GB, so the dependency phase
+    # exhausts the free disk of the hosted Linux image. Remove preinstalled
+    # SDKs and images that no lane uses before restoring the snapshot.
+    - name: Free runner disk
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -eu
+        df -h /
+        sudo rm -rf \
+          /usr/local/lib/android \
+          /usr/share/dotnet \
+          /opt/ghc \
+          /usr/local/.ghcup \
+          /opt/hostedtoolcache/CodeQL \
+          /usr/share/swift
+        if command -v docker > /dev/null; then
+          sudo docker image prune --all --force > /dev/null
+        fi
+        df -h /
+
+    # Native only: the runner must be the platform the target names. On
+    # macOS it must also provide the SDK it was chosen for, so a runner image
+    # that changes its default Xcode fails here rather than silently testing
+    # another SDK.
+    - name: Verify native host
+      id: host
+      shell: bash
+      env:
+        MACOS_SDK: ${{ inputs.macos-sdk }}
+      run: |
+        set -eu
+        case '${{ inputs.target }}' in
+          x86_64-unknown-linux-musl) test "$(uname -s)" = Linux; test "$(uname -m)" = x86_64 ;;
+          aarch64-unknown-linux-musl) test "$(uname -s)" = Linux; test "$(uname -m)" = aarch64 ;;
+          aarch64-apple-darwin) test "$(uname -s)" = Darwin; test "$(uname -m)" = arm64 ;;
+          x86_64-pc-windows-msvc) test "$RUNNER_OS" = Windows; test "$(uname -m)" = x86_64 ;;
+          *) echo "::error::unsupported target ${{ inputs.target }}"; exit 1 ;;
+        esac
+        snapshot='${{ inputs.target }}'
+        if [ "$RUNNER_OS" = macOS ]; then
+          sw_vers
+          xcode-select -p
+          xcodebuild -version
+          xcrun --sdk macosx --show-sdk-path
+          sdk_version=$(xcrun --sdk macosx --show-sdk-version)
+          echo "macOS SDK version: $sdk_version"
+          if [ "${sdk_version%%.*}" != "$MACOS_SDK" ]; then
+            echo "::error::runner provides macOS SDK $sdk_version, not ${MACOS_SDK:-(no macos-sdk input)}"
+            exit 1
+          fi
+          snapshot="$snapshot-sdk$MACOS_SDK"
+        elif [ -n "$MACOS_SDK" ]; then
+          echo "::error::macos-sdk is set on a $RUNNER_OS runner"
+          exit 1
+        fi
+        printf 'snapshot=%s\n' "$snapshot" >> "$GITHUB_OUTPUT"
+
+    # The test harnesses use Python and support Python 3.12 through 3.14.
+    - name: Set up Python
+      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with:
+        python-version: '3.14'
+
+    # The checks lane fuzzes with the analysis toolchain on every platform.
+    - name: Install pinned Rust toolchains
+      shell: bash
+      run: |
+        set -eu
+        stable=$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)
+        rustup toolchain install "$stable" --profile minimal --component clippy,rustfmt,llvm-tools --target '${{ inputs.target }}'
+        nightly=$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-analysis-toolchain.toml)
+        rustup toolchain install "$nightly" --profile minimal --component rust-src,miri
+
+    # The Windows image supplies Visual Studio with the x64 C++ tools,
+    # Strawberry Perl, and CMake. Ninja is installed only if it lacks it.
+    - name: Verify Windows host tools
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        set -eu
+        command -v ninja > /dev/null || choco install ninja --no-progress -y
+        cmake --version | head -n 1
+        echo "ninja $(ninja --version)"
+        "/c/Strawberry/perl/bin/perl" -e 'print "perl $^V on $^O\n"'
+
+    # Crates are keyed on the lockfiles that name them, apart from the
+    # dependency snapshot, so a lockfile change neither discards the native
+    # stages nor carries crates into them.
+    - name: Restore Cargo registry
+      id: cargo-registry
+      uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+        key: native-ci-cargo-v1-${{ inputs.target }}-${{ hashFiles('Cargo.lock', 'fuzz/Cargo.lock') }}
+        restore-keys: |
+          native-ci-cargo-v1-${{ inputs.target }}-
+
+    # GitHub caches are immutable, so every generation has a unique key and
+    # a restore takes the newest one under the stable prefix. The key carries
+    # no input fingerprints: each stage prefix is content-addressed, so after
+    # the restore a stage whose inputs changed rebuilds and every other stage
+    # is reused. The prefix names only what makes a whole snapshot unusable:
+    # the target (with the macOS SDK, whose tools every stage identity
+    # names), and a version bumped when the snapshot layout changes.
+    # Paths a platform does not produce (the LLVM release off Linux, and the
+    # other platforms' cargo-fuzz executable name) are simply absent from its
+    # snapshot.
+    - name: Restore native dependencies
+      id: deps-snapshot
+      uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
+      with:
+        path: |
+          target/downloads
+          target/toolchain
+          target/sources/llvm_binary_aarch64-*
+          target/deps
+          ~/.cargo/bin/cargo-fuzz
+          ~/.cargo/bin/cargo-fuzz.exe
+        key: native-ci-deps-v1-${{ steps.host.outputs.snapshot }}-${{ github.run_id }}
+        restore-keys: |
+          native-ci-deps-v1-${{ steps.host.outputs.snapshot }}-
+
+    # A warm dependency phase costs about ten seconds, while a broken cache
+    # identity rebuilds dependencies for minutes. A run is cold, and exempt,
+    # when nothing was restored or an expensive builder ran.
+    - name: Build native dependencies
+      id: dep-build
+      shell: bash
+      env:
+        AWSCLI_BUILDER_MARKER_DIR: ${{ github.workspace }}/.ci-builder-markers
+        RESTORED: ${{ steps.deps-snapshot.outputs.cache-matched-key }}
+      run: |
+        set -eu
+        # Compile xtask first, so the budget times the dependency phase and
+        # not xtask's own build, which the snapshot does not hold.
+        cargo build --locked -p xtask
+        start=$(date +%s)
+        mkdir -p "$AWSCLI_BUILDER_MARKER_DIR"
+        cargo xtask ci deps
+        duration=$(( $(date +%s) - start ))
+        builders=$(ls -A "$AWSCLI_BUILDER_MARKER_DIR" | tr '\n' ' ' | sed 's/ *$//')
+        printf 'builders=%s\n' "$builders" >> "$GITHUB_OUTPUT"
+        echo "dependency phase: ${duration}s"
+        echo "restored snapshot: ${RESTORED:-none}; builders: ${builders:-none}"
+        if [ -z "$RESTORED" ] || [ -n "$builders" ]; then
+          echo "classification: cold (exempt from the time budget)"
+        elif [ "$duration" -gt 90 ]; then
+          echo "::error::warm dependency phase exceeded 90 seconds"
+          exit 1
+        else
+          echo "classification: warm"
+        fi
+        du -sh target/downloads target/toolchain target/deps 2>/dev/null || true
+
+    - name: Save Cargo registry
+      if: inputs.save-cache == 'true' && steps.cargo-registry.outputs.cache-hit != 'true'
+      continue-on-error: true
+      uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+        key: native-ci-cargo-v1-${{ inputs.target }}-${{ hashFiles('Cargo.lock', 'fuzz/Cargo.lock') }}
+
+    # A restored generation keeps every stage prefix its inputs have since
+    # superseded. Keep only the roots `ci deps` recorded and the sources the
+    # pins name, so a generation never inherits its predecessors. A warm run
+    # saves nothing.
+    - name: Compact native dependencies
+      if: inputs.save-cache == 'true' && (steps.deps-snapshot.outputs.cache-matched-key == '' || steps.dep-build.outputs.builders != '')
+      shell: bash
+      run: |
+        set -eu
+        cargo xtask deps prune --roots=target/dependency-cache-roots.json --sources
+        du -sh target/downloads target/toolchain target/deps 2>/dev/null || true
+
+    - name: Save native dependencies
+      if: inputs.save-cache == 'true' && (steps.deps-snapshot.outputs.cache-matched-key == '' || steps.dep-build.outputs.builders != '')
+      continue-on-error: true
+      uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
+      with:
+        path: |
+          target/downloads
+          target/toolchain
+          target/sources/llvm_binary_aarch64-*
+          target/deps
+          ~/.cargo/bin/cargo-fuzz
+          ~/.cargo/bin/cargo-fuzz.exe
+        key: native-ci-deps-v1-${{ steps.host.outputs.snapshot }}-${{ github.run_id }}

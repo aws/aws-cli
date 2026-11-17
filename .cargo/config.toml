@@ -1,0 +1,15 @@
+[alias]
+xtask = "run --package xtask --"
+
+# xtask links musl executables through the managed toolchain's `bin/link`
+# (`Toolchain::apply_link`), which names it in the CARGO_TARGET_*_LINKER
+# variables. These placeholders stop a plain Cargo link, which would take
+# the musl bundled with Rust's target.
+[target.x86_64-unknown-linux-musl]
+linker = "link-musl-through-cargo-xtask"
+
+[target.aarch64-unknown-linux-musl]
+linker = "link-musl-through-cargo-xtask"
+
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-Ctarget-feature=+crt-static"]

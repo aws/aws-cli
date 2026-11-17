@@ -1,0 +1,29 @@
+# Upstream tests that cannot execute on Windows, for `cargo xtask integ`
+# (tests/integ/run_integ_tests.py).
+#
+# One pytest node id per line, with a trailing "# reason". This is NOT the
+# conformance ledger: nothing here says anything about the native CLI, so
+# these entries are deselected even under `--run-all`, and removing a line
+# is not progress unless upstream changed.
+#
+# Upstream marks both classes POSIX-only with a CLASS-level
+# @skip_if_windows. awscli/testutils.py builds that from unittest.skipIf,
+# and pytest honors __unittest_skip__ only on unittest.TestCase
+# subclasses, so a class decorator on the plain BaseS3IntegrationTest is
+# silently ignored and the tests would run anyway. The METHOD-level
+# @skip_if_windows cases in the same file do skip correctly and are
+# deliberately absent from this file.
+#
+# Only add an entry that provably cannot execute. Upstream also declares
+# TestSymlinks POSIX-only, but os.symlink succeeds on Windows without
+# elevation on this host, so those node ids are left out: their Windows
+# outcome is unmeasured, not impossible.
+#
+# Entry format:
+# tests/integration/customizations/s3/test_plugin.py::TestClass::test_name  # reason
+
+# awscli/testutils.py _wait_and_collect_mem() raises ValueError for any
+# platform that is not Darwin or Linux, so aws(collect_memory=True) can
+# never complete here.
+tests/integration/customizations/s3/test_plugin.py::TestMemoryUtilization::test_transfer_single_large_file  # collect_memory is mac/linux only
+tests/integration/customizations/s3/test_plugin.py::TestMemoryUtilization::test_stream_large_file  # collect_memory is mac/linux only

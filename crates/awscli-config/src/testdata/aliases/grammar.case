@@ -1,0 +1,44 @@
+=== ALIASES ===
+ # comment
+;comment
+  [default] trailing text
+  REGION : us-west-2 # retained
+  Odd Key = true; retained
+empty=
+colon=a:b=c
+equal:a=b:c
+percent=%(name)s
+zero=0
+rate=100Gb/s
+=== EXPECTED ===
+{
+  "config": {
+    "status": "omitted",
+    "sections": {}
+  },
+  "credentials": {
+    "status": "omitted",
+    "sections": {}
+  },
+  "aliases": {
+    "status": "loaded",
+    "sections": {
+      "default": {
+        "region": "us-west-2 # retained",
+        "odd key": "true; retained",
+        "empty": "",
+        "colon": "a:b=c",
+        "equal": "a=b:c",
+        "percent": "%(name)s",
+        "zero": "0",
+        "rate": "100Gb/s"
+      }
+    }
+  },
+  "organized": {
+    "profiles": {},
+    "sso_sessions": {},
+    "services": {}
+  },
+  "profiles": {}
+}

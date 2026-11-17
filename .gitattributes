@@ -1,0 +1,27 @@
+# Normalize all text files to LF in the repo; auto-detect what's text
+* text=auto eol=lf
+
+# Files that MUST stay CRLF (Windows-specific)
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Files that MUST stay LF even on Windows checkout
+*.sh   text eol=lf
+
+# Binary files — never touch
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.exe  binary
+*.dll  binary
+
+# The in-tree AWS CLI keeps upstream's attributes: none of the rules above
+# apply there, so its committed line endings and diff behavior are unchanged.
+# Last, so it overrides every rule above.
+/aws-cli/** !text !eol !diff !merge !binary

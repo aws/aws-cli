@@ -1,0 +1,87 @@
+=== CONFIG ===
+[profile dev]
+x=
+ B=3
+keep=yes
+[profile only-config]
+a=1
+=== CREDENTIALS ===
+[dev]
+x=
+ A=1
+ B=2
+[only-credentials]
+b=2
+=== ALIASES ===
+[toplevel]
+a=
+ echo x=y
+=== EXPECTED ===
+{
+  "config": {
+    "status": "loaded",
+    "sections": {
+      "profile dev": {
+        "x": {
+          "B": "3"
+        },
+        "keep": "yes"
+      },
+      "profile only-config": {
+        "a": "1"
+      }
+    }
+  },
+  "credentials": {
+    "status": "loaded",
+    "sections": {
+      "dev": {
+        "x": {
+          "A": "1",
+          "B": "2"
+        }
+      },
+      "only-credentials": {
+        "b": "2"
+      }
+    }
+  },
+  "aliases": {
+    "status": "loaded",
+    "sections": {
+      "toplevel": {
+        "a": "\necho x=y"
+      }
+    }
+  },
+  "organized": {
+    "profiles": {
+      "dev": {
+        "x": {
+          "B": "3"
+        },
+        "keep": "yes"
+      },
+      "only-config": {
+        "a": "1"
+      }
+    },
+    "sso_sessions": {},
+    "services": {}
+  },
+  "profiles": {
+    "dev": {
+      "x": {
+        "A": "1",
+        "B": "2"
+      },
+      "keep": "yes"
+    },
+    "only-config": {
+      "a": "1"
+    },
+    "only-credentials": {
+      "b": "2"
+    }
+  }
+}

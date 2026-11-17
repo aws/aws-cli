@@ -1,0 +1,56 @@
+[workspace]
+resolver = "3"
+members = ["crates/*", "xtask"]
+exclude = ["fuzz"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96"
+license = "Apache-2.0"
+publish = false
+
+[workspace.dependencies]
+arbitrary = "=1.4.2"
+libc = "=0.2.189"
+serde_json = { version = "=1.0.149", features = ["preserve_order", "arbitrary_precision"] }
+
+[workspace.lints.rust]
+dead_code = "deny"
+unused_crate_dependencies = "deny"
+unsafe_op_in_unsafe_fn = "deny"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+too_many_lines = "deny"
+cognitive_complexity = "deny"
+unwrap_used = "deny"
+expect_used = "deny"
+unreachable = "deny"
+panic = "deny"
+undocumented_unsafe_blocks = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+dbg_macro = "deny"
+todo = "deny"
+unimplemented = "deny"
+allow_attributes_without_reason = "deny"
+
+[profile.release]
+panic = "abort"
+lto = "thin"
+codegen-units = 1
+strip = "debuginfo"
+
+# The default product profile: optimized for size, with debug assertions and
+# overflow checks.
+[profile.release-safe]
+inherits = "release"
+opt-level = "s"
+debug-assertions = true
+overflow-checks = true
+
+# The default product profile without its debug assertions and overflow checks.
+[profile.release-small]
+inherits = "release"
+opt-level = "s"

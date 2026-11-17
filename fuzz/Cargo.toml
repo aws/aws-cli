@@ -1,0 +1,91 @@
+[package]
+name = "source-pool-fuzz"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "Apache-2.0"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+s3 = { path = "../crates/s3", features = ["testing", "download-writer-debug"] }
+libfuzzer-sys = "=0.4.13"
+crt = { path = "../crates/crt", features = ["testing"] }
+
+[[bin]]
+name = "pool_reservations"
+path = "fuzz_targets/pool_reservations.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "pool_ownership"
+path = "fuzz_targets/pool_ownership.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "pool_operations"
+path = "fuzz_targets/pool_operations.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "writer_ranges"
+path = "fuzz_targets/writer_ranges.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "writer_pages"
+path = "fuzz_targets/writer_pages.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "writer_retries"
+path = "fuzz_targets/writer_retries.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "writer_output"
+path = "fuzz_targets/writer_output.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "scheduler_orderings"
+path = "fuzz_targets/scheduler_orderings.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "scheduler_phases"
+path = "fuzz_targets/scheduler_phases.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "path_containment"
+path = "fuzz_targets/path_containment.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "error_body"
+path = "fuzz_targets/error_body.rs"
+test = false
+doc = false
+bench = false

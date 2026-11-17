@@ -1,0 +1,29 @@
+[package]
+name = "s3"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+download-writer-debug = []
+testing = ["dep:arbitrary"]
+
+[dependencies]
+libc.workspace = true
+numa = { path = "../numa" }
+crt = { path = "../crt" }
+credentials = { path = "../credentials" }
+pyload = { path = "../pyload" }
+cli-core = { path = "../cli-core" }
+awscli-config = { path = "../awscli-config" }
+awscli-argparse = { path = "../awscli-argparse" }
+arbitrary = { workspace = true, optional = true }
+
+[dev-dependencies]
+arbitrary.workspace = true
+pyload = { path = "../pyload", features = ["testing"] }
+
+[lints]
+workspace = true

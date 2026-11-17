@@ -1,0 +1,110 @@
+=== CONFIG ===
+[profile dev]
+a=1
+[profiles odd]
+b=2
+[profilex 'quoted name']
+c=3
+[sso-session s]
+d=4
+[services group]
+e=5
+[Profile caps]
+f=6
+[profile]
+x=7
+[profile too many words]
+x=8
+[profile 'broken]
+x=9
+[profile '']
+x=10
+=== EXPECTED ===
+{
+  "config": {
+    "status": "loaded",
+    "sections": {
+      "profile dev": {
+        "a": "1"
+      },
+      "profiles odd": {
+        "b": "2"
+      },
+      "profilex 'quoted name'": {
+        "c": "3"
+      },
+      "sso-session s": {
+        "d": "4"
+      },
+      "services group": {
+        "e": "5"
+      },
+      "Profile caps": {
+        "f": "6"
+      },
+      "profile": {
+        "x": "7"
+      },
+      "profile too many words": {
+        "x": "8"
+      },
+      "profile 'broken": {
+        "x": "9"
+      },
+      "profile ''": {
+        "x": "10"
+      }
+    }
+  },
+  "credentials": {
+    "status": "omitted",
+    "sections": {}
+  },
+  "aliases": {
+    "status": "omitted",
+    "sections": {}
+  },
+  "organized": {
+    "Profile caps": {
+      "f": "6"
+    },
+    "profiles": {
+      "dev": {
+        "a": "1"
+      },
+      "odd": {
+        "b": "2"
+      },
+      "quoted name": {
+        "c": "3"
+      },
+      "": {
+        "x": "10"
+      }
+    },
+    "sso_sessions": {
+      "s": {
+        "d": "4"
+      }
+    },
+    "services": {
+      "group": {
+        "e": "5"
+      }
+    }
+  },
+  "profiles": {
+    "dev": {
+      "a": "1"
+    },
+    "odd": {
+      "b": "2"
+    },
+    "quoted name": {
+      "c": "3"
+    },
+    "": {
+      "x": "10"
+    }
+  }
+}

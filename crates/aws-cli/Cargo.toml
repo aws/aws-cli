@@ -1,0 +1,35 @@
+[package]
+name = "aws-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+download-writer-debug = ["s3/download-writer-debug"]
+
+[dependencies]
+python-fallback = { path = "../python-fallback" }
+awscli-argparse = { path = "../awscli-argparse" }
+awscli-config = { path = "../awscli-config" }
+cli-core = { path = "../cli-core" }
+cli-router = { path = "../cli-router" }
+crt = { path = "../crt" }
+s3 = { path = "../s3" }
+pyload = { path = "../pyload", features = ["embedded"] }
+
+[target.'cfg(all(target_os = "linux", target_env = "musl"))'.dependencies]
+crt-sys = { path = "../crt-sys" }
+
+[build-dependencies]
+build-support = { path = "../build-support" }
+
+[[bin]]
+name = "aws"
+path = "src/main.rs"
+test = false
+bench = false

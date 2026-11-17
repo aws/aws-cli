@@ -1,0 +1,13 @@
+# Upstream blackbox tests the public AWS CLI fails in upstream's own
+# environment, for this directory's run.py.
+#
+# Every run applies this ledger, whichever AWS CLI it tests, and marks each
+# entry as a strict expected failure, so the run against the public AWS CLI
+# shows that it fails them too. Only upstream tests may appear here: the
+# public AWS CLI passes every repo test. Each entry has one pytest node id
+# followed by `shared-harness-failure` and the reason.
+
+# localstub's TLS intercept proxy parses an upstream response whole before it
+# relays any of it, so a body cut short never reaches the CLI: the proxy
+# closes the tunnel and the CLI reports the proxy, not the IncompleteRead.
+tests/blackbox/test_cp_command.py::test_download_content_length_mismatch_fails  # shared-harness-failure: localstub's proxy never relays the truncated response; the CLI reports "Failed to connect to proxy URL", not "Connection broken: IncompleteRead"

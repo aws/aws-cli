@@ -1,0 +1,135 @@
+name: Native CI
+
+# Vets every change on every supported platform with one definition.
+#
+# What a lane runs is defined in xtask (`cargo xtask ci <lane>`, see
+# xtask/src/ci.rs), never here: adding a check there adds it on every
+# platform, and a check that cannot run somewhere declares that in xtask.
+# This file only says where lanes run. Every platform runs every lane, and
+# platforms differ in setup only, inside .github/actions/native-ci-setup.
+
+on:
+  push:
+    # The only place a branch name appears: pushes to the main branch run CI
+    # and publish its binaries.
+    branches: [native]
+  pull_request:
+
+permissions:
+  contents: read
+
+# Dependency builds stay in target/, where native-ci-setup restores,
+# compacts, and saves them, rather than in the store checkouts share.
+env:
+  AWS_NATIVE_CACHE: local
+
+jobs:
+  lane:
+    name: ${{ matrix.lane }} (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux-x86_64, linux-aarch64, macos-arm64, macos-arm64-sdk27, windows-x86_64]
+        lane: [checks, runtime]
+        include:
+          - platform: linux-x86_64
+            runner: ubuntu-24.04
+            target: x86_64-unknown-linux-musl
+            binary: aws
+          - platform: linux-aarch64
+            runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+            binary: aws
+          # macOS runs against the released SDK and the next one's beta. A
+          # runner's SDK is its default Xcode's, and there is no xcode-26
+          # label: macos-26 defaults to Xcode 26, and the xcode-27 preview
+          # image carries the Xcode 27 beta. Only the released SDK publishes.
+          - platform: macos-arm64
+            runner: macos-26
+            target: aarch64-apple-darwin
+            macos-sdk: '26'
+            binary: aws
+          - platform: macos-arm64-sdk27
+            runner: xcode-27
+            target: aarch64-apple-darwin
+            macos-sdk: '27'
+            binary: aws
+          - platform: windows-x86_64
+            runner: windows-2025
+            target: x86_64-pc-windows-msvc
+            binary: aws.exe
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      # Only the checks lane publishes the caches, once per platform.
+      - name: Set up
+        uses: ./.github/actions/native-ci-setup
+        with:
+          target: ${{ matrix.target }}
+          macos-sdk: ${{ matrix.macos-sdk }}
+          save-cache: ${{ matrix.lane == 'checks' }}
+
+      # Dependencies are prepared; a lane that would rebuild one fails fast.
+      - name: Run lane
+        env:
+          AWSCLI_FORBID_EXPENSIVE_BUILDS: "1"
+        run: cargo xtask ci ${{ matrix.lane }}
+
+      # The runtime lane builds release-safe; keep it for `publish`.
+      - name: Keep release binary
+        if: matrix.lane == 'runtime'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: build-${{ matrix.platform }}
+          path: target/${{ matrix.target }}/release-safe/${{ matrix.binary }}
+          retention-days: 1
+          if-no-files-found: error
+
+  # The single required check for branch protection: it passes only when
+  # every lane on every platform passed, so adding a platform or lane never
+  # changes the repository settings.
+  native-ci:
+    name: native-ci
+    needs: lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require every lane
+        env:
+          RESULT: ${{ needs.lane.result }}
+        run: test "$RESULT" = success
+
+  # Pushes reach this job only on the main branch, by the trigger above, and
+  # only after every lane passed, so a published binary always comes from a
+  # fully vetted commit. Each artifact holds the binary and the commit it was
+  # built from.
+  publish:
+    name: publish (${{ matrix.platform }})
+    needs: native-ci
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        platform: [linux-x86_64, linux-aarch64, macos-arm64, windows-x86_64]
+    steps:
+      - name: Fetch release binary
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: build-${{ matrix.platform }}
+          path: dist
+
+      - name: Record commit
+        run: printf '%s\n' "$GITHUB_SHA" > dist/commit
+
+      - name: Publish
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: aws-${{ matrix.platform }}
+          path: dist
+          if-no-files-found: error

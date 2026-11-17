@@ -17,20 +17,17 @@ REGION_SCOPE_KEY = 'Region'
 
 
 def annotate_response(response, region):
-    """Label each top-level object, and each object in a top-level list."""
-    annotated = {}
-    for name, value in response.items():
-        # The allowlist only has commands whose members are objects or
-        # lists of objects (see test_allowlist.py).
-        if isinstance(value, list):
-            annotated[name] = [
-                # A null element is parsed as None.
-                element if element is None else _label(element, region)
-                for element in value
-            ]
-        else:
-            annotated[name] = _label(value, region)
-    return annotated
+    """Label each object of each top-level list with its region."""
+    # The allowlist only has commands whose members are lists of objects
+    # (see test_allowlist.py).
+    return {
+        name: [
+            # A null element is parsed as None.
+            element if element is None else _label(element, region)
+            for element in value
+        ]
+        for name, value in response.items()
+    }
 
 
 def _label(value, region):
@@ -39,12 +36,18 @@ def _label(value, region):
 
 
 def merge_responses(responses):
-    """Concatenate lists; turn any other member into a list per region."""
+    """Concatenate the lists of every region."""
     merged = {}
     for response in responses:
         for key, value in response.items():
-            if isinstance(value, list):
-                merged.setdefault(key, []).extend(value)
-            else:
-                merged.setdefault(key, []).append(value)
+            merged.setdefault(key, []).extend(value)
     return merged
+
+
+def empty_response(operation_model, response_tokens):
+    """The response of a region that has nothing to list."""
+    return {
+        name: []
+        for name, member in operation_model.output_shape.members.items()
+        if member.type_name == 'list' and name not in response_tokens
+    }

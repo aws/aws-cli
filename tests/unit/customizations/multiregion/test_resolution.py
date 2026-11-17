@@ -25,7 +25,10 @@ from botocore.exceptions import (
 from urllib3.exceptions import NewConnectionError
 
 from awscli.customizations.exceptions import ConfigurationError
-from awscli.customizations.multiregion.caller import _is_dns_failure
+from awscli.customizations.multiregion.caller import (
+    _NO_SUCH_HOST_ERRNOS,
+    _is_dns_failure,
+)
 from awscli.customizations.multiregion.resolution import resolve_regions
 from awscli.customizations.multiregion.validation import MultiRegionSpec
 
@@ -189,6 +192,8 @@ class TestResolveAllRegions:
 
         assert resolved.regions == ['eu-west-1', 'us-east-1']
         assert resolved.skip_missing_hosts is True
+        # A region left out for lack of the variant is worth reporting.
+        assert resolved.endpoint_variant is True
 
     def test_calls_every_enabled_region_without_endpoint_data(self):
         # A service missing from endpoints.json has no region list, so
@@ -202,6 +207,19 @@ class TestResolveAllRegions:
 
         assert resolved.regions == ['us-east-1', 'us-west-2']
         assert resolved.skip_missing_hosts is True
+        # The service was never launched in a region left out.
+        assert resolved.endpoint_variant is False
+
+    def test_endpoint_variant_without_endpoint_data(self):
+        session = make_session(
+            clients={'account': account_client(['us-east-1'])},
+            config={'use_fips_endpoint': 'true'},
+        )
+
+        resolved = resolve_regions(session, all_regions_spec(), 'newservice')
+
+        assert resolved.skip_missing_hosts is True
+        assert resolved.endpoint_variant is True
 
     def test_raises_when_service_in_no_enabled_region(self):
         session = make_session(
@@ -376,13 +394,8 @@ def connection_error(resolver_error, chained='cause'):
         )
 
 
-NO_SUCH_HOST_ERRNOS = [socket.EAI_NONAME] + (
-    [socket.EAI_NODATA] if hasattr(socket, 'EAI_NODATA') else []
-)
-
-
 class TestIsDnsFailure:
-    @pytest.mark.parametrize('errno', NO_SUCH_HOST_ERRNOS)
+    @pytest.mark.parametrize('errno', sorted(_NO_SUCH_HOST_ERRNOS))
     @pytest.mark.parametrize('chained', ['cause', 'context'])
     def test_missing_hostname_is_dns_failure(self, errno, chained):
         error = connection_error(socket.gaierror(errno, 'not known'), chained)

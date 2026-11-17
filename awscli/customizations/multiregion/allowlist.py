@@ -15,13 +15,15 @@
 # Commands that support --multi-regions, keyed by the CLI service name.
 #
 # Only add a read-only listing whose response can be merged: apart from
-# pagination tokens, every member is a list of objects or an object, so
-# every returned item can record its region.  Do not add a command that:
+# pagination tokens, every member is a list of structures, so every
+# returned item can record its region.  Do not add a command that:
 #
 # * mutates state, or returns credentials, secrets or pre-signed URLs;
 # * reads data-plane records rather than describing resources;
-# * returns account-wide data, a global catalog, or anything else that is
-#   the same in every region;
+# * returns account-wide data, or anything else that is the same in every
+#   region;
+# * returns, by default, a catalog or reference data provided by AWS
+#   rather than the account's own resources;
 # * requires a resource identifier, which only exists in some regions,
 #   even when the model does not mark it as required (one of several
 #   members has to be given);
@@ -62,16 +64,13 @@ ALLOWED_OPERATIONS = {
         'list-custom-models',
         'list-enforced-guardrails-configuration',
         'list-evaluation-jobs',
-        'list-foundation-models',
         'list-guardrails',
         'list-imported-models',
-        'list-inference-profiles',
         'list-marketplace-model-endpoints',
         'list-model-copy-jobs',
         'list-model-customization-jobs',
         'list-model-import-jobs',
         'list-model-invocation-jobs',
-        'list-prompt-routers',
         'list-provisioned-model-throughputs',
     ],
     'bedrock-agent': [
@@ -90,7 +89,6 @@ ALLOWED_OPERATIONS = {
         'list-configuration-bundles',
         'list-consent-portals',
         'list-datasets',
-        'list-evaluators',
         'list-gateways',
         'list-harnesses',
         'list-memories',
@@ -169,7 +167,6 @@ ALLOWED_OPERATIONS = {
         'describe-addresses',
         'describe-availability-zones',
         'describe-instance-status',
-        'describe-instance-types',
         'describe-instances',
         'describe-internet-gateways',
         'describe-key-pairs',
@@ -228,7 +225,6 @@ ALLOWED_OPERATIONS = {
     'guardduty': [
         'list-custom-detection-rule-associations',
         'list-custom-detection-rule-org-configurations',
-        'list-custom-detection-rules',
     ],
     'healthlake': ['list-data-transformation-jobs'],
     'inspector2': ['list-connector-scan-configurations', 'list-connectors'],
@@ -274,7 +270,7 @@ ALLOWED_OPERATIONS = {
     'lambda-core': ['list-network-connectors'],
     'lambda-microvms': ['list-microvm-images', 'list-microvms'],
     'lambda-web': ['list-web-functions'],
-    'launch-wizard': ['list-deployments', 'list-workloads'],
+    'launch-wizard': ['list-deployments'],
     'location': [
         'list-geofence-collections',
         'list-jobs',
@@ -334,7 +330,7 @@ ALLOWED_OPERATIONS = {
         'list-network-migration-definitions',
         'list-waves',
     ],
-    'mpa': ['list-approval-teams', 'list-identity-sources', 'list-policies'],
+    'mpa': ['list-approval-teams', 'list-identity-sources'],
     'mwaa-serverless': ['list-workflows'],
     'neptune-graph': [
         'list-export-tasks',
@@ -415,9 +411,9 @@ ALLOWED_OPERATIONS = {
         'list-trust-anchors',
     ],
     'rum': ['list-app-monitors'],
-    's3files': ['list-file-systems', 'list-mount-targets'],
-    's3tables': ['list-table-buckets', 'list-table-migrations'],
-    's3vectors': ['list-indexes', 'list-vector-buckets'],
+    's3files': ['list-file-systems'],
+    's3tables': ['list-table-buckets'],
+    's3vectors': ['list-vector-buckets'],
     'secretsmanager': ['list-secrets'],
     'security-ir': ['list-memberships'],
     'securityagent': [
@@ -439,7 +435,6 @@ ALLOWED_OPERATIONS = {
     'ssm-sap': [
         'list-applications',
         'list-components',
-        'list-configuration-check-definitions',
         'list-databases',
     ],
     'stepfunctions': ['list-state-machines'],
@@ -457,8 +452,6 @@ ALLOWED_OPERATIONS = {
         'list-resource-configurations',
         'list-resource-gateways',
         'list-service-network-resource-associations',
-        'list-service-network-service-associations',
-        'list-service-network-vpc-associations',
         'list-service-networks',
         'list-services',
         'list-target-groups',

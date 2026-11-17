@@ -14,7 +14,6 @@ import re
 
 import pytest
 
-from awscli.clidriver import create_clidriver
 from awscli.customizations.multiregion.allowlist import (
     ALLOWED_OPERATIONS,
     is_eligible,
@@ -23,9 +22,15 @@ from awscli.customizations.multiregion.arguments import (
     MULTI_REGIONS_NAME,
     MultiRegionsArgument,
 )
-from awscli.customizations.multiregion.pagination import get_response_tokens
+from awscli.customizations.multiregion.pagination import (
+    get_pagination_tokens,
+)
 from awscli.customizations.paginate import get_paginator_config
-from tests.unit.customizations.multiregion import is_mergeable
+from tests.unit.customizations.multiregion import (
+    cli_command_table,
+    get_cli_command,
+    is_mergeable,
+)
 
 
 def allowlist_entries():
@@ -36,27 +41,17 @@ def allowlist_entries():
     ]
 
 
-@pytest.fixture(scope='module')
-def cli_command_table():
-    return create_clidriver().subcommand_table
-
-
-def get_command(cli_command_table, cli_service_name, operation_name):
-    service = cli_command_table[cli_service_name]
-    return service.subcommand_table[operation_name]
-
-
 @pytest.mark.parametrize(
     'cli_service_name, operation_name', allowlist_entries()
 )
 def test_allowlisted_command_can_be_merged(
-    session, cli_command_table, cli_service_name, operation_name
+    session, cli_service_name, operation_name
 ):
     """Every entry names a real command whose response can be merged."""
-    assert cli_service_name in cli_command_table
-    command = get_command(cli_command_table, cli_service_name, operation_name)
+    assert cli_service_name in cli_command_table()
+    command = get_cli_command(cli_service_name, operation_name)
     operation_model = command._operation_model
-    tokens = get_response_tokens(
+    _, tokens = get_pagination_tokens(
         session, operation_model.service_model.service_name, operation_model
     )
     assert is_mergeable(operation_model, tokens)
@@ -66,12 +61,12 @@ def test_allowlisted_command_can_be_merged(
     'cli_service_name, operation_name', allowlist_entries()
 )
 def test_allowlisted_command_has_no_multi_regions_option_of_its_own(
-    cli_command_table, cli_service_name, operation_name
+    cli_service_name, operation_name
 ):
     # Building the argument table raises if the command already defines
     # the option, for example after a service adds a parameter of that
     # name.
-    command = get_command(cli_command_table, cli_service_name, operation_name)
+    command = get_cli_command(cli_service_name, operation_name)
     argument = command.arg_table[MULTI_REGIONS_NAME]
     assert isinstance(argument, MultiRegionsArgument)
 
@@ -80,12 +75,12 @@ def test_allowlisted_command_has_no_multi_regions_option_of_its_own(
     'cli_service_name, operation_name', allowlist_entries()
 )
 def test_allowlisted_command_can_be_paged(
-    session, cli_command_table, cli_service_name, operation_name
+    session, cli_service_name, operation_name
 ):
     # A command the service paginates but botocore has no paginator model
     # for cannot be paged with --starting-token.  Token names are only
     # guessed here, so a wrong guess fails this test instead of shipping.
-    command = get_command(cli_command_table, cli_service_name, operation_name)
+    command = get_cli_command(cli_service_name, operation_name)
     operation_model = command._operation_model
     service_name = operation_model.service_model.service_name
     if get_paginator_config(session, service_name, operation_model.name):
@@ -101,9 +96,9 @@ def test_allowlisted_command_can_be_paged(
     'cli_service_name, operation_name', allowlist_entries()
 )
 def test_allowlisted_command_takes_no_required_input(
-    cli_command_table, cli_service_name, operation_name
+    cli_service_name, operation_name
 ):
-    command = get_command(cli_command_table, cli_service_name, operation_name)
+    command = get_cli_command(cli_service_name, operation_name)
     input_shape = command._operation_model.input_shape
     assert input_shape is None or not input_shape.required_members
 
@@ -153,6 +148,16 @@ def test_command_that_is_not_allowlisted_is_rejected(
         # Catalogs provided by AWS rather than the account's resources.
         ('controltower', 'list-baselines'),
         ('resiliencehubv2', 'list-test-templates'),
+        ('ssm-sap', 'list-configuration-check-definitions'),
+        ('ec2', 'describe-instance-types'),
+        ('bedrock', 'list-foundation-models'),
+        ('launch-wizard', 'list-workloads'),
+        ('guardduty', 'list-custom-detection-rules'),
+        ('bedrock-agentcore-control', 'list-evaluators'),
+        ('mpa', 'list-policies'),
+        # Without a type filter, the profiles or routers defined by AWS.
+        ('bedrock', 'list-inference-profiles'),
+        ('bedrock', 'list-prompt-routers'),
         # Without filters, every public image or snapshot in the region.
         ('ec2', 'describe-images'),
         ('ec2', 'describe-snapshots'),
@@ -173,6 +178,11 @@ def test_command_returning_the_same_data_everywhere_is_not_eligible(
         ('elbv2', 'describe-rules'),
         ('logs', 'describe-log-streams'),
         ('odb', 'list-db-nodes'),
+        ('s3vectors', 'list-indexes'),
+        ('s3tables', 'list-table-migrations'),
+        ('s3files', 'list-mount-targets'),
+        ('vpc-lattice', 'list-service-network-service-associations'),
+        ('vpc-lattice', 'list-service-network-vpc-associations'),
         # Without --clusters it only describes the "default" cluster.
         ('ecs', 'describe-clusters'),
     ],

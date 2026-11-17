@@ -236,6 +236,56 @@ class TestMultiRegionOutput(BaseMultiRegionTest):
         )
 
 
+class TestStreamedRegionsWithNothingToList(BaseMultiRegionTest):
+    """A streamed document with only empty lists names no region."""
+
+    def run_streamed(self, output, responses, *args):
+        self.parsed_responses = responses
+        stdout, _, _ = self.run_cmd(
+            [
+                'ec2',
+                'describe-vpcs',
+                '--multi-regions',
+                'us-east-1,eu-west-1',
+                '--output',
+                output,
+                *args,
+            ]
+        )
+        return stdout
+
+    def test_yaml_stream_leaves_out_a_region_with_nothing_to_list(self):
+        stdout = self.run_streamed(
+            'yaml-stream', [{'Vpcs': []}, vpc_response('vpc-2')]
+        )
+        entries = self.yaml.load(stdout)
+        self.assertEqual(
+            [entry['Vpcs'][0]['_CliScope']['Region'] for entry in entries],
+            ['eu-west-1'],
+        )
+        self.assertEqual(self.called_regions, ['us-east-1', 'eu-west-1'])
+
+    def test_yaml_stream_prints_one_empty_document_when_no_region_lists(
+        self,
+    ):
+        # Like a single region with nothing to list.
+        stdout = self.run_streamed('yaml-stream', [{'Vpcs': []}, {}])
+        self.assertEqual(self.yaml.load(stdout), [{'Vpcs': []}])
+
+    def test_text_still_prints_the_token(self):
+        stdout = self.run_streamed(
+            'text',
+            [{'Vpcs': []}, {'Vpcs': [{'VpcId': 'vpc-1'}, {'VpcId': 'vpc-2'}]}],
+            '--max-items',
+            '1',
+        )
+        lines = stdout.splitlines()
+        self.assertEqual(len(lines), 3, stdout)
+        self.assertIn('vpc-1', lines[0])
+        self.assertIn('eu-west-1', lines[1])
+        self.assertRegex(lines[2], r'NEXTTOKEN\t\S+')
+
+
 class TestMultiRegionErrors(BaseMultiRegionTest):
     """The first region that fails fails the whole command."""
 
@@ -379,29 +429,11 @@ class TestMultiRegionValidation(BaseMultiRegionTest):
             '--endpoint-url cannot be used together with --multi-regions.',
         )
 
-    def test_regions_must_be_in_one_partition(self):
+    def test_region_list_is_validated_before_any_request(self):
+        # The value formats themselves are covered by the unit tests.
         self.assert_rejected(
-            'ec2 describe-vpcs --multi-regions us-east-1,cn-north-1',
-            'all regions must be in the same partition (us-east-1 is in '
-            '"aws", cn-north-1 is in "aws-cn")',
-        )
-
-    def test_malformed_region_is_rejected(self):
-        self.assert_rejected(
-            'ec2 describe-vpcs --multi-regions not-a-region',
+            'ec2 describe-vpcs --multi-regions us-east-1,not-a-region',
             '--multi-regions: "not-a-region" is not a valid region name.',
-        )
-
-    def test_empty_region_is_rejected(self):
-        self.assert_rejected(
-            ['ec2', 'describe-vpcs', '--multi-regions', 'us-east-1,'],
-            'the region list has an empty entry',
-        )
-
-    def test_all_cannot_be_mixed_with_region_names(self):
-        self.assert_rejected(
-            'ec2 describe-vpcs --multi-regions all,us-east-1',
-            '"all" cannot be combined with explicit region names.',
         )
 
     def test_customization_command_is_rejected(self):
@@ -427,9 +459,7 @@ class TestMultiRegionValidation(BaseMultiRegionTest):
             'cannot be used together with --multi-regions',
         )
 
-    def test_output_skeleton_is_merged_like_real_output(self):
-        # Each region's stubbed response is labelled and merged, so the
-        # skeleton has the shape of a real multi-region response.
+    def output_skeleton(self, regions, *args):
         stdout, stderr, _ = self.run_cmd(
             [
                 'ec2',
@@ -437,17 +467,43 @@ class TestMultiRegionValidation(BaseMultiRegionTest):
                 '--generate-cli-skeleton',
                 'output',
                 '--multi-regions',
-                'us-east-1,eu-west-1',
-                '--query',
-                '{Regions: Vpcs[]._CliScope.Region, NextToken: NextToken}',
+                regions,
+                *args,
             ]
         )
-        self.assertEqual(
-            json.loads(stdout),
-            {'Regions': ['us-east-1', 'eu-west-1'], 'NextToken': 'NextToken'},
-        )
-        # The placeholder tokens are not reported as truncated results.
+        # The placeholder token is not reported as truncated results.
         self.assertEqual(stderr, '')
+        self.assertEqual(self.request_urls, [])
+        return json.loads(stdout)
+
+    def test_output_skeleton_is_labelled_like_real_output(self):
+        # One example, labelled with the first region, like a region of
+        # the real output; the token is the one --multi-regions returns.
+        skeleton = self.output_skeleton(
+            'eu-west-1,us-east-1',
+            '--query',
+            '{Regions: Vpcs[]._CliScope.Region, NextToken: NextToken}',
+        )
+        self.assertEqual(
+            skeleton, {'Regions': ['eu-west-1'], 'NextToken': 'NextToken'}
+        )
+
+    def test_output_skeleton_has_the_members_of_one_region(self):
+        skeleton = self.output_skeleton('us-east-1,eu-west-1')
+        self.assertEqual(sorted(skeleton), ['NextToken', 'Vpcs'])
+        self.assertEqual(len(skeleton['Vpcs']), 1)
+        self.assertEqual(skeleton['Vpcs'][0]['VpcId'], 'VpcId')
+
+    def test_output_skeleton_of_an_unpaginated_command_has_no_token(self):
+        stdout, _, _ = self.run_cmd(
+            'ec2 describe-key-pairs --generate-cli-skeleton output '
+            '--multi-regions us-east-1,eu-west-1'
+        )
+        skeleton = json.loads(stdout)
+        self.assertEqual(list(skeleton), ['KeyPairs'])
+        self.assertEqual(
+            skeleton['KeyPairs'][0]['_CliScope'], {'Region': 'us-east-1'}
+        )
 
     def test_output_skeleton_does_not_resolve_credentials(self):
         # Like a single-region skeleton, it is generated without credentials.
@@ -464,37 +520,68 @@ class TestMultiRegionValidation(BaseMultiRegionTest):
             )
         credentials.get_frozen_credentials.assert_not_called()
 
-    def test_output_skeleton_with_all_makes_no_call(self):
-        # Every region with an ec2 endpoint stands in for the enabled
-        # regions, so the account is not asked for its regions.
-        stdout, _, _ = self.run_cmd(
-            [
-                'ec2',
-                'describe-vpcs',
-                '--generate-cli-skeleton',
-                'output',
-                '--multi-regions',
-                'all',
-                '--query',
-                'Vpcs[]._CliScope.Region',
-            ]
+    def test_output_skeleton_with_all_shows_the_default_region(self):
+        # The enabled regions are not looked up: a skeleton calls no API.
+        self.environ['AWS_DEFAULT_REGION'] = 'eu-west-1'
+        skeleton = self.output_skeleton(
+            'all', '--query', 'Vpcs[]._CliScope.Region'
         )
-        regions = json.loads(stdout)
+        self.assertEqual(skeleton, ['eu-west-1'])
         self.assertEqual(
-            regions, sorted(self.driver.session.get_available_regions('ec2'))
-        )
-        self.assertNotIn(
-            'ListRegions',
             [model.name for model, _ in self.operations_called],
+            ['DescribeVpcs'],
         )
 
-    def test_input_skeleton_is_allowed(self):
+    def test_output_skeleton_with_all_and_no_default_region(self):
+        del self.environ['AWS_DEFAULT_REGION']
+        skeleton = self.output_skeleton(
+            'all', '--query', 'Vpcs[]._CliScope.Region'
+        )
+        self.assertEqual(skeleton, ['us-east-1'])
+
+    def test_input_skeleton_leaves_out_the_pagination_token(self):
+        # --multi-regions rejects it, so the skeleton could not be used.
         stdout, _, _ = self.run_cmd(
             'ec2 describe-vpcs --generate-cli-skeleton '
             '--multi-regions us-east-1,eu-west-1'
         )
-        self.assertIn('VpcIds', stdout)
         self.assertEqual(self.request_urls, [])
+        skeleton = json.loads(stdout)
+        self.assertNotIn('NextToken', skeleton)
+        self.assertIn('MaxResults', skeleton)
+
+        # Filled in, it can be passed back with the option.
+        skeleton.update(VpcIds=['vpc-1'], MaxResults=5, DryRun=False)
+        self.parsed_responses = [vpc_response('vpc-1'), vpc_response('vpc-2')]
+        self.run_cmd(
+            [
+                'ec2',
+                'describe-vpcs',
+                '--cli-input-json',
+                json.dumps(skeleton),
+                '--multi-regions',
+                'us-east-1,eu-west-1',
+            ]
+        )
+        self.assertEqual(
+            list(dict.fromkeys(self.called_regions)),
+            ['us-east-1', 'eu-west-1'],
+        )
+
+    def test_yaml_input_skeleton_leaves_out_the_pagination_token(self):
+        stdout, _, _ = self.run_cmd(
+            'ec2 describe-vpcs --generate-cli-skeleton yaml-input '
+            '--multi-regions us-east-1,eu-west-1'
+        )
+        skeleton = self.yaml.load(stdout)
+        self.assertNotIn('NextToken', skeleton)
+        self.assertIn('VpcIds', skeleton)
+
+    def test_input_skeleton_keeps_the_token_without_the_option(self):
+        stdout, _, _ = self.run_cmd(
+            'ec2 describe-vpcs --generate-cli-skeleton'
+        )
+        self.assertIn('NextToken', json.loads(stdout))
 
 
 class TestMultiRegionAll(BaseMultiRegionTest):
@@ -628,6 +715,14 @@ class TestOptionIsOfferedOnlyWhereSupported(BaseMultiRegionTest):
     def test_not_added_to_a_data_plane_read(self):
         self.assert_in_arg_table('dynamodb scan', False)
         self.assert_in_arg_table('sqs receive-message', False)
+
+    def test_not_added_to_an_aws_provided_catalog(self):
+        self.assert_in_arg_table('ec2 describe-instance-types', False)
+        self.assert_in_arg_table('bedrock list-foundation-models', False)
+
+    def test_not_added_when_one_of_several_identifiers_is_needed(self):
+        self.assert_in_arg_table('s3vectors list-indexes', False)
+        self.assert_in_arg_table('s3files list-mount-targets', False)
 
     def test_not_added_when_the_response_cannot_be_merged(self):
         # A response that is a single structure or a set of scalars has
@@ -948,8 +1043,29 @@ class TestRegionsWithoutAnEndpoint(BaseMultiRegionTest):
         stdout, stderr, _ = self.run_cmd(
             f'dsql list-clusters --multi-regions all --starting-token {token}'
         )
-        self.assertEqual(stdout, '')
-        self.assertNotIn('could not resolve any endpoint', stderr)
+        # Printed like a region that has nothing to list.
+        self.assertEqual(json.loads(stdout), {'clusters': []})
+        self.assertEqual(stderr, '')
+
+    def test_resumed_yaml_stream_ending_in_regions_without_an_endpoint(self):
+        self.parsed_responses = [
+            self.enabled_regions('us-east-1', 'eu-west-1'),
+            {'clusters': [{'identifier': 'cluster-eu-west-1'}]},
+        ]
+        stdout, _, _ = self.run_cmd(
+            'dsql list-clusters --multi-regions all --max-items 1'
+        )
+        token = json.loads(stdout)['NextToken']
+
+        self.parsed_responses = [
+            self.enabled_regions('us-east-1', 'eu-west-1'),
+            name_resolution_failure('https://dsql.us-east-1.api.aws/cluster'),
+        ]
+        stdout, _, _ = self.run_cmd(
+            'dsql list-clusters --multi-regions all --output yaml-stream '
+            f'--starting-token {token}'
+        )
+        self.assertEqual(self.yaml.load(stdout), [{'clusters': []}])
 
     def test_region_named_on_the_command_line_is_never_skipped(self):
         # The user asked for this region by name, so a hostname that does
@@ -966,6 +1082,78 @@ class TestRegionsWithoutAnEndpoint(BaseMultiRegionTest):
         self.assertEqual(self.called_regions, ['eu-west-1'])
         self.assertIn('[eu-west-1] Could not connect to the endpoint', stderr)
         self.assertNotIn('could not resolve any endpoint', stderr)
+
+
+class TestRegionsWithoutAnEndpointVariant(BaseMultiRegionTest):
+    """Not every region has a FIPS or dual-stack endpoint.
+
+    With ``all`` such a region is left out, but unlike a region the
+    service was never launched in, the user is told about it.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.environ['AWS_USE_FIPS_ENDPOINT'] = 'true'
+
+    def enabled_regions(self, *names):
+        return {'Regions': [{'RegionName': name} for name in names]}
+
+    def test_regions_without_the_endpoint_are_reported(self):
+        self.parsed_responses = [
+            self.enabled_regions('us-east-1', 'eu-west-1', 'ap-south-1'),
+            name_resolution_failure(
+                'https://ec2-fips.ap-south-1.amazonaws.com'
+            ),
+            name_resolution_failure(
+                'https://ec2-fips.eu-west-1.amazonaws.com'
+            ),
+            vpc_response('vpc-1'),
+        ]
+        stdout, stderr, _ = self.run_cmd(
+            'ec2 describe-vpcs --multi-regions all'
+        )
+        self.assertEqual(
+            [vpc['_CliScope']['Region'] for vpc in json.loads(stdout)['Vpcs']],
+            ['us-east-1'],
+        )
+        self.assertEqual(
+            stderr,
+            '[ap-south-1, eu-west-1] skipped: no FIPS or dual-stack '
+            'endpoint for ec2 there, so the results leave these regions '
+            'out.\n',
+        )
+
+    def test_every_region_without_the_endpoint_names_the_variant(self):
+        self.parsed_responses = [
+            self.enabled_regions('us-east-1', 'eu-west-1'),
+            name_resolution_failure(
+                'https://ec2-fips.eu-west-1.amazonaws.com'
+            ),
+            name_resolution_failure(
+                'https://ec2-fips.us-east-1.amazonaws.com'
+            ),
+        ]
+        stdout, stderr, _ = self.run_cmd(
+            'ec2 describe-vpcs --multi-regions all',
+            expected_rc=GENERAL_ERROR_RC,
+        )
+        self.assertEqual(stdout, '')
+        self.assertIn(
+            '[eu-west-1, us-east-1] could not resolve any endpoint; the '
+            'service may have no FIPS or dual-stack endpoint in these '
+            'regions',
+            stderr,
+        )
+        self.assertNotIn('skipped', stderr)
+
+    def test_every_region_reachable_says_nothing(self):
+        self.parsed_responses = [
+            self.enabled_regions('us-east-1', 'eu-west-1'),
+            vpc_response('vpc-1'),
+            vpc_response('vpc-2'),
+        ]
+        _, stderr, _ = self.run_cmd('ec2 describe-vpcs --multi-regions all')
+        self.assertEqual(stderr, '')
 
 
 class TestPaginationTokensAreStripped(BaseMultiRegionTest):

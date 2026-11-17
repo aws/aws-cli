@@ -43,25 +43,22 @@ def decode_token(token, regions):
     return regions.index(region), region_token
 
 
-def get_response_tokens(session, service_name, operation_model):
-    """Output member names that carry pagination state, not data."""
+def get_pagination_tokens(session, service_name, operation_model):
+    """The members that carry pagination state rather than data.
+
+    Returns the input members that resume pagination in one region, and
+    the output members that are pagination state.
+    """
     config = get_paginator_config(session, service_name, operation_model.name)
     if config is None:
         # The allowlist only has unpaginated commands without a model.
-        return frozenset()
-    tokens = {_AGGREGATED_RESUME_TOKEN}
+        return frozenset(), frozenset()
+    input_tokens = frozenset(_as_list(config.get('input_token')))
     # Some services echo the input token, e.g. efs describe-file-systems.
-    for key in ('output_token', 'input_token', 'more_results'):
-        tokens.update(_as_list(config.get(key)))
-    return frozenset(tokens)
-
-
-def get_input_tokens(session, service_name, operation_model):
-    """Input member names that resume pagination in one region."""
-    config = get_paginator_config(session, service_name, operation_model.name)
-    if config is None:
-        return frozenset()
-    return frozenset(_as_list(config.get('input_token')))
+    response_tokens = {_AGGREGATED_RESUME_TOKEN, *input_tokens}
+    for key in ('output_token', 'more_results'):
+        response_tokens.update(_as_list(config.get(key)))
+    return input_tokens, frozenset(response_tokens)
 
 
 def pop_pagination_tokens(response, response_tokens):
@@ -92,13 +89,6 @@ def region_parameters(parameters, max_items, starting_token):
     if max_items is not None:
         config['MaxItems'] = max_items
     return dict(parameters, PaginationConfig=config)
-
-
-def with_next_token(responses, next_token, output):
-    """The responses, then the multi-region token if there is one."""
-    yield from responses
-    if next_token and output == 'text':
-        yield {'NextToken': {'NextToken': next_token[0]}}
 
 
 def count_items(page_iterator, response):

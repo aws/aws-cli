@@ -19,6 +19,7 @@ from awscli.customizations.multiregion.merge import (
     REGION_SCOPE_KEY,
     SCOPE_KEY,
     annotate_response,
+    empty_response,
     merge_responses,
 )
 from awscli.formatter import YAMLFormatter
@@ -98,16 +99,6 @@ class TestAnnotateResponse:
                 {'VpcId': 'vpc-1', SCOPE_KEY: scope(EAST)},
                 {'VpcId': 'vpc-2', SCOPE_KEY: scope(EAST)},
             ]
-        }
-
-    def test_labels_a_top_level_object(self):
-        # A structure, a map or a document object alike.
-        annotated = annotate_response(
-            {'Table': {'TableName': 't'}, 'Tags': {'env': 'prod'}}, EAST
-        )
-        assert annotated == {
-            'Table': {'TableName': 't', SCOPE_KEY: scope(EAST)},
-            'Tags': {'env': 'prod', SCOPE_KEY: scope(EAST)},
         }
 
     def test_does_not_label_nested_objects(self):
@@ -208,19 +199,33 @@ class TestMergeResponses:
             'Extra': [{'Id': 'e'}],
         }
 
-    def test_turns_a_structure_into_a_list_with_one_element_per_region(self):
-        east = annotate_response({'Table': {'TableName': 't'}}, EAST)
-        west = annotate_response({'Table': {'TableName': 't'}}, WEST)
-
-        assert merge_responses([east, west]) == {
-            'Table': [
-                {'TableName': 't', SCOPE_KEY: scope(EAST)},
-                {'TableName': 't', SCOPE_KEY: scope(WEST)},
-            ]
-        }
-
     def test_no_responses_merge_to_an_empty_response(self):
         assert merge_responses([]) == {}
+
+
+class TestEmptyResponse:
+    def test_has_every_list_member_as_an_empty_list(self, session):
+        operation_model = get_operation_model(session, 'ec2', 'describe-vpcs')
+        tokens = response_tokens(session, 'ec2', 'describe-vpcs')
+
+        assert empty_response(operation_model, tokens) == {'Vpcs': []}
+
+    def test_leaves_out_pagination_tokens(self, session):
+        # efs describe-file-systems also has Marker and NextMarker.
+        operation_model = get_operation_model(
+            session, 'efs', 'describe-file-systems'
+        )
+        tokens = response_tokens(session, 'efs', 'describe-file-systems')
+        assert set(output_members(operation_model)) - tokens == {'FileSystems'}
+
+        assert empty_response(operation_model, tokens) == {'FileSystems': []}
+
+    def test_every_call_returns_a_new_response(self, session):
+        operation_model = get_operation_model(session, 'ec2', 'describe-vpcs')
+        first = empty_response(operation_model, frozenset())
+        first['Vpcs'].append({'VpcId': 'vpc-1'})
+
+        assert empty_response(operation_model, frozenset()) == {'Vpcs': []}
 
 
 MERGEABLE_OPERATIONS = [
@@ -233,7 +238,7 @@ MERGEABLE_OPERATIONS = [
     ('efs', 'describe-file-systems'),
 ]
 
-# Each region's single object becomes one element of a list.
+# A single object per region would have to change shape to be merged.
 SINGLE_STRUCTURE_OPERATIONS = [
     ('dynamodb', 'describe-table'),
     ('kms', 'describe-key'),
@@ -274,7 +279,7 @@ class TestIsMergeable:
     @pytest.mark.parametrize(
         'cli_service_name, operation_name', SINGLE_STRUCTURE_OPERATIONS
     )
-    def test_single_structure_response_is_mergeable(
+    def test_single_structure_response_is_not_mergeable(
         self, session, cli_service_name, operation_name
     ):
         operation_model = get_operation_model(
@@ -286,7 +291,7 @@ class TestIsMergeable:
             members[name].type_name == 'structure'
             for name in set(members) - tokens
         )
-        assert is_mergeable(operation_model, tokens) is True
+        assert is_mergeable(operation_model, tokens) is False
 
     @pytest.mark.parametrize(
         'cli_service_name, operation_name', UNMERGEABLE_OPERATIONS
@@ -326,17 +331,16 @@ class TestIsMergeable:
         tokens = response_tokens(session, cli_service_name, operation_name)
         assert is_mergeable(operation_model, tokens) is False
 
-    def test_map_member_is_mergeable(self, session):
-        # ``lambda list-tags`` returns a map of tags, which becomes a list
-        # with one labelled map per region.
+    def test_map_member_is_not_mergeable(self, session):
+        # ``lambda list-tags`` returns a map of tags, not a list.
         operation_model = get_operation_model(session, 'lambda', 'list-tags')
         tags = output_members(operation_model)['Tags']
         assert tags.type_name == 'map'
         tokens = response_tokens(session, 'lambda', 'list-tags')
-        assert is_mergeable(operation_model, tokens) is True
+        assert is_mergeable(operation_model, tokens) is False
 
-    def test_a_list_of_maps_is_mergeable(self, session):
-        # The lists can be concatenated, and each map labelled.
+    def test_a_list_of_maps_is_not_mergeable(self, session):
+        # Labelling a map would add an entry the service never returned.
         operation_model = get_operation_model(
             session, 'ssm', 'describe-patch-properties'
         )
@@ -345,7 +349,7 @@ class TestIsMergeable:
         assert properties.member.type_name == 'map'
         tokens = response_tokens(session, 'ssm', 'describe-patch-properties')
 
-        assert is_mergeable(operation_model, tokens) is True
+        assert is_mergeable(operation_model, tokens) is False
 
     def test_response_with_no_output_shape_is_not_mergeable(self, session):
         operation_model = get_operation_model(session, 'sqs', 'delete-queue')

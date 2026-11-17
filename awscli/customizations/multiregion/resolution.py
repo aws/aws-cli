@@ -73,12 +73,18 @@ _AUTH_FAILURE_CODES = frozenset(
 class ResolvedRegions:
     """The regions a command will be run in."""
 
-    def __init__(self, regions, skip_missing_hosts=False):
+    def __init__(
+        self, regions, skip_missing_hosts=False, endpoint_variant=False
+    ):
         self.regions = list(regions)
+        # Whether a region whose hostname does not exist is left out.
         self.skip_missing_hosts = skip_missing_hosts
+        # Whether a FIPS or dual-stack endpoint is used, which some
+        # regions lack, so a region left out is worth reporting.
+        self.endpoint_variant = endpoint_variant
 
 
-def resolve_regions(session, spec, service_name, verify=None, offline=False):
+def resolve_regions(session, spec, service_name, verify=None):
     """Resolve a ``MultiRegionSpec`` into the regions to call."""
     if not spec.is_all:
         # Every listed region is called, so a missing one is reported.
@@ -93,11 +99,8 @@ def resolve_regions(session, spec, service_name, verify=None, offline=False):
         )
     partition = get_partition_for_region(session, current_region)
     service_regions = session.get_available_regions(service_name, partition)
-    if offline:
-        # Without calling AWS, every region with an endpoint is used.
-        regions = service_regions or _get_partition_regions(session, partition)
-        return ResolvedRegions(sorted(regions))
     enabled_regions = _get_enabled_regions(session, current_region, verify)
+    endpoint_variant = _uses_endpoint_variant(session)
     if not service_regions:
         # No endpoint data for the service: DNS decides.
         LOG.debug(
@@ -107,7 +110,9 @@ def resolve_regions(session, spec, service_name, verify=None, offline=False):
             partition,
         )
         return ResolvedRegions(
-            sorted(enabled_regions), skip_missing_hosts=True
+            sorted(enabled_regions),
+            skip_missing_hosts=True,
+            endpoint_variant=endpoint_variant,
         )
     omitted = sorted(set(enabled_regions) - set(service_regions))
     if omitted:
@@ -122,20 +127,15 @@ def resolve_regions(session, spec, service_name, verify=None, offline=False):
         )
     # Not every FIPS or dual-stack endpoint is listed, so DNS decides.
     return ResolvedRegions(
-        regions, skip_missing_hosts=_uses_endpoint_variant(session)
+        regions,
+        skip_missing_hosts=endpoint_variant,
+        endpoint_variant=endpoint_variant,
     )
 
 
 def get_partition_for_region(session, region):
     resolver = session._get_internal_component('endpoint_resolver')
     return resolver.get_partition_for_region(region)
-
-
-def _get_partition_regions(session, partition):
-    for entry in session.get_data('endpoints')['partitions']:
-        if entry['partition'] == partition:
-            return list(entry['regions'])
-    return []
 
 
 def _uses_endpoint_variant(session):

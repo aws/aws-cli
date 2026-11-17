@@ -26,7 +26,9 @@ from awscli.customizations.multiregion.arguments import (
 from awscli.customizations.multiregion.caller import (
     MultiRegionOperationCaller,
 )
-from awscli.customizations.multiregion.pagination import get_input_tokens
+from awscli.customizations.multiregion.pagination import (
+    get_pagination_tokens,
+)
 from awscli.customizations.multiregion.validation import (
     MultiRegionSpec,
     parse_multi_regions,
@@ -48,11 +50,12 @@ def input_tokens_for(session, service_name, operation_name):
     way the CLI driver reads them, rather than restated from a list kept
     in the CLI's own source.
     """
-    return get_input_tokens(
+    input_tokens, _ = get_pagination_tokens(
         session,
         service_name,
         operation_model(session, service_name, operation_name),
     )
+    return input_tokens
 
 
 def globals_with(**kwargs):

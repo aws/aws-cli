@@ -10,14 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from argparse import Namespace
-
 import pytest
-from botocore.paginate import Paginator
+from botocore.paginate import Paginator, TokenEncoder
 
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.multiregion.pagination import (
-    get_input_tokens,
-    get_response_tokens,
+    decode_token,
+    encode_token,
+    get_pagination_tokens,
     pop_pagination_tokens,
 )
 from tests.unit.customizations.multiregion import (
@@ -38,6 +38,10 @@ def shipped_paginator(session, cli_service_name, operation_name):
         session, cli_service_name, operation_name
     )
     return paginator_model.get_paginator(operation_model.name)
+
+
+def get_input_tokens(session, service_name, operation_model):
+    return get_pagination_tokens(session, service_name, operation_model)[0]
 
 
 def as_name_set(value):
@@ -299,7 +303,48 @@ class TestPaginationTokens:
         )
         assert output_members(operation_model)
 
-        assert (
-            get_response_tokens(session, 'sts', operation_model) == frozenset()
+        assert get_pagination_tokens(session, 'sts', operation_model) == (
+            frozenset(),
+            frozenset(),
         )
-        assert get_input_tokens(session, 'sts', operation_model) == frozenset()
+
+
+class TestMultiRegionToken:
+    REGIONS = ['us-east-1', 'eu-west-1']
+
+    def test_resumes_in_the_region_it_was_made_in(self):
+        token = encode_token('eu-west-1', 'page-2')
+
+        assert decode_token(token, self.REGIONS) == (1, 'page-2')
+
+    def test_resumes_at_the_start_of_a_region(self):
+        token = encode_token('eu-west-1', None)
+
+        assert decode_token(token, self.REGIONS) == (1, None)
+
+    def test_rejects_a_region_that_is_not_listed(self):
+        token = encode_token('ap-south-1', None)
+
+        with pytest.raises(ParamValidationError) as excinfo:
+            decode_token(token, self.REGIONS)
+
+        assert str(excinfo.value) == (
+            '--starting-token resumes in ap-south-1, which is not one of '
+            'the regions of --multi-regions.'
+        )
+
+    @pytest.mark.parametrize(
+        'token',
+        [
+            'abc123',
+            # A single-region token: botocore encodes the service's own.
+            TokenEncoder().encode({'NextToken': 'abc'}),
+        ],
+    )
+    def test_rejects_a_token_not_made_by_multi_regions(self, token):
+        with pytest.raises(ParamValidationError) as excinfo:
+            decode_token(token, self.REGIONS)
+
+        assert 'not a token returned by a command run with' in str(
+            excinfo.value
+        )

@@ -20,8 +20,10 @@ from ruamel.yaml import YAML
 
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
-from awscli.customizations.multiregion.caller import (
-    MultiRegionOperationCaller,
+from awscli.customizations.multiregion.merge import annotate_response
+from awscli.customizations.multiregion.pagination import (
+    get_pagination_tokens,
+    pop_pagination_tokens,
 )
 from awscli.customizations.utils import get_shape_doc_overview
 from awscli.utils import json_encoder
@@ -104,7 +106,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             self, '_generate_%s_skeleton' % arg_value.replace('-', '_')
         )(call_parameters=call_parameters, parsed_globals=parsed_globals)
 
-    def _generate_yaml_input_skeleton(self, **kwargs):
+    def _generate_yaml_input_skeleton(self, parsed_globals, **kwargs):
         input_shape = self._operation_model.input_shape
         yaml = YAML()
         yaml.representer.add_representer(_Bytes, _Bytes.represent)
@@ -112,16 +114,18 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
         if input_shape is not None:
             argument_generator = YAMLArgumentGenerator()
             skeleton = argument_generator.generate_skeleton(input_shape)
+            self._remove_multi_region_input_tokens(skeleton, parsed_globals)
         yaml.dump(skeleton, sys.stdout)
         return 0
 
-    def _generate_input_skeleton(self, **kwargs):
+    def _generate_input_skeleton(self, parsed_globals, **kwargs):
         outfile = sys.stdout
         input_shape = self._operation_model.input_shape
         skeleton = {}
         if input_shape is not None:
             argument_generator = ArgumentGenerator()
             skeleton = argument_generator.generate_skeleton(input_shape)
+            self._remove_multi_region_input_tokens(skeleton, parsed_globals)
         json.dump(skeleton, outfile, indent=4, default=json_encoder)
         outfile.write('\n')
         return 0
@@ -133,16 +137,50 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
         operation_name = self._operation_model.name
         operation_caller = StubbedCLIOperationCaller(self._session)
         spec = getattr(parsed_globals, 'multi_regions', None)
-        if spec is not None:
-            # The stubbed response of every region, labelled and merged
-            # the way --multi-regions merges real responses.
-            return MultiRegionOperationCaller(
-                self._session, operation_caller, spec, offline=True
-            ).invoke(
+        if spec is None:
+            return operation_caller.invoke(
                 service_name, operation_name, call_parameters, parsed_globals
             )
-        return operation_caller.invoke(
-            service_name, operation_name, call_parameters, parsed_globals
+        # One region stands for all of them, so that no API call is
+        # needed to find the regions and the skeleton shows one example
+        # of each list, like a single-region skeleton.
+        region = (
+            spec.regions[0]
+            if spec.regions
+            else self._session.get_config_variable('region') or 'us-east-1'
+        )
+        client = self._session.create_client(
+            service_name, region_name=region, verify=parsed_globals.verify_ssl
+        )
+        response = operation_caller._make_client_call(
+            client, operation_name, call_parameters, parsed_globals
+        )
+        response.pop('ResponseMetadata', None)
+        _, response_tokens = self._get_pagination_tokens()
+        pop_pagination_tokens(response, response_tokens)
+        # Labelled the way --multi-regions labels real responses.
+        skeleton = annotate_response(response, region)
+        if response_tokens:
+            # Where the token that resumes a --max-items listing goes.
+            skeleton['NextToken'] = 'NextToken'
+        operation_caller._display_response(
+            operation_name, skeleton, parsed_globals
+        )
+        return 0
+
+    def _remove_multi_region_input_tokens(self, skeleton, parsed_globals):
+        # --multi-regions rejects them: a token resumes only one region.
+        if getattr(parsed_globals, 'multi_regions', None) is None:
+            return
+        input_tokens, _ = self._get_pagination_tokens()
+        for token in input_tokens:
+            skeleton.pop(token, None)
+
+    def _get_pagination_tokens(self):
+        return get_pagination_tokens(
+            self._session,
+            self._operation_model.service_model.service_name,
+            self._operation_model,
         )
 
 

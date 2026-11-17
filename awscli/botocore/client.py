@@ -31,7 +31,10 @@ from botocore.compress import maybe_compress_request
 # "from botocore.client import UNSIGNED".
 from botocore.config import Config
 from botocore.context import with_current_context
-from botocore.credentials import RefreshableCredentials
+from botocore.credentials import (
+    RefreshableCredentials,
+    _ResilientRefreshableCredentials,
+)
 from botocore.discovery import (
     EndpointDiscoveryHandler,
     EndpointDiscoveryManager,
@@ -57,6 +60,7 @@ from botocore.paginate import Paginator
 from botocore.retries import adaptive, standard
 from botocore.useragent import UserAgentString, register_feature_id
 from botocore.utils import (
+    INVALID_CREDENTIAL_ERROR_CODES,
     CachedProperty,
     EventbridgeSignerSetter,
     S3ControlArnParamHandlerv2,
@@ -68,6 +72,42 @@ from botocore.utils import (
 
 logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()
+
+
+class AuthErrorInvalidationHandler:
+    """Invalidates cached credentials after auth-failure responses."""
+
+    def __init__(self, credentials, service_model):
+        self._credentials = credentials
+        self._service_model = service_model
+
+    def register(self, events, service_id):
+        events.register(
+            f'response-received.{service_id}', self.invalidate_on_auth_error
+        )
+
+    def invalidate_on_auth_error(
+        self, parsed_response, context, response_dict, **kwargs
+    ):
+        error_code = (parsed_response or {}).get('Error', {}).get('Code')
+        if error_code not in INVALID_CREDENTIAL_ERROR_CODES:
+            return
+        credentials = self._credentials
+        if not isinstance(credentials, _ResilientRefreshableCredentials):
+            return
+        operation_name = response_dict['context']['operation_name']
+        operation_model = self._service_model.operation_model(operation_name)
+        if operation_model.shape_for_error_code(error_code) is not None:
+            # A modeled error may refer to a token in the request rather
+            # than signing credentials, so skip credential invalidation.
+            return
+        try:
+            credentials._invalidate(context.get('signing_access_key'))
+        except Exception:
+            logger.debug(
+                "Failed to invalidate cached credentials after auth error.",
+                exc_info=True,
+            )
 
 
 class ClientCreator:
@@ -176,6 +216,7 @@ class ClientCreator:
         self._register_endpoint_discovery(
             service_client, endpoint_url, client_config
         )
+        self._register_credential_refresh_events(service_client)
         return service_client
 
     def create_client_class(self, service_name):
@@ -311,6 +352,13 @@ class ClientCreator:
             region=client.meta.region_name,
             endpoint_url=endpoint_url,
         ).register(client.meta.events)
+
+    def _register_credential_refresh_events(self, client):
+        service_model = client.meta.service_model
+        service_id = service_model.service_id.hyphenize()
+        AuthErrorInvalidationHandler(
+            client._get_credentials(), service_model
+        ).register(client.meta.events, service_id)
 
     def _register_s3express_events(
         self,
@@ -1196,6 +1244,13 @@ class BaseClient:
         return self._exceptions_factory.create_client_exceptions(
             self._service_model
         )
+
+    def _get_credentials(self):
+        """
+        This private interface is subject to abrupt breaking changes, including
+        removal, in any botocore release.
+        """
+        return self._request_signer._credentials
 
 
 class ClientMeta:

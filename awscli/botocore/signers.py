@@ -194,6 +194,17 @@ class RequestSigner:
                     raise e
 
             auth.add_auth(request)
+            # Record the access key that signed this request unless it used alternate
+            # credentials supplied per-request (request_credentials) or resolved from
+            # an identity cache (identity_cache).
+            if signing_context.get('request_credentials') or (
+                signing_context.get('identity_cache') is not None
+            ):
+                return
+            credentials = getattr(auth, 'credentials', None)
+            access_key = getattr(credentials, 'access_key', None)
+            if access_key is not None:
+                request.context['signing_access_key'] = access_key
 
     def _resolve_identity_cache(self, kwargs, cache, cache_key):
         kwargs['identity_cache'] = cache

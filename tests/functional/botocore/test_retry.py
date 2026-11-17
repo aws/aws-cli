@@ -17,10 +17,11 @@ import json
 import botocore.endpoint
 from botocore.awsrequest import AWSRequest
 from botocore.config import Config
+from botocore.credentials import _ResilientRefreshableCredentials
 from botocore.exceptions import ClientError
 from botocore.retries import standard
 
-from tests import BaseSessionTest, ClientHTTPStubber, mock
+from tests import BaseSessionTest, ClientHTTPStubber, create_session, mock
 from tests.functional.botocore.test_useragent import (
     get_captured_ua_strings,
     parse_registered_feature_ids,
@@ -469,3 +470,195 @@ class TestMaxAttemptsInRequestHeader(BaseSessionTest):
         request = AWSRequest()
         standard.MaxAttemptsSeeder(3).seed_max_attempts(request)
         self.assertNotIn('retries', request.context)
+
+
+class TestInvalidCredentialRetry(BaseRetryTest):
+    def create_client_with_resilient_credentials(
+        self, retry_mode, total_max_attempts, service_name='dynamodb'
+    ):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        refresh_using = mock.Mock(
+            return_value={
+                'access_key': 'NEW-ACCESS',
+                'secret_key': 'NEW-SECRET',
+                'token': 'NEW-TOKEN',
+                'expiry_time': (now + datetime.timedelta(hours=1)).isoformat(),
+            }
+        )
+        credentials = _ResilientRefreshableCredentials(
+            'OLD-ACCESS',
+            'OLD-SECRET',
+            'OLD-TOKEN',
+            now + datetime.timedelta(hours=1),
+            refresh_using,
+            'iam-role',
+        )
+        credential_provider = mock.Mock()
+        credential_provider.load_credentials.return_value = credentials
+        session = create_session()
+        session.register_component('credential_provider', credential_provider)
+        client = session.create_client(
+            service_name,
+            self.region,
+            config=Config(
+                retries={
+                    'mode': retry_mode,
+                    'max_attempts': total_max_attempts,
+                }
+            ),
+        )
+        return client, credentials, refresh_using
+
+    def assert_invalid_credential_error_refreshes_retry(
+        self,
+        error_code,
+        status=400,
+        service_name='dynamodb',
+        operation_name='list_tables',
+        operation_kwargs=None,
+    ):
+        for retry_mode in RETRY_MODES:
+            client, _, refresh_using = (
+                self.create_client_with_resilient_credentials(
+                    retry_mode,
+                    total_max_attempts=2,
+                    service_name=service_name,
+                )
+            )
+            if service_name == 'sts':
+                error_body = (
+                    f'<ErrorResponse><Error><Code>{error_code}</Code>'
+                    '</Error></ErrorResponse>'
+                ).encode()
+                api_name = client.meta.method_to_api_mapping[operation_name]
+                success_body = (
+                    f'<{api_name}Response><{api_name}Result/>'
+                    f'</{api_name}Response>'
+                ).encode()
+            else:
+                error_body = json.dumps(
+                    {'__type': error_code, 'message': 'invalid credentials'}
+                ).encode()
+                success_body = b'{"TableNames":[]}'
+            with ClientHTTPStubber(client) as http_stubber:
+                http_stubber.add_response(status=status, body=error_body)
+                http_stubber.add_response(status=200, body=success_body)
+                operation = getattr(client, operation_name)
+                response = operation(**(operation_kwargs or {}))
+
+            self.assertEqual(response['ResponseMetadata']['RetryAttempts'], 1)
+            self.assertEqual(refresh_using.call_count, 1)
+            self.assertEqual(len(http_stubber.requests), 2)
+            first_auth = http_stubber.requests[0].headers['Authorization']
+            second_auth = http_stubber.requests[1].headers['Authorization']
+            self.assertIn(b'Credential=OLD-ACCESS/', first_auth)
+            self.assertIn(b'Credential=NEW-ACCESS/', second_auth)
+
+    def test_expired_token_refreshes_and_resigns_retry(self):
+        self.assert_invalid_credential_error_refreshes_retry('ExpiredToken')
+
+    def test_expired_token_refreshes_and_resigns_retry_on_403(self):
+        self.assert_invalid_credential_error_refreshes_retry(
+            'ExpiredToken', status=403
+        )
+
+    def test_expired_token_exception_refreshes_and_resigns_retry(self):
+        self.assert_invalid_credential_error_refreshes_retry(
+            'ExpiredTokenException'
+        )
+
+    def test_expired_token_exception_refreshes_and_resigns_retry_on_403(self):
+        self.assert_invalid_credential_error_refreshes_retry(
+            'ExpiredTokenException', status=403
+        )
+
+    def test_modeled_expired_token_exception_does_not_retry_or_invalidate(
+        self,
+    ):
+        for retry_mode in RETRY_MODES:
+            client, credentials, refresh_using = (
+                self.create_client_with_resilient_credentials(
+                    retry_mode, total_max_attempts=2, service_name='sts'
+                )
+            )
+            with ClientHTTPStubber(client) as http_stubber:
+                http_stubber.add_response(
+                    status=403,
+                    body=(
+                        b'<ErrorResponse><Error><Code>ExpiredTokenException'
+                        b'</Code></Error></ErrorResponse>'
+                    ),
+                )
+                with self.assertRaisesRegex(
+                    ClientError, 'ExpiredTokenException'
+                ):
+                    client.assume_role(
+                        RoleArn='arn:aws:iam::123456789012:role/test',
+                        RoleSessionName='test-session',
+                    )
+
+            self.assertEqual(len(http_stubber.requests), 1)
+            refresh_using.assert_not_called()
+            self.assertFalse(credentials.refresh_needed())
+
+    def test_unmodeled_operation_in_same_service_refreshes_and_resigns_retry(
+        self,
+    ):
+        self.assert_invalid_credential_error_refreshes_retry(
+            'ExpiredTokenException',
+            status=403,
+            service_name='sts',
+            operation_name='get_caller_identity',
+        )
+
+    def test_expired_token_on_modeled_operation_refreshes_and_resigns_retry(
+        self,
+    ):
+        self.assert_invalid_credential_error_refreshes_retry(
+            'ExpiredToken',
+            status=403,
+            service_name='sts',
+            operation_name='assume_role',
+            operation_kwargs={
+                'RoleArn': 'arn:aws:iam::123456789012:role/test',
+                'RoleSessionName': 'test-session',
+            },
+        )
+
+    def test_invalid_token_does_not_retry_or_invalidate(self):
+        for retry_mode in RETRY_MODES:
+            client, credentials, refresh_using = (
+                self.create_client_with_resilient_credentials(
+                    retry_mode, total_max_attempts=2
+                )
+            )
+            with ClientHTTPStubber(client) as http_stubber:
+                http_stubber.add_response(
+                    status=400,
+                    body=b'{"__type":"InvalidToken","message":"invalid"}',
+                )
+                with self.assertRaises(ClientError):
+                    client.list_tables()
+
+            self.assertEqual(len(http_stubber.requests), 1)
+            refresh_using.assert_not_called()
+            self.assertFalse(credentials.refresh_needed())
+
+    def test_max_attempts_prevents_retry_but_not_invalidation(self):
+        for retry_mode in RETRY_MODES:
+            client, credentials, refresh_using = (
+                self.create_client_with_resilient_credentials(
+                    retry_mode, total_max_attempts=1
+                )
+            )
+            with ClientHTTPStubber(client) as http_stubber:
+                http_stubber.add_response(
+                    status=403,
+                    body=b'{"__type":"ExpiredTokenException","message":"expired"}',
+                )
+                with self.assertRaises(ClientError):
+                    client.list_tables()
+
+            self.assertEqual(len(http_stubber.requests), 1)
+            refresh_using.assert_not_called()
+            self.assertTrue(credentials.refresh_needed())

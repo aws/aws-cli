@@ -203,13 +203,15 @@ class TestSigner(BaseSignerTest):
         ):
             self.signer.sign('operation_name', self.request)
 
-        self.emitter.emit_until_response.assert_called_with(
-            'choose-signer.service_name.operation_name',
-            signing_name='signing_name',
-            region_name='region_name',
-            signature_version='v4',
-            context={'foo': 'bar'},
+        call = self.emitter.emit_until_response.call_args
+        self.assertEqual(
+            call.args[0], 'choose-signer.service_name.operation_name'
         )
+        self.assertEqual(call.kwargs['signing_name'], 'signing_name')
+        self.assertEqual(call.kwargs['region_name'], 'region_name')
+        self.assertEqual(call.kwargs['signature_version'], 'v4')
+        self.assertIs(call.kwargs['context'], self.request.context)
+        self.assertEqual(call.kwargs['context']['foo'], 'bar')
 
     def test_generate_url_choose_signer_override(self):
         request_dict = {
@@ -585,6 +587,87 @@ class TestSigner(BaseSignerTest):
                 self.signer.sign(
                     'operation_name', self.request, signing_type='presign-post'
                 )
+
+    def test_sign_records_signing_access_key(self):
+        auth = mock.Mock()
+        auth.credentials = self.fixed_credentials
+        auth_cls = mock.Mock(return_value=auth)
+
+        with mock.patch.dict(botocore.auth.AUTH_TYPE_MAPS, {'v4': auth_cls}):
+            self.signer.sign('operation_name', self.request)
+
+        self.assertEqual(self.request.context['signing_access_key'], 'key')
+
+    def test_sign_does_not_record_signing_access_key_without_credentials(
+        self,
+    ):
+        auth = mock.Mock(spec=["add_auth"])
+        auth_cls = mock.Mock(
+            REQUIRES_REGION=False,
+            REQUIRES_TOKEN=False,
+            return_value=auth,
+        )
+        self.emitter.emit_until_response.return_value = (None, 'custom')
+
+        with mock.patch.dict(
+            botocore.auth.AUTH_TYPE_MAPS, {'custom': auth_cls}
+        ):
+            self.signer.sign('operation_name', self.request)
+
+        self.assertNotIn('signing_access_key', self.request.context)
+
+    def test_sign_does_not_record_signing_access_key_for_request_credentials(
+        self,
+    ):
+        auth = mock.Mock()
+        auth.credentials = ReadOnlyCredentials(
+            'request-key', 'request-secret', None
+        )
+        auth_cls = mock.Mock(return_value=auth)
+        self.request.context = {
+            'signing': {
+                'request_credentials': Credentials(
+                    'request-key', 'request-secret', None
+                )
+            }
+        }
+
+        with mock.patch.dict(botocore.auth.AUTH_TYPE_MAPS, {'v4': auth_cls}):
+            self.signer.sign('operation_name', self.request)
+
+        self.assertNotIn('signing_access_key', self.request.context)
+
+    def test_sign_does_not_record_signing_access_key_for_identity_cache(
+        self,
+    ):
+        auth = mock.Mock(spec=["add_auth", "credentials"])
+        auth.credentials = ReadOnlyCredentials(
+            'cache-key', 'cache-secret', None
+        )
+        auth_cls = mock.Mock(
+            REQUIRES_REGION=False,
+            REQUIRES_TOKEN=False,
+            REQUIRES_IDENTITY_CACHE=True,
+            return_value=auth,
+        )
+        cache = mock.Mock()
+        cache.get_credentials.return_value = Credentials(
+            'cache-key', 'cache-secret', None
+        )
+        self.request.context = {
+            'signing': {
+                'identity_cache': cache,
+                'cache_key': 'bucket-name',
+            }
+        }
+        self.emitter.emit_until_response.return_value = (None, 'custom')
+
+        with mock.patch.dict(
+            botocore.auth.AUTH_TYPE_MAPS, {'custom': auth_cls}
+        ):
+            self.signer.sign('operation_name', self.request)
+
+        self.assertNotIn('signing_access_key', self.request.context)
 
 
 class TestCloudfrontSigner(BaseSignerTest):

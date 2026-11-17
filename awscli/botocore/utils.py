@@ -100,6 +100,9 @@ RETRYABLE_HTTP_ERRORS = (
     ConnectionClosedError,
     ConnectTimeoutError,
 )
+INVALID_CREDENTIAL_ERROR_CODES = frozenset(
+    ('ExpiredToken', 'ExpiredTokenException')
+)
 S3_ACCELERATE_WHITELIST = ['dualstack']
 
 # Vendoring IPv6 validation regex patterns from urllib3
@@ -564,7 +567,6 @@ class InstanceMetadataFetcher(IMDSFetcher):
                     'token': credentials['Token'],
                     'expiry_time': credentials['Expiration'],
                 }
-                self._evaluate_expiration(credentials)
                 return credentials
             else:
                 # IMDS can return a 200 response that has a JSON formatted
@@ -634,41 +636,6 @@ class InstanceMetadataFetcher(IMDSFetcher):
                 )
                 return False
         return True
-
-    def _evaluate_expiration(self, credentials):
-        expiration = credentials.get("expiry_time")
-        if expiration is None:
-            return
-        try:
-            expiration = datetime.datetime.strptime(
-                expiration, "%Y-%m-%dT%H:%M:%SZ"
-            )
-            refresh_interval = self._config.get(
-                "ec2_credential_refresh_window", 60 * 10
-            )
-            refresh_interval_with_jitter = refresh_interval + random.randint(
-                120, 600
-            )
-            current_time = datetime.datetime.utcnow()
-            refresh_offset = datetime.timedelta(
-                seconds=refresh_interval_with_jitter
-            )
-            extension_time = expiration - refresh_offset
-            if current_time >= extension_time:
-                new_time = current_time + refresh_offset
-                credentials["expiry_time"] = new_time.strftime(
-                    "%Y-%m-%dT%H:%M:%SZ"
-                )
-                logger.info(
-                    f"Attempting credential expiration extension due to a "
-                    f"credential service availability issue. A refresh of "
-                    f"these credentials will be attempted again within "
-                    f"the next {refresh_interval_with_jitter/60:.0f} minutes."
-                )
-        except ValueError:
-            logger.debug(
-                f"Unable to parse expiry_time in {credentials['expiry_time']}"
-            )
 
 
 def merge_dicts(dict1, dict2, append_lists=False):

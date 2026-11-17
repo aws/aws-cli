@@ -13,7 +13,9 @@
 import dateutil.parser
 import pytest
 from botocore.exceptions import (
+    EndpointConnectionError,
     InvalidConfigError,
+    ParamValidationError,
     SSOTokenLoadError,
     TokenRetrievalError,
 )
@@ -353,6 +355,102 @@ def test_sso_token_provider_refresh(test_case):
     # Pop the documentation to ensure all test fields are handled
     test_case.pop("documentation")
     assert not test_case.keys(), "All fields of test case should be handled"
+
+
+@pytest.mark.parametrize(
+    "current_time,expected_exception",
+    [
+        # Token still valid, but inside its refresh window.
+        ("2021-12-25T12:50:00Z", None),
+        # Token expired.
+        ("2021-12-25T13:30:00Z", TokenRetrievalError),
+    ],
+)
+def test_sso_token_provider_refresh_connection_error(
+    current_time, expected_exception
+):
+    config = {
+        "profiles": {"test": {"sso_session": "admin"}},
+        "sso_sessions": {
+            "admin": {
+                "sso_region": "us-west-2",
+                "sso_start_url": "https://d-123.awsapps.com/start",
+            }
+        },
+    }
+    cache_key = "d033e22ae348aeb5660fc2140aec35850c4da997"
+    token_cache = {
+        cache_key: {
+            "startUrl": "https://d-123.awsapps.com/start",
+            "region": "us-west-2",
+            "accessToken": "cachedtoken",
+            "expiresAt": "2021-12-25T13:00:00Z",
+            "clientId": "clientid",
+            "clientSecret": "YSBzZWNyZXQ=",
+            "registrationExpiresAt": "2022-12-25T13:30:00Z",
+            "refreshToken": "cachedrefreshtoken",
+        }
+    }
+    mock_session = _create_mock_session(config)
+    mock_sso_oidc = mock.Mock()
+    mock_sso_oidc.create_token.side_effect = EndpointConnectionError(
+        endpoint_url="https://oidc.us-west-2.amazonaws.com"
+    )
+    mock_session.create_client.return_value = mock_sso_oidc
+    now = dateutil.parser.parse(current_time)
+    resolver = SSOTokenProvider(
+        mock_session, token_cache, time_fetcher=lambda: now
+    )
+
+    auth_token = resolver.load_token()
+
+    if expected_exception is not None:
+        with pytest.raises(expected_exception):
+            auth_token.get_frozen_token()
+        # Refresh attempts are throttled, but the token must not be returned.
+        with pytest.raises(expected_exception):
+            auth_token.get_frozen_token()
+    else:
+        assert auth_token.get_frozen_token().token == "cachedtoken"
+    mock_sso_oidc.create_token.assert_called_once()
+
+
+def test_sso_token_provider_refresh_propagates_non_connection_errors():
+    config = {
+        "profiles": {"test": {"sso_session": "admin"}},
+        "sso_sessions": {
+            "admin": {
+                "sso_region": "us-west-2",
+                "sso_start_url": "https://d-123.awsapps.com/start",
+            }
+        },
+    }
+    cache_key = "d033e22ae348aeb5660fc2140aec35850c4da997"
+    token_cache = {
+        cache_key: {
+            "startUrl": "https://d-123.awsapps.com/start",
+            "region": "us-west-2",
+            "accessToken": "cachedtoken",
+            "expiresAt": "2021-12-25T13:00:00Z",
+            "clientId": "clientid",
+            "clientSecret": "YSBzZWNyZXQ=",
+            "registrationExpiresAt": "2022-12-25T13:30:00Z",
+            "refreshToken": "cachedrefreshtoken",
+        }
+    }
+    mock_session = _create_mock_session(config)
+    mock_sso_oidc = mock.Mock()
+    mock_sso_oidc.create_token.side_effect = ParamValidationError(
+        report="Invalid type for parameter clientSecret"
+    )
+    mock_session.create_client.return_value = mock_sso_oidc
+    now = dateutil.parser.parse("2021-12-25T12:50:00Z")
+    resolver = SSOTokenProvider(
+        mock_session, token_cache, time_fetcher=lambda: now
+    )
+
+    with pytest.raises(ParamValidationError):
+        resolver.load_token().get_frozen_token()
 
 
 def test_scoped_env_token_provider_returns_token_when_present(monkeypatch):

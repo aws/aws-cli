@@ -315,6 +315,7 @@ class TestOperationModelFromService(unittest.TestCase):
                 },
                 'NoSuchResourceException': {
                     'type': 'structure',
+                    'exception': True,
                     'members': {},
                 },
                 'stringType': {
@@ -409,6 +410,34 @@ class TestOperationModelFromService(unittest.TestCase):
         self.assertEqual(len(operation.error_shapes), 1)
         self.assertEqual(
             operation.error_shapes[0].name, 'NoSuchResourceException'
+        )
+
+    def test_shape_for_error_code(self):
+        operation = self.service_model.operation_model('OperationName')
+        shape = operation.shape_for_error_code('NoSuchResourceException')
+        self.assertEqual(shape.name, 'NoSuchResourceException')
+        self.assertIsNone(operation.shape_for_error_code('UnknownException'))
+
+    def test_shape_for_error_code_uses_wire_code(self):
+        self.model['shapes']['NoSuchResourceException']['error'] = {
+            'code': 'ResourceMissing'
+        }
+        operation = self.service_model.operation_model('OperationName')
+        shape = operation.shape_for_error_code('ResourceMissing')
+        self.assertEqual(shape.name, 'NoSuchResourceException')
+        self.assertIsNone(
+            operation.shape_for_error_code('NoSuchResourceException')
+        )
+
+    def test_shape_for_error_code_is_operation_specific(self):
+        self.model['operations']['OperationTwo']['errors'] = []
+        operation = self.service_model.operation_model('OperationName')
+        other_operation = self.service_model.operation_model('OperationTwo')
+        self.assertIsNotNone(
+            operation.shape_for_error_code('NoSuchResourceException')
+        )
+        self.assertIsNone(
+            other_operation.shape_for_error_code('NoSuchResourceException')
         )
 
     def test_has_auth(self):

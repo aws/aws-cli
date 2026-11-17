@@ -45,6 +45,17 @@ class BotoCoreError(Exception):
         return _exception_from_packed_args, (self.__class__, None, self.kwargs)
 
 
+class RefreshNonRecoverableError:
+    """Marker for refresh failures that should bypass refresh backoff and be
+    raised immediately to the caller.
+
+    This class is intended to be mixed into provider-specific exceptions and
+    is not raised directly.
+    """
+
+    pass
+
+
 class DataNotFoundError(BotoCoreError):
     """
     The data associated with a particular path could not be loaded.
@@ -162,7 +173,7 @@ class NoAuthTokenError(BotoCoreError):
     fmt = 'Unable to locate authorization token'
 
 
-class TokenRetrievalError(BotoCoreError):
+class TokenRetrievalError(BotoCoreError, RefreshNonRecoverableError):
     """
     Error attempting to retrieve a token from a remote source.
 
@@ -693,7 +704,9 @@ class InfiniteLoopConfigError(InvalidConfigError):
     )
 
 
-class RefreshWithMFAUnsupportedError(BotoCoreError):
+class RefreshWithMFAUnsupportedError(
+    BotoCoreError, RefreshNonRecoverableError
+):
     fmt = 'Cannot refresh credentials: MFA token required.'
 
 
@@ -735,7 +748,7 @@ class PendingAuthorizationExpiredError(SSOError):
     )
 
 
-class SSOTokenLoadError(SSOError):
+class SSOTokenLoadError(SSOError, RefreshNonRecoverableError):
     fmt = "Error loading SSO Token: {error_msg}"
 
 
@@ -743,7 +756,7 @@ class AuthorizationCodeLoadError(SSOError):
     fmt = "Error loading authorization code: {error_msg}"
 
 
-class UnauthorizedSSOTokenError(SSOError):
+class UnauthorizedSSOTokenError(SSOError, RefreshNonRecoverableError):
     fmt = (
         "The SSO session associated with this profile has expired or is "
         "otherwise invalid. To refresh this SSO session run aws sso login "
@@ -766,18 +779,18 @@ class LoginError(BotoCoreError):
     )
 
 
-class LoginRefreshTokenExpired(LoginError):
+class LoginRefreshTokenExpired(LoginError, RefreshNonRecoverableError):
     fmt = "Your session has expired. Please reauthenticate using 'aws login'."
 
 
-class LoginRefreshPasswordChanged(LoginError):
+class LoginRefreshPasswordChanged(LoginError, RefreshNonRecoverableError):
     fmt = (
         "Unable to refresh login credentials because of a change in your "
         "password. Please reauthenticate with your new password using 'aws login'."
     )
 
 
-class LoginInsufficientPermissions(LoginError):
+class LoginInsufficientPermissions(LoginError, RefreshNonRecoverableError):
     fmt = (
         "Unable to create or refresh login credentials due to insufficient "
         "permissions. You may be missing permission for the 'signin:CreateOAuth2Token' action."
@@ -786,6 +799,12 @@ class LoginInsufficientPermissions(LoginError):
 
 class LoginTokenLoadError(LoginError):
     fmt = "Error loading login session token: {error_msg}"
+
+
+class LoginInvalidCachedTokenError(
+    LoginTokenLoadError, RefreshNonRecoverableError
+):
+    pass
 
 
 class LoginAuthorizationCodeError(LoginError):

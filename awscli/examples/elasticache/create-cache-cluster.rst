@@ -1,6 +1,6 @@
 **To create a cache cluster**
 
-The following ``create-cache-cluster`` example creates a cache cluster using the Redis engine. ::
+The following ``create-cache-cluster`` example creates a cache cluster using the Redis engine. ``create-cache-cluster`` supports the Memcached and Redis OSS engines. To create a Valkey cluster, use ``create-replication-group``. ::
 
     aws elasticache create-cache-cluster \
         --cache-cluster-id "cluster-test" \
@@ -37,4 +37,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Cluster <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.Create.html>`__ in the *Elasticache User Guide*.
+For more information, see `Creating a cluster for Valkey or Redis OSS <https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Clusters.Create.html>`__ in the *Amazon ElastiCache User Guide*.

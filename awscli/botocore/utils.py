@@ -79,6 +79,7 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
+from botocore.service_module_names import SERVICE_MODULE_NAMES
 from botocore.useragent import register_feature_id
 from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
@@ -218,20 +219,33 @@ def has_header(header_name, headers):
         return header_name.lower() in [key.lower() for key in headers.keys()]
 
 
+_TABLED_MODULE_NAMES = frozenset(SERVICE_MODULE_NAMES.values())
+
+
 def get_service_module_name(service_model):
     """Returns the module name for a service
 
-    This is the value used in both the documentation and client class name
+    This is the value used in both the documentation and client class name.
+
+    The name is taken from ``SERVICE_MODULE_NAMES`` when the ``serviceId``
+    has an entry there, otherwise derived from the ``serviceId`` itself.
+
+    :raises ValueError: if the derived name is already used by an entry in
+        ``SERVICE_MODULE_NAMES``.
     """
-    name = service_model.metadata.get(
-        'serviceAbbreviation',
-        service_model.metadata.get(
-            'serviceFullName', service_model.service_name
-        ),
-    )
-    name = name.replace('Amazon', '')
-    name = name.replace('AWS', '')
-    name = re.sub(r'\W+', '', name)
+    service_id = service_model.metadata.get('serviceId')
+    if service_id is None:
+        return service_model.service_name
+    if service_id in SERVICE_MODULE_NAMES:
+        return SERVICE_MODULE_NAMES[service_id]
+    name = re.sub(r'\W+', '', service_id)
+    if name in _TABLED_MODULE_NAMES:
+        raise ValueError(
+            f'serviceId {service_id!r} derives the module name {name!r}, '
+            f'which is already used by another service in '
+            f'SERVICE_MODULE_NAMES. Record a different name for '
+            f'{service_id!r} in that table.'
+        )
     return name
 
 

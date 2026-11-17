@@ -51,6 +51,7 @@ class TestClientExceptionsFactory(unittest.TestCase):
         self.model = {
             "metadata": {
                 'endpointPrefix': 'myservice',
+                'serviceId': 'MyService',
                 'serviceFullName': 'MyService',
             },
             'operations': {
